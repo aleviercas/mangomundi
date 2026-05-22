@@ -76,10 +76,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments for retail remittances and corporate treasury." },
       { name: "author", content: "MangoGlobal" },
       { property: "og:title", content: "MangoGlobal — The Global FX Decision Engine" },
-      { property: "og:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision." },
+      { property: "og:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments for retail remittances and corporate treasury." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@MangoGlobal" },
+      { name: "twitter:title", content: "MangoGlobal — The Global FX Decision Engine" },
+      { name: "twitter:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments for retail remittances and corporate treasury." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
