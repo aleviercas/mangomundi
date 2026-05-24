@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-
-const navLinks = [
-  { to: "/", label: "Home" },
-  { to: "/fx-tool", label: "FX Tool" },
-  { to: "/features", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
-];
+import { useI18n } from "@/lib/i18n";
+import { LangSwitcher } from "@/components/LangSwitcher";
 
 export function Header() {
+  const { t } = useI18n();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { to: "/", label: t("nav.home") },
+    { to: "/fx-tool", label: t("nav.fx") },
+    { to: "/features", label: t("nav.features") },
+    { to: "/pricing", label: t("nav.pricing") },
+    { to: "/about", label: t("nav.about") },
+    { to: "/contact", label: t("nav.contact") },
+  ] as const;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -50,22 +53,26 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
+          <LangSwitcher />
           <Link
-            to="/contact"
+            to="/fx-tool"
             className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Get Started
+            {t("cta.tryTool")}
           </Link>
         </div>
 
-        <button
-          className="rounded-md p-2 text-foreground md:hidden"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-1 md:hidden">
+          <LangSwitcher />
+          <button
+            className="rounded-md p-2 text-foreground"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {mobileOpen && (
@@ -82,11 +89,11 @@ export function Header() {
               </Link>
             ))}
             <Link
-              to="/contact"
+              to="/fx-tool"
               className="mt-2 rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-medium text-primary-foreground"
               onClick={() => setMobileOpen(false)}
             >
-              Get Started
+              {t("cta.tryTool")}
             </Link>
           </nav>
         </div>

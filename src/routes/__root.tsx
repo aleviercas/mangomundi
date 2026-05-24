@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { I18nProvider } from "@/lib/i18n";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -115,13 +116,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="relative flex min-h-screen flex-col bg-background">
-        <Header />
-        <main className="flex-1 pt-16">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
+      <I18nProvider>
+        <div className="relative flex min-h-screen flex-col bg-background">
+          <Header />
+          <main className="flex-1 pt-16">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
+      </I18nProvider>
     </QueryClientProvider>
   );
 }
