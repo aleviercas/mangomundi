@@ -1,7 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export function HeroSection() {
+  const { t } = useI18n();
   return (
     <section className="relative overflow-hidden bg-background pt-16 pb-24 lg:pt-24 lg:pb-32">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_oklch(0.70_0.175_55)_0%,_transparent_50%)] opacity-10" />
@@ -15,42 +17,42 @@ export function HeroSection() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
               </span>
-              Now live in 150+ countries
+              {t("hero.badge")}
             </div>
             <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              The Global{" "}
-              <span className="text-primary">FX Decision</span> Engine
+              {t("hero.title.1")}{" "}
+              <span className="text-primary">{t("hero.title.2")}</span> {t("hero.title.3")}
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              Neutral AI that turns fragmented cross-border payments into one intelligent decision — from retail remittances to corporate treasury.
+              {t("hero.subtitle")}
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                to="/contact"
+                to="/fx-tool"
                 className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20"
               >
-                Start Sending
+                {t("cta.compare")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
-                to="/features"
+                to="/contact"
                 className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition-all hover:bg-surface-elevated"
               >
-                Treasury Solutions
+                {t("cta.talkSales")}
               </Link>
             </div>
             <div className="mt-10 flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <TrendingUp className="h-4 w-4 text-primary" />
-                <span>Best rates guaranteed</span>
+                <span>{t("hero.trust.1")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Shield className="h-4 w-4 text-primary" />
-                <span>Bank-grade security</span>
+                <span>{t("hero.trust.2")}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Zap className="h-4 w-4 text-primary" />
-                <span>Instant execution</span>
+                <span>{t("hero.trust.3")}</span>
               </div>
             </div>
           </div>

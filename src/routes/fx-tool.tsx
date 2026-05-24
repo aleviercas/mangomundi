@@ -1,14 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { Sparkles, ArrowRight, Clock, TrendingUp, Loader2, ExternalLink } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Sparkles, ArrowRight, Clock, TrendingUp, Loader2, ExternalLink, Send, MessageCircle } from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
   aiRecommend,
+  chatAboutRecommendation,
   type ComparisonResult,
 } from "@/lib/fx.functions";
+import { CURRENCIES } from "@/lib/currencies";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/fx-tool")({
   head: () => ({
@@ -17,46 +20,48 @@ export const Route = createFileRoute("/fx-tool")({
       {
         name: "description",
         content:
-          "Compare live FX rates across 8+ providers in one click. Neutral AI recommendation, real mid-market rates, and the best route for your transfer — retail or business.",
+          "Compare live FX rates across 30+ providers in one click. Neutral AI recommendation, real mid-market rates, and the best route for any corridor — retail or business.",
       },
       { property: "og:title", content: "FX Comparator & Calculator — MangoGlobal" },
       {
         property: "og:description",
         content:
-          "Compare 8+ money-transfer providers with live rates and a neutral AI recommendation.",
+          "Compare 30+ money-transfer providers with live rates, a neutral AI recommendation, and an interactive chat.",
       },
     ],
   }),
   component: FxToolPage,
 });
 
-const CURRENCIES = [
-  "USD", "EUR", "GBP", "JPY", "CAD", "AUD", "CHF", "CNY", "HKD", "SGD",
-  "INR", "MXN", "BRL", "NGN", "PHP", "ZAR", "AED", "TRY", "PLN", "SEK",
-] as const;
-
 type Segment = "retail" | "business";
 type Urgency = "urgent" | "standard" | "flexible";
+type ChatMsg = { role: "user" | "assistant"; content: string };
 
 function FxToolPage() {
+  const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(1000);
   const [from, setFrom] = useState("GBP");
-  const [to, setTo] = useState("EUR");
+  const [to, setTo] = useState("ARS");
   const [segment, setSegment] = useState<Segment>("retail");
   const [urgency, setUrgency] = useState<Urgency>("standard");
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [aiText, setAiText] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [chat, setChat] = useState<ChatMsg[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const chatBottomRef = useRef<HTMLDivElement>(null);
 
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
   const aiFn = useServerFn(aiRecommend);
+  const chatFn = useServerFn(chatAboutRecommendation);
 
   const compareMut = useMutation({
     mutationFn: () => compareFn({ data: { amount, from, to, segment } }),
     onSuccess: async (data) => {
       setResult(data);
       setAiText("");
+      setChat([]);
       setAiLoading(true);
       try {
         const ai = await aiFn({
@@ -66,6 +71,7 @@ function FxToolPage() {
             to,
             segment,
             urgency,
+            lang,
             top: data.rows.slice(0, 5).map((r) => ({
               name: r.name,
               received: r.received,
@@ -83,11 +89,41 @@ function FxToolPage() {
     },
   });
 
-  // Auto-run on first load
+  const chatMut = useMutation({
+    mutationFn: async (userMsg: string) => {
+      if (!result || !aiText) throw new Error("No recommendation yet");
+      const newHistory: ChatMsg[] = [...chat, { role: "user", content: userMsg }];
+      setChat(newHistory);
+      const res = await chatFn({
+        data: {
+          amount,
+          from,
+          to,
+          segment,
+          urgency,
+          lang,
+          recommendation: aiText,
+          top: result.rows.slice(0, 8).map((r) => ({
+            name: r.name,
+            received: r.received,
+            fee_total: r.fee_total,
+            speed_hours: r.speed_hours,
+          })),
+          history: newHistory,
+        },
+      });
+      setChat((c) => [...c, { role: "assistant", content: res.text }]);
+    },
+  });
+
   useEffect(() => {
     compareMut.mutate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chat, chatMut.isPending]);
 
   const handleAffiliateClick = (slug: string, url: string) => {
     trackFn({
@@ -103,27 +139,33 @@ function FxToolPage() {
     if (typeof window !== "undefined") window.open(url, "_blank", "noopener,noreferrer");
   };
 
+  const sendChat = (msg: string) => {
+    const trimmed = msg.trim();
+    if (!trimmed || chatMut.isPending) return;
+    setChatInput("");
+    chatMut.mutate(trimmed);
+  };
+
   return (
     <div className="min-h-screen bg-background pt-24 pb-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-            <Sparkles className="h-3 w-3 text-primary" /> Live rates · Neutral AI insight
+            <Sparkles className="h-3 w-3 text-primary" /> Live rates · Neutral AI · 30+ providers
           </div>
           <h1 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Compare every FX route. <span className="text-primary">In one click.</span>
+            {t("fx.title")} <span className="text-primary">{t("fx.titleAccent")}</span>
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">
-            Real mid-market rates against 8+ providers — retail and business. Mango's AI tells
-            you which one actually wins for your case.
+            {t("fx.subtitle")}
           </p>
         </div>
 
         {/* Form */}
         <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <Field label="You send">
+            <Field label={t("fx.field.send")}>
               <input
                 type="number"
                 min={1}
@@ -132,21 +174,13 @@ function FxToolPage() {
                 className="input"
               />
             </Field>
-            <Field label="From">
-              <select value={from} onChange={(e) => setFrom(e.target.value)} className="input">
-                {CURRENCIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+            <Field label={t("fx.field.from")}>
+              <CurrencySelect value={from} onChange={setFrom} />
             </Field>
-            <Field label="To">
-              <select value={to} onChange={(e) => setTo(e.target.value)} className="input">
-                {CURRENCIES.map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
+            <Field label={t("fx.field.to")}>
+              <CurrencySelect value={to} onChange={setTo} />
             </Field>
-            <Field label="Segment">
+            <Field label={t("fx.field.segment")}>
               <div className="flex h-10 items-center gap-1 rounded-lg border border-border bg-background p-1">
                 {(["retail", "business"] as Segment[]).map((s) => (
                   <button
@@ -163,15 +197,15 @@ function FxToolPage() {
                 ))}
               </div>
             </Field>
-            <Field label="Urgency">
+            <Field label={t("fx.field.urgency")}>
               <select
                 value={urgency}
                 onChange={(e) => setUrgency(e.target.value as Urgency)}
                 className="input"
               >
-                <option value="urgent">Urgent (minutes)</option>
-                <option value="standard">Standard (today)</option>
-                <option value="flexible">Flexible (days)</option>
+                <option value="urgent">{t("fx.urgency.urgent")}</option>
+                <option value="standard">{t("fx.urgency.standard")}</option>
+                <option value="flexible">{t("fx.urgency.flexible")}</option>
               </select>
             </Field>
           </div>
@@ -183,11 +217,11 @@ function FxToolPage() {
           >
             {compareMut.isPending ? (
               <>
-                <Loader2 className="h-4 w-4 animate-spin" /> Comparing…
+                <Loader2 className="h-4 w-4 animate-spin" /> …
               </>
             ) : (
               <>
-                Compare providers <ArrowRight className="h-4 w-4" />
+                {t("cta.compare")} <ArrowRight className="h-4 w-4" />
               </>
             )}
           </button>
@@ -199,15 +233,85 @@ function FxToolPage() {
             <div className="mb-3 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
               <span className="font-heading text-sm font-bold uppercase tracking-wider text-primary">
-                Mango recommends
+                {t("fx.recommends")}
               </span>
             </div>
             {aiLoading ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Analyzing your case…
+                <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
               </div>
             ) : (
               <p className="text-sm leading-relaxed text-foreground sm:text-base">{aiText}</p>
+            )}
+
+            {/* Interactive chat */}
+            {aiText && !aiLoading && (
+              <div className="mt-5 rounded-xl border border-border bg-background/60 p-4">
+                <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <MessageCircle className="h-3.5 w-3.5 text-primary" />
+                  {t("fx.chat.title")}
+                </div>
+
+                {chat.length === 0 && (
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
+                      <button
+                        key={q}
+                        onClick={() => sendChat(q)}
+                        className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-primary hover:text-primary"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {chat.length > 0 && (
+                  <div className="mb-3 max-h-72 space-y-2 overflow-y-auto pr-1">
+                    {chat.map((m, i) => (
+                      <div
+                        key={i}
+                        className={`rounded-lg px-3 py-2 text-sm leading-relaxed ${
+                          m.role === "user"
+                            ? "ml-8 bg-primary/15 text-foreground"
+                            : "mr-8 bg-card text-foreground"
+                        }`}
+                      >
+                        {m.content}
+                      </div>
+                    ))}
+                    {chatMut.isPending && (
+                      <div className="mr-8 flex items-center gap-2 rounded-lg bg-card px-3 py-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fx.chat.thinking")}
+                      </div>
+                    )}
+                    <div ref={chatBottomRef} />
+                  </div>
+                )}
+
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    sendChat(chatInput);
+                  }}
+                  className="flex gap-2"
+                >
+                  <input
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder={t("fx.chat.placeholder")}
+                    className="input flex-1"
+                    disabled={chatMut.isPending}
+                  />
+                  <button
+                    type="submit"
+                    disabled={chatMut.isPending || !chatInput.trim()}
+                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50"
+                  >
+                    <Send className="h-3.5 w-3.5" /> {t("fx.chat.send")}
+                  </button>
+                </form>
+              </div>
             )}
           </div>
         )}
@@ -215,7 +319,7 @@ function FxToolPage() {
         {/* Results */}
         {compareMut.isError && (
           <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-            Couldn't load rates right now. Please try again.
+            {(compareMut.error as Error)?.message ?? "Couldn't load rates."}
           </div>
         )}
 
@@ -223,18 +327,23 @@ function FxToolPage() {
           <div className="mt-6">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
               <span>
-                Mid-market rate · 1 {result.base} = {result.market_rate.toFixed(4)} {result.quote}
+                {t("fx.midmarket")} · 1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
               </span>
-              <span>Updated {new Date(result.fetched_at).toLocaleTimeString()}</span>
+              <span>
+                {t("fx.updated")} {new Date(result.rates_updated_at).toLocaleString(undefined, {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                })}
+              </span>
             </div>
 
             <div className="overflow-hidden rounded-2xl border border-border bg-card">
               <div className="hidden grid-cols-12 gap-2 border-b border-border bg-surface-elevated px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
                 <div className="col-span-3">Provider</div>
-                <div className="col-span-3 text-right">Recipient gets</div>
-                <div className="col-span-2 text-right">Total fee</div>
-                <div className="col-span-2 text-right">Speed</div>
-                <div className="col-span-2 text-right">Action</div>
+                <div className="col-span-3 text-right">{t("fx.recipient")}</div>
+                <div className="col-span-2 text-right">{t("fx.totalFee")}</div>
+                <div className="col-span-2 text-right">{t("fx.speed")}</div>
+                <div className="col-span-2 text-right">{t("fx.action")}</div>
               </div>
               {result.rows.map((row, i) => (
                 <div
@@ -246,7 +355,7 @@ function FxToolPage() {
                   <div className="col-span-3 flex items-center gap-3">
                     <span className="text-2xl" aria-hidden>{row.logo_emoji ?? "💱"}</span>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="font-semibold text-foreground">{row.name}</span>
                         {i === 0 && (
                           <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
@@ -276,6 +385,9 @@ function FxToolPage() {
                   </div>
                   <div className="col-span-2 text-sm text-muted-foreground tabular-nums sm:text-right">
                     {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.base}
+                    {row.spread_applied > 0 && (
+                      <div className="text-[10px]">+ {row.spread_applied.toFixed(2)}% spread</div>
+                    )}
                   </div>
                   <div className="col-span-2 text-sm text-muted-foreground sm:text-right">
                     <Clock className="mr-1 inline h-3 w-3" />
@@ -290,7 +402,7 @@ function FxToolPage() {
                       onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
                       className="inline-flex items-center gap-1 rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background transition hover:opacity-90"
                     >
-                      Go to {row.name.split(" ")[0]}
+                      {t("fx.goto")} {row.name.split(" ")[0]}
                       <ExternalLink className="h-3 w-3" />
                     </button>
                   </div>
@@ -298,11 +410,7 @@ function FxToolPage() {
               ))}
             </div>
 
-            <p className="mt-3 text-[11px] text-muted-foreground">
-              MangoGlobal is independent. Some links are affiliate links — we may earn a commission
-              at no extra cost to you. Rates and fees are estimates; verify on the provider's site
-              before sending.
-            </p>
+            <p className="mt-3 text-[11px] text-muted-foreground">{t("fx.disclaimer")}</p>
           </div>
         )}
       </div>
@@ -318,5 +426,17 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       </span>
       {children}
     </label>
+  );
+}
+
+function CurrencySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
+      {CURRENCIES.map((c) => (
+        <option key={c.code} value={c.code}>
+          {c.flag} {c.code} — {c.name}
+        </option>
+      ))}
+    </select>
   );
 }

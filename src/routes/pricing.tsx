@@ -1,14 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Check, ArrowRight } from "lucide-react";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Check, ArrowRight, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
       { title: "Pricing — MangoGlobal" },
-      { name: "description", content: "Transparent pricing for MangoGlobal's FX payment platform. No hidden fees." },
+      {
+        name: "description",
+        content:
+          "Free for retail users — paid for businesses that need optimised routing, API access, and white-label tools. Transparent, no hidden fees.",
+      },
       { property: "og:title", content: "Pricing — MangoGlobal" },
-      { property: "og:description", content: "Transparent pricing for MangoGlobal's FX payment platform." },
+      {
+        property: "og:description",
+        content:
+          "Free comparator for everyone. Pro and Enterprise plans for businesses needing automated routing and API access.",
+      },
     ],
   }),
   component: PricingPage,
@@ -16,27 +23,57 @@ export const Route = createFileRoute("/pricing")({
 
 const plans = [
   {
-    name: "Starter",
-    price: "0.5%",
-    description: "Per transaction. Perfect for individuals and small businesses.",
-    features: ["Up to $50K/month volume", "150+ currencies", "Real-time rates", "Email support", "Basic reporting"],
-    cta: "Get Started",
+    name: "Free",
+    price: "$0",
+    cadence: "forever",
+    description:
+      "The full comparator + AI chat for individuals and one-off transfers. We earn from affiliate commissions when you use a provider — you pay nothing extra.",
+    features: [
+      "30+ providers, 100+ currencies",
+      "Live mid-market rates",
+      "Mango AI recommendation + chat",
+      "Affiliate-funded, no signup needed",
+      "Public web access",
+    ],
+    cta: "Use the FX Tool",
+    ctaTo: "/fx-tool" as const,
     highlighted: false,
   },
   {
-    name: "Business",
-    price: "0.3%",
-    description: "Per transaction. For growing businesses with higher volumes.",
-    features: ["Up to $500K/month volume", "Everything in Starter", "API access", "Priority support", "Advanced reporting", "FX hedging tools"],
-    cta: "Start Free Trial",
+    name: "Pro",
+    price: "$49",
+    cadence: "/ month",
+    description:
+      "For frequent senders, freelancers, and SMBs. Automated best-route alerts, multi-corridor monitoring, and saved beneficiaries.",
+    features: [
+      "Everything in Free",
+      "Rate alerts on your corridors",
+      "Saved beneficiaries & history",
+      "CSV export & monthly report",
+      "Priority AI (advanced reasoning)",
+      "Email support",
+    ],
+    cta: "Start Pro",
+    ctaTo: "/contact" as const,
     highlighted: true,
+    badge: "For SMBs & freelancers",
   },
   {
     name: "Enterprise",
     price: "Custom",
-    description: "Tailored solutions for large-scale treasury operations.",
-    features: ["Unlimited volume", "Everything in Business", "Dedicated account manager", "Custom integrations", "SLA guarantees", "On-premise deployment option"],
-    cta: "Contact Sales",
+    cadence: "",
+    description:
+      "Treasury teams and fintechs. API access to the decision engine, custom provider mix, SSO, audit logs, and SLA.",
+    features: [
+      "Everything in Pro",
+      "REST API to the decision engine",
+      "Custom provider mix & rules",
+      "Webhook events & batch routing",
+      "Dedicated account manager",
+      "SSO, audit logs, SLA",
+    ],
+    cta: "Talk to Sales",
+    ctaTo: "/contact" as const,
     highlighted: false,
   },
 ];
@@ -46,11 +83,15 @@ function PricingPage() {
     <div className="bg-background">
       <section className="pt-16 pb-12">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-4">
+            <Sparkles className="h-3 w-3 text-primary" /> Free for retail. Paid for businesses that need automation.
+          </div>
           <h1 className="font-heading text-4xl font-bold text-foreground sm:text-5xl">
-            Transparent <span className="text-primary">Pricing</span>
+            How we make <span className="text-primary">money</span> — and how you save it
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            No hidden fees. No monthly minimums. Pay only for what you use.
+            Retail use is free, funded by affiliate commissions from providers. Businesses pay for
+            automation, API access, and the optimisation engine that runs in the background.
           </p>
         </div>
       </section>
@@ -69,25 +110,27 @@ function PricingPage() {
               >
                 {plan.highlighted && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground">
-                    Most Popular
+                    {plan.badge ?? "Most Popular"}
                   </div>
                 )}
                 <h3 className="font-heading text-xl font-semibold text-foreground">{plan.name}</h3>
                 <div className="mt-4 flex items-baseline gap-1">
                   <span className="font-heading text-4xl font-bold text-foreground">{plan.price}</span>
-                  {plan.price !== "Custom" && <span className="text-muted-foreground">/tx</span>}
+                  {plan.cadence && (
+                    <span className="text-muted-foreground">{plan.cadence}</span>
+                  )}
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
                 <ul className="mt-6 space-y-3">
                   {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 shrink-0 text-primary" />
+                    <li key={feature} className="flex items-start gap-3 text-sm text-muted-foreground">
+                      <Check className="h-4 w-4 shrink-0 text-primary mt-0.5" />
                       {feature}
                     </li>
                   ))}
                 </ul>
                 <Link
-                  to="/contact"
+                  to={plan.ctaTo}
                   className={`mt-8 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
                     plan.highlighted
                       ? "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -99,6 +142,20 @@ function PricingPage() {
                 </Link>
               </div>
             ))}
+          </div>
+
+          <div className="mt-12 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground sm:p-8">
+            <h2 className="font-heading text-lg font-semibold text-foreground mb-3">
+              How does this work with affiliate commissions?
+            </h2>
+            <p className="leading-relaxed">
+              When you use the free comparator and choose a provider, we may earn a commission from
+              that provider — at no extra cost to you. The recommendation is neutral and ordered by
+              actual amount received. Pro and Enterprise plans exist for businesses that need more
+              than a one-off comparison: continuous optimisation across corridors, an API to plug
+              into payment flows, and rules-based routing. The subscription pays for the engine and
+              automation — not for the comparison itself, which stays free.
+            </p>
           </div>
         </div>
       </section>
