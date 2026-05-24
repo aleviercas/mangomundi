@@ -91,14 +91,17 @@ export type Database = {
           featured: boolean
           fee_fixed: number
           fee_percent: number
+          fee_tiers: Json | null
           id: string
           logo_emoji: string | null
           name: string
           notes: string | null
+          rates_last_updated: string | null
           segment: string
           slug: string
           speed_hours: number
           spread_percent: number
+          supported_corridors: string[] | null
           updated_at: string
         }
         Insert: {
@@ -108,14 +111,17 @@ export type Database = {
           featured?: boolean
           fee_fixed?: number
           fee_percent?: number
+          fee_tiers?: Json | null
           id?: string
           logo_emoji?: string | null
           name: string
           notes?: string | null
+          rates_last_updated?: string | null
           segment?: string
           slug: string
           speed_hours?: number
           spread_percent?: number
+          supported_corridors?: string[] | null
           updated_at?: string
         }
         Update: {
@@ -125,14 +131,17 @@ export type Database = {
           featured?: boolean
           fee_fixed?: number
           fee_percent?: number
+          fee_tiers?: Json | null
           id?: string
           logo_emoji?: string | null
           name?: string
           notes?: string | null
+          rates_last_updated?: string | null
           segment?: string
           slug?: string
           speed_hours?: number
           spread_percent?: number
+          supported_corridors?: string[] | null
           updated_at?: string
         }
         Relationships: []
