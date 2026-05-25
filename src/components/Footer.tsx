@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Twitter, Linkedin, Github } from "lucide-react";
+import mangoLogo from "@/assets/mango-logo.svg";
+
 
 const productLinks = [
   { to: "/features", label: "Features" },
