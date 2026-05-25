@@ -16,13 +16,13 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/compare")({
   head: () => ({
     meta: [
-      { title: "FX Comparator & Calculator — MangoGlobal" },
+      { title: "Compare Money Transfers — MangoGlobal" },
       {
         name: "description",
         content:
-          "Compare live FX rates across 30+ providers in one click. Neutral AI recommendation, real mid-market rates, and the best route for any corridor — retail or business.",
+          "Compare live FX rates across 30+ providers in one click. Neutral AI recommendation, real mid-market rates, and the best route for any corridor.",
       },
-      { property: "og:title", content: "FX Comparator & Calculator — MangoGlobal" },
+      { property: "og:title", content: "Compare Money Transfers — MangoGlobal" },
       {
         property: "og:description",
         content:
