@@ -38,9 +38,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-                <span className="font-heading text-sm font-bold text-primary-foreground">M</span>
-              </div>
+              <img src={mangoLogo} alt="MangoGlobal" className="h-8 w-8" />
               <span className="font-heading text-lg font-semibold text-foreground">MangoGlobal</span>
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
