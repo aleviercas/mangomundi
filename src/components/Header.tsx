@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { LangSwitcher } from "@/components/LangSwitcher";
+import mangoLogo from "@/assets/mango-logo.svg";
 
 export function Header() {
   const { t } = useI18n();
@@ -34,9 +35,7 @@ export function Header() {
     >
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <span className="font-heading text-sm font-bold text-primary-foreground">M</span>
-          </div>
+          <img src={mangoLogo} alt="MangoGlobal" className="h-8 w-8" />
           <span className="font-heading text-lg font-semibold text-foreground">MangoGlobal</span>
         </Link>
 
