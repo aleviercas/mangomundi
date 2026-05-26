@@ -162,6 +162,7 @@ export const compareProviders = createServerFn({ method: "POST" })
       const fee = (tier.fee_percent / 100) * data.amount + tier.fee_fixed;
       const rate = marketRate * (1 - tier.spread_percent / 100);
       const received = Math.max(0, (data.amount - fee) * rate);
+      const rate_vs_market_pct = ((rate - marketRate) / marketRate) * 100;
       return {
         slug: p.slug,
         name: p.name,
@@ -177,8 +178,19 @@ export const compareProviders = createServerFn({ method: "POST" })
         spread_applied: tier.spread_percent,
         received,
         speed_hours: Number(p.speed_hours),
+        rate_vs_market_pct,
+        sponsored: Boolean(p.sponsored),
+        sponsored_rank: p.sponsored_rank ?? null,
+        trust_score: p.trust_score != null ? Number(p.trust_score) : null,
+        transparency_score: p.transparency_score != null ? Number(p.transparency_score) : null,
+        delivery_minutes: p.delivery_minutes ?? null,
+        regulator: p.regulator ?? null,
+        website_url: p.website_url ?? null,
+        review_count: Number(p.review_count ?? 0),
+        promo_text: p.promo_text ?? null,
       };
     });
+    // organic ranking: best received first; sponsored filtered out of organic block
     rows.sort((a, b) => b.received - a.received);
 
     return {
