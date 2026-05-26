@@ -50,6 +50,51 @@ export type Database = {
         }
         Relationships: []
       }
+      blog_posts: {
+        Row: {
+          audience: string
+          content_md: string | null
+          cover_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published: boolean
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string
+          vertical: Database["public"]["Enums"]["provider_vertical"] | null
+        }
+        Insert: {
+          audience?: string
+          content_md?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+          vertical?: Database["public"]["Enums"]["provider_vertical"] | null
+        }
+        Update: {
+          audience?: string
+          content_md?: string | null
+          cover_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+          vertical?: Database["public"]["Enums"]["provider_vertical"] | null
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           company: string | null
@@ -87,62 +132,104 @@ export type Database = {
         Row: {
           active: boolean
           affiliate_url: string
+          audience: string
           created_at: string
+          delivery_minutes: number | null
           featured: boolean
           fee_fixed: number
           fee_percent: number
           fee_tiers: Json | null
           id: string
           logo_emoji: string | null
+          max_amount: number | null
+          min_amount: number | null
           name: string
           notes: string | null
+          promo_text: string | null
           rates_last_updated: string | null
+          regulator: string | null
+          review_count: number | null
           segment: string
           slug: string
           speed_hours: number
+          sponsored: boolean
+          sponsored_rank: number | null
           spread_percent: number
           supported_corridors: string[] | null
+          supports_large_tickets: boolean
+          transparency_score: number | null
+          trust_score: number | null
           updated_at: string
+          vertical: Database["public"]["Enums"]["provider_vertical"]
+          website_url: string | null
         }
         Insert: {
           active?: boolean
           affiliate_url: string
+          audience?: string
           created_at?: string
+          delivery_minutes?: number | null
           featured?: boolean
           fee_fixed?: number
           fee_percent?: number
           fee_tiers?: Json | null
           id?: string
           logo_emoji?: string | null
+          max_amount?: number | null
+          min_amount?: number | null
           name: string
           notes?: string | null
+          promo_text?: string | null
           rates_last_updated?: string | null
+          regulator?: string | null
+          review_count?: number | null
           segment?: string
           slug: string
           speed_hours?: number
+          sponsored?: boolean
+          sponsored_rank?: number | null
           spread_percent?: number
           supported_corridors?: string[] | null
+          supports_large_tickets?: boolean
+          transparency_score?: number | null
+          trust_score?: number | null
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["provider_vertical"]
+          website_url?: string | null
         }
         Update: {
           active?: boolean
           affiliate_url?: string
+          audience?: string
           created_at?: string
+          delivery_minutes?: number | null
           featured?: boolean
           fee_fixed?: number
           fee_percent?: number
           fee_tiers?: Json | null
           id?: string
           logo_emoji?: string | null
+          max_amount?: number | null
+          min_amount?: number | null
           name?: string
           notes?: string | null
+          promo_text?: string | null
           rates_last_updated?: string | null
+          regulator?: string | null
+          review_count?: number | null
           segment?: string
           slug?: string
           speed_hours?: number
+          sponsored?: boolean
+          sponsored_rank?: number | null
           spread_percent?: number
           supported_corridors?: string[] | null
+          supports_large_tickets?: boolean
+          transparency_score?: number | null
+          trust_score?: number | null
           updated_at?: string
+          vertical?: Database["public"]["Enums"]["provider_vertical"]
+          website_url?: string | null
         }
         Relationships: []
       }
@@ -182,6 +269,18 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      provider_vertical:
+        | "fx"
+        | "insurance"
+        | "saas"
+        | "brokers"
+        | "shipping"
+        | "lending"
+        | "cloud"
+        | "payments_infra"
+        | "legal"
+        | "recruitment"
+        | "energy"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -310,6 +409,19 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      provider_vertical: [
+        "fx",
+        "insurance",
+        "saas",
+        "brokers",
+        "shipping",
+        "lending",
+        "cloud",
+        "payments_infra",
+        "legal",
+        "recruitment",
+        "energy",
+      ],
     },
   },
 } as const
