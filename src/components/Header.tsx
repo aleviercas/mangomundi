@@ -81,13 +81,9 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/fx-tool"
-              className="mt-2 rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-medium text-primary-foreground"
-              onClick={() => setMobileOpen(false)}
-            >
-              {t("cta.tryTool")}
-            </Link>
+          </nav>
+        </div>
+      )}
           </nav>
         </div>
       )}
