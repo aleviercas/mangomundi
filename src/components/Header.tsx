@@ -12,9 +12,9 @@ export function Header() {
 
   const navLinks = [
     { to: "/", label: t("nav.home") },
-    { to: "/fx-tool", label: t("nav.fx") },
-    { to: "/features", label: t("nav.features") },
-    { to: "/pricing", label: t("nav.pricing") },
+    { to: "/compare", label: t("nav.compare") },
+    { to: "/business", label: t("nav.business") },
+    { to: "/blog", label: t("nav.blog") },
     { to: "/about", label: t("nav.about") },
     { to: "/contact", label: t("nav.contact") },
   ] as const;
