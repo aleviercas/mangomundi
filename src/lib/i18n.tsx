@@ -8,6 +8,9 @@ const DICTS: Record<Lang, Dict> = {
   en: {
     "nav.home": "Home",
     "nav.fx": "FX Tool",
+    "nav.compare": "Compare",
+    "nav.business": "Business",
+    "nav.blog": "Blog",
     "nav.features": "Features",
     "nav.pricing": "Pricing",
     "nav.about": "About",
@@ -59,6 +62,9 @@ const DICTS: Record<Lang, Dict> = {
   es: {
     "nav.home": "Inicio",
     "nav.fx": "Herramienta FX",
+    "nav.compare": "Comparar",
+    "nav.business": "Empresas",
+    "nav.blog": "Blog",
     "nav.features": "Características",
     "nav.pricing": "Precios",
     "nav.about": "Nosotros",
@@ -110,6 +116,9 @@ const DICTS: Record<Lang, Dict> = {
   pt: {
     "nav.home": "Início",
     "nav.fx": "Ferramenta FX",
+    "nav.compare": "Comparar",
+    "nav.business": "Empresas",
+    "nav.blog": "Blog",
     "nav.features": "Recursos",
     "nav.pricing": "Preços",
     "nav.about": "Sobre",

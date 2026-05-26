@@ -1,34 +1,29 @@
 import { Link } from "@tanstack/react-router";
-import { Twitter, Linkedin, Github } from "lucide-react";
+import { Linkedin } from "lucide-react";
 import mangoLogo from "@/assets/mango-logo.svg";
 
 
-const productLinks = [
-  { to: "/features", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/features", label: "API Docs" },
-  { to: "/features", label: "Integrations" },
+const retailLinks = [
+  { to: "/compare", label: "Compare" },
+  { to: "/blog", label: "Blog" },
+];
+
+const businessLinks = [
+  { to: "/business", label: "Business" },
+  { to: "/business", label: "Features" },
+  { to: "/business", label: "Pricing" },
+  { to: "/contact", label: "Talk to Sales" },
 ];
 
 const companyLinks = [
   { to: "/about", label: "About" },
-  { to: "/about", label: "Careers" },
-  { to: "/about", label: "Press" },
   { to: "/contact", label: "Contact" },
-];
-
-const resourceLinks = [
-  { to: "/about", label: "Blog" },
-  { to: "/about", label: "Help Center" },
-  { to: "/about", label: "Community" },
-  { to: "/about", label: "Status" },
 ];
 
 const legalLinks = [
   { to: "/about", label: "Privacy" },
   { to: "/about", label: "Terms" },
   { to: "/about", label: "Cookies" },
-  { to: "/about", label: "Licenses" },
 ];
 
 export function Footer() {
@@ -45,22 +40,41 @@ export function Footer() {
               The global FX decision engine. Neutral AI for smarter cross-border payments.
             </p>
             <div className="mt-4 flex gap-3">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter">
-                <Twitter className="h-4 w-4" />
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="X (Twitter)"
+              >
+                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
               </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="LinkedIn">
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="LinkedIn"
+              >
                 <Linkedin className="h-4 w-4" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="GitHub">
-                <Github className="h-4 w-4" />
               </a>
             </div>
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-semibold text-foreground">Product</h3>
+            <h3 className="font-heading text-sm font-semibold text-foreground">Retail</h3>
             <ul className="mt-3 space-y-2">
-              {productLinks.map((link) => (
+              {retailLinks.map((link) => (
+                <li key={link.label}>
+                  <Link to={link.to} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-heading text-sm font-semibold text-foreground">Business</h3>
+            <ul className="mt-3 space-y-2">
+              {businessLinks.map((link) => (
                 <li key={link.label}>
                   <Link to={link.to} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                     {link.label}
@@ -73,18 +87,6 @@ export function Footer() {
             <h3 className="font-heading text-sm font-semibold text-foreground">Company</h3>
             <ul className="mt-3 space-y-2">
               {companyLinks.map((link) => (
-                <li key={link.label}>
-                  <Link to={link.to} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3 className="font-heading text-sm font-semibold text-foreground">Resources</h3>
-            <ul className="mt-3 space-y-2">
-              {resourceLinks.map((link) => (
                 <li key={link.label}>
                   <Link to={link.to} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                     {link.label}

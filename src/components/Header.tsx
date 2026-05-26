@@ -12,9 +12,9 @@ export function Header() {
 
   const navLinks = [
     { to: "/", label: t("nav.home") },
-    { to: "/fx-tool", label: t("nav.fx") },
-    { to: "/features", label: t("nav.features") },
-    { to: "/pricing", label: t("nav.pricing") },
+    { to: "/compare", label: t("nav.compare") },
+    { to: "/business", label: t("nav.business") },
+    { to: "/blog", label: t("nav.blog") },
     { to: "/about", label: t("nav.about") },
     { to: "/contact", label: t("nav.contact") },
   ] as const;
@@ -54,12 +54,6 @@ export function Header() {
 
         <div className="hidden items-center gap-2 md:flex">
           <LangSwitcher />
-          <Link
-            to="/fx-tool"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            {t("cta.tryTool")}
-          </Link>
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
@@ -87,13 +81,6 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              to="/fx-tool"
-              className="mt-2 rounded-lg bg-primary px-4 py-2.5 text-center text-sm font-medium text-primary-foreground"
-              onClick={() => setMobileOpen(false)}
-            >
-              {t("cta.tryTool")}
-            </Link>
           </nav>
         </div>
       )}
