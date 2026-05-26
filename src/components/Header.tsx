@@ -54,12 +54,6 @@ export function Header() {
 
         <div className="hidden items-center gap-2 md:flex">
           <LangSwitcher />
-          <Link
-            to="/fx-tool"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            {t("cta.tryTool")}
-          </Link>
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
