@@ -8,6 +8,9 @@ const DICTS: Record<Lang, Dict> = {
   en: {
     "nav.home": "Home",
     "nav.fx": "FX Tool",
+    "nav.compare": "Compare",
+    "nav.business": "Business",
+    "nav.blog": "Blog",
     "nav.features": "Features",
     "nav.pricing": "Pricing",
     "nav.about": "About",
