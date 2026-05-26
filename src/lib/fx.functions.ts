@@ -24,6 +24,18 @@ export interface Provider {
   featured: boolean;
   notes: string | null;
   fee_tiers?: FeeTier[] | null;
+  // multi-vertical / Monito-style fields
+  sponsored?: boolean;
+  sponsored_rank?: number | null;
+  trust_score?: number | null;
+  transparency_score?: number | null;
+  delivery_minutes?: number | null;
+  regulator?: string | null;
+  website_url?: string | null;
+  review_count?: number | null;
+  promo_text?: string | null;
+  supports_large_tickets?: boolean;
+  audience?: string;
 }
 
 export interface ComparisonRow {
@@ -41,6 +53,17 @@ export interface ComparisonRow {
   spread_applied: number;
   received: number;
   speed_hours: number;
+  // surfaced for Monito-style table
+  rate_vs_market_pct: number; // negative = worse than mid-market
+  sponsored: boolean;
+  sponsored_rank: number | null;
+  trust_score: number | null;
+  transparency_score: number | null;
+  delivery_minutes: number | null;
+  regulator: string | null;
+  website_url: string | null;
+  review_count: number;
+  promo_text: string | null;
 }
 
 export interface ComparisonResult {
