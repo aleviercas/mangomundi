@@ -1,34 +1,29 @@
 import { Link } from "@tanstack/react-router";
-import { Twitter, Linkedin, Github } from "lucide-react";
+import { Linkedin } from "lucide-react";
 import mangoLogo from "@/assets/mango-logo.svg";
 
 
-const productLinks = [
-  { to: "/features", label: "Features" },
-  { to: "/pricing", label: "Pricing" },
-  { to: "/features", label: "API Docs" },
-  { to: "/features", label: "Integrations" },
+const retailLinks = [
+  { to: "/compare", label: "Compare" },
+  { to: "/blog", label: "Blog" },
+];
+
+const businessLinks = [
+  { to: "/business", label: "Business" },
+  { to: "/business", label: "Features" },
+  { to: "/business", label: "Pricing" },
+  { to: "/contact", label: "Talk to Sales" },
 ];
 
 const companyLinks = [
   { to: "/about", label: "About" },
-  { to: "/about", label: "Careers" },
-  { to: "/about", label: "Press" },
   { to: "/contact", label: "Contact" },
-];
-
-const resourceLinks = [
-  { to: "/about", label: "Blog" },
-  { to: "/about", label: "Help Center" },
-  { to: "/about", label: "Community" },
-  { to: "/about", label: "Status" },
 ];
 
 const legalLinks = [
   { to: "/about", label: "Privacy" },
   { to: "/about", label: "Terms" },
   { to: "/about", label: "Cookies" },
-  { to: "/about", label: "Licenses" },
 ];
 
 export function Footer() {
