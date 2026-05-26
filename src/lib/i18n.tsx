@@ -62,6 +62,9 @@ const DICTS: Record<Lang, Dict> = {
   es: {
     "nav.home": "Inicio",
     "nav.fx": "Herramienta FX",
+    "nav.compare": "Comparar",
+    "nav.business": "Empresas",
+    "nav.blog": "Blog",
     "nav.features": "Características",
     "nav.pricing": "Precios",
     "nav.about": "Nosotros",
