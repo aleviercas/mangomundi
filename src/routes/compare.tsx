@@ -324,95 +324,266 @@ function FxToolPage() {
         )}
 
         {result && (
-          <div className="mt-6">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-              <span>
-                {t("fx.midmarket")} · 1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
-              </span>
-              <span>
-                {t("fx.updated")} {new Date(result.rates_updated_at).toLocaleString(undefined, {
-                  dateStyle: "short",
-                  timeStyle: "short",
-                })}
-              </span>
-            </div>
+          <ResultsBlock
+            result={result}
+            amount={amount}
+            handleAffiliateClick={handleAffiliateClick}
+            tDisclaimer={t("fx.disclaimer")}
+            tRecipient={t("fx.recipient")}
+            tTotalFee={t("fx.totalFee")}
+            tSpeed={t("fx.speed")}
+            tGoTo={t("fx.goto")}
+            tMidmarket={t("fx.midmarket")}
+            tUpdated={t("fx.updated")}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
 
-            <div className="overflow-hidden rounded-2xl border border-border bg-card">
-              <div className="hidden grid-cols-12 gap-2 border-b border-border bg-surface-elevated px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
-                <div className="col-span-3">Provider</div>
-                <div className="col-span-3 text-right">{t("fx.recipient")}</div>
-                <div className="col-span-2 text-right">{t("fx.totalFee")}</div>
-                <div className="col-span-2 text-right">{t("fx.speed")}</div>
-                <div className="col-span-2 text-right">{t("fx.action")}</div>
-              </div>
-              {result.rows.map((row, i) => (
-                <div
-                  key={row.slug}
-                  className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 sm:grid-cols-12 sm:items-center ${
-                    i === 0 ? "bg-primary/5" : ""
-                  }`}
-                >
-                  <div className="col-span-3 flex items-center gap-3">
-                    <span className="text-2xl" aria-hidden>{row.logo_emoji ?? "💱"}</span>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-foreground">{row.name}</span>
-                        {i === 0 && (
-                          <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
-                            Best
-                          </span>
-                        )}
-                        {row.featured && i !== 0 && (
-                          <span className="rounded-full border border-primary/40 px-2 py-0.5 text-[10px] font-semibold text-primary">
-                            Featured
-                          </span>
-                        )}
-                      </div>
-                      {row.notes && (
-                        <div className="text-xs text-muted-foreground">{row.notes}</div>
-                      )}
-                    </div>
-                  </div>
-                  <div className="col-span-3 sm:text-right">
-                    <div className="text-lg font-bold text-foreground tabular-nums">
-                      {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-                      <span className="text-xs font-normal text-muted-foreground">{result.quote}</span>
-                    </div>
-                    <div className="text-[11px] text-muted-foreground tabular-nums">
-                      <TrendingUp className="mr-1 inline h-3 w-3" />
-                      rate {row.rate.toFixed(4)}
-                    </div>
-                  </div>
-                  <div className="col-span-2 text-sm text-muted-foreground tabular-nums sm:text-right">
-                    {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.base}
-                    {row.spread_applied > 0 && (
-                      <div className="text-[10px]">+ {row.spread_applied.toFixed(2)}% spread</div>
-                    )}
-                  </div>
-                  <div className="col-span-2 text-sm text-muted-foreground sm:text-right">
-                    <Clock className="mr-1 inline h-3 w-3" />
-                    {row.speed_hours < 1
-                      ? "<1h"
-                      : row.speed_hours <= 24
-                      ? `${Math.round(row.speed_hours)}h`
-                      : `${Math.round(row.speed_hours / 24)}d`}
-                  </div>
-                  <div className="col-span-2 sm:text-right">
-                    <button
-                      onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
-                      className="inline-flex items-center gap-1 rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background transition hover:opacity-90"
-                    >
-                      {t("fx.goto")} {row.name.split(" ")[0]}
-                      <ExternalLink className="h-3 w-3" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+// ===== Monito-style results =====
+function ResultsBlock({
+  result,
+  amount,
+  handleAffiliateClick,
+  tDisclaimer,
+  tRecipient,
+  tTotalFee,
+  tSpeed,
+  tGoTo,
+  tMidmarket,
+  tUpdated,
+}: {
+  result: ComparisonResult;
+  amount: number;
+  handleAffiliateClick: (slug: string, url: string) => void;
+  tDisclaimer: string;
+  tRecipient: string;
+  tTotalFee: string;
+  tSpeed: string;
+  tGoTo: string;
+  tMidmarket: string;
+  tUpdated: string;
+}) {
+  const showLargeBanner = amount >= 50000;
+  const sponsored = useMemo(
+    () =>
+      result.rows
+        .filter((r) => r.sponsored)
+        .sort((a, b) => (a.sponsored_rank ?? 999) - (b.sponsored_rank ?? 999))
+        .slice(0, 2),
+    [result.rows],
+  );
+  const organic = useMemo(() => result.rows.filter((r) => !r.sponsored), [result.rows]);
 
-            <p className="mt-3 text-[11px] text-muted-foreground">{t("fx.disclaimer")}</p>
+  return (
+    <div className="mt-6">
+      {showLargeBanner && (
+        <Link
+          to="/business"
+          className="mb-4 flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4 transition hover:border-primary"
+        >
+          <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+          <div className="text-sm">
+            <div className="font-semibold text-foreground">
+              Sending over {amount.toLocaleString()} {result.base}? Talk to our business desk.
+            </div>
+            <div className="mt-0.5 text-muted-foreground">
+              For high-volume transfers, dedicated providers offer custom rates, treasury tooling and an account manager. →
+            </div>
+          </div>
+        </Link>
+      )}
+
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+        <span>
+          {tMidmarket} · 1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
+        </span>
+        <span>
+          {tUpdated} {new Date(result.rates_updated_at).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" })}
+        </span>
+      </div>
+
+      {/* Sponsored block — separated from organic, badged */}
+      {sponsored.length > 0 && (
+        <div className="mb-4 space-y-2">
+          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <Megaphone className="h-3 w-3" /> Sponsored offers
+          </div>
+          {sponsored.map((row) => (
+            <ProviderRow
+              key={row.slug}
+              row={row}
+              quote={result.quote}
+              base={result.base}
+              isBest={false}
+              isSponsored
+              onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
+              tRecipient={tRecipient}
+              tTotalFee={tTotalFee}
+              tSpeed={tSpeed}
+              tGoTo={tGoTo}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Organic ranking */}
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
+        <div className="hidden grid-cols-12 gap-2 border-b border-border bg-surface-elevated px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
+          <div className="col-span-3">Provider</div>
+          <div className="col-span-3 text-right">{tRecipient}</div>
+          <div className="col-span-2 text-right">{tTotalFee}</div>
+          <div className="col-span-2 text-right">{tSpeed} · Trust</div>
+          <div className="col-span-2 text-right">{/* action */}</div>
+        </div>
+        {organic.map((row, i) => (
+          <ProviderRow
+            key={row.slug}
+            row={row}
+            quote={result.quote}
+            base={result.base}
+            isBest={i === 0}
+            isSponsored={false}
+            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
+            tRecipient={tRecipient}
+            tTotalFee={tTotalFee}
+            tSpeed={tSpeed}
+            tGoTo={tGoTo}
+          />
+        ))}
+        {organic.length === 0 && (
+          <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+            No providers available for this corridor yet.
           </div>
         )}
+      </div>
+
+      <p className="mt-3 text-[11px] text-muted-foreground">{tDisclaimer}</p>
+    </div>
+  );
+}
+
+function ProviderRow({
+  row,
+  quote,
+  base,
+  isBest,
+  isSponsored,
+  onClick,
+  tRecipient,
+  tTotalFee,
+  tSpeed,
+  tGoTo,
+}: {
+  row: ComparisonResult["rows"][number];
+  quote: string;
+  base: string;
+  isBest: boolean;
+  isSponsored: boolean;
+  onClick: () => void;
+  tRecipient: string;
+  tTotalFee: string;
+  tSpeed: string;
+  tGoTo: string;
+}) {
+  const deliveryLabel =
+    row.delivery_minutes != null
+      ? row.delivery_minutes < 60
+        ? `${row.delivery_minutes}m`
+        : row.delivery_minutes < 60 * 24
+        ? `${Math.round(row.delivery_minutes / 60)}h`
+        : `${Math.round(row.delivery_minutes / 60 / 24)}d`
+      : row.speed_hours < 1
+      ? "<1h"
+      : row.speed_hours <= 24
+      ? `${Math.round(row.speed_hours)}h`
+      : `${Math.round(row.speed_hours / 24)}d`;
+
+  const ratePct = row.rate_vs_market_pct;
+  const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}% vs mid-market`;
+  const ratePctClass =
+    ratePct >= -0.25 ? "text-emerald-500" : ratePct >= -1 ? "text-amber-500" : "text-destructive";
+
+  return (
+    <div
+      className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 sm:grid-cols-12 sm:items-center ${
+        isSponsored ? "rounded-xl border border-amber-500/30 bg-amber-500/[0.04]" : isBest ? "bg-primary/5" : ""
+      }`}
+    >
+      <div className="col-span-3 flex items-center gap-3">
+        <span className="text-2xl" aria-hidden>
+          {row.logo_emoji ?? "💱"}
+        </span>
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="truncate font-semibold text-foreground">{row.name}</span>
+            {isSponsored ? (
+              <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[9px] font-bold uppercase text-amber-600 dark:text-amber-400">
+                Sponsored
+              </span>
+            ) : isBest ? (
+              <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
+                Best
+              </span>
+            ) : null}
+          </div>
+          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
+            {row.regulator && (
+              <span className="inline-flex items-center gap-0.5">
+                <Shield className="h-2.5 w-2.5" /> {row.regulator}
+              </span>
+            )}
+            {row.review_count > 0 && row.trust_score != null && (
+              <span className="inline-flex items-center gap-0.5">
+                <Star className="h-2.5 w-2.5 fill-current" /> {row.trust_score.toFixed(1)} ({row.review_count.toLocaleString()})
+              </span>
+            )}
+            {row.promo_text && isSponsored && (
+              <span className="text-amber-600 dark:text-amber-400">{row.promo_text}</span>
+            )}
+          </div>
+        </div>
+      </div>
+      <div className="col-span-3 sm:text-right">
+        <div className="text-lg font-bold tabular-nums text-foreground">
+          {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+          <span className="text-xs font-normal text-muted-foreground">{quote}</span>
+        </div>
+        <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
+      </div>
+      <div className="col-span-2 text-sm tabular-nums text-muted-foreground sm:text-right">
+        {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
+        <div className="text-[10px]">
+          {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
+          {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
+          {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
+        </div>
+      </div>
+      <div className="col-span-2 text-sm text-muted-foreground sm:text-right">
+        <div className="inline-flex items-center gap-1">
+          <Clock className="h-3 w-3" /> {deliveryLabel}
+        </div>
+        {row.trust_score != null && (
+          <div className="text-[10px]">
+            Trust {row.trust_score.toFixed(1)}/10
+            {row.transparency_score != null && ` · Transp. ${row.transparency_score.toFixed(1)}`}
+          </div>
+        )}
+      </div>
+      <div className="col-span-2 sm:text-right">
+        <button
+          onClick={onClick}
+          className="inline-flex items-center gap-1 rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background transition hover:opacity-90"
+        >
+          {tGoTo} {row.name.split(" ")[0]}
+          <ExternalLink className="h-3 w-3" />
+        </button>
+      </div>
+    </div>
+  );
+}
       </div>
     </div>
   );
