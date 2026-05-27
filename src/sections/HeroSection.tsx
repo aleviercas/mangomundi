@@ -28,7 +28,7 @@ export function HeroSection() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                to="/fx-tool"
+                to="/compare"
                 className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20"
               >
                 {t("cta.compare")}
