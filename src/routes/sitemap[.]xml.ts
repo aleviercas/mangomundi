@@ -14,12 +14,32 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
+        // Fetch published blog posts for dynamic entries
+        let blogEntries: SitemapEntry[] = [];
+        try {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { data } = await supabaseAdmin
+            .from("blog_posts")
+            .select("slug, updated_at")
+            .eq("published", true);
+          blogEntries = (data ?? []).map((p) => ({
+            path: `/blog/${p.slug}`,
+            lastmod: p.updated_at ? new Date(p.updated_at).toISOString() : undefined,
+            changefreq: "monthly",
+            priority: "0.7",
+          }));
+        } catch {
+          // Sitemap should still render even if DB is unavailable
+        }
+
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
-          { path: "/fx-tool", changefreq: "daily", priority: "0.9" },
-          { path: "/about", changefreq: "monthly", priority: "0.8" },
-          { path: "/features", changefreq: "monthly", priority: "0.8" },
-          { path: "/pricing", changefreq: "monthly", priority: "0.8" },
+          { path: "/compare", changefreq: "daily", priority: "0.95" },
+          { path: "/business", changefreq: "weekly", priority: "0.9" },
+          { path: "/platform", changefreq: "monthly", priority: "0.8" },
+          { path: "/blog", changefreq: "weekly", priority: "0.8" },
+          ...blogEntries,
+          { path: "/about", changefreq: "monthly", priority: "0.7" },
           { path: "/contact", changefreq: "monthly", priority: "0.6" },
         ];
 
