@@ -18,6 +18,8 @@ const businessLinks = [
 const companyLinks = [
   { to: "/about", label: "About" },
   { to: "/platform", label: "Platform" },
+  { to: "/insurance", label: "Insurance (soon)" },
+  { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact" },
 ];
 
