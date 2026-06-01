@@ -138,6 +138,11 @@ const largeTicketDesk = [
 ];
 
 function BusinessPage() {
+  const [monthly, setMonthly] = useState<number>(250000);
+  const savingsPct = 0.025; // conservative 2.5% blended saving
+  const monthlySavings = Math.round(monthly * savingsPct);
+  const annualSavings = monthlySavings * 12;
+
   return (
     <div className="bg-background">
       {/* Hero */}
