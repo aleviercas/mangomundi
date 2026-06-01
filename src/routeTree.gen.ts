@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PlatformRouteImport } from './routes/platform'
+import { Route as InsuranceRouteImport } from './routes/insurance'
 import { Route as FxToolRouteImport } from './routes/fx-tool'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -35,6 +36,11 @@ const PricingRoute = PricingRouteImport.update({
 const PlatformRoute = PlatformRouteImport.update({
   id: '/platform',
   path: '/platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsuranceRoute = InsuranceRouteImport.update({
+  id: '/insurance',
+  path: '/insurance',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FxToolRoute = FxToolRouteImport.update({
@@ -92,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
+  '/insurance': typeof InsuranceRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -106,6 +113,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
+  '/insurance': typeof InsuranceRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
+  '/insurance': typeof InsuranceRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/features'
     | '/fx-tool'
+    | '/insurance'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/features'
     | '/fx-tool'
+    | '/insurance'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
@@ -165,6 +176,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/features'
     | '/fx-tool'
+    | '/insurance'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
@@ -180,6 +192,7 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   FeaturesRoute: typeof FeaturesRoute
   FxToolRoute: typeof FxToolRoute
+  InsuranceRoute: typeof InsuranceRoute
   PlatformRoute: typeof PlatformRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -206,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/platform'
       fullPath: '/platform'
       preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insurance': {
+      id: '/insurance'
+      path: '/insurance'
+      fullPath: '/insurance'
+      preLoaderRoute: typeof InsuranceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/fx-tool': {
@@ -293,6 +313,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   FeaturesRoute: FeaturesRoute,
   FxToolRoute: FxToolRoute,
+  InsuranceRoute: InsuranceRoute,
   PlatformRoute: PlatformRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -300,13 +321,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

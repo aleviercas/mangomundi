@@ -58,27 +58,53 @@ export function HeroSection() {
           </div>
 
           <div className="relative">
-            <div className="relative rounded-2xl border border-border bg-card p-2 shadow-2xl">
-              <div className="aspect-[4/3] overflow-hidden rounded-xl bg-surface flex items-center justify-center">
-                <div className="relative">
-                  <div className="absolute -inset-20 rounded-full bg-primary/10 blur-3xl" />
-                  <div className="relative flex items-center justify-center">
-                    <div className="h-40 w-40 rounded-full border-2 border-primary/30 flex items-center justify-center">
-                      <div className="h-24 w-24 rounded-full border-2 border-mango-glow/40 flex items-center justify-center">
-                        <div className="h-12 w-12 rounded-full bg-primary flex items-center justify-center">
-                          <TrendingUp className="h-6 w-6 text-primary-foreground" />
-                        </div>
+            <div className="absolute -inset-10 rounded-full bg-primary/10 blur-3xl" />
+            <div className="relative rounded-2xl border border-border bg-card p-4 shadow-2xl">
+              <div className="mb-3 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  <span className="text-xs font-semibold text-foreground">Live comparison</span>
+                </div>
+                <span className="text-[10px] text-muted-foreground tabular-nums">1,000 GBP → ARS</span>
+              </div>
+
+              <div className="space-y-2">
+                {[
+                  { name: "Wise", emoji: "💸", received: "1,242,180", delta: "Best rate", best: true },
+                  { name: "Revolut", emoji: "🪙", received: "1,238,940", delta: "-0.26%", best: false },
+                  { name: "Western Union", emoji: "🏦", received: "1,219,500", delta: "-1.83%", best: false },
+                  { name: "PayPal Xoom", emoji: "💳", received: "1,201,330", delta: "-3.28%", best: false },
+                ].map((p) => (
+                  <div
+                    key={p.name}
+                    className={`flex items-center justify-between rounded-lg border px-3 py-2.5 ${
+                      p.best ? "border-primary/40 bg-primary/[0.06]" : "border-border bg-background/50"
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-lg">{p.emoji}</span>
+                      <div>
+                        <div className="text-sm font-semibold text-foreground">{p.name}</div>
+                        <div className={`text-[10px] ${p.best ? "text-primary font-semibold" : "text-muted-foreground"}`}>{p.delta}</div>
                       </div>
                     </div>
-                    <div className="absolute inset-0 animate-spin" style={{ animationDuration: "20s" }}>
-                      <div className="absolute -top-2 left-1/2 h-3 w-3 -translate-x-1/2 rounded-full bg-primary" />
-                    </div>
-                    <div className="absolute inset-0 animate-spin" style={{ animationDuration: "15s", animationDirection: "reverse" }}>
-                      <div className="absolute -bottom-2 left-1/2 h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-mango-glow" />
+                    <div className="text-right">
+                      <div className="text-sm font-bold tabular-nums text-foreground">{p.received}</div>
+                      <div className="text-[10px] text-muted-foreground">ARS</div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
+
+              <Link
+                to="/compare"
+                className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-foreground py-2.5 text-xs font-semibold text-background transition hover:opacity-90"
+              >
+                Run a live comparison <ArrowRight className="h-3 w-3" />
+              </Link>
             </div>
           </div>
         </div>

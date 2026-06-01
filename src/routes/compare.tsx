@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ArrowRight, Clock, Loader2, ExternalLink, Send, MessageCircle, Shield, Star, Megaphone, Building2 } from "lucide-react";
+import { Sparkles, ArrowRight, Clock, Loader2, ExternalLink, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp } from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -367,6 +367,8 @@ function ResultsBlock({
   tUpdated: string;
 }) {
   const showLargeBanner = amount >= 50000;
+  const [sortBy, setSortBy] = useState<"received" | "fee" | "speed">("received");
+
   const sponsored = useMemo(
     () =>
       result.rows
@@ -375,7 +377,28 @@ function ResultsBlock({
         .slice(0, 2),
     [result.rows],
   );
-  const organic = useMemo(() => result.rows.filter((r) => !r.sponsored), [result.rows]);
+  const organic = useMemo(() => {
+    const base = result.rows.filter((r) => !r.sponsored);
+    const sorted = [...base];
+    if (sortBy === "received") sorted.sort((a, b) => b.received - a.received);
+    if (sortBy === "fee") sorted.sort((a, b) => a.fee_total - b.fee_total);
+    if (sortBy === "speed")
+      sorted.sort(
+        (a, b) => (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
+      );
+    return sorted;
+  }, [result.rows, sortBy]);
+
+  // Savings vs worst provider (by received)
+  const savings = useMemo(() => {
+    if (result.rows.length < 2) return null;
+    const sorted = [...result.rows].sort((a, b) => b.received - a.received);
+    const best = sorted[0];
+    const worst = sorted[sorted.length - 1];
+    const diff = best.received - worst.received;
+    if (diff <= 0) return null;
+    return { diff, bestName: best.name, worstName: worst.name };
+  }, [result.rows]);
 
   return (
     <div className="mt-6">
@@ -396,14 +419,63 @@ function ResultsBlock({
         </Link>
       )}
 
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-        <span>
-          {tMidmarket} · 1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
-        </span>
-        <span>
-          {tUpdated} {new Date(result.rates_updated_at).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" })}
-        </span>
-      </div>
+      {/* Savings summary card */}
+      {savings && (
+        <div className="mb-4 grid gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:grid-cols-3 sm:p-5">
+          <div className="flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
+            </div>
+            <div>
+              <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                You save
+              </div>
+              <div className="font-heading text-2xl font-bold tabular-nums text-foreground">
+                {savings.diff.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+                <span className="text-sm font-normal text-muted-foreground">{result.quote}</span>
+              </div>
+              <div className="text-[11px] text-muted-foreground">
+                with <span className="font-semibold text-foreground">{savings.bestName}</span> vs <span className="font-semibold text-foreground">{savings.worstName}</span>
+              </div>
+            </div>
+          </div>
+          <div className="sm:border-l sm:border-emerald-500/20 sm:pl-5">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              {tMidmarket}
+            </div>
+            <div className="text-sm tabular-nums text-foreground">
+              1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
+            </div>
+            <div className="mt-1 text-[10px] text-muted-foreground">
+              {tUpdated} {new Date(result.rates_updated_at).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" })}
+            </div>
+          </div>
+          <div className="sm:border-l sm:border-emerald-500/20 sm:pl-5">
+            <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+              <ArrowDownUp className="mr-1 inline h-3 w-3" /> Sort by
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {([
+                ["received", "Best rate"],
+                ["fee", "Cheapest fees"],
+                ["speed", "Fastest"],
+              ] as const).map(([k, label]) => (
+                <button
+                  key={k}
+                  onClick={() => setSortBy(k)}
+                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
+                    sortBy === k
+                      ? "bg-foreground text-background"
+                      : "border border-border bg-card text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Sponsored block — separated from organic, badged */}
       {sponsored.length > 0 && (
@@ -444,7 +516,7 @@ function ResultsBlock({
             row={row}
             quote={result.quote}
             base={result.base}
-            isBest={i === 0}
+            isBest={i === 0 && sortBy === "received"}
             isSponsored={false}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
             tRecipient={tRecipient}
