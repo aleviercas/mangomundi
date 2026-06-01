@@ -102,6 +102,41 @@ const plans = [
   },
 ];
 
+const largeTicketDesk = [
+  {
+    name: "Airwallex",
+    emoji: "🌐",
+    regulator: "FCA · ASIC · MAS",
+    trust: 9.4,
+    spread: "0.4%",
+    speciality: "Global accounts, batch payouts, treasury API",
+  },
+  {
+    name: "OFX",
+    emoji: "🏦",
+    regulator: "ASIC · FCA · FinCEN",
+    trust: 9.1,
+    spread: "0.5%",
+    speciality: "Forwards & limit orders for treasury teams",
+  },
+  {
+    name: "Convera",
+    emoji: "💼",
+    regulator: "FinCEN · FCA",
+    trust: 8.9,
+    spread: "0.6%",
+    speciality: "Enterprise FX, education & higher-ed payouts",
+  },
+  {
+    name: "Currencies Direct",
+    emoji: "💷",
+    regulator: "FCA",
+    trust: 9.2,
+    spread: "0.5%",
+    speciality: "Property & high-value private client transfers",
+  },
+];
+
 function BusinessPage() {
   return (
     <div className="bg-background">
