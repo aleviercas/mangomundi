@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 import {
   Building2,
   Code,
@@ -11,6 +12,9 @@ import {
   Sparkles,
   Globe,
   TrendingUp,
+  Briefcase,
+  Star,
+  Shield,
 } from "lucide-react";
 
 export const Route = createFileRoute("/business")({
