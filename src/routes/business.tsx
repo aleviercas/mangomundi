@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { BrandLogo } from "@/components/BrandLogo";
 import {
   Building2,
   Code,
