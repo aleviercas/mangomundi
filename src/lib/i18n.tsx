@@ -172,6 +172,9 @@ const DICTS: Record<Lang, Dict> = {
     "fx.chat.cta1": "Por que este provedor?",
     "fx.chat.cta2": "Alternativas mais baratas?",
     "fx.chat.cta3": "Há taxas ocultas?",
+    "hero.mini.live": "Comparação ao vivo",
+    "hero.mini.best": "Melhor taxa",
+    "hero.mini.cta": "Fazer uma comparação ao vivo",
   },
 };
 
