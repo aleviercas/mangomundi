@@ -74,7 +74,7 @@ export function HeroSection() {
 
               <div className="space-y-2">
                 {[
-                  { name: "Wise", domain: "wise.com", received: "1,242,180", delta: "Best rate", best: true },
+                  { name: "Wise", domain: "wise.com", received: "1,242,180", delta: t("hero.mini.best"), best: true },
                   { name: "Revolut", domain: "revolut.com", received: "1,238,940", delta: "-0.26%", best: false },
                   { name: "Western Union", domain: "westernunion.com", received: "1,219,500", delta: "-1.83%", best: false },
                   { name: "PayPal Xoom", domain: "xoom.com", received: "1,201,330", delta: "-3.28%", best: false },
