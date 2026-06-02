@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { BrandLogo } from "@/components/BrandLogo";
 import {
   Building2,
   Code,
@@ -105,7 +106,7 @@ const plans = [
 const largeTicketDesk = [
   {
     name: "Airwallex",
-    emoji: "🌐",
+    domain: "airwallex.com",
     regulator: "FCA · ASIC · MAS",
     trust: 9.4,
     spread: "0.4%",
@@ -113,7 +114,7 @@ const largeTicketDesk = [
   },
   {
     name: "OFX",
-    emoji: "🏦",
+    domain: "ofx.com",
     regulator: "ASIC · FCA · FinCEN",
     trust: 9.1,
     spread: "0.5%",
@@ -121,7 +122,7 @@ const largeTicketDesk = [
   },
   {
     name: "Convera",
-    emoji: "💼",
+    domain: "convera.com",
     regulator: "FinCEN · FCA",
     trust: 8.9,
     spread: "0.6%",
@@ -129,7 +130,7 @@ const largeTicketDesk = [
   },
   {
     name: "Currencies Direct",
-    emoji: "💷",
+    domain: "currenciesdirect.com",
     regulator: "FCA",
     trust: 9.2,
     spread: "0.5%",
@@ -314,7 +315,7 @@ function BusinessPage() {
               <div key={p.name} className="rounded-2xl border border-border bg-background p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{p.emoji}</span>
+                    <BrandLogo name={p.name} domain={p.domain} size={32} />
                     <div>
                       <div className="font-heading font-semibold text-foreground">{p.name}</div>
                       <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">

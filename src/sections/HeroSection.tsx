@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export function HeroSection() {
   const { t } = useI18n();
@@ -73,10 +74,10 @@ export function HeroSection() {
 
               <div className="space-y-2">
                 {[
-                  { name: "Wise", emoji: "💸", received: "1,242,180", delta: "Best rate", best: true },
-                  { name: "Revolut", emoji: "🪙", received: "1,238,940", delta: "-0.26%", best: false },
-                  { name: "Western Union", emoji: "🏦", received: "1,219,500", delta: "-1.83%", best: false },
-                  { name: "PayPal Xoom", emoji: "💳", received: "1,201,330", delta: "-3.28%", best: false },
+                  { name: "Wise", domain: "wise.com", received: "1,242,180", delta: "Best rate", best: true },
+                  { name: "Revolut", domain: "revolut.com", received: "1,238,940", delta: "-0.26%", best: false },
+                  { name: "Western Union", domain: "westernunion.com", received: "1,219,500", delta: "-1.83%", best: false },
+                  { name: "PayPal Xoom", domain: "xoom.com", received: "1,201,330", delta: "-3.28%", best: false },
                 ].map((p) => (
                   <div
                     key={p.name}
@@ -85,7 +86,7 @@ export function HeroSection() {
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="text-lg">{p.emoji}</span>
+                      <BrandLogo name={p.name} domain={p.domain} size={24} />
                       <div>
                         <div className="text-sm font-semibold text-foreground">{p.name}</div>
                         <div className={`text-[10px] ${p.best ? "text-primary font-semibold" : "text-muted-foreground"}`}>{p.delta}</div>
