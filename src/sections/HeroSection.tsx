@@ -104,7 +104,7 @@ export function HeroSection() {
                 to="/compare"
                 className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-foreground py-2.5 text-xs font-semibold text-background transition hover:opacity-90"
               >
-                Run a live comparison <ArrowRight className="h-3 w-3" />
+                {t("hero.mini.cta")} <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
           </div>
