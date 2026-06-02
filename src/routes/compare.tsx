@@ -12,6 +12,7 @@ import {
 } from "@/lib/fx.functions";
 import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const Route = createFileRoute("/compare")({
   head: () => ({
