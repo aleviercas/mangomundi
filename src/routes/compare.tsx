@@ -586,9 +586,7 @@ function ProviderRow({
       }`}
     >
       <div className="col-span-3 flex items-center gap-3">
-        <span className="text-2xl" aria-hidden>
-          {row.logo_emoji ?? "💱"}
-        </span>
+        <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} size={36} />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="truncate font-semibold text-foreground">{row.name}</span>
