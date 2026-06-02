@@ -67,7 +67,7 @@ export function HeroSection() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                   </span>
-                  <span className="text-xs font-semibold text-foreground">Live comparison</span>
+                  <span className="text-xs font-semibold text-foreground">{t("hero.mini.live")}</span>
                 </div>
                 <span className="text-[10px] text-muted-foreground tabular-nums">1,000 GBP → ARS</span>
               </div>
