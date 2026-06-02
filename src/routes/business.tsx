@@ -314,7 +314,7 @@ function BusinessPage() {
               <div key={p.name} className="rounded-2xl border border-border bg-background p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{p.emoji}</span>
+                    <BrandLogo name={p.name} domain={p.domain} size={32} />
                     <div>
                       <div className="font-heading font-semibold text-foreground">{p.name}</div>
                       <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
