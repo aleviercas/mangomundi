@@ -58,6 +58,9 @@ const DICTS: Record<Lang, Dict> = {
     "fx.chat.cta1": "Why this provider?",
     "fx.chat.cta2": "Cheaper alternatives?",
     "fx.chat.cta3": "What about hidden fees?",
+    "hero.mini.live": "Live comparison",
+    "hero.mini.best": "Best rate",
+    "hero.mini.cta": "Run a live comparison",
   },
   es: {
     "nav.home": "Inicio",
@@ -112,6 +115,9 @@ const DICTS: Record<Lang, Dict> = {
     "fx.chat.cta1": "¿Por qué este proveedor?",
     "fx.chat.cta2": "¿Alternativas más baratas?",
     "fx.chat.cta3": "¿Hay comisiones ocultas?",
+    "hero.mini.live": "Comparación en vivo",
+    "hero.mini.best": "Mejor tasa",
+    "hero.mini.cta": "Hacer una comparación en vivo",
   },
   pt: {
     "nav.home": "Início",
@@ -166,6 +172,9 @@ const DICTS: Record<Lang, Dict> = {
     "fx.chat.cta1": "Por que este provedor?",
     "fx.chat.cta2": "Alternativas mais baratas?",
     "fx.chat.cta3": "Há taxas ocultas?",
+    "hero.mini.live": "Comparação ao vivo",
+    "hero.mini.best": "Melhor taxa",
+    "hero.mini.cta": "Fazer uma comparação ao vivo",
   },
 };
 

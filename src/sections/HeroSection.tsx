@@ -67,14 +67,14 @@ export function HeroSection() {
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                     <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                   </span>
-                  <span className="text-xs font-semibold text-foreground">Live comparison</span>
+                  <span className="text-xs font-semibold text-foreground">{t("hero.mini.live")}</span>
                 </div>
                 <span className="text-[10px] text-muted-foreground tabular-nums">1,000 GBP → ARS</span>
               </div>
 
               <div className="space-y-2">
                 {[
-                  { name: "Wise", domain: "wise.com", received: "1,242,180", delta: "Best rate", best: true },
+                  { name: "Wise", domain: "wise.com", received: "1,242,180", delta: t("hero.mini.best"), best: true },
                   { name: "Revolut", domain: "revolut.com", received: "1,238,940", delta: "-0.26%", best: false },
                   { name: "Western Union", domain: "westernunion.com", received: "1,219,500", delta: "-1.83%", best: false },
                   { name: "PayPal Xoom", domain: "xoom.com", received: "1,201,330", delta: "-3.28%", best: false },
@@ -104,7 +104,7 @@ export function HeroSection() {
                 to="/compare"
                 className="mt-3 flex items-center justify-center gap-1.5 rounded-lg bg-foreground py-2.5 text-xs font-semibold text-background transition hover:opacity-90"
               >
-                Run a live comparison <ArrowRight className="h-3 w-3" />
+                {t("hero.mini.cta")} <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
           </div>
