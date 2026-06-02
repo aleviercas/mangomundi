@@ -45,14 +45,15 @@ export function BrandLogo({ name, url, domain, size = 32, className, rounded = t
   if (host && !failed) {
     return (
       <img
-        src={`https://logo.clearbit.com/${host}`}
+        src={`https://www.google.com/s2/favicons?domain=${host}&sz=128`}
         alt={`${name} logo`}
         width={size}
         height={size}
         loading="lazy"
+        referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
         className={cn(
-          "shrink-0 object-contain bg-white",
+          "shrink-0 object-contain bg-white p-0.5",
           rounded ? "rounded-md" : "",
           className,
         )}
