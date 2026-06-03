@@ -61,6 +61,11 @@ const DICTS: Record<Lang, Dict> = {
     "hero.mini.live": "Live comparison",
     "hero.mini.best": "Best rate",
     "hero.mini.cta": "Run a live comparison",
+    "hero.alerts.title": "Smart rate alerts",
+    "hero.alerts.success": "Alert active. We'll email you when the rate moves in your favour.",
+    "hero.alerts.placeholder": "Your email (GBP → ARS)",
+    "hero.alerts.button": "Alert me",
+    "hero.alerts.saving": "Saving…",
   },
   es: {
     "nav.home": "Inicio",
@@ -118,6 +123,11 @@ const DICTS: Record<Lang, Dict> = {
     "hero.mini.live": "Comparación en vivo",
     "hero.mini.best": "Mejor tasa",
     "hero.mini.cta": "Hacer una comparación en vivo",
+    "hero.alerts.title": "Alertas inteligentes de tasa",
+    "hero.alerts.success": "¡Alerta activada! Te avisaremos cuando suba el tipo de cambio.",
+    "hero.alerts.placeholder": "Tu email (GBP → ARS)",
+    "hero.alerts.button": "Alertarme",
+    "hero.alerts.saving": "Guardando…",
   },
   pt: {
     "nav.home": "Início",
@@ -175,6 +185,11 @@ const DICTS: Record<Lang, Dict> = {
     "hero.mini.live": "Comparação ao vivo",
     "hero.mini.best": "Melhor taxa",
     "hero.mini.cta": "Fazer uma comparação ao vivo",
+    "hero.alerts.title": "Alertas inteligentes de taxa",
+    "hero.alerts.success": "Alerta ativado! Avisaremos quando a taxa subir.",
+    "hero.alerts.placeholder": "Seu email (GBP → ARS)",
+    "hero.alerts.button": "Avisar-me",
+    "hero.alerts.saving": "Salvando…",
   },
 };
 
