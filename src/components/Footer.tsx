@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Linkedin } from "lucide-react";
-import mangoLogo from "@/assets/mango-logo.svg";
+import { Wordmark } from "@/components/Wordmark";
 
 
 const retailLinks = [
@@ -35,9 +35,8 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2">
-              <img src={mangoLogo} alt="MangoGlobal" className="h-8 w-8" />
-              <span className="font-heading text-lg font-semibold text-foreground">MangoGlobal</span>
+            <Link to="/" className="flex items-center">
+              <Wordmark className="text-lg" />
             </Link>
             <p className="mt-3 text-sm text-muted-foreground">
               The global FX decision engine. Neutral AI for smarter cross-border payments.

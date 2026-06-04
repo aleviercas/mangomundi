@@ -89,13 +89,13 @@ export function HeroSection() {
 
   return (
     <section className="relative overflow-hidden bg-background pt-20 pb-24 lg:pt-28 lg:pb-32">
-      {/* Minimal geometric grid background */}
+      {/* Minimal geometric grid background — light mode */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.18]"
+        className="pointer-events-none absolute inset-0 opacity-[0.5]"
         style={{
           backgroundImage:
-            "linear-gradient(to right, oklch(1 0 0 / 0.06) 1px, transparent 1px), linear-gradient(to bottom, oklch(1 0 0 / 0.06) 1px, transparent 1px)",
+            "linear-gradient(to right, oklch(0.21 0.034 264 / 0.06) 1px, transparent 1px), linear-gradient(to bottom, oklch(0.21 0.034 264 / 0.06) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
           maskImage:
             "radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%)",
@@ -103,7 +103,7 @@ export function HeroSection() {
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"
       />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -127,13 +127,13 @@ export function HeroSection() {
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/compare"
-                className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                className="inline-flex items-center gap-2 rounded-md bg-[#0F172A] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1e293b]"
               >
                 {t("cta.compare")} <ArrowRight className="h-4 w-4" />
               </Link>
               <Link
                 to="/contact"
-                className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-foreground/30"
+                className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition-colors hover:border-slate-300"
               >
                 {t("cta.talkSales")}
               </Link>
@@ -154,7 +154,7 @@ export function HeroSection() {
 
           {/* Right: comparison widget */}
           <div className="relative">
-            <div className="relative rounded-xl border border-border bg-card p-4 shadow-[0_1px_0_0_oklch(1_0_0_/_0.04)_inset,0_24px_60px_-30px_oklch(0_0_0_/_0.6)]">
+            <div className="relative rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm shadow-slate-100">
               <div className="mb-3 flex items-center justify-between border-b border-border/60 pb-3">
                 <div className="flex items-center gap-2">
                   <span className="relative flex h-1.5 w-1.5">
@@ -185,10 +185,10 @@ export function HeroSection() {
                       onClick={() => handleProviderClick(p.name, p.slug)}
                       className={`group w-full text-left flex items-center justify-between rounded-md border px-3 py-2.5 transition-colors outline-none ${
                         isThisLoading
-                          ? "border-primary bg-primary/10"
+                          ? "border-amber-500 bg-amber-50"
                           : p.best
-                            ? "border-primary/50 bg-primary/[0.04] hover:border-primary"
-                            : "border-border/70 bg-background/40 hover:border-border hover:bg-background/70"
+                            ? "border-amber-300 bg-amber-50/60 hover:border-amber-400"
+                            : "border-slate-200/70 bg-white hover:border-slate-300 hover:bg-slate-50"
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
@@ -214,7 +214,7 @@ export function HeroSection() {
 
               <Link
                 to="/compare"
-                className="mt-3 flex items-center justify-center gap-1.5 rounded-md bg-foreground py-2.5 text-xs font-semibold text-background transition-opacity hover:opacity-90"
+                className="mt-3 flex items-center justify-center gap-1.5 rounded-md bg-[#0F172A] py-2.5 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]"
               >
                 {t("hero.mini.cta")} <ArrowRight className="h-3 w-3" />
               </Link>
@@ -222,19 +222,19 @@ export function HeroSection() {
               {/* Divider */}
               <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center" aria-hidden>
-                  <div className="w-full border-t border-border/60" />
+                  <div className="w-full border-t border-slate-200/60" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-card px-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  <span className="bg-white px-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
                     {t("hero.alerts.title")}
                   </span>
                 </div>
               </div>
 
               {/* Lead capture */}
-              <div className="rounded-md border border-border/60 bg-background/40 p-3">
+              <div className="rounded-md border border-slate-200/60 bg-slate-50/60 p-3">
                 {alertSubmitted ? (
-                  <div className="flex items-center gap-2 text-xs font-medium text-emerald-500 py-1">
+                  <div className="flex items-center gap-2 text-xs font-medium text-emerald-600 py-1">
                     <CheckCircle2 className="h-4 w-4 shrink-0" />
                     <span>{t("hero.alerts.success")}</span>
                   </div>
@@ -248,13 +248,13 @@ export function HeroSection() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder={t("hero.alerts.placeholder")}
-                        className="w-full rounded-md border border-border bg-background pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/70 focus:border-primary focus:outline-none transition-colors"
+                        className="w-full rounded-md border border-slate-200 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none transition-colors"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={submittingAlert}
-                      className="rounded-md bg-primary px-3 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 whitespace-nowrap"
+                      className="rounded-md bg-[#0F172A] px-3 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b] disabled:opacity-50 whitespace-nowrap"
                     >
                       {submittingAlert ? t("hero.alerts.saving") : t("hero.alerts.button")}
                     </button>
