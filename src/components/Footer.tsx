@@ -113,7 +113,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} MangoGlobal. All rights reserved.
+            &copy; {new Date().getFullYear()} mangoglobal. All rights reserved.
           </p>
           <p className="text-sm text-muted-foreground">
             Global FX, Made Intelligent
