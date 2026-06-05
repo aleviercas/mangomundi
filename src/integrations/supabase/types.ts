@@ -95,6 +95,113 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_conversations: {
+        Row: {
+          created_at: string
+          id: string
+          session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      enterprise_leads: {
+        Row: {
+          created_at: string
+          email: string
+          feature_source: string | null
+          id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          feature_source?: string | null
+          id?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          feature_source?: string | null
+          id?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      fx_rates: {
+        Row: {
+          fee: number
+          from_currency: string
+          id: string
+          provider_slug: string
+          rate: number
+          to_currency: string
+          updated_at: string
+        }
+        Insert: {
+          fee?: number
+          from_currency: string
+          id?: string
+          provider_slug: string
+          rate: number
+          to_currency: string
+          updated_at?: string
+        }
+        Update: {
+          fee?: number
+          from_currency?: string
+          id?: string
+          provider_slug?: string
+          rate?: number
+          to_currency?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           company: string | null
