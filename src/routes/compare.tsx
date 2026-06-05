@@ -17,13 +17,13 @@ import { BrandLogo } from "@/components/BrandLogo";
 export const Route = createFileRoute("/compare")({
   head: () => ({
     meta: [
-      { title: "Compare Money Transfers — MangoGlobal" },
+      { title: "Compare Money Transfers — mangoglobal" },
       {
         name: "description",
         content:
           "Compare live FX rates across 30+ providers in one click. Neutral AI recommendation, real mid-market rates, and the best route for any corridor.",
       },
-      { property: "og:title", content: "Compare Money Transfers — MangoGlobal" },
+      { property: "og:title", content: "Compare Money Transfers — mangoglobal" },
       {
         property: "og:description",
         content:

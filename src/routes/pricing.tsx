@@ -4,13 +4,13 @@ import { Check, ArrowRight, Sparkles } from "lucide-react";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — MangoGlobal" },
+      { title: "Pricing — mangoglobal" },
       {
         name: "description",
         content:
           "Free for retail users — paid for businesses that need optimised routing, API access, and white-label tools. Transparent, no hidden fees.",
       },
-      { property: "og:title", content: "Pricing — MangoGlobal" },
+      { property: "og:title", content: "Pricing — mangoglobal" },
       {
         property: "og:description",
         content:

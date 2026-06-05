@@ -4,10 +4,10 @@ import { Globe, Target, Heart, Zap } from "lucide-react";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — MangoGlobal" },
-      { name: "description", content: "Learn about MangoGlobal's mission to build a neutral, intelligent platform for global FX payments." },
-      { property: "og:title", content: "About — MangoGlobal" },
-      { property: "og:description", content: "Learn about MangoGlobal's mission to build a neutral, intelligent platform for global FX payments." },
+      { title: "About — mangoglobal" },
+      { name: "description", content: "Learn about mangoglobal's mission to build a neutral, intelligent platform for global FX payments." },
+      { property: "og:title", content: "About — mangoglobal" },
+      { property: "og:description", content: "Learn about mangoglobal's mission to build a neutral, intelligent platform for global FX payments." },
     ],
   }),
   component: AboutPage,
@@ -29,7 +29,7 @@ function AboutPage() {
             Built for a <span className="text-primary">Borderless</span> World
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            MangoGlobal was founded on a simple belief: cross-border payments should be intelligent, transparent, and accessible to everyone — from individuals sending remittances to corporations managing global treasury.
+            mangoglobal was founded on a simple belief: cross-border payments should be intelligent, transparent, and accessible to everyone — from individuals sending remittances to corporations managing global treasury.
           </p>
         </div>
       </section>

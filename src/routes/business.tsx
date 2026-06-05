@@ -21,13 +21,13 @@ import {
 export const Route = createFileRoute("/business")({
   head: () => ({
     meta: [
-      { title: "Business & Enterprise FX — MangoGlobal" },
+      { title: "Business & Enterprise FX — mangoglobal" },
       {
         name: "description",
         content:
           "Cross-border payments, treasury, and FX routing for businesses and financial institutions. API access, dedicated desks, and bespoke provider mix.",
       },
-      { property: "og:title", content: "Business & Enterprise FX — MangoGlobal" },
+      { property: "og:title", content: "Business & Enterprise FX — mangoglobal" },
       {
         property: "og:description",
         content:

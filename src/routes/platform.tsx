@@ -4,13 +4,13 @@ import { Sparkles, Layers, Network, Bot, Building2, ShieldCheck, ArrowRight } fr
 export const Route = createFileRoute("/platform")({
   head: () => ({
     meta: [
-      { title: "AI Decision Engine — MangoGlobal Platform" },
+      { title: "AI Decision Engine — mangoglobal Platform" },
       {
         name: "description",
         content:
-          "MangoGlobal is an AI-powered decision and sourcing infrastructure for complex markets. FX is the first vertical — insurance, brokers, SaaS, logistics and lending follow.",
+          "mangoglobal is an AI-powered decision and sourcing infrastructure for complex markets. FX is the first vertical — insurance, brokers, SaaS, logistics and lending follow.",
       },
-      { property: "og:title", content: "AI Decision Engine — MangoGlobal Platform" },
+      { property: "og:title", content: "AI Decision Engine — mangoglobal Platform" },
       {
         property: "og:description",
         content:
@@ -55,7 +55,7 @@ function PlatformPage() {
         {/* Hero */}
         <div className="mx-auto max-w-3xl text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-            <Sparkles className="h-3 w-3 text-primary" /> The platform behind MangoGlobal
+            <Sparkles className="h-3 w-3 text-primary" /> The platform behind mangoglobal
           </div>
           <h1 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             AI infrastructure for{" "}

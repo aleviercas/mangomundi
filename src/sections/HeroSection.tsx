@@ -88,46 +88,27 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-background pt-20 pb-24 lg:pt-28 lg:pb-32">
-      {/* Minimal geometric grid background — light mode */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.5]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, oklch(0.21 0.034 264 / 0.06) 1px, transparent 1px), linear-gradient(to bottom, oklch(0.21 0.034 264 / 0.06) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(ellipse at 50% 0%, black 30%, transparent 75%)",
-        }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"
-      />
-
+    <section className="relative pt-16 pb-24 lg:pt-20 lg:pb-32">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-12 items-center">
           {/* Left */}
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-md border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground mb-6">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-60 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
-              </span>
-              {t("hero.badge")}
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-[11px] font-medium tracking-widest text-white uppercase mb-6 shadow-sm">
+              ⚡ Agentic AI for Global FX <span className="text-slate-500 px-1">|</span>
+              <span className="text-white font-black lowercase">mango</span>
+              <span className="text-slate-300 font-light lowercase">global</span>
             </div>
-            <h1 className="font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-[3.5rem] lg:leading-[1.05]">
-              {t("hero.title.1")}{" "}
-              <span className="text-primary">{t("hero.title.2")}</span> {t("hero.title.3")}
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-950 leading-[1.1]">
+              The Global FX Decision Engine
             </h1>
-            <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              {t("hero.subtitle")}
+            <p className="mt-5 text-base sm:text-lg text-slate-500 max-w-2xl font-normal leading-relaxed">
+              Neutral intelligence that turns fragmented cross-border payments into{" "}
+              <span className="text-slate-950 font-semibold">one optimal decision</span> — from retail remittances to corporate treasury.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to="/compare"
-                className="inline-flex items-center gap-2 rounded-md bg-[#0F172A] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#1e293b]"
+                className="inline-flex items-center gap-2 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
               >
                 {t("cta.compare")} <ArrowRight className="h-4 w-4" />
               </Link>
@@ -144,8 +125,8 @@ export function HeroSection() {
                 { Icon: Shield, label: t("hero.trust.2") },
                 { Icon: Zap, label: t("hero.trust.3") },
               ].map(({ Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Icon className="h-4 w-4 text-primary" />
+                <div key={label} className="flex items-center gap-2 text-sm text-slate-500">
+                  <Icon className="h-4 w-4 text-slate-700" />
                   <span>{label}</span>
                 </div>
               ))}

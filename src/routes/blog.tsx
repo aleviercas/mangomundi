@@ -11,13 +11,13 @@ const postsQuery = queryOptions({
 export const Route = createFileRoute("/blog")({
   head: () => ({
     meta: [
-      { title: "Blog — MangoGlobal" },
+      { title: "Blog — mangoglobal" },
       {
         name: "description",
         content:
           "Guides, deep-dives, and analyses on cross-border payments, FX transparency, and how to send money smarter — for individuals and businesses.",
       },
-      { property: "og:title", content: "Blog — MangoGlobal" },
+      { property: "og:title", content: "Blog — mangoglobal" },
       {
         property: "og:description",
         content: "Cross-border payments, FX, and decision-engine insights.",
@@ -39,7 +39,7 @@ function BlogIndex() {
             <BookOpen className="h-3 w-3 text-primary" /> Insights
           </div>
           <h1 className="font-heading text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
-            The MangoGlobal blog
+            The mangoglobal blog
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
             Plain-English guides on sending money internationally, FX transparency, and how

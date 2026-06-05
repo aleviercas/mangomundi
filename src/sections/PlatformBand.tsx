@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 /**
- * Thin band right under the hero that introduces MangoGlobal as a multi-vertical
+ * Thin band right under the hero that introduces mangoglobal as a multi-vertical
  * decision-engine platform (not just FX). Keeps the home page FX-first while
  * funnelling curious visitors to /platform.
  */
@@ -13,7 +13,7 @@ export function PlatformBand() {
         <div className="inline-flex items-center gap-2 text-sm">
           <Sparkles className="h-4 w-4 text-primary shrink-0" />
           <span className="text-muted-foreground">
-            FX is the first vertical. <span className="text-foreground font-medium">MangoGlobal Platform</span> is the AI decision engine behind it — insurance, brokers, SaaS, and more are next.
+            FX is the first vertical. <span className="text-foreground font-medium">mangoglobal Platform</span> is the AI decision engine behind it — insurance, brokers, SaaS, and more are next.
           </span>
         </div>
         <Link

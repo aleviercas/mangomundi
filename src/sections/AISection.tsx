@@ -22,7 +22,7 @@ export function AISection() {
               <span className="text-primary">Agenda</span>
             </h2>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed">
-              Most platforms route payments to whoever pays them the highest margin. We built MangoGlobal differently. Our AI has no allegiance to any provider. It finds the true best route for every payment — every single time.
+              Most platforms route payments to whoever pays them the highest margin. We built mangoglobal differently. Our AI has no allegiance to any provider. It finds the true best route for every payment — every single time.
             </p>
             <div className="mt-10 space-y-6">
               {principles.map((principle) => (
