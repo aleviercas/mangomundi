@@ -1,15 +1,18 @@
 interface WordmarkProps {
   className?: string;
+  /** Override colour (default: slate-950). Pass e.g. "text-white" for dark backgrounds. */
+  tone?: "dark" | "light";
 }
 
-export function Wordmark({ className = "" }: WordmarkProps) {
+export function Wordmark({ className = "", tone = "dark" }: WordmarkProps) {
+  const colour = tone === "light" ? "text-white" : "text-slate-950";
   return (
     <span
-      className={`font-sans tracking-[-0.03em] leading-none ${className}`}
-      aria-label="MangoGlobal"
+      className={`font-sans lowercase tracking-tight leading-none ${colour} ${className}`}
+      aria-label="mangoglobal"
     >
-      <span className="font-semibold text-slate-950">Mango</span>
-      <span className="font-medium text-amber-500">Global</span>
+      <span className="font-black">mango</span>
+      <span className="font-light">global</span>
     </span>
   );
 }
