@@ -68,12 +68,13 @@ function InsurancePage() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
+          <button
+            type="button"
+            data-coming-soon="insurance-launch-partner"
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
-            Be a launch partner <ArrowRight className="h-4 w-4" />
-          </Link>
+            Be a launch partner · Enterprise Beta <ArrowRight className="h-4 w-4" />
+          </button>
           <Link
             to="/compare"
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-surface-elevated"
