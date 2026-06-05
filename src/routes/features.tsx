@@ -4,10 +4,10 @@ import { BarChart3, Brain, Wallet, Code, ShieldCheck, Headphones, Clock, FileTex
 export const Route = createFileRoute("/features")({
   head: () => ({
     meta: [
-      { title: "Features — MangoGlobal" },
-      { name: "description", content: "Explore MangoGlobal's platform features for intelligent cross-border payments." },
-      { property: "og:title", content: "Features — MangoGlobal" },
-      { property: "og:description", content: "Explore MangoGlobal's platform features for intelligent cross-border payments." },
+      { title: "Features — mangoglobal" },
+      { name: "description", content: "Explore mangoglobal's platform features for intelligent cross-border payments." },
+      { property: "og:title", content: "Features — mangoglobal" },
+      { property: "og:description", content: "Explore mangoglobal's platform features for intelligent cross-border payments." },
     ],
   }),
   component: FeaturesPage,

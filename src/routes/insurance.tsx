@@ -4,13 +4,13 @@ import { Shield, Sparkles, ArrowRight, Construction } from "lucide-react";
 export const Route = createFileRoute("/insurance")({
   head: () => ({
     meta: [
-      { title: "Insurance Comparison (Coming Soon) — MangoGlobal" },
+      { title: "Insurance Comparison (Coming Soon) — mangoglobal" },
       {
         name: "description",
         content:
-          "MangoGlobal is bringing its neutral AI decision engine to insurance: compare policies across providers with transparent pricing and coverage.",
+          "mangoglobal is bringing its neutral AI decision engine to insurance: compare policies across providers with transparent pricing and coverage.",
       },
-      { property: "og:title", content: "Insurance Comparison — MangoGlobal" },
+      { property: "og:title", content: "Insurance Comparison — mangoglobal" },
       {
         property: "og:description",
         content:
@@ -34,7 +34,7 @@ function InsurancePage() {
         </h1>
 
         <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-          The same neutral AI engine that powers MangoGlobal's FX comparison is being
+          The same neutral AI engine that powers mangoglobal's FX comparison is being
           extended to insurance. Compare policies across providers with transparent
           pricing, coverage scoring, and a recommendation tuned to your situation.
         </p>
@@ -56,7 +56,7 @@ function InsurancePage() {
         <div className="mt-10 rounded-2xl border border-border bg-card p-6">
           <h2 className="font-heading text-xl font-bold text-foreground">Why this matters</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            MangoGlobal is built as a multi-vertical decision platform. FX is the first
+            mangoglobal is built as a multi-vertical decision platform. FX is the first
             live vertical. Insurance is next, then SaaS, lending, and brokers — all on
             the same provider schema, sponsored-vs-organic ranking, and AI recommendation
             layer. See the{" "}

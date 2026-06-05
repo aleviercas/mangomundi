@@ -20,12 +20,12 @@ export const Route = createFileRoute("/blog/$slug")({
   head: ({ loaderData }) => {
     const post = loaderData;
     if (!post) {
-      return { meta: [{ title: "Post not found — MangoGlobal" }] };
+      return { meta: [{ title: "Post not found — mangoglobal" }] };
     }
-    const desc = post.excerpt ?? "Read this post on MangoGlobal.";
+    const desc = post.excerpt ?? "Read this post on mangoglobal.";
     return {
       meta: [
-        { title: `${post.title} — MangoGlobal` },
+        { title: `${post.title} — mangoglobal` },
         { name: "description", content: desc },
         { property: "og:title", content: post.title },
         { property: "og:description", content: desc },

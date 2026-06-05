@@ -2,13 +2,13 @@ import { Star, Quote } from "lucide-react";
 
 const testimonials = [
   {
-    quote: "MangoGlobal saved us $340K in FX costs in the first quarter alone. The transparency is unlike anything we've seen.",
+    quote: "mangoglobal saved us $340K in FX costs in the first quarter alone. The transparency is unlike anything we've seen.",
     author: "Sarah Chen",
     role: "CFO, TechVentures Inc.",
     rating: 5,
   },
   {
-    quote: "I send money to my family in Manila every month. MangoGlobal consistently beats Wise and Revolut on rates.",
+    quote: "I send money to my family in Manila every month. mangoglobal consistently beats Wise and Revolut on rates.",
     author: "Marco Reyes",
     role: "Healthcare Professional",
     rating: 5,

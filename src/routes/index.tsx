@@ -12,9 +12,9 @@ import { CTASection } from "@/sections/CTASection";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "MangoGlobal — The Global FX Decision Engine" },
+      { title: "mangoglobal — The Global FX Decision Engine" },
       { name: "description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments." },
-      { property: "og:title", content: "MangoGlobal — The Global FX Decision Engine" },
+      { property: "og:title", content: "mangoglobal — The Global FX Decision Engine" },
       { property: "og:description", content: "Neutral AI platform for smarter cross-border payments." },
     ],
   }),

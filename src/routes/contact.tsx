@@ -4,10 +4,10 @@ import { Mail, Phone, MessageCircle, MapPin } from "lucide-react";
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
-      { title: "Contact — MangoGlobal" },
-      { name: "description", content: "Get in touch with the MangoGlobal team for sales, support, or partnerships." },
-      { property: "og:title", content: "Contact — MangoGlobal" },
-      { property: "og:description", content: "Get in touch with the MangoGlobal team." },
+      { title: "Contact — mangoglobal" },
+      { name: "description", content: "Get in touch with the mangoglobal team for sales, support, or partnerships." },
+      { property: "og:title", content: "Contact — mangoglobal" },
+      { property: "og:description", content: "Get in touch with the mangoglobal team." },
     ],
   }),
   component: ContactPage,

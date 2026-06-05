@@ -50,7 +50,7 @@ const DICTS: Record<Lang, Dict> = {
     "fx.action": "Action",
     "fx.goto": "Go to",
     "fx.disclaimer":
-      "MangoGlobal is independent. Some links are affiliate links — we may earn a commission at no extra cost to you. Rates and fees are estimates; verify on the provider's site before sending.",
+      "mangoglobal is independent. Some links are affiliate links — we may earn a commission at no extra cost to you. Rates and fees are estimates; verify on the provider's site before sending.",
     "fx.chat.title": "Ask Mango about this recommendation",
     "fx.chat.placeholder": "Why this provider? What if I'm not in a rush?",
     "fx.chat.send": "Send",
@@ -112,7 +112,7 @@ const DICTS: Record<Lang, Dict> = {
     "fx.action": "Acción",
     "fx.goto": "Ir a",
     "fx.disclaimer":
-      "MangoGlobal es independiente. Algunos enlaces son de afiliados — podemos cobrar una comisión sin costo extra para vos. Las tasas y comisiones son estimadas; verificá en el sitio del proveedor antes de enviar.",
+      "mangoglobal es independiente. Algunos enlaces son de afiliados — podemos cobrar una comisión sin costo extra para vos. Las tasas y comisiones son estimadas; verificá en el sitio del proveedor antes de enviar.",
     "fx.chat.title": "Preguntale a Mango sobre esta recomendación",
     "fx.chat.placeholder": "¿Por qué este proveedor? ¿Y si no tengo apuro?",
     "fx.chat.send": "Enviar",
@@ -174,7 +174,7 @@ const DICTS: Record<Lang, Dict> = {
     "fx.action": "Ação",
     "fx.goto": "Ir para",
     "fx.disclaimer":
-      "MangoGlobal é independente. Alguns links são de afiliados — podemos receber comissão sem custo extra para você. Taxas são estimativas; verifique no site do provedor antes de enviar.",
+      "mangoglobal é independente. Alguns links são de afiliados — podemos receber comissão sem custo extra para você. Taxas são estimativas; verifique no site do provedor antes de enviar.",
     "fx.chat.title": "Pergunte à Mango sobre esta recomendação",
     "fx.chat.placeholder": "Por que este provedor? E se eu não tiver pressa?",
     "fx.chat.send": "Enviar",
