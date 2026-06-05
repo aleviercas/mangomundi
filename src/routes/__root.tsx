@@ -9,6 +9,8 @@ import {
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { I18nProvider } from "@/lib/i18n";
+import { ComingSoonProvider } from "@/components/ComingSoonModal";
+import { ChatWidget } from "@/components/ChatWidget";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -73,25 +75,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "MangoGlobal — The Global FX Decision Engine" },
+      { name: "theme-color", content: "#ffffff" },
+      { title: "mangoglobal — The Global FX Decision Engine" },
       { name: "description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments for retail remittances and corporate treasury." },
-      { name: "author", content: "MangoGlobal" },
-      { property: "og:title", content: "MangoGlobal — The Global FX Decision Engine" },
-      { property: "og:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments for retail remittances and corporate treasury." },
+      { name: "author", content: "mangoglobal" },
+      { property: "og:title", content: "mangoglobal — The Global FX Decision Engine" },
+      { property: "og:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@MangoGlobal" },
-      { name: "twitter:title", content: "MangoGlobal — The Global FX Decision Engine" },
-      { name: "twitter:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments for retail remittances and corporate treasury." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9c18c9f6-97f4-454f-bad0-79713052850e/id-preview-b75f71de--7dc2543e-201c-4adf-b044-0b020dfdced9.lovable.app-1779609212653.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/9c18c9f6-97f4-454f-bad0-79713052850e/id-preview-b75f71de--7dc2543e-201c-4adf-b044-0b020dfdced9.lovable.app-1779609212653.png" },
+      { name: "twitter:site", content: "@mangoglobal" },
+      { name: "twitter:title", content: "mangoglobal — The Global FX Decision Engine" },
+      { name: "twitter:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "icon", type: "image/png", sizes: "16x16", href: "/favicon-16x16.png" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+      { rel: "manifest", href: "/site.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&display=swap" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap" },
     ],
   }),
   shellComponent: RootShell,
@@ -120,13 +125,22 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <I18nProvider>
-        <div className="relative flex min-h-screen flex-col bg-background">
-          <Header />
-          <main className="flex-1 pt-16">
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
+        <ComingSoonProvider>
+          {/* Technical grid background — global, sutil */}
+          <div aria-hidden className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#F8FAFC]">
+            <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#0F172A_1px,transparent_1px),linear-gradient(to_bottom,#0F172A_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-amber-200/20 to-transparent blur-[120px]" />
+          </div>
+
+          <div className="relative z-10 flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1 pt-16">
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+          <ChatWidget />
+        </ComingSoonProvider>
       </I18nProvider>
     </QueryClientProvider>
   );
