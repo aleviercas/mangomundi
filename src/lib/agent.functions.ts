@@ -18,10 +18,62 @@ const HistoryInput = z.object({
 // Pattern: "500 GBP to ARS", "1,000 USD -> MXN", "1000 EUR → USD"
 const FX_PATTERN = /(\d[\d,\.]*)\s*([A-Za-z]{3})\s*(?:to|→|->|a|en)\s*([A-Za-z]{3})/i;
 
+// Loose amount detection for business heuristic (any number in the message)
+const AMOUNT_ANY = /(\d[\d,\.]{2,})/g;
+
+const BUSINESS_KEYWORDS =
+  /\b(finanzas?|equipo|empresa|empresarial|treasury|tesorer[ií]a|corporate|corporativ\w*|volumen|enterprise|business|mesa\s+de\s+cambio|n[oó]mina|payroll|b2b)\b/i;
+
+// Rough USD-equivalents for the business threshold
+const USD_EQUIV: Record<string, number> = {
+  USD: 1, EUR: 1.08, GBP: 1.27, CHF: 1.12, CAD: 0.73, AUD: 0.66,
+  MXN: 0.058, BRL: 0.2, ARS: 0.001, CLP: 0.001, COP: 0.00025, PEN: 0.27,
+  JPY: 0.0064,
+};
+
+function toUsd(amount: number, ccy?: string): number {
+  if (!ccy) return amount;
+  const rate = USD_EQUIV[ccy.toUpperCase()];
+  return rate ? amount * rate : amount;
+}
+
+function detectBusiness(message: string, amount?: number, from?: string): boolean {
+  if (BUSINESS_KEYWORDS.test(message)) return true;
+  if (amount && from && toUsd(amount, from) >= 10000) return true;
+  // Fallback: any large standalone number in message
+  if (!amount) {
+    const matches = message.match(AMOUNT_ANY) || [];
+    for (const m of matches) {
+      const n = parseFloat(m.replace(/,/g, ""));
+      if (!isNaN(n) && n >= 10000) return true;
+    }
+  }
+  return false;
+}
+
 interface RateRow {
   provider_slug: string;
   rate: number;
   fee: number;
+}
+
+function businessReply(amount: number | null, from: string | null, to: string | null): string {
+  const fmt = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const pair = from && to ? ` para **${from} → ${to}**` : "";
+  const volumeLine =
+    amount && from
+      ? `Sobre un volumen de **${fmt(amount)} ${from}**, eso representa aproximadamente **${fmt(amount * 0.008)} ${from}** que se quedan en spreads ocultos de la banca tradicional.`
+      : `En operaciones corporativas, los spreads ocultos de la banca tradicional erosionan en promedio **~0.8%** vs. mid-market.`;
+
+  return [
+    `Detectamos una consulta de **perfil corporativo / treasury**${pair}.`,
+    "",
+    volumeLine,
+    "",
+    `Con **mangoglobal** optimizamos tu mesa de cambio a **tasa interbancaria pura**, ejecución multi-proveedor y reporting consolidado — eliminando el costo invisible del FX.`,
+    "",
+    `Te abrimos acceso prioritario al **Copilot B2B** en la siguiente ventana →`,
+  ].join("\n");
 }
 
 async function fxMarkdown(
@@ -125,17 +177,28 @@ export const chatTurn = createServerFn({ method: "POST" })
 
     // Try regex FX match first
     let reply = "";
+    let segment: "retail" | "business" = "retail";
     const match = data.message.match(FX_PATTERN);
+
     if (match) {
       const amount = parseFloat(match[1].replace(/,/g, ""));
       const from = match[2].toUpperCase();
       const to = match[3].toUpperCase();
-      const { data: rates } = await supabaseAdmin
-        .from("fx_rates")
-        .select("provider_slug, rate, fee")
-        .eq("from_currency", from)
-        .eq("to_currency", to);
-      reply = await fxMarkdown(amount, from, to, (rates as RateRow[]) || []);
+
+      if (detectBusiness(data.message, amount, from)) {
+        segment = "business";
+        reply = businessReply(amount, from, to);
+      } else {
+        const { data: rates } = await supabaseAdmin
+          .from("fx_rates")
+          .select("provider_slug, rate, fee")
+          .eq("from_currency", from)
+          .eq("to_currency", to);
+        reply = await fxMarkdown(amount, from, to, (rates as RateRow[]) || []);
+      }
+    } else if (detectBusiness(data.message)) {
+      segment = "business";
+      reply = businessReply(null, null, null);
     } else {
       // Recent history (last 8 turns)
       const { data: history } = await supabaseAdmin
@@ -157,7 +220,7 @@ export const chatTurn = createServerFn({ method: "POST" })
       content: reply,
     });
 
-    return { reply };
+    return { reply, segment };
   });
 
 export const getChatHistory = createServerFn({ method: "POST" })

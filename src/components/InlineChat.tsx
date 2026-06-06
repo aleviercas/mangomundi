@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { Send, Loader2, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { chatTurn, getChatHistory } from "@/lib/agent.functions";
 import { useComingSoon } from "@/components/ComingSoonModal";
@@ -22,8 +22,14 @@ function getSessionId(): string {
   return id;
 }
 
-export function ChatWidget() {
-  const [open, setOpen] = useState(false);
+const QUICK_PROMPTS = [
+  "500 GBP to ARS",
+  "1000 USD to MXN",
+  "Treasury para empresa 50,000 EUR",
+  "¿Cómo elijo el mejor proveedor?",
+];
+
+export function InlineChat() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -38,7 +44,7 @@ export function ChatWidget() {
   }, []);
 
   useEffect(() => {
-    if (!open || !sessionId || messages.length > 0) return;
+    if (!sessionId || messages.length > 0) return;
     history({ data: { sessionId } })
       .then((r) => {
         if (r.messages.length === 0) {
@@ -46,7 +52,7 @@ export function ChatWidget() {
             {
               role: "assistant",
               content:
-                "Hola 👋 Soy el copiloto FX de **mangoglobal**. Probá:\n\n- `500 GBP to ARS`\n- ¿Cuál es el mejor proveedor para enviar USD a México?\n- ¿Cómo funciona el comparador?",
+                "Hola 👋 Soy el **copiloto FX** de **mangoglobal**. Probá una cotización (`500 GBP to ARS`) o contame el caso de tu empresa.",
             },
           ]);
         } else {
@@ -55,19 +61,20 @@ export function ChatWidget() {
       })
       .catch(() => {
         setMessages([
-          { role: "assistant", content: "Hola 👋 ¿En qué te ayudo con tu próxima operación FX?" },
+          {
+            role: "assistant",
+            content: "Hola 👋 ¿En qué te ayudo con tu próxima operación FX?",
+          },
         ]);
       });
-  }, [open, sessionId, history, messages.length]);
+  }, [sessionId, history, messages.length]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages, open]);
+  }, [messages]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text || sending) return;
+  const submitText = async (text: string) => {
+    if (!text || sending || !sessionId) return;
     setInput("");
     setMessages((m) => [...m, { role: "user", content: text }]);
     setSending(true);
@@ -78,7 +85,7 @@ export function ChatWidget() {
         setTimeout(() => openEnterpriseModal("chat_copilot_business"), 700);
       }
     } catch (err) {
-      console.error("chat error", err);
+      console.error("inline chat error", err);
       setMessages((m) => [
         ...m,
         { role: "assistant", content: "No pude procesar eso ahora. Probá de nuevo." },
@@ -88,55 +95,58 @@ export function ChatWidget() {
     }
   };
 
-  return (
-    <>
-      {/* Floating launcher */}
-      <button
-        onClick={() => setOpen((o) => !o)}
-        aria-label="Abrir copiloto FX"
-        className="fixed bottom-5 right-5 z-[90] flex h-12 w-12 items-center justify-center rounded-full bg-slate-950 text-white shadow-lg shadow-slate-900/20 transition-transform hover:scale-105"
-      >
-        {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
-      </button>
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    submitText(input.trim());
+  };
 
-      {open && (
-        <div className="fixed bottom-20 right-5 z-[90] flex h-[560px] max-h-[80vh] w-[380px] max-w-[calc(100vw-2.5rem)] flex-col rounded-xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10">
+  return (
+    <section className="relative pb-24">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="mb-6 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-medium tracking-widest text-slate-700 uppercase shadow-sm">
+            <Sparkles className="h-3 w-3 text-amber-500" />
+            Talk to the FX Agent
+          </div>
+          <h2 className="mt-4 font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
+            Pedile una cotización. Sin formularios.
+          </h2>
+          <p className="mt-2 text-sm text-slate-500">
+            El copiloto compara proveedores en tiempo real y deriva treasury corporativo automáticamente.
+          </p>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-            <div>
-              <div className="flex items-center gap-2 text-sm font-semibold text-slate-950">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60 animate-ping" />
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </span>
-                Copiloto FX
-              </div>
-              <p className="text-[11px] text-slate-400">
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-950">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              </span>
+              Copiloto FX
+              <span className="ml-1 text-[10px] font-medium uppercase tracking-widest text-slate-400">
                 <span className="font-black lowercase">mango</span>
                 <span className="font-light lowercase">global</span> · agentic AI
-              </p>
+              </span>
             </div>
-            <button
-              onClick={() => setOpen(false)}
-              className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-              aria-label="Cerrar"
-            >
-              <X className="h-4 w-4" />
-            </button>
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
+          <div
+            ref={scrollRef}
+            className="h-[380px] overflow-y-auto px-4 py-4 space-y-3 bg-slate-50/40"
+          >
             {messages.map((m, i) => (
               <div
                 key={i}
                 className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
+                  className={`max-w-[85%] rounded-lg px-3.5 py-2.5 text-sm ${
                     m.role === "user"
                       ? "bg-slate-950 text-white"
-                      : "bg-slate-50 text-slate-800 border border-slate-100"
+                      : "bg-white text-slate-800 border border-slate-100"
                   }`}
                 >
                   {m.role === "assistant" ? (
@@ -151,36 +161,52 @@ export function ChatWidget() {
             ))}
             {sending && (
               <div className="flex justify-start">
-                <div className="rounded-lg border border-slate-100 bg-slate-50 px-3 py-2 text-slate-500">
+                <div className="rounded-lg border border-slate-100 bg-white px-3 py-2 text-slate-500">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 </div>
               </div>
             )}
           </div>
 
+          {/* Quick prompts */}
+          <div className="flex flex-wrap gap-1.5 border-t border-slate-100 px-4 py-2.5">
+            {QUICK_PROMPTS.map((p) => (
+              <button
+                key={p}
+                type="button"
+                disabled={sending}
+                onClick={() => submitText(p)}
+                className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-slate-900 hover:text-slate-950 transition-colors disabled:opacity-50"
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+
           {/* Input */}
           <form
             onSubmit={handleSubmit}
-            className="flex items-center gap-2 border-t border-slate-100 px-3 py-2.5"
+            className="flex items-center gap-2 border-t border-slate-100 px-3 py-3"
           >
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Ej: 500 GBP to ARS"
-              className="flex-1 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none transition-colors"
+              placeholder="Ej: 500 GBP to ARS · o describí tu caso corporativo"
+              className="flex-1 rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none transition-colors"
             />
             <button
               type="submit"
               disabled={sending || !input.trim()}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-950 text-white transition-colors hover:bg-slate-800 disabled:opacity-40"
+              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:opacity-40"
               aria-label="Enviar"
             >
               <Send className="h-4 w-4" />
+              <span className="hidden sm:inline">Enviar</span>
             </button>
           </form>
         </div>
-      )}
-    </>
+      </div>
+    </section>
   );
 }
