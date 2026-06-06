@@ -31,6 +31,7 @@ export function ChatWidget() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const send = useServerFn(chatTurn);
   const history = useServerFn(getChatHistory);
+  const { open: openEnterpriseModal } = useComingSoon();
 
   useEffect(() => {
     setSessionId(getSessionId());
