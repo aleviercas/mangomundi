@@ -1,109 +1,127 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, TrendingUp, Shield, Zap, Mail, CheckCircle2, Loader2 } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
-import { BrandLogo } from "@/components/BrandLogo";
-import { supabase } from "@/integrations/supabase/client";
+
+function HexCoin({
+  symbol,
+  className = "",
+  size = 96,
+}: {
+  symbol: string;
+  className?: string;
+  size?: number;
+}) {
+  return (
+    <div
+      className={`relative flex items-center justify-center ${className}`}
+      style={{ width: size, height: size }}
+    >
+      <svg
+        viewBox="0 0 100 100"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <polygon
+          points="50,4 92,27 92,73 50,96 8,73 8,27"
+          fill="white"
+          stroke="#0F172A"
+          strokeWidth="1.25"
+        />
+        <polygon
+          points="50,12 85,31 85,69 50,88 15,69 15,31"
+          fill="none"
+          stroke="#0F172A"
+          strokeWidth="0.5"
+          opacity="0.25"
+        />
+      </svg>
+      <span className="relative font-heading font-extrabold text-slate-950 select-none" style={{ fontSize: size * 0.42 }}>
+        {symbol}
+      </span>
+    </div>
+  );
+}
+
+function CurrencyConstellation() {
+  return (
+    <div className="relative mx-auto aspect-square w-full max-w-[420px]">
+      {/* Connecting lines */}
+      <svg
+        viewBox="0 0 400 400"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden
+      >
+        <defs>
+          <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#0F172A" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#0F172A" stopOpacity="0.05" />
+          </linearGradient>
+        </defs>
+        <line x1="110" y1="90" x2="290" y2="120" stroke="url(#lineGrad)" strokeWidth="1" />
+        <line x1="290" y1="120" x2="310" y2="300" stroke="url(#lineGrad)" strokeWidth="1" />
+        <line x1="310" y1="300" x2="100" y2="280" stroke="url(#lineGrad)" strokeWidth="1" />
+        <line x1="100" y1="280" x2="110" y2="90" stroke="url(#lineGrad)" strokeWidth="1" />
+        <line x1="110" y1="90" x2="310" y2="300" stroke="url(#lineGrad)" strokeWidth="0.5" strokeDasharray="3 4" />
+        <line x1="290" y1="120" x2="100" y2="280" stroke="url(#lineGrad)" strokeWidth="0.5" strokeDasharray="3 4" />
+        {/* Subtle dots */}
+        {[
+          [60, 60], [340, 70], [360, 250], [50, 340], [200, 30], [200, 370],
+        ].map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="1.5" fill="#0F172A" opacity="0.25" />
+        ))}
+      </svg>
+
+      {/* Hex coins */}
+      <div className="absolute" style={{ top: "8%", left: "12%" }}>
+        <HexCoin symbol="£" size={104} className="shadow-sm shadow-slate-200 rounded-2xl" />
+      </div>
+      <div className="absolute" style={{ top: "14%", right: "8%" }}>
+        <HexCoin symbol="€" size={92} />
+      </div>
+      <div className="absolute" style={{ bottom: "10%", right: "12%" }}>
+        <HexCoin symbol="$" size={112} />
+      </div>
+      <div className="absolute" style={{ bottom: "12%", left: "10%" }}>
+        <HexCoin symbol="¥" size={88} />
+      </div>
+
+      {/* Center mark */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm">
+          <span className="font-heading text-xs font-black lowercase text-slate-950">
+            mg
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function HeroSection() {
   const { t } = useI18n();
 
-  const [loadingProvider, setLoadingProvider] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [alertSubmitted, setAlertSubmitted] = useState(false);
-  const [submittingAlert, setSubmittingAlert] = useState(false);
-
-  const handleProviderClick = async (providerName: string, providerSlug: string) => {
-    if (loadingProvider) return;
-    setLoadingProvider(providerName);
-
-    const affiliateLinks: Record<string, string> = {
-      "Wise": "https://wise.evyy.net/c/PLACEHOLDER/123456/8003",
-      "Revolut": "https://revolut.pxf.io/c/PLACEHOLDER/111222/8004",
-      "Western Union": "https://westernunion.pxf.io/c/PLACEHOLDER/333444/8005",
-      "PayPal Xoom": "https://xoom.pxf.io/c/PLACEHOLDER/555666/8006",
-    };
-    const targetUrl = affiliateLinks[providerName] || "https://wise.com";
-
-    let trackingCompleted = false;
-    const fallbackTimeout = setTimeout(() => {
-      if (!trackingCompleted) {
-        trackingCompleted = true;
-        window.open(targetUrl, "_blank", "noopener,noreferrer");
-        setLoadingProvider(null);
-      }
-    }, 1200);
-
-    try {
-      const { data, error } = await supabase
-        .from("affiliate_clicks")
-        .insert({
-          provider_slug: providerSlug,
-          from_currency: "GBP",
-          to_currency: "ARS",
-          amount: 1000,
-          segment: "retail",
-          referrer: typeof window !== "undefined" ? window.location.href : null,
-        })
-        .select("id")
-        .single();
-      if (error) throw error;
-
-      if (!trackingCompleted) {
-        clearTimeout(fallbackTimeout);
-        trackingCompleted = true;
-        window.open(`${targetUrl}?subId1=${data.id}`, "_blank", "noopener,noreferrer");
-        setLoadingProvider(null);
-      }
-    } catch (err) {
-      console.error("tracking error", err);
-      if (!trackingCompleted) {
-        clearTimeout(fallbackTimeout);
-        trackingCompleted = true;
-        window.open(targetUrl, "_blank", "noopener,noreferrer");
-        setLoadingProvider(null);
-      }
-    }
-  };
-
-  const handleRateAlertSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || submittingAlert) return;
-    setSubmittingAlert(true);
-    try {
-      const { error } = await supabase.from("leads").insert({
-        name: email.split("@")[0] || "alert",
-        email,
-        source: "rate-alert-gbp-ars",
-        message: "Rate alert subscription: GBP → ARS",
-      });
-      if (error) throw error;
-      setAlertSubmitted(true);
-      setEmail("");
-    } catch (err) {
-      console.error("rate alert error", err);
-    } finally {
-      setSubmittingAlert(false);
-    }
-  };
-
   return (
-    <section className="relative pt-16 pb-24 lg:pt-20 lg:pb-32">
+    <section className="relative pt-16 pb-16 lg:pt-20 lg:pb-20">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-2 lg:gap-12 items-center">
-          {/* Left */}
-          <div className="max-w-2xl">
+        <div className="grid gap-10 lg:grid-cols-[1.1fr_1.4fr] lg:gap-16 items-center">
+          {/* Left — Currency constellation */}
+          <div className="order-2 lg:order-1">
+            <CurrencyConstellation />
+          </div>
+
+          {/* Right — Headline */}
+          <div className="order-1 lg:order-2 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-[11px] font-medium tracking-widest text-white uppercase mb-6 shadow-sm">
               ⚡ Agentic AI for Global FX <span className="text-slate-500 px-1">|</span>
               <span className="text-white font-black lowercase">mango</span>
               <span className="text-slate-300 font-light lowercase">global</span>
             </div>
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-950 leading-[1.1]">
+            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-950 leading-[1.05]">
               The Global FX Decision Engine
             </h1>
             <p className="mt-5 text-base sm:text-lg text-slate-500 max-w-2xl font-normal leading-relaxed">
-              Neutral intelligence that turns fragmented cross-border payments into{" "}
-              <span className="text-slate-950 font-semibold">one optimal decision</span> — from retail remittances to corporate treasury.
+              Neutral intelligence for global payments —{" "}
+              <span className="text-slate-950 font-semibold">one optimal decision</span> from retail remittances to corporate treasury.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -119,7 +137,7 @@ export function HeroSection() {
                 {t("cta.talkSales")}
               </Link>
             </div>
-            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               {[
                 { Icon: TrendingUp, label: t("hero.trust.1") },
                 { Icon: Shield, label: t("hero.trust.2") },
@@ -130,118 +148,6 @@ export function HeroSection() {
                   <span>{label}</span>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* Right: comparison widget */}
-          <div className="relative">
-            <div className="relative rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm shadow-slate-100">
-              <div className="mb-3 flex items-center justify-between border-b border-border/60 pb-3">
-                <div className="flex items-center gap-2">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60 animate-ping" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="text-[11px] font-semibold uppercase tracking-wider text-foreground">
-                    {t("hero.mini.live")}
-                  </span>
-                </div>
-                <span className="text-[10px] font-medium text-muted-foreground tabular-nums">
-                  1,000 GBP → ARS
-                </span>
-              </div>
-
-              <div className="space-y-1.5">
-                {[
-                  { name: "Wise", slug: "wise", domain: "wise.com", received: "1,242,180", delta: t("hero.mini.best"), best: true },
-                  { name: "Revolut", slug: "revolut", domain: "revolut.com", received: "1,238,940", delta: "-0.26%", best: false },
-                  { name: "Western Union", slug: "western-union", domain: "westernunion.com", received: "1,219,500", delta: "-1.83%", best: false },
-                  { name: "PayPal Xoom", slug: "xoom", domain: "xoom.com", received: "1,201,330", delta: "-3.28%", best: false },
-                ].map((p) => {
-                  const isThisLoading = loadingProvider === p.name;
-                  return (
-                    <button
-                      key={p.name}
-                      disabled={loadingProvider !== null}
-                      onClick={() => handleProviderClick(p.name, p.slug)}
-                      className={`group w-full text-left flex items-center justify-between rounded-md border px-3 py-2.5 transition-colors outline-none ${
-                        isThisLoading
-                          ? "border-amber-500 bg-amber-50"
-                          : p.best
-                            ? "border-amber-300 bg-amber-50/60 hover:border-amber-400"
-                            : "border-slate-200/70 bg-white hover:border-slate-300 hover:bg-slate-50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <BrandLogo name={p.name} domain={p.domain} size={24} />
-                        <div>
-                          <div className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                            {p.name}
-                            {isThisLoading && <Loader2 className="h-3 w-3 animate-spin text-primary" />}
-                          </div>
-                          <div className={`text-[10px] tabular-nums ${p.best ? "text-primary font-semibold" : "text-muted-foreground"}`}>
-                            {p.delta}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-sm font-semibold tabular-nums text-foreground">{p.received}</div>
-                        <div className="text-[10px] text-muted-foreground tracking-wider">ARS</div>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <Link
-                to="/compare"
-                className="mt-3 flex items-center justify-center gap-1.5 rounded-md bg-[#0F172A] py-2.5 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b]"
-              >
-                {t("hero.mini.cta")} <ArrowRight className="h-3 w-3" />
-              </Link>
-
-              {/* Divider */}
-              <div className="relative my-4">
-                <div className="absolute inset-0 flex items-center" aria-hidden>
-                  <div className="w-full border-t border-slate-200/60" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-white px-2 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                    {t("hero.alerts.title")}
-                  </span>
-                </div>
-              </div>
-
-              {/* Lead capture */}
-              <div className="rounded-md border border-slate-200/60 bg-slate-50/60 p-3">
-                {alertSubmitted ? (
-                  <div className="flex items-center gap-2 text-xs font-medium text-emerald-600 py-1">
-                    <CheckCircle2 className="h-4 w-4 shrink-0" />
-                    <span>{t("hero.alerts.success")}</span>
-                  </div>
-                ) : (
-                  <form onSubmit={handleRateAlertSubmit} className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Mail className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                      <input
-                        type="email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t("hero.alerts.placeholder")}
-                        className="w-full rounded-md border border-slate-200 bg-white pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={submittingAlert}
-                      className="rounded-md bg-[#0F172A] px-3 text-xs font-semibold text-white transition-colors hover:bg-[#1e293b] disabled:opacity-50 whitespace-nowrap"
-                    >
-                      {submittingAlert ? t("hero.alerts.saving") : t("hero.alerts.button")}
-                    </button>
-                  </form>
-                )}
-              </div>
             </div>
           </div>
         </div>
