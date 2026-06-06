@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { chatTurn, getChatHistory } from "@/lib/agent.functions";
+import { useComingSoon } from "@/components/ComingSoonModal";
 
 interface Msg {
   role: "user" | "assistant";
