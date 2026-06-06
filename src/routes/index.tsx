@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HeroSection } from "@/sections/HeroSection";
+import { InlineChat } from "@/components/InlineChat";
 import { PlatformBand } from "@/sections/PlatformBand";
 import { StatsSection } from "@/sections/StatsSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
