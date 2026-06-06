@@ -177,17 +177,28 @@ export const chatTurn = createServerFn({ method: "POST" })
 
     // Try regex FX match first
     let reply = "";
+    let segment: "retail" | "business" = "retail";
     const match = data.message.match(FX_PATTERN);
+
     if (match) {
       const amount = parseFloat(match[1].replace(/,/g, ""));
       const from = match[2].toUpperCase();
       const to = match[3].toUpperCase();
-      const { data: rates } = await supabaseAdmin
-        .from("fx_rates")
-        .select("provider_slug, rate, fee")
-        .eq("from_currency", from)
-        .eq("to_currency", to);
-      reply = await fxMarkdown(amount, from, to, (rates as RateRow[]) || []);
+
+      if (detectBusiness(data.message, amount, from)) {
+        segment = "business";
+        reply = businessReply(amount, from, to);
+      } else {
+        const { data: rates } = await supabaseAdmin
+          .from("fx_rates")
+          .select("provider_slug, rate, fee")
+          .eq("from_currency", from)
+          .eq("to_currency", to);
+        reply = await fxMarkdown(amount, from, to, (rates as RateRow[]) || []);
+      }
+    } else if (detectBusiness(data.message)) {
+      segment = "business";
+      reply = businessReply(null, null, null);
     } else {
       // Recent history (last 8 turns)
       const { data: history } = await supabaseAdmin
@@ -209,7 +220,7 @@ export const chatTurn = createServerFn({ method: "POST" })
       content: reply,
     });
 
-    return { reply };
+    return { reply, segment };
   });
 
 export const getChatHistory = createServerFn({ method: "POST" })
