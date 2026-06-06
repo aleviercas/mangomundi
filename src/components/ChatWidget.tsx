@@ -72,8 +72,11 @@ export function ChatWidget() {
     setMessages((m) => [...m, { role: "user", content: text }]);
     setSending(true);
     try {
-      const { reply } = await send({ data: { sessionId, message: text } });
+      const { reply, segment } = await send({ data: { sessionId, message: text } });
       setMessages((m) => [...m, { role: "assistant", content: reply }]);
+      if (segment === "business") {
+        setTimeout(() => openEnterpriseModal("chat_copilot_business"), 700);
+      }
     } catch (err) {
       console.error("chat error", err);
       setMessages((m) => [
