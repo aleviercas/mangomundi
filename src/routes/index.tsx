@@ -26,6 +26,7 @@ function Index() {
   return (
     <>
       <HeroSection />
+      <InlineChat />
       <PlatformBand />
       <StatsSection />
       <HowItWorksSection />
