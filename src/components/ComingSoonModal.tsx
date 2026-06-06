@@ -65,6 +65,14 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const isChatBusiness = source === "chat_copilot_business";
+  const title = isChatBusiness
+    ? "Copilot B2B — Acceso prioritario"
+    : "Enterprise Beta — Acceso prioritario";
+  const description = isChatBusiness
+    ? "Detectamos que operas con volúmenes corporativos. Deja tu email institucional para habilitar tu Copilot B2B con prioridad."
+    : "Esta automatización está en fase beta cerrada. Dejá tu email corporativo y te asignamos un slot.";
+
   return (
     <ComingSoonContext.Provider value={{ open }}>
       {children}
@@ -75,10 +83,10 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
               <Sparkles className="h-5 w-5 text-amber-300" />
             </div>
             <DialogTitle className="text-center text-slate-950 font-semibold">
-              Enterprise Beta — Acceso prioritario
+              {title}
             </DialogTitle>
             <DialogDescription className="text-center text-slate-500">
-              Esta automatización está en fase beta cerrada. Dejá tu email corporativo y te asignamos un slot.
+              {description}
             </DialogDescription>
           </DialogHeader>
 
