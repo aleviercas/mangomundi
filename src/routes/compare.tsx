@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ArrowRight, Clock, Loader2, ExternalLink, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp } from "lucide-react";
+import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle } from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -13,6 +13,32 @@ import {
 import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
 import { BrandLogo } from "@/components/BrandLogo";
+import { PreferredRateModal } from "@/components/PreferredRateModal";
+
+const COUNTRIES: { code: string; name: string; flag: string }[] = [
+  { code: "ES", name: "España / Spain", flag: "🇪🇸" },
+  { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
+  { code: "US", name: "United States", flag: "🇺🇸" },
+  { code: "AR", name: "Argentina", flag: "🇦🇷" },
+  { code: "MX", name: "México", flag: "🇲🇽" },
+  { code: "BR", name: "Brasil", flag: "🇧🇷" },
+  { code: "CO", name: "Colombia", flag: "🇨🇴" },
+  { code: "CL", name: "Chile", flag: "🇨🇱" },
+  { code: "PE", name: "Perú", flag: "🇵🇪" },
+  { code: "UY", name: "Uruguay", flag: "🇺🇾" },
+  { code: "PT", name: "Portugal", flag: "🇵🇹" },
+  { code: "FR", name: "France", flag: "🇫🇷" },
+  { code: "DE", name: "Deutschland", flag: "🇩🇪" },
+  { code: "IT", name: "Italia", flag: "🇮🇹" },
+  { code: "NL", name: "Nederland", flag: "🇳🇱" },
+  { code: "IE", name: "Ireland", flag: "🇮🇪" },
+  { code: "CH", name: "Schweiz", flag: "🇨🇭" },
+  { code: "CA", name: "Canada", flag: "🇨🇦" },
+  { code: "AU", name: "Australia", flag: "🇦🇺" },
+  { code: "AE", name: "UAE", flag: "🇦🇪" },
+  { code: "IN", name: "India", flag: "🇮🇳" },
+  { code: "PH", name: "Philippines", flag: "🇵🇭" },
+];
 
 export const Route = createFileRoute("/compare")({
   head: () => ({
@@ -43,6 +69,8 @@ function FxToolPage() {
   const [amount, setAmount] = useState<number>(1000);
   const [from, setFrom] = useState("GBP");
   const [to, setTo] = useState("ARS");
+  const [sendingCountry, setSendingCountry] = useState("GB");
+  const [receivingCountry, setReceivingCountry] = useState("AR");
   const [segment, setSegment] = useState<Segment>("retail");
   const [urgency, setUrgency] = useState<Urgency>("standard");
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -52,13 +80,29 @@ function FxToolPage() {
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
+  // Preferred Rate modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCtx, setModalCtx] = useState<{
+    amount: number;
+    fromCurrency: string;
+    toCurrency: string;
+    sendingCountry?: string;
+    receivingCountry?: string;
+    providerSlug?: string;
+    affiliateBaseUrl?: string;
+  } | null>(null);
+
+  const isLocalFx = sendingCountry === receivingCountry && from !== to;
+
+
+
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
   const aiFn = useServerFn(aiRecommend);
   const chatFn = useServerFn(chatAboutRecommendation);
 
   const compareMut = useMutation({
-    mutationFn: () => compareFn({ data: { amount, from, to, segment } }),
+    mutationFn: () => compareFn({ data: { amount, from, to, segment, sendingCountry, receivingCountry } }),
     onSuccess: async (data) => {
       setResult(data);
       setAiText("");
@@ -126,7 +170,7 @@ function FxToolPage() {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
 
-  const handleAffiliateClick = (slug: string, url: string) => {
+  const openPreferredRate = (slug: string, url: string) => {
     trackFn({
       data: {
         provider_slug: slug,
@@ -137,7 +181,16 @@ function FxToolPage() {
         referrer: typeof window !== "undefined" ? window.location.href : undefined,
       },
     }).catch(() => {});
-    if (typeof window !== "undefined") window.open(url, "_blank", "noopener,noreferrer");
+    setModalCtx({
+      amount,
+      fromCurrency: from,
+      toCurrency: to,
+      sendingCountry,
+      receivingCountry,
+      providerSlug: slug,
+      affiliateBaseUrl: url,
+    });
+    setModalOpen(true);
   };
 
   const sendChat = (msg: string) => {
@@ -180,6 +233,12 @@ function FxToolPage() {
             </Field>
             <Field label={t("fx.field.to")}>
               <CurrencySelect value={to} onChange={setTo} />
+            </Field>
+            <Field label={t("rfq.fieldOrigin")}>
+              <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
+            </Field>
+            <Field label={t("rfq.fieldDest")}>
+              <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
             </Field>
             <Field label={t("fx.field.segment")}>
               <div className="flex h-10 items-center gap-1 rounded-lg border border-border bg-background p-1">
@@ -324,21 +383,42 @@ function FxToolPage() {
           </div>
         )}
 
+        {isLocalFx && (
+          <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+            <div>
+              <div className="font-semibold text-foreground">
+                Local FX detected · {sendingCountry} → {receivingCountry}
+              </div>
+              <div className="mt-0.5 text-xs text-muted-foreground">
+                Showing multi-currency domestic accounts only — international wire fees and SWIFT
+                spreads are excluded from this view.
+              </div>
+            </div>
+          </div>
+        )}
+
         {result && (
           <ResultsBlock
             result={result}
             amount={amount}
-            handleAffiliateClick={handleAffiliateClick}
+            handleAffiliateClick={openPreferredRate}
             tDisclaimer={t("fx.disclaimer")}
             tRecipient={t("fx.recipient")}
             tTotalFee={t("fx.totalFee")}
             tSpeed={t("fx.speed")}
-            tGoTo={t("fx.goto")}
+            tCta={t("retail.cta")}
             tMidmarket={t("fx.midmarket")}
             tUpdated={t("fx.updated")}
           />
         )}
       </div>
+
+      <PreferredRateModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        context={modalCtx}
+      />
     </div>
   );
 }
@@ -352,7 +432,7 @@ function ResultsBlock({
   tRecipient,
   tTotalFee,
   tSpeed,
-  tGoTo,
+  tCta,
   tMidmarket,
   tUpdated,
 }: {
@@ -363,7 +443,7 @@ function ResultsBlock({
   tRecipient: string;
   tTotalFee: string;
   tSpeed: string;
-  tGoTo: string;
+  tCta: string;
   tMidmarket: string;
   tUpdated: string;
 }) {
@@ -496,7 +576,7 @@ function ResultsBlock({
               tRecipient={tRecipient}
               tTotalFee={tTotalFee}
               tSpeed={tSpeed}
-              tGoTo={tGoTo}
+              tCta={tCta}
             />
           ))}
         </div>
@@ -523,7 +603,7 @@ function ResultsBlock({
             tRecipient={tRecipient}
             tTotalFee={tTotalFee}
             tSpeed={tSpeed}
-            tGoTo={tGoTo}
+            tCta={tCta}
           />
         ))}
         {organic.length === 0 && (
@@ -548,7 +628,7 @@ function ProviderRow({
   tRecipient,
   tTotalFee,
   tSpeed,
-  tGoTo,
+  tCta,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -559,7 +639,7 @@ function ProviderRow({
   tRecipient: string;
   tTotalFee: string;
   tSpeed: string;
-  tGoTo: string;
+  tCta: string;
 }) {
   const deliveryLabel =
     row.delivery_minutes != null
@@ -646,10 +726,10 @@ function ProviderRow({
       <div className="col-span-2 sm:text-right">
         <button
           onClick={onClick}
-          className="inline-flex items-center gap-1 rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background transition hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3 py-2 text-[11px] font-semibold leading-tight text-white transition hover:bg-slate-800"
         >
-          {tGoTo} {row.name.split(" ")[0]}
-          <ExternalLink className="h-3 w-3" />
+          <Sparkle className="h-3 w-3" />
+          <span className="text-left">{tCta}</span>
         </button>
       </div>
     </div>
@@ -671,6 +751,18 @@ function CurrencySelect({ value, onChange }: { value: string; onChange: (v: stri
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
       {CURRENCIES.map((c) => (
+        <option key={c.code} value={c.code}>
+          {c.flag} {c.code} — {c.name}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function CountrySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
+      {COUNTRIES.map((c) => (
         <option key={c.code} value={c.code}>
           {c.flag} {c.code} — {c.name}
         </option>

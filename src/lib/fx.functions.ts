@@ -135,10 +135,12 @@ function resolveTier(p: Provider, amount: number): {
 
 // ---------- compareProviders ----------
 const compareSchema = z.object({
-  amount: z.number().min(1).max(10_000_000),
+  amount: z.number().min(1).max(1e15),
   from: z.string().length(3).regex(/^[A-Z]{3}$/),
   to: z.string().length(3).regex(/^[A-Z]{3}$/),
   segment: z.enum(["retail", "business"]).default("retail"),
+  sendingCountry: z.string().min(2).max(64).optional(),
+  receivingCountry: z.string().min(2).max(64).optional(),
 });
 
 export const compareProviders = createServerFn({ method: "POST" })

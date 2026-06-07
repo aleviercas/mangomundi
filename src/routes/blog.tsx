@@ -2,11 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { listBlogPosts } from "@/lib/blog.functions";
+import { useI18n } from "@/lib/i18n";
 
-const postsQuery = queryOptions({
-  queryKey: ["blog", "list"],
-  queryFn: () => listBlogPosts(),
-});
+const postsQuery = (locale: string) =>
+  queryOptions({
+    queryKey: ["blog", "list", locale],
+    queryFn: () => listBlogPosts({ data: { locale } }),
+  });
 
 export const Route = createFileRoute("/blog")({
   head: () => ({
@@ -24,12 +26,13 @@ export const Route = createFileRoute("/blog")({
       },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery),
+  loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery("en")),
   component: BlogIndex,
 });
 
 function BlogIndex() {
-  const { data: posts } = useSuspenseQuery(postsQuery);
+  const { lang } = useI18n();
+  const { data: posts } = useSuspenseQuery(postsQuery(lang));
 
   return (
     <div className="bg-background">
