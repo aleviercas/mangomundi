@@ -12,12 +12,11 @@ export function Header() {
 
   const navLinks = [
     { to: "/", label: t("nav.home") },
-    { to: "/compare", label: t("nav.compare") },
     { to: "/business", label: t("nav.business") },
-    { to: "/blog", label: t("nav.blog") },
     { to: "/about", label: t("nav.about") },
-    { to: "/contact", label: t("nav.contact") },
+    { to: "/blog", label: t("nav.blog") },
   ] as const;
+
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);

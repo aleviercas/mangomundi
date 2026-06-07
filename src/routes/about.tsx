@@ -95,6 +95,71 @@ function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Institutional & Partnership Inquiries */}
+      <section id="institutional-inquiries" className="py-20 border-t border-border">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-border bg-card p-8 font-mono sm:p-10">
+            <div className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
+              Institutional &amp; Partnership Inquiries
+            </div>
+            <h2 className="font-heading text-2xl font-bold text-foreground sm:text-3xl">
+              Direct line to the desk
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
+              For treasury operations, liquidity partnerships, regulatory diligence and institutional onboarding.
+            </p>
+            <form
+              className="mt-6 grid gap-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                window.location.href = "mailto:hello@mangoglobal.com";
+              }}
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                <input
+                  type="text"
+                  required
+                  placeholder="Full name"
+                  className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+                <input
+                  type="email"
+                  required
+                  placeholder="Work email"
+                  className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+              <input
+                type="text"
+                placeholder="Institution / Company"
+                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+              <textarea
+                rows={4}
+                required
+                placeholder="Briefly describe your flow, corridor or partnership scope."
+                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+              <button
+                type="submit"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
+              >
+                Open secure channel
+              </button>
+            </form>
+            <p className="mt-4 text-xs text-muted-foreground">
+              Or write directly to{" "}
+              <a href="mailto:hello@mangoglobal.com" className="text-primary hover:underline">
+                hello@mangoglobal.com
+              </a>
+              .
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
+
