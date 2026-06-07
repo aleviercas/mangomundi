@@ -215,87 +215,104 @@ export function ComparatorSection() {
           </p>
         </div>
 
-        {/* Form */}
-        <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <Field label={t("fx.field.send")}>
-              <input
-                type="number"
-                min={1}
-                value={amount}
-                onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 0))}
-                className="input"
-              />
-            </Field>
-            <Field label={t("fx.field.from")}>
-              <CurrencySelect value={from} onChange={setFrom} />
-            </Field>
-            <Field label={t("fx.field.to")}>
-              <CurrencySelect value={to} onChange={setTo} />
-            </Field>
-            <Field label={t("rfq.fieldOrigin")}>
-              <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
-            </Field>
-            <Field label={t("rfq.fieldDest")}>
-              <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
-            </Field>
-            <Field label={t("fx.field.segment")}>
-              <div className="flex h-10 items-center gap-1 rounded-lg border border-border bg-background p-1">
-                {(["retail", "business"] as Segment[]).map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => setSegment(s)}
-                    className={`flex-1 rounded-md px-2 text-xs font-semibold capitalize transition ${
-                      segment === s
-                        ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </Field>
-            <Field label={t("fx.field.urgency")}>
-              <select
-                value={urgency}
-                onChange={(e) => setUrgency(e.target.value as Urgency)}
-                className="input"
-              >
-                <option value="urgent">{t("fx.urgency.urgent")}</option>
-                <option value="standard">{t("fx.urgency.standard")}</option>
-                <option value="flexible">{t("fx.urgency.flexible")}</option>
-              </select>
-            </Field>
+        {/* Form — terminal-style */}
+        <div className="terminal-card rounded-2xl overflow-hidden font-mono">
+          <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            </span>
+            <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
+              mangoglobal · query_builder.sh
+            </span>
+            <span className="ml-auto text-[10px] terminal-text-comment">// build query</span>
           </div>
 
-          <button
-            onClick={() => {
-              if (!sendingCountry || !receivingCountry || amount <= 0) {
-                setValidationError(t("fx.validation"));
-                return;
-              }
-              setValidationError(null);
-              compareMut.mutate();
-            }}
-            disabled={compareMut.isPending}
-            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-60 sm:w-auto"
-          >
-            {compareMut.isPending ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" /> …
-              </>
-            ) : (
-              <>
-                {t("cta.compare")} <ArrowRight className="h-4 w-4" />
-              </>
-            )}
-          </button>
-          {validationError && (
-            <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
-              {validationError}
+          <div className="p-5 sm:p-6">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <Field label={t("fx.field.send")}>
+                <input
+                  type="number"
+                  min={1}
+                  value={amount}
+                  onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 0))}
+                  className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                />
+              </Field>
+              <Field label={t("fx.field.from")}>
+                <CurrencySelect value={from} onChange={setFrom} />
+              </Field>
+              <Field label={t("fx.field.to")}>
+                <CurrencySelect value={to} onChange={setTo} />
+              </Field>
+              <Field label={t("rfq.fieldOrigin")}>
+                <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
+              </Field>
+              <Field label={t("rfq.fieldDest")}>
+                <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
+              </Field>
+              <Field label={t("fx.field.segment")}>
+                <div
+                  className="flex h-10 items-center gap-1 rounded-md border terminal-divider p-1"
+                  style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
+                >
+                  {(["retail", "business"] as Segment[]).map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => setSegment(s)}
+                      className={`flex-1 rounded-sm px-2 py-1 text-xs font-semibold capitalize transition font-mono ${
+                        segment === s ? "terminal-btn-primary" : "terminal-text-comment hover:opacity-80"
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </Field>
+              <Field label={t("fx.field.urgency")}>
+                <select
+                  value={urgency}
+                  onChange={(e) => setUrgency(e.target.value as Urgency)}
+                  className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                >
+                  <option value="urgent">{t("fx.urgency.urgent")}</option>
+                  <option value="standard">{t("fx.urgency.standard")}</option>
+                  <option value="flexible">{t("fx.urgency.flexible")}</option>
+                </select>
+              </Field>
             </div>
-          )}
+
+            <div className="mt-5 flex items-center gap-2">
+              <span className="terminal-text-comment font-mono text-sm select-none">{"$"}</span>
+              <button
+                onClick={() => {
+                  if (!sendingCountry || !receivingCountry || amount <= 0) {
+                    setValidationError(t("fx.validation"));
+                    return;
+                  }
+                  setValidationError(null);
+                  compareMut.mutate();
+                }}
+                disabled={compareMut.isPending}
+                className="terminal-btn-primary inline-flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold disabled:opacity-60 sm:w-auto font-mono"
+              >
+                {compareMut.isPending ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" /> …
+                  </>
+                ) : (
+                  <>
+                    {t("cta.compare")} <ArrowRight className="h-4 w-4" />
+                  </>
+                )}
+              </button>
+            </div>
+            {validationError && (
+              <div className="mt-3 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300 font-mono">
+                // {validationError}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* AI panel — unified $ terminal pattern */}
