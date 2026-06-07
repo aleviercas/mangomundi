@@ -108,8 +108,10 @@ const largeTicketDesk = [
 ];
 
 function BusinessPage() {
+  const { t } = useI18n();
+  const [rfqOpen, setRfqOpen] = useState(false);
   const [monthly, setMonthly] = useState<number>(250000);
-  const savingsPct = 0.025; // conservative 2.5% blended saving
+  const savingsPct = 0.025;
   const monthlySavings = Math.round(monthly * savingsPct);
   const annualSavings = monthlySavings * 12;
 
