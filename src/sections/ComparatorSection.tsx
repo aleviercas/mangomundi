@@ -464,7 +464,7 @@ export function ComparatorSection() {
         onOpenChange={setModalOpen}
         context={modalCtx}
       />
-    </div>
+    </section>
   );
 }
 
