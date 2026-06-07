@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { RfqTerminal } from "@/components/RfqTerminal";
+import { useEffect } from "react";
+import { RfqInlinePanel } from "@/components/RfqTerminal";
 import { useI18n, CORPORATE_LANGS, type Lang } from "@/lib/i18n";
 import {
   Building2,
-  Terminal,
   FlaskConical,
   Network,
   Lock,
