@@ -2,10 +2,22 @@ import { useI18n, type Lang } from "@/lib/i18n";
 import { Globe } from "lucide-react";
 import { useState } from "react";
 
-const LANGS: { code: Lang; label: string; flag: string }[] = [
-  { code: "en", label: "EN", flag: "🇬🇧" },
-  { code: "es", label: "ES", flag: "🇪🇸" },
-  { code: "pt", label: "PT", flag: "🇧🇷" },
+const LANGS: { code: Lang; label: string; flag: string; native: string }[] = [
+  { code: "en", label: "EN", flag: "🇬🇧", native: "English" },
+  { code: "es", label: "ES", flag: "🇪🇸", native: "Español" },
+  { code: "pt", label: "PT", flag: "🇧🇷", native: "Português" },
+  { code: "it", label: "IT", flag: "🇮🇹", native: "Italiano" },
+  { code: "fr", label: "FR", flag: "🇫🇷", native: "Français" },
+  { code: "de", label: "DE", flag: "🇩🇪", native: "Deutsch" },
+  { code: "pl", label: "PL", flag: "🇵🇱", native: "Polski" },
+  { code: "uk", label: "UK", flag: "🇺🇦", native: "Українська" },
+  { code: "kk", label: "KK", flag: "🇰🇿", native: "Qazaqsha" },
+  { code: "hi", label: "HI", flag: "🇮🇳", native: "हिन्दी" },
+  { code: "zh", label: "ZH", flag: "🇨🇳", native: "中文" },
+  { code: "id", label: "ID", flag: "🇮🇩", native: "Indonesia" },
+  { code: "tl", label: "TL", flag: "🇵🇭", native: "Tagalog" },
+  { code: "ar", label: "AR", flag: "🇸🇦", native: "العربية" },
+  { code: "vi", label: "VI", flag: "🇻🇳", native: "Tiếng Việt" },
 ];
 
 export function LangSwitcher() {
@@ -30,7 +42,7 @@ export function LangSwitcher() {
             onClick={() => setOpen(false)}
             aria-hidden
           />
-          <div className="absolute right-0 z-50 mt-1 min-w-[120px] overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+          <div className="absolute right-0 z-50 mt-1 max-h-[70vh] min-w-[180px] overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
             {LANGS.map((l) => (
               <button
                 key={l.code}
@@ -45,7 +57,8 @@ export function LangSwitcher() {
                 }`}
               >
                 <span>{l.flag}</span>
-                <span className="font-medium">{l.label}</span>
+                <span className="font-medium w-6">{l.label}</span>
+                <span className="text-xs text-muted-foreground truncate">{l.native}</span>
               </button>
             ))}
           </div>
