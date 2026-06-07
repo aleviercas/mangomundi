@@ -99,11 +99,11 @@ export function InlineChat() {
     <section className="relative pb-24">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="mb-6 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-medium tracking-widest text-slate-700 uppercase shadow-sm">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-medium tracking-widest text-muted-foreground uppercase shadow-sm">
             <Sparkles className="h-3 w-3 text-amber-500" />
             Talk to the FX Agent
           </div>
-          <h2 className="mt-4 font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-950">
+          <h2 className="mt-4 font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
             {lang === "es"
               ? "Pedile una cotización. Sin formularios."
               : lang === "pt"
@@ -112,76 +112,89 @@ export function InlineChat() {
           </h2>
         </div>
 
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-100">
-          <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-            <div className="flex items-center gap-2 text-sm font-semibold text-slate-950">
+        <div className="terminal-card overflow-hidden rounded-2xl shadow-2xl shadow-slate-950/20">
+          <div className="flex items-center justify-between border-b terminal-divider px-4 py-3">
+            <div className="flex items-center gap-2 text-sm font-semibold terminal-text-bright">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-60 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
               </span>
               FX Copilot
-              <span className="ml-1 text-[10px] font-medium uppercase tracking-widest text-slate-400">
+              <span className="ml-1 text-[10px] font-medium uppercase tracking-widest terminal-text-comment">
                 <span className="font-black lowercase">mango</span>
                 <span className="font-extralight lowercase">global</span> · {lang.toUpperCase()}
               </span>
             </div>
+            <span className="terminal-text-comment text-[10px] font-mono">// session active</span>
           </div>
 
-          <div ref={scrollRef} className="h-[380px] overflow-y-auto px-4 py-4 space-y-3 bg-slate-50/40">
+          <div
+            ref={scrollRef}
+            className="h-[380px] overflow-y-auto px-4 py-4 space-y-3"
+            style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
+          >
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
                   className={`max-w-[85%] rounded-lg px-3.5 py-2.5 text-sm ${
                     m.role === "user"
-                      ? "bg-slate-950 text-white"
-                      : "bg-white text-slate-800 border border-slate-100"
+                      ? "bg-amber-500/15 text-amber-50 border border-amber-500/30"
+                      : "border terminal-divider terminal-text-bright"
                   }`}
+                  style={m.role === "assistant" ? { backgroundColor: "oklch(0.22 0.012 264)" } : undefined}
                 >
                   {m.role === "assistant" ? (
-                    <div className="prose prose-sm max-w-none prose-p:my-1 prose-ol:my-1 prose-ul:my-1 prose-strong:text-slate-950">
+                    <div className="prose prose-sm max-w-none prose-invert prose-p:my-1 prose-ol:my-1 prose-ul:my-1 prose-strong:text-amber-300">
                       <ReactMarkdown>{m.content}</ReactMarkdown>
                     </div>
                   ) : (
-                    <span className="whitespace-pre-wrap">{m.content}</span>
+                    <span className="whitespace-pre-wrap font-mono text-[13px]">{m.content}</span>
                   )}
                 </div>
               </div>
             ))}
             {sending && (
               <div className="flex justify-start">
-                <div className="rounded-lg border border-slate-100 bg-white px-3 py-2 text-slate-500">
+                <div
+                  className="rounded-lg border terminal-divider px-3 py-2 terminal-text-comment"
+                  style={{ backgroundColor: "oklch(0.22 0.012 264)" }}
+                >
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 </div>
               </div>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-1.5 border-t border-slate-100 px-4 py-2.5">
+          <div className="flex flex-wrap gap-1.5 border-t terminal-divider px-4 py-2.5">
             {(QUICK_PROMPTS[lang as "en" | "es" | "pt"] ?? QUICK_PROMPTS.en).map((p: string) => (
               <button
                 key={p}
                 type="button"
                 disabled={sending}
                 onClick={() => submitText(p)}
-                className="rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-medium text-slate-600 hover:border-slate-900 hover:text-slate-950 transition-colors disabled:opacity-50"
+                className="terminal-chip rounded-full px-2.5 py-1 text-[11px] font-medium disabled:opacity-50"
               >
                 {p}
               </button>
             ))}
           </div>
 
-          <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-slate-100 px-3 py-3">
+          <form
+            onSubmit={handleSubmit}
+            className="group flex items-center gap-2 border-t terminal-divider px-3 py-3"
+          >
+            <span className="terminal-text-comment font-mono text-sm select-none">{"$"}</span>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={t("chat.placeholder")}
-              className="flex-1 rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none"
+              className="terminal-input flex-1 rounded-md px-3 py-2.5 text-sm font-mono"
             />
             <button
               type="submit"
               disabled={sending || !input.trim()}
-              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-40"
+              className="terminal-btn-primary inline-flex h-10 items-center justify-center gap-1.5 rounded-md px-4 text-sm font-semibold disabled:opacity-40"
               aria-label="Send"
             >
               <Send className="h-4 w-4" />
@@ -197,3 +210,4 @@ export function InlineChat() {
     </section>
   );
 }
+
