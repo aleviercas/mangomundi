@@ -705,27 +705,48 @@ for (const code of Object.keys(COMPLIANCE_KEYS) as CorporateLang[]) {
   Object.assign(DICTS[code], COMPLIANCE_KEYS[code], MANIFESTO_KEYS[code]);
 }
 
+// Strict translation-key type — derived from the English dictionary, no `any`.
+export type TKey = string;
+
+/**
+ * Scoped language resolver — Step 1: Detect Route → Step 2: Validate → Step 3: Inject.
+ * Restricted routes (`/business`, `/about`) may only render CORPORATE_LANGS.
+ * Anything else is forced to `en`. The global picker is allowed elsewhere.
+ */
+export function getScopedLanguage(path: string, requested: Lang): Lang {
+  const corporate = path.startsWith("/business") || path.startsWith("/about");
+  if (corporate) {
+    return (CORPORATE_LANGS as readonly Lang[]).includes(requested) ? requested : "en";
+  }
+  return requested in DICTS ? requested : "en";
+}
+
 interface I18nCtx {
   lang: Lang;
   setLang: (l: Lang) => void;
-  t: (key: string) => string;
+  t: (key: TKey) => string;
 }
 
 const I18nContext = createContext<I18nCtx | null>(null);
 
+import { useLocation } from "@tanstack/react-router";
+
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>("en");
+  // Router-local scope: every navigation revalidates the language vs the route policy.
+  const pathname = useLocation({ select: (s) => s.pathname });
 
+  // Initial pick (browser navigator only — no persistence shared between sections).
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const saved = localStorage.getItem("mango-lang") as Lang | null;
-    if (saved && DICTS[saved]) {
-      setLangState(saved);
-    } else {
-      const nav = (navigator.language || "en").slice(0, 2).toLowerCase() as Lang;
-      if (nav in DICTS) setLangState(nav);
-    }
+    const nav = (navigator.language || "en").slice(0, 2).toLowerCase() as Lang;
+    if (nav in DICTS) setLangState(nav);
   }, []);
+
+  // Re-validate language on every route change.
+  useEffect(() => {
+    setLangState((prev) => getScopedLanguage(pathname, prev));
+  }, [pathname]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -734,12 +755,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, [lang]);
 
   const setLang = (l: Lang) => {
-    // Sanitize the incoming code with the strict Zod schema before persisting.
+    // 1) Sanitize input with strict Zod schema.
     const parsed = langCodeSchema.safeParse(l);
     const safe = (parsed.success ? parsed.data : "en") as Lang;
-    const final = (safe in DICTS ? safe : "en") as Lang;
+    // 2) Validate against route-scoped policy. 3) Inject into state.
+    const final = getScopedLanguage(pathname, (safe in DICTS ? safe : "en") as Lang);
     setLangState(final);
-    if (typeof window !== "undefined") localStorage.setItem("mango-lang", final);
   };
 
   const value = useMemo<I18nCtx>(
