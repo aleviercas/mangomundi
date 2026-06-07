@@ -245,7 +245,7 @@ function BusinessPage() {
                   <span className="ml-1 text-base font-normal text-muted-foreground">/ year</span>
                 </div>
                 <div className="mt-1 text-sm text-muted-foreground">
-                  ≈ ${monthlySavings.toLocaleString()} per month · 2.5% blended saving
+                  ≈ ${monthlySavings.toLocaleString()} per month · Private asynchronous bidding via RFQ protocol
                 </div>
                 <div className="my-5 h-px bg-border" />
                 <ul className="space-y-2 text-sm text-muted-foreground">
