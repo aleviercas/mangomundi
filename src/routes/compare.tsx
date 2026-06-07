@@ -14,31 +14,8 @@ import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
+import { CountrySelect } from "@/components/ui/CountrySelect";
 
-const COUNTRIES: { code: string; name: string; flag: string }[] = [
-  { code: "ES", name: "España / Spain", flag: "🇪🇸" },
-  { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
-  { code: "US", name: "United States", flag: "🇺🇸" },
-  { code: "AR", name: "Argentina", flag: "🇦🇷" },
-  { code: "MX", name: "México", flag: "🇲🇽" },
-  { code: "BR", name: "Brasil", flag: "🇧🇷" },
-  { code: "CO", name: "Colombia", flag: "🇨🇴" },
-  { code: "CL", name: "Chile", flag: "🇨🇱" },
-  { code: "PE", name: "Perú", flag: "🇵🇪" },
-  { code: "UY", name: "Uruguay", flag: "🇺🇾" },
-  { code: "PT", name: "Portugal", flag: "🇵🇹" },
-  { code: "FR", name: "France", flag: "🇫🇷" },
-  { code: "DE", name: "Deutschland", flag: "🇩🇪" },
-  { code: "IT", name: "Italia", flag: "🇮🇹" },
-  { code: "NL", name: "Nederland", flag: "🇳🇱" },
-  { code: "IE", name: "Ireland", flag: "🇮🇪" },
-  { code: "CH", name: "Schweiz", flag: "🇨🇭" },
-  { code: "CA", name: "Canada", flag: "🇨🇦" },
-  { code: "AU", name: "Australia", flag: "🇦🇺" },
-  { code: "AE", name: "UAE", flag: "🇦🇪" },
-  { code: "IN", name: "India", flag: "🇮🇳" },
-  { code: "PH", name: "Philippines", flag: "🇵🇭" },
-];
 
 export const Route = createFileRoute("/compare")({
   head: () => ({
@@ -759,14 +736,3 @@ function CurrencySelect({ value, onChange }: { value: string; onChange: (v: stri
   );
 }
 
-function CountrySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
-      {COUNTRIES.map((c) => (
-        <option key={c.code} value={c.code}>
-          {c.flag} {c.code} — {c.name}
-        </option>
-      ))}
-    </select>
-  );
-}
