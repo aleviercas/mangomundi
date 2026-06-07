@@ -125,6 +125,7 @@ const DICTS: Record<Lang, Dict> = {
     "about.v2.body": "Democratize wholesale interbank rates and optimized spreads, pulverizing the information asymmetries of traditional banking.",
     "about.v3.title": "Human + AI Impartiality",
     "about.v3.body": "Our human team is always available to guide users through operational complexity, yet absolute algorithmic impartiality is what processes, distributes, and delivers the best optimized spreads to every party, equitably and without favoritism.",
+  },
   es: {
     "nav.home": "Inicio",
     "nav.fx": "Herramienta FX",
