@@ -200,7 +200,7 @@ export function ComparatorSection() {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-20">
+    <section id="comparator" className="bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 text-center">
