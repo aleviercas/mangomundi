@@ -139,10 +139,8 @@ function FxToolPage() {
     },
   });
 
-  useEffect(() => {
-    compareMut.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Intentionally do not auto-run: the comparator stays empty until the user submits.
+
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
