@@ -170,7 +170,7 @@ function FxToolPage() {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
 
-  const handleAffiliateClick = (slug: string, url: string) => {
+  const openPreferredRate = (slug: string, url: string) => {
     trackFn({
       data: {
         provider_slug: slug,
@@ -181,7 +181,16 @@ function FxToolPage() {
         referrer: typeof window !== "undefined" ? window.location.href : undefined,
       },
     }).catch(() => {});
-    if (typeof window !== "undefined") window.open(url, "_blank", "noopener,noreferrer");
+    setModalCtx({
+      amount,
+      fromCurrency: from,
+      toCurrency: to,
+      sendingCountry,
+      receivingCountry,
+      providerSlug: slug,
+      affiliateBaseUrl: url,
+    });
+    setModalOpen(true);
   };
 
   const sendChat = (msg: string) => {
@@ -224,6 +233,12 @@ function FxToolPage() {
             </Field>
             <Field label={t("fx.field.to")}>
               <CurrencySelect value={to} onChange={setTo} />
+            </Field>
+            <Field label={t("rfq.fieldOrigin")}>
+              <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
+            </Field>
+            <Field label={t("rfq.fieldDest")}>
+              <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
             </Field>
             <Field label={t("fx.field.segment")}>
               <div className="flex h-10 items-center gap-1 rounded-lg border border-border bg-background p-1">
