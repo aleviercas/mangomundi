@@ -52,7 +52,6 @@ const pillars = [
 ];
 
 function BusinessPage() {
-  const [rfqOpen, setRfqOpen] = useState(false);
   const { lang, setLang } = useI18n();
 
   // Compliance gate: /business is restricted to the 5 verified corporate locales.
@@ -61,6 +60,8 @@ function BusinessPage() {
       setLang("en");
     }
   }, [lang, setLang]);
+
+
 
 
 
