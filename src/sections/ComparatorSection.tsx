@@ -64,7 +64,7 @@ export function ComparatorSection() {
   const buildReasoning = (): string => {
     const urgencyLabel =
       urgency === "urgent" ? "urgent (minutes)" : urgency === "flexible" ? "flexible (days)" : "standard (same-day)";
-    return `Mango Engine Routing Justification: For a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the system analyzed available liquidity paths across indexed provider APIs and retail remittance channels. The optimal route has been selected based on a flat-fee optimization and real-time interbank exchange rates, delivering the maximum yield to the destination account. Spread, fixed fees, settlement window and regulatory coverage of each indexed counterparty were normalised before ranking; the recommendation reflects the neutral mathematical optimum for this corridor at query time.`;
+    return `[LANG:${lang.toUpperCase()}] Mango Engine Routing Justification: For a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the system analyzed available liquidity paths across indexed provider APIs and retail remittance channels. The optimal route has been selected based on a flat-fee optimization and real-time interbank exchange rates, delivering the maximum yield to the destination account. Spread, fixed fees, settlement window and regulatory coverage of each indexed counterparty were normalised before ranking; the recommendation reflects the neutral mathematical optimum for this corridor at query time.`;
   };
 
   const compareMut = useMutation({
