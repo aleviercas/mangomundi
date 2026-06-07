@@ -579,7 +579,7 @@ function ResultsBlock({
                 <span className="text-sm font-normal text-muted-foreground">{result.quote}</span>
               </div>
               <div className="text-[11px] text-muted-foreground">
-                on {amount.toLocaleString()} {result.base} → {result.quote} · best vs worst routed quote in this comparison
+                You save {savings.diff.toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.quote} with the optimal route vs the market average.
               </div>
 
             </div>
