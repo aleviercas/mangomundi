@@ -50,7 +50,7 @@ export function useAnalytics() {
             amount: payload.amount ?? null,
             from_currency: payload.from_currency,
             to_currency: payload.to_currency,
-            segment: segmentTag || event,
+            segment: (segmentTag || event).slice(0, 32),
             referrer,
           },
         }).catch(() => {
