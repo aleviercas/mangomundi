@@ -310,6 +310,13 @@ const DICTS: Record<Lang, Dict> = {
     "home.finalCta.title": "Optimizá hoy la arquitectura de tu tesorería corporativa.",
     "home.finalCta.subtitle": "Accedé a un ruteo FX transparente respaldado por el mercado y a protocolos personalizados de licitación RFQ asincrónica para tus corredores empresariales.",
     "home.finalCta.rfq": "Acceder a la Terminal RFQ",
+    "home.hero.ctaCompare": "Probar Comparador FX",
+    "home.dual.title": "Construido para cada flujo transfronterizo — retail y corporativo.",
+    "home.dual.retail.title": "Remesas Retail y Patrimonio Privado",
+    "home.dual.retail.body": "Enviá dinero internacionalmente, pagá viajes globales o gestioná transferencias personales. Accedé a tasas mayoristas interbancarias sin recargos ocultos, con transparencia absoluta y seguimiento automatizado.",
+    "home.dual.corporate.title": "Tesorería Corporativa y Operaciones",
+    "home.dual.corporate.body": "Gestioná exposición corporativa multidivisa, ejecutá pagos masivos y cubrí el riesgo cambiario con nuestra Terminal RFQ interactiva y reportes de datos transparentes.",
+    "compare.calculating": "Calculando rutas óptimas…",
   },
   pt: {
     "nav.home": "Início",
