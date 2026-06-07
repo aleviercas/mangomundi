@@ -86,8 +86,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:site", content: "@mangoglobal" },
       { name: "twitter:title", content: "mangoglobal — The Global FX Decision Engine" },
       { name: "twitter:description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments for retail remittances and corporate treasury." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/hA4co5Od47W2b9ad07ze93fKA903/social-images/social-1780799437188-a9a1d8e4-45c6-4aec-b17c-3dff4cf47347.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/hA4co5Od47W2b9ad07ze93fKA903/social-images/social-1780799437188-a9a1d8e4-45c6-4aec-b17c-3dff4cf47347.webp" },
+      { property: "og:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
+      { name: "twitter:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
