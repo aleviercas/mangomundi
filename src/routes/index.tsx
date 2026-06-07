@@ -5,7 +5,7 @@ import { StatsSection } from "@/sections/StatsSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { DualAudienceSection } from "@/sections/DualAudienceSection";
 import { FeaturesSection } from "@/sections/FeaturesSection";
-import { AISection } from "@/sections/AISection";
+
 import { TestimonialsSection } from "@/sections/TestimonialsSection";
 import { CTASection } from "@/sections/CTASection";
 
@@ -30,7 +30,7 @@ function Index() {
       <HowItWorksSection />
       <DualAudienceSection />
       <FeaturesSection />
-      <AISection />
+      
       <TestimonialsSection />
       <CTASection />
     </>
