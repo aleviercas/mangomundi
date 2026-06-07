@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Linkedin } from "lucide-react";
 import { Wordmark } from "@/components/Wordmark";
+import { useI18n } from "@/lib/i18n";
 
 const navigateLinks = [
   { to: "/", label: "Home" },
@@ -15,6 +16,7 @@ const complianceLinks = [
 ] as const;
 
 export function Footer() {
+  const { t } = useI18n();
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -60,7 +62,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-semibold text-foreground">Compliance</h3>
+            <h3 className="font-heading text-sm font-semibold text-foreground">
+              {t("footer.compliance")}
+            </h3>
             <ul className="mt-3 space-y-2">
               {complianceLinks.map((link) => (
                 <li key={link.to}>
@@ -77,8 +81,17 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} mangoglobal. All rights reserved.
           </p>
-          <p className="text-sm text-muted-foreground">
-            Global FX, Made Intelligent
+          <p className="text-sm text-muted-foreground">Global FX, Made Intelligent</p>
+        </div>
+
+        {/* Localized regulatory disclaimer — compact terminal style */}
+        <div className="mt-6 border-t border-border/60 pt-5">
+          <p
+            className="font-mono text-[10.5px] leading-relaxed text-muted-foreground/70"
+            style={{ letterSpacing: "0.01em" }}
+          >
+            <span className="opacity-60"># disclaimer &nbsp;</span>
+            {t("footer.disclaimer")}
           </p>
         </div>
       </div>

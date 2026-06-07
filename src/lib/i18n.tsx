@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 
 export type Lang =
   | "en"
@@ -19,7 +20,16 @@ export type Lang =
 
 export const RTL_LANGS: Lang[] = ["ar"];
 
+// Verified corporate locales — restrict /business to these.
+export const CORPORATE_LANGS = ["en", "es", "pt", "it", "fr"] as const;
+export type CorporateLang = (typeof CORPORATE_LANGS)[number];
+
+// Strict sanitization schema for any language code touching the backend.
+export const langCodeSchema = z.string().trim().max(10);
+
 type Dict = Record<string, string>;
+
+
 
 const DICTS: Record<Lang, Dict> = {
   en: {
@@ -542,6 +552,70 @@ const DICTS: Record<Lang, Dict> = {
 };
 
 
+// === Footer / Legal & Compliance localized keys (EN/ES/PT/IT/FR) ===
+const COMPLIANCE_KEYS: Record<CorporateLang, Dict> = {
+  en: {
+    "footer.compliance": "Legal & Compliance",
+    "footer.disclaimer":
+      "mangoglobal is a neutral information and decision-engine platform. Our AI tooling does not constitute financial, tax, or investment advice. We do not custody client funds; all transfers settle directly with the regulated provider chosen by the user. Foreign-exchange rates fluctuate continuously and users bear the full FX, settlement, and counterparty risk of any transaction.",
+    "legal.terms.title": "Terms of Service",
+    "legal.terms.intro":
+      "mangoglobal operates as a neutral information and decision-engine platform that aggregates publicly available FX rates and provider data. We do not hold client funds, do not execute transfers, and do not act as a money transmitter.",
+    "legal.risk.title": "Risk Disclosure",
+    "legal.risk.intro":
+      "Foreign-exchange rates fluctuate continuously. The mid-market reference rate shown is indicative and may change between the time a comparison is generated and the time a provider executes the transfer. Users bear the full FX, settlement, and counterparty risk of any transaction.",
+  },
+  es: {
+    "footer.compliance": "Legal & Cumplimiento",
+    "footer.disclaimer":
+      "mangoglobal es una plataforma neutral de información y motor de decisión. Nuestras herramientas de IA no constituyen asesoramiento financiero, fiscal ni de inversión. No custodiamos fondos de clientes; todas las transferencias se liquidan directamente con el proveedor regulado elegido por el usuario. Los tipos de cambio fluctúan continuamente y el usuario asume el riesgo cambiario, de liquidación y de contraparte.",
+    "legal.terms.title": "Términos del Servicio",
+    "legal.terms.intro":
+      "mangoglobal opera como una plataforma neutral de información y motor de decisión que agrega tasas FX y datos de proveedores disponibles públicamente. No custodiamos fondos de clientes, no ejecutamos transferencias y no actuamos como transmisor de dinero.",
+    "legal.risk.title": "Divulgación de Riesgos",
+    "legal.risk.intro":
+      "Los tipos de cambio fluctúan continuamente. La tasa mid-market mostrada es indicativa y puede variar entre el momento de la comparación y la ejecución por parte del proveedor. El usuario asume íntegramente el riesgo cambiario, de liquidación y de contraparte.",
+  },
+  pt: {
+    "footer.compliance": "Legal & Compliance",
+    "footer.disclaimer":
+      "mangoglobal é uma plataforma neutra de informação e motor de decisão. Nossas ferramentas de IA não constituem aconselhamento financeiro, fiscal ou de investimento. Não custodiamos fundos de clientes; todas as transferências são liquidadas diretamente com o provedor regulado escolhido pelo usuário. As taxas de câmbio flutuam continuamente e o usuário assume o risco cambial, de liquidação e de contraparte.",
+    "legal.terms.title": "Termos de Serviço",
+    "legal.terms.intro":
+      "mangoglobal opera como uma plataforma neutra de informação e motor de decisão que agrega taxas FX e dados de provedores publicamente disponíveis. Não custodiamos fundos, não executamos transferências e não atuamos como transmissor de dinheiro.",
+    "legal.risk.title": "Divulgação de Risco",
+    "legal.risk.intro":
+      "As taxas de câmbio flutuam continuamente. A taxa mid-market exibida é indicativa e pode variar entre o momento da comparação e a execução pelo provedor. O usuário assume integralmente o risco cambial, de liquidação e de contraparte.",
+  },
+  it: {
+    "footer.compliance": "Legal & Compliance",
+    "footer.disclaimer":
+      "mangoglobal è una piattaforma neutrale di informazione e motore decisionale. I nostri strumenti di IA non costituiscono consulenza finanziaria, fiscale o di investimento. Non deteniamo fondi dei clienti; tutti i trasferimenti vengono regolati direttamente con il fornitore regolamentato scelto dall'utente. I tassi di cambio fluttuano costantemente e l'utente assume integralmente il rischio cambio, di regolamento e di controparte.",
+    "legal.terms.title": "Termini di Servizio",
+    "legal.terms.intro":
+      "mangoglobal opera come piattaforma neutrale di informazione e motore decisionale che aggrega tassi FX e dati di fornitori pubblicamente disponibili. Non deteniamo fondi, non eseguiamo trasferimenti e non agiamo come trasmettitore di denaro.",
+    "legal.risk.title": "Informativa sul Rischio",
+    "legal.risk.intro":
+      "I tassi di cambio fluttuano costantemente. Il tasso mid-market mostrato è indicativo e può variare tra il momento della comparazione e l'esecuzione da parte del fornitore. L'utente assume integralmente il rischio cambio, di regolamento e di controparte.",
+  },
+  fr: {
+    "footer.compliance": "Légal & Conformité",
+    "footer.disclaimer":
+      "mangoglobal est une plateforme neutre d'information et un moteur de décision. Nos outils d'IA ne constituent pas un conseil financier, fiscal ou en investissement. Nous ne détenons pas de fonds clients ; tous les transferts sont réglés directement avec le prestataire régulé choisi par l'utilisateur. Les taux de change fluctuent continuellement et l'utilisateur assume intégralement le risque de change, de règlement et de contrepartie.",
+    "legal.terms.title": "Conditions d'utilisation",
+    "legal.terms.intro":
+      "mangoglobal opère comme une plateforme neutre d'information et un moteur de décision agrégeant les taux FX et données de prestataires publiquement disponibles. Nous ne détenons pas de fonds, n'exécutons pas de transferts et n'agissons pas comme transmetteur d'argent.",
+    "legal.risk.title": "Information sur les Risques",
+    "legal.risk.intro":
+      "Les taux de change fluctuent continuellement. Le taux mid-market affiché est indicatif et peut varier entre la comparaison et l'exécution par le prestataire. L'utilisateur assume intégralement le risque de change, de règlement et de contrepartie.",
+  },
+};
+
+// Merge compliance keys into the main dictionaries.
+for (const code of Object.keys(COMPLIANCE_KEYS) as CorporateLang[]) {
+  Object.assign(DICTS[code], COMPLIANCE_KEYS[code]);
+}
+
 interface I18nCtx {
   lang: Lang;
   setLang: (l: Lang) => void;
@@ -571,8 +645,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   }, [lang]);
 
   const setLang = (l: Lang) => {
-    setLangState(l);
-    if (typeof window !== "undefined") localStorage.setItem("mango-lang", l);
+    // Sanitize the incoming code with the strict Zod schema before persisting.
+    const parsed = langCodeSchema.safeParse(l);
+    const safe = (parsed.success ? parsed.data : "en") as Lang;
+    const final = (safe in DICTS ? safe : "en") as Lang;
+    setLangState(final);
+    if (typeof window !== "undefined") localStorage.setItem("mango-lang", final);
   };
 
   const value = useMemo<I18nCtx>(
@@ -592,3 +670,4 @@ export function useI18n() {
   if (!ctx) throw new Error("useI18n must be used inside I18nProvider");
   return ctx;
 }
+

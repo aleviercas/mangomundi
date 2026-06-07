@@ -24,18 +24,21 @@ export const Route = createFileRoute("/")({
 function FlowLabel({ step, title, body }: { step: string; title: string; body: string }) {
   return (
     <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-      <div className="rounded-xl border border-border bg-card/40 p-4 sm:p-5">
+      <div className="terminal-card rounded-xl p-4 sm:p-5">
         <div className="flex items-baseline gap-3">
-          <span className="font-mono text-xs font-bold tracking-widest text-primary">{step}</span>
-          <span className="font-heading text-sm font-bold uppercase tracking-wider text-foreground">
+          <span className="terminal-text-comment text-xs font-bold tracking-widest">
+            // {step}
+          </span>
+          <span className="font-heading text-sm font-bold uppercase tracking-wider terminal-text-bright">
             {title}
           </span>
         </div>
-        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground sm:text-sm">{body}</p>
+        <p className="terminal-text-comment mt-1.5 text-xs leading-relaxed sm:text-sm">{body}</p>
       </div>
     </div>
   );
 }
+
 
 function Index() {
   return (
