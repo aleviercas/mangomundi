@@ -1,23 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { BrandLogo } from "@/components/BrandLogo";
 import { RfqTerminal } from "@/components/RfqTerminal";
 import { useI18n } from "@/lib/i18n";
 import {
-  Building2,
   Code,
   ShieldCheck,
   Wallet,
   BarChart3,
   Headphones,
   ArrowRight,
-  Check,
   Globe,
   TrendingUp,
-  Briefcase,
-  Star,
   Shield,
-  Sparkles,
   Terminal,
 } from "lucide-react";
 
