@@ -559,10 +559,16 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     if (saved && DICTS[saved]) {
       setLangState(saved);
     } else {
-      const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
-      if (nav === "es" || nav === "pt") setLangState(nav as Lang);
+      const nav = (navigator.language || "en").slice(0, 2).toLowerCase() as Lang;
+      if (nav in DICTS) setLangState(nav);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = RTL_LANGS.includes(lang) ? "rtl" : "ltr";
+  }, [lang]);
 
   const setLang = (l: Lang) => {
     setLangState(l);
