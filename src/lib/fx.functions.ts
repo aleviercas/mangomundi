@@ -213,7 +213,7 @@ const trackSchema = z.object({
   amount: z.number().nullable().optional(),
   from_currency: z.string().length(3).optional(),
   to_currency: z.string().length(3).optional(),
-  segment: z.string().max(32).optional(),
+  segment: z.string().trim().max(128).optional(),
   referrer: z.string().max(512).optional(),
 });
 
