@@ -366,6 +366,9 @@ const DICTS: Record<Lang, Dict> = {
     "about.v2.body": "Democratizar as taxas atacadistas interbancárias e os spreads otimizados, pulverizando as assimetrias de informação da banca tradicional.",
     "about.v3.title": "Imparcialidade Humana + IA",
     "about.v3.body": "Nossa equipe humana está sempre disponível para acompanhar os usuários na complexidade operativa, mas a imparcialidade algorítmica absoluta é o que processa, distribui e entrega os melhores spreads otimizados a cada parte, de forma equitativa e sem favoritismos.",
+  },
+};
+
 
 interface I18nCtx {
   lang: Lang;
