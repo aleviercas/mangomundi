@@ -1,4 +1,4 @@
-import { Cpu, Users, Scale } from "lucide-react";
+import { Cpu, ShieldCheck, Scale } from "lucide-react";
 
 export function TestimonialsSection() {
   return (
@@ -35,15 +35,14 @@ export function TestimonialsSection() {
           </div>
           <div className="rounded-2xl border border-border bg-card p-8">
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Users className="h-5 w-5" />
+              <ShieldCheck className="h-5 w-5" />
             </div>
             <h3 className="font-heading text-lg font-semibold text-foreground mb-2">
-              Human Support When It Matters
+              System Integrity
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Our specialists are always reachable to accompany users through operational
-              complexity, compliance and large-ticket execution — without ever overriding the
-              neutral decision engine that guarantees fair outcomes for every party.
+              Absolute algorithmic impartiality is what processes, distributes and delivers
+              the best optimised spreads to every party, equitably and without favouritism.
             </p>
           </div>
         </div>

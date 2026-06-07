@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle, BellPlus, Share2, Check } from "lucide-react";
+import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle, BellPlus, Share2, Check } from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -522,24 +522,15 @@ function ResultsBlock({
   const showLargeBanner = amount >= 50000;
   const [sortBy, setSortBy] = useState<"received" | "fee" | "speed">("received");
 
-  const sponsored = useMemo(
-    () =>
-      result.rows
-        .filter((r) => r.sponsored)
-        .sort((a, b) => (a.sponsored_rank ?? 999) - (b.sponsored_rank ?? 999))
-        .slice(0, 2),
-    [result.rows],
-  );
   const organic = useMemo(() => {
-    const base = result.rows.filter((r) => !r.sponsored);
-    const sorted = [...base];
-    if (sortBy === "received") sorted.sort((a, b) => b.received - a.received);
-    if (sortBy === "fee") sorted.sort((a, b) => a.fee_total - b.fee_total);
+    const base = [...result.rows];
+    if (sortBy === "received") base.sort((a, b) => b.received - a.received);
+    if (sortBy === "fee") base.sort((a, b) => a.fee_total - b.fee_total);
     if (sortBy === "speed")
-      sorted.sort(
+      base.sort(
         (a, b) => (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
       );
-    return sorted;
+    return base;
   }, [result.rows, sortBy]);
 
   // Savings vs worst provider (by received)
@@ -588,7 +579,7 @@ function ResultsBlock({
                 <span className="text-sm font-normal text-muted-foreground">{result.quote}</span>
               </div>
               <div className="text-[11px] text-muted-foreground">
-                on {amount.toLocaleString()} {result.base} → {result.quote} · best vs worst routed quote in this comparison
+                You save {savings.diff.toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.quote} with the optimal route vs the market average.
               </div>
 
             </div>
@@ -631,29 +622,6 @@ function ResultsBlock({
         </div>
       )}
 
-      {/* Sponsored block — separated from organic, badged */}
-      {sponsored.length > 0 && (
-        <div className="mb-4 space-y-2">
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <Megaphone className="h-3 w-3" /> Sponsored offers
-          </div>
-          {sponsored.map((row) => (
-            <ProviderRow
-              key={row.slug}
-              row={row}
-              quote={result.quote}
-              base={result.base}
-              isBest={false}
-              isSponsored
-              onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
-              tRecipient={tRecipient}
-              tTotalFee={tTotalFee}
-              tSpeed={tSpeed}
-              tCta={tCta}
-            />
-          ))}
-        </div>
-      )}
 
       {/* Organic ranking */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card">

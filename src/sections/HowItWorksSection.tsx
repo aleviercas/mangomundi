@@ -5,7 +5,7 @@ const steps = [
     number: "01",
     icon: Search,
     title: "Compare",
-    description: "Our engine scans 150+ providers in real-time to surface the best available rates and routes for your payment.",
+    description: "Our engine analyzes available liquidity paths and indexed provider rates in real-time to surface optimal execution routes.",
   },
   {
     number: "02",

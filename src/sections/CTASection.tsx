@@ -6,7 +6,6 @@ import { RfqTerminal } from "@/components/RfqTerminal";
 export function CTASection() {
   const { t } = useI18n();
   const [rfqOpen, setRfqOpen] = useState(false);
-  const [salesOpen, setSalesOpen] = useState(false);
 
   return (
     <section className="relative overflow-hidden bg-card py-20 lg:py-28">
@@ -18,7 +17,7 @@ export function CTASection() {
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
           {t("home.finalCta.subtitle")}
         </p>
-        <div className="mt-10 flex flex-wrap justify-center gap-4">
+        <div className="mt-10 flex justify-center">
           <button
             onClick={() => setRfqOpen(true)}
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/20"
@@ -27,16 +26,9 @@ export function CTASection() {
             {t("home.finalCta.rfq")}
             <ArrowRight className="h-5 w-5" />
           </button>
-          <button
-            onClick={() => setSalesOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-surface-elevated"
-          >
-            {t("cta.talkSales")}
-          </button>
         </div>
       </div>
       <RfqTerminal open={rfqOpen} onOpenChange={setRfqOpen} />
-      <RfqTerminal open={salesOpen} onOpenChange={setSalesOpen} />
     </section>
   );
 }
