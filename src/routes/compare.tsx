@@ -43,13 +43,14 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 
 function FxToolPage() {
   const { t, lang } = useI18n();
-  const [amount, setAmount] = useState<number>(1000);
+  const [amount, setAmount] = useState<number>(0);
   const [from, setFrom] = useState("GBP");
   const [to, setTo] = useState("ARS");
-  const [sendingCountry, setSendingCountry] = useState("GB");
-  const [receivingCountry, setReceivingCountry] = useState("AR");
+  const [sendingCountry, setSendingCountry] = useState("");
+  const [receivingCountry, setReceivingCountry] = useState("");
   const [segment, setSegment] = useState<Segment>("retail");
   const [urgency, setUrgency] = useState<Urgency>("standard");
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [aiText, setAiText] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
