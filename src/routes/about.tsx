@@ -16,12 +16,37 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const { t } = useI18n();
+  const { t, lang, setLang } = useI18n();
+
+  // Corporate compliance gate: /about is restricted to the verified locales.
+  useEffect(() => {
+    if (!(CORPORATE_LANGS as readonly Lang[]).includes(lang)) {
+      setLang("en");
+    }
+  }, [lang, setLang]);
 
   const values = [
     { icon: Globe2, title: t("about.v1.title"), body: t("about.v1.body") },
     { icon: Sparkles, title: t("about.v2.title"), body: t("about.v2.body") },
     { icon: Scale, title: t("about.v3.title"), body: t("about.v3.body") },
+  ];
+
+  const chapters = [
+    {
+      chapter: t("about.manifesto.chapterMission"),
+      title: t("about.manifesto.missionTitle"),
+      body: t("about.manifesto.missionText"),
+    },
+    {
+      chapter: t("about.manifesto.chapterVision"),
+      title: t("about.manifesto.visionTitle"),
+      body: t("about.manifesto.visionText"),
+    },
+    {
+      chapter: t("about.manifesto.chapterProblem"),
+      title: t("about.manifesto.problemTitle"),
+      body: t("about.manifesto.problemText"),
+    },
   ];
 
   return (
