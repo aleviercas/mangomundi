@@ -72,48 +72,10 @@ const features = [
 ];
 
 
-const largeTicketDesk = [
-  {
-    name: "Airwallex",
-    domain: "airwallex.com",
-    regulator: "FCA · ASIC · MAS",
-    trust: 9.4,
-    spread: "0.4%",
-    speciality: "Global accounts, batch payouts, treasury API",
-  },
-  {
-    name: "OFX",
-    domain: "ofx.com",
-    regulator: "ASIC · FCA · FinCEN",
-    trust: 9.1,
-    spread: "0.5%",
-    speciality: "Forwards & limit orders for treasury teams",
-  },
-  {
-    name: "Convera",
-    domain: "convera.com",
-    regulator: "FinCEN · FCA",
-    trust: 8.9,
-    spread: "0.6%",
-    speciality: "Enterprise FX, education & higher-ed payouts",
-  },
-  {
-    name: "Currencies Direct",
-    domain: "currenciesdirect.com",
-    regulator: "FCA",
-    trust: 9.2,
-    spread: "0.5%",
-    speciality: "Property & high-value private client transfers",
-  },
-];
-
 function BusinessPage() {
   const { t } = useI18n();
   const [rfqOpen, setRfqOpen] = useState(false);
-  const [monthly, setMonthly] = useState<number>(250000);
-  const savingsPct = 0.025;
-  const monthlySavings = Math.round(monthly * savingsPct);
-  const annualSavings = monthlySavings * 12;
+
 
   return (
     <div className="bg-background">
