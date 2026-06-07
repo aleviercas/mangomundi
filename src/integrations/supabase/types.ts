@@ -58,6 +58,7 @@ export type Database = {
           created_at: string
           excerpt: string | null
           id: string
+          locale: string
           published: boolean
           published_at: string | null
           slug: string
@@ -72,6 +73,7 @@ export type Database = {
           created_at?: string
           excerpt?: string | null
           id?: string
+          locale?: string
           published?: boolean
           published_at?: string | null
           slug: string
@@ -86,6 +88,7 @@ export type Database = {
           created_at?: string
           excerpt?: string | null
           id?: string
+          locale?: string
           published?: boolean
           published_at?: string | null
           slug?: string
@@ -150,53 +153,101 @@ export type Database = {
       }
       enterprise_leads: {
         Row: {
+          amount: number | null
+          consent_timestamp: string | null
           created_at: string
           email: string
           feature_source: string | null
+          from_currency: string | null
           id: string
+          locale: string | null
+          privacy_consent: boolean
+          receiving_country: string | null
+          request_id: string | null
+          sending_country: string | null
           status: string
+          to_currency: string | null
         }
         Insert: {
+          amount?: number | null
+          consent_timestamp?: string | null
           created_at?: string
           email: string
           feature_source?: string | null
+          from_currency?: string | null
           id?: string
+          locale?: string | null
+          privacy_consent?: boolean
+          receiving_country?: string | null
+          request_id?: string | null
+          sending_country?: string | null
           status?: string
+          to_currency?: string | null
         }
         Update: {
+          amount?: number | null
+          consent_timestamp?: string | null
           created_at?: string
           email?: string
           feature_source?: string | null
+          from_currency?: string | null
           id?: string
+          locale?: string | null
+          privacy_consent?: boolean
+          receiving_country?: string | null
+          request_id?: string | null
+          sending_country?: string | null
           status?: string
+          to_currency?: string | null
         }
         Relationships: []
       }
       fx_rates: {
         Row: {
+          affiliate_url_template: string | null
           fee: number
           from_currency: string
           id: string
+          is_local_fx: boolean
+          max_amount: number | null
+          min_amount: number | null
           provider_slug: string
+          public_spread_percent: number
           rate: number
+          receiving_country: string | null
+          sending_country: string | null
           to_currency: string
           updated_at: string
         }
         Insert: {
+          affiliate_url_template?: string | null
           fee?: number
           from_currency: string
           id?: string
+          is_local_fx?: boolean
+          max_amount?: number | null
+          min_amount?: number | null
           provider_slug: string
+          public_spread_percent?: number
           rate: number
+          receiving_country?: string | null
+          sending_country?: string | null
           to_currency: string
           updated_at?: string
         }
         Update: {
+          affiliate_url_template?: string | null
           fee?: number
           from_currency?: string
           id?: string
+          is_local_fx?: boolean
+          max_amount?: number | null
+          min_amount?: number | null
           provider_slug?: string
+          public_spread_percent?: number
           rate?: number
+          receiving_country?: string | null
+          sending_country?: string | null
           to_currency?: string
           updated_at?: string
         }
@@ -337,6 +388,57 @@ export type Database = {
           updated_at?: string
           vertical?: Database["public"]["Enums"]["provider_vertical"]
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      retail_leads: {
+        Row: {
+          affiliate_code: string
+          amount: number
+          consent_timestamp: string
+          created_at: string
+          email: string
+          from_currency: string
+          id: string
+          locale: string
+          privacy_consent: boolean
+          provider_slug: string | null
+          receiving_country: string | null
+          sending_country: string | null
+          status: string
+          to_currency: string
+        }
+        Insert: {
+          affiliate_code?: string
+          amount: number
+          consent_timestamp?: string
+          created_at?: string
+          email: string
+          from_currency: string
+          id?: string
+          locale?: string
+          privacy_consent?: boolean
+          provider_slug?: string | null
+          receiving_country?: string | null
+          sending_country?: string | null
+          status?: string
+          to_currency: string
+        }
+        Update: {
+          affiliate_code?: string
+          amount?: number
+          consent_timestamp?: string
+          created_at?: string
+          email?: string
+          from_currency?: string
+          id?: string
+          locale?: string
+          privacy_consent?: boolean
+          provider_slug?: string | null
+          receiving_country?: string | null
+          sending_country?: string | null
+          status?: string
+          to_currency?: string
         }
         Relationships: []
       }
