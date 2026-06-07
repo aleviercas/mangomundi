@@ -152,6 +152,15 @@ function FxToolPage() {
         referrer: typeof window !== "undefined" ? window.location.href : undefined,
       },
     }).catch(() => {});
+    track("provider_click", {
+      provider_slug: slug,
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      urgency,
+      source: "compare_results",
+    });
     setModalCtx({
       amount,
       fromCurrency: from,
@@ -163,6 +172,46 @@ function FxToolPage() {
     });
     setModalOpen(true);
   };
+
+  const handleSaveAlert = () => {
+    track("rfq_interaction", {
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      urgency,
+      source: "save_alert",
+    });
+    setShareToast(false);
+    window.alert(`Alert saved for ${from} → ${to}. We will notify you when the rate improves.`);
+  };
+
+  const handleShare = async () => {
+    const shareUrl =
+      typeof window !== "undefined"
+        ? `${window.location.origin}/compare?from=${from}&to=${to}&amount=${amount}`
+        : "";
+    track("rfq_interaction", {
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      urgency,
+      source: "share",
+    });
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ title: "mangoglobal comparison", url: shareUrl });
+      } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareToast(true);
+        setTimeout(() => setShareToast(false), 2400);
+      }
+    } catch {
+      /* user cancelled */
+    }
+  };
+
 
   const sendChat = (msg: string) => {
     const trimmed = msg.trim();
