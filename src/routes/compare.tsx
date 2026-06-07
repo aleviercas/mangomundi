@@ -588,8 +588,9 @@ function ResultsBlock({
                 <span className="text-sm font-normal text-muted-foreground">{result.quote}</span>
               </div>
               <div className="text-[11px] text-muted-foreground">
-                with <span className="font-semibold text-foreground">{savings.bestName}</span> vs <span className="font-semibold text-foreground">{savings.worstName}</span>
+                on {amount.toLocaleString()} {result.base} → {result.quote} · best vs worst routed quote in this comparison
               </div>
+
             </div>
           </div>
           <div className="sm:border-l sm:border-emerald-500/20 sm:pl-5">
