@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -16,33 +16,12 @@ import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { useAnalytics } from "@/hooks/use-analytics";
 
-
-
-export const Route = createFileRoute("/compare")({
-  head: () => ({
-    meta: [
-      { title: "Compare Money Transfers — mangoglobal" },
-      {
-        name: "description",
-        content:
-          "Compare live FX rates across 30+ providers in one click. Neutral AI recommendation, real mid-market rates, and the best route for any corridor.",
-      },
-      { property: "og:title", content: "Compare Money Transfers — mangoglobal" },
-      {
-        property: "og:description",
-        content:
-          "Compare 30+ money-transfer providers with live rates, a neutral AI recommendation, and an interactive chat.",
-      },
-    ],
-  }),
-  component: FxToolPage,
-});
-
 type Segment = "retail" | "business";
 type Urgency = "urgent" | "standard" | "flexible";
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
-function FxToolPage() {
+export function ComparatorSection() {
+
   const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(0);
   const [from, setFrom] = useState("GBP");
