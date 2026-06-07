@@ -246,6 +246,7 @@ const DICTS: Record<Lang, Dict> = {
     "about.v2.body": "Democratizar las tasas mayoristas interbancarias y los spreads optimizados, pulverizando las asimetrías de información de la banca tradicional.",
     "about.v3.title": "Imparcialidad Humana + IA",
     "about.v3.body": "Nuestro equipo humano está siempre disponible para acompañar a los usuarios en la complejidad operativa, pero la imparcialidad algorítmica absoluta es la que procesa, distribuye y entrega los mejores spreads optimizados a cada parte, de forma equitativa y sin favoritismos.",
+  },
   pt: {
     "nav.home": "Início",
     "nav.fx": "Ferramenta FX",
