@@ -71,40 +71,6 @@ const features = [
   { icon: Headphones, title: "Dedicated support", body: "Account manager, SLA, and direct lines to our London, Singapore, NY, and Lagos desks." },
 ];
 
-const plans = [
-  {
-    name: "Pro",
-    price: "$49",
-    cadence: "/ month",
-    description: "For SMBs and finance teams running regular cross-border flows.",
-    features: [
-      "Rate alerts on your corridors",
-      "Saved beneficiaries & history",
-      "CSV export & monthly reports",
-      "Priority AI reasoning",
-      "Email support",
-    ],
-    cta: "Start Pro",
-    ctaTo: "/contact" as const,
-    highlighted: true,
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    cadence: "",
-    description: "Treasury teams, fintechs, and financial institutions.",
-    features: [
-      "REST API to the decision engine",
-      "Custom provider mix & routing rules",
-      "Webhook events & batch routing",
-      "Dedicated account manager",
-      "SSO, audit logs, SLA",
-    ],
-    cta: "Talk to Sales",
-    ctaTo: "/contact" as const,
-    highlighted: false,
-  },
-];
 
 const largeTicketDesk = [
   {
