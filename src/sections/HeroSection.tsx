@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { Terminal, TrendingUp, Shield, Zap, GitCompare } from "lucide-react";
+import { TrendingUp, Shield, Zap, GitCompare } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { RfqTerminal } from "@/components/RfqTerminal";
+
 
 function HexCoin({
   symbol,
@@ -82,7 +81,8 @@ function CurrencyConstellation() {
 
 export function HeroSection() {
   const { t } = useI18n();
-  const [rfqOpen, setRfqOpen] = useState(false);
+
+
 
   return (
     <section className="relative pt-16 pb-16 lg:pt-20 lg:pb-20">
@@ -112,14 +112,8 @@ export function HeroSection() {
                 <GitCompare className="h-4 w-4" />
                 {t("home.hero.ctaCompare")}
               </Link>
-              <button
-                onClick={() => setRfqOpen(true)}
-                className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 transition-colors hover:bg-slate-50"
-              >
-                <Terminal className="h-4 w-4" />
-                {t("cta.talkSales")}
-              </button>
             </div>
+
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               {[
                 { Icon: TrendingUp, label: t("hero.trust.1") },
@@ -135,7 +129,7 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-      <RfqTerminal open={rfqOpen} onOpenChange={setRfqOpen} />
     </section>
   );
 }
+

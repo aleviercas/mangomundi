@@ -132,21 +132,8 @@ function BusinessPage() {
             Cut FX cost across payroll, suppliers, and treasury. Plug our decision engine into your
             product via API, or use the dashboard for high-value transfers with dedicated support.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-            >
-              Talk to Sales <ArrowRight className="h-4 w-4" />
-            </Link>
-            <a
-              href="#pricing"
-              className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-surface-elevated"
-            >
-              See pricing
-            </a>
-          </div>
         </div>
+
       </section>
 
       {/* Use cases */}
