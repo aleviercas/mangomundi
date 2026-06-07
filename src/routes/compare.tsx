@@ -576,7 +576,7 @@ function ResultsBlock({
               tRecipient={tRecipient}
               tTotalFee={tTotalFee}
               tSpeed={tSpeed}
-              tGoTo={tGoTo}
+              tCta={tCta}
             />
           ))}
         </div>
@@ -603,7 +603,7 @@ function ResultsBlock({
             tRecipient={tRecipient}
             tTotalFee={tTotalFee}
             tSpeed={tSpeed}
-            tGoTo={tGoTo}
+            tCta={tCta}
           />
         ))}
         {organic.length === 0 && (
@@ -628,7 +628,7 @@ function ProviderRow({
   tRecipient,
   tTotalFee,
   tSpeed,
-  tGoTo,
+  tCta,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -639,7 +639,7 @@ function ProviderRow({
   tRecipient: string;
   tTotalFee: string;
   tSpeed: string;
-  tGoTo: string;
+  tCta: string;
 }) {
   const deliveryLabel =
     row.delivery_minutes != null
@@ -751,6 +751,18 @@ function CurrencySelect({ value, onChange }: { value: string; onChange: (v: stri
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
       {CURRENCIES.map((c) => (
+        <option key={c.code} value={c.code}>
+          {c.flag} {c.code} — {c.name}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function CountrySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  return (
+    <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
+      {COUNTRIES.map((c) => (
         <option key={c.code} value={c.code}>
           {c.flag} {c.code} — {c.name}
         </option>
