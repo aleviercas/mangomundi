@@ -93,10 +93,8 @@ function FxToolPage() {
   } | null>(null);
 
   const isLocalFx = sendingCountry === receivingCountry && from !== to;
-  const [aiLoading, setAiLoading] = useState(false);
-  const [chat, setChat] = useState<ChatMsg[]>([]);
-  const [chatInput, setChatInput] = useState("");
-  const chatBottomRef = useRef<HTMLDivElement>(null);
+
+
 
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
