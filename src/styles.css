@@ -177,3 +177,61 @@
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 25%, transparent);
   }
 }
+
+/* === Dark Terminal aesthetic utilities === */
+@keyframes mg-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.terminal-card {
+  background-color: oklch(0.18 0.012 264);
+  color: oklch(0.96 0.005 247);
+  border: 1px solid oklch(0.30 0.015 264 / 0.55);
+}
+.terminal-divider {
+  border-color: oklch(0.30 0.015 264 / 0.45);
+}
+.terminal-text-bright { color: oklch(0.98 0.005 247); }
+.terminal-text-exec   { color: oklch(0.78 0.16 145); }
+.terminal-text-comment{ color: oklch(0.60 0.015 257 / 0.75); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.terminal-input {
+  background-color: oklch(0.22 0.012 264);
+  border: 1px solid oklch(0.30 0.015 264 / 0.55);
+  color: oklch(0.98 0.005 247);
+  caret-color: oklch(0.769 0.188 70.08);
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.terminal-input::placeholder { color: oklch(0.55 0.015 257 / 0.6); }
+.terminal-input:focus {
+  outline: none;
+  border-color: oklch(0.769 0.188 70.08 / 0.7);
+  box-shadow: 0 0 0 3px oklch(0.769 0.188 70.08 / 0.18);
+}
+.terminal-input:focus-within { border-color: oklch(0.769 0.188 70.08 / 0.7); }
+.terminal-cursor::after {
+  content: "_";
+  margin-left: 2px;
+  color: oklch(0.769 0.188 70.08);
+  animation: mg-caret-blink 1s steps(2, start) infinite;
+}
+.terminal-chip {
+  background-color: oklch(0.22 0.012 264);
+  border: 1px solid oklch(0.30 0.015 264 / 0.55);
+  color: oklch(0.78 0.012 257);
+  transition: color .15s ease, border-color .15s ease, background-color .15s ease;
+}
+.terminal-chip:hover {
+  color: oklch(0.85 0.17 70);
+  border-color: oklch(0.769 0.188 70.08 / 0.6);
+  background-color: oklch(0.769 0.188 70.08 / 0.06);
+}
+.terminal-btn-primary {
+  background-color: oklch(0.769 0.188 70.08);
+  color: oklch(0.18 0.012 264);
+  transition: filter .15s ease, box-shadow .15s ease;
+}
+.terminal-btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 0 0 3px oklch(0.769 0.188 70.08 / 0.25);
+}
+
