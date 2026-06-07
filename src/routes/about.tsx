@@ -141,66 +141,108 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Institutional & Partnership Inquiries */}
+      {/* Institutional & Partnership Inquiries — Send Console */}
       <section id="institutional-inquiries" className="py-20 border-t border-border">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl border border-border bg-card p-8 font-mono sm:p-10">
-            <div className="mb-4 flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
-              <span className="inline-block h-2 w-2 rounded-full bg-primary" />
-              Institutional &amp; Partnership Inquiries
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="terminal-card rounded-2xl overflow-hidden font-mono">
+            {/* Header */}
+            <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
+              </span>
+              <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
+                mangoglobal · partnerships.exec
+              </span>
+              <span className="ml-auto text-[10px] terminal-text-comment">// secure channel</span>
             </div>
-            <h2 className="font-heading text-2xl font-bold text-foreground sm:text-3xl">
-              Direct line to the desk
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-base">
-              For treasury operations, liquidity partnerships, regulatory diligence and institutional onboarding.
-            </p>
-            <form
-              className="mt-6 grid gap-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                window.location.href = "mailto:hello@mangoglobal.com";
-              }}
-            >
-              <div className="grid gap-4 sm:grid-cols-2">
-                <input
-                  type="text"
-                  required
-                  placeholder="Full name"
-                  className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
-                <input
-                  type="email"
-                  required
-                  placeholder="Work email"
-                  className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                />
+
+            <div className="p-6 sm:p-8 space-y-5">
+              <div>
+                <div className="terminal-text-exec text-sm font-semibold">
+                  $ Institutional &amp; Partnership Inquiries
+                </div>
+                <p className="mt-2 text-[12px] terminal-text-comment leading-relaxed">
+                  // For treasury operations, liquidity partnerships, regulatory diligence and institutional onboarding.
+                </p>
               </div>
-              <input
-                type="text"
-                placeholder="Institution / Company"
-                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <textarea
-                rows={4}
-                required
-                placeholder="Briefly describe your flow, corridor or partnership scope."
-                className="rounded-lg border border-border bg-background px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-              <button
-                type="submit"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 sm:w-auto"
+
+              <form
+                className="grid gap-4"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  window.location.href = "mailto:hello@mangoglobal.com";
+                }}
               >
-                Open secure channel
-              </button>
-            </form>
-            <p className="mt-4 text-xs text-muted-foreground">
-              Or write directly to{" "}
-              <a href="mailto:hello@mangoglobal.com" className="text-primary hover:underline">
-                hello@mangoglobal.com
-              </a>
-              .
-            </p>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="block">
+                    <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
+                      // full_name
+                    </span>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Jane Doe"
+                      className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
+                      // work_email
+                    </span>
+                    <input
+                      type="email"
+                      required
+                      placeholder="jane@institution.com"
+                      className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                    />
+                  </label>
+                </div>
+
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
+                    // institution
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Institution / Company"
+                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                  />
+                </label>
+
+                <label className="block">
+                  <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
+                    // scope
+                  </span>
+                  <textarea
+                    rows={4}
+                    required
+                    placeholder="Briefly describe your flow, corridor or partnership scope."
+                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                  />
+                </label>
+
+                <div className="flex items-center justify-between gap-3 border-t terminal-divider pt-4">
+                  <span className="terminal-text-comment text-[11px] font-mono">
+                    $ submit → hello@mangoglobal.com
+                  </span>
+                  <button
+                    type="submit"
+                    className="terminal-btn-primary inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-xs font-bold uppercase tracking-widest"
+                  >
+                    ▶ Open secure channel
+                  </button>
+                </div>
+              </form>
+
+              <p className="text-[11px] terminal-text-comment">
+                // Or write directly to{" "}
+                <a href="mailto:hello@mangoglobal.com" className="terminal-text-exec hover:underline">
+                  hello@mangoglobal.com
+                </a>
+                .
+              </p>
+            </div>
           </div>
         </div>
       </section>
