@@ -1,39 +1,24 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
+import { useQuery, queryOptions } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { getBlogPost } from "@/lib/blog.functions";
+import { useI18n } from "@/lib/i18n";
 
-const postQuery = (slug: string) =>
+const postQuery = (slug: string, locale: string) =>
   queryOptions({
-    queryKey: ["blog", "post", slug],
-    queryFn: () => getBlogPost({ data: { slug } }),
+    queryKey: ["blog", "post", slug, locale],
+    queryFn: () => getBlogPost({ data: { slug, locale } }),
   });
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: async ({ context, params }) => {
-    const post = await context.queryClient.ensureQueryData(postQuery(params.slug));
-    if (!post) throw notFound();
-    return post;
-  },
-  head: ({ loaderData }) => {
-    const post = loaderData;
-    if (!post) {
-      return { meta: [{ title: "Post not found — mangoglobal" }] };
-    }
-    const desc = post.excerpt ?? "Read this post on mangoglobal.";
-    return {
-      meta: [
-        { title: `${post.title} — mangoglobal` },
-        { name: "description", content: desc },
-        { property: "og:title", content: post.title },
-        { property: "og:description", content: desc },
-        ...(post.cover_url ? [{ property: "og:image", content: post.cover_url }] : []),
-        { property: "og:type", content: "article" },
-      ],
-    };
-  },
+  head: ({ params }) => ({
+    meta: [
+      { title: `${params.slug} — mangoglobal` },
+      { name: "description", content: "Read this post on mangoglobal." },
+    ],
+  }),
   notFoundComponent: () => (
     <div className="bg-background min-h-[60vh] flex items-center justify-center">
       <div className="text-center px-4">
@@ -58,8 +43,20 @@ export const Route = createFileRoute("/blog/$slug")({
 
 function BlogPostPage() {
   const { slug } = Route.useParams();
-  const { data: post } = useSuspenseQuery(postQuery(slug));
-  if (!post) return null;
+  const { lang } = useI18n();
+  const { data: post, isLoading } = useQuery(postQuery(slug, lang));
+
+  if (isLoading) {
+    return (
+      <div className="bg-background min-h-[60vh] flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!post) {
+    throw notFound();
+  }
 
   return (
     <article className="bg-background">
