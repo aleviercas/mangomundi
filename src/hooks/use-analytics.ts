@@ -37,9 +37,10 @@ export function useAnalytics() {
   const track = useCallback(
     (event: AnalyticsEvent, payload: AnalyticsPayload = {}) => {
       try {
-        const segmentTag = [payload.segment, payload.urgency, payload.source, event]
+        const rawSegment = [payload.segment, payload.urgency, payload.source, event]
           .filter(Boolean)
           .join(":");
+        const segmentTag = rawSegment.slice(0, 32);
         const referrer = typeof window !== "undefined" ? window.location.href : undefined;
 
         // Fire-and-forget: never await, never throw to UI.
