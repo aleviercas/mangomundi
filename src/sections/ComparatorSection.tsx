@@ -298,117 +298,157 @@ export function ComparatorSection() {
           )}
         </div>
 
-        {/* AI panel */}
+        {/* AI panel — unified $ terminal pattern */}
         {(aiLoading || aiText) && (
-          <div className="mt-6 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-5 sm:p-6">
-            <div className="mb-3 flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span className="font-heading text-sm font-bold uppercase tracking-wider text-primary">
-                {t("fx.recommends")}
+          <div className="terminal-card mt-6 rounded-2xl overflow-hidden font-mono">
+            <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
               </span>
+              <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
+                mangoglobal · ai_reasoning.log
+              </span>
+              <span className="ml-auto text-[10px] terminal-text-comment">// {t("fx.recommends")}</span>
             </div>
-            {aiLoading ? (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
-              </div>
-            ) : (
-              <p className="text-sm leading-relaxed text-foreground sm:text-base">{aiText}</p>
-            )}
 
-            {/* Compact action row — symmetrically aligned with reasoning block */}
-            {aiText && !aiLoading && (
-              <div className="mt-4 flex flex-wrap items-center gap-2">
-                <button
-                  onClick={handleSaveAlert}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-primary/40 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/20"
-                >
-                  <BellPlus className="h-3.5 w-3.5" /> Save &amp; Alert Me
-                </button>
-                <button
-                  onClick={handleShare}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition hover:border-primary hover:text-primary"
-                >
-                  <Share2 className="h-3.5 w-3.5" /> Share
-                </button>
-                {shareToast && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-500">
-                    <Check className="h-3 w-3" /> Link copied
-                  </span>
-                )}
-              </div>
-            )}
-
-
-
-            {/* Interactive chat */}
-            {aiText && !aiLoading && (
-              <div className="mt-5 rounded-xl border border-border bg-background/60 p-4">
-                <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <MessageCircle className="h-3.5 w-3.5 text-primary" />
-                  {t("fx.chat.title")}
+            <div className="p-5 sm:p-6 space-y-4">
+              {aiLoading ? (
+                <div className="flex items-center gap-2 text-sm terminal-text-comment">
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
                 </div>
-
-                {chat.length === 0 && (
-                  <div className="mb-3 flex flex-wrap gap-2">
-                    {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
-                      <button
-                        key={q}
-                        onClick={() => sendChat(q)}
-                        className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-primary hover:text-primary"
-                      >
-                        {q}
-                      </button>
-                    ))}
+              ) : (
+                <>
+                  <div className="terminal-text-exec text-sm font-semibold">
+                    $ Execution Path Found
                   </div>
-                )}
+                  <ul className="text-sm terminal-text-bright leading-relaxed font-mono space-y-1.5">
+                    <li>
+                      <span className="terminal-text-comment">›</span> Corridor:{" "}
+                      <span className="terminal-text-bright">
+                        {from} → {to}
+                      </span>
+                    </li>
+                    <li>
+                      <span className="terminal-text-comment">›</span> Notional:{" "}
+                      <span className="terminal-text-bright">
+                        {amount.toLocaleString()} {from}
+                      </span>
+                    </li>
+                    <li>
+                      <span className="terminal-text-comment">›</span> Segment / Urgency:{" "}
+                      <span className="terminal-text-bright">
+                        {segment} · {urgency}
+                      </span>
+                    </li>
+                  </ul>
 
-                {chat.length > 0 && (
-                  <div className="mb-3 max-h-72 space-y-2 overflow-y-auto pr-1">
-                    {chat.map((m, i) => (
-                      <div
-                        key={i}
-                        className={`rounded-lg px-3 py-2 text-sm leading-relaxed ${
-                          m.role === "user"
-                            ? "ml-8 bg-primary/15 text-foreground"
-                            : "mr-8 bg-card text-foreground"
-                        }`}
-                      >
-                        {m.content}
-                      </div>
-                    ))}
-                    {chatMut.isPending && (
-                      <div className="mr-8 flex items-center gap-2 rounded-lg bg-card px-3 py-2 text-sm text-muted-foreground">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fx.chat.thinking")}
-                      </div>
-                    )}
-                    <div ref={chatBottomRef} />
+                  <div className="border-t terminal-divider pt-3">
+                    <div className="terminal-text-comment text-[10px] uppercase tracking-[0.2em]">
+                      // Technical analysis
+                    </div>
+                    <p className="mt-2 text-[13px] terminal-text-comment leading-relaxed">
+                      {aiText}
+                    </p>
                   </div>
-                )}
+                </>
+              )}
 
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    sendChat(chatInput);
-                  }}
-                  className="flex gap-2"
-                >
-                  <input
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    placeholder={t("fx.chat.placeholder")}
-                    className="input flex-1"
-                    disabled={chatMut.isPending}
-                  />
+              {/* Compact action row */}
+              {aiText && !aiLoading && (
+                <div className="flex flex-wrap items-center gap-2 border-t terminal-divider pt-4">
                   <button
-                    type="submit"
-                    disabled={chatMut.isPending || !chatInput.trim()}
-                    className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-50"
+                    onClick={handleSaveAlert}
+                    className="terminal-chip inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold"
                   >
-                    <Send className="h-3.5 w-3.5" /> {t("fx.chat.send")}
+                    <BellPlus className="h-3.5 w-3.5" /> Save &amp; Alert Me
                   </button>
-                </form>
-              </div>
-            )}
+                  <button
+                    onClick={handleShare}
+                    className="terminal-chip inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold"
+                  >
+                    <Share2 className="h-3.5 w-3.5" /> Share
+                  </button>
+                  {shareToast && (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400">
+                      <Check className="h-3 w-3" /> Link copied
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Interactive chat */}
+              {aiText && !aiLoading && (
+                <div className="rounded-md border terminal-divider p-4" style={{ backgroundColor: "oklch(0.16 0.012 264)" }}>
+                  <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider terminal-text-comment">
+                    <MessageCircle className="h-3.5 w-3.5 terminal-text-exec" />
+                    {t("fx.chat.title")}
+                  </div>
+
+                  {chat.length === 0 && (
+                    <div className="mb-3 flex flex-wrap gap-2">
+                      {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
+                        <button
+                          key={q}
+                          onClick={() => sendChat(q)}
+                          className="terminal-chip rounded-full px-3 py-1.5 text-xs"
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {chat.length > 0 && (
+                    <div className="mb-3 max-h-72 space-y-2 overflow-y-auto pr-1">
+                      {chat.map((m, i) => (
+                        <div
+                          key={i}
+                          className={`rounded-md px-3 py-2 text-sm leading-relaxed font-mono ${
+                            m.role === "user"
+                              ? "ml-8 bg-amber-500/15 text-amber-50 border border-amber-500/30"
+                              : "mr-8 border terminal-divider terminal-text-bright"
+                          }`}
+                          style={m.role === "assistant" ? { backgroundColor: "oklch(0.22 0.012 264)" } : undefined}
+                        >
+                          {m.content}
+                        </div>
+                      ))}
+                      {chatMut.isPending && (
+                        <div className="mr-8 flex items-center gap-2 rounded-md border terminal-divider px-3 py-2 text-sm terminal-text-comment" style={{ backgroundColor: "oklch(0.22 0.012 264)" }}>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fx.chat.thinking")}
+                        </div>
+                      )}
+                      <div ref={chatBottomRef} />
+                    </div>
+                  )}
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      sendChat(chatInput);
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <span className="terminal-text-comment font-mono text-sm select-none">{"$"}</span>
+                    <input
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      placeholder={t("fx.chat.placeholder")}
+                      className="terminal-input flex-1 rounded-md px-3 py-2 text-sm font-mono"
+                      disabled={chatMut.isPending}
+                    />
+                    <button
+                      type="submit"
+                      disabled={chatMut.isPending || !chatInput.trim()}
+                      className="terminal-btn-primary inline-flex h-10 items-center justify-center gap-1.5 rounded-md px-4 text-sm font-semibold disabled:opacity-40"
+                    >
+                      <Send className="h-3.5 w-3.5" /> {t("fx.chat.send")}
+                    </button>
+                  </form>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
