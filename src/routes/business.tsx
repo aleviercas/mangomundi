@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RfqTerminal } from "@/components/RfqTerminal";
+import { useI18n, CORPORATE_LANGS, type Lang } from "@/lib/i18n";
 import {
   Building2,
   Terminal,
@@ -8,6 +9,7 @@ import {
   Network,
   Lock,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/business")({
   head: () => ({
@@ -52,6 +54,16 @@ const pillars = [
 
 function BusinessPage() {
   const [rfqOpen, setRfqOpen] = useState(false);
+  const { lang, setLang } = useI18n();
+
+  // Compliance gate: /business is restricted to the 5 verified corporate locales.
+  useEffect(() => {
+    if (!(CORPORATE_LANGS as readonly Lang[]).includes(lang)) {
+      setLang("en");
+    }
+  }, [lang, setLang]);
+
+
 
   return (
     <div className="bg-background">

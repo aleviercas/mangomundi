@@ -1,12 +1,14 @@
 import { useCallback } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { trackAffiliateClick } from "@/lib/fx.functions";
+import { useI18n } from "@/lib/i18n";
 
 /**
  * Centralised, fail-silent analytics hook. Persists strategic business events
  * (provider clicks, comparator queries, RFQ interactions, simulated conversions)
  * to the `affiliate_clicks` table via the existing trackAffiliateClick server
- * function. UI must never block or break if the writes fail.
+ * function. Enriched with language code + corridor for BI dashboards. UI must
+ * never block or break if the writes fail.
  */
 export type AnalyticsEvent =
   | "provider_click"
@@ -33,11 +35,24 @@ const SAFE_SLUG: Record<AnalyticsEvent, string> = {
 
 export function useAnalytics() {
   const trackFn = useServerFn(trackAffiliateClick);
+  const { lang } = useI18n();
 
   const track = useCallback(
     (event: AnalyticsEvent, payload: AnalyticsPayload = {}) => {
       try {
-        const segmentTag = [payload.segment, payload.urgency, payload.source, event]
+        // Enrich segment with language + corridor for BI (Zod-bounded to 128 chars server-side).
+        const corridor =
+          payload.from_currency && payload.to_currency
+            ? `${payload.from_currency}->${payload.to_currency}`
+            : undefined;
+        const segmentTag = [
+          `lang=${lang}`,
+          corridor && `corridor=${corridor}`,
+          payload.segment,
+          payload.urgency,
+          payload.source,
+          event,
+        ]
           .filter(Boolean)
           .join(":")
           .slice(0, 128);
@@ -60,7 +75,7 @@ export function useAnalytics() {
         /* swallow */
       }
     },
-    [trackFn],
+    [trackFn, lang],
   );
 
   return { track };
