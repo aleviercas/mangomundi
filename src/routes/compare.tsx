@@ -247,7 +247,14 @@ function FxToolPage() {
           </div>
 
           <button
-            onClick={() => compareMut.mutate()}
+            onClick={() => {
+              if (!sendingCountry || !receivingCountry || amount <= 0) {
+                setValidationError(t("fx.validation"));
+                return;
+              }
+              setValidationError(null);
+              compareMut.mutate();
+            }}
             disabled={compareMut.isPending}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-60 sm:w-auto"
           >
@@ -261,6 +268,11 @@ function FxToolPage() {
               </>
             )}
           </button>
+          {validationError && (
+            <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
+              {validationError}
+            </div>
+          )}
         </div>
 
         {/* AI panel */}
