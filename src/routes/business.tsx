@@ -17,6 +17,7 @@ import {
   Briefcase,
   Star,
   Shield,
+  Sparkles,
   Terminal,
 } from "lucide-react";
 
