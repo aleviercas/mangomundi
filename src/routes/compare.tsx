@@ -616,7 +616,15 @@ function ResultsBlock({
         )}
       </div>
 
+      <div className="mt-4 rounded-xl border border-border bg-card/50 px-4 py-3 text-[11px] text-muted-foreground">
+        {tRatesSource}{" "}
+        <span className="font-semibold text-foreground">
+          {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
+          {new Date(result.rates_updated_at).toLocaleTimeString()}
+        </span>
+      </div>
       <p className="mt-3 text-[11px] text-muted-foreground">{tDisclaimer}</p>
+      <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground/80">{tTrademarks}</p>
     </div>
   );
 }
