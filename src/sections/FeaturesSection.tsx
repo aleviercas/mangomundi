@@ -1,35 +1,29 @@
-import { BarChart3, Brain, Wallet, Code, ShieldCheck, Headphones } from "lucide-react";
+import { Sparkles, Bell, ShieldCheck, Globe2 } from "lucide-react";
 
 const features = [
   {
-    icon: BarChart3,
-    title: "Real-Time Rate Comparison",
-    description: "Monitor live exchange rates across 150+ providers. Never miss the best deal.",
+    icon: Sparkles,
+    title: "Smart Spread Optimisation (RFQ)",
+    description:
+      "Non-public asynchronous bidding protocol for volumes above 10,000 USD with our network of authorised money desks.",
   },
   {
-    icon: Brain,
-    title: "AI-Powered Smart Routing",
-    description: "Our neutral AI finds the optimal path for every payment based on speed, cost, and reliability.",
-  },
-  {
-    icon: Wallet,
-    title: "Multi-Currency Wallets",
-    description: "Hold, convert, and manage balances in 150+ currencies from a single dashboard.",
-  },
-  {
-    icon: Code,
-    title: "Enterprise API Access",
-    description: "RESTful APIs with comprehensive documentation. Integrate in hours, not weeks.",
+    icon: Bell,
+    title: "Multichannel Automated Alerts",
+    description:
+      "Configure FX threshold alerts and receive instant notifications through WhatsApp, Slack and Telegram.",
   },
   {
     icon: ShieldCheck,
-    title: "Compliance & KYC",
-    description: "Automated identity verification and regulatory compliance across all jurisdictions.",
+    title: "Privacy by Design (GDPR)",
+    description:
+      "Complete anonymisation of financial data on external webhooks to protect the identity and strategy of corporate treasuries.",
   },
   {
-    icon: Headphones,
-    title: "24/7 Global Support",
-    description: "Expert support teams across time zones. Chat, email, or phone — we're always here.",
+    icon: Globe2,
+    title: "Local & Cross-Border Coverage",
+    description:
+      "Integrated support for international transfers and domestic Local FX — optimising existing multi-currency accounts.",
   },
 ];
 
@@ -42,10 +36,10 @@ export function FeaturesSection() {
             Platform Features
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to move money intelligently across borders
+            The four operational pillars of our Agentic AI architecture.
           </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature) => (
             <div
               key={feature.title}

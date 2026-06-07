@@ -43,13 +43,14 @@ type ChatMsg = { role: "user" | "assistant"; content: string };
 
 function FxToolPage() {
   const { t, lang } = useI18n();
-  const [amount, setAmount] = useState<number>(1000);
+  const [amount, setAmount] = useState<number>(0);
   const [from, setFrom] = useState("GBP");
   const [to, setTo] = useState("ARS");
-  const [sendingCountry, setSendingCountry] = useState("GB");
-  const [receivingCountry, setReceivingCountry] = useState("AR");
+  const [sendingCountry, setSendingCountry] = useState("");
+  const [receivingCountry, setReceivingCountry] = useState("");
   const [segment, setSegment] = useState<Segment>("retail");
   const [urgency, setUrgency] = useState<Urgency>("standard");
+  const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [aiText, setAiText] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
@@ -138,10 +139,8 @@ function FxToolPage() {
     },
   });
 
-  useEffect(() => {
-    compareMut.mutate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Intentionally do not auto-run: the comparator stays empty until the user submits.
+
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -248,7 +247,14 @@ function FxToolPage() {
           </div>
 
           <button
-            onClick={() => compareMut.mutate()}
+            onClick={() => {
+              if (!sendingCountry || !receivingCountry || amount <= 0) {
+                setValidationError(t("fx.validation"));
+                return;
+              }
+              setValidationError(null);
+              compareMut.mutate();
+            }}
             disabled={compareMut.isPending}
             className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:opacity-60 sm:w-auto"
           >
@@ -262,6 +268,11 @@ function FxToolPage() {
               </>
             )}
           </button>
+          {validationError && (
+            <div className="mt-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
+              {validationError}
+            </div>
+          )}
         </div>
 
         {/* AI panel */}
@@ -375,12 +386,21 @@ function FxToolPage() {
           </div>
         )}
 
+        {!result && !compareMut.isPending && !compareMut.isError && (
+          <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
+            <p className="text-sm text-muted-foreground">{t("fx.emptyState")}</p>
+          </div>
+        )}
+
         {result && (
           <ResultsBlock
             result={result}
             amount={amount}
             handleAffiliateClick={openPreferredRate}
             tDisclaimer={t("fx.disclaimer")}
+            tTrademarks={t("fx.trademarks")}
+            tRatesSource={t("fx.ratesSource")}
+            tAt={t("fx.at")}
             tRecipient={t("fx.recipient")}
             tTotalFee={t("fx.totalFee")}
             tSpeed={t("fx.speed")}
@@ -406,6 +426,9 @@ function ResultsBlock({
   amount,
   handleAffiliateClick,
   tDisclaimer,
+  tTrademarks,
+  tRatesSource,
+  tAt,
   tRecipient,
   tTotalFee,
   tSpeed,
@@ -417,6 +440,9 @@ function ResultsBlock({
   amount: number;
   handleAffiliateClick: (slug: string, url: string) => void;
   tDisclaimer: string;
+  tTrademarks: string;
+  tRatesSource: string;
+  tAt: string;
   tRecipient: string;
   tTotalFee: string;
   tSpeed: string;
@@ -590,7 +616,15 @@ function ResultsBlock({
         )}
       </div>
 
+      <div className="mt-4 rounded-xl border border-border bg-card/50 px-4 py-3 text-[11px] text-muted-foreground">
+        {tRatesSource}{" "}
+        <span className="font-semibold text-foreground">
+          {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
+          {new Date(result.rates_updated_at).toLocaleTimeString()}
+        </span>
+      </div>
       <p className="mt-3 text-[11px] text-muted-foreground">{tDisclaimer}</p>
+      <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground/80">{tTrademarks}</p>
     </div>
   );
 }
