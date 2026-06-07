@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle, BellPlus, Share2, Check } from "lucide-react";
+import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle, BellPlus, Share2, Check } from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
