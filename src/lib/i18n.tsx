@@ -189,6 +189,13 @@ const DICTS: Record<Lang, Dict> = {
     "chat.welcome": "Hola 👋 Soy el copiloto FX de **mangoglobal**. Probá una cotización (`500 GBP to ARS`) o contame el caso de tu empresa.",
     "chat.placeholder": "Ej: 500 GBP to ARS · o describí tu caso corporativo",
     "chat.error": "No pude procesar eso ahora. Probá de nuevo.",
+    "fx.emptyState": "Introducí los datos para calcular las mejores tasas.",
+    "fx.validation": "Por favor, completá país de origen, país de destino y monto.",
+    "fx.ratesSource": "Valores obtenidos directamente del mercado interbancario mayorista. Última actualización:",
+    "fx.at": "a las",
+    "fx.trademarks": "Todas las marcas comerciales, logotipos y nombres de proveedores de terceros (incluidos Wise, Airwallex, OFX, Convera y Currencies Direct) son propiedad de sus respectivos titulares. Su aparición en esta plataforma se realiza exclusivamente con fines informativos, comparativos y de referencia de mercado, y no implica afiliación, patrocinio o endoso comercial alguno por parte de dichos titulares con mangoglobal.",
+    "biz.rfqCta": "Abrir mesa RFQ",
+    "biz.rfqRoute": "Acceder a la mesa adecuada para tu corredor",
   },
   pt: {
     "nav.home": "Início",
