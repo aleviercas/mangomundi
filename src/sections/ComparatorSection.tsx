@@ -64,7 +64,7 @@ export function ComparatorSection() {
   const buildReasoning = (): string => {
     const urgencyLabel =
       urgency === "urgent" ? "urgent (minutes)" : urgency === "flexible" ? "flexible (days)" : "standard (same-day)";
-    return `Mango Engine Routing Justification: For a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the system analyzed available liquidity paths across indexed provider APIs and retail remittance channels. The optimal route has been selected based on a flat-fee optimization and real-time interbank exchange rates, delivering the maximum yield to the destination account. Spread, fixed fees, settlement window and regulatory coverage of each indexed counterparty were normalised before ranking; the recommendation reflects the neutral mathematical optimum for this corridor at query time.`;
+    return `[LANG:${lang.toUpperCase()}] Mango Engine Routing Justification: For a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the system analyzed available liquidity paths across indexed provider APIs and retail remittance channels. The optimal route has been selected based on a flat-fee optimization and real-time interbank exchange rates, delivering the maximum yield to the destination account. Spread, fixed fees, settlement window and regulatory coverage of each indexed counterparty were normalised before ranking; the recommendation reflects the neutral mathematical optimum for this corridor at query time.`;
   };
 
   const compareMut = useMutation({
@@ -228,59 +228,85 @@ export function ComparatorSection() {
             <span className="ml-auto text-[10px] terminal-text-comment">// build query</span>
           </div>
 
-          <div className="p-5 sm:p-6">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              <Field label={t("fx.field.send")}>
-                <input
-                  type="number"
-                  min={1}
-                  value={amount}
-                  onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 0))}
-                  className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
-                />
-              </Field>
-              <Field label={t("fx.field.from")}>
-                <CurrencySelect value={from} onChange={setFrom} />
-              </Field>
-              <Field label={t("fx.field.to")}>
-                <CurrencySelect value={to} onChange={setTo} />
-              </Field>
-              <Field label={t("rfq.fieldOrigin")}>
-                <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
-              </Field>
-              <Field label={t("rfq.fieldDest")}>
-                <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
-              </Field>
-              <Field label={t("fx.field.segment")}>
-                <div
-                  className="flex h-10 items-center gap-1 rounded-md border terminal-divider p-1"
-                  style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
-                >
-                  {(["retail", "business"] as Segment[]).map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => setSegment(s)}
-                      className={`flex-1 rounded-sm px-2 py-1 text-xs font-semibold capitalize transition font-mono ${
-                        segment === s ? "terminal-btn-primary" : "terminal-text-comment hover:opacity-80"
-                      }`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </Field>
-              <Field label={t("fx.field.urgency")}>
-                <select
-                  value={urgency}
-                  onChange={(e) => setUrgency(e.target.value as Urgency)}
-                  className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
-                >
-                  <option value="urgent">{t("fx.urgency.urgent")}</option>
-                  <option value="standard">{t("fx.urgency.standard")}</option>
-                  <option value="flexible">{t("fx.urgency.flexible")}</option>
-                </select>
-              </Field>
-            </div>
+          <div className="p-5 sm:p-6 space-y-6">
+            {/* ── Block 1: Market Context (Geography) ── */}
+            <section>
+              <div className="terminal-text-exec text-sm font-semibold font-mono">
+                $ Market Context
+              </div>
+              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
+                // Origen y destino geográfico del flujo.
+              </div>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                <Field label={t("rfq.fieldOrigin")}>
+                  <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
+                </Field>
+                <Field label={t("rfq.fieldDest")}>
+                  <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
+                </Field>
+              </div>
+            </section>
+
+            <div className="border-t terminal-divider" />
+
+            {/* ── Block 2: Execution Strategy (Currencies + Notional) ── */}
+            <section>
+              <div className="terminal-text-exec text-sm font-semibold font-mono">
+                $ Execution Strategy
+              </div>
+              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
+                // Par de divisas base y cotizada.
+              </div>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <Field label={t("fx.field.send")}>
+                  <input
+                    type="number"
+                    min={1}
+                    value={amount}
+                    onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 0))}
+                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                  />
+                </Field>
+                <Field label="Source Currency">
+                  <CurrencyChip value={from} onChange={setFrom} />
+                </Field>
+                <Field label="Target Currency">
+                  <CurrencyChip value={to} onChange={setTo} />
+                </Field>
+                <Field label={t("fx.field.urgency")}>
+                  <select
+                    value={urgency}
+                    onChange={(e) => setUrgency(e.target.value as Urgency)}
+                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                  >
+                    <option value="urgent">{t("fx.urgency.urgent")}</option>
+                    <option value="standard">{t("fx.urgency.standard")}</option>
+                    <option value="flexible">{t("fx.urgency.flexible")}</option>
+                  </select>
+                </Field>
+              </div>
+
+              <div className="mt-4">
+                <Field label={t("fx.field.segment")}>
+                  <div
+                    className="flex h-10 items-center gap-1 rounded-md border terminal-divider p-1"
+                    style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
+                  >
+                    {(["retail", "business"] as Segment[]).map((s) => (
+                      <button
+                        key={s}
+                        onClick={() => setSegment(s)}
+                        className={`flex-1 rounded-sm px-2 py-1 text-xs font-semibold capitalize transition font-mono ${
+                          segment === s ? "terminal-btn-primary" : "terminal-text-comment hover:opacity-80"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                </Field>
+              </div>
+            </section>
 
             <div className="mt-5 flex items-center gap-2">
               <span className="terminal-text-comment font-mono text-sm select-none">{"$"}</span>
@@ -302,7 +328,7 @@ export function ComparatorSection() {
                   </>
                 ) : (
                   <>
-                    {t("cta.compare")} <ArrowRight className="h-4 w-4" />
+                    $ {t("cta.compare")} <ArrowRight className="h-4 w-4" />
                   </>
                 )}
               </button>
@@ -847,4 +873,40 @@ function CurrencySelect({ value, onChange }: { value: string; onChange: (v: stri
     </select>
   );
 }
+
+/**
+ * Chip-style currency picker — visually distinct from the geography dropdowns.
+ * Rendered as a clear rounded "capsule" with the active currency on top of the
+ * native select, keeping accessibility intact.
+ */
+function CurrencyChip({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const active = CURRENCIES.find((c) => c.code === value);
+  return (
+    <div
+      className="relative flex h-10 items-center gap-2 rounded-full border border-amber-500/40 px-3 font-mono text-sm transition focus-within:border-amber-400 focus-within:shadow-[0_0_0_2px_oklch(0.769_0.188_70.08/0.25)]"
+      style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
+    >
+      <span className="text-base leading-none">{active?.flag ?? "🌐"}</span>
+      <span className="terminal-text-bright font-semibold tracking-wide">
+        {active?.code ?? value}
+      </span>
+      <span className="terminal-text-comment truncate text-[11px]">
+        {active?.name ?? ""}
+      </span>
+      <select
+        aria-label="Currency"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="absolute inset-0 cursor-pointer opacity-0"
+      >
+        {CURRENCIES.map((c) => (
+          <option key={c.code} value={c.code}>
+            {c.flag} {c.code} — {c.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 
