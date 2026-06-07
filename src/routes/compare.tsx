@@ -102,7 +102,7 @@ function FxToolPage() {
   const chatFn = useServerFn(chatAboutRecommendation);
 
   const compareMut = useMutation({
-    mutationFn: () => compareFn({ data: { amount, from, to, segment } }),
+    mutationFn: () => compareFn({ data: { amount, from, to, segment, sendingCountry, receivingCountry } }),
     onSuccess: async (data) => {
       setResult(data);
       setAiText("");
