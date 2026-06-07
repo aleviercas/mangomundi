@@ -386,12 +386,21 @@ function FxToolPage() {
           </div>
         )}
 
+        {!result && !compareMut.isPending && !compareMut.isError && (
+          <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
+            <p className="text-sm text-muted-foreground">{t("fx.emptyState")}</p>
+          </div>
+        )}
+
         {result && (
           <ResultsBlock
             result={result}
             amount={amount}
             handleAffiliateClick={openPreferredRate}
             tDisclaimer={t("fx.disclaimer")}
+            tTrademarks={t("fx.trademarks")}
+            tRatesSource={t("fx.ratesSource")}
+            tAt={t("fx.at")}
             tRecipient={t("fx.recipient")}
             tTotalFee={t("fx.totalFee")}
             tSpeed={t("fx.speed")}
