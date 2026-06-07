@@ -69,10 +69,30 @@ function FxToolPage() {
   const [amount, setAmount] = useState<number>(1000);
   const [from, setFrom] = useState("GBP");
   const [to, setTo] = useState("ARS");
+  const [sendingCountry, setSendingCountry] = useState("GB");
+  const [receivingCountry, setReceivingCountry] = useState("AR");
   const [segment, setSegment] = useState<Segment>("retail");
   const [urgency, setUrgency] = useState<Urgency>("standard");
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const [aiText, setAiText] = useState<string>("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [chat, setChat] = useState<ChatMsg[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const chatBottomRef = useRef<HTMLDivElement>(null);
+
+  // Preferred Rate modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCtx, setModalCtx] = useState<{
+    amount: number;
+    fromCurrency: string;
+    toCurrency: string;
+    sendingCountry?: string;
+    receivingCountry?: string;
+    providerSlug?: string;
+    affiliateBaseUrl?: string;
+  } | null>(null);
+
+  const isLocalFx = sendingCountry === receivingCountry && from !== to;
   const [aiLoading, setAiLoading] = useState(false);
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
