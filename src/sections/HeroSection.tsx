@@ -1,6 +1,7 @@
-import { Link } from "@tanstack/react-router";
-import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
+import { useState } from "react";
+import { Terminal, TrendingUp, Shield, Zap } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { RfqTerminal } from "@/components/RfqTerminal";
 
 function HexCoin({
   symbol,
@@ -16,11 +17,7 @@ function HexCoin({
       className={`relative flex items-center justify-center ${className}`}
       style={{ width: size, height: size }}
     >
-      <svg
-        viewBox="0 0 100 100"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden
-      >
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
         <polygon
           points="50,4 92,27 92,73 50,96 8,73 8,27"
           fill="white"
@@ -35,7 +32,10 @@ function HexCoin({
           opacity="0.25"
         />
       </svg>
-      <span className="relative font-heading font-extrabold text-slate-950 select-none" style={{ fontSize: size * 0.42 }}>
+      <span
+        className="relative font-heading font-extrabold text-slate-950 select-none"
+        style={{ fontSize: size * 0.42 }}
+      >
         {symbol}
       </span>
     </div>
@@ -43,7 +43,6 @@ function HexCoin({
 }
 
 function CurrencyConstellation() {
-  // 50% smaller, organic and floating — no central "mg" badge.
   return (
     <div className="relative mx-auto aspect-square w-full max-w-[210px] opacity-90">
       <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" aria-hidden>
@@ -82,17 +81,16 @@ function CurrencyConstellation() {
 
 export function HeroSection() {
   const { t } = useI18n();
+  const [rfqOpen, setRfqOpen] = useState(false);
 
   return (
     <section className="relative pt-16 pb-16 lg:pt-20 lg:pb-20">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[1.1fr_1.4fr] lg:gap-16 items-center">
-          {/* Left — Currency constellation */}
           <div className="order-2 lg:order-1">
             <CurrencyConstellation />
           </div>
 
-          {/* Right — Headline */}
           <div className="order-1 lg:order-2 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-[11px] font-medium tracking-widest text-white uppercase mb-6 shadow-sm">
               ⚡ Agentic AI for Global FX <span className="text-slate-500 px-1">|</span>
@@ -100,25 +98,19 @@ export function HeroSection() {
               <span className="text-slate-300 font-light lowercase">global</span>
             </div>
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-950 leading-[1.05]">
-              The Global FX Decision Engine
+              {t("home.hero.title")}
             </h1>
             <p className="mt-5 text-base sm:text-lg text-slate-500 max-w-2xl font-normal leading-relaxed">
-              Neutral intelligence for global payments —{" "}
-              <span className="text-slate-950 font-semibold">one optimal decision</span> from retail remittances to corporate treasury.
+              {t("home.hero.subtitle")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/compare"
+              <button
+                onClick={() => setRfqOpen(true)}
                 className="inline-flex items-center gap-2 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
               >
-                {t("cta.compare")} <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                to="/contact"
-                className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition-colors hover:border-slate-300"
-              >
+                <Terminal className="h-4 w-4" />
                 {t("cta.talkSales")}
-              </Link>
+              </button>
             </div>
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               {[
@@ -135,6 +127,7 @@ export function HeroSection() {
           </div>
         </div>
       </div>
+      <RfqTerminal open={rfqOpen} onOpenChange={setRfqOpen} />
     </section>
   );
 }
