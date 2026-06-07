@@ -33,7 +33,7 @@ export function CountrySelect({
   placeholder?: string;
 }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
+    <select value={value} onChange={(e) => onChange(e.target.value)} className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono">
       <option value="">{placeholder ?? "—"}</option>
       {COUNTRIES.map((c) => (
         <option key={c.code} value={c.code}>
