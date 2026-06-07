@@ -824,8 +824,8 @@ function ProviderRow({
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-        {label}
+      <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider terminal-text-comment font-mono">
+        // {label}
       </span>
       {children}
     </label>
@@ -834,7 +834,11 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function CurrencySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+    >
       {CURRENCIES.map((c) => (
         <option key={c.code} value={c.code}>
           {c.flag} {c.code} — {c.name}
