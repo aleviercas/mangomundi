@@ -611,9 +611,98 @@ const COMPLIANCE_KEYS: Record<CorporateLang, Dict> = {
   },
 };
 
-// Merge compliance keys into the main dictionaries.
+// === Manifesto / Company story localized keys (EN/ES/PT/IT/FR) ===
+const MANIFESTO_KEYS: Record<CorporateLang, Dict> = {
+  en: {
+    "about.manifesto.headline":
+      "International Payments, Intelligently Routed. Agentic AI for Global FX. 🌐⚡",
+    "about.manifesto.kicker": "// company manifesto",
+    "about.manifesto.missionTitle": "$ Our Mission",
+    "about.manifesto.missionText":
+      "Democratise access to the best foreign exchange decisions through neutral, AI-powered intelligence — eliminating information asymmetry and hidden costs from global payments.",
+    "about.manifesto.visionTitle": "$ Our Vision",
+    "about.manifesto.visionText":
+      "A world where every local FX or cross-border payment — from a family remittance to a multinational treasury operation — runs through a transparent, auditable, and equitable decision layer.",
+    "about.manifesto.problemTitle": "$ The Problem",
+    "about.manifesto.problemText":
+      "While analysing the global FX market, our team uncovered a two-sided inefficiency. On one side, retail clients sending remittances and businesses managing cross-border flows face a frustrating maze: they never know with certainty if they are getting the best rate, trapped by hidden costs and opaque structures they cannot control or understand. On the other side, competitive financial institutions are eager to acquire these volume-generating clients, yet high acquisition costs and fragmented channels prevent them from reaching them effectively. mangoglobal ends this mismatch by building an infrastructure where AI agents scan the market impartially and enable regulated institutions to submit real-time counter-offers to improve the price at that exact moment.",
+    "about.manifesto.chapterMission": "01 · Mission",
+    "about.manifesto.chapterVision": "02 · Vision",
+    "about.manifesto.chapterProblem": "03 · Market Inefficiency",
+  },
+  es: {
+    "about.manifesto.headline":
+      "Pagos Internacionales, Enrutados Inteligentemente. IA Agéntica para FX Global. 🌐⚡",
+    "about.manifesto.kicker": "// manifiesto corporativo",
+    "about.manifesto.missionTitle": "$ Nuestra Misión",
+    "about.manifesto.missionText":
+      "Democratizar el acceso a las mejores decisiones de cambio de divisas a través de una inteligencia neutral impulsada por IA, eliminando la asimetría de información y los costos ocultos de los pagos globales.",
+    "about.manifesto.visionTitle": "$ Nuestra Visión",
+    "about.manifesto.visionText":
+      "Un mundo donde cada pago local de FX o transfronterizo — desde una remesa familiar hasta la operación de tesorería de una multinacional — se ejecute a través de una capa de decisión transparente, auditable y equitativa.",
+    "about.manifesto.problemTitle": "$ El Problema",
+    "about.manifesto.problemText":
+      "Al analizar el mercado global de FX, nuestro equipo descubrió una ineficiencia de doble capa. Por un lado, los clientes retail que envían remesas y las empresas que gestionan flujos transfronterizos enfrentan un laberinto frustrante: nunca saben con certeza si obtienen la mejor tasa, atrapados por costos ocultos y estructuras opacas que no pueden controlar ni comprender. Por otro lado, las instituciones financieras competitivas están deseosas de adquirir estos clientes que generan volumen, pero los altos costos de adquisición y los canales fragmentados les impiden llegar a ellos eficazmente. mangoglobal pone fin a este desajuste creando una infraestructura donde agentes de IA escrutan el mercado de forma imparcial y permiten a las instituciones reguladas ofrecer contraofertas en tiempo real para mejorar el precio en ese instante exacto.",
+    "about.manifesto.chapterMission": "01 · Misión",
+    "about.manifesto.chapterVision": "02 · Visión",
+    "about.manifesto.chapterProblem": "03 · Ineficiencia del Mercado",
+  },
+  pt: {
+    "about.manifesto.headline":
+      "Pagamentos Internacionais, Roteados Inteligentemente. IA Agêntica para FX Global. 🌐⚡",
+    "about.manifesto.kicker": "// manifesto corporativo",
+    "about.manifesto.missionTitle": "$ Nossa Missão",
+    "about.manifesto.missionText":
+      "Democratizar o acesso às melhores decisões de câmbio através de uma inteligência neutra impulsionada por IA, eliminando a assimetria de informação e os custos ocultos dos pagamentos globais.",
+    "about.manifesto.visionTitle": "$ Nossa Visão",
+    "about.manifesto.visionText":
+      "Um mundo onde cada pagamento local de FX ou transfronteiriço — de uma remessa familiar a uma operação de tesouraria multinacional — seja executado através de uma camada de decisão transparente, auditável e equitativa.",
+    "about.manifesto.problemTitle": "$ O Problema",
+    "about.manifesto.problemText":
+      "Ao analisar o mercado global de FX, nossa equipe descobriu uma ineficiência de dupla camada. De um lado, os clientes retail que enviam remessas e as empresas que gerenciam fluxos transfronteiriços enfrentam um labirinto frustrante: nunca sabem com certeza se obtêm a melhor taxa, presos por custos ocultos e estruturas opacas que não conseguem controlar nem compreender. Do outro lado, as instituições financeiras competitivas estão ansiosas para adquirir esses clientes geradores de volume, mas os altos custos de aquisição e os canais fragmentados as impedem de alcançá-los eficazmente. A mangoglobal põe fim a esse desajuste construindo uma infraestrutura onde agentes de IA examinam o mercado de forma imparcial e permitem às instituições reguladas apresentar contrapropostas em tempo real para melhorar o preço naquele exato momento.",
+    "about.manifesto.chapterMission": "01 · Missão",
+    "about.manifesto.chapterVision": "02 · Visão",
+    "about.manifesto.chapterProblem": "03 · Ineficiência de Mercado",
+  },
+  it: {
+    "about.manifesto.headline":
+      "Pagamenti Internazionali, Instradati Intelligentemente. IA Agentica per il FX Globale. 🌐⚡",
+    "about.manifesto.kicker": "// manifesto aziendale",
+    "about.manifesto.missionTitle": "$ La Nostra Missione",
+    "about.manifesto.missionText":
+      "Democratizzare l'accesso alle migliori decisioni di cambio valuta attraverso un'intelligenza neutrale alimentata dall'IA, eliminando l'asimmetria informativa e i costi nascosti dei pagamenti globali.",
+    "about.manifesto.visionTitle": "$ La Nostra Visione",
+    "about.manifesto.visionText":
+      "Un mondo in cui ogni pagamento FX locale o transfrontaliero — da una rimessa familiare a un'operazione di tesoreria multinazionale — venga eseguito attraverso un livello decisionale trasparente, verificabile ed equo.",
+    "about.manifesto.problemTitle": "$ Il Problema",
+    "about.manifesto.problemText":
+      "Analizzando il mercato globale FX, il nostro team ha scoperto un'inefficienza a doppio strato. Da un lato, i clienti retail che inviano rimesse e le aziende che gestiscono flussi transfrontalieri affrontano un labirinto frustrante: non sanno mai con certezza se ottengono il miglior tasso, intrappolati da costi nascosti e strutture opache che non possono controllare né comprendere. Dall'altro lato, le istituzioni finanziarie competitive desiderano acquisire questi clienti generatori di volume, ma gli alti costi di acquisizione e i canali frammentati impediscono loro di raggiungerli efficacemente. mangoglobal pone fine a questo disallineamento costruendo un'infrastruttura in cui agenti di IA scrutinano il mercato in modo imparziale e permettono alle istituzioni regolamentate di presentare controfferte in tempo reale per migliorare il prezzo in quell'esatto istante.",
+    "about.manifesto.chapterMission": "01 · Missione",
+    "about.manifesto.chapterVision": "02 · Visione",
+    "about.manifesto.chapterProblem": "03 · Inefficienza di Mercato",
+  },
+  fr: {
+    "about.manifesto.headline":
+      "Paiements Internationaux, Routés Intelligemment. IA Agentique pour le FX Global. 🌐⚡",
+    "about.manifesto.kicker": "// manifeste d'entreprise",
+    "about.manifesto.missionTitle": "$ Notre Mission",
+    "about.manifesto.missionText":
+      "Démocratiser l'accès aux meilleures décisions de change grâce à une intelligence neutre propulsée par l'IA, en éliminant l'asymétrie d'information et les coûts cachés des paiements mondiaux.",
+    "about.manifesto.visionTitle": "$ Notre Vision",
+    "about.manifesto.visionText":
+      "Un monde où chaque paiement FX local ou transfrontalier — d'une remise familiale à une opération de trésorerie multinationale — s'exécute à travers une couche de décision transparente, auditable et équitable.",
+    "about.manifesto.problemTitle": "$ Le Problème",
+    "about.manifesto.problemText":
+      "En analysant le marché global du FX, notre équipe a identifié une inefficience à double couche. D'un côté, les clients retail envoyant des remises et les entreprises gérant des flux transfrontaliers affrontent un labyrinthe frustrant : ils ne savent jamais avec certitude s'ils obtiennent le meilleur taux, piégés par des coûts cachés et des structures opaques qu'ils ne peuvent ni contrôler ni comprendre. De l'autre côté, les institutions financières compétitives souhaitent acquérir ces clients générateurs de volume, mais des coûts d'acquisition élevés et des canaux fragmentés les empêchent de les atteindre efficacement. mangoglobal met fin à ce désalignement en construisant une infrastructure où des agents IA scrutent le marché de manière impartiale et permettent aux institutions régulées de soumettre des contre-offres en temps réel pour améliorer le prix à cet instant précis.",
+    "about.manifesto.chapterMission": "01 · Mission",
+    "about.manifesto.chapterVision": "02 · Vision",
+    "about.manifesto.chapterProblem": "03 · Inefficience du Marché",
+  },
+};
+
+// Merge compliance + manifesto keys into the main dictionaries.
 for (const code of Object.keys(COMPLIANCE_KEYS) as CorporateLang[]) {
-  Object.assign(DICTS[code], COMPLIANCE_KEYS[code]);
+  Object.assign(DICTS[code], COMPLIANCE_KEYS[code], MANIFESTO_KEYS[code]);
 }
 
 interface I18nCtx {
