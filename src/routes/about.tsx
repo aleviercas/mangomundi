@@ -1,84 +1,97 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Globe, Target, Heart, Zap } from "lucide-react";
+import { Globe2, Sparkles, Scale } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
       { title: "About — mangoglobal" },
-      { name: "description", content: "Learn about mangoglobal's mission to build a neutral, intelligent platform for global FX payments." },
+      { name: "description", content: "mangoglobal is a neutral FX decision engine connecting retail and corporate flows to the best cross-border route." },
       { property: "og:title", content: "About — mangoglobal" },
-      { property: "og:description", content: "Learn about mangoglobal's mission to build a neutral, intelligent platform for global FX payments." },
+      { property: "og:description", content: "Neutral FX decision engine for borderless payments." },
     ],
   }),
   component: AboutPage,
 });
 
-const values = [
-  { icon: Globe, title: "Borderless", description: "We believe money should move as freely as information." },
-  { icon: Target, title: "Neutral", description: "No provider bias. No hidden margins. Pure optimization." },
-  { icon: Heart, title: "Human", description: "Technology serves people, not the other way around." },
-  { icon: Zap, title: "Fast", description: "Speed without compromise on security or compliance." },
-];
-
 function AboutPage() {
+  const { t } = useI18n();
+
+  const values = [
+    { icon: Globe2, title: t("about.v1.title"), body: t("about.v1.body") },
+    { icon: Sparkles, title: t("about.v2.title"), body: t("about.v2.body") },
+    { icon: Scale, title: t("about.v3.title"), body: t("about.v3.body") },
+  ];
+
   return (
     <div className="bg-background">
-      <section className="pt-16 pb-12">
+      <section className="pt-20 pb-12">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-5">
+            {t("about.badge")}
+          </div>
           <h1 className="font-heading text-4xl font-bold text-foreground sm:text-5xl">
-            Built for a <span className="text-primary">Borderless</span> World
+            {t("about.heroTitle1")} <span className="text-primary">{t("about.heroTitleAccent")}</span> {t("about.heroTitle2")}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            mangoglobal was founded on a simple belief: cross-border payments should be intelligent, transparent, and accessible to everyone — from individuals sending remittances to corporations managing global treasury.
+            {t("about.heroSubtitle")}
           </p>
         </div>
       </section>
 
-      <section className="py-16 border-y border-border bg-card">
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="font-heading text-2xl font-bold text-foreground">Our Mission</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-            To democratise access to the best foreign exchange decisions through neutral, AI-powered intelligence — eliminating information asymmetry and hidden costs from global payments.
-          </p>
+      {/* Mission + Vision */}
+      <section className="py-12 border-y border-border bg-card">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 grid gap-8 md:grid-cols-2">
+          <div>
+            <h2 className="font-heading text-2xl font-bold text-foreground">{t("about.missionTitle")}</h2>
+            <p className="mt-3 text-muted-foreground leading-relaxed">{t("about.missionBody")}</p>
+          </div>
+          <div>
+            <h2 className="font-heading text-2xl font-bold text-foreground">{t("about.visionTitle")}</h2>
+            <p className="mt-3 text-muted-foreground leading-relaxed">{t("about.visionBody")}</p>
+          </div>
         </div>
       </section>
 
+      {/* Values */}
       <section className="py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="font-heading text-center text-2xl font-bold text-foreground mb-12">Our Values</h2>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <h2 className="font-heading text-center text-2xl font-bold text-foreground mb-12">
+            {t("about.valuesTitle")}
+          </h2>
+          <div className="grid gap-6 md:grid-cols-3">
             {values.map((v) => (
-              <div key={v.title} className="rounded-2xl border border-border bg-card p-6 text-center">
-                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div key={v.title} className="rounded-2xl border border-border bg-card p-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <v.icon className="h-6 w-6" />
                 </div>
-                <h3 className="font-heading font-semibold text-foreground">{v.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{v.description}</p>
+                <h3 className="font-heading font-semibold text-foreground text-lg">{v.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{v.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-16 border-y border-border bg-card">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4 text-center">
-            <div>
-              <div className="font-heading text-3xl font-bold text-primary">2021</div>
-              <div className="mt-1 text-sm text-muted-foreground">Founded</div>
-            </div>
-            <div>
-              <div className="font-heading text-3xl font-bold text-primary">150+</div>
-              <div className="mt-1 text-sm text-muted-foreground">Countries</div>
-            </div>
-            <div>
-              <div className="font-heading text-3xl font-bold text-primary">200+</div>
-              <div className="mt-1 text-sm text-muted-foreground">Team Members</div>
-            </div>
-            <div>
-              <div className="font-heading text-3xl font-bold text-primary">$2B+</div>
-              <div className="mt-1 text-sm text-muted-foreground">Volume Processed</div>
-            </div>
+      {/* Factual metrics */}
+      <section className="py-16 border-t border-border bg-card">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+            {[1, 2, 3].map((i) => (
+              <div key={i}>
+                <div className="font-heading text-4xl font-bold text-primary tabular-nums">
+                  {t(`about.metric${i}.value`)}
+                </div>
+                <div className="mt-2 text-sm font-semibold text-foreground">
+                  {t(`about.metric${i}.label`)}
+                </div>
+                {i > 1 && (
+                  <div className="mt-1 text-xs text-muted-foreground">
+                    {t(`about.metric${i}.note`)}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
       </section>
