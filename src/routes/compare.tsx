@@ -432,7 +432,7 @@ function ResultsBlock({
   tRecipient,
   tTotalFee,
   tSpeed,
-  tGoTo,
+  tCta,
   tMidmarket,
   tUpdated,
 }: {
@@ -443,7 +443,7 @@ function ResultsBlock({
   tRecipient: string;
   tTotalFee: string;
   tSpeed: string;
-  tGoTo: string;
+  tCta: string;
   tMidmarket: string;
   tUpdated: string;
 }) {
