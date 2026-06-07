@@ -1,8 +1,7 @@
-import { useState } from "react";
-import { Terminal, TrendingUp, Shield, Zap, GitCompare } from "lucide-react";
+import { TrendingUp, Shield, Zap, GitCompare } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { RfqTerminal } from "@/components/RfqTerminal";
+
 
 function HexCoin({
   symbol,
@@ -82,7 +81,8 @@ function CurrencyConstellation() {
 
 export function HeroSection() {
   const { t } = useI18n();
-  const [rfqOpen, setRfqOpen] = useState(false);
+
+
 
   return (
     <section className="relative pt-16 pb-16 lg:pt-20 lg:pb-20">
@@ -129,7 +129,7 @@ export function HeroSection() {
           </div>
         </div>
       </div>
-      <RfqTerminal open={rfqOpen} onOpenChange={setRfqOpen} />
     </section>
   );
 }
+
