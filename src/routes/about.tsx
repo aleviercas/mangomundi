@@ -88,7 +88,7 @@ function AboutPage() {
                   <h3 className="mt-2 font-mono text-lg font-semibold terminal-text-exec sm:text-xl">
                     {ch.title}
                   </h3>
-                  <p className="mt-3 font-mono text-sm leading-relaxed terminal-text-bright/90 sm:text-[15px]">
+                  <p className="mt-3 font-mono text-sm leading-relaxed terminal-text-bright sm:text-[15px]">
                     {ch.body}
                   </p>
                 </div>
