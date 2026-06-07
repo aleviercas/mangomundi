@@ -426,6 +426,9 @@ function ResultsBlock({
   amount,
   handleAffiliateClick,
   tDisclaimer,
+  tTrademarks,
+  tRatesSource,
+  tAt,
   tRecipient,
   tTotalFee,
   tSpeed,
@@ -437,6 +440,9 @@ function ResultsBlock({
   amount: number;
   handleAffiliateClick: (slug: string, url: string) => void;
   tDisclaimer: string;
+  tTrademarks: string;
+  tRatesSource: string;
+  tAt: string;
   tRecipient: string;
   tTotalFee: string;
   tSpeed: string;
