@@ -65,16 +65,35 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Mission + Vision */}
-      <section className="py-12 border-y border-border bg-card">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 grid gap-8 md:grid-cols-2">
-          <div>
-            <h2 className="font-heading text-2xl font-bold text-foreground">{t("about.missionTitle")}</h2>
-            <p className="mt-3 text-muted-foreground leading-relaxed">{t("about.missionBody")}</p>
-          </div>
-          <div>
-            <h2 className="font-heading text-2xl font-bold text-foreground">{t("about.visionTitle")}</h2>
-            <p className="mt-3 text-muted-foreground leading-relaxed">{t("about.visionBody")}</p>
+      {/* Manifesto — Dark Terminal */}
+      <section className="py-12">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="terminal-card rounded-2xl p-6 font-mono sm:p-10">
+            <div className="terminal-text-comment text-[11px] tracking-wider">
+              {t("about.manifesto.kicker")}
+            </div>
+            <h2 className="mt-3 font-heading text-2xl font-bold leading-tight terminal-text-bright sm:text-3xl terminal-cursor">
+              {t("about.manifesto.headline")}
+            </h2>
+
+            <div className="mt-8 space-y-8">
+              {chapters.map((ch, i) => (
+                <div key={ch.chapter}>
+                  {i > 0 && (
+                    <div className="mb-8 h-px w-full terminal-divider border-t" />
+                  )}
+                  <div className="terminal-text-comment text-[10px] uppercase tracking-[0.2em]">
+                    {ch.chapter}
+                  </div>
+                  <h3 className="mt-2 font-mono text-lg font-semibold terminal-text-exec sm:text-xl">
+                    {ch.title}
+                  </h3>
+                  <p className="mt-3 font-mono text-sm leading-relaxed terminal-text-bright/90 sm:text-[15px]">
+                    {ch.body}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
