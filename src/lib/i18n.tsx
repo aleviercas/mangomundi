@@ -143,8 +143,8 @@ const DICTS: Record<Lang, Dict> = {
     "about.v3.title": "Human + AI Impartiality",
     "about.v3.body": "Our human team is always available to guide users through operational complexity, yet absolute algorithmic impartiality is what processes, distributes, and delivers the best optimized spreads to every party, equitably and without favoritism.",
     // Home
-    "home.hero.title": "International payments, intelligently routed.",
-    "home.hero.subtitle": "Cut FX cost across payroll, suppliers, and treasury. Utilize our intelligent decision engine and interactive dashboard for high-value transfers with dedicated expert support.",
+    "home.hero.title": "International Payments, Intelligently Routed.",
+    "home.hero.subtitle": "Utilize our neutral decision engine to analyze cross-border flow variance, validate execution strategies, and optimize multi-currency routing.",
     "home.flows.title": "Built for every institutional cross-border flow",
     "home.flows.payroll.title": "Global payroll & contractor payouts",
     "home.flows.payroll.body": "Pay international teams and contractors in their local currency with optimised FX routing and full audit trail.",
