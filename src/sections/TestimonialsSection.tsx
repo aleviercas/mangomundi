@@ -1,4 +1,4 @@
-import { Cpu, Users, Scale } from "lucide-react";
+import { Cpu, ShieldCheck, Scale } from "lucide-react";
 
 export function TestimonialsSection() {
   return (
