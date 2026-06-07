@@ -383,21 +383,42 @@ function FxToolPage() {
           </div>
         )}
 
+        {isLocalFx && (
+          <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm">
+            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
+            <div>
+              <div className="font-semibold text-foreground">
+                Local FX detected · {sendingCountry} → {receivingCountry}
+              </div>
+              <div className="mt-0.5 text-xs text-muted-foreground">
+                Showing multi-currency domestic accounts only — international wire fees and SWIFT
+                spreads are excluded from this view.
+              </div>
+            </div>
+          </div>
+        )}
+
         {result && (
           <ResultsBlock
             result={result}
             amount={amount}
-            handleAffiliateClick={handleAffiliateClick}
+            handleAffiliateClick={openPreferredRate}
             tDisclaimer={t("fx.disclaimer")}
             tRecipient={t("fx.recipient")}
             tTotalFee={t("fx.totalFee")}
             tSpeed={t("fx.speed")}
-            tGoTo={t("fx.goto")}
+            tCta={t("retail.cta")}
             tMidmarket={t("fx.midmarket")}
             tUpdated={t("fx.updated")}
           />
         )}
       </div>
+
+      <PreferredRateModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        context={modalCtx}
+      />
     </div>
   );
 }
@@ -705,10 +726,10 @@ function ProviderRow({
       <div className="col-span-2 sm:text-right">
         <button
           onClick={onClick}
-          className="inline-flex items-center gap-1 rounded-lg bg-foreground px-3 py-2 text-xs font-semibold text-background transition hover:opacity-90"
+          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3 py-2 text-[11px] font-semibold leading-tight text-white transition hover:bg-slate-800"
         >
-          {tGoTo} {row.name.split(" ")[0]}
-          <ExternalLink className="h-3 w-3" />
+          <Sparkle className="h-3 w-3" />
+          <span className="text-left">{tCta}</span>
         </button>
       </div>
     </div>
