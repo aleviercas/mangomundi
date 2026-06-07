@@ -622,29 +622,6 @@ function ResultsBlock({
         </div>
       )}
 
-      {/* Sponsored block — separated from organic, badged */}
-      {sponsored.length > 0 && (
-        <div className="mb-4 space-y-2">
-          <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <Megaphone className="h-3 w-3" /> Sponsored offers
-          </div>
-          {sponsored.map((row) => (
-            <ProviderRow
-              key={row.slug}
-              row={row}
-              quote={result.quote}
-              base={result.base}
-              isBest={false}
-              isSponsored
-              onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
-              tRecipient={tRecipient}
-              tTotalFee={tTotalFee}
-              tSpeed={tSpeed}
-              tCta={tCta}
-            />
-          ))}
-        </div>
-      )}
 
       {/* Organic ranking */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
