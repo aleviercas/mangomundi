@@ -3,6 +3,7 @@ import { useState } from "react";
 import { RfqTerminal } from "@/components/RfqTerminal";
 import { useI18n } from "@/lib/i18n";
 import {
+  Building2,
   Code,
   ShieldCheck,
   Wallet,
