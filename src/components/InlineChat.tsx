@@ -157,7 +157,7 @@ export function InlineChat() {
           </div>
 
           <div className="flex flex-wrap gap-1.5 border-t border-slate-100 px-4 py-2.5">
-            {QUICK_PROMPTS[lang].map((p) => (
+            {(QUICK_PROMPTS[lang as "en" | "es" | "pt"] ?? QUICK_PROMPTS.en).map((p: string) => (
               <button
                 key={p}
                 type="button"
