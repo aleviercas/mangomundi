@@ -1,6 +1,23 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export type Lang = "en" | "es" | "pt";
+export type Lang =
+  | "en"
+  | "es"
+  | "pt"
+  | "it"
+  | "fr"
+  | "de"
+  | "pl"
+  | "uk"
+  | "kk"
+  | "hi"
+  | "zh"
+  | "id"
+  | "tl"
+  | "ar"
+  | "vi";
+
+export const RTL_LANGS: Lang[] = ["ar"];
 
 type Dict = Record<string, string>;
 
