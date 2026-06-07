@@ -11,8 +11,6 @@ const retailLinks = [
 const businessLinks = [
   { to: "/business", label: "Business" },
   { to: "/business", label: "Features" },
-  { to: "/business", label: "Pricing" },
-  { to: "/contact", label: "Talk to Sales" },
 ];
 
 const companyLinks = [
@@ -22,10 +20,11 @@ const companyLinks = [
 ];
 
 const legalLinks = [
+  { to: "/legal/terms", label: "Terms" },
+  { to: "/legal/risk", label: "Risk Disclosure" },
   { to: "/about", label: "Privacy" },
-  { to: "/about", label: "Terms" },
-  { to: "/about", label: "Cookies" },
 ];
+
 
 export function Footer() {
   return (

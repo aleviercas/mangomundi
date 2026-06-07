@@ -112,14 +112,8 @@ export function HeroSection() {
                 <GitCompare className="h-4 w-4" />
                 {t("home.hero.ctaCompare")}
               </Link>
-              <button
-                onClick={() => setRfqOpen(true)}
-                className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 transition-colors hover:bg-slate-50"
-              >
-                <Terminal className="h-4 w-4" />
-                {t("cta.talkSales")}
-              </button>
             </div>
+
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               {[
                 { Icon: TrendingUp, label: t("hero.trust.1") },
