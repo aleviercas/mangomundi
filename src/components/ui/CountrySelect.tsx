@@ -26,12 +26,15 @@ const COUNTRIES: { code: string; name: string; flag: string }[] = [
 export function CountrySelect({
   value,
   onChange,
+  placeholder,
 }: {
   value: string;
   onChange: (v: string) => void;
+  placeholder?: string;
 }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)} className="input">
+      <option value="">{placeholder ?? "—"}</option>
       {COUNTRIES.map((c) => (
         <option key={c.code} value={c.code}>
           {c.flag} {c.code} — {c.name}
