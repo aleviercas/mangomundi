@@ -313,79 +313,26 @@ function BusinessPage() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-20">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-4">
-              <Sparkles className="h-3 w-3 text-primary" /> Retail use stays free. Business pays for automation.
-            </div>
-            <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
-              Business <span className="text-primary">pricing</span>
-            </h2>
-            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-              The public comparator is free for individuals. These plans exist for teams that need
-              continuous optimisation, an API, and dedicated support.
-            </p>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2">
-            {plans.map((plan) => (
-              <div
-                key={plan.name}
-                className={`relative rounded-2xl border p-8 ${
-                  plan.highlighted
-                    ? "border-primary bg-card shadow-xl shadow-primary/10"
-                    : "border-border bg-card"
-                }`}
-              >
-                <h3 className="font-heading text-xl font-semibold text-foreground">{plan.name}</h3>
-                <div className="mt-4 flex items-baseline gap-1">
-                  <span className="font-heading text-4xl font-bold text-foreground">{plan.price}</span>
-                  {plan.cadence && <span className="text-muted-foreground">{plan.cadence}</span>}
-                </div>
-                <p className="mt-2 text-sm text-muted-foreground">{plan.description}</p>
-                <ul className="mt-6 space-y-3">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3 text-sm text-muted-foreground">
-                      <Check className="h-4 w-4 shrink-0 text-primary mt-0.5" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to={plan.ctaTo}
-                  className={`mt-8 flex w-full items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
-                    plan.highlighted
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "border border-border text-foreground hover:bg-surface-elevated"
-                  }`}
-                >
-                  {plan.cta}
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
+      {/* Final CTA — RFQ */}
       <section className="py-16 bg-card border-t border-border">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="font-heading text-2xl sm:text-3xl font-bold text-foreground">
             Moving more than $50k a month?
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Our business desk gets you better rates, batch routing, and a dedicated point of contact.
+            We do not charge subscription fees. Our model monetises exclusively through optimised
+            spread on transacted volume — request a private RFQ quotation.
           </p>
-          <Link
-            to="/contact"
+          <button
+            onClick={() => setRfqOpen(true)}
             className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
-            Talk to Sales <ArrowRight className="h-4 w-4" />
-          </Link>
+            <Terminal className="h-4 w-4" /> {t("biz.rfqCta")}
+          </button>
         </div>
       </section>
+      <RfqTerminal open={rfqOpen} onOpenChange={setRfqOpen} />
     </div>
   );
 }
+
