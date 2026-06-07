@@ -43,18 +43,14 @@ function HexCoin({
 }
 
 function CurrencyConstellation() {
+  // 50% smaller, organic and floating — no central "mg" badge.
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[420px]">
-      {/* Connecting lines */}
-      <svg
-        viewBox="0 0 400 400"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden
-      >
+    <div className="relative mx-auto aspect-square w-full max-w-[210px] opacity-90">
+      <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" aria-hidden>
         <defs>
           <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#0F172A" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#0F172A" stopOpacity="0.05" />
+            <stop offset="0%" stopColor="#0F172A" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#0F172A" stopOpacity="0.04" />
           </linearGradient>
         </defs>
         <line x1="110" y1="90" x2="290" y2="120" stroke="url(#lineGrad)" strokeWidth="1" />
@@ -63,35 +59,22 @@ function CurrencyConstellation() {
         <line x1="100" y1="280" x2="110" y2="90" stroke="url(#lineGrad)" strokeWidth="1" />
         <line x1="110" y1="90" x2="310" y2="300" stroke="url(#lineGrad)" strokeWidth="0.5" strokeDasharray="3 4" />
         <line x1="290" y1="120" x2="100" y2="280" stroke="url(#lineGrad)" strokeWidth="0.5" strokeDasharray="3 4" />
-        {/* Subtle dots */}
-        {[
-          [60, 60], [340, 70], [360, 250], [50, 340], [200, 30], [200, 370],
-        ].map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="1.5" fill="#0F172A" opacity="0.25" />
+        {[[60, 60], [340, 70], [360, 250], [50, 340], [200, 30], [200, 370]].map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="1.5" fill="#0F172A" opacity="0.22" />
         ))}
       </svg>
 
-      {/* Hex coins */}
       <div className="absolute" style={{ top: "8%", left: "12%" }}>
-        <HexCoin symbol="£" size={104} className="shadow-sm shadow-slate-200 rounded-2xl" />
+        <HexCoin symbol="£" size={56} />
       </div>
       <div className="absolute" style={{ top: "14%", right: "8%" }}>
-        <HexCoin symbol="€" size={92} />
+        <HexCoin symbol="€" size={48} />
       </div>
       <div className="absolute" style={{ bottom: "10%", right: "12%" }}>
-        <HexCoin symbol="$" size={112} />
+        <HexCoin symbol="$" size={60} />
       </div>
       <div className="absolute" style={{ bottom: "12%", left: "10%" }}>
-        <HexCoin symbol="¥" size={88} />
-      </div>
-
-      {/* Center mark */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm">
-          <span className="font-heading text-xs font-black lowercase text-slate-950">
-            mg
-          </span>
-        </div>
+        <HexCoin symbol="¥" size={46} />
       </div>
     </div>
   );
