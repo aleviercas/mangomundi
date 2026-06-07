@@ -37,10 +37,10 @@ export function useAnalytics() {
   const track = useCallback(
     (event: AnalyticsEvent, payload: AnalyticsPayload = {}) => {
       try {
-        const rawSegment = [payload.segment, payload.urgency, payload.source, event]
+        const segmentTag = [payload.segment, payload.urgency, payload.source, event]
           .filter(Boolean)
-          .join(":");
-        const segmentTag = rawSegment.slice(0, 32);
+          .join(":")
+          .slice(0, 128);
         const referrer = typeof window !== "undefined" ? window.location.href : undefined;
 
         // Fire-and-forget: never await, never throw to UI.
@@ -50,7 +50,7 @@ export function useAnalytics() {
             amount: payload.amount ?? null,
             from_currency: payload.from_currency,
             to_currency: payload.to_currency,
-            segment: (segmentTag || event).slice(0, 32),
+            segment: segmentTag || event,
             referrer,
           },
         }).catch(() => {
