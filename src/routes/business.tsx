@@ -148,112 +148,20 @@ function BusinessPage() {
         </div>
       </section>
 
-      {/* ROI calculator */}
-      <section className="py-16">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-transparent p-6 sm:p-10">
-            <div className="grid items-center gap-8 lg:grid-cols-2">
-              <div>
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-primary">
-                  <TrendingUp className="h-3 w-3" /> ROI estimate
-                </div>
-                <h2 className="mt-4 font-heading text-3xl font-bold text-foreground sm:text-4xl">
-                  How much could you save?
-                </h2>
-                <p className="mt-3 text-muted-foreground">
-                  Most business clients save 1–4% on every conversion vs their incumbent bank or PSP.
-                  Drag the slider to see what that means for your flow.
-                </p>
-                <label className="mt-6 block">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                    Monthly cross-border volume (USD)
-                  </span>
-                  <input
-                    type="range"
-                    min={25000}
-                    max={5000000}
-                    step={25000}
-                    value={monthly}
-                    onChange={(e) => setMonthly(Number(e.target.value))}
-                    className="mt-2 w-full accent-primary"
-                  />
-                  <div className="mt-1 flex justify-between text-[10px] text-muted-foreground">
-                    <span>$25k</span>
-                    <span className="font-semibold text-foreground">${monthly.toLocaleString()}</span>
-                    <span>$5M</span>
-                  </div>
-                </label>
-              </div>
-
-              <div className="rounded-2xl border border-border bg-background p-6">
-                <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                  Estimated savings
-                </div>
-                <div className="mt-2 font-heading text-5xl font-bold text-foreground tabular-nums">
-                  ${annualSavings.toLocaleString()}
-                  <span className="ml-1 text-base font-normal text-muted-foreground">/ year</span>
-                </div>
-                <div className="mt-1 text-sm text-muted-foreground">
-                  ≈ ${monthlySavings.toLocaleString()} per month · Private asynchronous bidding via RFQ protocol
-                </div>
-                <div className="my-5 h-px bg-border" />
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> No card lock-in. Use your own provider accounts.</li>
-                  <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> Audit-ready logs and FX exposure reports.</li>
-                  <li className="flex items-start gap-2"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" /> API or dashboard — your team chooses.</li>
-                </ul>
-                <Link
-                  to="/contact"
-                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
-                >
-                  Get a tailored quote <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </div>
+      {/* Institutional neutrality statement */}
+      <section className="py-16 bg-card border-t border-border">
+        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground mb-4">
+            <Shield className="h-3 w-3 text-primary" /> Neutrality by design
           </div>
-        </div>
-      </section>
-
-      {/* Large-ticket desk */}
-      <section className="py-16 bg-card">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center mb-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground mb-4">
-              <Briefcase className="h-3 w-3 text-primary" /> For transfers &gt; $50k
-            </div>
-            <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
-              The large-ticket desk
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Specialist providers we route to for high-value transfers — pre-vetted for
-              regulation, transparent spreads, and treasury features.
-            </p>
-          </div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            {largeTicketDesk.map((p) => (
-              <div key={p.name} className="rounded-2xl border border-border bg-background p-5">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <BrandLogo name={p.name} domain={p.domain} size={32} />
-                    <div>
-                      <div className="font-heading font-semibold text-foreground">{p.name}</div>
-                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
-                        <span className="inline-flex items-center gap-0.5"><Shield className="h-2.5 w-2.5" /> {p.regulator}</span>
-                        <span className="inline-flex items-center gap-0.5"><Star className="h-2.5 w-2.5 fill-current" /> {p.trust}/10</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="rounded-md bg-primary/10 px-2 py-1 text-[10px] font-bold tabular-nums text-primary">
-                    ~{p.spread} spread
-                  </div>
-                </div>
-                <p className="mt-3 text-sm text-muted-foreground">{p.speciality}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 text-center">
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            mangoglobal operates as an independent decision engine. We do not own balance sheets,
+            do not hold client funds, and route every quotation through a neutral comparator across
+            regulated counterparties. Provider selection is driven exclusively by transparent
+            criteria — effective rate, regulatory standing, settlement time and corridor coverage —
+            never by commercial bias.
+          </p>
+          <div className="mt-6">
             <button
               onClick={() => setRfqOpen(true)}
               className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4"
@@ -261,12 +169,10 @@ function BusinessPage() {
               {t("biz.rfqRoute")} <ArrowRight className="h-4 w-4" />
             </button>
           </div>
-
-          <p className="mt-10 max-w-4xl mx-auto text-[10px] leading-relaxed text-muted-foreground/80 text-center">
-            {t("fx.trademarks")}
-          </p>
         </div>
       </section>
+
+
 
       {/* Final CTA — RFQ */}
       <section className="py-16 bg-card border-t border-border">
