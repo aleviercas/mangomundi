@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ArrowRight, Clock, Loader2, ExternalLink, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp } from "lucide-react";
+import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle } from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -13,6 +13,32 @@ import {
 import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
 import { BrandLogo } from "@/components/BrandLogo";
+import { PreferredRateModal } from "@/components/PreferredRateModal";
+
+const COUNTRIES: { code: string; name: string; flag: string }[] = [
+  { code: "ES", name: "España / Spain", flag: "🇪🇸" },
+  { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
+  { code: "US", name: "United States", flag: "🇺🇸" },
+  { code: "AR", name: "Argentina", flag: "🇦🇷" },
+  { code: "MX", name: "México", flag: "🇲🇽" },
+  { code: "BR", name: "Brasil", flag: "🇧🇷" },
+  { code: "CO", name: "Colombia", flag: "🇨🇴" },
+  { code: "CL", name: "Chile", flag: "🇨🇱" },
+  { code: "PE", name: "Perú", flag: "🇵🇪" },
+  { code: "UY", name: "Uruguay", flag: "🇺🇾" },
+  { code: "PT", name: "Portugal", flag: "🇵🇹" },
+  { code: "FR", name: "France", flag: "🇫🇷" },
+  { code: "DE", name: "Deutschland", flag: "🇩🇪" },
+  { code: "IT", name: "Italia", flag: "🇮🇹" },
+  { code: "NL", name: "Nederland", flag: "🇳🇱" },
+  { code: "IE", name: "Ireland", flag: "🇮🇪" },
+  { code: "CH", name: "Schweiz", flag: "🇨🇭" },
+  { code: "CA", name: "Canada", flag: "🇨🇦" },
+  { code: "AU", name: "Australia", flag: "🇦🇺" },
+  { code: "AE", name: "UAE", flag: "🇦🇪" },
+  { code: "IN", name: "India", flag: "🇮🇳" },
+  { code: "PH", name: "Philippines", flag: "🇵🇭" },
+];
 
 export const Route = createFileRoute("/compare")({
   head: () => ({
