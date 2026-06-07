@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Globe2, Sparkles, Scale } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, CORPORATE_LANGS, type Lang } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
