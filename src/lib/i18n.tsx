@@ -1,6 +1,23 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-export type Lang = "en" | "es" | "pt";
+export type Lang =
+  | "en"
+  | "es"
+  | "pt"
+  | "it"
+  | "fr"
+  | "de"
+  | "pl"
+  | "uk"
+  | "kk"
+  | "hi"
+  | "zh"
+  | "id"
+  | "tl"
+  | "ar"
+  | "vi";
+
+export const RTL_LANGS: Lang[] = ["ar"];
 
 type Dict = Record<string, string>;
 
@@ -145,6 +162,13 @@ const DICTS: Record<Lang, Dict> = {
     "home.finalCta.title": "Optimise your corporate treasury layout today.",
     "home.finalCta.subtitle": "Access transparent, market-backed FX routing and custom asynchronous RFQ bidding protocols for your enterprise corridors.",
     "home.finalCta.rfq": "Access RFQ Terminal",
+    "home.hero.ctaCompare": "Try FX Comparator",
+    "home.dual.title": "Built for every cross-border flow — retail and corporate.",
+    "home.dual.retail.title": "Retail Remittances & Private Wealth",
+    "home.dual.retail.body": "Send money internationally, pay for global travel, or manage personal cross-border transfers. Access wholesale interbank rates with zero hidden markups, absolute transparency, and automated tracking.",
+    "home.dual.corporate.title": "Corporate Treasury & Operations",
+    "home.dual.corporate.body": "Manage multi-currency corporate exposure, execute bulk payments, and hedge currency risk utilizing our interactive RFQ Terminal and transparent data reporting.",
+    "compare.calculating": "Calculating optimal paths…",
   },
   es: {
     "nav.home": "Inicio",
@@ -286,6 +310,13 @@ const DICTS: Record<Lang, Dict> = {
     "home.finalCta.title": "Optimizá hoy la arquitectura de tu tesorería corporativa.",
     "home.finalCta.subtitle": "Accedé a un ruteo FX transparente respaldado por el mercado y a protocolos personalizados de licitación RFQ asincrónica para tus corredores empresariales.",
     "home.finalCta.rfq": "Acceder a la Terminal RFQ",
+    "home.hero.ctaCompare": "Probar Comparador FX",
+    "home.dual.title": "Construido para cada flujo transfronterizo — retail y corporativo.",
+    "home.dual.retail.title": "Remesas Retail y Patrimonio Privado",
+    "home.dual.retail.body": "Enviá dinero internacionalmente, pagá viajes globales o gestioná transferencias personales. Accedé a tasas mayoristas interbancarias sin recargos ocultos, con transparencia absoluta y seguimiento automatizado.",
+    "home.dual.corporate.title": "Tesorería Corporativa y Operaciones",
+    "home.dual.corporate.body": "Gestioná exposición corporativa multidivisa, ejecutá pagos masivos y cubrí el riesgo cambiario con nuestra Terminal RFQ interactiva y reportes de datos transparentes.",
+    "compare.calculating": "Calculando rutas óptimas…",
   },
   pt: {
     "nav.home": "Início",
@@ -427,6 +458,86 @@ const DICTS: Record<Lang, Dict> = {
     "home.finalCta.title": "Otimize hoje a arquitetura da sua tesouraria corporativa.",
     "home.finalCta.subtitle": "Acesse roteamento FX transparente, respaldado pelo mercado, e protocolos personalizados de licitação RFQ assíncrona para seus corredores corporativos.",
     "home.finalCta.rfq": "Acessar Terminal RFQ",
+    "home.hero.ctaCompare": "Testar Comparador FX",
+    "home.dual.title": "Construído para cada fluxo transfronteiriço — retail e corporativo.",
+    "home.dual.retail.title": "Remessas Retail e Patrimônio Privado",
+    "home.dual.retail.body": "Envie dinheiro internacionalmente, pague viagens globais ou gerencie transferências pessoais. Acesse taxas atacadistas interbancárias sem markups ocultos, com transparência absoluta e rastreamento automatizado.",
+    "home.dual.corporate.title": "Tesouraria Corporativa e Operações",
+    "home.dual.corporate.body": "Gerencie exposição corporativa multimoeda, execute pagamentos em massa e proteja o risco cambial com nosso Terminal RFQ interativo e relatórios de dados transparentes.",
+    "compare.calculating": "Calculando rotas ótimas…",
+  },
+  // Scaffolded locales — core navigation translated; remaining keys fall back to English until full translation phase.
+  it: {
+    "nav.home": "Home", "nav.compare": "Confronta", "nav.business": "Aziende",
+    "nav.blog": "Blog", "nav.about": "Chi siamo", "nav.contact": "Contatti",
+    "cta.talkSales": "Parla con le vendite", "home.hero.ctaCompare": "Prova il comparatore FX",
+    "compare.calculating": "Calcolo dei percorsi ottimali…",
+  },
+  fr: {
+    "nav.home": "Accueil", "nav.compare": "Comparer", "nav.business": "Entreprises",
+    "nav.blog": "Blog", "nav.about": "À propos", "nav.contact": "Contact",
+    "cta.talkSales": "Parler aux ventes", "home.hero.ctaCompare": "Essayer le comparateur FX",
+    "compare.calculating": "Calcul des routes optimales…",
+  },
+  de: {
+    "nav.home": "Startseite", "nav.compare": "Vergleichen", "nav.business": "Unternehmen",
+    "nav.blog": "Blog", "nav.about": "Über uns", "nav.contact": "Kontakt",
+    "cta.talkSales": "Vertrieb kontaktieren", "home.hero.ctaCompare": "FX-Vergleich testen",
+    "compare.calculating": "Optimale Routen werden berechnet…",
+  },
+  pl: {
+    "nav.home": "Główna", "nav.compare": "Porównaj", "nav.business": "Firmy",
+    "nav.blog": "Blog", "nav.about": "O nas", "nav.contact": "Kontakt",
+    "cta.talkSales": "Skontaktuj się ze sprzedażą", "home.hero.ctaCompare": "Wypróbuj porównywarkę FX",
+    "compare.calculating": "Obliczanie optymalnych tras…",
+  },
+  uk: {
+    "nav.home": "Головна", "nav.compare": "Порівняти", "nav.business": "Бізнес",
+    "nav.blog": "Блог", "nav.about": "Про нас", "nav.contact": "Контакти",
+    "cta.talkSales": "Зв'язатися з відділом продажів", "home.hero.ctaCompare": "Спробувати FX-компаратор",
+    "compare.calculating": "Обчислення оптимальних маршрутів…",
+  },
+  kk: {
+    "nav.home": "Басты бет", "nav.compare": "Салыстыру", "nav.business": "Бизнес",
+    "nav.blog": "Блог", "nav.about": "Біз туралы", "nav.contact": "Байланыс",
+    "cta.talkSales": "Сату бөлімімен сөйлесу", "home.hero.ctaCompare": "FX компараторын сынау",
+    "compare.calculating": "Оңтайлы бағыттар есептелуде…",
+  },
+  hi: {
+    "nav.home": "होम", "nav.compare": "तुलना करें", "nav.business": "व्यवसाय",
+    "nav.blog": "ब्लॉग", "nav.about": "हमारे बारे में", "nav.contact": "संपर्क",
+    "cta.talkSales": "बिक्री से बात करें", "home.hero.ctaCompare": "FX तुलनित्र आज़माएँ",
+    "compare.calculating": "इष्टतम मार्ग गणना…",
+  },
+  zh: {
+    "nav.home": "首页", "nav.compare": "比较", "nav.business": "企业",
+    "nav.blog": "博客", "nav.about": "关于我们", "nav.contact": "联系我们",
+    "cta.talkSales": "联系销售", "home.hero.ctaCompare": "试用外汇比较器",
+    "compare.calculating": "正在计算最佳路径…",
+  },
+  id: {
+    "nav.home": "Beranda", "nav.compare": "Bandingkan", "nav.business": "Bisnis",
+    "nav.blog": "Blog", "nav.about": "Tentang", "nav.contact": "Kontak",
+    "cta.talkSales": "Hubungi Sales", "home.hero.ctaCompare": "Coba Komparator FX",
+    "compare.calculating": "Menghitung jalur optimal…",
+  },
+  tl: {
+    "nav.home": "Tahanan", "nav.compare": "Ihambing", "nav.business": "Negosyo",
+    "nav.blog": "Blog", "nav.about": "Tungkol", "nav.contact": "Kontak",
+    "cta.talkSales": "Makipag-usap sa Sales", "home.hero.ctaCompare": "Subukan ang FX Comparator",
+    "compare.calculating": "Kinakalkula ang pinakamainam na ruta…",
+  },
+  ar: {
+    "nav.home": "الرئيسية", "nav.compare": "قارن", "nav.business": "الشركات",
+    "nav.blog": "المدونة", "nav.about": "من نحن", "nav.contact": "اتصل بنا",
+    "cta.talkSales": "تحدث مع المبيعات", "home.hero.ctaCompare": "جرّب مقارن العملات",
+    "compare.calculating": "حساب أفضل المسارات…",
+  },
+  vi: {
+    "nav.home": "Trang chủ", "nav.compare": "So sánh", "nav.business": "Doanh nghiệp",
+    "nav.blog": "Blog", "nav.about": "Giới thiệu", "nav.contact": "Liên hệ",
+    "cta.talkSales": "Liên hệ kinh doanh", "home.hero.ctaCompare": "Thử công cụ so sánh FX",
+    "compare.calculating": "Đang tính toán lộ trình tối ưu…",
   },
 };
 
@@ -448,10 +559,16 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     if (saved && DICTS[saved]) {
       setLangState(saved);
     } else {
-      const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
-      if (nav === "es" || nav === "pt") setLangState(nav as Lang);
+      const nav = (navigator.language || "en").slice(0, 2).toLowerCase() as Lang;
+      if (nav in DICTS) setLangState(nav);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = RTL_LANGS.includes(lang) ? "rtl" : "ltr";
+  }, [lang]);
 
   const setLang = (l: Lang) => {
     setLangState(l);

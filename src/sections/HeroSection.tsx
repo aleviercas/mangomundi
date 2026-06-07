@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Terminal, TrendingUp, Shield, Zap } from "lucide-react";
+import { Terminal, TrendingUp, Shield, Zap, GitCompare } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 import { RfqTerminal } from "@/components/RfqTerminal";
 
@@ -104,9 +105,16 @@ export function HeroSection() {
               {t("home.hero.subtitle")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/compare"
+                className="inline-flex items-center gap-2 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+              >
+                <GitCompare className="h-4 w-4" />
+                {t("home.hero.ctaCompare")}
+              </Link>
               <button
                 onClick={() => setRfqOpen(true)}
-                className="inline-flex items-center gap-2 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-950 transition-colors hover:bg-slate-50"
               >
                 <Terminal className="h-4 w-4" />
                 {t("cta.talkSales")}
