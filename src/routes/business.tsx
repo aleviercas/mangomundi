@@ -108,23 +108,18 @@ function BusinessPage() {
         </div>
       </section>
 
-      {/* Unique RFQ conversion close */}
+      {/* Always-open RFQ desk — terminal-card, no click trigger */}
       <section className="py-16 border-t border-border">
-        <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
-          <p className="text-base text-muted-foreground leading-relaxed">
-            We do not charge subscription fees. Our model focuses exclusively on absolute
-            routing transparency. Access the institutional desk below.
-          </p>
-          <button
-            onClick={() => setRfqOpen(true)}
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-slate-950 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-          >
-            <Terminal className="h-4 w-4" /> Open the RFQ desk
-          </button>
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-6 text-center">
+            <p className="text-base text-muted-foreground leading-relaxed">
+              We do not charge subscription fees. Our model focuses exclusively on absolute
+              routing transparency. The institutional desk is open below.
+            </p>
+          </div>
+          <RfqInlinePanel />
         </div>
       </section>
-
-      <RfqTerminal open={rfqOpen} onOpenChange={setRfqOpen} />
     </div>
   );
 }
