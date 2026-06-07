@@ -522,24 +522,15 @@ function ResultsBlock({
   const showLargeBanner = amount >= 50000;
   const [sortBy, setSortBy] = useState<"received" | "fee" | "speed">("received");
 
-  const sponsored = useMemo(
-    () =>
-      result.rows
-        .filter((r) => r.sponsored)
-        .sort((a, b) => (a.sponsored_rank ?? 999) - (b.sponsored_rank ?? 999))
-        .slice(0, 2),
-    [result.rows],
-  );
   const organic = useMemo(() => {
-    const base = result.rows.filter((r) => !r.sponsored);
-    const sorted = [...base];
-    if (sortBy === "received") sorted.sort((a, b) => b.received - a.received);
-    if (sortBy === "fee") sorted.sort((a, b) => a.fee_total - b.fee_total);
+    const base = [...result.rows];
+    if (sortBy === "received") base.sort((a, b) => b.received - a.received);
+    if (sortBy === "fee") base.sort((a, b) => a.fee_total - b.fee_total);
     if (sortBy === "speed")
-      sorted.sort(
+      base.sort(
         (a, b) => (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
       );
-    return sorted;
+    return base;
   }, [result.rows, sortBy]);
 
   // Savings vs worst provider (by received)
