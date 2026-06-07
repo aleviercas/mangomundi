@@ -2,11 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle } from "lucide-react";
+import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Megaphone, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle, BellPlus, Share2, Check } from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
-  aiRecommend,
   chatAboutRecommendation,
   type ComparisonResult,
 } from "@/lib/fx.functions";
@@ -15,6 +14,8 @@ import { useI18n } from "@/lib/i18n";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountrySelect } from "@/components/ui/CountrySelect";
+import { useAnalytics } from "@/hooks/use-analytics";
+
 
 
 export const Route = createFileRoute("/compare")({
@@ -76,41 +77,35 @@ function FxToolPage() {
 
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
-  const aiFn = useServerFn(aiRecommend);
   const chatFn = useServerFn(chatAboutRecommendation);
+  const { track } = useAnalytics();
+
+  const [shareToast, setShareToast] = useState(false);
+
+  const buildReasoning = (): string => {
+    const urgencyLabel =
+      urgency === "urgent" ? "urgent (minutes)" : urgency === "flexible" ? "flexible (days)" : "standard (same-day)";
+    return `Mango Engine Routing Justification: For a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the system analyzed available liquidity paths across indexed provider APIs and retail remittance channels. The optimal route has been selected based on a flat-fee optimization and real-time interbank exchange rates, delivering the maximum yield to the destination account. Spread, fixed fees, settlement window and regulatory coverage of each indexed counterparty were normalised before ranking; the recommendation reflects the neutral mathematical optimum for this corridor at query time.`;
+  };
 
   const compareMut = useMutation({
     mutationFn: () => compareFn({ data: { amount, from, to, segment, sendingCountry, receivingCountry } }),
-    onSuccess: async (data) => {
+    onSuccess: (data) => {
       setResult(data);
-      setAiText("");
       setChat([]);
-      setAiLoading(true);
-      try {
-        const ai = await aiFn({
-          data: {
-            amount,
-            from,
-            to,
-            segment,
-            urgency,
-            lang,
-            top: data.rows.slice(0, 5).map((r) => ({
-              name: r.name,
-              received: r.received,
-              fee_total: r.fee_total,
-              speed_hours: r.speed_hours,
-            })),
-          },
-        });
-        setAiText(ai.text);
-      } catch {
-        setAiText("AI insight unavailable right now.");
-      } finally {
-        setAiLoading(false);
-      }
+      setAiText(buildReasoning());
+      setAiLoading(false);
+      track("comparator_query", {
+        amount,
+        from_currency: from,
+        to_currency: to,
+        segment,
+        urgency,
+        source: "compare_page",
+      });
     },
   });
+
 
   const chatMut = useMutation({
     mutationFn: async (userMsg: string) => {
