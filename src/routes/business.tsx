@@ -1,6 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { BrandLogo } from "@/components/BrandLogo";
+import { RfqTerminal } from "@/components/RfqTerminal";
+import { useI18n } from "@/lib/i18n";
 import {
   Building2,
   Code,
@@ -10,12 +12,12 @@ import {
   Headphones,
   ArrowRight,
   Check,
-  Sparkles,
   Globe,
   TrendingUp,
   Briefcase,
   Star,
   Shield,
+  Terminal,
 } from "lucide-react";
 
 export const Route = createFileRoute("/business")({
