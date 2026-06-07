@@ -17,7 +17,7 @@ const steps = [
     number: "03",
     icon: Send,
     title: "Execute",
-    description: "One click initiates seamless settlement. Track every step with full transparency from origin to destination.",
+    description: "Execute your transaction directly through the recommended provider or initiate our asynchronous RFQ protocol. Complete your operation with full transparency and market-backed justification.",
   },
 ];
 

@@ -305,13 +305,17 @@ function BusinessPage() {
           </div>
 
           <div className="mt-8 text-center">
-            <Link
-              to="/contact"
+            <button
+              onClick={() => setRfqOpen(true)}
               className="inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline underline-offset-4"
             >
-              Get routed to the right desk for your corridor <ArrowRight className="h-4 w-4" />
-            </Link>
+              {t("biz.rfqRoute")} <ArrowRight className="h-4 w-4" />
+            </button>
           </div>
+
+          <p className="mt-10 max-w-4xl mx-auto text-[10px] leading-relaxed text-muted-foreground/80 text-center">
+            {t("fx.trademarks")}
+          </p>
         </div>
       </section>
 
