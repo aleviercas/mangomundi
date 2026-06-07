@@ -162,6 +162,13 @@ const DICTS: Record<Lang, Dict> = {
     "home.finalCta.title": "Optimise your corporate treasury layout today.",
     "home.finalCta.subtitle": "Access transparent, market-backed FX routing and custom asynchronous RFQ bidding protocols for your enterprise corridors.",
     "home.finalCta.rfq": "Access RFQ Terminal",
+    "home.hero.ctaCompare": "Try FX Comparator",
+    "home.dual.title": "Built for every cross-border flow — retail and corporate.",
+    "home.dual.retail.title": "Retail Remittances & Private Wealth",
+    "home.dual.retail.body": "Send money internationally, pay for global travel, or manage personal cross-border transfers. Access wholesale interbank rates with zero hidden markups, absolute transparency, and automated tracking.",
+    "home.dual.corporate.title": "Corporate Treasury & Operations",
+    "home.dual.corporate.body": "Manage multi-currency corporate exposure, execute bulk payments, and hedge currency risk utilizing our interactive RFQ Terminal and transparent data reporting.",
+    "compare.calculating": "Calculating optimal paths…",
   },
   es: {
     "nav.home": "Inicio",
