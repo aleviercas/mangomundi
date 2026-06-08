@@ -582,6 +582,18 @@ const DICTS: Record<Lang, Dict> = {
     "cta.talkSales": "Liên hệ kinh doanh", "home.hero.ctaCompare": "Thử công cụ so sánh FX",
     "compare.calculating": "Đang tính toán lộ trình tối ưu…",
   },
+  ja: {
+    "nav.home": "ホーム", "nav.compare": "比較", "nav.business": "法人",
+    "nav.blog": "ブログ", "nav.about": "会社情報", "nav.contact": "お問い合わせ",
+    "cta.talkSales": "営業担当に相談", "home.hero.ctaCompare": "FX コンパレーターを試す",
+    "compare.calculating": "最適なルートを計算中…",
+  },
+  ko: {
+    "nav.home": "홈", "nav.compare": "비교", "nav.business": "기업",
+    "nav.blog": "블로그", "nav.about": "회사 소개", "nav.contact": "문의",
+    "cta.talkSales": "영업팀 문의", "home.hero.ctaCompare": "FX 비교기 사용해보기",
+    "compare.calculating": "최적 경로 계산 중…",
+  },
 };
 
 
