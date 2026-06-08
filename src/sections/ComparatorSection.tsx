@@ -867,11 +867,11 @@ function ProviderRow({
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider terminal-text-comment font-mono">
+    <label className="block min-w-0">
+      <span className="mb-1 block break-words text-[10px] font-bold uppercase tracking-wider terminal-text-comment font-mono">
         // {label}
       </span>
-      {children}
+      <div className="min-w-0">{children}</div>
     </label>
   );
 }
@@ -901,14 +901,14 @@ function CurrencyChip({ value, onChange }: { value: string; onChange: (v: string
   const active = CURRENCIES.find((c) => c.code === value);
   return (
     <div
-      className="relative flex h-10 items-center gap-2 rounded-full border border-amber-500/40 px-3 font-mono text-sm transition focus-within:border-amber-400 focus-within:shadow-[0_0_0_2px_oklch(0.769_0.188_70.08/0.25)]"
+      className="relative flex h-10 min-w-0 items-center gap-2 overflow-hidden rounded-full border border-amber-500/40 px-3 font-mono text-sm transition focus-within:border-amber-400 focus-within:shadow-[0_0_0_2px_oklch(0.769_0.188_70.08/0.25)]"
       style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
     >
-      <span className="text-base leading-none">{active?.flag ?? "🌐"}</span>
-      <span className="terminal-text-bright font-semibold tracking-wide">
+      <span className="shrink-0 text-base leading-none">{active?.flag ?? "🌐"}</span>
+      <span className="shrink-0 terminal-text-bright font-semibold tracking-wide">
         {active?.code ?? value}
       </span>
-      <span className="terminal-text-comment truncate text-[11px]">
+      <span className="terminal-text-comment min-w-0 flex-1 truncate whitespace-nowrap text-[11px]">
         {active?.name ?? ""}
       </span>
       <select
