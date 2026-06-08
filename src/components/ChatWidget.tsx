@@ -116,7 +116,7 @@ export function ChatWidget() {
             <button
               onClick={() => setOpen(false)}
               className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-              aria-label="Close"
+              aria-label={t("common.close")}
             >
               <X className="h-4 w-4" />
             </button>
