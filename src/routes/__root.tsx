@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { I18nProvider } from "@/lib/i18n";
+import { I18nProvider, SEO_META } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 import { ChatWidget } from "@/components/ChatWidget";
 import appCss from "../styles.css?url";
@@ -71,21 +71,33 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: async () => {
+    try {
+      const { getInitialLang } = await import("@/lib/geo.functions");
+      const initialLang = await getInitialLang();
+      return { initialLang };
+    } catch {
+      return { initialLang: "en" as const };
+    }
+  },
+  head: ({ loaderData }) => {
+    const lang = loaderData?.initialLang ?? "en";
+    const seo = SEO_META[lang] ?? SEO_META.en;
+    return {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#ffffff" },
-      { title: "mangoglobal | AI Agent for Global FX" },
-      { name: "description", content: "Intelligent decisions for Retail Remittances and Corporate Treasury" },
+      { title: seo.title },
+      { name: "description", content: seo.description },
       { name: "author", content: "mangoglobal" },
-      { property: "og:title", content: "mangoglobal | AI Agent for Global FX" },
-      { property: "og:description", content: "Intelligent decisions for Retail Remittances and Corporate Treasury" },
+      { property: "og:title", content: seo.title },
+      { property: "og:description", content: seo.description },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@mangoglobal" },
-      { name: "twitter:title", content: "mangoglobal | AI Agent for Global FX" },
-      { name: "twitter:description", content: "Intelligent decisions for Retail Remittances and Corporate Treasury" },
+      { name: "twitter:title", content: seo.title },
+      { name: "twitter:description", content: seo.description },
       { property: "og:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
       { name: "twitter:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
     ],
@@ -100,7 +112,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap" },
     ],
-  }),
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -123,10 +136,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { initialLang } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>
+      <I18nProvider initialLang={initialLang}>
         <ComingSoonProvider>
           {/* Technical grid background — global, sutil */}
           <div aria-hidden className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#F8FAFC]">
@@ -147,3 +161,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
