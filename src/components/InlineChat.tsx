@@ -23,10 +23,13 @@ function getSessionId(): string {
   return id;
 }
 
-const QUICK_PROMPTS: Record<"en" | "es" | "pt", string[]> = {
+const QUICK_PROMPTS: Partial<Record<string, string[]>> = {
   en: ["500 GBP to ARS", "1000 USD to MXN", "Treasury for company 50,000 EUR", "How do I pick the best provider?"],
   es: ["500 GBP to ARS", "1000 USD to MXN", "Treasury para empresa 50,000 EUR", "¿Cómo elijo el mejor proveedor?"],
   pt: ["500 GBP to ARS", "1000 USD to MXN", "Tesouraria empresa 50.000 EUR", "Como escolho o melhor provedor?"],
+  it: ["500 GBP to ARS", "1000 USD to MXN", "Tesoreria azienda 50.000 EUR", "Come scelgo il miglior fornitore?"],
+  fr: ["500 GBP to ARS", "1000 USD to MXN", "Trésorerie entreprise 50 000 EUR", "Comment choisir le meilleur prestataire ?"],
+  de: ["500 GBP to ARS", "1000 USD to MXN", "Treasury Firma 50.000 EUR", "Wie wähle ich den besten Anbieter?"],
 };
 
 export function InlineChat() {
