@@ -20,7 +20,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const values = [
     { icon: Globe2, title: t("about.v1.title"), body: t("about.v1.body") },
