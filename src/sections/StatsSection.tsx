@@ -1,12 +1,13 @@
 import { Globe, DollarSign, Calendar } from "lucide-react";
-
-const stats = [
-  { icon: Calendar, value: "2026", label: "Founded" },
-  { icon: Globe, value: "150+", label: "Countries" },
-  { icon: DollarSign, value: "100+", label: "Currencies" },
-];
+import { useI18n } from "@/lib/i18n";
 
 export function StatsSection() {
+  const { t } = useI18n();
+  const stats = [
+    { icon: Calendar, value: "2026", label: t("home.stats.founded") },
+    { icon: Globe, value: "150+", label: t("home.stats.countries") },
+    { icon: DollarSign, value: "100+", label: t("home.stats.currencies") },
+  ];
   return (
     <section className="border-y border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

@@ -1284,7 +1284,66 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
   },
 };
 
-// Merge compliance + manifesto + legal/business + UI keys into the main dictionaries.
+const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
+  en: {
+    "home.cta.badge": "Institutional Operations",
+    "home.cta.title": "Moving high-volume corporate allocation?",
+    "home.cta.subtitle": "Access our specialized multi-currency infrastructure and private RFQ protocols.",
+    "home.cta.button": "Access Institutional Desk",
+    "home.how.title": "How It Works",
+    "home.how.subtitle": "Three simple steps to smarter cross-border payments",
+    "home.how.s1.title": "Compare",
+    "home.how.s1.desc": "Our engine analyzes available liquidity paths and indexed provider rates in real-time to surface optimal execution routes.",
+    "home.how.s2.title": "Optimise",
+    "home.how.s2.desc": "Neutral AI analyses speed, cost, and reliability to build the optimal payment path — with zero provider bias.",
+    "home.how.s3.title": "Execute",
+    "home.how.s3.desc": "Execute your transaction directly through the recommended provider or initiate our asynchronous RFQ protocol. Complete your operation with full transparency and market-backed justification.",
+    "home.platform.text": "FX is the first vertical.",
+    "home.platform.brand": "mangoglobal Platform",
+    "home.platform.tail": "is the AI decision engine behind it — insurance, brokers, SaaS, and more are next.",
+    "home.platform.learn": "Learn more",
+    "home.stats.founded": "Founded",
+    "home.stats.countries": "Countries",
+    "home.stats.currencies": "Currencies",
+    "home.test.badge": "Auditable Neutrality",
+    "home.test.title": "How the Decision Engine Works",
+    "home.test.subtitle": "Our human team is always available to support and guide users through operational complexity — yet absolute algorithmic impartiality is what processes, distributes and delivers the best optimised spreads to every party, equitably and without favouritism.",
+    "home.test.c1.title": "Algorithmic Impartiality",
+    "home.test.c1.desc": "Every route is ranked by the engine on objective parameters — wholesale interbank rate, total fee, settlement speed and regulatory coverage — never by sponsorship or commercial preference. The same logic applies to retail remittances and corporate treasury flows.",
+    "home.test.c2.title": "System Integrity",
+    "home.test.c2.desc": "Absolute algorithmic impartiality is what processes, distributes and delivers the best optimised spreads to every party, equitably and without favouritism.",
+  },
+  es: {
+    "home.cta.badge": "Operaciones Institucionales",
+    "home.cta.title": "¿Mueves grandes volúmenes corporativos?",
+    "home.cta.subtitle": "Accede a nuestra infraestructura multidivisa especializada y protocolos privados de RFQ.",
+    "home.cta.button": "Acceder a Mesa Institucional",
+    "home.how.title": "Cómo Funciona",
+    "home.how.subtitle": "Tres pasos simples para pagos transfronterizos más inteligentes",
+    "home.how.s1.title": "Comparar",
+    "home.how.s1.desc": "Nuestro motor analiza rutas de liquidez disponibles y tarifas indexadas de proveedores en tiempo real para mostrar las rutas óptimas de ejecución.",
+    "home.how.s2.title": "Optimizar",
+    "home.how.s2.desc": "IA neutral que analiza velocidad, coste y fiabilidad para construir la ruta óptima de pago — sin sesgo a ningún proveedor.",
+    "home.how.s3.title": "Ejecutar",
+    "home.how.s3.desc": "Ejecuta tu operación directamente con el proveedor recomendado o inicia nuestro protocolo asíncrono de RFQ. Completa con total transparencia y justificación de mercado.",
+    "home.platform.text": "FX es la primera vertical.",
+    "home.platform.brand": "mangoglobal Platform",
+    "home.platform.tail": "es el motor de decisión IA detrás — seguros, brokers, SaaS y más vienen después.",
+    "home.platform.learn": "Saber más",
+    "home.stats.founded": "Fundada",
+    "home.stats.countries": "Países",
+    "home.stats.currencies": "Divisas",
+    "home.test.badge": "Neutralidad Auditable",
+    "home.test.title": "Cómo Funciona el Motor de Decisión",
+    "home.test.subtitle": "Nuestro equipo humano siempre está disponible para apoyar y guiar a los usuarios — pero es la imparcialidad algorítmica absoluta la que procesa, distribuye y entrega los mejores spreads optimizados a cada parte, de forma equitativa y sin favoritismos.",
+    "home.test.c1.title": "Imparcialidad Algorítmica",
+    "home.test.c1.desc": "Cada ruta es clasificada por el motor según parámetros objetivos — tipo interbancario mayorista, comisión total, velocidad de liquidación y cobertura regulatoria — nunca por patrocinio o preferencia comercial. La misma lógica aplica a remesas retail y flujos de tesorería corporativa.",
+    "home.test.c2.title": "Integridad del Sistema",
+    "home.test.c2.desc": "La imparcialidad algorítmica absoluta es la que procesa, distribuye y entrega los mejores spreads optimizados a cada parte, de forma equitativa y sin favoritismos.",
+  },
+};
+
+// Merge compliance + manifesto + legal/business + UI + home keys into the main dictionaries.
 for (const code of SUPPORTED_LANGS) {
   Object.assign(
     DICTS[code],
@@ -1292,6 +1351,7 @@ for (const code of SUPPORTED_LANGS) {
     MANIFESTO_KEYS[code] ?? {},
     LEGAL_BUSINESS_KEYS[code] ?? {},
     UI_KEYS[code] ?? {},
+    HOME_SECTIONS_KEYS[code] ?? {},
   );
 }
 

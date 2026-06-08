@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { I18nProvider, SEO_META } from "@/lib/i18n";
+import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 import { ChatWidget } from "@/components/ChatWidget";
 import appCss from "../styles.css?url";
@@ -130,6 +130,19 @@ function RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
+function LangKeyedShell() {
+  const { lang } = useI18n();
+  return (
+    <div key={lang} className="relative z-10 flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1 pt-16">
+        <Outlet />
+      </main>
+      <Footer />
+    </div>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { initialLang } = Route.useLoaderData();
@@ -144,13 +157,7 @@ function RootComponent() {
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-amber-200/20 to-transparent blur-[120px]" />
           </div>
 
-          <div className="relative z-10 flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1 pt-16">
-              <Outlet />
-            </main>
-            <Footer />
-          </div>
+          <LangKeyedShell />
           <ChatWidget />
         </ComingSoonProvider>
       </I18nProvider>
