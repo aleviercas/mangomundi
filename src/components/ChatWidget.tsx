@@ -166,7 +166,7 @@ export function ChatWidget() {
               type="submit"
               disabled={sending || !input.trim()}
               className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-950 text-white hover:bg-slate-800 disabled:opacity-40"
-              aria-label="Send"
+              aria-label={t("chat.send")}
             >
               <Send className="h-4 w-4" />
             </button>
