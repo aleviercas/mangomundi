@@ -54,7 +54,7 @@ function BlogIndex() {
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           {posts.length === 0 ? (
             <div className="rounded-2xl border border-border bg-card p-10 text-center">
-              <p className="text-muted-foreground">No posts yet. Check back soon.</p>
+              <p className="text-muted-foreground">{t("blog.empty")}</p>
             </div>
           ) : (
             <div className="grid gap-6 sm:grid-cols-2">
