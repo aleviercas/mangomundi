@@ -1809,6 +1809,79 @@ for (const code of SUPPORTED_LANGS) {
   );
 }
 
+// ============================================================================
+// validateDictionaries — compare DICTS.en (source of truth) against every
+// other supported language. Returns a report of missing/broken keys per lang.
+// Use this in CI or via `bun run scripts/i18n-validate.ts` to produce
+// `i18n-errors.log` and feed it back into the translation pipeline.
+// ============================================================================
+export interface I18nValidationReport {
+  ok: boolean;
+  enKeyCount: number;
+  perLang: Record<Lang, { missing: string[]; empty: string[]; coverage: number }>;
+  brokenLangs: Lang[]; // languages whose dict is missing/null/not an object
+}
+
+export function validateDictionaries(): I18nValidationReport {
+  const enDict = DICTS.en ?? {};
+  const enKeys = Object.keys(enDict);
+  const perLang = {} as I18nValidationReport["perLang"];
+  const brokenLangs: Lang[] = [];
+
+  for (const code of SUPPORTED_LANGS) {
+    const dict = DICTS[code];
+    if (!dict || typeof dict !== "object") {
+      brokenLangs.push(code);
+      perLang[code] = { missing: enKeys.slice(), empty: [], coverage: 0 };
+      continue;
+    }
+    const missing: string[] = [];
+    const empty: string[] = [];
+    for (const key of enKeys) {
+      const v = dict[key];
+      if (v === undefined) missing.push(key);
+      else if (typeof v !== "string" || v.trim() === "") empty.push(key);
+    }
+    const filled = enKeys.length - missing.length - empty.length;
+    perLang[code] = {
+      missing,
+      empty,
+      coverage: enKeys.length ? +(filled / enKeys.length).toFixed(4) : 1,
+    };
+  }
+
+  const ok = brokenLangs.length === 0 &&
+    Object.values(perLang).every((r) => r.missing.length === 0 && r.empty.length === 0);
+
+  return { ok, enKeyCount: enKeys.length, perLang, brokenLangs };
+}
+
+// Auto-run validation in DEV to surface drift early (warn-only, never throws).
+if (import.meta.env?.DEV) {
+  try {
+    const report = validateDictionaries();
+    if (!report.ok) {
+      const summary = SUPPORTED_LANGS
+        .filter((c) => c !== "en")
+        .map((c) => {
+          const r = report.perLang[c];
+          return `${c}: ${Math.round(r.coverage * 100)}% (missing ${r.missing.length}, empty ${r.empty.length})`;
+        })
+        .join(" · ");
+      // eslint-disable-next-line no-console
+      console.warn(`[i18n] dictionary drift detected — ${summary}`);
+      if (report.brokenLangs.length) {
+        // eslint-disable-next-line no-console
+        console.warn(`[i18n] BROKEN dictionaries (missing/non-object):`, report.brokenLangs);
+      }
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn("[i18n] validateDictionaries failed:", e);
+  }
+}
+
+
 
 // === Per-language SEO meta (Home / sitewide default) ===
 export interface SeoMeta {
