@@ -538,6 +538,7 @@ export function ComparatorSection() {
             tCta={t("retail.cta")}
             tMidmarket={t("fx.midmarket")}
             tUpdated={t("fx.updated")}
+            tProvider={t("cmp.provider")}
           />
         )}
       </div>
