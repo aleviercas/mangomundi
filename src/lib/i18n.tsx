@@ -746,23 +746,42 @@ const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
 };
 
 // Merge compliance + manifesto keys into the main dictionaries.
-for (const code of Object.keys(COMPLIANCE_KEYS) as CorporateLang[]) {
-  Object.assign(DICTS[code], COMPLIANCE_KEYS[code], MANIFESTO_KEYS[code]);
+for (const code of Object.keys(COMPLIANCE_KEYS) as Lang[]) {
+  Object.assign(DICTS[code], COMPLIANCE_KEYS[code] ?? {}, MANIFESTO_KEYS[code] ?? {});
 }
 
-// Strict translation-key type — derived from the English dictionary, no `any`.
+// === Per-language SEO meta (Home / sitewide default) ===
+export interface SeoMeta {
+  title: string;
+  description: string;
+}
+export const SEO_META: Record<Lang, SeoMeta> = {
+  en: { title: "mangoglobal | Intelligent FX and global payment decisions", description: "AI Agent for individuals and corporate treasury. Optimization and transparency in your currency exchange and international payment operations." },
+  es: { title: "mangoglobal | Decisiones inteligentes de cambio de divisas y pagos globales", description: "Agente de IA para individuos y tesorería corporativa. Optimización y transparencia en tus operaciones de cambio y pagos internacionales." },
+  pt: { title: "mangoglobal | Decisões inteligentes de câmbio e pagamentos globais", description: "Agente de IA para indivíduos e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais." },
+  it: { title: "mangoglobal | Decisioni intelligenti sui cambi e pagamenti globali", description: "Agente IA per privati e tesoreria aziendale. Ottimizzazione e trasparenza nelle operazioni di cambio e pagamenti internazionali." },
+  fr: { title: "mangoglobal | Décisions intelligentes de change et de paiements mondiaux", description: "Agent IA pour les particuliers et la trésorerie d'entreprise. Optimisation et transparence de vos opérations de change et paiements internationaux." },
+  de: { title: "mangoglobal | Intelligente Entscheidungen für Devisen und globale Zahlungen", description: "KI-Agent für Privatpersonen und Unternehmensschatzämter. Optimierung und Transparenz bei Ihren Devisen- und internationalen Zahlungsgeschäften." },
+  pl: { title: "mangoglobal | Inteligentne decyzje w zakresie wymiany walut i płatności globalnych", description: "Agent AI dla klientów indywidualnych i skarbców korporacyjnych. Optymalizacja i przejrzystość w operacjach wymiany walut i płatnościach międzynarodowych." },
+  uk: { title: "mangoglobal | Інтелектуальні рішення щодо обміну валют та глобальних платежів", description: "AI-агент для фізичних осіб та корпоративних казначейств. Оптимізація та прозорість ваших операцій з обміну валют та міжнародних платежів." },
+  kk: { title: "mangoglobal | Валюта айырбастау және жаһандық төлемдер бойынша ақылды шешімдер", description: "Жеке тұлғалар мен корпоративтік қазынашылықтарға арналған AI агенті. Валюта айырбастау және халықаралық төлем операцияларыңыздағы оңтайландыру мен ашықтық." },
+  hi: { title: "mangoglobal | मुद्रा विनिमय और वैश्विक भुगतान के लिए स्मार्ट निर्णय", description: "व्यक्तियों और कॉर्पोरेट खजाने के लिए AI एजेंट। आपके मुद्रा विनिमय और अंतर्राष्ट्रीय भुगतान कार्यों में अनुकूलन और पारदर्शिता।" },
+  zh: { title: "mangoglobal | 智能外汇与全球支付决策", description: "面向个人与企业财务的 AI 代理。为您提供优化且透明的外汇与国际支付操作方案。" },
+  id: { title: "mangoglobal | Keputusan cerdas terkait valas dan pembayaran global", description: "Agen AI untuk individu dan perbendaharaan perusahaan. Optimalisasi dan transparansi dalam operasional valas dan pembayaran internasional Anda." },
+  tl: { title: "mangoglobal | Matalinong desisyon sa foreign exchange at global payments", description: "AI Agent para sa mga indibidwal at corporate treasury. Optimization at transparency sa iyong currency exchange at international payment operations." },
+  ar: { title: "mangoglobal | قرارات ذكية بشأن العملات الأجنبية والمدفوعات العالمية", description: "وكيل ذكاء اصطناعي للأفراد وخزائن الشركات. التحسين والشفافية في عمليات صرف العملات والمدفوعات الدولية الخاصة بك." },
+  vi: { title: "mangoglobal | Quyết định thông minh về ngoại hối và thanh toán toàn cầu", description: "AI Agent dành cho cá nhân và kho bạc doanh nghiệp. Tối ưu hóa và tính minh bạch trong hoạt động trao đổi tiền tệ và thanh toán quốc tế của bạn." },
+  ja: { title: "mangoglobal | 為替とグローバル決済に関するインテリジェントな意思決定", description: "個人および企業財務向けの AI エージェント。外貨両替および国際決済業務における最適化と透明性を提供します。" },
+  ko: { title: "mangoglobal | 환율 및 글로벌 결제에 대한 지능형 의사결정", description: "개인 및 기업 재무를 위한 AI 에이전트. 외환 거래 및 국제 결제 운영의 최적화와 투명성을 제공합니다." },
+};
+
 export type TKey = string;
 
 /**
- * Scoped language resolver — Step 1: Detect Route → Step 2: Validate → Step 3: Inject.
- * Restricted routes (`/business`, `/about`) may only render CORPORATE_LANGS.
- * Anything else is forced to `en`. The global picker is allowed elsewhere.
+ * Language resolver. All 16 supported languages are valid on every route;
+ * unknown codes fall back to English.
  */
-export function getScopedLanguage(path: string, requested: Lang): Lang {
-  const corporate = path.startsWith("/business") || path.startsWith("/about");
-  if (corporate) {
-    return (CORPORATE_LANGS as readonly Lang[]).includes(requested) ? requested : "en";
-  }
+export function getScopedLanguage(_path: string, requested: Lang): Lang {
   return requested in DICTS ? requested : "en";
 }
 
@@ -774,45 +793,76 @@ interface I18nCtx {
 
 const I18nContext = createContext<I18nCtx | null>(null);
 
-import { useLocation } from "@tanstack/react-router";
+const LS_KEY = "mg.lang";
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLangState] = useState<Lang>("en");
-  // Router-local scope: every navigation revalidates the language vs the route policy.
-  const pathname = useLocation({ select: (s) => s.pathname });
+export function I18nProvider({
+  children,
+  initialLang = "en",
+}: {
+  children: React.ReactNode;
+  initialLang?: Lang;
+}) {
+  const [lang, setLangState] = useState<Lang>(initialLang);
 
-  // Initial pick (browser navigator only — no persistence shared between sections).
+  // Hydration: prefer the user's previously chosen language (localStorage),
+  // then the server-detected geo-IP language passed via props, then navigator,
+  // then English.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    try {
+      const stored = window.localStorage.getItem(LS_KEY) as Lang | null;
+      if (stored && stored in DICTS) {
+        setLangState(stored);
+        return;
+      }
+    } catch {
+      // localStorage unavailable — fall through
+    }
+    if (initialLang && initialLang in DICTS && initialLang !== "en") {
+      setLangState(initialLang);
+      return;
+    }
     const nav = (navigator.language || "en").slice(0, 2).toLowerCase() as Lang;
     if (nav in DICTS) setLangState(nav);
-  }, []);
+  }, [initialLang]);
 
-  // Re-validate language on every route change.
-  useEffect(() => {
-    setLangState((prev) => getScopedLanguage(pathname, prev));
-  }, [pathname]);
-
+  // Keep <html lang> and direction in sync, plus update <title>/<meta> live.
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.lang = lang;
     document.documentElement.dir = RTL_LANGS.includes(lang) ? "rtl" : "ltr";
+    const seo = SEO_META[lang];
+    if (seo) {
+      document.title = seo.title;
+      const setMeta = (selector: string, content: string) => {
+        const el = document.head.querySelector<HTMLMetaElement>(selector);
+        if (el) el.setAttribute("content", content);
+      };
+      setMeta('meta[name="description"]', seo.description);
+      setMeta('meta[property="og:title"]', seo.title);
+      setMeta('meta[property="og:description"]', seo.description);
+      setMeta('meta[name="twitter:title"]', seo.title);
+      setMeta('meta[name="twitter:description"]', seo.description);
+    }
   }, [lang]);
 
   const setLang = (l: Lang) => {
-    // 1) Sanitize input with strict Zod schema.
     const parsed = langCodeSchema.safeParse(l);
     const safe = (parsed.success ? parsed.data : "en") as Lang;
-    // 2) Validate against route-scoped policy. 3) Inject into state.
-    const final = getScopedLanguage(pathname, (safe in DICTS ? safe : "en") as Lang);
+    const final = (safe in DICTS ? safe : "en") as Lang;
     setLangState(final);
+    try {
+      window.localStorage.setItem(LS_KEY, final);
+    } catch {
+      // ignore
+    }
   };
 
   const value = useMemo<I18nCtx>(
     () => ({
       lang,
       setLang,
-      t: (key) => DICTS[lang][key] ?? DICTS.en[key] ?? key,
+      t: (key) => DICTS[lang]?.[key] ?? DICTS.en[key] ?? key,
     }),
     [lang],
   );
