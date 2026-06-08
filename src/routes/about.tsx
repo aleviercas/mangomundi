@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
 import { Globe2, Sparkles, Scale } from "lucide-react";
-import { useI18n, CORPORATE_LANGS, type Lang } from "@/lib/i18n";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -16,14 +15,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const { t, lang, setLang } = useI18n();
-
-  // Corporate compliance gate: /about is restricted to the verified locales.
-  useEffect(() => {
-    if (!(CORPORATE_LANGS as readonly Lang[]).includes(lang)) {
-      setLang("en");
-    }
-  }, [lang, setLang]);
+  const { t } = useI18n();
 
   const values = [
     { icon: Globe2, title: t("about.v1.title"), body: t("about.v1.body") },
