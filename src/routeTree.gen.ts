@@ -24,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LegalTermsRouteImport } from './routes/legal.terms'
 import { Route as LegalRiskRouteImport } from './routes/legal.risk'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminI18nStatusRouteImport } from './routes/admin.i18n-status'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -100,6 +101,11 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AdminI18nStatusRoute = AdminI18nStatusRouteImport.update({
+  id: '/admin/i18n-status',
+  path: '/admin/i18n-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/risk': typeof LegalRiskRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByTo {
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/risk': typeof LegalRiskRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -149,6 +157,7 @@ export interface FileRoutesById {
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/legal/risk': typeof LegalRiskRoute
   '/legal/terms': typeof LegalTermsRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
+    | '/admin/i18n-status'
     | '/blog/$slug'
     | '/legal/risk'
     | '/legal/terms'
@@ -185,6 +195,7 @@ export interface FileRouteTypes {
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
+    | '/admin/i18n-status'
     | '/blog/$slug'
     | '/legal/risk'
     | '/legal/terms'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
+    | '/admin/i18n-status'
     | '/blog/$slug'
     | '/legal/risk'
     | '/legal/terms'
@@ -220,6 +232,7 @@ export interface RootRouteChildren {
   PlatformRoute: typeof PlatformRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  AdminI18nStatusRoute: typeof AdminI18nStatusRoute
   LegalRiskRoute: typeof LegalRiskRoute
   LegalTermsRoute: typeof LegalTermsRoute
 }
@@ -331,6 +344,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/admin/i18n-status': {
+      id: '/admin/i18n-status'
+      path: '/admin/i18n-status'
+      fullPath: '/admin/i18n-status'
+      preLoaderRoute: typeof AdminI18nStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -357,9 +377,20 @@ const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  AdminI18nStatusRoute: AdminI18nStatusRoute,
   LegalRiskRoute: LegalRiskRoute,
   LegalTermsRoute: LegalTermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
