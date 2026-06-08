@@ -51,14 +51,9 @@ const pillars = [
 ];
 
 function BusinessPage() {
-  const { lang, setLang } = useI18n();
+  useI18n();
 
-  // Compliance gate: /business is restricted to the 5 verified corporate locales.
-  useEffect(() => {
-    if (!(CORPORATE_LANGS as readonly Lang[]).includes(lang)) {
-      setLang("en");
-    }
-  }, [lang, setLang]);
+
 
 
 
