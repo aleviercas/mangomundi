@@ -8,8 +8,8 @@
  *
  * Usage:  bun run scripts/i18n-validate.ts
  */
-import { writeFileSync } from "node:fs";
-import { resolve } from "node:path";
+import { writeFileSync, readdirSync, readFileSync, existsSync } from "node:fs";
+import { resolve, join } from "node:path";
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
 
@@ -19,14 +19,41 @@ import {
   LANGUAGE_METADATA,
   I18nProvider,
   useI18n,
+  DICTS,
   type Lang,
 } from "../src/lib/i18n";
 
+// ---------------------------------------------------------------------------
+// 0) Hydrate DICTS from scripts/translations/*.json on disk.
+//    import.meta.glob returns {} in bun script context, so we read the dir
+//    directly and merge each JSON over the in-source defaults.
+// ---------------------------------------------------------------------------
+const translationsDir = resolve(process.cwd(), "scripts/translations");
+if (existsSync(translationsDir)) {
+  const files = readdirSync(translationsDir).filter((f) => f.endsWith(".json"));
+  let merged = 0;
+  for (const file of files) {
+    const code = file.replace(/\.json$/, "") as Lang;
+    if (!SUPPORTED_LANGS.includes(code)) continue;
+    try {
+      const raw = readFileSync(join(translationsDir, file), "utf8");
+      const dict = JSON.parse(raw);
+      if (!dict || typeof dict !== "object") continue;
+      if (!DICTS[code]) DICTS[code] = {};
+      Object.assign(DICTS[code], dict);
+      merged++;
+    } catch (e) {
+      console.error(`[i18n] failed to load ${file}:`, e);
+    }
+  }
+  console.log(`[i18n] merged ${merged} translation file(s) from disk`);
+}
 
 // ---------------------------------------------------------------------------
 // 1) Dictionary validation report
 // ---------------------------------------------------------------------------
 const report = validateDictionaries();
+
 
 const lines: string[] = [];
 lines.push(`# i18n validation report`);
