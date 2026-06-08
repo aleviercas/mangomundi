@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { I18nProvider, SEO_META } from "@/lib/i18n";
+import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 import { ChatWidget } from "@/components/ChatWidget";
 import appCss from "../styles.css?url";
