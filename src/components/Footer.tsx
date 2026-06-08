@@ -3,20 +3,21 @@ import { Linkedin } from "lucide-react";
 import { Wordmark } from "@/components/Wordmark";
 import { useI18n } from "@/lib/i18n";
 
-const navigateLinks = [
-  { to: "/", label: "Home" },
-  { to: "/business", label: "Business" },
-  { to: "/about", label: "About" },
-  { to: "/blog", label: "Blog" },
-] as const;
-
-const complianceLinks = [
-  { to: "/legal/terms", label: "Terms of Service" },
-  { to: "/legal/risk", label: "Risk Disclosure" },
-] as const;
-
 export function Footer() {
   const { t } = useI18n();
+
+  const navigateLinks = [
+    { to: "/", label: t("nav.home") },
+    { to: "/business", label: t("nav.business") },
+    { to: "/about", label: t("nav.about") },
+    { to: "/blog", label: t("nav.blog") },
+  ] as const;
+
+  const complianceLinks = [
+    { to: "/legal/terms", label: t("legal.terms.title") },
+    { to: "/legal/risk", label: t("legal.risk.title") },
+  ] as const;
+
   return (
     <footer className="border-t border-border bg-card">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -26,7 +27,7 @@ export function Footer() {
               <Wordmark className="text-lg" />
             </Link>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-              The global FX decision engine. Neutral AI for smarter cross-border payments.
+              {t("footer.tagline")}
             </p>
             <div className="mt-4 flex gap-3">
               <a
@@ -49,7 +50,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-semibold text-foreground">Navigate</h3>
+            <h3 className="font-heading text-sm font-semibold text-foreground">{t("footer.navigate")}</h3>
             <ul className="mt-3 space-y-2">
               {navigateLinks.map((link) => (
                 <li key={link.to}>
@@ -79,18 +80,17 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} mangoglobal. All rights reserved.
+            &copy; {new Date().getFullYear()} mangoglobal. {t("footer.copyright")}
           </p>
-          <p className="text-sm text-muted-foreground">Global FX, Made Intelligent</p>
+          <p className="text-sm text-muted-foreground">{t("footer.brandLine")}</p>
         </div>
 
-        {/* Localized regulatory disclaimer — compact terminal style */}
         <div className="mt-6 border-t border-border/60 pt-5">
           <p
             className="font-mono text-[10.5px] leading-relaxed text-muted-foreground/70"
             style={{ letterSpacing: "0.01em" }}
           >
-            <span className="opacity-60"># disclaimer &nbsp;</span>
+            <span className="opacity-60"># {t("footer.disclaimerLabel")} &nbsp;</span>
             {t("footer.disclaimer")}
           </p>
         </div>
