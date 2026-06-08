@@ -194,12 +194,10 @@ export function InlineChat() {
               type="submit"
               disabled={sending || !input.trim()}
               className="terminal-btn-primary inline-flex h-10 items-center justify-center gap-1.5 rounded-md px-4 text-sm font-semibold disabled:opacity-40"
-              aria-label="Send"
+              aria-label={t("chat.send")}
             >
               <Send className="h-4 w-4" />
-              <span className="hidden sm:inline">
-                {lang === "es" ? "Enviar" : lang === "pt" ? "Enviar" : "Send"}
-              </span>
+              <span className="hidden sm:inline">{t("chat.send")}</span>
             </button>
           </form>
         </div>
