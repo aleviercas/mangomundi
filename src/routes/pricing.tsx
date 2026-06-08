@@ -1,24 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/pricing")({
-  head: () => ({
-    meta: [
-      { title: "Pricing — mangoglobal" },
-      {
-        name: "description",
-        content:
-          "Free for retail users — paid for businesses that need optimised routing, API access, and white-label tools. Transparent, no hidden fees.",
-      },
-      { property: "og:title", content: "Pricing — mangoglobal" },
-      {
-        property: "og:description",
-        content:
-          "Free comparator for everyone. Pro and Enterprise plans for businesses needing automated routing and API access.",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/pricing");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
+        { property: "og:url", content: "https://mangoglobal.lovable.app/pricing" },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/pricing" }],
+    };
+  },
   component: PricingPage,
 });
 

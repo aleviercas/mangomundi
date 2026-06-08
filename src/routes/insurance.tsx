@@ -1,24 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Shield, Sparkles, ArrowRight, Construction } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/insurance")({
-  head: () => ({
-    meta: [
-      { title: "Insurance Comparison (Coming Soon) — mangoglobal" },
-      {
-        name: "description",
-        content:
-          "mangoglobal is bringing its neutral AI decision engine to insurance: compare policies across providers with transparent pricing and coverage.",
-      },
-      { property: "og:title", content: "Insurance Comparison — mangoglobal" },
-      {
-        property: "og:description",
-        content:
-          "The same engine that compares FX providers, applied to insurance. Coming soon.",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/insurance");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
+        { property: "og:url", content: "https://mangoglobal.lovable.app/insurance" },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/insurance" }],
+    };
+  },
   component: InsurancePage,
 });
 

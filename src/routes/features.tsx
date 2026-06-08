@@ -1,16 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BarChart3, Brain, Wallet, Code, ShieldCheck, Headphones, Clock, FileText } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/features")({
-  head: () => ({
-    meta: [
-      { title: "Features — mangoglobal" },
-      { name: "description", content: "Explore mangoglobal's platform features for intelligent cross-border payments." },
-      { property: "og:title", content: "Features — mangoglobal" },
-      { property: "og:description", content: "Explore mangoglobal's platform features for intelligent cross-border payments." },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/features");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
+        { property: "og:url", content: "https://mangoglobal.lovable.app/features" },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/features" }],
+    };
+  },
   component: FeaturesPage,
 });
 
