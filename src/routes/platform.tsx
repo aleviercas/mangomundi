@@ -1,24 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sparkles, Layers, Network, Bot, Building2, ShieldCheck, ArrowRight } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/platform")({
-  head: () => ({
-    meta: [
-      { title: "AI Decision Engine — mangoglobal Platform" },
-      {
-        name: "description",
-        content:
-          "mangoglobal is an AI-powered decision and sourcing infrastructure for complex markets. FX is the first vertical — insurance, brokers, SaaS, logistics and lending follow.",
-      },
-      { property: "og:title", content: "AI Decision Engine — mangoglobal Platform" },
-      {
-        property: "og:description",
-        content:
-          "AI infrastructure for complex decisions, sourcing and procurement. One core engine, many verticals.",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/platform");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
+        { property: "og:url", content: "https://mangoglobal.lovable.app/platform" },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/platform" }],
+    };
+  },
   component: PlatformPage,
 });
 

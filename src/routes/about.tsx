@@ -1,16 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Globe2, Sparkles, Scale } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About — mangoglobal" },
-      { name: "description", content: "mangoglobal is a neutral FX decision engine connecting retail and corporate flows to the best cross-border route." },
-      { property: "og:title", content: "About — mangoglobal" },
-      { property: "og:description", content: "Neutral FX decision engine for borderless payments." },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/about");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
+        { property: "og:url", content: "https://mangoglobal.lovable.app/about" },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/about" }],
+    };
+  },
   component: AboutPage,
 });
 

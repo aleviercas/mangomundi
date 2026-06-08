@@ -1,28 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RfqInlinePanel } from "@/components/RfqTerminal";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 import { Building2, FlaskConical, Network, Lock } from "lucide-react";
 
 export const Route = createFileRoute("/business")({
-  head: () => ({
-    meta: [
-      { title: "Institutional Routing & Strategy Validation — mangoglobal" },
-      {
-        name: "description",
-        content:
-          "Architected for high-volume cross-border analysis and neutral flow optimization. Validate institutional routing mechanics before execution.",
-      },
-      {
-        property: "og:title",
-        content: "Institutional Routing & Strategy Validation — mangoglobal",
-      },
-      {
-        property: "og:description",
-        content:
-          "High-volume cross-border analysis and neutral flow optimization. Eliminate hidden variance before execution.",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/business");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
+        { property: "og:url", content: "https://mangoglobal.lovable.app/business" },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/business" }],
+    };
+  },
   component: BusinessPage,
 });
 
