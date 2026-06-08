@@ -205,7 +205,7 @@ export function ComparatorSection() {
         {/* Header */}
         <div className="mb-10 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-            <Sparkles className="h-3 w-3 text-primary" /> Live rates · Neutral AI · 30+ providers
+            <Sparkles className="h-3 w-3 text-primary" /> {t("comparator.subheadline")}
           </div>
           <h1 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             {t("fx.title")} <span className="text-primary">{t("fx.titleAccent")}</span>
