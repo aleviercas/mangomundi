@@ -16,10 +16,12 @@ import { createElement } from "react";
 import {
   validateDictionaries,
   SUPPORTED_LANGS,
+  LANGUAGE_METADATA,
   I18nProvider,
   useI18n,
   type Lang,
 } from "../src/lib/i18n";
+
 
 // ---------------------------------------------------------------------------
 // 1) Dictionary validation report
