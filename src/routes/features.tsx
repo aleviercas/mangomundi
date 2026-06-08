@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BarChart3, Brain, Wallet, Code, ShieldCheck, Headphones, Clock, FileText } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/features")({
   head: () => ({
@@ -13,60 +14,30 @@ export const Route = createFileRoute("/features")({
   component: FeaturesPage,
 });
 
-const features = [
-  {
-    icon: BarChart3,
-    title: "Real-Time Rate Comparison",
-    description: "Access live exchange rates from 150+ providers. Our engine updates every 30 seconds to ensure you always see the most current market data.",
-  },
-  {
-    icon: Brain,
-    title: "AI-Powered Smart Routing",
-    description: "Our neutral AI analyses speed, cost, reliability, and compliance to build the optimal payment path for every transaction.",
-  },
-  {
-    icon: Wallet,
-    title: "Multi-Currency Wallets",
-    description: "Hold balances in 150+ currencies. Convert between currencies at market-leading rates with a single click.",
-  },
-  {
-    icon: Code,
-    title: "Enterprise API",
-    description: "RESTful APIs with comprehensive documentation, webhooks, and SDKs for Python, Node.js, Java, and Go.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Compliance Automation",
-    description: "Automated KYC, AML screening, and regulatory reporting across all supported jurisdictions.",
-  },
-  {
-    icon: Headphones,
-    title: "24/7 Global Support",
-    description: "Expert support teams across London, Singapore, New York, and Lagos. Available via chat, email, and phone.",
-  },
-  {
-    icon: Clock,
-    title: "Scheduled Payments",
-    description: "Set up recurring transfers, forward contracts, and automated hedging strategies.",
-  },
-  {
-    icon: FileText,
-    title: "Advanced Reporting",
-    description: "Detailed analytics on FX exposure, cost savings, and payment performance. Export to Excel, PDF, or via API.",
-  },
-];
-
 function FeaturesPage() {
+  const { t } = useI18n();
+
+  const features = [
+    { icon: BarChart3, title: t("feat.f1.t"), description: t("feat.f1.d") },
+    { icon: Brain, title: t("feat.f2.t"), description: t("feat.f2.d") },
+    { icon: Wallet, title: t("feat.f3.t"), description: t("feat.f3.d") },
+    { icon: Code, title: t("feat.f4.t"), description: t("feat.f4.d") },
+    { icon: ShieldCheck, title: t("feat.f5.t"), description: t("feat.f5.d") },
+    { icon: Headphones, title: t("feat.f6.t"), description: t("feat.f6.d") },
+    { icon: Clock, title: t("feat.f7.t"), description: t("feat.f7.d") },
+    { icon: FileText, title: t("feat.f8.t"), description: t("feat.f8.d") },
+  ];
+
   return (
     <div className="bg-background">
       <section className="pt-16 pb-12">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <h1 className="font-heading text-4xl font-bold text-foreground sm:text-5xl">
-            Everything You Need for{" "}
-            <span className="text-primary">Global Payments</span>
+            {t("feat.title.a")}{" "}
+            <span className="text-primary">{t("feat.title.b")}</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            A complete platform for comparing, optimising, and executing cross-border payments at any scale.
+            {t("feat.subtitle")}
           </p>
         </div>
       </section>

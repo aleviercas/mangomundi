@@ -19,31 +19,41 @@ export const Route = createFileRoute("/blog/$slug")({
       { name: "description", content: "Read this post on mangoglobal." },
     ],
   }),
-  notFoundComponent: () => (
+  notFoundComponent: () => <PostNotFound />,
+  errorComponent: ({ error }) => <PostError error={error} />,
+  component: BlogPostPage,
+});
+
+function PostNotFound() {
+  const { t } = useI18n();
+  return (
     <div className="bg-background min-h-[60vh] flex items-center justify-center">
       <div className="text-center px-4">
-        <h1 className="font-heading text-3xl font-bold text-foreground">Post not found</h1>
-        <p className="mt-2 text-muted-foreground">This article doesn't exist or was unpublished.</p>
+        <h1 className="font-heading text-3xl font-bold text-foreground">{t("errors.post.title")}</h1>
+        <p className="mt-2 text-muted-foreground">{t("errors.post.body")}</p>
         <Link
           to="/blog"
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to the blog
+          <ArrowLeft className="h-4 w-4" /> {t("errors.post.back")}
         </Link>
       </div>
     </div>
-  ),
-  errorComponent: ({ error }) => (
+  );
+}
+
+function PostError({ error }: { error: Error }) {
+  const { t } = useI18n();
+  return (
     <div className="bg-background min-h-[60vh] flex items-center justify-center px-4">
-      <p className="text-muted-foreground">Couldn't load this post: {error.message}</p>
+      <p className="text-muted-foreground">{t("errors.post.load")} {error.message}</p>
     </div>
-  ),
-  component: BlogPostPage,
-});
+  );
+}
 
 function BlogPostPage() {
   const { slug } = Route.useParams();
-  const { lang } = useI18n();
+  const { lang, t } = useI18n();
   const { data: post, isLoading } = useQuery(postQuery(slug, lang));
 
   if (isLoading) {
@@ -65,12 +75,12 @@ function BlogPostPage() {
           to="/blog"
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to blog
+          <ArrowLeft className="h-4 w-4" /> {t("blog.backShort")}
         </Link>
 
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground mb-4">
           <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
-            {post.audience === "business" ? "Business" : post.audience === "retail" ? "Retail" : "Both"}
+            {post.audience === "business" ? t("blog.audience.business") : post.audience === "retail" ? t("blog.audience.retail") : t("blog.audience.both")}
           </span>
           {post.published_at && (
             <span>
@@ -105,12 +115,12 @@ function BlogPostPage() {
         </div>
 
         <div className="mt-16 rounded-2xl border border-border bg-card p-6 text-center">
-          <p className="text-sm text-muted-foreground">Ready to compare your transfer?</p>
+          <p className="text-sm text-muted-foreground">{t("blog.cta.prompt")}</p>
           <Link
             to="/compare"
             className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
-            Open the comparator
+            {t("blog.cta.button")}
           </Link>
         </div>
       </div>

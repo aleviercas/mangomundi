@@ -538,6 +538,7 @@ export function ComparatorSection() {
             tCta={t("retail.cta")}
             tMidmarket={t("fx.midmarket")}
             tUpdated={t("fx.updated")}
+            tProvider={t("cmp.provider")}
           />
         )}
       </div>
@@ -566,6 +567,7 @@ function ResultsBlock({
   tCta,
   tMidmarket,
   tUpdated,
+  tProvider,
 }: {
   result: ComparisonResult;
   amount: number;
@@ -580,6 +582,7 @@ function ResultsBlock({
   tCta: string;
   tMidmarket: string;
   tUpdated: string;
+  tProvider: string;
 }) {
   const showLargeBanner = amount >= 50000;
   const [sortBy, setSortBy] = useState<"received" | "fee" | "speed">("received");
@@ -688,7 +691,7 @@ function ResultsBlock({
       {/* Organic ranking */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="hidden grid-cols-12 gap-2 border-b border-border bg-surface-elevated px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
-          <div className="col-span-3">Provider</div>
+          <div className="col-span-3">{tProvider}</div>
           <div className="col-span-3 text-right">{tRecipient}</div>
           <div className="col-span-2 text-right">{tTotalFee}</div>
           <div className="col-span-2 text-right">{tSpeed} · Trust</div>
