@@ -14,9 +14,45 @@ export const SUPPORTED_LANGS: Lang[] = [
 export const RTL_LANGS: Lang[] = ["ar"];
 
 // Kept for backwards compatibility — no longer used as a gating mechanism.
-// The whole site now exposes all 16 supported languages.
+// The whole site now exposes all 20 supported languages.
 export const CORPORATE_LANGS = SUPPORTED_LANGS;
 export type CorporateLang = Lang;
+
+// ============================================================================
+// LANGUAGE_METADATA — single source of truth for the language selector UI.
+// Refactor any LangSwitcher / language picker to consume this map.
+// ============================================================================
+export interface LangMetadata {
+  code: Lang;
+  label: string;   // 2-letter uppercase code (for compact display)
+  flag: string;    // unicode flag emoji
+  native: string;  // native language name (for menu rows)
+  english: string; // English name (for searching / a11y)
+}
+
+export const LANGUAGE_METADATA: Record<Lang, LangMetadata> = {
+  en: { code: "en", label: "EN", flag: "🇬🇧", native: "English",    english: "English" },
+  es: { code: "es", label: "ES", flag: "🇪🇸", native: "Español",    english: "Spanish" },
+  pt: { code: "pt", label: "PT", flag: "🇧🇷", native: "Português",  english: "Portuguese" },
+  ru: { code: "ru", label: "RU", flag: "🇷🇺", native: "Русский",    english: "Russian" },
+  tr: { code: "tr", label: "TR", flag: "🇹🇷", native: "Türkçe",     english: "Turkish" },
+  bn: { code: "bn", label: "BN", flag: "🇧🇩", native: "বাংলা",       english: "Bengali" },
+  ur: { code: "ur", label: "UR", flag: "🇵🇰", native: "اردو",        english: "Urdu" },
+  zh: { code: "zh", label: "ZH", flag: "🇨🇳", native: "中文",        english: "Chinese" },
+  pl: { code: "pl", label: "PL", flag: "🇵🇱", native: "Polski",     english: "Polish" },
+  hi: { code: "hi", label: "HI", flag: "🇮🇳", native: "हिन्दी",      english: "Hindi" },
+  tl: { code: "tl", label: "TL", flag: "🇵🇭", native: "Tagalog",    english: "Tagalog" },
+  vi: { code: "vi", label: "VI", flag: "🇻🇳", native: "Tiếng Việt", english: "Vietnamese" },
+  ar: { code: "ar", label: "AR", flag: "🇸🇦", native: "العربية",     english: "Arabic" },
+  de: { code: "de", label: "DE", flag: "🇩🇪", native: "Deutsch",    english: "German" },
+  fr: { code: "fr", label: "FR", flag: "🇫🇷", native: "Français",   english: "French" },
+  it: { code: "it", label: "IT", flag: "🇮🇹", native: "Italiano",   english: "Italian" },
+  ja: { code: "ja", label: "JA", flag: "🇯🇵", native: "日本語",       english: "Japanese" },
+  ko: { code: "ko", label: "KO", flag: "🇰🇷", native: "한국어",       english: "Korean" },
+  id: { code: "id", label: "ID", flag: "🇮🇩", native: "Indonesia",  english: "Indonesian" },
+  th: { code: "th", label: "TH", flag: "🇹🇭", native: "ไทย",         english: "Thai" },
+};
+
 
 // Strict sanitization schema for any language code touching the backend.
 export const langCodeSchema = z.string().trim().max(10);
@@ -1773,6 +1809,79 @@ for (const code of SUPPORTED_LANGS) {
   );
 }
 
+// ============================================================================
+// validateDictionaries — compare DICTS.en (source of truth) against every
+// other supported language. Returns a report of missing/broken keys per lang.
+// Use this in CI or via `bun run scripts/i18n-validate.ts` to produce
+// `i18n-errors.log` and feed it back into the translation pipeline.
+// ============================================================================
+export interface I18nValidationReport {
+  ok: boolean;
+  enKeyCount: number;
+  perLang: Record<Lang, { missing: string[]; empty: string[]; coverage: number }>;
+  brokenLangs: Lang[]; // languages whose dict is missing/null/not an object
+}
+
+export function validateDictionaries(): I18nValidationReport {
+  const enDict = DICTS.en ?? {};
+  const enKeys = Object.keys(enDict);
+  const perLang = {} as I18nValidationReport["perLang"];
+  const brokenLangs: Lang[] = [];
+
+  for (const code of SUPPORTED_LANGS) {
+    const dict = DICTS[code];
+    if (!dict || typeof dict !== "object") {
+      brokenLangs.push(code);
+      perLang[code] = { missing: enKeys.slice(), empty: [], coverage: 0 };
+      continue;
+    }
+    const missing: string[] = [];
+    const empty: string[] = [];
+    for (const key of enKeys) {
+      const v = dict[key];
+      if (v === undefined) missing.push(key);
+      else if (typeof v !== "string" || v.trim() === "") empty.push(key);
+    }
+    const filled = enKeys.length - missing.length - empty.length;
+    perLang[code] = {
+      missing,
+      empty,
+      coverage: enKeys.length ? +(filled / enKeys.length).toFixed(4) : 1,
+    };
+  }
+
+  const ok = brokenLangs.length === 0 &&
+    Object.values(perLang).every((r) => r.missing.length === 0 && r.empty.length === 0);
+
+  return { ok, enKeyCount: enKeys.length, perLang, brokenLangs };
+}
+
+// Auto-run validation in DEV to surface drift early (warn-only, never throws).
+if (import.meta.env?.DEV) {
+  try {
+    const report = validateDictionaries();
+    if (!report.ok) {
+      const summary = SUPPORTED_LANGS
+        .filter((c) => c !== "en")
+        .map((c) => {
+          const r = report.perLang[c];
+          return `${c}: ${Math.round(r.coverage * 100)}% (missing ${r.missing.length}, empty ${r.empty.length})`;
+        })
+        .join(" · ");
+      // eslint-disable-next-line no-console
+      console.warn(`[i18n] dictionary drift detected — ${summary}`);
+      if (report.brokenLangs.length) {
+        // eslint-disable-next-line no-console
+        console.warn(`[i18n] BROKEN dictionaries (missing/non-object):`, report.brokenLangs);
+      }
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn("[i18n] validateDictionaries failed:", e);
+  }
+}
+
+
 
 // === Per-language SEO meta (Home / sitewide default) ===
 export interface SeoMeta {
@@ -1955,6 +2064,25 @@ const I18nContext = createContext<I18nCtx | null>(null);
 
 const LS_KEY = "mg.lang";
 
+/**
+ * Defensive language coercion: anything that isn't a recognised, non-broken
+ * supported language collapses to "en". Never throws — safe for SSR.
+ */
+function coerceLang(candidate: unknown): Lang {
+  if (typeof candidate !== "string") return "en";
+  const lower = candidate.toLowerCase() as Lang;
+  if (!SUPPORTED_LANGS.includes(lower)) return "en";
+  const dict = DICTS[lower];
+  if (!dict || typeof dict !== "object") {
+    if (import.meta.env?.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn(`[i18n] dictionary for "${lower}" missing or corrupt — forcing EN fallback`);
+    }
+    return "en";
+  }
+  return lower;
+}
+
 export function I18nProvider({
   children,
   initialLang = "en",
@@ -1962,10 +2090,17 @@ export function I18nProvider({
   children: React.ReactNode;
   initialLang?: Lang;
 }) {
-  const [lang, setLangState] = useState<Lang>(initialLang);
+  const [lang, setLangState] = useState<Lang>(() => coerceLang(initialLang));
   // Subscribe to router state so SEO meta react to navigation as well as lang.
-  // `useRouterState` returns `undefined` if rendered outside a router (tests/storybook).
-  const pathname = useRouterState({ select: (s) => s.location.pathname }) ?? "/";
+  // useRouterState throws if no <RouterProvider> ancestor exists (tests/storybook/SSR probes),
+  // so we guard it and fall back to "/" — never propagate the error.
+  let pathname = "/";
+  try {
+    pathname = useRouterState({ select: (s) => s.location.pathname }) ?? "/";
+  } catch {
+    pathname = "/";
+  }
+
 
   // Hydration: prefer the user's previously chosen language (localStorage),
   // then the server-detected geo-IP language passed via props, then navigator,
@@ -1973,20 +2108,28 @@ export function I18nProvider({
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      const stored = window.localStorage.getItem(LS_KEY) as Lang | null;
-      if (stored && stored in DICTS) {
-        setLangState(stored);
-        return;
+      const stored = window.localStorage.getItem(LS_KEY);
+      if (stored) {
+        const coerced = coerceLang(stored);
+        if (coerced !== "en" || stored.toLowerCase() === "en") {
+          setLangState(coerced);
+          return;
+        }
       }
     } catch {
       // localStorage unavailable — fall through
     }
-    if (initialLang && initialLang in DICTS && initialLang !== "en") {
-      setLangState(initialLang);
+    const coercedInitial = coerceLang(initialLang);
+    if (coercedInitial !== "en") {
+      setLangState(coercedInitial);
       return;
     }
-    const nav = (navigator.language || "en").slice(0, 2).toLowerCase() as Lang;
-    if (nav in DICTS) setLangState(nav);
+    try {
+      const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
+      setLangState(coerceLang(nav));
+    } catch {
+      setLangState("en");
+    }
   }, [initialLang]);
 
   // Keep <html lang> and direction in sync, plus update <title>/<meta>
@@ -2012,8 +2155,8 @@ export function I18nProvider({
 
   const setLang = (l: Lang) => {
     const parsed = langCodeSchema.safeParse(l);
-    const safe = (parsed.success ? parsed.data : "en") as Lang;
-    const final = (safe in DICTS ? safe : "en") as Lang;
+    const safe = parsed.success ? parsed.data : "en";
+    const final = coerceLang(safe);
     setLangState(final);
     try {
       window.localStorage.setItem(LS_KEY, final);
@@ -2027,14 +2170,24 @@ export function I18nProvider({
       lang,
       setLang,
       t: (key) => {
-        const hit = DICTS[lang]?.[key];
-        if (hit !== undefined) return hit;
-        const fallback = DICTS.en[key];
-        if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
-          console.warn(`[i18n] missing key "${key}" for lang "${lang}" — using ${fallback !== undefined ? "EN fallback" : "raw key"}`);
+        // Hardened: any failure path falls through to EN, then to the raw key.
+        try {
+          const active = DICTS[lang] && typeof DICTS[lang] === "object" ? DICTS[lang] : undefined;
+          const hit = active?.[key];
+          if (typeof hit === "string" && hit.length > 0) return hit;
+          const fallback = DICTS.en?.[key];
+          if (import.meta.env?.DEV) {
+            // eslint-disable-next-line no-console
+            console.warn(`[i18n] missing key "${key}" for lang "${lang}" — using ${fallback !== undefined ? "EN fallback" : "raw key"}`);
+          }
+          return typeof fallback === "string" ? fallback : key;
+        } catch (err) {
+          if (import.meta.env?.DEV) {
+            // eslint-disable-next-line no-console
+            console.warn(`[i18n] t() threw for key "${key}":`, err);
+          }
+          return key;
         }
-        return fallback ?? key;
       },
     }),
     [lang],
@@ -2042,6 +2195,7 @@ export function I18nProvider({
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
+
 
 export function useI18n() {
   const ctx = useContext(I18nContext);
