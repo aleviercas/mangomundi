@@ -91,7 +91,7 @@ export function RfqTerminal({ open, onOpenChange, defaults }: Props) {
             <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" />
             <p className="text-sm text-slate-200 leading-relaxed">{t("rfq.success")}</p>
             <p className="text-[11px] text-slate-500">
-              request_id: <span className="text-emerald-400">{done.requestId}</span>
+              {t("rfq.requestId")}: <span className="text-emerald-400">{done.requestId}</span>
             </p>
           </div>
         ) : (
