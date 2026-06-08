@@ -86,18 +86,18 @@ export function LangSwitcher() {
                     onClick={() => pick(l.code)}
                     role="option"
                     aria-selected={active}
-                    className={`flex w-full items-center gap-2.5 px-3 py-2 text-sm transition ${
+                    className={`flex w-full min-w-0 items-center gap-2.5 px-3 py-2 text-sm transition ${
                       active
                         ? "bg-primary/10 text-primary"
                         : "text-foreground hover:bg-surface-elevated hover:text-primary"
                     }`}
                   >
-                    <span className="text-base leading-none">{l.flag}</span>
-                    <span className="w-7 font-mono text-xs font-semibold">{l.label}</span>
-                    <span className="flex-1 truncate text-xs text-muted-foreground">
+                    <span className="shrink-0 text-base leading-none">{l.flag}</span>
+                    <span className="w-7 shrink-0 font-mono text-xs font-semibold">{l.label}</span>
+                    <span className="min-w-0 flex-1 truncate whitespace-nowrap text-xs text-muted-foreground">
                       {l.native}
                     </span>
-                    {active && <span className="text-[10px] font-mono text-primary">●</span>}
+                    {active && <span className="shrink-0 text-[10px] font-mono text-primary">●</span>}
                   </button>
                 );
               })}
