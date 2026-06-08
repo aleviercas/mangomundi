@@ -38,10 +38,14 @@ export const COUNTRY_TO_LANG: Record<string, Lang> = {
   DE: "de", AT: "de", CH: "de", LI: "de",
   // Polish
   PL: "pl",
-  // Ukrainian
-  UA: "uk",
-  // Kazakh
-  KZ: "kk",
+  // Russian
+  RU: "ru", BY: "ru", KZ: "ru",
+  // Turkish
+  TR: "tr",
+  // Bengali
+  BD: "bn",
+  // Urdu
+  PK: "ur",
   // Hindi
   IN: "hi",
   // Chinese
@@ -50,6 +54,8 @@ export const COUNTRY_TO_LANG: Record<string, Lang> = {
   ID: "id",
   // Tagalog
   PH: "tl",
+  // Thai
+  TH: "th",
   // Arabic
   SA: "ar", AE: "ar", EG: "ar", QA: "ar", KW: "ar", BH: "ar", OM: "ar", JO: "ar", LB: "ar", IQ: "ar",
   YE: "ar", LY: "ar", SY: "ar", PS: "ar",
