@@ -1,0 +1,122 @@
+{
+  "generatedAt": "2026-06-08T16:19:23.954Z",
+  "ok": true,
+  "enKeyCount": 400,
+  "brokenLangs": [],
+  "perLang": {
+    "es": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "pt": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "ru": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "tr": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "bn": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "ur": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "zh": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "pl": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "hi": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "tl": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "vi": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "ar": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "de": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "fr": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "it": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "ja": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "ko": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "id": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    },
+    "th": {
+      "coverage": 1,
+      "missing": 0,
+      "empty": 0,
+      "missingKeys": []
+    }
+  }
+}
