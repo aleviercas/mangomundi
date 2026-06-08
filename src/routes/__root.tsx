@@ -80,21 +80,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       return { initialLang: "en" as const };
     }
   },
-  head: () => ({
+  head: ({ loaderData }) => {
+    const lang = loaderData?.initialLang ?? "en";
+    const seo = SEO_META[lang] ?? SEO_META.en;
+    return {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#ffffff" },
-      { title: "mangoglobal | AI Agent for Global FX" },
-      { name: "description", content: "Intelligent decisions for Retail Remittances and Corporate Treasury" },
+      { title: seo.title },
+      { name: "description", content: seo.description },
       { name: "author", content: "mangoglobal" },
-      { property: "og:title", content: "mangoglobal | AI Agent for Global FX" },
-      { property: "og:description", content: "Intelligent decisions for Retail Remittances and Corporate Treasury" },
+      { property: "og:title", content: seo.title },
+      { property: "og:description", content: seo.description },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@mangoglobal" },
-      { name: "twitter:title", content: "mangoglobal | AI Agent for Global FX" },
-      { name: "twitter:description", content: "Intelligent decisions for Retail Remittances and Corporate Treasury" },
+      { name: "twitter:title", content: seo.title },
+      { name: "twitter:description", content: seo.description },
       { property: "og:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
       { name: "twitter:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
     ],
