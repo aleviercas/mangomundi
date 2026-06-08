@@ -1,7 +1,6 @@
-import { useI18n, type Lang, CORPORATE_LANGS } from "@/lib/i18n";
-import { useLocation } from "@tanstack/react-router";
+import { useI18n, type Lang } from "@/lib/i18n";
 import { Globe } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const LANGS: { code: Lang; label: string; flag: string; native: string }[] = [
   { code: "en", label: "EN", flag: "🇬🇧", native: "English" },
@@ -19,26 +18,13 @@ const LANGS: { code: Lang; label: string; flag: string; native: string }[] = [
   { code: "tl", label: "TL", flag: "🇵🇭", native: "Tagalog" },
   { code: "ar", label: "AR", flag: "🇸🇦", native: "العربية" },
   { code: "vi", label: "VI", flag: "🇻🇳", native: "Tiếng Việt" },
+  { code: "ja", label: "JA", flag: "🇯🇵", native: "日本語" },
+  { code: "ko", label: "KO", flag: "🇰🇷", native: "한국어" },
 ];
 
 export function LangSwitcher() {
   const { lang, setLang } = useI18n();
-  const pathname = useLocation({ select: (s) => s.pathname });
   const [open, setOpen] = useState(false);
-
-  // Corporate route restriction: /business is limited to verified locales.
-  const isCorporateRoute = pathname.startsWith("/business");
-  const visibleLangs = isCorporateRoute
-    ? LANGS.filter((l) => (CORPORATE_LANGS as readonly Lang[]).includes(l.code))
-    : LANGS;
-
-  // Auto-fallback when navigating into /business with a non-corporate locale.
-  useEffect(() => {
-    if (isCorporateRoute && !(CORPORATE_LANGS as readonly Lang[]).includes(lang)) {
-      setLang("en");
-    }
-  }, [isCorporateRoute, lang, setLang]);
-
   const current = LANGS.find((l) => l.code === lang) ?? LANGS[0];
 
   return (
@@ -53,18 +39,9 @@ export function LangSwitcher() {
       </button>
       {open && (
         <>
-          <div
-            className="fixed inset-0 z-40"
-            onClick={() => setOpen(false)}
-            aria-hidden
-          />
-          <div className="absolute right-0 z-50 mt-1 max-h-[70vh] min-w-[180px] overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
-            {isCorporateRoute && (
-              <div className="border-b border-border px-3 py-1.5 text-[10px] uppercase tracking-wider text-muted-foreground">
-                Corporate verified
-              </div>
-            )}
-            {visibleLangs.map((l) => (
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
+          <div className="absolute right-0 z-50 mt-1 max-h-[70vh] min-w-[200px] overflow-y-auto rounded-lg border border-border bg-card shadow-lg">
+            {LANGS.map((l) => (
               <button
                 key={l.code}
                 onClick={() => {
