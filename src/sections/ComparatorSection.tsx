@@ -867,11 +867,11 @@ function ProviderRow({
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="mb-1 block text-[10px] font-bold uppercase tracking-wider terminal-text-comment font-mono">
+    <label className="block min-w-0">
+      <span className="mb-1 block break-words text-[10px] font-bold uppercase tracking-wider terminal-text-comment font-mono">
         // {label}
       </span>
-      {children}
+      <div className="min-w-0">{children}</div>
     </label>
   );
 }
