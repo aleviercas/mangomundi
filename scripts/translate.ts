@@ -103,30 +103,42 @@ async function translateLang(
   lang: string,
   enDict: Record<string, string>,
 ): Promise<void> {
-  const entries = Object.entries(enDict);
-  const out: Record<string, string> = {};
+  // Incremental: keep any prior translation, only fill missing/empty keys.
+  const existing = await loadExisting(lang);
+  const out: Record<string, string> = { ...existing };
 
-  for (let i = 0; i < entries.length; i += BATCH_SIZE) {
-    const slice = entries.slice(i, i + BATCH_SIZE);
-    let translated: Record<string, string> = {};
-    try {
-      translated = await translateBatch(apiKey, lang, slice);
-    } catch (err) {
-      console.error(`  ! batch ${i}/${entries.length} failed for ${lang}:`, (err as Error).message);
+  const todo: Array<[string, string]> = [];
+  for (const [k, en] of Object.entries(enDict)) {
+    const cur = out[k];
+    if (typeof cur !== "string" || cur.trim().length === 0) todo.push([k, en]);
+  }
+
+  if (todo.length === 0) {
+    console.log(`  ${lang}: already complete (${Object.keys(out).length} keys)`);
+  } else {
+    console.log(`  ${lang}: filling ${todo.length} / ${Object.keys(enDict).length} missing keys`);
+    for (let i = 0; i < todo.length; i += BATCH_SIZE) {
+      const slice = todo.slice(i, i + BATCH_SIZE);
+      let translated: Record<string, string> = {};
+      try {
+        translated = await translateBatch(apiKey, lang, slice);
+      } catch (err) {
+        console.error(`  ! batch ${i}/${todo.length} failed for ${lang}:`, (err as Error).message);
+      }
+      for (const [k, en] of slice) {
+        const v = translated[k];
+        out[k] = typeof v === "string" && v.trim().length > 0 ? v : en;
+      }
+      process.stdout.write(`  ${lang}: ${Math.min(i + BATCH_SIZE, todo.length)}/${todo.length}\r`);
+      await new Promise((r) => setTimeout(r, 250));
     }
-    // Inject EN fallback for any missing/empty key.
-    for (const [k, en] of slice) {
-      const v = translated[k];
-      out[k] = typeof v === "string" && v.trim().length > 0 ? v : en;
-    }
-    process.stdout.write(`  ${lang}: ${Math.min(i + BATCH_SIZE, entries.length)}/${entries.length}\r`);
-    await new Promise((r) => setTimeout(r, 350));
+    process.stdout.write("\n");
   }
 
   const path = resolve(OUT_DIR, `${lang}.json`);
   await mkdir(dirname(path), { recursive: true });
   await writeFile(path, JSON.stringify(out, null, 2) + "\n", "utf8");
-  console.log(`\n  ✓ wrote ${path}`);
+  console.log(`  ✓ wrote ${path}`);
 }
 
 async function main() {
@@ -138,9 +150,8 @@ async function main() {
   const requested = process.argv.slice(2);
   const langs = requested.length > 0 ? requested : [...TARGET_LANGS];
 
-  console.log(`→ Loading EN dictionary from ${I18N_PATH}`);
-  const enDict = await extractEnDict();
-  console.log(`→ ${Object.keys(enDict).length} keys to translate × ${langs.length} languages`);
+  const enDict = LIVE_DICTS.en;
+  console.log(`→ ${Object.keys(enDict).length} EN keys × ${langs.length} languages`);
 
   for (const lang of langs) {
     if (lang === "en") continue;
@@ -158,3 +169,4 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
+
