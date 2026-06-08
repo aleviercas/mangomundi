@@ -1758,6 +1758,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
 
 // Merge compliance + manifesto + legal/business + UI + home + page + extra keys into the main dictionaries.
 for (const code of SUPPORTED_LANGS) {
+  // Defensive: ensure target exists so Object.assign never receives null/undefined
+  // even if SUPPORTED_LANGS drifts ahead of DICTS during refactors.
+  if (!DICTS[code]) DICTS[code] = {};
   Object.assign(
     DICTS[code],
     COMPLIANCE_KEYS[code] ?? {},
