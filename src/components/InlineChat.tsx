@@ -104,14 +104,10 @@ export function InlineChat() {
         <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-medium tracking-widest text-muted-foreground uppercase shadow-sm">
             <Sparkles className="h-3 w-3 text-amber-500" />
-            Talk to the FX Agent
+            {t("inline.badge")}
           </div>
           <h2 className="mt-4 font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-            {lang === "es"
-              ? "Pedile una cotización. Sin formularios."
-              : lang === "pt"
-                ? "Peça uma cotação. Sem formulários."
-                : "Just ask for a quote. No forms."}
+            {t("inline.headline")}
           </h2>
         </div>
 
@@ -122,13 +118,13 @@ export function InlineChat() {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
               </span>
-              FX Copilot
+              {t("chat.copilotAria")}
               <span className="ml-1 text-[10px] font-medium uppercase tracking-widest terminal-text-comment">
                 <span className="font-black lowercase">mango</span>
                 <span className="font-extralight lowercase">global</span> · {lang.toUpperCase()}
               </span>
             </div>
-            <span className="terminal-text-comment text-[10px] font-mono">// session active</span>
+            <span className="terminal-text-comment text-[10px] font-mono">{t("chat.sessionActive")}</span>
           </div>
 
           <div
