@@ -1494,6 +1494,19 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
 
     // Comparator misc
     "cmp.provider": "Provider",
+
+    // shadcn/ui sr-only labels
+    "common.previous": "Previous",
+    "common.next": "Next",
+    "common.morePages": "More pages",
+    "common.prevSlide": "Previous slide",
+    "common.nextSlide": "Next slide",
+    "common.toggleSidebar": "Toggle Sidebar",
+    "common.sidebar": "Sidebar",
+    "common.sidebarDesc": "Displays the mobile sidebar.",
+    "common.prevPage": "Go to previous page",
+    "common.nextPage": "Go to next page",
+    "common.pagination": "pagination",
   },
   es: {
     "errors.notFound.title": "Página no encontrada",
@@ -1637,6 +1650,18 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "feat.f8.d": "Analítica detallada sobre exposición FX, ahorro y desempeño de pagos. Exporta a Excel, PDF o vía API.",
 
     "cmp.provider": "Proveedor",
+
+    "common.previous": "Anterior",
+    "common.next": "Siguiente",
+    "common.morePages": "Más páginas",
+    "common.prevSlide": "Diapositiva anterior",
+    "common.nextSlide": "Siguiente diapositiva",
+    "common.toggleSidebar": "Alternar barra lateral",
+    "common.sidebar": "Barra lateral",
+    "common.sidebarDesc": "Muestra la barra lateral móvil.",
+    "common.prevPage": "Ir a la página anterior",
+    "common.nextPage": "Ir a la página siguiente",
+    "common.pagination": "paginación",
   },
 };
 
