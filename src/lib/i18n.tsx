@@ -1678,6 +1678,139 @@ export const SEO_META: Record<Lang, SeoMeta> = {
   ko: { title: "mangoglobal | 환율 및 글로벌 결제에 대한 지능형 의사결정", description: "개인 및 기업 재무를 위한 AI 에이전트. 외환 거래 및 국제 결제 운영의 최적화와 투명성을 제공합니다." },
 };
 
+// === Per-route SEO (title + description) per language ===
+// Keys are route paths matching TanStack Router pathnames.
+// Other 14 languages fall back to EN; unknown routes fall back to SEO_META.
+type RouteSeoMap = Record<string, SeoMeta>;
+
+const ROUTE_SEO_EN: RouteSeoMap = {
+  "/": SEO_META.en,
+  "/pricing": {
+    title: "Pricing — mangoglobal",
+    description: "Free for retail users — paid for businesses that need optimised routing, API access, and white-label tools. Transparent, no hidden fees.",
+  },
+  "/platform": {
+    title: "AI Decision Engine — mangoglobal Platform",
+    description: "mangoglobal is an AI-powered decision and sourcing infrastructure for complex markets. FX is the first vertical — insurance, brokers, SaaS and lending follow.",
+  },
+  "/features": {
+    title: "Features — mangoglobal",
+    description: "Explore mangoglobal's platform features for intelligent cross-border payments: live rates, smart routing, multi-currency wallets and an enterprise API.",
+  },
+  "/insurance": {
+    title: "Insurance Comparison (Coming Soon) — mangoglobal",
+    description: "mangoglobal is bringing its neutral AI decision engine to insurance: compare policies across providers with transparent pricing and coverage.",
+  },
+  "/blog": {
+    title: "Blog — mangoglobal",
+    description: "Guides, deep-dives, and analyses on cross-border payments, FX transparency, and how to send money smarter — for individuals and businesses.",
+  },
+  "/about": {
+    title: "About — mangoglobal",
+    description: "mangoglobal is building the neutral AI decision and sourcing layer for fragmented markets, starting with cross-border FX.",
+  },
+  "/business": {
+    title: "Business & Treasury — mangoglobal",
+    description: "Treasury, fintech and SMB tools: automated routing, API access to the decision engine, and white-label workflows for cross-border payments.",
+  },
+  "/contact": {
+    title: "Contact — mangoglobal",
+    description: "Talk to mangoglobal: launch partners, enterprise deployments, press and general enquiries.",
+  },
+  "/compare": {
+    title: "Compare FX providers — mangoglobal",
+    description: "Compare 30+ FX providers across 100+ currencies. Live mid-market rates, total fees and AI-ranked recommendations.",
+  },
+  "/fx-tool": {
+    title: "FX Tool — mangoglobal",
+    description: "The mangoglobal FX comparator: live rates, AI recommendation and transparent fees for every cross-border transfer.",
+  },
+  "/legal/terms": {
+    title: "Terms — mangoglobal",
+    description: "Terms of service for mangoglobal.",
+  },
+  "/legal/risk": {
+    title: "Risk disclosures — mangoglobal",
+    description: "Risk disclosures for mangoglobal.",
+  },
+};
+
+const ROUTE_SEO_ES: RouteSeoMap = {
+  "/": SEO_META.es,
+  "/pricing": {
+    title: "Precios — mangoglobal",
+    description: "Gratis para usuarios retail — de pago para empresas que necesitan enrutamiento optimizado, acceso API y herramientas white-label. Transparente, sin tarifas ocultas.",
+  },
+  "/platform": {
+    title: "Motor de Decisión IA — Plataforma mangoglobal",
+    description: "mangoglobal es una infraestructura de decisión y abastecimiento impulsada por IA para mercados complejos. FX es el primer vertical — seguros, brókers, SaaS y préstamos siguen.",
+  },
+  "/features": {
+    title: "Funcionalidades — mangoglobal",
+    description: "Explora las funcionalidades de la plataforma mangoglobal para pagos transfronterizos inteligentes: tipos en vivo, enrutamiento inteligente, carteras multi-divisa y API empresarial.",
+  },
+  "/insurance": {
+    title: "Comparador de Seguros (Próximamente) — mangoglobal",
+    description: "mangoglobal lleva su motor de decisión IA neutral a los seguros: compara pólizas entre proveedores con precios y coberturas transparentes.",
+  },
+  "/blog": {
+    title: "Blog — mangoglobal",
+    description: "Guías, análisis y artículos sobre pagos transfronterizos, transparencia FX y cómo enviar dinero de forma más inteligente — para particulares y empresas.",
+  },
+  "/about": {
+    title: "Nosotros — mangoglobal",
+    description: "mangoglobal construye la capa neutral de decisión y abastecimiento con IA para mercados fragmentados, empezando por FX transfronterizo.",
+  },
+  "/business": {
+    title: "Empresas y Tesorería — mangoglobal",
+    description: "Herramientas para tesorería, fintechs y pymes: enrutamiento automatizado, acceso API al motor de decisión y flujos white-label para pagos transfronterizos.",
+  },
+  "/contact": {
+    title: "Contacto — mangoglobal",
+    description: "Habla con mangoglobal: socios de lanzamiento, despliegues empresariales, prensa y consultas generales.",
+  },
+  "/compare": {
+    title: "Comparar proveedores FX — mangoglobal",
+    description: "Compara más de 30 proveedores FX en más de 100 divisas. Tipos mid-market en vivo, comisiones totales y recomendaciones rankeadas por IA.",
+  },
+  "/fx-tool": {
+    title: "Herramienta FX — mangoglobal",
+    description: "El comparador FX de mangoglobal: tipos en vivo, recomendación IA y comisiones transparentes para cada transferencia transfronteriza.",
+  },
+  "/legal/terms": {
+    title: "Términos — mangoglobal",
+    description: "Términos del servicio de mangoglobal.",
+  },
+  "/legal/risk": {
+    title: "Aviso de riesgo — mangoglobal",
+    description: "Aviso de riesgo de mangoglobal.",
+  },
+};
+
+export const SEO_PER_ROUTE: Partial<Record<Lang, RouteSeoMap>> = {
+  en: ROUTE_SEO_EN,
+  es: ROUTE_SEO_ES,
+};
+
+function normalizePath(path: string): string {
+  if (!path) return "/";
+  // Strip trailing slash except for root
+  const trimmed = path.length > 1 && path.endsWith("/") ? path.slice(0, -1) : path;
+  // Strip query/hash
+  return trimmed.split("?")[0].split("#")[0];
+}
+
+export function getRouteSeo(lang: Lang, path: string): SeoMeta {
+  const p = normalizePath(path);
+  const perLang = SEO_PER_ROUTE[lang]?.[p];
+  if (perLang) return perLang;
+  const en = SEO_PER_ROUTE.en?.[p];
+  if (en && lang === "en") return en;
+  // Try sitewide localized meta as fallback
+  if (SEO_META[lang]) return SEO_META[lang];
+  return en ?? SEO_META.en;
+}
+
 export type TKey = string;
 
 /**
