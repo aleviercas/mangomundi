@@ -598,7 +598,7 @@ const DICTS: Record<Lang, Dict> = {
 
 
 // === Footer / Legal & Compliance localized keys (EN/ES/PT/IT/FR) ===
-const COMPLIANCE_KEYS: Record<CorporateLang, Dict> = {
+const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "footer.compliance": "Legal & Compliance",
     "footer.disclaimer":
@@ -657,7 +657,7 @@ const COMPLIANCE_KEYS: Record<CorporateLang, Dict> = {
 };
 
 // === Manifesto / Company story localized keys (EN/ES/PT/IT/FR) ===
-const MANIFESTO_KEYS: Record<CorporateLang, Dict> = {
+const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "about.manifesto.headline":
       "International Payments, Intelligently Routed. Agentic AI for Global FX. 🌐⚡",
