@@ -71,6 +71,15 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  loader: async () => {
+    try {
+      const { getInitialLang } = await import("@/lib/geo.functions");
+      const initialLang = await getInitialLang();
+      return { initialLang };
+    } catch {
+      return { initialLang: "en" as const };
+    }
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
