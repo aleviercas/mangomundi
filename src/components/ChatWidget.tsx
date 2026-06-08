@@ -91,7 +91,7 @@ export function ChatWidget() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label="Copiloto FX"
+        aria-label={t("chat.copilotAria")}
         className="fixed bottom-5 right-5 z-[90] flex h-12 w-12 items-center justify-center rounded-full bg-slate-950 text-white shadow-lg shadow-slate-900/20 transition-transform hover:scale-105"
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
