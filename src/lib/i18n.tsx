@@ -3,12 +3,12 @@ import { useRouterState } from "@tanstack/react-router";
 import { z } from "zod";
 
 export type Lang =
-  | "en" | "es" | "pt" | "it" | "fr" | "de" | "pl" | "uk"
-  | "kk" | "hi" | "zh" | "id" | "tl" | "ar" | "vi" | "ja" | "ko";
+  | "en" | "es" | "pt" | "ru" | "tr" | "bn" | "ur" | "zh" | "pl" | "hi"
+  | "tl" | "vi" | "ar" | "de" | "fr" | "it" | "ja" | "ko" | "id" | "th";
 
 export const SUPPORTED_LANGS: Lang[] = [
-  "en", "es", "pt", "it", "fr", "de", "pl", "uk",
-  "kk", "hi", "zh", "id", "tl", "ar", "vi", "ja", "ko",
+  "en", "es", "pt", "ru", "tr", "bn", "ur", "zh", "pl", "hi",
+  "tl", "vi", "ar", "de", "fr", "it", "ja", "ko", "id", "th",
 ];
 
 export const RTL_LANGS: Lang[] = ["ar"];
@@ -38,10 +38,14 @@ export const COUNTRY_TO_LANG: Record<string, Lang> = {
   DE: "de", AT: "de", CH: "de", LI: "de",
   // Polish
   PL: "pl",
-  // Ukrainian
-  UA: "uk",
-  // Kazakh
-  KZ: "kk",
+  // Russian
+  RU: "ru", BY: "ru", KZ: "ru",
+  // Turkish
+  TR: "tr",
+  // Bengali
+  BD: "bn",
+  // Urdu
+  PK: "ur",
   // Hindi
   IN: "hi",
   // Chinese
@@ -50,6 +54,8 @@ export const COUNTRY_TO_LANG: Record<string, Lang> = {
   ID: "id",
   // Tagalog
   PH: "tl",
+  // Thai
+  TH: "th",
   // Arabic
   SA: "ar", AE: "ar", EG: "ar", QA: "ar", KW: "ar", BH: "ar", OM: "ar", JO: "ar", LB: "ar", IQ: "ar",
   YE: "ar", LY: "ar", SY: "ar", PS: "ar",
@@ -535,17 +541,35 @@ const DICTS: Record<Lang, Dict> = {
     "cta.talkSales": "Skontaktuj się ze sprzedażą", "home.hero.ctaCompare": "Wypróbuj porównywarkę FX",
     "compare.calculating": "Obliczanie optymalnych tras…",
   },
-  uk: {
-    "nav.home": "Головна", "nav.compare": "Порівняти", "nav.business": "Бізнес",
-    "nav.blog": "Блог", "nav.about": "Про нас", "nav.contact": "Контакти",
-    "cta.talkSales": "Зв'язатися з відділом продажів", "home.hero.ctaCompare": "Спробувати FX-компаратор",
-    "compare.calculating": "Обчислення оптимальних маршрутів…",
+  ru: {
+    "nav.home": "Главная", "nav.compare": "Сравнить", "nav.business": "Бизнес",
+    "nav.blog": "Блог", "nav.about": "О нас", "nav.contact": "Контакты",
+    "cta.talkSales": "Связаться с отделом продаж", "home.hero.ctaCompare": "Попробовать FX-компаратор",
+    "compare.calculating": "Расчёт оптимальных маршрутов…",
   },
-  kk: {
-    "nav.home": "Басты бет", "nav.compare": "Салыстыру", "nav.business": "Бизнес",
-    "nav.blog": "Блог", "nav.about": "Біз туралы", "nav.contact": "Байланыс",
-    "cta.talkSales": "Сату бөлімімен сөйлесу", "home.hero.ctaCompare": "FX компараторын сынау",
-    "compare.calculating": "Оңтайлы бағыттар есептелуде…",
+  tr: {
+    "nav.home": "Ana Sayfa", "nav.compare": "Karşılaştır", "nav.business": "İşletme",
+    "nav.blog": "Blog", "nav.about": "Hakkımızda", "nav.contact": "İletişim",
+    "cta.talkSales": "Satış ile görüşün", "home.hero.ctaCompare": "FX Karşılaştırıcıyı dene",
+    "compare.calculating": "Optimum rotalar hesaplanıyor…",
+  },
+  bn: {
+    "nav.home": "হোম", "nav.compare": "তুলনা", "nav.business": "ব্যবসা",
+    "nav.blog": "ব্লগ", "nav.about": "আমাদের সম্পর্কে", "nav.contact": "যোগাযোগ",
+    "cta.talkSales": "বিক্রয়ের সাথে কথা বলুন", "home.hero.ctaCompare": "FX তুলনাকারী চেষ্টা করুন",
+    "compare.calculating": "সেরা রুট হিসাব করা হচ্ছে…",
+  },
+  ur: {
+    "nav.home": "ہوم", "nav.compare": "موازنہ", "nav.business": "کاروبار",
+    "nav.blog": "بلاگ", "nav.about": "ہمارے بارے میں", "nav.contact": "رابطہ",
+    "cta.talkSales": "سیلز سے بات کریں", "home.hero.ctaCompare": "FX کمپیریٹر آزمائیں",
+    "compare.calculating": "بہترین راستے کا حساب…",
+  },
+  th: {
+    "nav.home": "หน้าแรก", "nav.compare": "เปรียบเทียบ", "nav.business": "ธุรกิจ",
+    "nav.blog": "บล็อก", "nav.about": "เกี่ยวกับเรา", "nav.contact": "ติดต่อ",
+    "cta.talkSales": "ติดต่อฝ่ายขาย", "home.hero.ctaCompare": "ลองเครื่องเปรียบเทียบ FX",
+    "compare.calculating": "กำลังคำนวณเส้นทางที่ดีที่สุด…",
   },
   hi: {
     "nav.home": "होम", "nav.compare": "तुलना करें", "nav.business": "व्यवसाय",
@@ -1760,8 +1784,11 @@ export const SEO_META: Record<Lang, SeoMeta> = {
   fr: { title: "mangoglobal | Décisions intelligentes de change et de paiements mondiaux", description: "Agent IA pour les particuliers et la trésorerie d'entreprise. Optimisation et transparence de vos opérations de change et paiements internationaux." },
   de: { title: "mangoglobal | Intelligente Entscheidungen für Devisen und globale Zahlungen", description: "KI-Agent für Privatpersonen und Unternehmensschatzämter. Optimierung und Transparenz bei Ihren Devisen- und internationalen Zahlungsgeschäften." },
   pl: { title: "mangoglobal | Inteligentne decyzje w zakresie wymiany walut i płatności globalnych", description: "Agent AI dla klientów indywidualnych i skarbców korporacyjnych. Optymalizacja i przejrzystość w operacjach wymiany walut i płatnościach międzynarodowych." },
-  uk: { title: "mangoglobal | Інтелектуальні рішення щодо обміну валют та глобальних платежів", description: "AI-агент для фізичних осіб та корпоративних казначейств. Оптимізація та прозорість ваших операцій з обміну валют та міжнародних платежів." },
-  kk: { title: "mangoglobal | Валюта айырбастау және жаһандық төлемдер бойынша ақылды шешімдер", description: "Жеке тұлғалар мен корпоративтік қазынашылықтарға арналған AI агенті. Валюта айырбастау және халықаралық төлем операцияларыңыздағы оңтайландыру мен ашықтық." },
+  ru: { title: "mangoglobal | Умные решения по обмену валют и глобальным платежам", description: "AI-агент для частных лиц и корпоративных казначейств. Оптимизация и прозрачность ваших операций по обмену валют и международным платежам." },
+  tr: { title: "mangoglobal | Döviz ve küresel ödemeler için akıllı kararlar", description: "Bireyler ve kurumsal hazineler için AI Ajanı. Döviz ve uluslararası ödeme işlemlerinizde optimizasyon ve şeffaflık." },
+  bn: { title: "mangoglobal | মুদ্রা বিনিময় ও বৈশ্বিক পেমেন্টের জন্য স্মার্ট সিদ্ধান্ত", description: "ব্যক্তি ও কর্পোরেট ট্রেজারির জন্য AI এজেন্ট। আপনার মুদ্রা বিনিময় ও আন্তর্জাতিক পেমেন্ট পরিচালনায় অপ্টিমাইজেশন ও স্বচ্ছতা।" },
+  ur: { title: "mangoglobal | کرنسی کے تبادلے اور عالمی ادائیگیوں کے لیے ذہین فیصلے", description: "افراد اور کارپوریٹ ٹریژری کے لیے AI ایجنٹ۔ آپ کی کرنسی ایکسچینج اور بین الاقوامی ادائیگی کے کاموں میں اصلاح اور شفافیت۔" },
+  th: { title: "mangoglobal | การตัดสินใจอัจฉริยะด้านการแลกเปลี่ยนเงินตราและการชำระเงินทั่วโลก", description: "AI Agent สำหรับบุคคลและคลังของบริษัท การเพิ่มประสิทธิภาพและความโปร่งใสในการแลกเปลี่ยนสกุลเงินและการชำระเงินระหว่างประเทศ" },
   hi: { title: "mangoglobal | मुद्रा विनिमय और वैश्विक भुगतान के लिए स्मार्ट निर्णय", description: "व्यक्तियों और कॉर्पोरेट खजाने के लिए AI एजेंट। आपके मुद्रा विनिमय और अंतर्राष्ट्रीय भुगतान कार्यों में अनुकूलन और पारदर्शिता।" },
   zh: { title: "mangoglobal | 智能外汇与全球支付决策", description: "面向个人与企业财务的 AI 代理。为您提供优化且透明的外汇与国际支付操作方案。" },
   id: { title: "mangoglobal | Keputusan cerdas terkait valas dan pembayaran global", description: "Agen AI untuk individu dan perbendaharaan perusahaan. Optimalisasi dan transparansi dalam operasional valas dan pembayaran internasional Anda." },

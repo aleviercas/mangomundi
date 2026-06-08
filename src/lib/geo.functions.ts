@@ -1,11 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
-import { COUNTRY_TO_LANG, type Lang } from "@/lib/i18n";
+import { COUNTRY_TO_LANG, SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
 
 /**
  * Server-side initial language detection.
  * Priority: Cloudflare CF-IPCountry → Accept-Language → "en".
- * Maps ISO country codes to one of the 16 supported languages.
+ * Maps ISO country codes to one of the 20 supported languages.
  */
 export const getInitialLang = createServerFn({ method: "GET" }).handler(
   async (): Promise<Lang> => {
@@ -16,11 +16,7 @@ export const getInitialLang = createServerFn({ method: "GET" }).handler(
       }
       const accept = (getRequestHeader("accept-language") || "").toLowerCase();
       const primary = accept.split(",")[0]?.split("-")[0]?.trim();
-      const SUPPORTED: Lang[] = [
-        "en", "es", "pt", "it", "fr", "de", "pl", "uk",
-        "kk", "hi", "zh", "id", "tl", "ar", "vi", "ja", "ko",
-      ];
-      if (primary && (SUPPORTED as string[]).includes(primary)) {
+      if (primary && (SUPPORTED_LANGS as string[]).includes(primary)) {
         return primary as Lang;
       }
     } catch {
