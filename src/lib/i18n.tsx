@@ -2092,8 +2092,15 @@ export function I18nProvider({
 }) {
   const [lang, setLangState] = useState<Lang>(() => coerceLang(initialLang));
   // Subscribe to router state so SEO meta react to navigation as well as lang.
-  // `useRouterState` returns `undefined` if rendered outside a router (tests/storybook).
-  const pathname = useRouterState({ select: (s) => s.location.pathname }) ?? "/";
+  // useRouterState throws if no <RouterProvider> ancestor exists (tests/storybook/SSR probes),
+  // so we guard it and fall back to "/" — never propagate the error.
+  let pathname = "/";
+  try {
+    pathname = useRouterState({ select: (s) => s.location.pathname }) ?? "/";
+  } catch {
+    pathname = "/";
+  }
+
 
   // Hydration: prefer the user's previously chosen language (localStorage),
   // then the server-detected geo-IP language passed via props, then navigator,
