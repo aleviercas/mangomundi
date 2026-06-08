@@ -3,12 +3,12 @@ import { useRouterState } from "@tanstack/react-router";
 import { z } from "zod";
 
 export type Lang =
-  | "en" | "es" | "pt" | "it" | "fr" | "de" | "pl" | "uk"
-  | "kk" | "hi" | "zh" | "id" | "tl" | "ar" | "vi" | "ja" | "ko";
+  | "en" | "es" | "pt" | "ru" | "tr" | "bn" | "ur" | "zh" | "pl" | "hi"
+  | "tl" | "vi" | "ar" | "de" | "fr" | "it" | "ja" | "ko" | "id" | "th";
 
 export const SUPPORTED_LANGS: Lang[] = [
-  "en", "es", "pt", "it", "fr", "de", "pl", "uk",
-  "kk", "hi", "zh", "id", "tl", "ar", "vi", "ja", "ko",
+  "en", "es", "pt", "ru", "tr", "bn", "ur", "zh", "pl", "hi",
+  "tl", "vi", "ar", "de", "fr", "it", "ja", "ko", "id", "th",
 ];
 
 export const RTL_LANGS: Lang[] = ["ar"];
