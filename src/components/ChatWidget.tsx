@@ -91,7 +91,7 @@ export function ChatWidget() {
     <>
       <button
         onClick={() => setOpen((o) => !o)}
-        aria-label="Copiloto FX"
+        aria-label={t("chat.copilotAria")}
         className="fixed bottom-5 right-5 z-[90] flex h-12 w-12 items-center justify-center rounded-full bg-slate-950 text-white shadow-lg shadow-slate-900/20 transition-transform hover:scale-105"
       >
         {open ? <X className="h-5 w-5" /> : <MessageCircle className="h-5 w-5" />}
@@ -116,7 +116,7 @@ export function ChatWidget() {
             <button
               onClick={() => setOpen(false)}
               className="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
-              aria-label="Close"
+              aria-label={t("common.close")}
             >
               <X className="h-4 w-4" />
             </button>
@@ -166,7 +166,7 @@ export function ChatWidget() {
               type="submit"
               disabled={sending || !input.trim()}
               className="inline-flex h-9 w-9 items-center justify-center rounded-md bg-slate-950 text-white hover:bg-slate-800 disabled:opacity-40"
-              aria-label="Send"
+              aria-label={t("chat.send")}
             >
               <Send className="h-4 w-4" />
             </button>

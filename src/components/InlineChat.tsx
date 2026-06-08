@@ -23,10 +23,13 @@ function getSessionId(): string {
   return id;
 }
 
-const QUICK_PROMPTS: Record<"en" | "es" | "pt", string[]> = {
+const QUICK_PROMPTS: Partial<Record<string, string[]>> = {
   en: ["500 GBP to ARS", "1000 USD to MXN", "Treasury for company 50,000 EUR", "How do I pick the best provider?"],
   es: ["500 GBP to ARS", "1000 USD to MXN", "Treasury para empresa 50,000 EUR", "¿Cómo elijo el mejor proveedor?"],
   pt: ["500 GBP to ARS", "1000 USD to MXN", "Tesouraria empresa 50.000 EUR", "Como escolho o melhor provedor?"],
+  it: ["500 GBP to ARS", "1000 USD to MXN", "Tesoreria azienda 50.000 EUR", "Come scelgo il miglior fornitore?"],
+  fr: ["500 GBP to ARS", "1000 USD to MXN", "Trésorerie entreprise 50 000 EUR", "Comment choisir le meilleur prestataire ?"],
+  de: ["500 GBP to ARS", "1000 USD to MXN", "Treasury Firma 50.000 EUR", "Wie wähle ich den besten Anbieter?"],
 };
 
 export function InlineChat() {
@@ -101,14 +104,10 @@ export function InlineChat() {
         <div className="mb-6 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-medium tracking-widest text-muted-foreground uppercase shadow-sm">
             <Sparkles className="h-3 w-3 text-amber-500" />
-            Talk to the FX Agent
+            {t("inline.badge")}
           </div>
           <h2 className="mt-4 font-heading text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-            {lang === "es"
-              ? "Pedile una cotización. Sin formularios."
-              : lang === "pt"
-                ? "Peça uma cotação. Sem formulários."
-                : "Just ask for a quote. No forms."}
+            {t("inline.headline")}
           </h2>
         </div>
 
@@ -119,13 +118,13 @@ export function InlineChat() {
                 <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
               </span>
-              FX Copilot
+              {t("chat.copilotAria")}
               <span className="ml-1 text-[10px] font-medium uppercase tracking-widest terminal-text-comment">
                 <span className="font-black lowercase">mango</span>
                 <span className="font-extralight lowercase">global</span> · {lang.toUpperCase()}
               </span>
             </div>
-            <span className="terminal-text-comment text-[10px] font-mono">// session active</span>
+            <span className="terminal-text-comment text-[10px] font-mono">{t("chat.sessionActive")}</span>
           </div>
 
           <div
@@ -166,7 +165,7 @@ export function InlineChat() {
           </div>
 
           <div className="flex flex-wrap gap-1.5 border-t terminal-divider px-4 py-2.5">
-            {(QUICK_PROMPTS[lang as "en" | "es" | "pt"] ?? QUICK_PROMPTS.en).map((p: string) => (
+            {(QUICK_PROMPTS[lang] ?? QUICK_PROMPTS.en ?? []).map((p: string) => (
               <button
                 key={p}
                 type="button"
@@ -195,12 +194,10 @@ export function InlineChat() {
               type="submit"
               disabled={sending || !input.trim()}
               className="terminal-btn-primary inline-flex h-10 items-center justify-center gap-1.5 rounded-md px-4 text-sm font-semibold disabled:opacity-40"
-              aria-label="Send"
+              aria-label={t("chat.send")}
             >
               <Send className="h-4 w-4" />
-              <span className="hidden sm:inline">
-                {lang === "es" ? "Enviar" : lang === "pt" ? "Enviar" : "Send"}
-              </span>
+              <span className="hidden sm:inline">{t("chat.send")}</span>
             </button>
           </form>
         </div>

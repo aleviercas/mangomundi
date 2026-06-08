@@ -59,7 +59,7 @@ export function Header() {
           <button
             className="rounded-md p-2 text-foreground"
             onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label="Toggle menu"
+            aria-label={t("common.toggleMenu")}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
