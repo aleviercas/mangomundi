@@ -30,7 +30,7 @@ export const Route = createFileRoute("/blog")({
 });
 
 function BlogIndex() {
-  const { lang } = useI18n();
+  const { lang, t } = useI18n();
   const { data: posts } = useQuery({ ...postsQuery(lang), initialData: [] });
 
   return (
