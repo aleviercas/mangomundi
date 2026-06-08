@@ -221,7 +221,7 @@ export function RfqInlinePanel({ defaults }: { defaults?: Props["defaults"] }) {
           <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" />
           <p className="text-sm terminal-text-bright leading-relaxed">{t("rfq.success")}</p>
           <p className="text-[11px] terminal-text-comment">
-            request_id: <span className="terminal-text-exec">{done.requestId}</span>
+            {t("rfq.requestId")}: <span className="terminal-text-exec">{done.requestId}</span>
           </p>
         </div>
       ) : (
