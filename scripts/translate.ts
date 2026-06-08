@@ -13,17 +13,18 @@
  * Requires the LOVABLE_API_KEY env var (auto-provisioned in Lovable projects).
  */
 import { mkdir, writeFile, readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 
+// Import the LIVE merged dictionary so we translate every key actually used
+// in the app (in-source DICTS + all *_KEYS overlays), not just the literal block.
+import { DICTS as LIVE_DICTS, SUPPORTED_LANGS } from "../src/lib/i18n";
+
 const ROOT = resolve(import.meta.dir, "..");
-const I18N_PATH = resolve(ROOT, "src/lib/i18n.tsx");
 const OUT_DIR = resolve(ROOT, "scripts/translations");
 
 // Mirror of SUPPORTED_LANGS minus "en" (en is the source of truth).
-const TARGET_LANGS = [
-  "es", "pt", "ru", "tr", "bn", "ur", "zh", "pl", "hi",
-  "tl", "vi", "ar", "de", "fr", "it", "ja", "ko", "id", "th",
-] as const;
+const TARGET_LANGS = SUPPORTED_LANGS.filter((l) => l !== "en");
 
 const LANG_NAMES: Record<string, string> = {
   es: "Spanish", pt: "Portuguese (Brazil)", ru: "Russian", tr: "Turkish",
@@ -37,36 +38,17 @@ const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const MODEL = "google/gemini-3-flash-preview";
 const BATCH_SIZE = 40;
 
-async function extractEnDict(): Promise<Record<string, string>> {
-  // Parse DICTS.en out of i18n.tsx by isolating the first `en: { ... }` block.
-  const src = await readFile(I18N_PATH, "utf8");
-  const start = src.indexOf("const DICTS:");
-  if (start === -1) throw new Error("Could not find `const DICTS:` in i18n.tsx");
-  const enIdx = src.indexOf("en: {", start);
-  if (enIdx === -1) throw new Error("Could not find `en: {` in DICTS");
-  // Walk braces to find matching `}`
-  let depth = 0;
-  let i = enIdx + "en: ".length;
-  let openIdx = -1;
-  for (; i < src.length; i++) {
-    const ch = src[i];
-    if (ch === "{") {
-      if (depth === 0) openIdx = i;
-      depth++;
-    } else if (ch === "}") {
-      depth--;
-      if (depth === 0) {
-        const block = src.slice(openIdx, i + 1);
-        // Evaluate as a JS object literal (no top-level imports allowed).
-        // Use Function to avoid require/eval and module scope leakage.
-        // eslint-disable-next-line @typescript-eslint/no-implied-eval
-        const dict = new Function(`return (${block});`)() as Record<string, string>;
-        return dict;
-      }
-    }
+async function loadExisting(lang: string): Promise<Record<string, string>> {
+  const path = resolve(OUT_DIR, `${lang}.json`);
+  if (!existsSync(path)) return {};
+  try {
+    return JSON.parse(await readFile(path, "utf8")) as Record<string, string>;
+  } catch {
+    return {};
   }
-  throw new Error("Failed to parse DICTS.en block");
 }
+
+
 
 async function translateBatch(
   apiKey: string,
