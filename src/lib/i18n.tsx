@@ -14,9 +14,45 @@ export const SUPPORTED_LANGS: Lang[] = [
 export const RTL_LANGS: Lang[] = ["ar"];
 
 // Kept for backwards compatibility — no longer used as a gating mechanism.
-// The whole site now exposes all 16 supported languages.
+// The whole site now exposes all 20 supported languages.
 export const CORPORATE_LANGS = SUPPORTED_LANGS;
 export type CorporateLang = Lang;
+
+// ============================================================================
+// LANGUAGE_METADATA — single source of truth for the language selector UI.
+// Refactor any LangSwitcher / language picker to consume this map.
+// ============================================================================
+export interface LangMetadata {
+  code: Lang;
+  label: string;   // 2-letter uppercase code (for compact display)
+  flag: string;    // unicode flag emoji
+  native: string;  // native language name (for menu rows)
+  english: string; // English name (for searching / a11y)
+}
+
+export const LANGUAGE_METADATA: Record<Lang, LangMetadata> = {
+  en: { code: "en", label: "EN", flag: "🇬🇧", native: "English",    english: "English" },
+  es: { code: "es", label: "ES", flag: "🇪🇸", native: "Español",    english: "Spanish" },
+  pt: { code: "pt", label: "PT", flag: "🇧🇷", native: "Português",  english: "Portuguese" },
+  ru: { code: "ru", label: "RU", flag: "🇷🇺", native: "Русский",    english: "Russian" },
+  tr: { code: "tr", label: "TR", flag: "🇹🇷", native: "Türkçe",     english: "Turkish" },
+  bn: { code: "bn", label: "BN", flag: "🇧🇩", native: "বাংলা",       english: "Bengali" },
+  ur: { code: "ur", label: "UR", flag: "🇵🇰", native: "اردو",        english: "Urdu" },
+  zh: { code: "zh", label: "ZH", flag: "🇨🇳", native: "中文",        english: "Chinese" },
+  pl: { code: "pl", label: "PL", flag: "🇵🇱", native: "Polski",     english: "Polish" },
+  hi: { code: "hi", label: "HI", flag: "🇮🇳", native: "हिन्दी",      english: "Hindi" },
+  tl: { code: "tl", label: "TL", flag: "🇵🇭", native: "Tagalog",    english: "Tagalog" },
+  vi: { code: "vi", label: "VI", flag: "🇻🇳", native: "Tiếng Việt", english: "Vietnamese" },
+  ar: { code: "ar", label: "AR", flag: "🇸🇦", native: "العربية",     english: "Arabic" },
+  de: { code: "de", label: "DE", flag: "🇩🇪", native: "Deutsch",    english: "German" },
+  fr: { code: "fr", label: "FR", flag: "🇫🇷", native: "Français",   english: "French" },
+  it: { code: "it", label: "IT", flag: "🇮🇹", native: "Italiano",   english: "Italian" },
+  ja: { code: "ja", label: "JA", flag: "🇯🇵", native: "日本語",       english: "Japanese" },
+  ko: { code: "ko", label: "KO", flag: "🇰🇷", native: "한국어",       english: "Korean" },
+  id: { code: "id", label: "ID", flag: "🇮🇩", native: "Indonesia",  english: "Indonesian" },
+  th: { code: "th", label: "TH", flag: "🇹🇭", native: "ไทย",         english: "Thai" },
+};
+
 
 // Strict sanitization schema for any language code touching the backend.
 export const langCodeSchema = z.string().trim().max(10);
