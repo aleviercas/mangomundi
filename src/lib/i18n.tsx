@@ -1665,7 +1665,51 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
   },
 };
 
-// Merge compliance + manifesto + legal/business + UI + home + page keys into the main dictionaries.
+// Unified hero/comparator/blog/contact keys (EN canonical + ES; other langs fall back to EN).
+const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
+  en: {
+    "hero.headline": "Intelligent FX and global payment decisions",
+    "hero.subheadline":
+      "AI Agent for corporate treasury and individuals. Optimization and transparency in your currency exchange and international payment operations.",
+    "comparator.subheadline": "Live rates · Neutral AI · 30+ providers",
+    "blog.emptyState": "Under construction — we're crafting new insights. Check back soon.",
+    "contact.heading": "Institutional & Partnership Inquiries",
+    "contact.intro": "For treasury operations, liquidity partnerships, regulatory diligence and institutional onboarding.",
+    "contact.fullName": "Full name",
+    "contact.fullNamePlaceholder": "Jane Doe",
+    "contact.workEmail": "Work email",
+    "contact.workEmailPlaceholder": "jane@institution.com",
+    "contact.institution": "Institution",
+    "contact.institutionPlaceholder": "Institution / Company",
+    "contact.scope": "Scope",
+    "contact.scopePlaceholder": "Briefly describe your flow, corridor or partnership scope.",
+    "contact.submit": "Open secure channel",
+    "contact.submitHint": "submit → hello@mangoglobal.com",
+    "contact.orWrite": "Or write directly to",
+  },
+  es: {
+    "hero.headline": "Decisiones inteligentes de FX y pagos globales",
+    "hero.subheadline":
+      "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
+    "comparator.subheadline": "Tasas en vivo · IA neutral · +30 proveedores",
+    "blog.emptyState": "En construcción — estamos preparando nuevos contenidos. Vuelve pronto.",
+    "contact.heading": "Consultas Institucionales y de Partnership",
+    "contact.intro": "Para operaciones de tesorería, alianzas de liquidez, due diligence regulatorio y onboarding institucional.",
+    "contact.fullName": "Nombre completo",
+    "contact.fullNamePlaceholder": "Juana Pérez",
+    "contact.workEmail": "Email corporativo",
+    "contact.workEmailPlaceholder": "jane@institucion.com",
+    "contact.institution": "Institución",
+    "contact.institutionPlaceholder": "Institución / Empresa",
+    "contact.scope": "Alcance",
+    "contact.scopePlaceholder": "Describí brevemente tu flujo, corredor o alcance del partnership.",
+    "contact.submit": "Abrir canal seguro",
+    "contact.submitHint": "enviar → hello@mangoglobal.com",
+    "contact.orWrite": "O escribinos directamente a",
+  },
+};
+
+// Merge compliance + manifesto + legal/business + UI + home + page + extra keys into the main dictionaries.
 for (const code of SUPPORTED_LANGS) {
   Object.assign(
     DICTS[code],
@@ -1675,6 +1719,7 @@ for (const code of SUPPORTED_LANGS) {
     UI_KEYS[code] ?? {},
     HOME_SECTIONS_KEYS[code] ?? {},
     PAGE_KEYS[code] ?? {},
+    EXTRA_KEYS[code] ?? {},
   );
 }
 

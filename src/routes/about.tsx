@@ -20,7 +20,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   const values = [
     { icon: Globe2, title: t("about.v1.title"), body: t("about.v1.body") },
@@ -157,14 +157,15 @@ function AboutPage() {
             <div className="p-6 sm:p-8 space-y-5">
               <div>
                 <div className="terminal-text-exec text-sm font-semibold">
-                  $ Institutional &amp; Partnership Inquiries
+                  $ {t("contact.heading")}
                 </div>
                 <p className="mt-2 text-[12px] terminal-text-comment leading-relaxed">
-                  // For treasury operations, liquidity partnerships, regulatory diligence and institutional onboarding.
+                  // {t("contact.intro")}
                 </p>
               </div>
 
               <form
+                key={`contact-${lang}`}
                 className="grid gap-4"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -174,23 +175,23 @@ function AboutPage() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="block">
                     <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                      // full_name
+                      // {t("contact.fullName")}
                     </span>
                     <input
                       type="text"
                       required
-                      placeholder="Jane Doe"
+                      placeholder={t("contact.fullNamePlaceholder")}
                       className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
                     />
                   </label>
                   <label className="block">
                     <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                      // work_email
+                      // {t("contact.workEmail")}
                     </span>
                     <input
                       type="email"
                       required
-                      placeholder="jane@institution.com"
+                      placeholder={t("contact.workEmailPlaceholder")}
                       className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
                     />
                   </label>
@@ -198,42 +199,42 @@ function AboutPage() {
 
                 <label className="block">
                   <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                    // institution
+                    // {t("contact.institution")}
                   </span>
                   <input
                     type="text"
-                    placeholder="Institution / Company"
+                    placeholder={t("contact.institutionPlaceholder")}
                     className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
                   />
                 </label>
 
                 <label className="block">
                   <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                    // scope
+                    // {t("contact.scope")}
                   </span>
                   <textarea
                     rows={4}
                     required
-                    placeholder="Briefly describe your flow, corridor or partnership scope."
+                    placeholder={t("contact.scopePlaceholder")}
                     className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
                   />
                 </label>
 
                 <div className="flex items-center justify-between gap-3 border-t terminal-divider pt-4">
                   <span className="terminal-text-comment text-[11px] font-mono">
-                    $ submit → hello@mangoglobal.com
+                    $ {t("contact.submitHint")}
                   </span>
                   <button
                     type="submit"
                     className="terminal-btn-primary inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-xs font-bold uppercase tracking-widest"
                   >
-                    ▶ Open secure channel
+                    ▶ {t("contact.submit")}
                   </button>
                 </div>
               </form>
 
               <p className="text-[11px] terminal-text-comment">
-                // Or write directly to{" "}
+                // {t("contact.orWrite")}{" "}
                 <a href="mailto:hello@mangoglobal.com" className="terminal-text-exec hover:underline">
                   hello@mangoglobal.com
                 </a>

@@ -99,10 +99,10 @@ export function HeroSection() {
               <span className="text-slate-300 font-light lowercase">global</span>
             </div>
             <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-950 leading-[1.05]">
-              {t("home.hero.title")}
+              {t("hero.headline")}
             </h1>
             <p className="mt-5 text-base sm:text-lg text-slate-500 max-w-2xl font-normal leading-relaxed">
-              {t("home.hero.subtitle")}
+              {t("hero.subheadline")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
