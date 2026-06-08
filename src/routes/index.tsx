@@ -10,14 +10,10 @@ import { TestimonialsSection } from "@/sections/TestimonialsSection";
 import { CTASection } from "@/sections/CTASection";
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "mangoglobal — The Global FX Decision Engine" },
-      { name: "description", content: "Neutral AI platform that turns fragmented cross-border payments into one intelligent decision. Compare, optimise, and execute FX payments." },
-      { property: "og:title", content: "mangoglobal — The Global FX Decision Engine" },
-      { property: "og:description", content: "Neutral AI platform for smarter cross-border payments." },
-    ],
-  }),
+  // Title / description / og:* are emitted dynamically by __root.tsx
+  // based on the user's resolved language (see SEO_META + I18nProvider).
+  // Intentionally no head() override here so the home page inherits the
+  // localized meta for all 16 languages.
   component: Index,
 });
 
