@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useRouterState } from "@tanstack/react-router";
 import { z } from "zod";
 
 export type Lang =
@@ -1839,6 +1840,9 @@ export function I18nProvider({
   initialLang?: Lang;
 }) {
   const [lang, setLangState] = useState<Lang>(initialLang);
+  // Subscribe to router state so SEO meta react to navigation as well as lang.
+  // `useRouterState` returns `undefined` if rendered outside a router (tests/storybook).
+  const pathname = useRouterState({ select: (s) => s.location.pathname }) ?? "/";
 
   // Hydration: prefer the user's previously chosen language (localStorage),
   // then the server-detected geo-IP language passed via props, then navigator,
@@ -1862,12 +1866,13 @@ export function I18nProvider({
     if (nav in DICTS) setLangState(nav);
   }, [initialLang]);
 
-  // Keep <html lang> and direction in sync, plus update <title>/<meta> live.
+  // Keep <html lang> and direction in sync, plus update <title>/<meta>
+  // live whenever the language OR the current route changes.
   useEffect(() => {
     if (typeof document === "undefined") return;
     document.documentElement.lang = lang;
     document.documentElement.dir = RTL_LANGS.includes(lang) ? "rtl" : "ltr";
-    const seo = SEO_META[lang];
+    const seo = getRouteSeo(lang, pathname);
     if (seo) {
       document.title = seo.title;
       const setMeta = (selector: string, content: string) => {
@@ -1880,7 +1885,7 @@ export function I18nProvider({
       setMeta('meta[name="twitter:title"]', seo.title);
       setMeta('meta[name="twitter:description"]', seo.description);
     }
-  }, [lang]);
+  }, [lang, pathname]);
 
   const setLang = (l: Lang) => {
     const parsed = langCodeSchema.safeParse(l);
