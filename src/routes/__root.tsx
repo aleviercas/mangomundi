@@ -132,10 +132,11 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { initialLang } = Route.useLoaderData();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <I18nProvider>
+      <I18nProvider initialLang={initialLang}>
         <ComingSoonProvider>
           {/* Technical grid background — global, sutil */}
           <div aria-hidden className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#F8FAFC]">
@@ -156,3 +157,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
