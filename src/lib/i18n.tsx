@@ -541,17 +541,35 @@ const DICTS: Record<Lang, Dict> = {
     "cta.talkSales": "Skontaktuj się ze sprzedażą", "home.hero.ctaCompare": "Wypróbuj porównywarkę FX",
     "compare.calculating": "Obliczanie optymalnych tras…",
   },
-  uk: {
-    "nav.home": "Головна", "nav.compare": "Порівняти", "nav.business": "Бізнес",
-    "nav.blog": "Блог", "nav.about": "Про нас", "nav.contact": "Контакти",
-    "cta.talkSales": "Зв'язатися з відділом продажів", "home.hero.ctaCompare": "Спробувати FX-компаратор",
-    "compare.calculating": "Обчислення оптимальних маршрутів…",
+  ru: {
+    "nav.home": "Главная", "nav.compare": "Сравнить", "nav.business": "Бизнес",
+    "nav.blog": "Блог", "nav.about": "О нас", "nav.contact": "Контакты",
+    "cta.talkSales": "Связаться с отделом продаж", "home.hero.ctaCompare": "Попробовать FX-компаратор",
+    "compare.calculating": "Расчёт оптимальных маршрутов…",
   },
-  kk: {
-    "nav.home": "Басты бет", "nav.compare": "Салыстыру", "nav.business": "Бизнес",
-    "nav.blog": "Блог", "nav.about": "Біз туралы", "nav.contact": "Байланыс",
-    "cta.talkSales": "Сату бөлімімен сөйлесу", "home.hero.ctaCompare": "FX компараторын сынау",
-    "compare.calculating": "Оңтайлы бағыттар есептелуде…",
+  tr: {
+    "nav.home": "Ana Sayfa", "nav.compare": "Karşılaştır", "nav.business": "İşletme",
+    "nav.blog": "Blog", "nav.about": "Hakkımızda", "nav.contact": "İletişim",
+    "cta.talkSales": "Satış ile görüşün", "home.hero.ctaCompare": "FX Karşılaştırıcıyı dene",
+    "compare.calculating": "Optimum rotalar hesaplanıyor…",
+  },
+  bn: {
+    "nav.home": "হোম", "nav.compare": "তুলনা", "nav.business": "ব্যবসা",
+    "nav.blog": "ব্লগ", "nav.about": "আমাদের সম্পর্কে", "nav.contact": "যোগাযোগ",
+    "cta.talkSales": "বিক্রয়ের সাথে কথা বলুন", "home.hero.ctaCompare": "FX তুলনাকারী চেষ্টা করুন",
+    "compare.calculating": "সেরা রুট হিসাব করা হচ্ছে…",
+  },
+  ur: {
+    "nav.home": "ہوم", "nav.compare": "موازنہ", "nav.business": "کاروبار",
+    "nav.blog": "بلاگ", "nav.about": "ہمارے بارے میں", "nav.contact": "رابطہ",
+    "cta.talkSales": "سیلز سے بات کریں", "home.hero.ctaCompare": "FX کمپیریٹر آزمائیں",
+    "compare.calculating": "بہترین راستے کا حساب…",
+  },
+  th: {
+    "nav.home": "หน้าแรก", "nav.compare": "เปรียบเทียบ", "nav.business": "ธุรกิจ",
+    "nav.blog": "บล็อก", "nav.about": "เกี่ยวกับเรา", "nav.contact": "ติดต่อ",
+    "cta.talkSales": "ติดต่อฝ่ายขาย", "home.hero.ctaCompare": "ลองเครื่องเปรียบเทียบ FX",
+    "compare.calculating": "กำลังคำนวณเส้นทางที่ดีที่สุด…",
   },
   hi: {
     "nav.home": "होम", "nav.compare": "तुलना करें", "nav.business": "व्यवसाय",
