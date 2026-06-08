@@ -68,7 +68,7 @@ export function RfqTerminal({ open, onOpenChange, defaults }: Props) {
       });
       setDone({ requestId: res.requestId });
     } catch (err) {
-      setError((err as Error).message || "RFQ failed");
+      setError((err as Error).message || t("rfq.errorGeneric"));
     } finally {
       setPending(false);
     }
