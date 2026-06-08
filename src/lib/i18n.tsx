@@ -2,30 +2,63 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 
 export type Lang =
-  | "en"
-  | "es"
-  | "pt"
-  | "it"
-  | "fr"
-  | "de"
-  | "pl"
-  | "uk"
-  | "kk"
-  | "hi"
-  | "zh"
-  | "id"
-  | "tl"
-  | "ar"
-  | "vi";
+  | "en" | "es" | "pt" | "it" | "fr" | "de" | "pl" | "uk"
+  | "kk" | "hi" | "zh" | "id" | "tl" | "ar" | "vi" | "ja" | "ko";
+
+export const SUPPORTED_LANGS: Lang[] = [
+  "en", "es", "pt", "it", "fr", "de", "pl", "uk",
+  "kk", "hi", "zh", "id", "tl", "ar", "vi", "ja", "ko",
+];
 
 export const RTL_LANGS: Lang[] = ["ar"];
 
-// Verified corporate locales — restrict /business to these.
-export const CORPORATE_LANGS = ["en", "es", "pt", "it", "fr"] as const;
-export type CorporateLang = (typeof CORPORATE_LANGS)[number];
+// Kept for backwards compatibility — no longer used as a gating mechanism.
+// The whole site now exposes all 16 supported languages.
+export const CORPORATE_LANGS = SUPPORTED_LANGS;
+export type CorporateLang = Lang;
 
 // Strict sanitization schema for any language code touching the backend.
 export const langCodeSchema = z.string().trim().max(10);
+
+// Country (ISO-3166 alpha-2) → preferred language code for geo-IP detection.
+export const COUNTRY_TO_LANG: Record<string, Lang> = {
+  // English
+  US: "en", GB: "en", IE: "en", AU: "en", NZ: "en", CA: "en", ZA: "en", SG: "en", NG: "en", KE: "en",
+  // Spanish
+  ES: "es", MX: "es", AR: "es", CO: "es", CL: "es", PE: "es", UY: "es", VE: "es", EC: "es", BO: "es",
+  PY: "es", CR: "es", PA: "es", DO: "es", GT: "es", HN: "es", SV: "es", NI: "es", CU: "es", PR: "es",
+  // Portuguese
+  PT: "pt", BR: "pt", AO: "pt", MZ: "pt", CV: "pt",
+  // Italian
+  IT: "it", SM: "it", VA: "it",
+  // French
+  FR: "fr", BE: "fr", LU: "fr", MC: "fr", SN: "fr", CI: "fr", CM: "fr", MA: "fr", DZ: "fr", TN: "fr",
+  // German
+  DE: "de", AT: "de", CH: "de", LI: "de",
+  // Polish
+  PL: "pl",
+  // Ukrainian
+  UA: "uk",
+  // Kazakh
+  KZ: "kk",
+  // Hindi
+  IN: "hi",
+  // Chinese
+  CN: "zh", HK: "zh", TW: "zh",
+  // Indonesian
+  ID: "id",
+  // Tagalog
+  PH: "tl",
+  // Arabic
+  SA: "ar", AE: "ar", EG: "ar", QA: "ar", KW: "ar", BH: "ar", OM: "ar", JO: "ar", LB: "ar", IQ: "ar",
+  YE: "ar", LY: "ar", SY: "ar", PS: "ar",
+  // Vietnamese
+  VN: "vi",
+  // Japanese
+  JP: "ja",
+  // Korean
+  KR: "ko",
+};
 
 type Dict = Record<string, string>;
 
