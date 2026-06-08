@@ -2064,6 +2064,25 @@ const I18nContext = createContext<I18nCtx | null>(null);
 
 const LS_KEY = "mg.lang";
 
+/**
+ * Defensive language coercion: anything that isn't a recognised, non-broken
+ * supported language collapses to "en". Never throws — safe for SSR.
+ */
+function coerceLang(candidate: unknown): Lang {
+  if (typeof candidate !== "string") return "en";
+  const lower = candidate.toLowerCase() as Lang;
+  if (!SUPPORTED_LANGS.includes(lower)) return "en";
+  const dict = DICTS[lower];
+  if (!dict || typeof dict !== "object") {
+    if (import.meta.env?.DEV) {
+      // eslint-disable-next-line no-console
+      console.warn(`[i18n] dictionary for "${lower}" missing or corrupt — forcing EN fallback`);
+    }
+    return "en";
+  }
+  return lower;
+}
+
 export function I18nProvider({
   children,
   initialLang = "en",
@@ -2071,7 +2090,7 @@ export function I18nProvider({
   children: React.ReactNode;
   initialLang?: Lang;
 }) {
-  const [lang, setLangState] = useState<Lang>(initialLang);
+  const [lang, setLangState] = useState<Lang>(() => coerceLang(initialLang));
   // Subscribe to router state so SEO meta react to navigation as well as lang.
   // `useRouterState` returns `undefined` if rendered outside a router (tests/storybook).
   const pathname = useRouterState({ select: (s) => s.location.pathname }) ?? "/";
@@ -2082,20 +2101,28 @@ export function I18nProvider({
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      const stored = window.localStorage.getItem(LS_KEY) as Lang | null;
-      if (stored && stored in DICTS) {
-        setLangState(stored);
-        return;
+      const stored = window.localStorage.getItem(LS_KEY);
+      if (stored) {
+        const coerced = coerceLang(stored);
+        if (coerced !== "en" || stored.toLowerCase() === "en") {
+          setLangState(coerced);
+          return;
+        }
       }
     } catch {
       // localStorage unavailable — fall through
     }
-    if (initialLang && initialLang in DICTS && initialLang !== "en") {
-      setLangState(initialLang);
+    const coercedInitial = coerceLang(initialLang);
+    if (coercedInitial !== "en") {
+      setLangState(coercedInitial);
       return;
     }
-    const nav = (navigator.language || "en").slice(0, 2).toLowerCase() as Lang;
-    if (nav in DICTS) setLangState(nav);
+    try {
+      const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
+      setLangState(coerceLang(nav));
+    } catch {
+      setLangState("en");
+    }
   }, [initialLang]);
 
   // Keep <html lang> and direction in sync, plus update <title>/<meta>
@@ -2121,8 +2148,8 @@ export function I18nProvider({
 
   const setLang = (l: Lang) => {
     const parsed = langCodeSchema.safeParse(l);
-    const safe = (parsed.success ? parsed.data : "en") as Lang;
-    const final = (safe in DICTS ? safe : "en") as Lang;
+    const safe = parsed.success ? parsed.data : "en";
+    const final = coerceLang(safe);
     setLangState(final);
     try {
       window.localStorage.setItem(LS_KEY, final);
@@ -2136,14 +2163,24 @@ export function I18nProvider({
       lang,
       setLang,
       t: (key) => {
-        const hit = DICTS[lang]?.[key];
-        if (hit !== undefined) return hit;
-        const fallback = DICTS.en[key];
-        if (import.meta.env.DEV) {
-          // eslint-disable-next-line no-console
-          console.warn(`[i18n] missing key "${key}" for lang "${lang}" — using ${fallback !== undefined ? "EN fallback" : "raw key"}`);
+        // Hardened: any failure path falls through to EN, then to the raw key.
+        try {
+          const active = DICTS[lang] && typeof DICTS[lang] === "object" ? DICTS[lang] : undefined;
+          const hit = active?.[key];
+          if (typeof hit === "string" && hit.length > 0) return hit;
+          const fallback = DICTS.en?.[key];
+          if (import.meta.env?.DEV) {
+            // eslint-disable-next-line no-console
+            console.warn(`[i18n] missing key "${key}" for lang "${lang}" — using ${fallback !== undefined ? "EN fallback" : "raw key"}`);
+          }
+          return typeof fallback === "string" ? fallback : key;
+        } catch (err) {
+          if (import.meta.env?.DEV) {
+            // eslint-disable-next-line no-console
+            console.warn(`[i18n] t() threw for key "${key}":`, err);
+          }
+          return key;
         }
-        return fallback ?? key;
       },
     }),
     [lang],
@@ -2151,6 +2188,7 @@ export function I18nProvider({
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
+
 
 export function useI18n() {
   const ctx = useContext(I18nContext);
