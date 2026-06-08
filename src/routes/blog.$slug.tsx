@@ -19,27 +19,37 @@ export const Route = createFileRoute("/blog/$slug")({
       { name: "description", content: "Read this post on mangoglobal." },
     ],
   }),
-  notFoundComponent: () => (
+  notFoundComponent: () => <PostNotFound />,
+  errorComponent: ({ error }) => <PostError error={error} />,
+  component: BlogPostPage,
+});
+
+function PostNotFound() {
+  const { t } = useI18n();
+  return (
     <div className="bg-background min-h-[60vh] flex items-center justify-center">
       <div className="text-center px-4">
-        <h1 className="font-heading text-3xl font-bold text-foreground">Post not found</h1>
-        <p className="mt-2 text-muted-foreground">This article doesn't exist or was unpublished.</p>
+        <h1 className="font-heading text-3xl font-bold text-foreground">{t("errors.post.title")}</h1>
+        <p className="mt-2 text-muted-foreground">{t("errors.post.body")}</p>
         <Link
           to="/blog"
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
         >
-          <ArrowLeft className="h-4 w-4" /> Back to the blog
+          <ArrowLeft className="h-4 w-4" /> {t("errors.post.back")}
         </Link>
       </div>
     </div>
-  ),
-  errorComponent: ({ error }) => (
+  );
+}
+
+function PostError({ error }: { error: Error }) {
+  const { t } = useI18n();
+  return (
     <div className="bg-background min-h-[60vh] flex items-center justify-center px-4">
-      <p className="text-muted-foreground">Couldn't load this post: {error.message}</p>
+      <p className="text-muted-foreground">{t("errors.post.load")} {error.message}</p>
     </div>
-  ),
-  component: BlogPostPage,
-});
+  );
+}
 
 function BlogPostPage() {
   const { slug } = Route.useParams();
