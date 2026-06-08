@@ -123,3 +123,59 @@ if (failures > 0) {
   process.exit(1);
 }
 console.log(`[i18n] all render fallback cases passed`);
+
+// ---------------------------------------------------------------------------
+// 3) LangSwitcher filter logic test — mirror the component's filter
+// ---------------------------------------------------------------------------
+const LANGS = SUPPORTED_LANGS.map((c) => LANGUAGE_METADATA[c]);
+function filterLangs(q: string) {
+  const lower = q.trim().toLowerCase();
+  if (!lower) return LANGS;
+  return LANGS.filter(
+    (l) =>
+      l.code.toLowerCase().includes(lower) ||
+      l.label.toLowerCase().includes(lower) ||
+      l.english.toLowerCase().includes(lower) ||
+      l.native.toLowerCase().includes(lower),
+  );
+}
+const filterCases: Array<{ q: string; expectCodes: Lang[] }> = [
+  { q: "", expectCodes: SUPPORTED_LANGS },
+  { q: "spa", expectCodes: ["es"] },
+  { q: "中文", expectCodes: ["zh"] },
+  { q: "ja", expectCodes: ["ja"] },
+  { q: "fr", expectCodes: ["fr"] },
+  { q: "ZZZZZ", expectCodes: [] },
+];
+let filterFailures = 0;
+for (const c of filterCases) {
+  const got = filterLangs(c.q).map((l) => l.code);
+  const ok = c.expectCodes.every((e) => got.includes(e)) &&
+    (c.expectCodes.length === 0 ? got.length === 0 : got.length >= c.expectCodes.length);
+  if (!ok) {
+    filterFailures++;
+    console.error(`[langswitcher] filter("${c.q}") expected ${JSON.stringify(c.expectCodes)} → got ${JSON.stringify(got)}`);
+  } else {
+    console.log(`[langswitcher] filter("${c.q}") → ${got.length} result(s) OK`);
+  }
+}
+if (filterFailures > 0) {
+  console.error(`[langswitcher] ${filterFailures} filter case(s) failed`);
+  process.exit(1);
+}
+
+// ---------------------------------------------------------------------------
+// 4) Strict mode — fail when dictionaries drift (used by prebuild / CI)
+// ---------------------------------------------------------------------------
+if (process.env.I18N_STRICT === "1" && !report.ok) {
+  const incomplete = SUPPORTED_LANGS.filter(
+    (c) => c !== "en" && (report.perLang[c].missing.length > 0 || report.perLang[c].empty.length > 0),
+  );
+  console.error(
+    `[i18n] STRICT FAIL — ${report.brokenLangs.length} broken / ${incomplete.length} incomplete dictionaries. ` +
+      `See i18n-errors.log. Run \`bun run scripts/translate.ts\` to fill missing keys.`,
+  );
+  process.exit(1);
+}
+console.log(`[i18n] all checks passed`);
+
