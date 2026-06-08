@@ -11,7 +11,10 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "i18n:validate": "bun run scripts/i18n-validate.ts"
+    "i18n:validate": "bun run scripts/i18n-validate.ts",
+    "i18n:check": "I18N_STRICT=1 bun run scripts/i18n-validate.ts",
+    "prebuild": "I18N_STRICT=1 bun run scripts/i18n-validate.ts",
+    "prebuild:dev": "I18N_STRICT=1 bun run scripts/i18n-validate.ts"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.25.5",

@@ -107,7 +107,7 @@ type Dict = Record<string, string>;
 
 
 
-const DICTS: Record<Lang, Dict> = {
+export const DICTS: Record<Lang, Dict> = {
   en: {
     "nav.home": "Home",
     "nav.fx": "FX Tool",
@@ -1808,6 +1808,33 @@ for (const code of SUPPORTED_LANGS) {
     EXTRA_KEYS[code] ?? {},
   );
 }
+
+// ============================================================================
+// Load auto-generated translations (scripts/translations/<lang>.json) and
+// merge them OVER the in-source defaults so they take precedence for any key
+// present in the JSON. The in-source EN strings remain the source of truth;
+// any key missing from a JSON file falls through to the EN fallback in t().
+// ============================================================================
+try {
+  // Vite resolves this glob at build time; in bun script contexts it returns {}.
+  const translationModules = import.meta.glob("../../scripts/translations/*.json", {
+    eager: true,
+    import: "default",
+  }) as Record<string, Record<string, string> | undefined>;
+  for (const [path, dict] of Object.entries(translationModules)) {
+    const match = path.match(/\/([a-z]{2})\.json$/);
+    if (!match) continue;
+    const code = match[1] as Lang;
+    if (!SUPPORTED_LANGS.includes(code)) continue;
+    if (!dict || typeof dict !== "object") continue;
+    if (!DICTS[code]) DICTS[code] = {};
+    Object.assign(DICTS[code], dict);
+  }
+} catch {
+  // Glob not available (non-Vite runtime) — translations stay un-merged.
+}
+
+
 
 // ============================================================================
 // validateDictionaries — compare DICTS.en (source of truth) against every
