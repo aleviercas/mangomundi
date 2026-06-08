@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/legal/risk")({
-  head: () => ({
-    meta: [
-      { title: "Risk Disclosure — mangoglobal" },
-      {
-        name: "description",
-        content:
-          "Risk disclosure for foreign-exchange and cross-border payment activity routed through mangoglobal.",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/legal/risk");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/legal/risk" }],
+    };
+  },
   component: RiskPage,
 });
 

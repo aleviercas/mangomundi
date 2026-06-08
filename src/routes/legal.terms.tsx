@@ -1,13 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/legal/terms")({
-  head: () => ({
-    meta: [
-      { title: "Terms of Service — mangoglobal" },
-      { name: "description", content: "Terms of Service for the mangoglobal FX decision engine." },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/legal/terms");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/legal/terms" }],
+    };
+  },
   component: TermsPage,
 });
 

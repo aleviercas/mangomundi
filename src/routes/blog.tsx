@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { listBlogPosts } from "@/lib/blog.functions";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 
 const postsQuery = (locale: string) =>
   queryOptions({
@@ -11,21 +11,19 @@ const postsQuery = (locale: string) =>
   });
 
 export const Route = createFileRoute("/blog")({
-  head: () => ({
-    meta: [
-      { title: "Blog — mangoglobal" },
-      {
-        name: "description",
-        content:
-          "Guides, deep-dives, and analyses on cross-border payments, FX transparency, and how to send money smarter — for individuals and businesses.",
-      },
-      { property: "og:title", content: "Blog — mangoglobal" },
-      {
-        property: "og:description",
-        content: "Cross-border payments, FX, and decision-engine insights.",
-      },
-    ],
-  }),
+  head: () => {
+    const seo = getRouteSeo("en", "/blog");
+    return {
+      meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
+        { property: "og:url", content: "https://mangoglobal.lovable.app/blog" },
+      ],
+      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/blog" }],
+    };
+  },
   component: BlogIndex,
 });
 
