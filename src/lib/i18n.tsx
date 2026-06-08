@@ -107,7 +107,7 @@ type Dict = Record<string, string>;
 
 
 
-const DICTS: Record<Lang, Dict> = {
+export const DICTS: Record<Lang, Dict> = {
   en: {
     "nav.home": "Home",
     "nav.fx": "FX Tool",
