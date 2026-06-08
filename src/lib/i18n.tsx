@@ -1225,7 +1225,16 @@ export function I18nProvider({
     () => ({
       lang,
       setLang,
-      t: (key) => DICTS[lang]?.[key] ?? DICTS.en[key] ?? key,
+      t: (key) => {
+        const hit = DICTS[lang]?.[key];
+        if (hit !== undefined) return hit;
+        const fallback = DICTS.en[key];
+        if (import.meta.env.DEV) {
+          // eslint-disable-next-line no-console
+          console.warn(`[i18n] missing key "${key}" for lang "${lang}" — using ${fallback !== undefined ? "EN fallback" : "raw key"}`);
+        }
+        return fallback ?? key;
+      },
     }),
     [lang],
   );
