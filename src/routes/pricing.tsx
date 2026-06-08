@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -21,77 +22,77 @@ export const Route = createFileRoute("/pricing")({
   component: PricingPage,
 });
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0",
-    cadence: "forever",
-    description:
-      "The full comparator + AI chat for individuals and one-off transfers. We earn from affiliate commissions when you use a provider — you pay nothing extra.",
-    features: [
-      "30+ providers, 100+ currencies",
-      "Live mid-market rates",
-      "Mango AI recommendation + chat",
-      "Affiliate-funded, no signup needed",
-      "Public web access",
-    ],
-    cta: "Use the FX Tool",
-    ctaTo: "/fx-tool" as const,
-    highlighted: false,
-  },
-  {
-    name: "Pro",
-    price: "$49",
-    cadence: "/ month",
-    description:
-      "For frequent senders, freelancers, and SMBs. Automated best-route alerts, multi-corridor monitoring, and saved beneficiaries.",
-    features: [
-      "Everything in Free",
-      "Rate alerts on your corridors",
-      "Saved beneficiaries & history",
-      "CSV export & monthly report",
-      "Priority AI (advanced reasoning)",
-      "Email support",
-    ],
-    cta: "Start Pro",
-    ctaTo: "/contact" as const,
-    highlighted: true,
-    badge: "For SMBs & freelancers",
-  },
-  {
-    name: "Enterprise",
-    price: "Custom",
-    cadence: "",
-    description:
-      "Treasury teams and fintechs. API access to the decision engine, custom provider mix, SSO, audit logs, and SLA.",
-    features: [
-      "Everything in Pro",
-      "REST API to the decision engine",
-      "Custom provider mix & rules",
-      "Webhook events & batch routing",
-      "Dedicated account manager",
-      "SSO, audit logs, SLA",
-    ],
-    cta: "Talk to Sales",
-    ctaTo: "/contact" as const,
-    highlighted: false,
-  },
-];
-
 function PricingPage() {
+  const { t } = useI18n();
+
+  const plans = [
+    {
+      name: t("pricing.free.name"),
+      price: t("pricing.free.price"),
+      cadence: t("pricing.free.cadence"),
+      description: t("pricing.free.desc"),
+      features: [
+        t("pricing.free.f1"),
+        t("pricing.free.f2"),
+        t("pricing.free.f3"),
+        t("pricing.free.f4"),
+        t("pricing.free.f5"),
+      ],
+      cta: t("pricing.free.cta"),
+      ctaTo: "/fx-tool" as const,
+      highlighted: false,
+      badge: undefined as string | undefined,
+    },
+    {
+      name: t("pricing.pro.name"),
+      price: t("pricing.pro.price"),
+      cadence: t("pricing.pro.cadence"),
+      description: t("pricing.pro.desc"),
+      features: [
+        t("pricing.pro.f1"),
+        t("pricing.pro.f2"),
+        t("pricing.pro.f3"),
+        t("pricing.pro.f4"),
+        t("pricing.pro.f5"),
+        t("pricing.pro.f6"),
+      ],
+      cta: t("pricing.pro.cta"),
+      ctaTo: "/contact" as const,
+      highlighted: true,
+      badge: t("pricing.pro.badge"),
+    },
+    {
+      name: t("pricing.ent.name"),
+      price: t("pricing.ent.price"),
+      cadence: "",
+      description: t("pricing.ent.desc"),
+      features: [
+        t("pricing.ent.f1"),
+        t("pricing.ent.f2"),
+        t("pricing.ent.f3"),
+        t("pricing.ent.f4"),
+        t("pricing.ent.f5"),
+        t("pricing.ent.f6"),
+      ],
+      cta: t("pricing.ent.cta"),
+      ctaTo: "/contact" as const,
+      highlighted: false,
+      badge: undefined as string | undefined,
+    },
+  ];
+
   return (
     <div className="bg-background">
       <section className="pt-16 pb-12">
         <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-4">
-            <Sparkles className="h-3 w-3 text-primary" /> Free for retail. Paid for businesses that need automation.
+            <Sparkles className="h-3 w-3 text-primary" /> {t("pricing.eyebrow")}
           </div>
           <h1 className="font-heading text-4xl font-bold text-foreground sm:text-5xl">
-            How we make <span className="text-primary">money</span> — and how you save it
+            {t("pricing.title.a")} <span className="text-primary">{t("pricing.title.b")}</span> {t("pricing.title.c")}
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
-            Retail use is free, funded by affiliate commissions from providers. Businesses pay for
-            automation, API access, and the optimisation engine that runs in the background.
+            {t("pricing.subtitle")}
           </p>
         </div>
       </section>
@@ -110,7 +111,7 @@ function PricingPage() {
               >
                 {plan.highlighted && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-4 py-1 text-xs font-semibold text-primary-foreground">
-                    {plan.badge ?? "Most Popular"}
+                    {plan.badge ?? t("pricing.popular")}
                   </div>
                 )}
                 <h3 className="font-heading text-xl font-semibold text-foreground">{plan.name}</h3>
@@ -146,16 +147,9 @@ function PricingPage() {
 
           <div className="mt-12 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground sm:p-8">
             <h2 className="font-heading text-lg font-semibold text-foreground mb-3">
-              How does this work with affiliate commissions?
+              {t("pricing.faq.title")}
             </h2>
-            <p className="leading-relaxed">
-              When you use the free comparator and choose a provider, we may earn a commission from
-              that provider — at no extra cost to you. The recommendation is neutral and ordered by
-              actual amount received. Pro and Enterprise plans exist for businesses that need more
-              than a one-off comparison: continuous optimisation across corridors, an API to plug
-              into payment flows, and rules-based routing. The subscription pays for the engine and
-              automation — not for the comparison itself, which stays free.
-            </p>
+            <p className="leading-relaxed">{t("pricing.faq.body")}</p>
           </div>
         </div>
       </section>
