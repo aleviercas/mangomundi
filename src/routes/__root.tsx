@@ -80,24 +80,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       return { initialLang: "en" as const };
     }
   },
-  head: ({ loaderData }) => {
-    const lang = loaderData?.initialLang ?? "en";
-    const seo = SEO_META[lang] ?? SEO_META.en;
-    return {
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#ffffff" },
-      { title: seo.title },
-      { name: "description", content: seo.description },
+      { title: (SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en).title },
+      { name: "description", content: (SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en).description },
       { name: "author", content: "mangoglobal" },
-      { property: "og:title", content: seo.title },
-      { property: "og:description", content: seo.description },
+      { property: "og:title", content: (SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en).title },
+      { property: "og:description", content: (SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en).description },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@mangoglobal" },
-      { name: "twitter:title", content: seo.title },
-      { name: "twitter:description", content: seo.description },
+      { name: "twitter:title", content: (SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en).title },
+      { name: "twitter:description", content: (SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en).description },
       { property: "og:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
       { name: "twitter:image", content: "https://mangoglobal.lovable.app/__l5e/assets-v1/8c1a6993-3dd3-49eb-a873-c466dbc18004/og-image.png" },
     ],
@@ -112,8 +109,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap" },
     ],
-    };
-  },
+  }),
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
