@@ -1686,6 +1686,17 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "contact.submit": "Open secure channel",
     "contact.submitHint": "submit → hello@mangoglobal.com",
     "contact.orWrite": "Or write directly to",
+    "comparator.buildQuery": "build query",
+    "comparator.execStrategy": "Execution Strategy",
+    "comparator.execStrategy.note": "Notional amount and timing of the operation.",
+    "comparator.marketContext": "Market Context",
+    "comparator.marketContext.note": "Geographic origin and destination of the flow.",
+    "comparator.currencyPair": "Currency Pair",
+    "comparator.currencyPair.note": "Base and quote currencies for the operation.",
+    "comparator.field.sourceCurrency": "Source Currency",
+    "comparator.field.targetCurrency": "Target Currency",
+    "comparator.segment.retail": "Retail",
+    "comparator.segment.business": "Business",
   },
   es: {
     "hero.headline": "Decisiones inteligentes de FX y pagos globales",
@@ -1706,7 +1717,19 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "contact.submit": "Abrir canal seguro",
     "contact.submitHint": "enviar → hello@mangoglobal.com",
     "contact.orWrite": "O escribinos directamente a",
+    "comparator.buildQuery": "construir consulta",
+    "comparator.execStrategy": "Estrategia de Ejecución",
+    "comparator.execStrategy.note": "Monto nocional y urgencia de la operación.",
+    "comparator.marketContext": "Contexto de Mercado",
+    "comparator.marketContext.note": "Origen y destino geográfico del flujo.",
+    "comparator.currencyPair": "Par de Divisas",
+    "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
+    "comparator.field.sourceCurrency": "Divisa de Origen",
+    "comparator.field.targetCurrency": "Divisa de Destino",
+    "comparator.segment.retail": "Retail",
+    "comparator.segment.business": "Empresas",
   },
+
 };
 
 // Merge compliance + manifesto + legal/business + UI + home + page + extra keys into the main dictionaries.

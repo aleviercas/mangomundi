@@ -200,7 +200,7 @@ export function ComparatorSection() {
   };
 
   return (
-    <section id="comparator" className="bg-background py-16 sm:py-20">
+    <section id="comparator" key={lang} className="bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 text-center">
@@ -225,39 +225,19 @@ export function ComparatorSection() {
             <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
               mangoglobal · query_builder.sh
             </span>
-            <span className="ml-auto text-[10px] terminal-text-comment">// build query</span>
+            <span className="ml-auto text-[10px] terminal-text-comment">// {t("comparator.buildQuery")}</span>
           </div>
 
           <div className="p-5 sm:p-6 space-y-6">
-            {/* ── Block 1: Market Context (Geography) ── */}
+            {/* ── Block 1: Execution Strategy (Amount + Urgency) ── */}
             <section>
               <div className="terminal-text-exec text-sm font-semibold font-mono">
-                $ Market Context
+                $ {t("comparator.execStrategy")}
               </div>
               <div className="mt-1 terminal-text-comment text-[11px] font-mono">
-                // Origen y destino geográfico del flujo.
+                // {t("comparator.execStrategy.note")}
               </div>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <Field label={t("rfq.fieldOrigin")}>
-                  <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
-                </Field>
-                <Field label={t("rfq.fieldDest")}>
-                  <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
-                </Field>
-              </div>
-            </section>
-
-            <div className="border-t terminal-divider" />
-
-            {/* ── Block 2: Execution Strategy (Currencies + Notional) ── */}
-            <section>
-              <div className="terminal-text-exec text-sm font-semibold font-mono">
-                $ Execution Strategy
-              </div>
-              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
-                // Par de divisas base y cotizada.
-              </div>
-              <div className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <Field label={t("fx.field.send")}>
                   <input
                     type="number"
@@ -266,12 +246,6 @@ export function ComparatorSection() {
                     onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 0))}
                     className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
                   />
-                </Field>
-                <Field label="Source Currency">
-                  <CurrencyChip value={from} onChange={setFrom} />
-                </Field>
-                <Field label="Target Currency">
-                  <CurrencyChip value={to} onChange={setTo} />
                 </Field>
                 <Field label={t("fx.field.urgency")}>
                   <select
@@ -283,6 +257,46 @@ export function ComparatorSection() {
                     <option value="standard">{t("fx.urgency.standard")}</option>
                     <option value="flexible">{t("fx.urgency.flexible")}</option>
                   </select>
+                </Field>
+              </div>
+            </section>
+
+            <div className="border-t terminal-divider" />
+
+            {/* ── Block 2: Market Context (Geography, full-width) ── */}
+            <section>
+              <div className="terminal-text-exec text-sm font-semibold font-mono">
+                $ {t("comparator.marketContext")}
+              </div>
+              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
+                // {t("comparator.marketContext.note")}
+              </div>
+              <div className="mt-3 grid w-full gap-4 sm:grid-cols-2">
+                <Field label={t("rfq.fieldOrigin")}>
+                  <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
+                </Field>
+                <Field label={t("rfq.fieldDest")}>
+                  <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
+                </Field>
+              </div>
+            </section>
+
+            <div className="border-t terminal-divider" />
+
+            {/* ── Block 3: Currency pair + Segment ── */}
+            <section>
+              <div className="terminal-text-exec text-sm font-semibold font-mono">
+                $ {t("comparator.currencyPair")}
+              </div>
+              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
+                // {t("comparator.currencyPair.note")}
+              </div>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                <Field label={t("comparator.field.sourceCurrency")}>
+                  <CurrencyChip value={from} onChange={setFrom} />
+                </Field>
+                <Field label={t("comparator.field.targetCurrency")}>
+                  <CurrencyChip value={to} onChange={setTo} />
                 </Field>
               </div>
 
@@ -300,13 +314,14 @@ export function ComparatorSection() {
                           segment === s ? "terminal-btn-primary" : "terminal-text-comment hover:opacity-80"
                         }`}
                       >
-                        {s}
+                        {t(`comparator.segment.${s}`)}
                       </button>
                     ))}
                   </div>
                 </Field>
               </div>
             </section>
+
 
             <div className="mt-5 flex items-center gap-2">
               <span className="terminal-text-comment font-mono text-sm select-none">{"$"}</span>
