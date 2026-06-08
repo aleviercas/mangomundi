@@ -2134,6 +2134,18 @@ export function I18nProvider({
   // then English.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // 1) Highest priority: explicit ?lang= query param (used by share URLs + E2E).
+    try {
+      const qp = new URLSearchParams(window.location.search).get("lang");
+      if (qp) {
+        const coerced = coerceLang(qp);
+        setLangState(coerced);
+        try { window.localStorage.setItem(LS_KEY, coerced); } catch { /* ignore */ }
+        return;
+      }
+    } catch {
+      // URL parsing unavailable — fall through
+    }
     try {
       const stored = window.localStorage.getItem(LS_KEY);
       if (stored) {
@@ -2158,6 +2170,7 @@ export function I18nProvider({
       setLangState("en");
     }
   }, [initialLang]);
+
 
   // Keep <html lang> and direction in sync, plus update <title>/<meta>
   // live whenever the language OR the current route changes.

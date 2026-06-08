@@ -98,6 +98,83 @@ for (const code of SUPPORTED_LANGS) {
 const outPath = resolve(process.cwd(), "i18n-errors.log");
 writeFileSync(outPath, lines.join("\n"), "utf8");
 console.log(`[i18n] wrote report → ${outPath}`);
+
+// JSON report (machine-readable, consumed by the admin dashboard)
+const jsonReport = {
+  generatedAt: new Date().toISOString(),
+  ok: report.ok,
+  enKeyCount: report.enKeyCount,
+  brokenLangs: report.brokenLangs,
+  perLang: Object.fromEntries(
+    SUPPORTED_LANGS.filter((c) => c !== "en").map((code) => {
+      const r = report.perLang[code];
+      return [code, {
+        coverage: r.coverage,
+        missing: r.missing.length,
+        empty: r.empty.length,
+        missingKeys: r.missing.slice(0, 50),
+      }];
+    }),
+  ),
+};
+writeFileSync(resolve(process.cwd(), "i18n-errors.json"), JSON.stringify(jsonReport, null, 2), "utf8");
+
+// HTML report — short, self-contained, easy to open in a browser/CI artifact
+const rowsHtml = SUPPORTED_LANGS.filter((c) => c !== "en").map((code) => {
+  const r = report.perLang[code];
+  const pct = Math.round(r.coverage * 100);
+  const status = r.missing.length === 0 && r.empty.length === 0 ? "ok" : pct >= 95 ? "warn" : "err";
+  const meta = LANGUAGE_METADATA[code];
+  return `<tr class="${status}"><td>${meta.flag} ${meta.label}</td><td>${meta.english}</td>` +
+    `<td class="pct">${pct}%</td><td>${r.missing.length}</td><td>${r.empty.length}</td></tr>`;
+}).join("\n");
+const html = `<!doctype html><meta charset="utf-8"><title>i18n coverage</title>
+<style>body{font:14px/1.5 -apple-system,system-ui,sans-serif;background:#0f172a;color:#f8fafc;padding:24px}
+h1{font-size:18px;margin:0 0 4px}small{color:#94a3b8}
+table{border-collapse:collapse;margin-top:16px;width:100%;max-width:720px}
+th,td{padding:8px 10px;border-bottom:1px solid #1e293b;text-align:left}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#94a3b8}
+tr.ok td.pct{color:#34d399}tr.warn td.pct{color:#fbbf24}tr.err td.pct{color:#f87171}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px}
+.badge.ok{background:#064e3b;color:#34d399}.badge.err{background:#7f1d1d;color:#fca5a5}</style>
+<h1>i18n coverage report <span class="badge ${report.ok ? "ok" : "err"}">${report.ok ? "OK" : "DRIFT"}</span></h1>
+<small>${jsonReport.generatedAt} · source-of-truth: en (${report.enKeyCount} keys) · ${SUPPORTED_LANGS.length - 1} target locales</small>
+<table><thead><tr><th>Lang</th><th>Name</th><th>Coverage</th><th>Missing</th><th>Empty</th></tr></thead><tbody>
+${rowsHtml}
+</tbody></table>`;
+writeFileSync(resolve(process.cwd(), "i18n-errors.html"), html, "utf8");
+
+// GitHub Actions step summary (when running in CI)
+const ghSummary = process.env.GITHUB_STEP_SUMMARY;
+if (ghSummary) {
+  const md: string[] = [];
+  md.push(`### i18n coverage — ${report.ok ? "✅ OK" : "❌ DRIFT"}`);
+  md.push(`Source of truth: \`en\` (${report.enKeyCount} keys) · ${SUPPORTED_LANGS.length - 1} target locales`);
+  md.push("");
+  md.push("| Lang | Coverage | Missing | Empty |");
+  md.push("|------|---------:|--------:|------:|");
+  for (const code of SUPPORTED_LANGS) {
+    if (code === "en") continue;
+    const r = report.perLang[code];
+    const pct = Math.round(r.coverage * 100);
+    const icon = r.missing.length === 0 && r.empty.length === 0 ? "🟢" : pct >= 95 ? "🟡" : "🔴";
+    md.push(`| ${icon} \`${code}\` | ${pct}% | ${r.missing.length} | ${r.empty.length} |`);
+  }
+  const incomplete = SUPPORTED_LANGS.filter((c) => c !== "en" && (report.perLang[c].missing.length + report.perLang[c].empty.length) > 0);
+  if (incomplete.length) {
+    md.push("");
+    md.push(`<details><summary>Sample missing keys (${incomplete.length} incomplete lang${incomplete.length === 1 ? "" : "s"})</summary>\n`);
+    for (const code of incomplete) {
+      const r = report.perLang[code];
+      const sample = r.missing.slice(0, 10).map((k) => `\`${k}\``).join(", ");
+      md.push(`- **${code}** — missing ${r.missing.length}: ${sample}${r.missing.length > 10 ? ", …" : ""}`);
+    }
+    md.push("</details>");
+  }
+  writeFileSync(ghSummary, md.join("\n") + "\n", { flag: "a" });
+  console.log(`[i18n] appended GitHub Actions summary`);
+}
+
 console.log(
   `[i18n] ${report.ok ? "OK" : "DRIFT"} — ${
     report.brokenLangs.length
@@ -105,6 +182,7 @@ console.log(
     SUPPORTED_LANGS.filter((c) => c !== "en" && report.perLang[c].missing.length > 0).length
   } incomplete (of ${SUPPORTED_LANGS.length - 1})`,
 );
+
 
 // ---------------------------------------------------------------------------
 // 2) SSR render smoke-test with INVALID language
