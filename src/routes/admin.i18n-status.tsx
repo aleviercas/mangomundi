@@ -6,7 +6,7 @@ import {
   LANGUAGE_METADATA,
   type Lang,
 } from "@/lib/i18n";
-import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react";
+import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw, Filter, X } from "lucide-react";
 
 export const Route = createFileRoute("/admin/i18n-status")({
   head: () => ({
@@ -25,6 +25,8 @@ function statusOf(pct: number, missing: number, empty: number) {
   return "err" as const;
 }
 
+type StatusFilter = "all" | "incomplete";
+
 function I18nStatusPage() {
   // Validate on-demand on the client; DICTS is fully merged at this point.
   const [report, setReport] = useState(() => validateDictionaries());
@@ -32,6 +34,8 @@ function I18nStatusPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Lang | null>(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [langFilter, setLangFilter] = useState<Lang | "all">("all");
 
   const refresh = useCallback(() => {
     setIsRefreshing(true);
@@ -53,6 +57,11 @@ function I18nStatusPage() {
     } catch { /* ignore */ }
   };
 
+  const clearFilters = () => {
+    setStatusFilter("all");
+    setLangFilter("all");
+  };
+
   const rows = SUPPORTED_LANGS
     .filter((c) => c !== "en")
     .map((code) => {
@@ -68,6 +77,12 @@ function I18nStatusPage() {
       };
     })
     .sort((a, b) => a.pct - b.pct);
+
+  const filteredRows = rows.filter((r) => {
+    if (statusFilter === "incomplete" && r.status === "ok") return false;
+    if (langFilter !== "all" && r.code !== langFilter) return false;
+    return true;
+  });
 
   const incompleteCount = rows.filter((r) => r.status !== "ok").length;
 
@@ -125,7 +140,49 @@ function I18nStatusPage() {
           </div>
         )}
 
-        <div className="mt-6 overflow-hidden rounded-lg border border-border bg-card">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Filter className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Filters</span>
+          </div>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            className="rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground outline-none focus:border-primary"
+          >
+            <option value="all">All statuses</option>
+            <option value="incomplete">Incomplete only</option>
+          </select>
+
+          <select
+            value={langFilter}
+            onChange={(e) => setLangFilter(e.target.value as Lang | "all")}
+            className="rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground outline-none focus:border-primary"
+          >
+            <option value="all">All languages</option>
+            {SUPPORTED_LANGS.filter((c) => c !== "en").map((code) => (
+              <option key={code} value={code}>
+                {LANGUAGE_METADATA[code].flag} {LANGUAGE_METADATA[code].label}
+              </option>
+            ))}
+          </select>
+
+          {(statusFilter !== "all" || langFilter !== "all") && (
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-3 w-3" /> Clear
+            </button>
+          )}
+
+          <span className="ml-auto text-[11px] text-muted-foreground">
+            Showing {filteredRows.length} of {rows.length}
+          </span>
+        </div>
+
+        <div className="mt-3 overflow-hidden rounded-lg border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-[10px] uppercase tracking-widest text-muted-foreground">
               <tr>
@@ -138,7 +195,7 @@ function I18nStatusPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => {
+              {filteredRows.map((r) => {
                 const cmd = `bun run scripts/translate.ts ${r.code}`;
                 const isOpen = expanded === r.code;
                 return (
