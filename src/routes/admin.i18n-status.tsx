@@ -184,7 +184,7 @@ function I18nStatusPage() {
                                   Missing ({r.missing.length})
                                 </div>
                                 <ul className="max-h-48 overflow-y-auto rounded-md bg-background/60 p-2 font-mono text-[11px] leading-relaxed">
-                                  {r.missing.slice(0, 60).map((k) => (
+                                  {r.missing.slice(0, 60).map((k: string) => (
                                     <li key={k} className="truncate">{k}</li>
                                   ))}
                                   {r.missing.length > 60 && (
