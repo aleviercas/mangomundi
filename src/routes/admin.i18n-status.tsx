@@ -91,14 +91,27 @@ function I18nStatusPage() {
               against {SUPPORTED_LANGS.length - 1} target locales.
             </p>
           </div>
-          <div
-            className={`rounded-md px-3 py-1.5 text-xs font-mono font-semibold ${
-              report.ok
-                ? "bg-emerald-500/15 text-emerald-500"
-                : "bg-amber-500/15 text-amber-500"
-            }`}
-          >
-            {report.ok ? "● ALL GREEN" : `▲ ${incompleteCount} incomplete`}
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] text-muted-foreground">
+              Validated {lastValidated.toLocaleTimeString()}
+            </span>
+            <button
+              onClick={refresh}
+              className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-[11px] text-muted-foreground hover:border-primary/40 hover:text-primary"
+              title="Refresh now"
+            >
+              <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </button>
+            <div
+              className={`rounded-md px-3 py-1.5 text-xs font-mono font-semibold ${
+                report.ok
+                  ? "bg-emerald-500/15 text-emerald-500"
+                  : "bg-amber-500/15 text-amber-500"
+              }`}
+            >
+              {report.ok ? "● ALL GREEN" : `▲ ${incompleteCount} incomplete`}
+            </div>
           </div>
         </div>
 
