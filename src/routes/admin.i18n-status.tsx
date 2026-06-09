@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   validateDictionaries,
   SUPPORTED_LANGS,
   LANGUAGE_METADATA,
   type Lang,
 } from "@/lib/i18n";
-import { Check, Copy, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/admin/i18n-status")({
   head: () => ({
@@ -27,9 +27,23 @@ function statusOf(pct: number, missing: number, empty: number) {
 
 function I18nStatusPage() {
   // Validate on-demand on the client; DICTS is fully merged at this point.
-  const report = useMemo(() => validateDictionaries(), []);
+  const [report, setReport] = useState(() => validateDictionaries());
+  const [lastValidated, setLastValidated] = useState(() => new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Lang | null>(null);
+
+  const refresh = useCallback(() => {
+    setIsRefreshing(true);
+    setReport(validateDictionaries());
+    setLastValidated(new Date());
+    setTimeout(() => setIsRefreshing(false), 500);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(refresh, 30000);
+    return () => clearInterval(id);
+  }, [refresh]);
 
   const copy = async (text: string, key: string) => {
     try {
@@ -77,14 +91,27 @@ function I18nStatusPage() {
               against {SUPPORTED_LANGS.length - 1} target locales.
             </p>
           </div>
-          <div
-            className={`rounded-md px-3 py-1.5 text-xs font-mono font-semibold ${
-              report.ok
-                ? "bg-emerald-500/15 text-emerald-500"
-                : "bg-amber-500/15 text-amber-500"
-            }`}
-          >
-            {report.ok ? "● ALL GREEN" : `▲ ${incompleteCount} incomplete`}
+          <div className="flex items-center gap-3">
+            <span className="text-[11px] text-muted-foreground">
+              Validated {lastValidated.toLocaleTimeString()}
+            </span>
+            <button
+              onClick={refresh}
+              className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-[11px] text-muted-foreground hover:border-primary/40 hover:text-primary"
+              title="Refresh now"
+            >
+              <RefreshCw className={`h-3 w-3 ${isRefreshing ? "animate-spin" : ""}`} />
+              Refresh
+            </button>
+            <div
+              className={`rounded-md px-3 py-1.5 text-xs font-mono font-semibold ${
+                report.ok
+                  ? "bg-emerald-500/15 text-emerald-500"
+                  : "bg-amber-500/15 text-amber-500"
+              }`}
+            >
+              {report.ok ? "● ALL GREEN" : `▲ ${incompleteCount} incomplete`}
+            </div>
           </div>
         </div>
 
@@ -170,7 +197,7 @@ function I18nStatusPage() {
                                   Missing ({r.missing.length})
                                 </div>
                                 <ul className="max-h-48 overflow-y-auto rounded-md bg-background/60 p-2 font-mono text-[11px] leading-relaxed">
-                                  {r.missing.slice(0, 60).map((k) => (
+                                  {r.missing.slice(0, 60).map((k: string) => (
                                     <li key={k} className="truncate">{k}</li>
                                   ))}
                                   {r.missing.length > 60 && (
