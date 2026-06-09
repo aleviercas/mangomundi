@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   validateDictionaries,
   SUPPORTED_LANGS,
   LANGUAGE_METADATA,
   type Lang,
 } from "@/lib/i18n";
-import { Check, Copy, AlertTriangle, ArrowLeft } from "lucide-react";
+import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react";
 
 export const Route = createFileRoute("/admin/i18n-status")({
   head: () => ({
