@@ -25,6 +25,8 @@ function statusOf(pct: number, missing: number, empty: number) {
   return "err" as const;
 }
 
+type StatusFilter = "all" | "incomplete";
+
 function I18nStatusPage() {
   // Validate on-demand on the client; DICTS is fully merged at this point.
   const [report, setReport] = useState(() => validateDictionaries());
@@ -32,6 +34,8 @@ function I18nStatusPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Lang | null>(null);
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
+  const [langFilter, setLangFilter] = useState<Lang | "all">("all");
 
   const refresh = useCallback(() => {
     setIsRefreshing(true);
@@ -51,6 +55,11 @@ function I18nStatusPage() {
       setCopied(key);
       setTimeout(() => setCopied(null), 1600);
     } catch { /* ignore */ }
+  };
+
+  const clearFilters = () => {
+    setStatusFilter("all");
+    setLangFilter("all");
   };
 
   const rows = SUPPORTED_LANGS
