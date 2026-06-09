@@ -195,7 +195,7 @@ function I18nStatusPage() {
               </tr>
             </thead>
             <tbody>
-              {rows.map((r) => {
+              {filteredRows.map((r) => {
                 const cmd = `bun run scripts/translate.ts ${r.code}`;
                 const isOpen = expanded === r.code;
                 return (
