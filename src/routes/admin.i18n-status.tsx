@@ -134,7 +134,49 @@ function I18nStatusPage() {
           </div>
         )}
 
-        <div className="mt-6 overflow-hidden rounded-lg border border-border bg-card">
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Filter className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Filters</span>
+          </div>
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+            className="rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground outline-none focus:border-primary"
+          >
+            <option value="all">All statuses</option>
+            <option value="incomplete">Incomplete only</option>
+          </select>
+
+          <select
+            value={langFilter}
+            onChange={(e) => setLangFilter(e.target.value as Lang | "all")}
+            className="rounded-md border border-border bg-card px-2 py-1 text-xs text-foreground outline-none focus:border-primary"
+          >
+            <option value="all">All languages</option>
+            {SUPPORTED_LANGS.filter((c) => c !== "en").map((code) => (
+              <option key={code} value={code}>
+                {LANGUAGE_METADATA[code].flag} {LANGUAGE_METADATA[code].label}
+              </option>
+            ))}
+          </select>
+
+          {(statusFilter !== "all" || langFilter !== "all") && (
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-1 text-xs text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-3 w-3" /> Clear
+            </button>
+          )}
+
+          <span className="ml-auto text-[11px] text-muted-foreground">
+            Showing {filteredRows.length} of {rows.length}
+          </span>
+        </div>
+
+        <div className="mt-3 overflow-hidden rounded-lg border border-border bg-card">
           <table className="w-full text-sm">
             <thead className="bg-muted/40 text-[10px] uppercase tracking-widest text-muted-foreground">
               <tr>
