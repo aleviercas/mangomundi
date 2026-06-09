@@ -6,7 +6,7 @@ import {
   LANGUAGE_METADATA,
   type Lang,
 } from "@/lib/i18n";
-import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw } from "lucide-react";
+import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw, Filter, X } from "lucide-react";
 
 export const Route = createFileRoute("/admin/i18n-status")({
   head: () => ({
