@@ -78,6 +78,12 @@ function I18nStatusPage() {
     })
     .sort((a, b) => a.pct - b.pct);
 
+  const filteredRows = rows.filter((r) => {
+    if (statusFilter === "incomplete" && r.status === "ok") return false;
+    if (langFilter !== "all" && r.code !== langFilter) return false;
+    return true;
+  });
+
   const incompleteCount = rows.filter((r) => r.status !== "ok").length;
 
   return (
