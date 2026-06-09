@@ -27,9 +27,23 @@ function statusOf(pct: number, missing: number, empty: number) {
 
 function I18nStatusPage() {
   // Validate on-demand on the client; DICTS is fully merged at this point.
-  const report = useMemo(() => validateDictionaries(), []);
+  const [report, setReport] = useState(() => validateDictionaries());
+  const [lastValidated, setLastValidated] = useState(() => new Date());
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Lang | null>(null);
+
+  const refresh = useCallback(() => {
+    setIsRefreshing(true);
+    setReport(validateDictionaries());
+    setLastValidated(new Date());
+    setTimeout(() => setIsRefreshing(false), 500);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(refresh, 30000);
+    return () => clearInterval(id);
+  }, [refresh]);
 
   const copy = async (text: string, key: string) => {
     try {
