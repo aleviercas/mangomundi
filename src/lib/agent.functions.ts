@@ -332,6 +332,9 @@ export const chatTurn = createServerFn({ method: "POST" })
 export const getChatHistory = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => HistoryInput.parse(input))
   .handler(async ({ data }) => {
+    if (!checkRateLimit(`hist:${data.sessionId}`)) {
+      return { messages: [] as { role: string; content: string }[] };
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: conv } = await supabaseAdmin
       .from("chat_conversations")
