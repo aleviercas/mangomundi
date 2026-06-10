@@ -4,20 +4,12 @@ import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
-  Clock,
   Loader2,
   Send,
-  Shield,
-  Star,
-  Building2,
-  TrendingUp,
-  ArrowDownUp,
-  MapPin,
   Sparkle,
   BellPlus,
   Share2,
   Check,
-  MessageCircle,
 } from "lucide-react";
 import {
   compareProviders,
