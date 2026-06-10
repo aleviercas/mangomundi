@@ -16,8 +16,25 @@ export const Route = createFileRoute("/admin/i18n-status")({
       { name: "description", content: "Internal i18n coverage dashboard." },
     ],
   }),
-  component: I18nStatusPage,
+  component: I18nStatusGate,
 });
+
+function I18nStatusGate() {
+  if (!import.meta.env.DEV) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="text-center">
+          <h1 className="font-heading text-2xl font-bold text-foreground">Not Found</h1>
+          <p className="mt-2 text-sm text-muted-foreground">This page is not available.</p>
+          <Link to="/" className="mt-4 inline-block text-sm text-primary hover:underline">
+            Return home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  return <I18nStatusPage />;
+}
 
 function statusOf(pct: number, missing: number, empty: number) {
   if (missing === 0 && empty === 0) return "ok" as const;
