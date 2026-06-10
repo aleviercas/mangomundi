@@ -531,20 +531,6 @@ export function ComparatorSection() {
           </div>
         )}
 
-        {isLocalFx && (
-          <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-            <div className="min-w-0">
-              <div className="truncate font-semibold text-foreground">
-                Local FX detected · {sendingCountry} → {receivingCountry}
-              </div>
-              <div className="mt-0.5 text-xs text-muted-foreground">
-                Showing multi-currency domestic accounts only — international wire fees and SWIFT
-                spreads are excluded from this view.
-              </div>
-            </div>
-          </div>
-        )}
 
         {!result && !compareMut.isPending && !compareMut.isError && !aiText && (
           <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
