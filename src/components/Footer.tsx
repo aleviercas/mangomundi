@@ -80,7 +80,10 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 sm:flex-row">
           <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} mangoglobal. {t("footer.copyright")}
+            &copy; {new Date().getFullYear()}{" "}
+            <span className="font-black lowercase">mango</span>
+            <span className="font-extralight lowercase">global</span>
+            . {t("footer.copyright")}
           </p>
           <p className="text-sm text-muted-foreground">{t("footer.brandLine")}</p>
         </div>

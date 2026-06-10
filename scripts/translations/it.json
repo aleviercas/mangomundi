@@ -415,5 +415,9 @@
   "home.cta.button": "Accedi a Institutional Desk",
   "home.how.s1.desc": "Scansione in tempo reale dei percorsi di liquidità e dei tassi dei fornitori.",
   "home.how.s2.desc": "L'IA neutrale classifica velocità, costi e affidabilità — senza pregiudizi.",
-  "home.how.s3.desc": "Regolamento tramite il fornitore scelto o il nostro protocollo RFQ."
+  "home.how.s3.desc": "Regolamento tramite il fornitore scelto o il nostro protocollo RFQ.",
+  "nav.legal": "Legale",
+  "nav.terms": "Termini e Condizioni",
+  "nav.risk": "Rischio",
+  "institutional.cta": "Contatta il desk istituzionale"
 }

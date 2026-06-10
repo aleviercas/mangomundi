@@ -415,5 +415,9 @@
   "home.cta.button": "Acceder a Mesa Institucional",
   "home.how.s1.desc": "Escaneo en tiempo real de rutas de liquidez y tarifas de proveedores.",
   "home.how.s2.desc": "IA neutral clasifica velocidad, coste y fiabilidad, sin sesgos.",
-  "home.how.s3.desc": "Liquidación a través del proveedor elegido o nuestro protocolo RFQ."
+  "home.how.s3.desc": "Liquidación a través del proveedor elegido o nuestro protocolo RFQ.",
+  "nav.legal": "Legal",
+  "nav.terms": "Términos",
+  "nav.risk": "Riesgo",
+  "institutional.cta": "Hable con la Mesa Institucional"
 }

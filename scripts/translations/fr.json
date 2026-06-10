@@ -415,5 +415,9 @@
   "home.cta.button": "Accéder au Bureau Institutionnel",
   "home.how.s1.desc": "Analyse en temps réel des flux de liquidité et des taux des fournisseurs.",
   "home.how.s2.desc": "L'IA neutre classe la rapidité, le coût et la fiabilité — sans biais.",
-  "home.how.s3.desc": "Règlement via le fournisseur choisi ou notre protocole RFQ."
+  "home.how.s3.desc": "Règlement via le fournisseur choisi ou notre protocole RFQ.",
+  "nav.legal": "Juridique",
+  "nav.terms": "Conditions",
+  "nav.risk": "Risques",
+  "institutional.cta": "Contacter le bureau institutionnel"
 }

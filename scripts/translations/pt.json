@@ -415,5 +415,9 @@
   "home.cta.button": "Acessar Mesa Institucional",
   "home.how.s1.desc": "Varredura em tempo real de caminhos de liquidez e taxas de provedores.",
   "home.how.s2.desc": "IA neutra classifica velocidade, custo e confiabilidade — sem viés.",
-  "home.how.s3.desc": "Liquidação através do provedor escolhido ou do nosso protocolo RFQ."
+  "home.how.s3.desc": "Liquidação através do provedor escolhido ou do nosso protocolo RFQ.",
+  "nav.legal": "Jurídico",
+  "nav.terms": "Termos",
+  "nav.risk": "Risco",
+  "institutional.cta": "Fale com a Mesa Institucional"
 }
