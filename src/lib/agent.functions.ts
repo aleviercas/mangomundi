@@ -357,6 +357,8 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
       email: data.email,
       feature_source: data.featureSource,
       status: "beta_pending",
+      privacy_consent: true,
+      consent_timestamp: new Date().toISOString(),
     });
     if (error) throw new Error(error.message);
     return { ok: true };
