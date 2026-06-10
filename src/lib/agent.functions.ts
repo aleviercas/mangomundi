@@ -12,7 +12,25 @@ const ChatInput = z.object({
 const LeadInput = z.object({
   email: z.string().email().max(255),
   featureSource: z.string().min(1).max(120),
+  consent: z.literal(true),
 });
+
+// In-memory rate limit (best-effort; resets on worker recycle).
+const RATE_BUCKETS = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_MAX = 20; // requests per window per session
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+function checkRateLimit(key: string): boolean {
+  const now = Date.now();
+  const bucket = RATE_BUCKETS.get(key);
+  if (!bucket || bucket.resetAt < now) {
+    RATE_BUCKETS.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (bucket.count >= RATE_LIMIT_MAX) return false;
+  bucket.count += 1;
+  return true;
+}
 
 const HistoryInput = z.object({
   sessionId: z.string().min(1).max(128),
