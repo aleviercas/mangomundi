@@ -415,5 +415,9 @@
   "home.cta.button": "Kurumsal Masaya Erişin",
   "home.how.s1.desc": "Likidite yollarının ve sağlayıcı kurlarının gerçek zamanlı taranması.",
   "home.how.s2.desc": "Tarafsız yapay zeka hız, maliyet ve güvenilirliği sıralar — ön yargı yoktur.",
-  "home.how.s3.desc": "Seçilen sağlayıcı veya RFQ protokolümüz üzerinden takas gerçekleştirin."
+  "home.how.s3.desc": "Seçilen sağlayıcı veya RFQ protokolümüz üzerinden takas gerçekleştirin.",
+  "nav.legal": "Yasal",
+  "nav.terms": "Şartlar",
+  "nav.risk": "Risk",
+  "institutional.cta": "Kurumsal Masa ile Konuşun"
 }

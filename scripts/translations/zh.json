@@ -415,5 +415,9 @@
   "home.cta.button": "访问机构服务台",
   "home.how.s1.desc": "实时扫描流动性路径和供应商汇率。",
   "home.how.s2.desc": "中立 AI 对速度、成本和可靠性进行排名 — 无偏见。",
-  "home.how.s3.desc": "通过选定的供应商或我们的 RFQ 协议进行结算。"
+  "home.how.s3.desc": "通过选定的供应商或我们的 RFQ 协议进行结算。",
+  "nav.legal": "法律信息",
+  "nav.terms": "服务条款",
+  "nav.risk": "风险提示",
+  "institutional.cta": "联系机构业务团队"
 }

@@ -415,5 +415,9 @@
   "home.cta.button": "Akses Meja Institusional",
   "home.how.s1.desc": "Pemindaian real-time untuk jalur likuiditas dan nilai penyedia.",
   "home.how.s2.desc": "AI netral menyusun peringkat kecepatan, biaya, dan reliabilitas — tanpa bias.",
-  "home.how.s3.desc": "Penyelesaian melalui penyedia pilihan atau protokol RFQ kami."
+  "home.how.s3.desc": "Penyelesaian melalui penyedia pilihan atau protokol RFQ kami.",
+  "nav.legal": "Hukum",
+  "nav.terms": "Ketentuan",
+  "nav.risk": "Risiko",
+  "institutional.cta": "Hubungi Tim Institusi"
 }

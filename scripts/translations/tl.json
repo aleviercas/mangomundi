@@ -415,5 +415,9 @@
   "home.cta.button": "I-access ang Institutional Desk",
   "home.how.s1.desc": "Real-time na pag-scan ng mga liquidity path at rate ng provider.",
   "home.how.s2.desc": "Ang neutral AI ay nagraranggo ng bilis, gastos, at pagiging maaasahan — walang kinikilingan.",
-  "home.how.s3.desc": "Mag-settle sa pamamagitan ng napiling provider o sa aming RFQ protocol."
+  "home.how.s3.desc": "Mag-settle sa pamamagitan ng napiling provider o sa aming RFQ protocol.",
+  "nav.legal": "Legal",
+  "nav.terms": "Mga Tuntunin",
+  "nav.risk": "Panganib",
+  "institutional.cta": "Makipag-usap sa Institutional Desk"
 }

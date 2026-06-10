@@ -415,5 +415,9 @@
   "home.cta.button": "Truy cập Bàn Giao dịch Tổ chức",
   "home.how.s1.desc": "Quét thời gian thực các lộ trình thanh khoản và tỷ giá của nhà cung cấp.",
   "home.how.s2.desc": "AI trung lập xếp hạng tốc độ, chi phí và độ tin cậy — không thiên vị.",
-  "home.how.s3.desc": "Quyết toán thông qua nhà cung cấp đã chọn hoặc giao thức RFQ của chúng tôi."
+  "home.how.s3.desc": "Quyết toán thông qua nhà cung cấp đã chọn hoặc giao thức RFQ của chúng tôi.",
+  "nav.legal": "Pháp lý",
+  "nav.terms": "Điều khoản",
+  "nav.risk": "Rủi ro",
+  "institutional.cta": "Liên hệ bộ phận khách hàng tổ chức"
 }

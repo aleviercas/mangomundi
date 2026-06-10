@@ -415,5 +415,9 @@
   "home.cta.button": "Dostęp do Institutional Desk",
   "home.how.s1.desc": "Skanowanie ścieżek płynności i kursów dostawców w czasie rzeczywistym.",
   "home.how.s2.desc": "Neutralna sztuczna inteligencja szereguje szybkość, koszt i niezawodność — bez uprzedzeń.",
-  "home.how.s3.desc": "Rozliczenie za pośrednictwem wybranego dostawcy lub naszego protokołu RFQ."
+  "home.how.s3.desc": "Rozliczenie za pośrednictwem wybranego dostawcy lub naszego protokołu RFQ.",
+  "nav.legal": "Informacje prawne",
+  "nav.terms": "Regulamin",
+  "nav.risk": "Ryzyko",
+  "institutional.cta": "Rozmawiaj z działem instytucjonalnym"
 }

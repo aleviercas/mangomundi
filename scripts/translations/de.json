@@ -415,5 +415,9 @@
   "home.cta.button": "Institutional Desk kontaktieren",
   "home.how.s1.desc": "Echtzeit-Scan von Liquiditätspfaden und Anbieterkursen.",
   "home.how.s2.desc": "Neutrale KI bewertet Geschwindigkeit, Kosten und Zuverlässigkeit – ohne Bias.",
-  "home.how.s3.desc": "Abwicklung über den gewählten Anbieter oder unser RFQ-Protokoll."
+  "home.how.s3.desc": "Abwicklung über den gewählten Anbieter oder unser RFQ-Protokoll.",
+  "nav.legal": "Rechtliches",
+  "nav.terms": "AGB",
+  "nav.risk": "Risiko",
+  "institutional.cta": "Kontaktieren Sie den Institutional Desk"
 }
