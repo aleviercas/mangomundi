@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "कोपायलट को सक्षम करने के लिए तुलना चलाएं।",
   "comparator.copilot.send": "भेजें",
   "comparator.reasoning.title": "इष्टतम मार्ग मिल गया",
-  "comparator.reasoning.context": "प्रसंग"
+  "comparator.reasoning.context": "प्रसंग",
+  "hero.subheadline.short": "व्यक्तियों और कॉर्पोरेट ट्रेजरी के लिए AI एजेंट। आपके मुद्रा विनिमय और अंतरराष्ट्रीय भुगतान संचालन में अनुकूलन और पारदर्शिता।"
 }

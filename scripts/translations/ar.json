@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "قم بإجراء مقارنة لتفعيل المساعد (copilot).",
   "comparator.copilot.send": "إرسال",
   "comparator.reasoning.title": "تم العثور على المسار الأمثل",
-  "comparator.reasoning.context": "السياق"
+  "comparator.reasoning.context": "السياق",
+  "hero.subheadline.short": "وكيل ذكاء اصطناعي للأفراد والخزانة المؤسسية. تحسين وشفافية في عمليات صرف العملات والمدفوعات الدولية الخاصة بك."
 }

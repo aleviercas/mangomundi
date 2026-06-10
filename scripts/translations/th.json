@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "เรียกใช้การเปรียบเทียบเพื่อเปิดใช้งาน copilot",
   "comparator.copilot.send": "ส่ง",
   "comparator.reasoning.title": "พบเส้นทางที่เหมาะสมที่สุดแล้ว",
-  "comparator.reasoning.context": "บริบท"
+  "comparator.reasoning.context": "บริบท",
+  "hero.subheadline.short": "เอเจนท์ AI สำหรับบุคคลทั่วไปและฝ่ายบริหารเงินขององค์กร เพื่อการเพิ่มประสิทธิภาพและความโปร่งใสในการแลกเปลี่ยนเงินตราและการโอนเงินระหว่างประเทศของคุณ"
 }

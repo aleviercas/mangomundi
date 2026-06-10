@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "코파일럿을 활성화하려면 비교를 실행하세요.",
   "comparator.copilot.send": "전송",
   "comparator.reasoning.title": "최적의 경로 발견",
-  "comparator.reasoning.context": "컨텍스트"
+  "comparator.reasoning.context": "컨텍스트",
+  "hero.subheadline.short": "개인 및 기업 재무 관리를 위한 AI 에이전트. 환전 및 해외 송금 업무에서 최적화와 투명성을 제공합니다."
 }

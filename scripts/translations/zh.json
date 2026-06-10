@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "Run a comparison to enable the copilot.",
   "comparator.copilot.send": "Send",
   "comparator.reasoning.title": "Optimal route found",
-  "comparator.reasoning.context": "Context"
+  "comparator.reasoning.context": "Context",
+  "hero.subheadline.short": "适用于个人和企业财务的 AI 代理。全面优化您的货币兑换和国际支付业务，确保操作透明。"
 }

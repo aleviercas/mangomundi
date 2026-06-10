@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "Copilot'u etkinleştirmek için bir karşılaştırma yapın.",
   "comparator.copilot.send": "Gönder",
   "comparator.reasoning.title": "Optimal rota bulundu",
-  "comparator.reasoning.context": "Bağlam"
+  "comparator.reasoning.context": "Bağlam",
+  "hero.subheadline.short": "Bireyler ve kurumların hazine yönetimi için Yapay Zeka Temsilcisi. Döviz bozdurma ve uluslararası ödeme operasyonlarınızda optimizasyon ve şeffaflık."
 }

@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "コパイロットを有効にするには、比較を実行してください。",
   "comparator.copilot.send": "送信",
   "comparator.reasoning.title": "最適なルートが見つかりました",
-  "comparator.reasoning.context": "コンテキスト"
+  "comparator.reasoning.context": "コンテキスト",
+  "hero.subheadline.short": "個人および企業財務向けのAIエージェント。通貨両替と国際送金業務の最適化と透明性を実現します。"
 }

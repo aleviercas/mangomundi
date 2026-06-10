@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "Uruchom porównanie, aby aktywować copilot.",
   "comparator.copilot.send": "Wyślij",
   "comparator.reasoning.title": "Znaleziono optymalną trasę",
-  "comparator.reasoning.context": "Kontekst"
+  "comparator.reasoning.context": "Kontekst",
+  "hero.subheadline.short": "Agent AI dla osób fizycznych i skarbowości korporacyjnej. Optymalizacja i przejrzystość operacji wymiany walut oraz płatności międzynarodowych."
 }

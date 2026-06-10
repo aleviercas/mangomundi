@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "Запустите сравнение, чтобы активировать Copilot.",
   "comparator.copilot.send": "Отправить",
   "comparator.reasoning.title": "Оптимальный маршрут найден",
-  "comparator.reasoning.context": "Контекст"
+  "comparator.reasoning.context": "Контекст",
+  "hero.subheadline.short": "ИИ-агент для частных лиц и корпоративного казначейства. Оптимизация и прозрачность ваших валютных операций и международных платежей."
 }
