@@ -20,41 +20,40 @@ function RiskPage() {
   const sections = [1, 2, 3, 4] as const;
   return (
     <main className="mx-auto max-w-4xl px-4 pt-28 pb-20 sm:px-6 lg:px-8">
-      <div className="terminal-card rounded-2xl overflow-hidden font-mono">
-        <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
+      <div className="surface-card overflow-hidden">
+        <div className="flex items-center gap-2 border-b border-border px-5 py-3">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-60 animate-ping" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
+            <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-60 animate-ping" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
           </span>
-          <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
-            mangoglobal · risk.exec
+          <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+            mangoglobal · Risk Disclosure
           </span>
-          <span className="ml-auto text-[10px] terminal-text-comment">// v 07/06/2026</span>
         </div>
 
         <div className="p-6 sm:p-10 space-y-8">
           <div>
-            <h1 className="font-heading text-3xl font-bold tracking-tight terminal-text-bright sm:text-4xl">
+            <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               {t("legal.risk.title")}
             </h1>
-            <p className="mt-2 text-sm terminal-text-comment">{t("legal.lastUpdated")}</p>
+            <p className="mt-2 text-sm text-muted-foreground">{t("legal.lastUpdated")}</p>
           </div>
 
-          <div className="rounded-lg border border-amber-400/20 bg-amber-400/5 p-4">
-            <p className="text-sm leading-relaxed terminal-text-bright">{t("footer.disclaimer")}</p>
+          <div className="rounded-lg border border-amber-300/50 bg-amber-50 p-4">
+            <p className="text-sm leading-relaxed text-amber-900">{t("footer.disclaimer")}</p>
           </div>
 
           {sections.map((n) => (
             <div key={n}>
-              <div className="h-px w-full terminal-divider border-t" />
+              <div className="h-px w-full border-t border-border" />
               <section className="pt-8">
-                <div className="terminal-text-comment text-[10px] uppercase tracking-[0.2em] mb-2">
-                  // section_0{n}
+                <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                  Section 0{n}
                 </div>
-                <h2 className="font-mono text-lg font-semibold terminal-text-exec sm:text-xl">
+                <h2 className="font-heading text-lg font-semibold text-foreground sm:text-xl">
                   {t(`legal.risk.s${n}.title`)}
                 </h2>
-                <p className="mt-3 font-mono text-sm leading-relaxed terminal-text-bright sm:text-[15px]">
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
                   {t(`legal.risk.s${n}.body`)}
                 </p>
               </section>
