@@ -239,6 +239,16 @@ async function callLovableAI(
 export const chatTurn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => ChatInput.parse(input))
   .handler(async ({ data }) => {
+    if (!checkRateLimit(`chat:${data.sessionId}`)) {
+      const locale = data.locale as Locale;
+      const msg =
+        locale === "es"
+          ? "Demasiadas consultas. Probá en un minuto."
+          : locale === "pt"
+            ? "Muitas consultas. Tente em um minuto."
+            : "Too many requests. Try again in a minute.";
+      return { reply: msg, segment: "retail" as const, context: {} };
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const locale = data.locale as Locale;
 
