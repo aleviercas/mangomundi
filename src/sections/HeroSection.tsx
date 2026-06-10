@@ -1,5 +1,3 @@
-import { ArrowRight } from "lucide-react";
-import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 
 function HexCoin({
@@ -96,16 +94,6 @@ export function HeroSection() {
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-500 sm:text-lg">
               {t("hero.subheadline.short")}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/"
-                hash="comparator"
-                className="btn-cta inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold"
-              >
-                {t("comparator.cta.compare")}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
           </div>
         </div>
       </div>
