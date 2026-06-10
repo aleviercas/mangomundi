@@ -310,7 +310,6 @@
   "platform.road.s4.t": "RFQ + pazarlık otomasyonu",
   "platform.road.s4.s": "2026",
   "platform.road.s5.t": "Yapay zeka satın alma altyapısı",
-  "platform.road.s5.s": "2026–2027",
   "platform.road.s6.t": "Evrensel karar katmanı",
   "platform.road.s6.s": "Vizyon",
   "platform.ent.title": "Kurumsal ve özel dağıtımlar",
@@ -371,7 +370,6 @@
   "contact.heading": "Kurumsal ve Ortaklık Talepleri",
   "contact.intro": "Hazine operasyonları, likidite ortaklıkları, düzenleyici inceleme ve kurumsal katılım için.",
   "contact.fullName": "Ad Soyad",
-  "contact.fullNamePlaceholder": "Jane Doe",
   "contact.workEmail": "İş e-postası",
   "contact.workEmailPlaceholder": "jane@kurum.com",
   "contact.institution": "Kurum",
@@ -402,7 +400,6 @@
   "comparator.combobox.search": "Ara…",
   "comparator.combobox.empty": "Sonuç bulunamadı.",
   "comparator.combobox.placeholder": "Seçiniz…",
-  "comparator.copilot.title": "FX Copilot",
   "comparator.copilot.placeholder": "Bu rota hakkında bir takip sorusu sorun…",
   "comparator.copilot.empty": "Copilot'u etkinleştirmek için bir karşılaştırma yapın.",
   "comparator.copilot.send": "Gönder",
@@ -419,5 +416,11 @@
   "nav.legal": "Yasal",
   "nav.terms": "Şartlar",
   "nav.risk": "Risk",
-  "institutional.cta": "Kurumsal Masa ile Konuşun"
+  "institutional.cta": "Kurumsal Masa ile Konuşun",
+  "brand.decisionEngine": "Karar Motoru",
+  "brand.partnerships": "İş Ortaklıkları",
+  "legal.section": "Bölüm",
+  "platform.road.s5.s": "2026–2027",
+  "contact.fullNamePlaceholder": "Jane Doe",
+  "comparator.copilot.title": "FX Copilot"
 }

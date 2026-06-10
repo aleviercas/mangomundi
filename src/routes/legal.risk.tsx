@@ -27,7 +27,7 @@ function RiskPage() {
             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
           </span>
           <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            mangoglobal · Risk Disclosure
+            <span className="font-black lowercase">mango</span><span className="font-extralight lowercase">global</span> · {t("legal.risk.title")}
           </span>
         </div>
 
@@ -48,7 +48,7 @@ function RiskPage() {
               <div className="h-px w-full border-t border-border" />
               <section className="pt-8">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground mb-2">
-                  Section 0{n}
+                  {t("legal.section")} 0{n}
                 </div>
                 <h2 className="font-heading text-lg font-semibold text-foreground sm:text-xl">
                   {t(`legal.risk.s${n}.title`)}
