@@ -361,7 +361,6 @@
   "nav.risk": "Panganib",
   "institutional.cta": "Makipag-usap sa Institutional Desk",
   "nav.fx": "FX Tool",
-  "brand.decisionEngine": "Decision Engine",
   "brand.partnerships": "Mga Partnership",
   "legal.section": "Seksyon",
   "hero.title.2": "Desisyon sa FX",
@@ -422,5 +421,8 @@
   "comparator.currencyPair": "Currency Pair",
   "comparator.field.sourceCurrency": "Source Currency",
   "comparator.field.targetCurrency": "Target Currency",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Decision Engine ng Sistema",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "blog"
 }

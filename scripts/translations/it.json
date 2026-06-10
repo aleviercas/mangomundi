@@ -410,7 +410,6 @@
   "nav.terms": "Termini e Condizioni",
   "nav.risk": "Rischio",
   "institutional.cta": "Contatta il desk istituzionale",
-  "brand.decisionEngine": "Decision Engine",
   "brand.partnerships": "Partnership",
   "legal.section": "Sezione",
   "footer.disclaimerLabel": "disclaimer",
@@ -422,5 +421,8 @@
   "platform.road.s5.s": "2026–2027",
   "contact.fullNamePlaceholder": "Jane Doe",
   "contact.workEmailPlaceholder": "jane@istituzione.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Motore Decisionale",
+  "brand.rfqDesk": "Desk RFQ",
+  "brand.blog": "blog"
 }

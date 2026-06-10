@@ -413,7 +413,6 @@
   "nav.terms": "Ketentuan",
   "nav.risk": "Risiko",
   "institutional.cta": "Hubungi Tim Institusi",
-  "brand.decisionEngine": "Decision Engine",
   "brand.partnerships": "Kemitraan",
   "legal.section": "Bagian",
   "hero.title.2": "Keputusan FX",
@@ -422,5 +421,8 @@
   "platform.road.s5.s": "2026–2027",
   "contact.fullNamePlaceholder": "Jane Doe",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Mesin Keputusan",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "blog"
 }

@@ -408,7 +408,6 @@
   "nav.terms": "ข้อกำหนด",
   "nav.risk": "ความเสี่ยง",
   "institutional.cta": "ติดต่อฝ่ายสถาบัน (Institutional Desk)",
-  "brand.decisionEngine": "Decision Engine",
   "brand.partnerships": "ความร่วมมือ (Partnerships)",
   "legal.section": "ส่วน",
   "hero.title.2": "การตัดสินใจด้าน FX",
@@ -422,5 +421,8 @@
   "platform.road.s5.s": "2026–2027",
   "contact.fullNamePlaceholder": "Jane Doe",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "เอนจินตัดสินใจ",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "blog"
 }

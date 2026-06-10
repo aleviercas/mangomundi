@@ -414,7 +414,6 @@
   "nav.terms": "Regulamin",
   "nav.risk": "Ryzyko",
   "institutional.cta": "Rozmawiaj z działem instytucjonalnym",
-  "brand.decisionEngine": "Decision Engine",
   "brand.partnerships": "Partnerstwa",
   "legal.section": "Sekcja",
   "rfq.requestId": "request_id",
@@ -422,5 +421,8 @@
   "pricing.ent.name": "Enterprise",
   "platform.road.s5.s": "2026–2027",
   "feat.f4.t": "Enterprise API",
-  "comparator.copilot.title": "Copilot FX"
+  "comparator.copilot.title": "Copilot FX",
+  "brand.decisionEngine": "Silnik Decyzyjny",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "blog"
 }

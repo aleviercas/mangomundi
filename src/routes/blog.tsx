@@ -27,7 +27,7 @@ function BlogIndex() {
       <section className="pt-24 pb-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-6">
-            <BookOpen className="h-3 w-3 text-primary" /> mangoglobal · blog
+            <BookOpen className="h-3 w-3 text-primary" /> <span className="font-black lowercase">mango</span><span className="font-extralight lowercase">global</span> · {t("brand.blog")}
           </div>
           <div className="rounded-2xl border border-border bg-card p-10">
             <p className="text-muted-foreground">{t("blog.emptyState")}</p>

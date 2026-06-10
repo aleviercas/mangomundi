@@ -211,7 +211,7 @@ export function RfqInlinePanel({ defaults }: { defaults?: Props["defaults"] }) {
       <div className="flex items-center gap-2 border-b border-border px-5 py-3">
         <Terminal className="h-3.5 w-3.5 text-primary" />
         <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-          mangoglobal · RFQ Desk
+          <span className="font-black lowercase">mango</span><span className="font-extralight lowercase">global</span> · {t("brand.rfqDesk")}
         </span>
         <span className="ml-auto flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
       </div>

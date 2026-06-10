@@ -422,5 +422,7 @@
   "comparator.currencyPair": "Paire de devises",
   "comparator.currencyPair.note": "Devises de base et de cotation pour l'opération.",
   "comparator.field.sourceCurrency": "Devise source",
-  "comparator.field.targetCurrency": "Devise cible"
+  "comparator.field.targetCurrency": "Devise cible",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "blog"
 }

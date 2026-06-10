@@ -414,13 +414,15 @@
   "nav.terms": "Điều khoản",
   "nav.risk": "Rủi ro",
   "institutional.cta": "Liên hệ bộ phận khách hàng tổ chức",
-  "brand.decisionEngine": "Decision Engine",
-  "brand.partnerships": "Partnerships",
   "legal.section": "Mục",
   "rfq.requestId": "request_id",
   "pricing.ent.name": "Enterprise",
   "platform.road.s5.s": "2026–2027",
   "contact.fullNamePlaceholder": "Jane Doe",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Công cụ ra quyết định",
+  "brand.partnerships": "Quan hệ đối tác",
+  "brand.rfqDesk": "Bộ phận Yêu cầu báo giá (RFQ)",
+  "brand.blog": "blog"
 }
