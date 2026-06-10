@@ -63,7 +63,7 @@ export function ComparatorSection() {
     affiliateBaseUrl?: string;
   } | null>(null);
 
-  const isLocalFx = sendingCountry === receivingCountry && from !== to;
+  
 
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
