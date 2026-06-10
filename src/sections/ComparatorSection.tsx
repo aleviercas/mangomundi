@@ -2,18 +2,34 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Sparkles, ArrowRight, Clock, Loader2, Send, MessageCircle, Shield, Star, Building2, TrendingUp, ArrowDownUp, MapPin, Sparkle, BellPlus, Share2, Check } from "lucide-react";
+import {
+  ArrowRight,
+  Clock,
+  Loader2,
+  Send,
+  Shield,
+  Star,
+  Building2,
+  TrendingUp,
+  ArrowDownUp,
+  MapPin,
+  Sparkle,
+  BellPlus,
+  Share2,
+  Check,
+  MessageCircle,
+} from "lucide-react";
 import {
   compareProviders,
   trackAffiliateClick,
   chatAboutRecommendation,
   type ComparisonResult,
 } from "@/lib/fx.functions";
-import { CURRENCIES } from "@/lib/currencies";
 import { useI18n } from "@/lib/i18n";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountrySelect } from "@/components/ui/CountrySelect";
+import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 
 type Segment = "retail" | "business";
@@ -21,7 +37,6 @@ type Urgency = "urgent" | "standard" | "flexible";
 type ChatMsg = { role: "user" | "assistant"; content: string };
 
 export function ComparatorSection() {
-
   const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(0);
   const [from, setFrom] = useState("GBP");
@@ -38,7 +53,6 @@ export function ComparatorSection() {
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
 
-  // Preferred Rate modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
     amount: number;
@@ -52,23 +66,27 @@ export function ComparatorSection() {
 
   const isLocalFx = sendingCountry === receivingCountry && from !== to;
 
-
-
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
   const chatFn = useServerFn(chatAboutRecommendation);
   const { track } = useAnalytics();
-
   const [shareToast, setShareToast] = useState(false);
 
   const buildReasoning = (): string => {
     const urgencyLabel =
-      urgency === "urgent" ? "urgent (minutes)" : urgency === "flexible" ? "flexible (days)" : "standard (same-day)";
-    return `[LANG:${lang.toUpperCase()}] Mango Engine Routing Justification: For a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the system analyzed available liquidity paths across indexed provider APIs and retail remittance channels. The optimal route has been selected based on a flat-fee optimization and real-time interbank exchange rates, delivering the maximum yield to the destination account. Spread, fixed fees, settlement window and regulatory coverage of each indexed counterparty were normalised before ranking; the recommendation reflects the neutral mathematical optimum for this corridor at query time.`;
+      urgency === "urgent"
+        ? "urgent (minutes)"
+        : urgency === "flexible"
+        ? "flexible (days)"
+        : "standard (same-day)";
+    return `[LANG:${lang.toUpperCase()}] mangoglobal routing justification: for a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the engine analysed liquidity paths across indexed providers. The optimal route was selected from flat-fee optimisation and real-time interbank rates; spread, fixed fees, settlement window and regulatory coverage of each counterparty were normalised before ranking.`;
   };
 
   const compareMut = useMutation({
-    mutationFn: () => compareFn({ data: { amount, from, to, segment, sendingCountry, receivingCountry } }),
+    mutationFn: () =>
+      compareFn({
+        data: { amount, from, to, segment, sendingCountry, receivingCountry },
+      }),
     onSuccess: (data) => {
       setResult(data);
       setChat([]);
@@ -80,11 +98,10 @@ export function ComparatorSection() {
         to_currency: to,
         segment,
         urgency,
-        source: "compare_page",
+        source: "home_comparator",
       });
     },
   });
-
 
   const chatMut = useMutation({
     mutationFn: async (userMsg: string) => {
@@ -113,9 +130,6 @@ export function ComparatorSection() {
     },
   });
 
-  // Intentionally do not auto-run: the comparator stays empty until the user submits.
-
-
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
@@ -138,7 +152,7 @@ export function ComparatorSection() {
       to_currency: to,
       segment,
       urgency,
-      source: "compare_results",
+      source: "home_results",
     });
     setModalCtx({
       amount,
@@ -161,8 +175,7 @@ export function ComparatorSection() {
       urgency,
       source: "save_alert",
     });
-    setShareToast(false);
-    window.alert(`Alert saved for ${from} → ${to}. We will notify you when the rate improves.`);
+    window.alert(`Alert saved for ${from} → ${to}. We'll notify you when the rate improves.`);
   };
 
   const handleShare = async () => {
@@ -191,7 +204,6 @@ export function ComparatorSection() {
     }
   };
 
-
   const sendChat = (msg: string) => {
     const trimmed = msg.trim();
     if (!trimmed || chatMut.isPending) return;
@@ -200,131 +212,147 @@ export function ComparatorSection() {
   };
 
   return (
-    <section id="comparator" key={lang} className="bg-background py-16 sm:py-20">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+    <section
+      id="comparator"
+      key={lang}
+      className="bg-background py-12 sm:py-16"
+    >
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
         {/* Header */}
-        <div className="mb-10 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
-            <Sparkles className="h-3 w-3 text-primary" /> {t("comparator.subheadline")}
-          </div>
-          <h1 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            {t("fx.title")} <span className="text-primary">{t("fx.titleAccent")}</span>
-          </h1>
-          <p className="mx-auto mt-3 max-w-2xl text-base text-muted-foreground">
-            {t("fx.subtitle")}
+        <div className="mb-6 text-center sm:mb-8">
+          <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            {t("comparator.title")}
+          </h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
+            {t("comparator.subtitle")}
           </p>
         </div>
 
-        {/* Form — terminal-style */}
-        <div className="terminal-card rounded-2xl overflow-hidden font-mono">
-          <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            </span>
-            <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
-              mangoglobal · query_builder.sh
-            </span>
-            <span className="ml-auto text-[10px] terminal-text-comment">// {t("comparator.buildQuery")}</span>
+        {/* Decision card */}
+        <div className="surface-card overflow-hidden">
+          {/* Card header: brand + segment toggle */}
+          <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
+            <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              </span>
+              <span className="truncate">
+                <span className="font-black lowercase text-foreground">mango</span>
+                <span className="font-extralight lowercase text-foreground">global</span>
+                <span className="px-1.5 text-muted-foreground/60">·</span>
+                Decision Engine
+              </span>
+            </div>
+            <div
+              role="tablist"
+              aria-label="Segment"
+              className="flex h-8 shrink-0 items-center gap-0.5 rounded-md border border-border bg-muted p-0.5"
+            >
+              {(["retail", "business"] as Segment[]).map((s) => (
+                <button
+                  key={s}
+                  role="tab"
+                  aria-selected={segment === s}
+                  onClick={() => setSegment(s)}
+                  className={`rounded-sm px-2.5 py-1 text-[11px] font-semibold capitalize transition ${
+                    segment === s
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {t(`comparator.segment.${s}`)}
+                </button>
+              ))}
+            </div>
           </div>
 
-          <div className="p-5 sm:p-6 space-y-6">
-            {/* ── Block 1: Execution Strategy (Amount + Urgency) ── */}
-            <section>
-              <div className="terminal-text-exec text-sm font-semibold font-mono">
-                $ {t("comparator.execStrategy")}
-              </div>
-              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
-                // {t("comparator.execStrategy.note")}
-              </div>
-              <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <Field label={t("fx.field.send")}>
-                  <input
-                    type="number"
-                    min={1}
-                    value={amount}
-                    onChange={(e) => setAmount(Math.max(1, Number(e.target.value) || 0))}
-                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
-                  />
-                </Field>
-                <Field label={t("fx.field.urgency")}>
-                  <select
-                    value={urgency}
-                    onChange={(e) => setUrgency(e.target.value as Urgency)}
-                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
-                  >
-                    <option value="urgent">{t("fx.urgency.urgent")}</option>
-                    <option value="standard">{t("fx.urgency.standard")}</option>
-                    <option value="flexible">{t("fx.urgency.flexible")}</option>
-                  </select>
-                </Field>
-              </div>
-            </section>
+          {/* Form body */}
+          <div className="space-y-4 p-4 sm:p-6">
+            {/* Row 1 — Geography */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FieldLight label={t("comparator.field.sourceCountry")}>
+                <CountrySelect
+                  value={sendingCountry}
+                  onChange={setSendingCountry}
+                  placeholder={t("comparator.combobox.placeholder")}
+                  searchPlaceholder={t("comparator.combobox.search")}
+                  emptyLabel={t("comparator.combobox.empty")}
+                  ariaLabel={t("comparator.field.sourceCountry")}
+                />
+              </FieldLight>
+              <FieldLight label={t("comparator.field.targetCountry")}>
+                <CountrySelect
+                  value={receivingCountry}
+                  onChange={setReceivingCountry}
+                  placeholder={t("comparator.combobox.placeholder")}
+                  searchPlaceholder={t("comparator.combobox.search")}
+                  emptyLabel={t("comparator.combobox.empty")}
+                  ariaLabel={t("comparator.field.targetCountry")}
+                />
+              </FieldLight>
+            </div>
 
-            <div className="border-t terminal-divider" />
+            {/* Row 2 — Amount + Source currency */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FieldLight label={t("comparator.field.amount")}>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min={1}
+                  value={amount || ""}
+                  placeholder="1000"
+                  onChange={(e) =>
+                    setAmount(Math.max(0, Number(e.target.value) || 0))
+                  }
+                  className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm tabular-nums text-foreground shadow-sm transition-colors placeholder:text-muted-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                />
+              </FieldLight>
+              <FieldLight label={t("comparator.field.sourceCurrency")}>
+                <CurrencyCombobox
+                  value={from}
+                  onChange={setFrom}
+                  placeholder={t("comparator.combobox.placeholder")}
+                  searchPlaceholder={t("comparator.combobox.search")}
+                  emptyLabel={t("comparator.combobox.empty")}
+                  ariaLabel={t("comparator.field.sourceCurrency")}
+                />
+              </FieldLight>
+            </div>
 
-            {/* ── Block 2: Market Context (Geography, full-width) ── */}
-            <section>
-              <div className="terminal-text-exec text-sm font-semibold font-mono">
-                $ {t("comparator.marketContext")}
-              </div>
-              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
-                // {t("comparator.marketContext.note")}
-              </div>
-              <div className="mt-3 grid w-full gap-4 sm:grid-cols-2">
-                <Field label={t("rfq.fieldOrigin")}>
-                  <CountrySelect value={sendingCountry} onChange={setSendingCountry} />
-                </Field>
-                <Field label={t("rfq.fieldDest")}>
-                  <CountrySelect value={receivingCountry} onChange={setReceivingCountry} />
-                </Field>
-              </div>
-            </section>
+            {/* Row 3 — Target currency */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FieldLight label={t("comparator.field.targetCurrency")}>
+                <CurrencyCombobox
+                  value={to}
+                  onChange={setTo}
+                  placeholder={t("comparator.combobox.placeholder")}
+                  searchPlaceholder={t("comparator.combobox.search")}
+                  emptyLabel={t("comparator.combobox.empty")}
+                  ariaLabel={t("comparator.field.targetCurrency")}
+                />
+              </FieldLight>
+              <div className="hidden md:block" aria-hidden />
+            </div>
 
-            <div className="border-t terminal-divider" />
+            {/* Row 4 — Urgency */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <FieldLight label={t("comparator.field.urgency")}>
+                <select
+                  value={urgency}
+                  onChange={(e) => setUrgency(e.target.value as Urgency)}
+                  className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                >
+                  <option value="urgent">{t("fx.urgency.urgent")}</option>
+                  <option value="standard">{t("fx.urgency.standard")}</option>
+                  <option value="flexible">{t("fx.urgency.flexible")}</option>
+                </select>
+              </FieldLight>
+              <div className="hidden md:block" aria-hidden />
+            </div>
 
-            {/* ── Block 3: Currency pair + Segment ── */}
-            <section>
-              <div className="terminal-text-exec text-sm font-semibold font-mono">
-                $ {t("comparator.currencyPair")}
-              </div>
-              <div className="mt-1 terminal-text-comment text-[11px] font-mono">
-                // {t("comparator.currencyPair.note")}
-              </div>
-              <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <Field label={t("comparator.field.sourceCurrency")}>
-                  <CurrencyChip value={from} onChange={setFrom} />
-                </Field>
-                <Field label={t("comparator.field.targetCurrency")}>
-                  <CurrencyChip value={to} onChange={setTo} />
-                </Field>
-              </div>
-
-              <div className="mt-4">
-                <Field label={t("fx.field.segment")}>
-                  <div
-                    className="flex h-10 items-center gap-1 rounded-md border terminal-divider p-1"
-                    style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
-                  >
-                    {(["retail", "business"] as Segment[]).map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => setSegment(s)}
-                        className={`flex-1 rounded-sm px-2 py-1 text-xs font-semibold capitalize transition font-mono ${
-                          segment === s ? "terminal-btn-primary" : "terminal-text-comment hover:opacity-80"
-                        }`}
-                      >
-                        {t(`comparator.segment.${s}`)}
-                      </button>
-                    ))}
-                  </div>
-                </Field>
-              </div>
-            </section>
-
-
-            <div className="mt-5 flex items-center gap-2">
-              <span className="terminal-text-comment font-mono text-sm select-none">{"$"}</span>
+            {/* CTA */}
+            <div className="pt-1">
               <button
                 onClick={() => {
                   if (!sendingCountry || !receivingCountry || amount <= 0) {
@@ -335,182 +363,178 @@ export function ComparatorSection() {
                   compareMut.mutate();
                 }}
                 disabled={compareMut.isPending}
-                className="terminal-btn-primary inline-flex w-full items-center justify-center gap-2 rounded-md px-6 py-3 text-sm font-semibold disabled:opacity-60 sm:w-auto font-mono"
+                className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold md:w-auto md:min-w-[14rem]"
               >
                 {compareMut.isPending ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" /> …
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="truncate">…</span>
                   </>
                 ) : (
                   <>
-                    $ {t("cta.compare")} <ArrowRight className="h-4 w-4" />
+                    <span className="truncate">{t("comparator.cta.compare")}</span>
+                    <ArrowRight className="h-4 w-4 shrink-0" />
                   </>
                 )}
               </button>
+              {validationError && (
+                <div className="mt-3 rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                  {validationError}
+                </div>
+              )}
             </div>
-            {validationError && (
-              <div className="mt-3 rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300 font-mono">
-                // {validationError}
-              </div>
-            )}
           </div>
         </div>
 
-        {/* AI panel — unified $ terminal pattern */}
+        {/* AI reasoning + embedded chat */}
         {(aiLoading || aiText) && (
-          <div className="terminal-card mt-6 rounded-2xl overflow-hidden font-mono">
-            <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              </span>
-              <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
-                mangoglobal · ai_reasoning.log
-              </span>
-              <span className="ml-auto text-[10px] terminal-text-comment">// {t("fx.recommends")}</span>
-            </div>
-
-            <div className="p-5 sm:p-6 space-y-4">
-              {aiLoading ? (
-                <div className="flex items-center gap-2 text-sm terminal-text-comment">
-                  <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
-                </div>
-              ) : (
-                <>
-                  <div className="terminal-text-exec text-sm font-semibold">
-                    $ Execution Path Found
-                  </div>
-                  <ul className="text-sm terminal-text-bright leading-relaxed font-mono space-y-1.5">
-                    <li>
-                      <span className="terminal-text-comment">›</span> Corridor:{" "}
-                      <span className="terminal-text-bright">
-                        {from} → {to}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="terminal-text-comment">›</span> Notional:{" "}
-                      <span className="terminal-text-bright">
-                        {amount.toLocaleString()} {from}
-                      </span>
-                    </li>
-                    <li>
-                      <span className="terminal-text-comment">›</span> Segment / Urgency:{" "}
-                      <span className="terminal-text-bright">
-                        {segment} · {urgency}
-                      </span>
-                    </li>
-                  </ul>
-
-                  <div className="border-t terminal-divider pt-3">
-                    <div className="terminal-text-comment text-[10px] uppercase tracking-[0.2em]">
-                      // Technical analysis
-                    </div>
-                    <p className="mt-2 text-[13px] terminal-text-comment leading-relaxed">
-                      {aiText}
-                    </p>
-                  </div>
-                </>
-              )}
-
-              {/* Compact action row */}
+          <div className="surface-card mt-6 overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
+              <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <Sparkle className="h-3.5 w-3.5 text-foreground" />
+                <span className="truncate">{t("comparator.reasoning.title")}</span>
+              </div>
               {aiText && !aiLoading && (
-                <div className="flex flex-wrap items-center gap-2 border-t terminal-divider pt-4">
+                <div className="flex shrink-0 items-center gap-1.5">
                   <button
                     onClick={handleSaveAlert}
-                    className="terminal-chip inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold"
+                    className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-foreground/30"
                   >
-                    <BellPlus className="h-3.5 w-3.5" /> Save &amp; Alert Me
+                    <BellPlus className="h-3 w-3" /> Alert
                   </button>
                   <button
                     onClick={handleShare}
-                    className="terminal-chip inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold"
+                    className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-foreground/30"
                   >
-                    <Share2 className="h-3.5 w-3.5" /> Share
+                    <Share2 className="h-3 w-3" /> Share
                   </button>
                   {shareToast && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400">
-                      <Check className="h-3 w-3" /> Link copied
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+                      <Check className="h-3 w-3" /> Copied
                     </span>
                   )}
                 </div>
               )}
+            </div>
 
-              {/* Interactive chat */}
-              {aiText && !aiLoading && (
-                <div className="rounded-md border terminal-divider p-4" style={{ backgroundColor: "oklch(0.16 0.012 264)" }}>
-                  <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider terminal-text-comment">
-                    <MessageCircle className="h-3.5 w-3.5 terminal-text-exec" />
-                    {t("fx.chat.title")}
+            <div className="space-y-4 p-4 sm:p-5">
+              {aiLoading ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
+                </div>
+              ) : (
+                <>
+                  <ul className="grid gap-1.5 text-sm leading-relaxed text-foreground sm:grid-cols-3">
+                    <li className="min-w-0">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        Corridor
+                      </div>
+                      <div className="truncate font-semibold">
+                        {from} → {to}
+                      </div>
+                    </li>
+                    <li className="min-w-0">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        Notional
+                      </div>
+                      <div className="truncate font-semibold tabular-nums">
+                        {amount.toLocaleString()} {from}
+                      </div>
+                    </li>
+                    <li className="min-w-0">
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        Segment · Urgency
+                      </div>
+                      <div className="truncate font-semibold capitalize">
+                        {segment} · {urgency}
+                      </div>
+                    </li>
+                  </ul>
+
+                  <div className="border-t border-border pt-3">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                      {t("comparator.reasoning.context")}
+                    </div>
+                    <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+                      {aiText}
+                    </p>
                   </div>
 
-                  {chat.length === 0 && (
-                    <div className="mb-3 flex flex-wrap gap-2">
-                      {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
-                        <button
-                          key={q}
-                          onClick={() => sendChat(q)}
-                          className="terminal-chip rounded-full px-3 py-1.5 text-xs"
-                        >
-                          {q}
-                        </button>
-                      ))}
+                  {/* Embedded FX Copilot */}
+                  <div className="mt-2 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
+                    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      <MessageCircle className="h-3.5 w-3.5 text-foreground" />
+                      <span className="truncate">{t("comparator.copilot.title")}</span>
                     </div>
-                  )}
 
-                  {chat.length > 0 && (
-                    <div className="mb-3 max-h-72 space-y-2 overflow-y-auto pr-1">
-                      {chat.map((m, i) => (
-                        <div
-                          key={i}
-                          className={`rounded-md px-3 py-2 text-sm leading-relaxed font-mono ${
-                            m.role === "user"
-                              ? "ml-8 bg-amber-500/15 text-amber-50 border border-amber-500/30"
-                              : "mr-8 border terminal-divider terminal-text-bright"
-                          }`}
-                          style={m.role === "assistant" ? { backgroundColor: "oklch(0.22 0.012 264)" } : undefined}
-                        >
-                          {m.content}
-                        </div>
-                      ))}
-                      {chatMut.isPending && (
-                        <div className="mr-8 flex items-center gap-2 rounded-md border terminal-divider px-3 py-2 text-sm terminal-text-comment" style={{ backgroundColor: "oklch(0.22 0.012 264)" }}>
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fx.chat.thinking")}
-                        </div>
-                      )}
-                      <div ref={chatBottomRef} />
-                    </div>
-                  )}
+                    {chat.length === 0 && (
+                      <div className="mb-3 flex flex-wrap gap-2">
+                        {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
+                          <button
+                            key={q}
+                            onClick={() => sendChat(q)}
+                            className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-foreground/30"
+                          >
+                            {q}
+                          </button>
+                        ))}
+                      </div>
+                    )}
 
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      sendChat(chatInput);
-                    }}
-                    className="flex items-center gap-2"
-                  >
-                    <span className="terminal-text-comment font-mono text-sm select-none">{"$"}</span>
-                    <input
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      placeholder={t("fx.chat.placeholder")}
-                      className="terminal-input flex-1 rounded-md px-3 py-2 text-sm font-mono"
-                      disabled={chatMut.isPending}
-                    />
-                    <button
-                      type="submit"
-                      disabled={chatMut.isPending || !chatInput.trim()}
-                      className="terminal-btn-primary inline-flex h-10 items-center justify-center gap-1.5 rounded-md px-4 text-sm font-semibold disabled:opacity-40"
+                    {chat.length > 0 && (
+                      <div className="mb-3 max-h-72 space-y-2 overflow-y-auto pr-1">
+                        {chat.map((m, i) => (
+                          <div
+                            key={i}
+                            className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
+                              m.role === "user"
+                                ? "ml-8 bg-foreground text-background"
+                                : "mr-8 border border-border bg-card text-foreground"
+                            }`}
+                          >
+                            {m.content}
+                          </div>
+                        ))}
+                        {chatMut.isPending && (
+                          <div className="mr-8 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fx.chat.thinking")}
+                          </div>
+                        )}
+                        <div ref={chatBottomRef} />
+                      </div>
+                    )}
+
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        sendChat(chatInput);
+                      }}
+                      className="flex items-center gap-2"
                     >
-                      <Send className="h-3.5 w-3.5" /> {t("fx.chat.send")}
-                    </button>
-                  </form>
-                </div>
+                      <input
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        placeholder={t("comparator.copilot.placeholder")}
+                        className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
+                        disabled={chatMut.isPending}
+                      />
+                      <button
+                        type="submit"
+                        disabled={chatMut.isPending || !chatInput.trim()}
+                        className="btn-cta inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold"
+                        aria-label={t("comparator.copilot.send")}
+                      >
+                        <Send className="h-3.5 w-3.5" />
+                      </button>
+                    </form>
+                  </div>
+                </>
               )}
             </div>
           </div>
         )}
 
-        {/* Results */}
+        {/* Errors / empty / results */}
         {compareMut.isError && (
           <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
             {(compareMut.error as Error)?.message ?? "Couldn't load rates."}
@@ -518,10 +542,10 @@ export function ComparatorSection() {
         )}
 
         {isLocalFx && (
-          <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm">
+          <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm">
             <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-            <div>
-              <div className="font-semibold text-foreground">
+            <div className="min-w-0">
+              <div className="truncate font-semibold text-foreground">
                 Local FX detected · {sendingCountry} → {receivingCountry}
               </div>
               <div className="mt-0.5 text-xs text-muted-foreground">
@@ -532,8 +556,8 @@ export function ComparatorSection() {
           </div>
         )}
 
-        {!result && !compareMut.isPending && !compareMut.isError && (
-          <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
+        {!result && !compareMut.isPending && !compareMut.isError && !aiText && (
+          <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
             <p className="text-sm text-muted-foreground">{t("fx.emptyState")}</p>
           </div>
         )}
@@ -558,16 +582,23 @@ export function ComparatorSection() {
         )}
       </div>
 
-      <PreferredRateModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        context={modalCtx}
-      />
+      <PreferredRateModal open={modalOpen} onOpenChange={setModalOpen} context={modalCtx} />
     </section>
   );
 }
 
-// ===== Monito-style results =====
+function FieldLight({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block min-w-0">
+      <span className="mb-1.5 block truncate text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
+      </span>
+      <div className="min-w-0">{children}</div>
+    </label>
+  );
+}
+
+// ===== Results table (light) =====
 function ResultsBlock({
   result,
   amount,
@@ -608,12 +639,13 @@ function ResultsBlock({
     if (sortBy === "fee") base.sort((a, b) => a.fee_total - b.fee_total);
     if (sortBy === "speed")
       base.sort(
-        (a, b) => (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
+        (a, b) =>
+          (a.delivery_minutes ?? a.speed_hours * 60) -
+          (b.delivery_minutes ?? b.speed_hours * 60),
       );
     return base;
   }, [result.rows, sortBy]);
 
-  // Savings vs worst provider (by received)
   const savings = useMemo(() => {
     if (result.rows.length < 2) return null;
     const sorted = [...result.rows].sort((a, b) => b.received - a.received);
@@ -632,26 +664,26 @@ function ResultsBlock({
           className="mb-4 flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4 transition hover:border-primary"
         >
           <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <div className="text-sm">
-            <div className="font-semibold text-foreground">
+          <div className="min-w-0 text-sm">
+            <div className="truncate font-semibold text-foreground">
               Sending over {amount.toLocaleString()} {result.base}? Talk to our business desk.
             </div>
             <div className="mt-0.5 text-muted-foreground">
-              For high-volume transfers, dedicated providers offer custom rates, treasury tooling and an account manager. →
+              For high-volume transfers, dedicated providers offer custom rates, treasury tooling
+              and an account manager. →
             </div>
           </div>
         </Link>
       )}
 
-      {/* Savings summary card */}
       {savings && (
         <div className="mb-4 grid gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:grid-cols-3 sm:p-5">
-          <div className="flex items-start gap-3">
+          <div className="flex min-w-0 items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
-              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              <TrendingUp className="h-4 w-4 text-emerald-600" />
             </div>
-            <div>
-              <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+            <div className="min-w-0">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
                 You save
               </div>
               <div className="font-heading text-2xl font-bold tabular-nums text-foreground">
@@ -659,32 +691,37 @@ function ResultsBlock({
                 <span className="text-sm font-normal text-muted-foreground">{result.quote}</span>
               </div>
               <div className="text-[11px] text-muted-foreground">
-                You save {savings.diff.toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.quote} with the optimal route vs the market average.
+                vs the market average for this corridor.
               </div>
-
             </div>
           </div>
-          <div className="sm:border-l sm:border-emerald-500/20 sm:pl-5">
+          <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
             <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               {tMidmarket}
             </div>
-            <div className="text-sm tabular-nums text-foreground">
+            <div className="truncate text-sm tabular-nums text-foreground">
               1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
             </div>
             <div className="mt-1 text-[10px] text-muted-foreground">
-              {tUpdated} {new Date(result.rates_updated_at).toLocaleString(undefined, { dateStyle: "short", timeStyle: "short" })}
+              {tUpdated}{" "}
+              {new Date(result.rates_updated_at).toLocaleString(undefined, {
+                dateStyle: "short",
+                timeStyle: "short",
+              })}
             </div>
           </div>
-          <div className="sm:border-l sm:border-emerald-500/20 sm:pl-5">
+          <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
             <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
               <ArrowDownUp className="mr-1 inline h-3 w-3" /> Sort by
             </div>
             <div className="flex flex-wrap gap-1">
-              {([
-                ["received", "Best rate"],
-                ["fee", "Cheapest fees"],
-                ["speed", "Fastest"],
-              ] as const).map(([k, label]) => (
+              {(
+                [
+                  ["received", "Best rate"],
+                  ["fee", "Cheapest fees"],
+                  ["speed", "Fastest"],
+                ] as const
+              ).map(([k, label]) => (
                 <button
                   key={k}
                   onClick={() => setSortBy(k)}
@@ -702,15 +739,13 @@ function ResultsBlock({
         </div>
       )}
 
-
-      {/* Organic ranking */}
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        <div className="hidden grid-cols-12 gap-2 border-b border-border bg-surface-elevated px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
-          <div className="col-span-3">{tProvider}</div>
-          <div className="col-span-3 text-right">{tRecipient}</div>
-          <div className="col-span-2 text-right">{tTotalFee}</div>
-          <div className="col-span-2 text-right">{tSpeed} · Trust</div>
-          <div className="col-span-2 text-right">{/* action */}</div>
+        <div className="hidden grid-cols-12 gap-2 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
+          <div className="col-span-3 min-w-0">{tProvider}</div>
+          <div className="col-span-3 min-w-0 text-right">{tRecipient}</div>
+          <div className="col-span-2 min-w-0 text-right">{tTotalFee}</div>
+          <div className="col-span-2 min-w-0 text-right">{tSpeed} · Trust</div>
+          <div className="col-span-2" />
         </div>
         {organic.map((row, i) => (
           <ProviderRow
@@ -719,11 +754,7 @@ function ResultsBlock({
             quote={result.quote}
             base={result.base}
             isBest={i === 0 && sortBy === "received"}
-            isSponsored={false}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
-            tRecipient={tRecipient}
-            tTotalFee={tTotalFee}
-            tSpeed={tSpeed}
             tCta={tCta}
           />
         ))}
@@ -752,22 +783,14 @@ function ProviderRow({
   quote,
   base,
   isBest,
-  isSponsored,
   onClick,
-  tRecipient,
-  tTotalFee,
-  tSpeed,
   tCta,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
   base: string;
   isBest: boolean;
-  isSponsored: boolean;
   onClick: () => void;
-  tRecipient: string;
-  tTotalFee: string;
-  tSpeed: string;
   tCta: string;
 }) {
   const deliveryLabel =
@@ -786,28 +809,28 @@ function ProviderRow({
   const ratePct = row.rate_vs_market_pct;
   const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}% vs mid-market`;
   const ratePctClass =
-    ratePct >= -0.25 ? "text-emerald-500" : ratePct >= -1 ? "text-amber-500" : "text-destructive";
+    ratePct >= -0.25
+      ? "text-emerald-600"
+      : ratePct >= -1
+      ? "text-amber-600"
+      : "text-destructive";
 
   return (
     <div
       className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 sm:grid-cols-12 sm:items-center ${
-        isSponsored ? "rounded-xl border border-amber-500/30 bg-amber-500/[0.04]" : isBest ? "bg-primary/5" : ""
+        isBest ? "bg-primary/5" : ""
       }`}
     >
-      <div className="col-span-3 flex items-center gap-3">
+      <div className="col-span-3 flex min-w-0 items-center gap-3">
         <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} size={36} />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="truncate font-semibold text-foreground">{row.name}</span>
-            {isSponsored ? (
-              <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[9px] font-bold uppercase text-amber-600 dark:text-amber-400">
-                Sponsored
-              </span>
-            ) : isBest ? (
+            {isBest && (
               <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
                 Best
               </span>
-            ) : null}
+            )}
           </div>
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
             {row.regulator && (
@@ -817,23 +840,21 @@ function ProviderRow({
             )}
             {row.review_count > 0 && row.trust_score != null && (
               <span className="inline-flex items-center gap-0.5">
-                <Star className="h-2.5 w-2.5 fill-current" /> {row.trust_score.toFixed(1)} ({row.review_count.toLocaleString()})
+                <Star className="h-2.5 w-2.5 fill-current" />{" "}
+                {row.trust_score.toFixed(1)} ({row.review_count.toLocaleString()})
               </span>
-            )}
-            {row.promo_text && isSponsored && (
-              <span className="text-amber-600 dark:text-amber-400">{row.promo_text}</span>
             )}
           </div>
         </div>
       </div>
-      <div className="col-span-3 sm:text-right">
-        <div className="text-lg font-bold tabular-nums text-foreground">
+      <div className="col-span-3 min-w-0 sm:text-right">
+        <div className="truncate text-lg font-bold tabular-nums text-foreground">
           {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
           <span className="text-xs font-normal text-muted-foreground">{quote}</span>
         </div>
         <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
       </div>
-      <div className="col-span-2 text-sm tabular-nums text-muted-foreground sm:text-right">
+      <div className="col-span-2 min-w-0 text-sm tabular-nums text-muted-foreground sm:text-right">
         {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
         <div className="text-[10px]">
           {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
@@ -841,90 +862,27 @@ function ProviderRow({
           {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
         </div>
       </div>
-      <div className="col-span-2 text-sm text-muted-foreground sm:text-right">
+      <div className="col-span-2 min-w-0 text-sm text-muted-foreground sm:text-right">
         <div className="inline-flex items-center gap-1">
           <Clock className="h-3 w-3" /> {deliveryLabel}
         </div>
         {row.trust_score != null && (
           <div className="text-[10px]">
             Trust {row.trust_score.toFixed(1)}/10
-            {row.transparency_score != null && ` · Transp. ${row.transparency_score.toFixed(1)}`}
+            {row.transparency_score != null &&
+              ` · Transp. ${row.transparency_score.toFixed(1)}`}
           </div>
         )}
       </div>
       <div className="col-span-2 sm:text-right">
         <button
           onClick={onClick}
-          className="inline-flex items-center gap-1.5 rounded-lg bg-slate-950 px-3 py-2 text-[11px] font-semibold leading-tight text-white transition hover:bg-slate-800"
+          className="btn-cta inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-[11px] font-semibold leading-tight"
         >
-          <Sparkle className="h-3 w-3" />
-          <span className="text-left">{tCta}</span>
+          <Sparkle className="h-3 w-3 shrink-0" />
+          <span className="truncate text-left">{tCta}</span>
         </button>
       </div>
     </div>
   );
 }
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block min-w-0">
-      <span className="mb-1 block break-words text-[10px] font-bold uppercase tracking-wider terminal-text-comment font-mono">
-        // {label}
-      </span>
-      <div className="min-w-0">{children}</div>
-    </label>
-  );
-}
-
-function CurrencySelect({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
-    >
-      {CURRENCIES.map((c) => (
-        <option key={c.code} value={c.code}>
-          {c.flag} {c.code} — {c.name}
-        </option>
-      ))}
-    </select>
-  );
-}
-
-/**
- * Chip-style currency picker — visually distinct from the geography dropdowns.
- * Rendered as a clear rounded "capsule" with the active currency on top of the
- * native select, keeping accessibility intact.
- */
-function CurrencyChip({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const active = CURRENCIES.find((c) => c.code === value);
-  return (
-    <div
-      className="relative flex h-10 min-w-0 items-center gap-2 overflow-hidden rounded-full border border-amber-500/40 px-3 font-mono text-sm transition focus-within:border-amber-400 focus-within:shadow-[0_0_0_2px_oklch(0.769_0.188_70.08/0.25)]"
-      style={{ backgroundColor: "oklch(0.16 0.012 264)" }}
-    >
-      <span className="shrink-0 text-base leading-none">{active?.flag ?? "🌐"}</span>
-      <span className="shrink-0 terminal-text-bright font-semibold tracking-wide">
-        {active?.code ?? value}
-      </span>
-      <span className="terminal-text-comment min-w-0 flex-1 truncate whitespace-nowrap text-[11px]">
-        {active?.name ?? ""}
-      </span>
-      <select
-        aria-label="Currency"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="absolute inset-0 cursor-pointer opacity-0"
-      >
-        {CURRENCIES.map((c) => (
-          <option key={c.code} value={c.code}>
-            {c.flag} {c.code} — {c.name}
-          </option>
-        ))}
-      </select>
-    </div>
-  );
-}
-
-
