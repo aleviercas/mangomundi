@@ -240,7 +240,7 @@ export function ComparatorSection() {
                 <span className="font-black lowercase text-foreground">mango</span>
                 <span className="font-extralight lowercase text-foreground">global</span>
                 <span className="px-1.5 text-muted-foreground/60">·</span>
-                Decision Engine
+                {t("brand.decisionEngine")}
               </span>
             </div>
             <div
