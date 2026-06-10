@@ -421,5 +421,8 @@
   "platform.road.s5.s": "2026–2027",
   "contact.fullNamePlaceholder": "Jane Doe",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "blog"
 }

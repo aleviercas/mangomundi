@@ -420,5 +420,9 @@
   "home.cta.badge": "Institutional Desk",
   "pricing.ent.name": "Enterprise",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "의사결정 엔진",
+  "brand.partnerships": "파트너십",
+  "brand.rfqDesk": "RFQ 데스크",
+  "brand.blog": "블로그"
 }

@@ -420,5 +420,9 @@
   "platform.road.s5.s": "2026–2027",
   "feat.f4.t": "Enterprise API",
   "contact.institution": "Institution",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.partnerships": "Partnerships",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "blog"
 }

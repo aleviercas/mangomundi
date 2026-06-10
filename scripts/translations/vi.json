@@ -420,5 +420,9 @@
   "platform.road.s5.s": "2026–2027",
   "contact.fullNamePlaceholder": "Jane Doe",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Công cụ ra quyết định",
+  "brand.partnerships": "Quan hệ đối tác",
+  "brand.rfqDesk": "Bộ phận Yêu cầu báo giá (RFQ)",
+  "brand.blog": "blog"
 }

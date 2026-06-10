@@ -420,5 +420,9 @@
   "pricing.ent.name": "Enterprise",
   "platform.road.s5.s": "2026–2027",
   "contact.fullNamePlaceholder": "Jane Doe",
-  "contact.workEmailPlaceholder": "jane@institution.com"
+  "contact.workEmailPlaceholder": "jane@institution.com",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.partnerships": "Alianzas",
+  "brand.rfqDesk": "Mesa de RFQ",
+  "brand.blog": "blog"
 }

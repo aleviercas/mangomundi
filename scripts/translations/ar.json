@@ -421,5 +421,8 @@
   "rfq.requestId": "request_id",
   "platform.road.s5.s": "2026–2027",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "محرك القرار",
+  "brand.rfqDesk": "مكتب طلب عرض السعر (RFQ)",
+  "brand.blog": "المدونة"
 }

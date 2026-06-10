@@ -421,5 +421,8 @@
   "platform.road.s5.s": "2026–2027",
   "feat.f4.t": "Enterprise API",
   "contact.workEmailPlaceholder": "jane@institution.com",
-  "comparator.copilot.title": "FX Copilot"
+  "comparator.copilot.title": "FX Copilot",
+  "brand.decisionEngine": "Система принятия решений",
+  "brand.rfqDesk": "Деск котировок (RFQ)",
+  "brand.blog": "blog"
 }

@@ -422,5 +422,7 @@
   "comparator.copilot.title": "FX Copilot",
   "comparator.copilot.placeholder": "询问关于此路由的后续问题...",
   "comparator.copilot.empty": "运行比较以启用 Copilot。",
-  "comparator.reasoning.title": "已找到最优路由"
+  "comparator.reasoning.title": "已找到最优路由",
+  "brand.rfqDesk": "RFQ Desk",
+  "brand.blog": "博客"
 }
