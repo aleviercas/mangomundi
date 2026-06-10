@@ -146,7 +146,7 @@ function AboutPage() {
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
               </span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                mangoglobal · Partnerships
+                <span className="font-black lowercase">mango</span><span className="font-extralight lowercase">global</span> · {t("brand.partnerships")}
               </span>
             </div>
 
