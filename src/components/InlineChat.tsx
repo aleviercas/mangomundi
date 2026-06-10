@@ -17,7 +17,7 @@ function getSessionId(): string {
   if (typeof window === "undefined") return "";
   let id = localStorage.getItem(STORAGE_KEY);
   if (!id) {
-    id = `s_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    id = `s_${crypto.randomUUID()}`;
     localStorage.setItem(STORAGE_KEY, id);
   }
   return id;

@@ -12,7 +12,25 @@ const ChatInput = z.object({
 const LeadInput = z.object({
   email: z.string().email().max(255),
   featureSource: z.string().min(1).max(120),
+  consent: z.literal(true),
 });
+
+// In-memory rate limit (best-effort; resets on worker recycle).
+const RATE_BUCKETS = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT_MAX = 20; // requests per window per session
+const RATE_LIMIT_WINDOW_MS = 60_000;
+
+function checkRateLimit(key: string): boolean {
+  const now = Date.now();
+  const bucket = RATE_BUCKETS.get(key);
+  if (!bucket || bucket.resetAt < now) {
+    RATE_BUCKETS.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (bucket.count >= RATE_LIMIT_MAX) return false;
+  bucket.count += 1;
+  return true;
+}
 
 const HistoryInput = z.object({
   sessionId: z.string().min(1).max(128),
@@ -221,6 +239,16 @@ async function callLovableAI(
 export const chatTurn = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => ChatInput.parse(input))
   .handler(async ({ data }) => {
+    if (!checkRateLimit(`chat:${data.sessionId}`)) {
+      const locale = data.locale as Locale;
+      const msg =
+        locale === "es"
+          ? "Demasiadas consultas. Probá en un minuto."
+          : locale === "pt"
+            ? "Muitas consultas. Tente em um minuto."
+            : "Too many requests. Try again in a minute.";
+      return { reply: msg, segment: "retail" as const, context: {} };
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const locale = data.locale as Locale;
 
@@ -304,6 +332,9 @@ export const chatTurn = createServerFn({ method: "POST" })
 export const getChatHistory = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => HistoryInput.parse(input))
   .handler(async ({ data }) => {
+    if (!checkRateLimit(`hist:${data.sessionId}`)) {
+      return { messages: [] as { role: string; content: string }[] };
+    }
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: conv } = await supabaseAdmin
       .from("chat_conversations")
@@ -329,6 +360,8 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
       email: data.email,
       feature_source: data.featureSource,
       status: "beta_pending",
+      privacy_consent: true,
+      consent_timestamp: new Date().toISOString(),
     });
     if (error) throw new Error(error.message);
     return { ok: true };
