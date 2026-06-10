@@ -413,5 +413,14 @@
   "nav.legal": "Informacje prawne",
   "nav.terms": "Regulamin",
   "nav.risk": "Ryzyko",
-  "institutional.cta": "Rozmawiaj z działem instytucjonalnym"
+  "institutional.cta": "Rozmawiaj z działem instytucjonalnym",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.partnerships": "Partnerstwa",
+  "legal.section": "Sekcja",
+  "rfq.requestId": "request_id",
+  "home.cta.badge": "Obsługa Instytucjonalna",
+  "pricing.ent.name": "Enterprise",
+  "platform.road.s5.s": "2026–2027",
+  "feat.f4.t": "Enterprise API",
+  "comparator.copilot.title": "Copilot FX"
 }

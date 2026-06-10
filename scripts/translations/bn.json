@@ -412,5 +412,15 @@
   "nav.legal": "আইনি",
   "nav.terms": "শর্তাবলী",
   "nav.risk": "ঝুঁকি",
-  "institutional.cta": "Institutional Desk-এর সাথে কথা বলুন"
+  "institutional.cta": "Institutional Desk-এর সাথে কথা বলুন",
+  "brand.decisionEngine": "ডিসিশন ইঞ্জিন",
+  "brand.partnerships": "পার্টনারশিপ",
+  "legal.section": "অনুচ্ছেদ",
+  "retail.emailPlaceholder": "your.email@domain.com",
+  "rfq.requestId": "request_id",
+  "pricing.ent.name": "এন্টারপ্রাইজ",
+  "platform.road.s3.s": "Q1 2026",
+  "platform.road.s5.s": "2026–2027",
+  "contact.workEmailPlaceholder": "jane@institution.com",
+  "comparator.copilot.title": "FX কোপাইলট"
 }

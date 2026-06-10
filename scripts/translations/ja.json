@@ -414,5 +414,13 @@
   "nav.legal": "リーガル",
   "nav.terms": "利用規約",
   "nav.risk": "リスク",
-  "institutional.cta": "法人デスクにご相談ください"
+  "institutional.cta": "法人デスクにご相談ください",
+  "brand.decisionEngine": "ディシジョン・エンジン",
+  "brand.partnerships": "パートナーシップ",
+  "legal.section": "セクション",
+  "retail.emailPlaceholder": "your.email@domain.com",
+  "footer.copyright": "All rights reserved.",
+  "footer.brandLine": "Global FX, Made Intelligent",
+  "contact.workEmailPlaceholder": "jane@institution.com",
+  "comparator.copilot.title": "FX Copilot"
 }

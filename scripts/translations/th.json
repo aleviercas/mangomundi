@@ -407,5 +407,20 @@
   "nav.legal": "กฎหมาย",
   "nav.terms": "ข้อกำหนด",
   "nav.risk": "ความเสี่ยง",
-  "institutional.cta": "ติดต่อฝ่ายสถาบัน (Institutional Desk)"
+  "institutional.cta": "ติดต่อฝ่ายสถาบัน (Institutional Desk)",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.partnerships": "ความร่วมมือ (Partnerships)",
+  "legal.section": "ส่วน",
+  "hero.title.2": "การตัดสินใจด้าน FX",
+  "retail.emailPlaceholder": "your.email@domain.com",
+  "home.flows.treasury.title": "การบริหารเงินสดและการป้องกันความเสี่ยง FX (Treasury & FX hedging)",
+  "chat.copilotAria": "FX Copilot",
+  "rfq.requestId": "request_id",
+  "home.cta.badge": "Institutional Desk",
+  "home.platform.brand": "แพลตฟอร์ม mangoglobal",
+  "pricing.ent.name": "Enterprise",
+  "platform.road.s5.s": "2026–2027",
+  "contact.fullNamePlaceholder": "Jane Doe",
+  "contact.workEmailPlaceholder": "jane@institution.com",
+  "comparator.copilot.title": "FX Copilot"
 }

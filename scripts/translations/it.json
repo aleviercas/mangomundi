@@ -409,5 +409,18 @@
   "nav.legal": "Legale",
   "nav.terms": "Termini e Condizioni",
   "nav.risk": "Rischio",
-  "institutional.cta": "Contatta il desk istituzionale"
+  "institutional.cta": "Contatta il desk istituzionale",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.partnerships": "Partnership",
+  "legal.section": "Sezione",
+  "footer.disclaimerLabel": "disclaimer",
+  "home.cta.badge": "Institutional Desk",
+  "home.platform.brand": "Piattaforma mangoglobal",
+  "pricing.ent.name": "Enterprise",
+  "platform.core.l2.t": "Grafico dei fornitori",
+  "platform.road.s3.s": "Q1 2026",
+  "platform.road.s5.s": "2026–2027",
+  "contact.fullNamePlaceholder": "Jane Doe",
+  "contact.workEmailPlaceholder": "jane@istituzione.com",
+  "comparator.copilot.title": "FX Copilot"
 }

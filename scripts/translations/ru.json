@@ -410,5 +410,17 @@
   "nav.legal": "Юридическая информация",
   "nav.terms": "Условия",
   "nav.risk": "Риски",
-  "institutional.cta": "Связаться с отделом институциональных услуг"
+  "institutional.cta": "Связаться с отделом институциональных услуг",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.partnerships": "Партнёрства",
+  "legal.section": "Раздел",
+  "retail.emailPlaceholder": "vash.email@domain.com",
+  "rfq.requestId": "request_id",
+  "home.cta.badge": "Институциональный отдел",
+  "pricing.ent.name": "Enterprise",
+  "platform.road.s3.s": "I квартал 2026",
+  "platform.road.s5.s": "2026–2027",
+  "feat.f4.t": "Enterprise API",
+  "contact.workEmailPlaceholder": "jane@institution.com",
+  "comparator.copilot.title": "FX Copilot"
 }

@@ -414,5 +414,13 @@
   "nav.legal": "الشؤون القانونية",
   "nav.terms": "الشروط",
   "nav.risk": "المخاطر",
-  "institutional.cta": "تحدث إلى مكتب المؤسسات"
+  "institutional.cta": "تحدث إلى مكتب المؤسسات",
+  "brand.decisionEngine": "Decision Engine",
+  "brand.partnerships": "الشراكات",
+  "legal.section": "القسم",
+  "retail.emailPlaceholder": "your.email@domain.com",
+  "rfq.requestId": "request_id",
+  "platform.road.s5.s": "2026–2027",
+  "contact.workEmailPlaceholder": "jane@institution.com",
+  "comparator.copilot.title": "FX Copilot"
 }
