@@ -124,6 +124,8 @@ export const DICTS: Record<Lang, Dict> = {
     "institutional.cta": "Talk to the Institutional Desk",
     "brand.decisionEngine": "Decision Engine",
     "brand.partnerships": "Partnerships",
+    "brand.rfqDesk": "RFQ Desk",
+    "brand.blog": "blog",
     "legal.section": "Section",
     "cta.getStarted": "Get Started",
     "cta.compare": "Compare providers",
