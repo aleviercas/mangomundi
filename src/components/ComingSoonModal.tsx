@@ -26,6 +26,7 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const [source, setSource] = useState("");
   const [email, setEmail] = useState("");
+  const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const capture = useServerFn(captureEnterpriseLead);
@@ -33,6 +34,7 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
   const open = useCallback((src: string) => {
     setSource(src);
     setEmail("");
+    setConsent(false);
     setDone(false);
     setIsOpen(true);
   }, []);
@@ -53,10 +55,10 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || submitting) return;
+    if (!email || !consent || submitting) return;
     setSubmitting(true);
     try {
-      await capture({ data: { email, featureSource: source } });
+      await capture({ data: { email, featureSource: source, consent: true } });
       setDone(true);
     } catch (err) {
       console.error("enterprise lead", err);
