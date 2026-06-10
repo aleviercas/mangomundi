@@ -1757,7 +1757,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.field.targetCurrency": "Target Currency",
     "comparator.segment.retail": "Retail",
     "comparator.segment.business": "Business",
-    "hero.subheadline.short": "Neutral AI that turns fragmented cross-border payments into one optimal decision.",
+    "hero.subheadline.short": "AI Agent for individuals and corporate treasury. Optimization and transparency in your currency exchange and international payment operations.",
     "comparator.title": "Find the optimal route",
     "comparator.subtitle": "Geography, amount, currencies, urgency — one decision engine.",
     "comparator.cta.compare": "Compare Providers",
