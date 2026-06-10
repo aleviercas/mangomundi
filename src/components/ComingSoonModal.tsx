@@ -110,9 +110,21 @@ export function ComingSoonProvider({ children }: { children: ReactNode }) {
                 placeholder="nombre@empresa.com"
                 className="w-full rounded-md border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-slate-900 focus:outline-none transition-colors"
               />
+              <label className="flex items-start gap-2 text-[11px] text-slate-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  required
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-0.5 h-3.5 w-3.5 rounded border-slate-300 text-slate-950 focus:ring-slate-900"
+                />
+                <span>
+                  Acepto que <span className="font-black lowercase">mango</span><span className="font-extralight lowercase">global</span> almacene mi email para contactarme sobre este acceso prioritario (GDPR).
+                </span>
+              </label>
               <button
                 type="submit"
-                disabled={submitting}
+                disabled={submitting || !consent}
                 className="w-full inline-flex items-center justify-center gap-2 rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800 disabled:opacity-50"
               >
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
