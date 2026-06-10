@@ -320,7 +320,7 @@ export function ComparatorSection() {
               </FieldLight>
             </div>
 
-            {/* Row 3 — Target currency */}
+            {/* Row 3 — Target currency + Urgency */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FieldLight label={t("comparator.field.targetCurrency")}>
                 <CurrencyCombobox
@@ -332,11 +332,6 @@ export function ComparatorSection() {
                   ariaLabel={t("comparator.field.targetCurrency")}
                 />
               </FieldLight>
-              <div className="hidden md:block" aria-hidden />
-            </div>
-
-            {/* Row 4 — Urgency */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FieldLight label={t("comparator.field.urgency")}>
                 <select
                   value={urgency}
@@ -348,7 +343,6 @@ export function ComparatorSection() {
                   <option value="flexible">{t("fx.urgency.flexible")}</option>
                 </select>
               </FieldLight>
-              <div className="hidden md:block" aria-hidden />
             </div>
 
             {/* CTA */}
