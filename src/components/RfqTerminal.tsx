@@ -206,38 +206,38 @@ export function RfqInlinePanel({ defaults }: { defaults?: Props["defaults"] }) {
   };
 
   return (
-    <div className="terminal-card rounded-2xl overflow-hidden font-mono">
+    <div className="surface-card overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
-        <Terminal className="h-3.5 w-3.5 terminal-text-exec" />
-        <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
-          mangoglobal · rfq_desk.exec
+      <div className="flex items-center gap-2 border-b border-border px-5 py-3">
+        <Terminal className="h-3.5 w-3.5 text-primary" />
+        <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          mangoglobal · RFQ Desk
         </span>
         <span className="ml-auto flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
       </div>
 
       {done ? (
         <div className="p-6 text-center space-y-4">
-          <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-400" />
-          <p className="text-sm terminal-text-bright leading-relaxed">{t("rfq.success")}</p>
-          <p className="text-[11px] terminal-text-comment">
-            {t("rfq.requestId")}: <span className="terminal-text-exec">{done.requestId}</span>
+          <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-500" />
+          <p className="text-sm leading-relaxed text-foreground">{t("rfq.success")}</p>
+          <p className="text-xs text-muted-foreground">
+            {t("rfq.requestId")}: <span className="font-semibold text-foreground">{done.requestId}</span>
           </p>
         </div>
       ) : (
         <form onSubmit={onSubmit} className="p-5 sm:p-6 space-y-5">
           <div>
-            <div className="terminal-text-exec text-sm font-semibold">$ {t("rfq.title")}</div>
-            <p className="mt-2 text-[12px] terminal-text-comment leading-relaxed">
+            <div className="font-heading text-base font-semibold text-foreground">{t("rfq.title")}</div>
+            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
               {t("rfq.notice")}{" "}
-              <span className="terminal-text-bright">[{origin || "—"}]</span>.
+              <span className="font-semibold text-foreground">[{origin || "—"}]</span>.
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            <TerminalField label={t("rfq.fieldFrom")} value={from} onChange={setFrom} maxLength={3} upper />
-            <TerminalField label={t("rfq.fieldTo")} value={to} onChange={setTo} maxLength={3} upper />
-            <TerminalField
+            <LightField label={t("rfq.fieldFrom")} value={from} onChange={setFrom} maxLength={3} upper />
+            <LightField label={t("rfq.fieldTo")} value={to} onChange={setTo} maxLength={3} upper />
+            <LightField
               label={t("rfq.fieldAmount")}
               value={amount}
               onChange={setAmount}
@@ -245,10 +245,10 @@ export function RfqInlinePanel({ defaults }: { defaults?: Props["defaults"] }) {
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <TerminalField label={t("rfq.fieldOrigin")} value={origin} onChange={setOrigin} />
-            <TerminalField label={t("rfq.fieldDest")} value={dest} onChange={setDest} />
+            <LightField label={t("rfq.fieldOrigin")} value={origin} onChange={setOrigin} />
+            <LightField label={t("rfq.fieldDest")} value={dest} onChange={setDest} />
           </div>
-          <TerminalField
+          <LightField
             label={t("rfq.email")}
             value={email}
             onChange={setEmail}
@@ -256,18 +256,18 @@ export function RfqInlinePanel({ defaults }: { defaults?: Props["defaults"] }) {
             placeholder="treasury@company.com"
           />
 
-          <label className="flex items-start gap-2 text-[11px] terminal-text-comment leading-relaxed cursor-pointer">
+          <label className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed cursor-pointer">
             <input
               type="checkbox"
               checked={consent}
               onChange={(e) => setConsent(e.target.checked)}
-              className="mt-0.5 h-3.5 w-3.5 accent-amber-500"
+              className="mt-0.5 h-3.5 w-3.5 accent-primary"
             />
             <span>{t("rfq.consent")}</span>
           </label>
 
           {error && (
-            <div className="text-[11px] text-red-400 border border-red-900/50 bg-red-950/30 rounded px-2 py-1.5">
+            <div className="text-xs text-destructive border border-destructive/30 bg-destructive/10 rounded px-3 py-2">
               {error}
             </div>
           )}
@@ -275,9 +275,9 @@ export function RfqInlinePanel({ defaults }: { defaults?: Props["defaults"] }) {
           <button
             type="submit"
             disabled={!canSubmit || pending}
-            className="terminal-btn-primary inline-flex w-full items-center justify-center gap-2 rounded-md py-2.5 text-xs font-bold uppercase tracking-widest disabled:opacity-40 disabled:cursor-not-allowed"
+            className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md text-sm font-semibold"
           >
-            {pending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "▶"} {t("rfq.submit")}
+            {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : null} {t("rfq.submit")}
           </button>
         </form>
       )}
@@ -285,7 +285,7 @@ export function RfqInlinePanel({ defaults }: { defaults?: Props["defaults"] }) {
   );
 }
 
-function TerminalField({
+function LightField({
   label,
   value,
   onChange,
@@ -304,8 +304,8 @@ function TerminalField({
 }) {
   return (
     <label className="block">
-      <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-        // {label}
+      <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+        {label}
       </span>
       <input
         type={type}
@@ -313,7 +313,7 @@ function TerminalField({
         maxLength={maxLength}
         placeholder={placeholder}
         onChange={(e) => onChange(upper ? e.target.value.toUpperCase() : e.target.value)}
-        className="terminal-input w-full rounded-md px-2.5 py-2 text-sm font-mono"
+        className="flex h-11 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
       />
     </label>
   );
