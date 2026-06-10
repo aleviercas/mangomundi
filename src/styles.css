@@ -57,6 +57,11 @@
   --color-mango-foreground: var(--mango-foreground);
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
+
+  /* Premium CTA — the only orange in the system, reserved for primary action */
+  --color-brand-cta: #ff6600;
+  --color-brand-cta-hover: #e85a00;
+  --color-brand-cta-foreground: #ffffff;
 }
 
 :root {
