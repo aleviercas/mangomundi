@@ -414,5 +414,6 @@
   "comparator.copilot.empty": "Realice una comparación para activar el copiloto.",
   "comparator.copilot.send": "Enviar",
   "comparator.reasoning.title": "Ruta óptima encontrada",
-  "comparator.reasoning.context": "Contexto"
+  "comparator.reasoning.context": "Contexto",
+  "hero.subheadline.short": "Agente de IA para particulares y tesorería corporativa. Optimización y transparencia en sus operaciones de cambio de divisas y pagos internacionales."
 }
