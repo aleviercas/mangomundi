@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "Target Currency",
   "comparator.segment.retail": "Retail",
   "comparator.segment.business": "Business",
-  "hero.subheadline.short": "Neutral na AI na nagpapalit sa mga pira-pirasong cross-border payment bilang isang optimal na desisyon.",
   "comparator.title": "Hanapin ang optimal na ruta",
   "comparator.subtitle": "Heograpiya, halaga, mga pera, pagka-apurahan — iisang decision engine.",
   "comparator.cta.compare": "Ihambing ang mga Provider",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "Magsagawa ng paghahambing para paganahin ang copilot.",
   "comparator.copilot.send": "Ipadala",
   "comparator.reasoning.title": "Nahanap ang optimal na ruta",
-  "comparator.reasoning.context": "Konteksto"
+  "comparator.reasoning.context": "Konteksto",
+  "hero.subheadline.short": "AI Agent para sa mga indibidwal at corporate treasury. Optimization at transparency sa iyong currency exchange at mga operasyon ng internasyonal na pagbabayad."
 }

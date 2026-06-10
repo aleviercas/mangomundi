@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "Mata Uang Tujuan",
   "comparator.segment.retail": "Ritel",
   "comparator.segment.business": "Bisnis",
-  "hero.subheadline.short": "AI Netral yang mengubah pembayaran lintas batas yang terfragmentasi menjadi satu keputusan optimal.",
   "comparator.title": "Temukan rute optimal",
   "comparator.subtitle": "Geografi, jumlah, mata uang, urgensi — satu mesin keputusan.",
   "comparator.cta.compare": "Bandingkan Penyedia",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "Jalankan perbandingan untuk mengaktifkan copilot.",
   "comparator.copilot.send": "Kirim",
   "comparator.reasoning.title": "Rute optimal ditemukan",
-  "comparator.reasoning.context": "Konteks"
+  "comparator.reasoning.context": "Konteks",
+  "hero.subheadline.short": "Agen AI untuk perbendaharaan individu dan korporat. Optimalisasi dan transparansi dalam pertukaran mata uang dan operasi pembayaran internasional Anda."
 }

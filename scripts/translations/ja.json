@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "受取通貨",
   "comparator.segment.retail": "個人（リテール）",
   "comparator.segment.business": "法人（ビジネス）",
-  "hero.subheadline.short": "断片化されたクロスボーダー決済を、一つの最適な意思決定へと変える中立的なAI、mangoglobal。",
   "comparator.title": "最適なルートを見つける",
   "comparator.subtitle": "地域、金額、通貨、緊急性 — 一つの意思決定エンジンですべてを解決。",
   "comparator.cta.compare": "プロバイダーを比較",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "コパイロットを有効にするには、比較を実行してください。",
   "comparator.copilot.send": "送信",
   "comparator.reasoning.title": "最適なルートが見つかりました",
-  "comparator.reasoning.context": "コンテキスト"
+  "comparator.reasoning.context": "コンテキスト",
+  "hero.subheadline.short": "個人および企業財務向けのAIエージェント。通貨両替と国際送金業務の最適化と透明性を実現します。"
 }

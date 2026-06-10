@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "Целевая валюта",
   "comparator.segment.retail": "Розничный",
   "comparator.segment.business": "Бизнес",
-  "hero.subheadline.short": "Нейтральный ИИ, превращающий разрозненные международные платежи в одно оптимальное решение.",
   "comparator.title": "Найдите оптимальный маршрут",
   "comparator.subtitle": "География, сумма, валюты, срочность — единый аналитический центр.",
   "comparator.cta.compare": "Сравнить провайдеров",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "Запустите сравнение, чтобы активировать Copilot.",
   "comparator.copilot.send": "Отправить",
   "comparator.reasoning.title": "Оптимальный маршрут найден",
-  "comparator.reasoning.context": "Контекст"
+  "comparator.reasoning.context": "Контекст",
+  "hero.subheadline.short": "ИИ-агент для частных лиц и корпоративного казначейства. Оптимизация и прозрачность ваших валютных операций и международных платежей."
 }

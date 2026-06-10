@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "العملة المستهدفة",
   "comparator.segment.retail": "تجزئة",
   "comparator.segment.business": "أعمال",
-  "hero.subheadline.short": "ذكاء اصطناعي محايد يحول المدفوعات الدولية المجزأة إلى قرار أمثل واحد.",
   "comparator.title": "اعثر على المسار الأمثل",
   "comparator.subtitle": "الجغرافيا، المبلغ، العملات، الاستعجال — محرك قرار واحد.",
   "comparator.cta.compare": "قارن بين المزودين",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "قم بإجراء مقارنة لتفعيل المساعد (copilot).",
   "comparator.copilot.send": "إرسال",
   "comparator.reasoning.title": "تم العثور على المسار الأمثل",
-  "comparator.reasoning.context": "السياق"
+  "comparator.reasoning.context": "السياق",
+  "hero.subheadline.short": "وكيل ذكاء اصطناعي للأفراد والخزانة المؤسسية. تحسين وشفافية في عمليات صرف العملات والمدفوعات الدولية الخاصة بك."
 }

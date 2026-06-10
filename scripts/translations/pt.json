@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "Moeda de Destino",
   "comparator.segment.retail": "Varejo",
   "comparator.segment.business": "Empresarial",
-  "hero.subheadline.short": "IA neutra que transforma pagamentos internacionais fragmentados em uma decisão ideal.",
   "comparator.title": "Encontre a rota ideal",
   "comparator.subtitle": "Geografia, valor, moedas, urgência — um único mecanismo de decisão.",
   "comparator.cta.compare": "Comparar Provedores",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "Execute uma comparação para ativar o copilot.",
   "comparator.copilot.send": "Enviar",
   "comparator.reasoning.title": "Rota ideal encontrada",
-  "comparator.reasoning.context": "Contexto"
+  "comparator.reasoning.context": "Contexto",
+  "hero.subheadline.short": "Agente de IA para pessoas físicas e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais."
 }

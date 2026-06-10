@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "Zielwährung",
   "comparator.segment.retail": "Privatkunden",
   "comparator.segment.business": "Unternehmen",
-  "hero.subheadline.short": "Neutrale KI, die fragmentierte grenzüberschreitende Zahlungen in eine optimale Entscheidung verwandelt.",
   "comparator.title": "Finden Sie die optimale Route",
   "comparator.subtitle": "Geografie, Betrag, Währungen, Dringlichkeit – eine Decision Engine.",
   "comparator.cta.compare": "Anbieter vergleichen",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "Führen Sie einen Vergleich durch, um den Copilot zu aktivieren.",
   "comparator.copilot.send": "Senden",
   "comparator.reasoning.title": "Optimale Route gefunden",
-  "comparator.reasoning.context": "Kontext"
+  "comparator.reasoning.context": "Kontext",
+  "hero.subheadline.short": "KI-Agent für Privatpersonen und das Treasury von Unternehmen. Optimierung und Transparenz bei Ihren Devisengeschäften und dem internationalen Zahlungsverkehr."
 }

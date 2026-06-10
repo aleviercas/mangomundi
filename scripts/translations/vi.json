@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "Đồng tiền đích",
   "comparator.segment.retail": "Cá nhân",
   "comparator.segment.business": "Doanh nghiệp",
-  "hero.subheadline.short": "AI trung lập giúp chuyển đổi các khoản thanh toán xuyên biên giới phân mảnh thành một quyết định tối ưu duy nhất.",
   "comparator.title": "Tìm lộ trình tối ưu",
   "comparator.subtitle": "Địa lý, số tiền, loại tiền tệ, mức độ khẩn cấp — một công cụ ra quyết định duy nhất.",
   "comparator.cta.compare": "So sánh các nhà cung cấp",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "Chạy so sánh để kích hoạt copilot.",
   "comparator.copilot.send": "Gửi",
   "comparator.reasoning.title": "Đã tìm thấy lộ trình tối ưu",
-  "comparator.reasoning.context": "Ngữ cảnh"
+  "comparator.reasoning.context": "Ngữ cảnh",
+  "hero.subheadline.short": "Đại lý AI dành cho cá nhân và quản lý ngân quỹ doanh nghiệp. Tối ưu hóa và minh bạch trong các nghiệp vụ đổi ngoại tệ và thanh toán quốc tế."
 }

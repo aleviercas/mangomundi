@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "लक्ष्य मुद्रा",
   "comparator.segment.retail": "रिटेल",
   "comparator.segment.business": "बिजनेस",
-  "hero.subheadline.short": "एक तटस्थ (neutral) AI जो खंडित क्रॉस-बॉर्डर भुगतानों को एक इष्टतम निर्णय में बदलता है।",
   "comparator.title": "इष्टतम मार्ग खोजें",
   "comparator.subtitle": "भूगोल, राशि, मुद्राएं, तात्कालिकता — एक निर्णय इंजन।",
   "comparator.cta.compare": "प्रदाताओं की तुलना करें",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "कोपायलट को सक्षम करने के लिए तुलना चलाएं।",
   "comparator.copilot.send": "भेजें",
   "comparator.reasoning.title": "इष्टतम मार्ग मिल गया",
-  "comparator.reasoning.context": "प्रसंग"
+  "comparator.reasoning.context": "प्रसंग",
+  "hero.subheadline.short": "व्यक्तियों और कॉर्पोरेट ट्रेजरी के लिए AI एजेंट। आपके मुद्रा विनिमय और अंतरराष्ट्रीय भुगतान संचालन में अनुकूलन और पारदर्शिता।"
 }

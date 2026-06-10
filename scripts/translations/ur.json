@@ -399,7 +399,6 @@
   "comparator.field.targetCurrency": "ہدف کرنسی",
   "comparator.segment.retail": "ریٹیل",
   "comparator.segment.business": "کاروبار",
-  "hero.subheadline.short": "غیر جانبدار AI جو بکھری ہوئی بین الاقوامی ادائیگیوں کو ایک بہترین فیصلے میں بدل دیتا ہے۔",
   "comparator.title": "بہترین راستہ تلاش کریں",
   "comparator.subtitle": "جغرافیہ، رقم، کرنسیاں، اور فوری ضرورت — ایک ہی ڈیژین انجن۔",
   "comparator.cta.compare": "فراہم کنندگان کا موازنہ کریں",
@@ -415,5 +414,6 @@
   "comparator.copilot.empty": "Copilot کو فعال کرنے کے لیے موازنہ چلائیں۔",
   "comparator.copilot.send": "بھیجیں",
   "comparator.reasoning.title": "بہترین راستہ مل گیا",
-  "comparator.reasoning.context": "سیاق و سباق"
+  "comparator.reasoning.context": "سیاق و سباق",
+  "hero.subheadline.short": "افراد اور کارپوریٹ ٹریژری کے لیے AI ایجنٹ۔ آپ کے کرنسی ایکسچینج اور بین الاقوامی ادائیگیوں کے آپریشنز میں بہتری اور شفافیت۔"
 }
