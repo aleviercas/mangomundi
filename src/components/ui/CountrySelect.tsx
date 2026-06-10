@@ -1,3 +1,5 @@
+import { Combobox } from "@/components/ui/Combobox";
+
 const COUNTRIES: { code: string; name: string; flag: string }[] = [
   { code: "ES", name: "España / Spain", flag: "🇪🇸" },
   { code: "GB", name: "United Kingdom", flag: "🇬🇧" },
@@ -23,23 +25,37 @@ const COUNTRIES: { code: string; name: string; flag: string }[] = [
   { code: "PH", name: "Philippines", flag: "🇵🇭" },
 ];
 
+const OPTIONS = COUNTRIES.map((c) => ({
+  value: c.code,
+  label: `${c.code} — ${c.name}`,
+  leading: c.flag,
+  keywords: [c.code, c.name],
+}));
+
 export function CountrySelect({
   value,
   onChange,
   placeholder,
+  searchPlaceholder,
+  emptyLabel,
+  ariaLabel,
 }: {
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  searchPlaceholder?: string;
+  emptyLabel?: string;
+  ariaLabel?: string;
 }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value)} className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono">
-      <option value="">{placeholder ?? "—"}</option>
-      {COUNTRIES.map((c) => (
-        <option key={c.code} value={c.code}>
-          {c.flag} {c.code} — {c.name}
-        </option>
-      ))}
-    </select>
+    <Combobox
+      value={value}
+      onChange={onChange}
+      options={OPTIONS}
+      placeholder={placeholder ?? "—"}
+      searchPlaceholder={searchPlaceholder}
+      emptyLabel={emptyLabel}
+      ariaLabel={ariaLabel}
+    />
   );
 }
