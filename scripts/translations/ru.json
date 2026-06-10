@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Исходная валюта",
   "comparator.field.targetCurrency": "Целевая валюта",
   "comparator.segment.retail": "Розничный",
-  "comparator.segment.business": "Бизнес"
+  "comparator.segment.business": "Бизнес",
+  "hero.subheadline.short": "Нейтральный ИИ, превращающий разрозненные международные платежи в одно оптимальное решение.",
+  "comparator.title": "Найдите оптимальный маршрут",
+  "comparator.subtitle": "География, сумма, валюты, срочность — единый аналитический центр.",
+  "comparator.cta.compare": "Сравнить провайдеров",
+  "comparator.field.sourceCountry": "Страна отправления",
+  "comparator.field.targetCountry": "Страна получения",
+  "comparator.field.amount": "Вы отправляете",
+  "comparator.field.urgency": "Срочность",
+  "comparator.combobox.search": "Поиск…",
+  "comparator.combobox.empty": "Нет результатов.",
+  "comparator.combobox.placeholder": "Выберите…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Задайте уточняющий вопрос об этом маршруте…",
+  "comparator.copilot.empty": "Запустите сравнение, чтобы активировать Copilot.",
+  "comparator.copilot.send": "Отправить",
+  "comparator.reasoning.title": "Оптимальный маршрут найден",
+  "comparator.reasoning.context": "Контекст"
 }

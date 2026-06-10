@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "منبع کرنسی",
   "comparator.field.targetCurrency": "ہدف کرنسی",
   "comparator.segment.retail": "ریٹیل",
-  "comparator.segment.business": "کاروبار"
+  "comparator.segment.business": "کاروبار",
+  "hero.subheadline.short": "غیر جانبدار AI جو بکھری ہوئی بین الاقوامی ادائیگیوں کو ایک بہترین فیصلے میں بدل دیتا ہے۔",
+  "comparator.title": "بہترین راستہ تلاش کریں",
+  "comparator.subtitle": "جغرافیہ، رقم، کرنسیاں، اور فوری ضرورت — ایک ہی ڈیژین انجن۔",
+  "comparator.cta.compare": "فراہم کنندگان کا موازنہ کریں",
+  "comparator.field.sourceCountry": "ارسال کرنے والا ملک",
+  "comparator.field.targetCountry": "وصول کرنے والا ملک",
+  "comparator.field.amount": "آپ بھیجتے ہیں",
+  "comparator.field.urgency": "فوری ضرورت",
+  "comparator.combobox.search": "تلاش کریں…",
+  "comparator.combobox.empty": "کوئی نتائج نہیں۔",
+  "comparator.combobox.placeholder": "منتخب کریں…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "اس راستے کے بارے میں فالو اپ سوال پوچھیں…",
+  "comparator.copilot.empty": "Copilot کو فعال کرنے کے لیے موازنہ چلائیں۔",
+  "comparator.copilot.send": "بھیجیں",
+  "comparator.reasoning.title": "بہترین راستہ مل گیا",
+  "comparator.reasoning.context": "سیاق و سباق"
 }

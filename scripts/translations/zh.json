@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "源货币",
   "comparator.field.targetCurrency": "目标货币",
   "comparator.segment.retail": "零售",
-  "comparator.segment.business": "商务"
+  "comparator.segment.business": "商务",
+  "hero.subheadline.short": "Neutral AI that turns fragmented cross-border payments into one optimal decision.",
+  "comparator.title": "Find the optimal route",
+  "comparator.subtitle": "Geography, amount, currencies, urgency — one decision engine.",
+  "comparator.cta.compare": "Compare Providers",
+  "comparator.field.sourceCountry": "Source country",
+  "comparator.field.targetCountry": "Target country",
+  "comparator.field.amount": "You send",
+  "comparator.field.urgency": "Urgency",
+  "comparator.combobox.search": "Search…",
+  "comparator.combobox.empty": "No results.",
+  "comparator.combobox.placeholder": "Select…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Ask a follow-up about this route…",
+  "comparator.copilot.empty": "Run a comparison to enable the copilot.",
+  "comparator.copilot.send": "Send",
+  "comparator.reasoning.title": "Optimal route found",
+  "comparator.reasoning.context": "Context"
 }

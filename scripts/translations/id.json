@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Mata Uang Asal",
   "comparator.field.targetCurrency": "Mata Uang Tujuan",
   "comparator.segment.retail": "Ritel",
-  "comparator.segment.business": "Bisnis"
+  "comparator.segment.business": "Bisnis",
+  "hero.subheadline.short": "AI Netral yang mengubah pembayaran lintas batas yang terfragmentasi menjadi satu keputusan optimal.",
+  "comparator.title": "Temukan rute optimal",
+  "comparator.subtitle": "Geografi, jumlah, mata uang, urgensi — satu mesin keputusan.",
+  "comparator.cta.compare": "Bandingkan Penyedia",
+  "comparator.field.sourceCountry": "Negara asal",
+  "comparator.field.targetCountry": "Negara tujuan",
+  "comparator.field.amount": "Anda mengirim",
+  "comparator.field.urgency": "Urgensi",
+  "comparator.combobox.search": "Cari…",
+  "comparator.combobox.empty": "Tidak ada hasil.",
+  "comparator.combobox.placeholder": "Pilih…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Ajukan pertanyaan lanjutan tentang rute ini…",
+  "comparator.copilot.empty": "Jalankan perbandingan untuk mengaktifkan copilot.",
+  "comparator.copilot.send": "Kirim",
+  "comparator.reasoning.title": "Rute optimal ditemukan",
+  "comparator.reasoning.context": "Konteks"
 }

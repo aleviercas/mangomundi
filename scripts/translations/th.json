@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "สกุลเงินต้นทาง",
   "comparator.field.targetCurrency": "สกุลเงินปลายทาง",
   "comparator.segment.retail": "รายย่อย",
-  "comparator.segment.business": "ธุรกิจ"
+  "comparator.segment.business": "ธุรกิจ",
+  "hero.subheadline.short": "AI ที่เป็นกลางซึ่งเปลี่ยนการชำระเงินข้ามพรมแดนที่กระจัดกระจายให้เป็นการตัดสินใจที่เหมาะสมที่สุดเพียงหนึ่งเดียว",
+  "comparator.title": "ค้นหาเส้นทางที่เหมาะสมที่สุด",
+  "comparator.subtitle": "ภูมิศาสตร์ จำนวนเงิน สกุลเงิน ความเร่งด่วน — เครื่องมือตัดสินใจเพียงหนึ่งเดียว",
+  "comparator.cta.compare": "เปรียบเทียบผู้ให้บริการ",
+  "comparator.field.sourceCountry": "ประเทศต้นทาง",
+  "comparator.field.targetCountry": "ประเทศปลายทาง",
+  "comparator.field.amount": "คุณส่ง",
+  "comparator.field.urgency": "ความเร่งด่วน",
+  "comparator.combobox.search": "ค้นหา…",
+  "comparator.combobox.empty": "ไม่พบผลลัพธ์",
+  "comparator.combobox.placeholder": "เลือก…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "ถามคำถามเพิ่มเติมเกี่ยวกับเส้นทางนี้…",
+  "comparator.copilot.empty": "เรียกใช้การเปรียบเทียบเพื่อเปิดใช้งาน copilot",
+  "comparator.copilot.send": "ส่ง",
+  "comparator.reasoning.title": "พบเส้นทางที่เหมาะสมที่สุดแล้ว",
+  "comparator.reasoning.context": "บริบท"
 }

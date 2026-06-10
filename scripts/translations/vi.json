@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Đồng tiền nguồn",
   "comparator.field.targetCurrency": "Đồng tiền đích",
   "comparator.segment.retail": "Cá nhân",
-  "comparator.segment.business": "Doanh nghiệp"
+  "comparator.segment.business": "Doanh nghiệp",
+  "hero.subheadline.short": "AI trung lập giúp chuyển đổi các khoản thanh toán xuyên biên giới phân mảnh thành một quyết định tối ưu duy nhất.",
+  "comparator.title": "Tìm lộ trình tối ưu",
+  "comparator.subtitle": "Địa lý, số tiền, loại tiền tệ, mức độ khẩn cấp — một công cụ ra quyết định duy nhất.",
+  "comparator.cta.compare": "So sánh các nhà cung cấp",
+  "comparator.field.sourceCountry": "Quốc gia gửi",
+  "comparator.field.targetCountry": "Quốc gia nhận",
+  "comparator.field.amount": "Số tiền gửi",
+  "comparator.field.urgency": "Mức độ khẩn cấp",
+  "comparator.combobox.search": "Tìm kiếm…",
+  "comparator.combobox.empty": "Không có kết quả.",
+  "comparator.combobox.placeholder": "Chọn…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Đặt câu hỏi tiếp theo về lộ trình này…",
+  "comparator.copilot.empty": "Chạy so sánh để kích hoạt copilot.",
+  "comparator.copilot.send": "Gửi",
+  "comparator.reasoning.title": "Đã tìm thấy lộ trình tối ưu",
+  "comparator.reasoning.context": "Ngữ cảnh"
 }

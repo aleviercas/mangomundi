@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Kaynak Para Birimi",
   "comparator.field.targetCurrency": "Hedef Para Birimi",
   "comparator.segment.retail": "Bireysel",
-  "comparator.segment.business": "Kurumsal"
+  "comparator.segment.business": "Kurumsal",
+  "hero.subheadline.short": "Parçalanmış sınır ötesi ödemeleri tek bir optimal karara dönüştüren tarafsız yapay zeka.",
+  "comparator.title": "Optimal rotayı bulun",
+  "comparator.subtitle": "Coğrafya, tutar, para birimleri, aciliyet — tek bir karar motoru.",
+  "comparator.cta.compare": "Sağlayıcıları Karşılaştır",
+  "comparator.field.sourceCountry": "Kaynak ülke",
+  "comparator.field.targetCountry": "Hedef ülke",
+  "comparator.field.amount": "Gönderilen tutar",
+  "comparator.field.urgency": "Aciliyet",
+  "comparator.combobox.search": "Ara…",
+  "comparator.combobox.empty": "Sonuç bulunamadı.",
+  "comparator.combobox.placeholder": "Seçiniz…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Bu rota hakkında bir takip sorusu sorun…",
+  "comparator.copilot.empty": "Copilot'u etkinleştirmek için bir karşılaştırma yapın.",
+  "comparator.copilot.send": "Gönder",
+  "comparator.reasoning.title": "Optimal rota bulundu",
+  "comparator.reasoning.context": "Bağlam"
 }

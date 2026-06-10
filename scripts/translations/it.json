@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Valuta di origine",
   "comparator.field.targetCurrency": "Valuta di destinazione",
   "comparator.segment.retail": "Retail",
-  "comparator.segment.business": "Business"
+  "comparator.segment.business": "Business",
+  "hero.subheadline.short": "AI neutrale che trasforma i pagamenti transfrontalieri frammentati in una decisione ottimale.",
+  "comparator.title": "Trova la rotta ottimale",
+  "comparator.subtitle": "Geografia, importo, valute, urgenza — un unico motore decisionale.",
+  "comparator.cta.compare": "Confronta i provider",
+  "comparator.field.sourceCountry": "Paese di origine",
+  "comparator.field.targetCountry": "Paese di destinazione",
+  "comparator.field.amount": "Invii",
+  "comparator.field.urgency": "Urgenza",
+  "comparator.combobox.search": "Cerca…",
+  "comparator.combobox.empty": "Nessun risultato.",
+  "comparator.combobox.placeholder": "Seleziona…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Fai una domanda di approfondimento su questa rotta…",
+  "comparator.copilot.empty": "Esegui un confronto per abilitare il copilot.",
+  "comparator.copilot.send": "Invia",
+  "comparator.reasoning.title": "Rotta ottimale trovata",
+  "comparator.reasoning.context": "Contesto"
 }
