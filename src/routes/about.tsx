@@ -62,30 +62,28 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Manifesto — Dark Terminal */}
+      {/* Manifesto */}
       <section className="py-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="terminal-card rounded-2xl p-6 font-mono sm:p-10">
-            <div className="terminal-text-comment text-[11px] tracking-wider">
+          <div className="surface-card p-6 sm:p-10">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               {t("about.manifesto.kicker")}
             </div>
-            <h2 className="mt-3 font-heading text-2xl font-bold leading-tight terminal-text-bright sm:text-3xl terminal-cursor">
+            <h2 className="mt-3 font-heading text-2xl font-bold leading-tight text-foreground sm:text-3xl">
               {t("about.manifesto.headline")}
             </h2>
 
             <div className="mt-8 space-y-8">
               {chapters.map((ch, i) => (
                 <div key={ch.chapter}>
-                  {i > 0 && (
-                    <div className="mb-8 h-px w-full terminal-divider border-t" />
-                  )}
-                  <div className="terminal-text-comment text-[10px] uppercase tracking-[0.2em]">
+                  {i > 0 && <div className="mb-8 h-px w-full border-t border-border" />}
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                     {ch.chapter}
                   </div>
-                  <h3 className="mt-2 font-mono text-lg font-semibold terminal-text-exec sm:text-xl">
+                  <h3 className="mt-2 font-heading text-lg font-semibold text-foreground sm:text-xl">
                     {ch.title}
                   </h3>
-                  <p className="mt-3 font-mono text-sm leading-relaxed terminal-text-bright sm:text-[15px]">
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
                     {ch.body}
                   </p>
                 </div>
