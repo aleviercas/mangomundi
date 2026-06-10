@@ -408,5 +408,12 @@
   "comparator.copilot.send": "送信",
   "comparator.reasoning.title": "最適なルートが見つかりました",
   "comparator.reasoning.context": "コンテキスト",
-  "hero.subheadline.short": "個人および企業財務向けのAIエージェント。通貨両替と国際送金業務の最適化と透明性を実現します。"
+  "hero.subheadline.short": "個人および企業財務向けのAIエージェント。通貨両替と国際送金業務の最適化と透明性を実現します。",
+  "home.cta.badge": "機関投資家デスク",
+  "home.cta.title": "機関投資家向けのトレジャリー・オペレーション",
+  "home.cta.subtitle": "マルチ通貨インフラ、プライベートRFQプロトコル、企業向けFXプログラムや大口のクロスボーダー決済フローに特化したカバレッジへのダイレクト・アクセス。",
+  "home.cta.button": "機関投資家デスクを利用する",
+  "home.how.s1.desc": "リクイディティ・パスと各プロバイダーのレートをリアルタイムでスキャン。",
+  "home.how.s2.desc": "ニュートラルなAIがスピード、コスト、信頼性をバイアスなしでランク付け。",
+  "home.how.s3.desc": "選択したプロバイダー、または当社のRFQプロトコルを介して決済。"
 }

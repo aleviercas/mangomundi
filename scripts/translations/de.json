@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Senden",
   "comparator.reasoning.title": "Optimale Route gefunden",
   "comparator.reasoning.context": "Kontext",
-  "hero.subheadline.short": "KI-Agent für Privatpersonen und das Treasury von Unternehmen. Optimierung und Transparenz bei Ihren Devisengeschäften und dem internationalen Zahlungsverkehr."
+  "hero.subheadline.short": "KI-Agent für Privatpersonen und das Treasury von Unternehmen. Optimierung und Transparenz bei Ihren Devisengeschäften und dem internationalen Zahlungsverkehr.",
+  "home.cta.badge": "Institutional Desk",
+  "home.cta.title": "Treasury-Operationen auf institutionellem Niveau.",
+  "home.cta.subtitle": "Direkter Zugang zu unserer Multi-Währungs-Infrastruktur, privaten RFQ-Protokollen und dedizierter Betreuung für FX-Programme von Unternehmen sowie grenzüberschreitende Zahlungsströme mit hohem Volumen.",
+  "home.cta.button": "Institutional Desk kontaktieren",
+  "home.how.s1.desc": "Echtzeit-Scan von Liquiditätspfaden und Anbieterkursen.",
+  "home.how.s2.desc": "Neutrale KI bewertet Geschwindigkeit, Kosten und Zuverlässigkeit – ohne Bias.",
+  "home.how.s3.desc": "Abwicklung über den gewählten Anbieter oder unser RFQ-Protokoll."
 }

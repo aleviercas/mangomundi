@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Envoyer",
   "comparator.reasoning.title": "Itinéraire optimal trouvé",
   "comparator.reasoning.context": "Contexte",
-  "hero.subheadline.short": "Agent IA pour les particuliers et la trésorerie d'entreprise. Optimisation et transparence de vos opérations de change et de paiements internationaux."
+  "hero.subheadline.short": "Agent IA pour les particuliers et la trésorerie d'entreprise. Optimisation et transparence de vos opérations de change et de paiements internationaux.",
+  "home.cta.badge": "Bureau Institutionnel",
+  "home.cta.title": "Opérations de trésorerie à l'échelle institutionnelle.",
+  "home.cta.subtitle": "Accès direct à notre infrastructure multi-devises, protocoles RFQ privés et couverture dédiée pour les programmes de change d'entreprise et les flux transfrontaliers à gros volumes.",
+  "home.cta.button": "Accéder au Bureau Institutionnel",
+  "home.how.s1.desc": "Analyse en temps réel des flux de liquidité et des taux des fournisseurs.",
+  "home.how.s2.desc": "L'IA neutre classe la rapidité, le coût et la fiabilité — sans biais.",
+  "home.how.s3.desc": "Règlement via le fournisseur choisi ou notre protocole RFQ."
 }

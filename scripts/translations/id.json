@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Kirim",
   "comparator.reasoning.title": "Rute optimal ditemukan",
   "comparator.reasoning.context": "Konteks",
-  "hero.subheadline.short": "Agen AI untuk perbendaharaan individu dan korporat. Optimalisasi dan transparansi dalam pertukaran mata uang dan operasi pembayaran internasional Anda."
+  "hero.subheadline.short": "Agen AI untuk perbendaharaan individu dan korporat. Optimalisasi dan transparansi dalam pertukaran mata uang dan operasi pembayaran internasional Anda.",
+  "home.cta.badge": "Meja Institusional",
+  "home.cta.title": "Operasi treasury pada skala institusional.",
+  "home.cta.subtitle": "Akses langsung ke infrastruktur multi-mata uang kami, protokol RFQ privat, dan cakupan khusus untuk program FX korporat serta aliran lintas batas bervolume tinggi.",
+  "home.cta.button": "Akses Meja Institusional",
+  "home.how.s1.desc": "Pemindaian real-time untuk jalur likuiditas dan nilai penyedia.",
+  "home.how.s2.desc": "AI netral menyusun peringkat kecepatan, biaya, dan reliabilitas — tanpa bias.",
+  "home.how.s3.desc": "Penyelesaian melalui penyedia pilihan atau protokol RFQ kami."
 }

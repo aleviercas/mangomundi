@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Invia",
   "comparator.reasoning.title": "Rotta ottimale trovata",
   "comparator.reasoning.context": "Contesto",
-  "hero.subheadline.short": "Agente AI per privati e tesoreria aziendale. Ottimizzazione e trasparenza nelle tue operazioni di cambio valuta e pagamenti internazionali."
+  "hero.subheadline.short": "Agente AI per privati e tesoreria aziendale. Ottimizzazione e trasparenza nelle tue operazioni di cambio valuta e pagamenti internazionali.",
+  "home.cta.badge": "Institutional Desk",
+  "home.cta.title": "Operazioni di tesoreria su scala istituzionale.",
+  "home.cta.subtitle": "Accesso diretto alla nostra infrastruttura multivaluta, protocolli RFQ privati e copertura dedicata per programmi FX aziendali e flussi transfrontalieri ad alto volume.",
+  "home.cta.button": "Accedi a Institutional Desk",
+  "home.how.s1.desc": "Scansione in tempo reale dei percorsi di liquidità e dei tassi dei fornitori.",
+  "home.how.s2.desc": "L'IA neutrale classifica velocità, costi e affidabilità — senza pregiudizi.",
+  "home.how.s3.desc": "Regolamento tramite il fornitore scelto o il nostro protocollo RFQ."
 }

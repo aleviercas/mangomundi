@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Ipadala",
   "comparator.reasoning.title": "Nahanap ang optimal na ruta",
   "comparator.reasoning.context": "Konteksto",
-  "hero.subheadline.short": "AI Agent para sa mga indibidwal at corporate treasury. Optimization at transparency sa iyong currency exchange at mga operasyon ng internasyonal na pagbabayad."
+  "hero.subheadline.short": "AI Agent para sa mga indibidwal at corporate treasury. Optimization at transparency sa iyong currency exchange at mga operasyon ng internasyonal na pagbabayad.",
+  "home.cta.badge": "Institutional Desk",
+  "home.cta.title": "Treasury operations sa antas na pang-institusyon.",
+  "home.cta.subtitle": "Direktang access sa aming multi-currency infrastructure, mga pribadong RFQ protocol at nakalaang coverage para sa mga corporate FX programme at high-volume na cross-border flows.",
+  "home.cta.button": "I-access ang Institutional Desk",
+  "home.how.s1.desc": "Real-time na pag-scan ng mga liquidity path at rate ng provider.",
+  "home.how.s2.desc": "Ang neutral AI ay nagraranggo ng bilis, gastos, at pagiging maaasahan — walang kinikilingan.",
+  "home.how.s3.desc": "Mag-settle sa pamamagitan ng napiling provider o sa aming RFQ protocol."
 }

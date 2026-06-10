@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Gönder",
   "comparator.reasoning.title": "Optimal rota bulundu",
   "comparator.reasoning.context": "Bağlam",
-  "hero.subheadline.short": "Bireyler ve kurumların hazine yönetimi için Yapay Zeka Temsilcisi. Döviz bozdurma ve uluslararası ödeme operasyonlarınızda optimizasyon ve şeffaflık."
+  "hero.subheadline.short": "Bireyler ve kurumların hazine yönetimi için Yapay Zeka Temsilcisi. Döviz bozdurma ve uluslararası ödeme operasyonlarınızda optimizasyon ve şeffaflık.",
+  "home.cta.badge": "Kurumsal Masa",
+  "home.cta.title": "Kurumsal ölçekte hazine operasyonları.",
+  "home.cta.subtitle": "Çok para birimli altyapımıza, özel RFQ protokollerimize ve kurumsal Döviz programları ile yüksek hacimli sınır ötesi akışlar için atanmış kapsamımıza doğrudan erişim.",
+  "home.cta.button": "Kurumsal Masaya Erişin",
+  "home.how.s1.desc": "Likidite yollarının ve sağlayıcı kurlarının gerçek zamanlı taranması.",
+  "home.how.s2.desc": "Tarafsız yapay zeka hız, maliyet ve güvenilirliği sıralar — ön yargı yoktur.",
+  "home.how.s3.desc": "Seçilen sağlayıcı veya RFQ protokolümüz üzerinden takas gerçekleştirin."
 }

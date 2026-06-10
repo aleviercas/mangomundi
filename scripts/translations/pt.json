@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Enviar",
   "comparator.reasoning.title": "Rota ideal encontrada",
   "comparator.reasoning.context": "Contexto",
-  "hero.subheadline.short": "Agente de IA para pessoas físicas e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais."
+  "hero.subheadline.short": "Agente de IA para pessoas físicas e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais.",
+  "home.cta.badge": "Mesa Institucional",
+  "home.cta.title": "Operações de tesouraria em escala institucional.",
+  "home.cta.subtitle": "Acesso direto à nossa infraestrutura multimoeda, protocolos de RFQ privados e cobertura dedicada para programas de câmbio corporativo e fluxos transfronteiriços de alto volume.",
+  "home.cta.button": "Acessar Mesa Institucional",
+  "home.how.s1.desc": "Varredura em tempo real de caminhos de liquidez e taxas de provedores.",
+  "home.how.s2.desc": "IA neutra classifica velocidade, custo e confiabilidade — sem viés.",
+  "home.how.s3.desc": "Liquidação através do provedor escolhido ou do nosso protocolo RFQ."
 }

@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Gửi",
   "comparator.reasoning.title": "Đã tìm thấy lộ trình tối ưu",
   "comparator.reasoning.context": "Ngữ cảnh",
-  "hero.subheadline.short": "Đại lý AI dành cho cá nhân và quản lý ngân quỹ doanh nghiệp. Tối ưu hóa và minh bạch trong các nghiệp vụ đổi ngoại tệ và thanh toán quốc tế."
+  "hero.subheadline.short": "Đại lý AI dành cho cá nhân và quản lý ngân quỹ doanh nghiệp. Tối ưu hóa và minh bạch trong các nghiệp vụ đổi ngoại tệ và thanh toán quốc tế.",
+  "home.cta.badge": "Bàn Giao dịch Tổ chức",
+  "home.cta.title": "Hoạt động quản lý nguồn vốn ở quy mô định chế.",
+  "home.cta.subtitle": "Truy cập trực tiếp vào cơ sở hạ tầng đa tiền tệ của chúng tôi, các giao thức RFQ riêng tư và sự hỗ trợ chuyên biệt cho các chương trình FX doanh nghiệp và luồng thanh toán xuyên biên giới khối lượng lớn.",
+  "home.cta.button": "Truy cập Bàn Giao dịch Tổ chức",
+  "home.how.s1.desc": "Quét thời gian thực các lộ trình thanh khoản và tỷ giá của nhà cung cấp.",
+  "home.how.s2.desc": "AI trung lập xếp hạng tốc độ, chi phí và độ tin cậy — không thiên vị.",
+  "home.how.s3.desc": "Quyết toán thông qua nhà cung cấp đã chọn hoặc giao thức RFQ của chúng tôi."
 }

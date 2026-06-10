@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Wyślij",
   "comparator.reasoning.title": "Znaleziono optymalną trasę",
   "comparator.reasoning.context": "Kontekst",
-  "hero.subheadline.short": "Agent AI dla osób fizycznych i skarbowości korporacyjnej. Optymalizacja i przejrzystość operacji wymiany walut oraz płatności międzynarodowych."
+  "hero.subheadline.short": "Agent AI dla osób fizycznych i skarbowości korporacyjnej. Optymalizacja i przejrzystość operacji wymiany walut oraz płatności międzynarodowych.",
+  "home.cta.badge": "Institutional Desk",
+  "home.cta.title": "Operacje skarbowe na skalę instytucjonalną.",
+  "home.cta.subtitle": "Bezpośredni dostęp do naszej wielowalutowej infrastruktury, prywatnych protokołów RFQ oraz dedykowane wsparcie dla korporacyjnych programów FX i przepływów transgranicznych o wysokim wolumenie.",
+  "home.cta.button": "Dostęp do Institutional Desk",
+  "home.how.s1.desc": "Skanowanie ścieżek płynności i kursów dostawców w czasie rzeczywistym.",
+  "home.how.s2.desc": "Neutralna sztuczna inteligencja szereguje szybkość, koszt i niezawodność — bez uprzedzeń.",
+  "home.how.s3.desc": "Rozliczenie za pośrednictwem wybranego dostawcy lub naszego protokołu RFQ."
 }

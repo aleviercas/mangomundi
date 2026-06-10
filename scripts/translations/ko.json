@@ -408,5 +408,12 @@
   "comparator.copilot.send": "전송",
   "comparator.reasoning.title": "최적의 경로 발견",
   "comparator.reasoning.context": "컨텍스트",
-  "hero.subheadline.short": "개인 및 기업 재무 관리를 위한 AI 에이전트. 환전 및 해외 송금 업무에서 최적화와 투명성을 제공합니다."
+  "hero.subheadline.short": "개인 및 기업 재무 관리를 위한 AI 에이전트. 환전 및 해외 송금 업무에서 최적화와 투명성을 제공합니다.",
+  "home.cta.badge": "Institutional Desk",
+  "home.cta.title": "기관급 규모의 자금 운용.",
+  "home.cta.subtitle": "멀티 커런시 인프라, 전용 RFQ 프로토콜, 그리고 기업용 FX 프로그램 및 대규모 국외 송금을 위한 전문 지원을 직접 이용해 보세요.",
+  "home.cta.button": "Institutional Desk 이용하기",
+  "home.how.s1.desc": "유동성 경로 및 제공업체 환율을 실시간으로 스캔합니다.",
+  "home.how.s2.desc": "중립적인 AI가 편향 없이 속도, 비용, 신뢰도를 평가합니다.",
+  "home.how.s3.desc": "선택한 제공업체 또는 자체 RFQ 프로토콜을 통해 결제합니다."
 }

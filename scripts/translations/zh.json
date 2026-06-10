@@ -408,5 +408,12 @@
   "comparator.copilot.send": "Send",
   "comparator.reasoning.title": "Optimal route found",
   "comparator.reasoning.context": "Context",
-  "hero.subheadline.short": "适用于个人和企业财务的 AI 代理。全面优化您的货币兑换和国际支付业务，确保操作透明。"
+  "hero.subheadline.short": "适用于个人和企业财务的 AI 代理。全面优化您的货币兑换和国际支付业务，确保操作透明。",
+  "home.cta.badge": "机构服务台",
+  "home.cta.title": "机构规模的财资运营。",
+  "home.cta.subtitle": "直接访问我们的多货币基础设施、私有 RFQ 协议，以及针对企业外汇方案和大额跨境流动的专项覆盖。",
+  "home.cta.button": "访问机构服务台",
+  "home.how.s1.desc": "实时扫描流动性路径和供应商汇率。",
+  "home.how.s2.desc": "中立 AI 对速度、成本和可靠性进行排名 — 无偏见。",
+  "home.how.s3.desc": "通过选定的供应商或我们的 RFQ 协议进行结算。"
 }
