@@ -1777,8 +1777,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
   },
   es: {
     "hero.headline": "Decisiones inteligentes de FX y pagos globales",
-    "hero.subheadline":
-      "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
+    "hero.subheadline.short": "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
+    "hero.subheadline": "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
     "comparator.subheadline": "Tasas en vivo · IA neutral · +30 proveedores",
     "blog.emptyState": "En construcción — estamos preparando nuevos contenidos. Vuelve pronto.",
     "contact.heading": "Consultas Institucionales y de Partnership",
