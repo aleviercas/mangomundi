@@ -1,7 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection } from "@/sections/ComparatorSection";
-import { StatsSection } from "@/sections/StatsSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { CTASection } from "@/sections/CTASection";
 
@@ -14,7 +13,6 @@ function Index() {
     <>
       <HeroSection />
       <ComparatorSection />
-      <StatsSection />
       <HowItWorksSection />
       <CTASection />
     </>

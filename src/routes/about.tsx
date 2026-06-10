@@ -62,30 +62,28 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Manifesto — Dark Terminal */}
+      {/* Manifesto */}
       <section className="py-12">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="terminal-card rounded-2xl p-6 font-mono sm:p-10">
-            <div className="terminal-text-comment text-[11px] tracking-wider">
+          <div className="surface-card p-6 sm:p-10">
+            <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
               {t("about.manifesto.kicker")}
             </div>
-            <h2 className="mt-3 font-heading text-2xl font-bold leading-tight terminal-text-bright sm:text-3xl terminal-cursor">
+            <h2 className="mt-3 font-heading text-2xl font-bold leading-tight text-foreground sm:text-3xl">
               {t("about.manifesto.headline")}
             </h2>
 
             <div className="mt-8 space-y-8">
               {chapters.map((ch, i) => (
                 <div key={ch.chapter}>
-                  {i > 0 && (
-                    <div className="mb-8 h-px w-full terminal-divider border-t" />
-                  )}
-                  <div className="terminal-text-comment text-[10px] uppercase tracking-[0.2em]">
+                  {i > 0 && <div className="mb-8 h-px w-full border-t border-border" />}
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
                     {ch.chapter}
                   </div>
-                  <h3 className="mt-2 font-mono text-lg font-semibold terminal-text-exec sm:text-xl">
+                  <h3 className="mt-2 font-heading text-lg font-semibold text-foreground sm:text-xl">
                     {ch.title}
                   </h3>
-                  <p className="mt-3 font-mono text-sm leading-relaxed terminal-text-bright sm:text-[15px]">
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
                     {ch.body}
                   </p>
                 </div>
@@ -138,29 +136,27 @@ function AboutPage() {
         </div>
       </section>
 
-      {/* Institutional & Partnership Inquiries — Send Console */}
+      {/* Institutional & Partnership Inquiries */}
       <section id="institutional-inquiries" className="py-20 border-t border-border">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="terminal-card rounded-2xl overflow-hidden font-mono">
-            {/* Header */}
-            <div className="flex items-center gap-2 border-b terminal-divider px-4 py-2.5">
+          <div className="surface-card overflow-hidden">
+            <div className="flex items-center gap-2 border-b border-border px-5 py-3">
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-60 animate-ping" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
+                <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-60 animate-ping" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
               </span>
-              <span className="text-[11px] uppercase tracking-widest terminal-text-comment">
-                mangoglobal · partnerships.exec
+              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                mangoglobal · Partnerships
               </span>
-              <span className="ml-auto text-[10px] terminal-text-comment">// secure channel</span>
             </div>
 
             <div className="p-6 sm:p-8 space-y-5">
               <div>
-                <div className="terminal-text-exec text-sm font-semibold">
-                  $ {t("contact.heading")}
-                </div>
-                <p className="mt-2 text-[12px] terminal-text-comment leading-relaxed">
-                  // {t("contact.intro")}
+                <h3 className="font-heading text-lg font-semibold text-foreground sm:text-xl">
+                  {t("contact.heading")}
+                </h3>
+                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                  {t("contact.intro")}
                 </p>
               </div>
 
@@ -174,68 +170,68 @@ function AboutPage() {
               >
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="block">
-                    <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                      // {t("contact.fullName")}
+                    <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t("contact.fullName")}
                     </span>
                     <input
                       type="text"
                       required
                       placeholder={t("contact.fullNamePlaceholder")}
-                      className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                      className="flex h-11 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
                     />
                   </label>
                   <label className="block">
-                    <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                      // {t("contact.workEmail")}
+                    <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t("contact.workEmail")}
                     </span>
                     <input
                       type="email"
                       required
                       placeholder={t("contact.workEmailPlaceholder")}
-                      className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                      className="flex h-11 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
                     />
                   </label>
                 </div>
 
                 <label className="block">
-                  <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                    // {t("contact.institution")}
+                  <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {t("contact.institution")}
                   </span>
                   <input
                     type="text"
                     placeholder={t("contact.institutionPlaceholder")}
-                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                    className="flex h-11 w-full rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
                 </label>
 
                 <label className="block">
-                  <span className="block text-[10px] uppercase tracking-widest terminal-text-comment mb-1">
-                    // {t("contact.scope")}
+                  <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {t("contact.scope")}
                   </span>
                   <textarea
                     rows={4}
                     required
                     placeholder={t("contact.scopePlaceholder")}
-                    className="terminal-input w-full rounded-md px-3 py-2 text-sm font-mono"
+                    className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
                   />
                 </label>
 
-                <div className="flex items-center justify-between gap-3 border-t terminal-divider pt-4">
-                  <span className="terminal-text-comment text-[11px] font-mono">
-                    $ {t("contact.submitHint")}
+                <div className="flex items-center justify-between gap-3 border-t border-border pt-4">
+                  <span className="text-xs text-muted-foreground">
+                    {t("contact.submitHint")}
                   </span>
                   <button
                     type="submit"
-                    className="terminal-btn-primary inline-flex items-center justify-center gap-2 rounded-md px-5 py-2.5 text-xs font-bold uppercase tracking-widest"
+                    className="btn-cta inline-flex h-11 items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold"
                   >
-                    ▶ {t("contact.submit")}
+                    {t("contact.submit")}
                   </button>
                 </div>
               </form>
 
-              <p className="text-[11px] terminal-text-comment">
-                // {t("contact.orWrite")}{" "}
-                <a href="mailto:hello@mangoglobal.com" className="terminal-text-exec hover:underline">
+              <p className="text-xs text-muted-foreground">
+                {t("contact.orWrite")}{" "}
+                <a href="mailto:hello@mangoglobal.com" className="text-primary hover:underline">
                   hello@mangoglobal.com
                 </a>
                 .

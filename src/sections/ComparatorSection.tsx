@@ -12,7 +12,6 @@ import {
   Building2,
   TrendingUp,
   ArrowDownUp,
-  MapPin,
   Sparkle,
   BellPlus,
   Share2,
@@ -64,7 +63,7 @@ export function ComparatorSection() {
     affiliateBaseUrl?: string;
   } | null>(null);
 
-  const isLocalFx = sendingCountry === receivingCountry && from !== to;
+  
 
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
@@ -269,8 +268,8 @@ export function ComparatorSection() {
 
           {/* Form body */}
           <div className="space-y-4 p-4 sm:p-6">
-            {/* Row 1 — Geography */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* Row 1 — Source Country | Target Country | Urgency */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FieldLight label={t("comparator.field.sourceCountry")}>
                 <CountrySelect
                   value={sendingCountry}
@@ -291,10 +290,21 @@ export function ComparatorSection() {
                   ariaLabel={t("comparator.field.targetCountry")}
                 />
               </FieldLight>
+              <FieldLight label={t("comparator.field.urgency")}>
+                <select
+                  value={urgency}
+                  onChange={(e) => setUrgency(e.target.value as Urgency)}
+                  className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                >
+                  <option value="urgent">{t("fx.urgency.urgent")}</option>
+                  <option value="standard">{t("fx.urgency.standard")}</option>
+                  <option value="flexible">{t("fx.urgency.flexible")}</option>
+                </select>
+              </FieldLight>
             </div>
 
-            {/* Row 2 — Amount + Source currency */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* Row 2 — Amount | Source Currency | Target Currency */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FieldLight label={t("comparator.field.amount")}>
                 <input
                   type="number"
@@ -318,10 +328,6 @@ export function ComparatorSection() {
                   ariaLabel={t("comparator.field.sourceCurrency")}
                 />
               </FieldLight>
-            </div>
-
-            {/* Row 3 — Target currency + Urgency */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FieldLight label={t("comparator.field.targetCurrency")}>
                 <CurrencyCombobox
                   value={to}
@@ -332,20 +338,9 @@ export function ComparatorSection() {
                   ariaLabel={t("comparator.field.targetCurrency")}
                 />
               </FieldLight>
-              <FieldLight label={t("comparator.field.urgency")}>
-                <select
-                  value={urgency}
-                  onChange={(e) => setUrgency(e.target.value as Urgency)}
-                  className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
-                >
-                  <option value="urgent">{t("fx.urgency.urgent")}</option>
-                  <option value="standard">{t("fx.urgency.standard")}</option>
-                  <option value="flexible">{t("fx.urgency.flexible")}</option>
-                </select>
-              </FieldLight>
             </div>
 
-            {/* CTA */}
+            {/* CTA — full width */}
             <div className="pt-1">
               <button
                 onClick={() => {
@@ -357,7 +352,7 @@ export function ComparatorSection() {
                   compareMut.mutate();
                 }}
                 disabled={compareMut.isPending}
-                className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold md:w-auto md:min-w-[14rem]"
+                className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold"
               >
                 {compareMut.isPending ? (
                   <>
@@ -535,20 +530,6 @@ export function ComparatorSection() {
           </div>
         )}
 
-        {isLocalFx && (
-          <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm">
-            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
-            <div className="min-w-0">
-              <div className="truncate font-semibold text-foreground">
-                Local FX detected · {sendingCountry} → {receivingCountry}
-              </div>
-              <div className="mt-0.5 text-xs text-muted-foreground">
-                Showing multi-currency domestic accounts only — international wire fees and SWIFT
-                spreads are excluded from this view.
-              </div>
-            </div>
-          </div>
-        )}
 
         {!result && !compareMut.isPending && !compareMut.isError && !aiText && (
           <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
