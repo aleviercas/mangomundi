@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "보내는 통화",
   "comparator.field.targetCurrency": "받는 통화",
   "comparator.segment.retail": "개인",
-  "comparator.segment.business": "기업"
+  "comparator.segment.business": "기업",
+  "hero.subheadline.short": "파편화된 해외 결제를 단 하나의 최적의 결정으로 전환하는 중립적 AI.",
+  "comparator.title": "최적의 경로 찾기",
+  "comparator.subtitle": "지역, 금액, 통화, 긴급도 — 단 하나의 의사결정 엔진.",
+  "comparator.cta.compare": "공급업체 비교",
+  "comparator.field.sourceCountry": "보내는 국가",
+  "comparator.field.targetCountry": "받는 국가",
+  "comparator.field.amount": "보내는 금액",
+  "comparator.field.urgency": "긴급도",
+  "comparator.combobox.search": "검색…",
+  "comparator.combobox.empty": "결과 없음.",
+  "comparator.combobox.placeholder": "선택해주세요…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "이 경로에 대해 추가로 질문하기…",
+  "comparator.copilot.empty": "코파일럿을 활성화하려면 비교를 실행하세요.",
+  "comparator.copilot.send": "전송",
+  "comparator.reasoning.title": "최적의 경로 발견",
+  "comparator.reasoning.context": "컨텍스트"
 }

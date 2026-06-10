@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Moeda de Origem",
   "comparator.field.targetCurrency": "Moeda de Destino",
   "comparator.segment.retail": "Varejo",
-  "comparator.segment.business": "Empresarial"
+  "comparator.segment.business": "Empresarial",
+  "hero.subheadline.short": "IA neutra que transforma pagamentos internacionais fragmentados em uma decisão ideal.",
+  "comparator.title": "Encontre a rota ideal",
+  "comparator.subtitle": "Geografia, valor, moedas, urgência — um único mecanismo de decisão.",
+  "comparator.cta.compare": "Comparar Provedores",
+  "comparator.field.sourceCountry": "País de origem",
+  "comparator.field.targetCountry": "País de destino",
+  "comparator.field.amount": "Você envia",
+  "comparator.field.urgency": "Urgência",
+  "comparator.combobox.search": "Pesquisar…",
+  "comparator.combobox.empty": "Nenhum resultado.",
+  "comparator.combobox.placeholder": "Selecionar…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Faça uma pergunta de acompanhamento sobre esta rota…",
+  "comparator.copilot.empty": "Execute uma comparação para ativar o copilot.",
+  "comparator.copilot.send": "Enviar",
+  "comparator.reasoning.title": "Rota ideal encontrada",
+  "comparator.reasoning.context": "Contexto"
 }

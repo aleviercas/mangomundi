@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "عملة المصدر",
   "comparator.field.targetCurrency": "العملة المستهدفة",
   "comparator.segment.retail": "تجزئة",
-  "comparator.segment.business": "أعمال"
+  "comparator.segment.business": "أعمال",
+  "hero.subheadline.short": "ذكاء اصطناعي محايد يحول المدفوعات الدولية المجزأة إلى قرار أمثل واحد.",
+  "comparator.title": "اعثر على المسار الأمثل",
+  "comparator.subtitle": "الجغرافيا، المبلغ، العملات، الاستعجال — محرك قرار واحد.",
+  "comparator.cta.compare": "قارن بين المزودين",
+  "comparator.field.sourceCountry": "بلد المصدر",
+  "comparator.field.targetCountry": "البلد الهدف",
+  "comparator.field.amount": "أنت ترسل",
+  "comparator.field.urgency": "مدى الاستعجال",
+  "comparator.combobox.search": "بحث…",
+  "comparator.combobox.empty": "لا توجد نتائج.",
+  "comparator.combobox.placeholder": "اختر…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "اسأل سؤالاً للمتابعة حول هذا المسار…",
+  "comparator.copilot.empty": "قم بإجراء مقارنة لتفعيل المساعد (copilot).",
+  "comparator.copilot.send": "إرسال",
+  "comparator.reasoning.title": "تم العثور على المسار الأمثل",
+  "comparator.reasoning.context": "السياق"
 }

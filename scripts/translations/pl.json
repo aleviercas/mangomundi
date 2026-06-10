@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Waluta źródłowa",
   "comparator.field.targetCurrency": "Waluta docelowa",
   "comparator.segment.retail": "Detaliczny",
-  "comparator.segment.business": "Biznesowy"
+  "comparator.segment.business": "Biznesowy",
+  "hero.subheadline.short": "Neutralna sztuczna inteligencja, która zmienia rozproszone płatności transgraniczne w jedną optymalną decyzję.",
+  "comparator.title": "Znajdź optymalną trasę",
+  "comparator.subtitle": "Geografia, kwota, waluty, pilność — jeden silnik decyzyjny.",
+  "comparator.cta.compare": "Porównaj dostawców",
+  "comparator.field.sourceCountry": "Kraj źródłowy",
+  "comparator.field.targetCountry": "Kraj docelowy",
+  "comparator.field.amount": "Wysyłasz",
+  "comparator.field.urgency": "Pilność",
+  "comparator.combobox.search": "Szukaj…",
+  "comparator.combobox.empty": "Brak wyników.",
+  "comparator.combobox.placeholder": "Wybierz…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Zadaj pytanie uzupełniające o tę trasę…",
+  "comparator.copilot.empty": "Uruchom porównanie, aby aktywować copilot.",
+  "comparator.copilot.send": "Wyślij",
+  "comparator.reasoning.title": "Znaleziono optymalną trasę",
+  "comparator.reasoning.context": "Kontekst"
 }

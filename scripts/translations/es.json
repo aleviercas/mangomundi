@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Divisa de origen",
   "comparator.field.targetCurrency": "Divisa de destino",
   "comparator.segment.retail": "Minorista",
-  "comparator.segment.business": "Empresa"
+  "comparator.segment.business": "Empresa",
+  "hero.subheadline.short": "IA neutral que convierte los pagos transfronterizos fragmentados en una decisión óptima.",
+  "comparator.title": "Encuentre la ruta óptima",
+  "comparator.subtitle": "Geografía, importe, divisas, urgencia: un único motor de decisión.",
+  "comparator.cta.compare": "Comparar proveedores",
+  "comparator.field.sourceCountry": "País de origen",
+  "comparator.field.targetCountry": "País de destino",
+  "comparator.field.amount": "Usted envía",
+  "comparator.field.urgency": "Urgencia",
+  "comparator.combobox.search": "Buscar…",
+  "comparator.combobox.empty": "Sin resultados.",
+  "comparator.combobox.placeholder": "Seleccionar…",
+  "comparator.copilot.title": "Copiloto de FX",
+  "comparator.copilot.placeholder": "Haga una pregunta de seguimiento sobre esta ruta…",
+  "comparator.copilot.empty": "Realice una comparación para activar el copiloto.",
+  "comparator.copilot.send": "Enviar",
+  "comparator.reasoning.title": "Ruta óptima encontrada",
+  "comparator.reasoning.context": "Contexto"
 }

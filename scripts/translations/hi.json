@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "स्रोत मुद्रा",
   "comparator.field.targetCurrency": "लक्ष्य मुद्रा",
   "comparator.segment.retail": "रिटेल",
-  "comparator.segment.business": "बिजनेस"
+  "comparator.segment.business": "बिजनेस",
+  "hero.subheadline.short": "एक तटस्थ (neutral) AI जो खंडित क्रॉस-बॉर्डर भुगतानों को एक इष्टतम निर्णय में बदलता है।",
+  "comparator.title": "इष्टतम मार्ग खोजें",
+  "comparator.subtitle": "भूगोल, राशि, मुद्राएं, तात्कालिकता — एक निर्णय इंजन।",
+  "comparator.cta.compare": "प्रदाताओं की तुलना करें",
+  "comparator.field.sourceCountry": "स्रोत देश",
+  "comparator.field.targetCountry": "गंतव्य देश",
+  "comparator.field.amount": "आप भेज रहे हैं",
+  "comparator.field.urgency": "तात्कालिकता",
+  "comparator.combobox.search": "खोजें…",
+  "comparator.combobox.empty": "कोई परिणाम नहीं।",
+  "comparator.combobox.placeholder": "चुनें…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "इस मार्ग के बारे में अनुवर्ती प्रश्न पूछें…",
+  "comparator.copilot.empty": "कोपायलट को सक्षम करने के लिए तुलना चलाएं।",
+  "comparator.copilot.send": "भेजें",
+  "comparator.reasoning.title": "इष्टतम मार्ग मिल गया",
+  "comparator.reasoning.context": "प्रसंग"
 }

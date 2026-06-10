@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Source Currency",
   "comparator.field.targetCurrency": "Target Currency",
   "comparator.segment.retail": "Retail",
-  "comparator.segment.business": "Business"
+  "comparator.segment.business": "Business",
+  "hero.subheadline.short": "Neutral na AI na nagpapalit sa mga pira-pirasong cross-border payment bilang isang optimal na desisyon.",
+  "comparator.title": "Hanapin ang optimal na ruta",
+  "comparator.subtitle": "Heograpiya, halaga, mga pera, pagka-apurahan — iisang decision engine.",
+  "comparator.cta.compare": "Ihambing ang mga Provider",
+  "comparator.field.sourceCountry": "Pinagmulang bansa",
+  "comparator.field.targetCountry": "Destinasyong bansa",
+  "comparator.field.amount": "Iyong ipapadala",
+  "comparator.field.urgency": "Pagka-apurahan",
+  "comparator.combobox.search": "Maghanap…",
+  "comparator.combobox.empty": "Walang resulta.",
+  "comparator.combobox.placeholder": "Pumili…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "Magtanong tungkol sa rutang ito…",
+  "comparator.copilot.empty": "Magsagawa ng paghahambing para paganahin ang copilot.",
+  "comparator.copilot.send": "Ipadala",
+  "comparator.reasoning.title": "Nahanap ang optimal na ruta",
+  "comparator.reasoning.context": "Konteksto"
 }

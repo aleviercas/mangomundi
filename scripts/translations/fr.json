@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "Source Currency",
   "comparator.field.targetCurrency": "Target Currency",
   "comparator.segment.retail": "Retail",
-  "comparator.segment.business": "Business"
+  "comparator.segment.business": "Business",
+  "hero.subheadline.short": "Une IA neutre qui transforme les paiements transfrontaliers fragmentés en une décision optimale.",
+  "comparator.title": "Trouvez l'itinéraire optimal",
+  "comparator.subtitle": "Géographie, montant, devises, urgence — un moteur de décision unique.",
+  "comparator.cta.compare": "Comparer les prestataires",
+  "comparator.field.sourceCountry": "Pays d'origine",
+  "comparator.field.targetCountry": "Pays de destination",
+  "comparator.field.amount": "Vous envoyez",
+  "comparator.field.urgency": "Urgence",
+  "comparator.combobox.search": "Rechercher…",
+  "comparator.combobox.empty": "Aucun résultat.",
+  "comparator.combobox.placeholder": "Sélectionner…",
+  "comparator.copilot.title": "Copilote FX",
+  "comparator.copilot.placeholder": "Posez une question complémentaire sur cet itinéraire…",
+  "comparator.copilot.empty": "Lancez une comparaison pour activer le copilote.",
+  "comparator.copilot.send": "Envoyer",
+  "comparator.reasoning.title": "Itinéraire optimal trouvé",
+  "comparator.reasoning.context": "Contexte"
 }

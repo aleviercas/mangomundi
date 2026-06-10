@@ -1,7 +1,6 @@
-import { TrendingUp, Shield, Zap, GitCompare } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-
 
 function HexCoin({
   symbol,
@@ -82,49 +81,30 @@ function CurrencyConstellation() {
 export function HeroSection() {
   const { t } = useI18n();
 
-
-
   return (
-    <section className="relative pt-16 pb-16 lg:pt-20 lg:pb-20">
+    <section className="relative pt-16 pb-12 lg:pt-20 lg:pb-16">
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_1.4fr] lg:gap-16 items-center">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.1fr_1.4fr] lg:gap-16">
           <div className="order-2 lg:order-1">
             <CurrencyConstellation />
           </div>
 
-          <div className="order-1 lg:order-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-[11px] font-medium tracking-widest text-white uppercase mb-6 shadow-sm">
-              ⚡ Agentic AI for Global FX <span className="text-slate-500 px-1">|</span>
-              <span className="text-white font-black lowercase">mango</span>
-              <span className="text-slate-300 font-light lowercase">global</span>
-            </div>
-            <h1 className="font-heading text-4xl sm:text-5xl lg:text-[3.5rem] font-extrabold tracking-tight text-slate-950 leading-[1.05]">
+          <div className="order-1 min-w-0 max-w-2xl lg:order-2">
+            <h1 className="font-heading text-4xl font-extrabold leading-[1.05] tracking-tight text-slate-950 sm:text-5xl lg:text-[3.5rem]">
               {t("hero.headline")}
             </h1>
-            <p className="mt-5 text-base sm:text-lg text-slate-500 max-w-2xl font-normal leading-relaxed">
-              {t("hero.subheadline")}
+            <p className="mt-5 max-w-2xl text-base leading-relaxed text-slate-500 sm:text-lg">
+              {t("hero.subheadline.short")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                to="/compare"
-                className="inline-flex items-center gap-2 rounded-md bg-slate-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-slate-800"
+                to="/"
+                hash="comparator"
+                className="btn-cta inline-flex items-center gap-2 rounded-md px-6 py-3 text-sm font-semibold"
               >
-                <GitCompare className="h-4 w-4" />
-                {t("home.hero.ctaCompare")}
+                {t("comparator.cta.compare")}
+                <ArrowRight className="h-4 w-4" />
               </Link>
-            </div>
-
-            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-              {[
-                { Icon: TrendingUp, label: t("hero.trust.1") },
-                { Icon: Shield, label: t("hero.trust.2") },
-                { Icon: Zap, label: t("hero.trust.3") },
-              ].map(({ Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-sm text-slate-500">
-                  <Icon className="h-4 w-4 text-slate-700" />
-                  <span>{label}</span>
-                </div>
-              ))}
             </div>
           </div>
         </div>
@@ -132,4 +112,3 @@ export function HeroSection() {
     </section>
   );
 }
-

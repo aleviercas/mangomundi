@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "উৎস মুদ্রা",
   "comparator.field.targetCurrency": "টার্গেট মুদ্রা",
   "comparator.segment.retail": "খুচরা",
-  "comparator.segment.business": "ব্যবসা"
+  "comparator.segment.business": "ব্যবসা",
+  "hero.subheadline.short": "নিরপেক্ষ AI যা বিচ্ছিন্ন আন্তঃসীমান্ত পেমেন্টগুলোকে একটি সর্বোত্তম সিদ্ধান্তে রূপান্তরিত করে।",
+  "comparator.title": "সেরা রুটটি খুঁজে নিন",
+  "comparator.subtitle": "ভৌগোলিক অবস্থান, পরিমাণ, কারেন্সি, জরুরি অবস্থা — একটি মাত্র ডিসিশন ইঞ্জিন।",
+  "comparator.cta.compare": "প্রোভাইডারদের তুলনা করুন",
+  "comparator.field.sourceCountry": "উৎস দেশ",
+  "comparator.field.targetCountry": "গন্তব্য দেশ",
+  "comparator.field.amount": "আপনি পাঠাচ্ছেন",
+  "comparator.field.urgency": "জরুরি অবস্থা",
+  "comparator.combobox.search": "অনুসন্ধান করুন…",
+  "comparator.combobox.empty": "কোনো ফলাফল নেই।",
+  "comparator.combobox.placeholder": "নির্বাচন করুন…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "এই রুট সম্পর্কে আরও জিজ্ঞাসা করুন…",
+  "comparator.copilot.empty": "Copilot চালু করতে একটি তুলনা সম্পাদন করুন।",
+  "comparator.copilot.send": "পাঠান",
+  "comparator.reasoning.title": "সর্বোত্তম রুট পাওয়া গেছে",
+  "comparator.reasoning.context": "প্রসঙ্গ"
 }

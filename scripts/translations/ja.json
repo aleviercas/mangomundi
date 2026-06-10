@@ -398,5 +398,22 @@
   "comparator.field.sourceCurrency": "送金元通貨",
   "comparator.field.targetCurrency": "受取通貨",
   "comparator.segment.retail": "個人（リテール）",
-  "comparator.segment.business": "法人（ビジネス）"
+  "comparator.segment.business": "法人（ビジネス）",
+  "hero.subheadline.short": "断片化されたクロスボーダー決済を、一つの最適な意思決定へと変える中立的なAI、mangoglobal。",
+  "comparator.title": "最適なルートを見つける",
+  "comparator.subtitle": "地域、金額、通貨、緊急性 — 一つの意思決定エンジンですべてを解決。",
+  "comparator.cta.compare": "プロバイダーを比較",
+  "comparator.field.sourceCountry": "送金元の国",
+  "comparator.field.targetCountry": "送金先の国",
+  "comparator.field.amount": "送金額",
+  "comparator.field.urgency": "緊急性",
+  "comparator.combobox.search": "検索…",
+  "comparator.combobox.empty": "結果が見つかりません。",
+  "comparator.combobox.placeholder": "選択してください…",
+  "comparator.copilot.title": "FX Copilot",
+  "comparator.copilot.placeholder": "このルートについて追加で質問する…",
+  "comparator.copilot.empty": "コパイロットを有効にするには、比較を実行してください。",
+  "comparator.copilot.send": "送信",
+  "comparator.reasoning.title": "最適なルートが見つかりました",
+  "comparator.reasoning.context": "コンテキスト"
 }
