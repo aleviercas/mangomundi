@@ -441,6 +441,33 @@ export function ComparatorSection() {
           </div>
         </div>
 
+        {/* Welcome state for AI Agent (pre-comparison) */}
+        {!aiText && !aiLoading && (
+          <div className="surface-card mt-6 overflow-hidden">
+            <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
+              <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                <MessageCircle className="h-3.5 w-3.5 text-foreground" />
+                <span className="truncate">
+                  {t("comparator.copilot.agent")}{" "}
+                  <span className="font-black lowercase text-foreground normal-case">mango</span>
+                  <span className="font-extralight lowercase text-foreground normal-case">global</span>
+                </span>
+              </div>
+              <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-emerald-600">
+                ● {lang.toUpperCase()}
+              </span>
+            </div>
+            <div className="p-4 sm:p-5">
+              <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
+              </div>
+              <p className="mt-3 text-xs text-muted-foreground">
+                {t("comparator.copilot.empty")}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* AI reasoning + embedded chat */}
         {(aiLoading || aiText) && (
           <div className="surface-card mt-6 overflow-hidden">
@@ -956,10 +983,12 @@ function ProviderRow({
       <div className="col-span-2 sm:text-right">
         <button
           onClick={onClick}
-          className="btn-cta inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-[11px] font-semibold leading-tight"
+          aria-label={tCta}
+          title={tCta}
+          className="btn-cta inline-flex w-full items-center justify-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-semibold leading-tight sm:w-auto"
         >
-          <Sparkle className="h-3 w-3 shrink-0" />
-          <span className="truncate text-left">{tCta}</span>
+          <span className="hidden truncate sm:inline">{tCta}</span>
+          <ArrowRight className="h-3.5 w-3.5 shrink-0" />
         </button>
       </div>
     </div>
