@@ -730,7 +730,7 @@ function ResultsBlock({
   amount: number;
   sortBy: SortKey;
   onSortChange: (k: SortKey) => void;
-  handleAffiliateClick: (slug: string, url: string) => void;
+  handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
   tRatesSource: string;
