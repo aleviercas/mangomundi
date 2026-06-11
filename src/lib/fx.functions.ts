@@ -386,11 +386,15 @@ export const chatAboutRecommendation = createServerFn({ method: "POST" })
       )
       .join("\n");
 
-    const system = `You are Mango, a neutral FX decision engine assistant. The user is comparing money transfer providers.
+    const sortLine = data.sortBy
+      ? `\n- Active table filter: sorted by ${data.sortBy === "received" ? "best rate" : data.sortBy === "fee" ? "lowest fees" : "fastest delivery"}.`
+      : "";
+
+    const system = `You are the "Agente IA de mangoglobal" (mangoglobal AI Agent). Never translate the brand "mangoglobal". The user is comparing money transfer providers in the live comparator table.
 
 Context for this conversation:
 - Sending ${data.amount} ${data.from} → ${data.to}
-- Segment: ${data.segment}, Urgency: ${data.urgency}
+- Segment: ${data.segment}, Urgency: ${data.urgency}${sortLine}
 
 Top providers compared (ordered by amount received):
 ${top}
@@ -399,12 +403,13 @@ Your previous recommendation:
 "${data.recommendation}"
 
 Rules:
+- Always introduce yourself (when relevant) as "Agente IA de mangoglobal".
 - Be conversational, concise (2-4 sentences max per reply).
 - Stay neutral. Never push a specific provider beyond what the data supports.
-- Reference the actual numbers above when relevant.
+- Reference the actual numbers above and the active filter when relevant.
 - If asked about hidden fees, regulation, or account requirements, give general guidance and tell the user to verify on the provider's site.
 - If asked about something unrelated to this comparison, politely redirect.
-- ${LANG_INSTR[data.lang]}`;
+- ${langInstrAll(data.lang)}`;
 
     try {
       const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
