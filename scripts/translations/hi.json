@@ -424,5 +424,16 @@
   "contact.workEmailPlaceholder": "jane@institution.com",
   "comparator.copilot.title": "FX Copilot",
   "brand.rfqDesk": "RFQ डेस्क",
-  "brand.blog": "ब्लॉग"
+  "brand.blog": "ब्लॉग",
+  "comparator.copilot.agent": "AI एजेंट ·",
+  "comparator.copilot.analyzing": "परिणामों का विश्लेषण किया जा रहा है…",
+  "comparator.copilot.proceed": "{provider} के साथ जारी रखें",
+  "comparator.copilot.notify": "दर बेहतर होने पर मुझे सूचित करें",
+  "comparator.copilot.proactive.rate": "मैंने देखा कि इस राशि के लिए अभी **{provider}** सबसे अच्छी दर दे रहा है। क्या मैं आगे बढ़ने में मदद करूँ?",
+  "comparator.copilot.proactive.fee": "ध्यान दें: इस राशि के लिए **{provider}** की कुल फीस सबसे कम है। आगे बढ़ें?",
+  "comparator.copilot.proactive.speed": "इस कॉरिडोर के लिए **{provider}** अभी सबसे तेज़ विकल्प है। जारी रखें?",
+  "comparator.copilot.filterReact": "मैं देख रहा हूँ कि आपने **{filter}** से फ़िल्टर किया — इस चयन के लिए सर्वश्रेष्ठ प्रदाता:",
+  "comparator.copilot.filter.received": "सर्वोत्तम दर",
+  "comparator.copilot.filter.fee": "सबसे कम शुल्क",
+  "comparator.copilot.filter.speed": "सबसे तेज़"
 }

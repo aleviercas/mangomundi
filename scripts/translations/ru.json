@@ -424,5 +424,16 @@
   "comparator.copilot.title": "FX Copilot",
   "brand.decisionEngine": "Движок Решений",
   "brand.rfqDesk": "Деск котировок (RFQ)",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "ИИ-агент ·",
+  "comparator.copilot.analyzing": "Анализирую результаты…",
+  "comparator.copilot.proceed": "Продолжить с {provider}",
+  "comparator.copilot.notify": "Сообщите, если курс улучшится",
+  "comparator.copilot.proactive.rate": "Я заметил, что **{provider}** сейчас предлагает лучший курс для этой суммы. Помочь продолжить?",
+  "comparator.copilot.proactive.fee": "Обратите внимание: у **{provider}** самые низкие общие комиссии для этой суммы. Продолжим?",
+  "comparator.copilot.proactive.speed": "**{provider}** — самый быстрый вариант для этого коридора. Продолжить?",
+  "comparator.copilot.filterReact": "Вижу, вы отфильтровали по **{filter}** — вот лучшие провайдеры для этого выбора:",
+  "comparator.copilot.filter.received": "Лучший курс",
+  "comparator.copilot.filter.fee": "Минимальные комиссии",
+  "comparator.copilot.filter.speed": "Самый быстрый"
 }

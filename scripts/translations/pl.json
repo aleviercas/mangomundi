@@ -424,5 +424,16 @@
   "comparator.copilot.title": "Copilot FX",
   "brand.decisionEngine": "Silnik Decyzyjny",
   "brand.rfqDesk": "RFQ Desk",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "Agent AI ·",
+  "comparator.copilot.analyzing": "Analizowanie wyników…",
+  "comparator.copilot.proceed": "Kontynuuj z {provider}",
+  "comparator.copilot.notify": "Powiadom mnie, gdy kurs się poprawi",
+  "comparator.copilot.proactive.rate": "Zauważyłem, że **{provider}** oferuje teraz najlepszy kurs dla tej kwoty. Mam pomóc Ci kontynuować?",
+  "comparator.copilot.proactive.fee": "Uwaga: **{provider}** ma najniższe łączne opłaty dla tej kwoty. Kontynuujemy?",
+  "comparator.copilot.proactive.speed": "**{provider}** to obecnie najszybsza opcja dla tego korytarza. Kontynuować?",
+  "comparator.copilot.filterReact": "Widzę, że filtrowałeś według **{filter}** — oto najlepsi dostawcy dla tego wyboru:",
+  "comparator.copilot.filter.received": "Najlepszy kurs",
+  "comparator.copilot.filter.fee": "Najniższe opłaty",
+  "comparator.copilot.filter.speed": "Najszybciej"
 }

@@ -424,5 +424,16 @@
   "comparator.copilot.title": "FX Copilot",
   "brand.decisionEngine": "محرك القرار",
   "brand.rfqDesk": "مكتب طلب عرض السعر (RFQ)",
-  "brand.blog": "المدونة"
+  "brand.blog": "المدونة",
+  "comparator.copilot.agent": "وكيل الذكاء الاصطناعي ·",
+  "comparator.copilot.analyzing": "جارٍ تحليل النتائج…",
+  "comparator.copilot.proceed": "المتابعة مع {provider}",
+  "comparator.copilot.notify": "أعلمني إذا تحسّن السعر",
+  "comparator.copilot.proactive.rate": "لاحظت أن **{provider}** يقدم أفضل سعر الآن لهذا المبلغ. هل تريد أن أساعدك في المتابعة؟",
+  "comparator.copilot.proactive.fee": "تنبيه: لدى **{provider}** أقل رسوم إجمالية لهذا المبلغ. هل نتابع؟",
+  "comparator.copilot.proactive.speed": "**{provider}** هو الخيار الأسرع لهذا الممر الآن. هل تريد المتابعة؟",
+  "comparator.copilot.filterReact": "أرى أنك قمت بالتصفية حسب **{filter}** — إليك أفضل المزودين لهذا الاختيار:",
+  "comparator.copilot.filter.received": "أفضل سعر",
+  "comparator.copilot.filter.fee": "أقل رسوم",
+  "comparator.copilot.filter.speed": "الأسرع"
 }

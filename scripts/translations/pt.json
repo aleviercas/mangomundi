@@ -424,5 +424,16 @@
   "comparator.copilot.title": "FX Copilot",
   "brand.decisionEngine": "Motor de Decisão",
   "brand.rfqDesk": "Mesa de Cotações (RFQ)",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "Agente IA ·",
+  "comparator.copilot.analyzing": "Analisando resultados…",
+  "comparator.copilot.proceed": "Continuar com {provider}",
+  "comparator.copilot.notify": "Avise-me se a taxa melhorar",
+  "comparator.copilot.proactive.rate": "Notei que **{provider}** oferece a melhor taxa agora para este valor. Quer que eu te ajude a prosseguir?",
+  "comparator.copilot.proactive.fee": "Atenção: **{provider}** tem as menores taxas totais para este valor. Vamos avançar?",
+  "comparator.copilot.proactive.speed": "**{provider}** é a opção mais rápida para este corredor. Quer continuar?",
+  "comparator.copilot.filterReact": "Vejo que você filtrou por **{filter}** — estes são os melhores provedores para essa seleção:",
+  "comparator.copilot.filter.received": "Melhor taxa",
+  "comparator.copilot.filter.fee": "Menores taxas",
+  "comparator.copilot.filter.speed": "Mais rápido"
 }

@@ -424,5 +424,16 @@
   "brand.decisionEngine": "의사결정 엔진",
   "brand.partnerships": "파트너십",
   "brand.rfqDesk": "RFQ 데스크",
-  "brand.blog": "블로그"
+  "brand.blog": "블로그",
+  "comparator.copilot.agent": "AI 에이전트 ·",
+  "comparator.copilot.analyzing": "결과 분석 중…",
+  "comparator.copilot.proceed": "{provider}로 계속하기",
+  "comparator.copilot.notify": "환율이 개선되면 알려주세요",
+  "comparator.copilot.proactive.rate": "이 금액에 대해 지금 **{provider}**가 최고의 환율을 제공한다는 것을 발견했습니다. 진행을 도와드릴까요?",
+  "comparator.copilot.proactive.fee": "참고: 이 금액에 대해 **{provider}**의 총 수수료가 가장 낮습니다. 계속할까요?",
+  "comparator.copilot.proactive.speed": "**{provider}**는 이 회랑에서 현재 가장 빠른 옵션입니다. 계속할까요?",
+  "comparator.copilot.filterReact": "**{filter}**로 필터링하신 것 같네요 — 해당 선택에 가장 적합한 제공업체:",
+  "comparator.copilot.filter.received": "최고 환율",
+  "comparator.copilot.filter.fee": "최저 수수료",
+  "comparator.copilot.filter.speed": "가장 빠름"
 }

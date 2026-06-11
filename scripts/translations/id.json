@@ -424,5 +424,16 @@
   "comparator.copilot.title": "FX Copilot",
   "brand.decisionEngine": "Mesin Keputusan",
   "brand.rfqDesk": "RFQ Desk",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "Agen AI ·",
+  "comparator.copilot.analyzing": "Menganalisis hasil…",
+  "comparator.copilot.proceed": "Lanjutkan dengan {provider}",
+  "comparator.copilot.notify": "Beri tahu saya jika kursnya membaik",
+  "comparator.copilot.proactive.rate": "Saya perhatikan **{provider}** menawarkan kurs terbaik saat ini untuk jumlah ini. Mau saya bantu melanjutkan?",
+  "comparator.copilot.proactive.fee": "Perhatian: **{provider}** memiliki total biaya terendah untuk jumlah ini. Lanjutkan?",
+  "comparator.copilot.proactive.speed": "**{provider}** adalah opsi tercepat untuk koridor ini saat ini. Mau lanjutkan?",
+  "comparator.copilot.filterReact": "Saya lihat Anda memfilter berdasarkan **{filter}** — berikut penyedia terbaik untuk pilihan tersebut:",
+  "comparator.copilot.filter.received": "Kurs terbaik",
+  "comparator.copilot.filter.fee": "Biaya termurah",
+  "comparator.copilot.filter.speed": "Tercepat"
 }

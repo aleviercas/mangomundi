@@ -424,5 +424,16 @@
   "brand.decisionEngine": "ڈیسیژن انجن",
   "brand.partnerships": "شراکت داری",
   "brand.rfqDesk": "RFQ ڈیسک",
-  "brand.blog": "بلاگ"
+  "brand.blog": "بلاگ",
+  "comparator.copilot.agent": "AI ایجنٹ ·",
+  "comparator.copilot.analyzing": "نتائج کا تجزیہ ہو رہا ہے…",
+  "comparator.copilot.proceed": "{provider} کے ساتھ جاری رکھیں",
+  "comparator.copilot.notify": "ریٹ بہتر ہونے پر مجھے مطلع کریں",
+  "comparator.copilot.proactive.rate": "میں نے دیکھا کہ اس رقم کے لیے ابھی **{provider}** بہترین ریٹ پیش کر رہا ہے۔ کیا میں آگے بڑھنے میں مدد کروں؟",
+  "comparator.copilot.proactive.fee": "نوٹ: اس رقم کے لیے **{provider}** کی کل فیس سب سے کم ہے۔ آگے بڑھیں؟",
+  "comparator.copilot.proactive.speed": "اس کوریڈور کے لیے **{provider}** ابھی تیز ترین آپشن ہے۔ جاری رکھیں؟",
+  "comparator.copilot.filterReact": "میں دیکھ رہا ہوں کہ آپ نے **{filter}** سے فلٹر کیا — اس انتخاب کے لیے بہترین فراہم کنندگان:",
+  "comparator.copilot.filter.received": "بہترین ریٹ",
+  "comparator.copilot.filter.fee": "کم ترین فیس",
+  "comparator.copilot.filter.speed": "تیز ترین"
 }

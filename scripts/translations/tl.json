@@ -424,5 +424,16 @@
   "comparator.copilot.title": "FX Copilot",
   "brand.decisionEngine": "Decision Engine ng Sistema",
   "brand.rfqDesk": "RFQ Desk",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "AI Agent ·",
+  "comparator.copilot.analyzing": "Sinusuri ang mga resulta…",
+  "comparator.copilot.proceed": "Magpatuloy sa {provider}",
+  "comparator.copilot.notify": "Ipaalam sa akin kung gumanda ang rate",
+  "comparator.copilot.proactive.rate": "Napansin ko na **{provider}** ang nag-aalok ng pinakamagandang rate ngayon para sa halagang ito. Tulungan kitang magpatuloy?",
+  "comparator.copilot.proactive.fee": "Pansin: **{provider}** ang may pinakamababang kabuuang bayad para sa halagang ito. Magpatuloy?",
+  "comparator.copilot.proactive.speed": "**{provider}** ang pinakamabilis na opsyon para sa koridor na ito ngayon. Magpatuloy?",
+  "comparator.copilot.filterReact": "Nakikita kong nag-filter ka ayon sa **{filter}** — narito ang pinakamahusay na mga provider para sa pagpiling iyan:",
+  "comparator.copilot.filter.received": "Pinakamagandang rate",
+  "comparator.copilot.filter.fee": "Pinakamababang bayad",
+  "comparator.copilot.filter.speed": "Pinakamabilis"
 }
