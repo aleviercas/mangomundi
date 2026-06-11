@@ -165,7 +165,6 @@ function RootComponent() {
           </div>
 
           <LangKeyedShell />
-          <ChatWidget />
         </ComingSoonProvider>
       </I18nProvider>
     </QueryClientProvider>
