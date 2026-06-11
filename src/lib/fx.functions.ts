@@ -338,7 +338,8 @@ const chatSchema = z.object({
   to: z.string().length(3),
   segment: z.enum(["retail", "business"]),
   urgency: z.enum(["urgent", "standard", "flexible"]),
-  lang: z.enum(["en", "es", "pt"]).default("en"),
+  lang: z.string().min(2).max(5).default("en"),
+  sortBy: z.enum(["received", "fee", "speed"]).optional(),
   recommendation: z.string().max(2000),
   top: z
     .array(
@@ -360,6 +361,17 @@ const chatSchema = z.object({
     )
     .max(20),
 });
+
+const LANG_NAMES: Record<string, string> = {
+  en: "English", es: "Spanish (rioplatense)", pt: "Portuguese", ru: "Russian",
+  tr: "Turkish", bn: "Bengali", ur: "Urdu", zh: "Chinese (Simplified)", pl: "Polish",
+  hi: "Hindi", tl: "Tagalog", vi: "Vietnamese", ar: "Arabic", de: "German",
+  fr: "French", it: "Italian", ja: "Japanese", ko: "Korean", id: "Indonesian", th: "Thai",
+};
+function langInstrAll(code: string): string {
+  if (LANG_NAMES[code]) return `Respond strictly in ${LANG_NAMES[code]}. Never mix languages.`;
+  return LANG_INSTR[code] ?? LANG_INSTR.en;
+}
 
 export const chatAboutRecommendation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => chatSchema.parse(input))
