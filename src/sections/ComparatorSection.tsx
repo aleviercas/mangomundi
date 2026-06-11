@@ -803,7 +803,7 @@ function ResultsBlock({
               ).map(([k, label]) => (
                 <button
                   key={k}
-                  onClick={() => setSortBy(k)}
+                  onClick={() => onSortChange(k)}
                   className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
                     sortBy === k
                       ? "bg-foreground text-background"
