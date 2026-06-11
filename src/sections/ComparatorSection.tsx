@@ -956,10 +956,12 @@ function ProviderRow({
       <div className="col-span-2 sm:text-right">
         <button
           onClick={onClick}
-          className="btn-cta inline-flex items-center gap-1.5 rounded-md px-3 py-2 text-[11px] font-semibold leading-tight"
+          aria-label={tCta}
+          title={tCta}
+          className="btn-cta inline-flex w-full items-center justify-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-semibold leading-tight sm:w-auto"
         >
-          <Sparkle className="h-3 w-3 shrink-0" />
-          <span className="truncate text-left">{tCta}</span>
+          <span className="hidden truncate sm:inline">{tCta}</span>
+          <ArrowRight className="h-3.5 w-3.5 shrink-0" />
         </button>
       </div>
     </div>
