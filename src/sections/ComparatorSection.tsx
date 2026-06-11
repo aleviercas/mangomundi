@@ -88,6 +88,42 @@ export function ComparatorSection() {
     return `[LANG:${lang.toUpperCase()}] mangoglobal routing justification: for a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the engine analysed liquidity paths across indexed providers. The optimal route was selected from flat-fee optimisation and real-time interbank rates; spread, fixed fees, settlement window and regulatory coverage of each counterparty were normalised before ranking.`;
   };
 
+  const proactiveMessage = (
+    res: ComparisonResult,
+    key: SortKey,
+  ): ChatMsg | null => {
+    const rows = [...res.rows];
+    if (rows.length === 0) return null;
+    if (key === "received") rows.sort((a, b) => b.received - a.received);
+    else if (key === "fee") rows.sort((a, b) => a.fee_total - b.fee_total);
+    else rows.sort(
+      (a, b) =>
+        (a.delivery_minutes ?? a.speed_hours * 60) -
+        (b.delivery_minutes ?? b.speed_hours * 60),
+    );
+    const top = rows[0];
+    const tplKey =
+      key === "received"
+        ? "comparator.copilot.proactive.rate"
+        : key === "fee"
+        ? "comparator.copilot.proactive.fee"
+        : "comparator.copilot.proactive.speed";
+    const content = t(tplKey).replace("{provider}", top.name);
+    return {
+      role: "assistant",
+      content,
+      actions: [
+        {
+          kind: "proceed",
+          slug: top.slug,
+          url: top.affiliate_url,
+          label: t("comparator.copilot.proceed").replace("{provider}", top.name),
+        },
+        { kind: "notify", label: t("comparator.copilot.notify") },
+      ],
+    };
+  };
+
   const compareMut = useMutation({
     mutationFn: () =>
       compareFn({
@@ -95,9 +131,11 @@ export function ComparatorSection() {
       }),
     onSuccess: (data) => {
       setResult(data);
-      setChat([]);
+      setSortBy("received");
       setAiText(buildReasoning());
       setAiLoading(false);
+      const intro = proactiveMessage(data, "received");
+      setChat(intro ? [intro] : []);
       track("comparator_query", {
         amount,
         from_currency: from,
@@ -122,6 +160,7 @@ export function ComparatorSection() {
           segment,
           urgency,
           lang,
+          sortBy,
           recommendation: aiText,
           top: result.rows.slice(0, 8).map((r) => ({
             name: r.name,
@@ -129,12 +168,32 @@ export function ComparatorSection() {
             fee_total: r.fee_total,
             speed_hours: r.speed_hours,
           })),
-          history: newHistory,
+          history: newHistory.map((m) => ({ role: m.role, content: m.content })),
         },
       });
       setChat((c) => [...c, { role: "assistant", content: res.text }]);
     },
   });
+
+  // React to filter changes in the table: append a short assistant note.
+  const lastSortRef = useRef<SortKey>("received");
+  useEffect(() => {
+    if (!result) return;
+    if (lastSortRef.current === sortBy) return;
+    lastSortRef.current = sortBy;
+    const msg = proactiveMessage(result, sortBy);
+    if (!msg) return;
+    const label =
+      sortBy === "received"
+        ? t("comparator.copilot.filter.received")
+        : sortBy === "fee"
+        ? t("comparator.copilot.filter.fee")
+        : t("comparator.copilot.filter.speed");
+    const intro = t("comparator.copilot.filterReact").replace("{filter}", label);
+    setChat((c) => [...c, { ...msg, content: `${intro}\n\n${msg.content}` }]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, result]);
+
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
