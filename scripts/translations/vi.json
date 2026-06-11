@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "Tôi thấy bạn đã lọc theo **{filter}** — đây là các nhà cung cấp tốt nhất cho lựa chọn đó:",
   "comparator.copilot.filter.received": "Tỷ giá tốt nhất",
   "comparator.copilot.filter.fee": "Phí thấp nhất",
-  "comparator.copilot.filter.speed": "Nhanh nhất"
+  "comparator.copilot.filter.speed": "Nhanh nhất",
+  "comparator.tooltip.preferred_rate": "Áp dụng tỷ giá mangoglobal Preferred",
+  "comparator.tooltip.discount_warning": "Rời khỏi mangoglobal có thể làm mất ưu đãi giảm giá độc quyền của bạn",
+  "comparator.copilot.redirecting": "Đang chuyển hướng đến **{provider}**. Hoàn tất quy trình tại đây để đảm bảo ưu đãi mangoglobal độc quyền của bạn."
 }

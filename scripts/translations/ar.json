@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "أرى أنك قمت بالتصفية حسب **{filter}** — إليك أفضل المزودين لهذا الاختيار:",
   "comparator.copilot.filter.received": "أفضل سعر",
   "comparator.copilot.filter.fee": "أقل رسوم",
-  "comparator.copilot.filter.speed": "الأسرع"
+  "comparator.copilot.filter.speed": "الأسرع",
+  "comparator.tooltip.preferred_rate": "تطبيق سعر mangoglobal Preferred",
+  "comparator.tooltip.discount_warning": "مغادرة mangoglobal قد تلغي خصمك الحصري",
+  "comparator.copilot.redirecting": "إعادة التوجيه إلى **{provider}**. أكمل العملية هنا لتأمين خصم mangoglobal الحصري الخاص بك."
 }

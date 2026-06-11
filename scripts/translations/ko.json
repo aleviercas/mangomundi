@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "**{filter}**로 필터링하신 것 같네요 — 해당 선택에 가장 적합한 제공업체:",
   "comparator.copilot.filter.received": "최고 환율",
   "comparator.copilot.filter.fee": "최저 수수료",
-  "comparator.copilot.filter.speed": "가장 빠름"
+  "comparator.copilot.filter.speed": "가장 빠름",
+  "comparator.tooltip.preferred_rate": "mangoglobal Preferred 환율 적용",
+  "comparator.tooltip.discount_warning": "mangoglobal을 떠나면 독점 할인이 무효화될 수 있습니다",
+  "comparator.copilot.redirecting": "**{provider}**로 리디렉션 중입니다. 독점 mangoglobal 할인을 확보하려면 여기에서 프로세스를 완료하세요."
 }

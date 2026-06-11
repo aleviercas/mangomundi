@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "**{filter}** でフィルターされたようですね — その選択に最適なプロバイダー:",
   "comparator.copilot.filter.received": "最良レート",
   "comparator.copilot.filter.fee": "最低手数料",
-  "comparator.copilot.filter.speed": "最速"
+  "comparator.copilot.filter.speed": "最速",
+  "comparator.tooltip.preferred_rate": "mangoglobal Preferred レートを適用",
+  "comparator.tooltip.discount_warning": "mangoglobal を離れると専用割引が無効になる可能性があります",
+  "comparator.copilot.redirecting": "**{provider}** にリダイレクトしています。専用の mangoglobal 割引を確保するには、ここでプロセスを完了してください。"
 }

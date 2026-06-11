@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "我看到您按 **{filter}** 进行了筛选 — 此选择的最佳提供商:",
   "comparator.copilot.filter.received": "最佳汇率",
   "comparator.copilot.filter.fee": "最低费用",
-  "comparator.copilot.filter.speed": "最快"
+  "comparator.copilot.filter.speed": "最快",
+  "comparator.tooltip.preferred_rate": "应用 mangoglobal Preferred 汇率",
+  "comparator.tooltip.discount_warning": "离开 mangoglobal 可能会使您的专属折扣失效",
+  "comparator.copilot.redirecting": "正在重定向到 **{provider}**。请在此处完成流程以确保您的 mangoglobal 专属折扣。"
 }

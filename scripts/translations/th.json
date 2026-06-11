@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "ฉันเห็นว่าคุณกรองตาม **{filter}** — นี่คือผู้ให้บริการที่ดีที่สุดสำหรับการเลือกนั้น:",
   "comparator.copilot.filter.received": "อัตราดีที่สุด",
   "comparator.copilot.filter.fee": "ค่าธรรมเนียมต่ำสุด",
-  "comparator.copilot.filter.speed": "เร็วที่สุด"
+  "comparator.copilot.filter.speed": "เร็วที่สุด",
+  "comparator.tooltip.preferred_rate": "ใช้อัตรา mangoglobal Preferred",
+  "comparator.tooltip.discount_warning": "การออกจาก mangoglobal อาจทำให้ส่วนลดพิเศษของคุณเป็นโมฆะ",
+  "comparator.copilot.redirecting": "กำลังเปลี่ยนเส้นทางไปที่ **{provider}** กรุณาดำเนินการให้เสร็จที่นี่เพื่อรับส่วนลด mangoglobal พิเศษของคุณ"
 }
