@@ -33,7 +33,11 @@ import { useAnalytics } from "@/hooks/use-analytics";
 
 type Segment = "retail" | "business";
 type Urgency = "urgent" | "standard" | "flexible";
-type ChatMsg = { role: "user" | "assistant"; content: string };
+type SortKey = "received" | "fee" | "speed";
+type ChatAction =
+  | { kind: "proceed"; slug: string; url: string; label: string }
+  | { kind: "notify"; label: string };
+type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
 
 export function ComparatorSection() {
   const { t, lang } = useI18n();
