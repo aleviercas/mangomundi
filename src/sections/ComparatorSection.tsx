@@ -990,15 +990,39 @@ function ProviderRow({
         )}
       </div>
       <div className="col-span-2 sm:text-right">
-        <button
-          onClick={onClick}
-          aria-label={tCta}
-          title={tCta}
-          className="btn-cta inline-flex w-full items-center justify-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-semibold leading-tight sm:w-auto"
-        >
-          <span className="hidden truncate sm:inline">{tCta}</span>
-          <ArrowRight className="h-3.5 w-3.5 shrink-0" />
-        </button>
+        <TooltipProvider delayDuration={150}>
+          <div className="flex items-center justify-end gap-1.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={onClick}
+                  aria-label={tooltipPreferred}
+                  title={tooltipPreferred}
+                  className="btn-cta inline-flex max-w-full shrink-0 items-center justify-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] font-semibold leading-tight"
+                >
+                  <Star className="h-3.5 w-3.5 shrink-0 fill-current" />
+                  <Check className="h-3 w-3 shrink-0" />
+                  <span className="sr-only truncate">{tCta}</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">{tooltipPreferred}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={tooltipWarn}
+                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:text-amber-600"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] bg-amber-600 text-white">
+                {tooltipWarn}
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
     </div>
   );
