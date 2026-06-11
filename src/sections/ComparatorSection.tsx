@@ -519,7 +519,11 @@ export function ComparatorSection() {
                   <div className="mt-2 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
                     <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       <MessageCircle className="h-3.5 w-3.5 text-foreground" />
-                      <span className="truncate">{t("comparator.copilot.title")}</span>
+                      <span className="truncate">
+                        {t("comparator.copilot.agent")}{" "}
+                        <span className="font-black lowercase text-foreground normal-case">mango</span>
+                        <span className="font-extralight lowercase text-foreground normal-case">global</span>
+                      </span>
                     </div>
 
                     {chat.length === 0 && (
@@ -547,12 +551,41 @@ export function ComparatorSection() {
                                 : "mr-8 border border-border bg-card text-foreground"
                             }`}
                           >
-                            {m.content}
+                            {m.role === "assistant" ? (
+                              <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:text-foreground">
+                                <ReactMarkdown>{m.content}</ReactMarkdown>
+                              </div>
+                            ) : (
+                              <span className="whitespace-pre-wrap">{m.content}</span>
+                            )}
+                            {m.actions && m.actions.length > 0 && (
+                              <div className="mt-2 flex flex-wrap gap-1.5">
+                                {m.actions.map((a, j) =>
+                                  a.kind === "proceed" ? (
+                                    <button
+                                      key={j}
+                                      onClick={() => openPreferredRate(a.slug, a.url)}
+                                      className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold"
+                                    >
+                                      <Zap className="h-3 w-3" /> {a.label}
+                                    </button>
+                                  ) : (
+                                    <button
+                                      key={j}
+                                      onClick={handleSaveAlert}
+                                      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground hover:border-foreground/30"
+                                    >
+                                      <BellPlus className="h-3 w-3" /> {a.label}
+                                    </button>
+                                  ),
+                                )}
+                              </div>
+                            )}
                           </div>
                         ))}
                         {chatMut.isPending && (
                           <div className="mr-8 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fx.chat.thinking")}
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("comparator.copilot.analyzing")}
                           </div>
                         )}
                         <div ref={chatBottomRef} />
