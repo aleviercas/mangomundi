@@ -678,6 +678,8 @@ function FieldLight({ label, children }: { label: string; children: React.ReactN
 function ResultsBlock({
   result,
   amount,
+  sortBy,
+  onSortChange,
   handleAffiliateClick,
   tDisclaimer,
   tTrademarks,
@@ -693,6 +695,8 @@ function ResultsBlock({
 }: {
   result: ComparisonResult;
   amount: number;
+  sortBy: SortKey;
+  onSortChange: (k: SortKey) => void;
   handleAffiliateClick: (slug: string, url: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
@@ -707,7 +711,6 @@ function ResultsBlock({
   tProvider: string;
 }) {
   const showLargeBanner = amount >= 50000;
-  const [sortBy, setSortBy] = useState<"received" | "fee" | "speed">("received");
 
   const organic = useMemo(() => {
     const base = [...result.rows];
