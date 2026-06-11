@@ -866,7 +866,7 @@ function ResultsBlock({
             quote={result.quote}
             base={result.base}
             isBest={i === 0 && sortBy === "received"}
-            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
+            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
           />
         ))}
