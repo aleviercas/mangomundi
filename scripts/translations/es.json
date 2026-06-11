@@ -424,5 +424,16 @@
   "brand.decisionEngine": "Motor de Decisión",
   "brand.partnerships": "Alianzas",
   "brand.rfqDesk": "Mesa de RFQ",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "Agente IA ·",
+  "comparator.copilot.analyzing": "Analizando resultados…",
+  "comparator.copilot.proceed": "Continuar con {provider}",
+  "comparator.copilot.notify": "Avisame si la tasa mejora",
+  "comparator.copilot.proactive.rate": "Detecté que **{provider}** ofrece la mejor tasa ahora mismo para este monto. ¿Querés que te ayude a proceder?",
+  "comparator.copilot.proactive.fee": "Atención: **{provider}** tiene las comisiones totales más bajas para este monto. ¿Avanzamos?",
+  "comparator.copilot.proactive.speed": "**{provider}** es la opción más rápida para este corredor. ¿Querés continuar?",
+  "comparator.copilot.filterReact": "Veo que filtraste por **{filter}** — estos son los mejores corredores para esa selección:",
+  "comparator.copilot.filter.received": "Mejor tasa",
+  "comparator.copilot.filter.fee": "Menores comisiones",
+  "comparator.copilot.filter.speed": "Más rápido"
 }

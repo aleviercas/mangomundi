@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
   Clock,
@@ -17,6 +18,7 @@ import {
   Share2,
   Check,
   MessageCircle,
+  Zap,
 } from "lucide-react";
 import {
   compareProviders,
@@ -33,7 +35,11 @@ import { useAnalytics } from "@/hooks/use-analytics";
 
 type Segment = "retail" | "business";
 type Urgency = "urgent" | "standard" | "flexible";
-type ChatMsg = { role: "user" | "assistant"; content: string };
+type SortKey = "received" | "fee" | "speed";
+type ChatAction =
+  | { kind: "proceed"; slug: string; url: string; label: string }
+  | { kind: "notify"; label: string };
+type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
 
 export function ComparatorSection() {
   const { t, lang } = useI18n();
@@ -51,6 +57,7 @@ export function ComparatorSection() {
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
+  const [sortBy, setSortBy] = useState<SortKey>("received");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
@@ -81,6 +88,42 @@ export function ComparatorSection() {
     return `[LANG:${lang.toUpperCase()}] mangoglobal routing justification: for a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the engine analysed liquidity paths across indexed providers. The optimal route was selected from flat-fee optimisation and real-time interbank rates; spread, fixed fees, settlement window and regulatory coverage of each counterparty were normalised before ranking.`;
   };
 
+  const proactiveMessage = (
+    res: ComparisonResult,
+    key: SortKey,
+  ): ChatMsg | null => {
+    const rows = [...res.rows];
+    if (rows.length === 0) return null;
+    if (key === "received") rows.sort((a, b) => b.received - a.received);
+    else if (key === "fee") rows.sort((a, b) => a.fee_total - b.fee_total);
+    else rows.sort(
+      (a, b) =>
+        (a.delivery_minutes ?? a.speed_hours * 60) -
+        (b.delivery_minutes ?? b.speed_hours * 60),
+    );
+    const top = rows[0];
+    const tplKey =
+      key === "received"
+        ? "comparator.copilot.proactive.rate"
+        : key === "fee"
+        ? "comparator.copilot.proactive.fee"
+        : "comparator.copilot.proactive.speed";
+    const content = t(tplKey).replace("{provider}", top.name);
+    return {
+      role: "assistant",
+      content,
+      actions: [
+        {
+          kind: "proceed",
+          slug: top.slug,
+          url: top.affiliate_url,
+          label: t("comparator.copilot.proceed").replace("{provider}", top.name),
+        },
+        { kind: "notify", label: t("comparator.copilot.notify") },
+      ],
+    };
+  };
+
   const compareMut = useMutation({
     mutationFn: () =>
       compareFn({
@@ -88,9 +131,11 @@ export function ComparatorSection() {
       }),
     onSuccess: (data) => {
       setResult(data);
-      setChat([]);
+      setSortBy("received");
       setAiText(buildReasoning());
       setAiLoading(false);
+      const intro = proactiveMessage(data, "received");
+      setChat(intro ? [intro] : []);
       track("comparator_query", {
         amount,
         from_currency: from,
@@ -115,6 +160,7 @@ export function ComparatorSection() {
           segment,
           urgency,
           lang,
+          sortBy,
           recommendation: aiText,
           top: result.rows.slice(0, 8).map((r) => ({
             name: r.name,
@@ -122,12 +168,32 @@ export function ComparatorSection() {
             fee_total: r.fee_total,
             speed_hours: r.speed_hours,
           })),
-          history: newHistory,
+          history: newHistory.map((m) => ({ role: m.role, content: m.content })),
         },
       });
       setChat((c) => [...c, { role: "assistant", content: res.text }]);
     },
   });
+
+  // React to filter changes in the table: append a short assistant note.
+  const lastSortRef = useRef<SortKey>("received");
+  useEffect(() => {
+    if (!result) return;
+    if (lastSortRef.current === sortBy) return;
+    lastSortRef.current = sortBy;
+    const msg = proactiveMessage(result, sortBy);
+    if (!msg) return;
+    const label =
+      sortBy === "received"
+        ? t("comparator.copilot.filter.received")
+        : sortBy === "fee"
+        ? t("comparator.copilot.filter.fee")
+        : t("comparator.copilot.filter.speed");
+    const intro = t("comparator.copilot.filterReact").replace("{filter}", label);
+    setChat((c) => [...c, { ...msg, content: `${intro}\n\n${msg.content}` }]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, result]);
+
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -453,7 +519,11 @@ export function ComparatorSection() {
                   <div className="mt-2 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
                     <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       <MessageCircle className="h-3.5 w-3.5 text-foreground" />
-                      <span className="truncate">{t("comparator.copilot.title")}</span>
+                      <span className="truncate">
+                        {t("comparator.copilot.agent")}{" "}
+                        <span className="font-black lowercase text-foreground normal-case">mango</span>
+                        <span className="font-extralight lowercase text-foreground normal-case">global</span>
+                      </span>
                     </div>
 
                     {chat.length === 0 && (
@@ -481,12 +551,41 @@ export function ComparatorSection() {
                                 : "mr-8 border border-border bg-card text-foreground"
                             }`}
                           >
-                            {m.content}
+                            {m.role === "assistant" ? (
+                              <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:text-foreground">
+                                <ReactMarkdown>{m.content}</ReactMarkdown>
+                              </div>
+                            ) : (
+                              <span className="whitespace-pre-wrap">{m.content}</span>
+                            )}
+                            {m.actions && m.actions.length > 0 && (
+                              <div className="mt-2 flex flex-wrap gap-1.5">
+                                {m.actions.map((a, j) =>
+                                  a.kind === "proceed" ? (
+                                    <button
+                                      key={j}
+                                      onClick={() => openPreferredRate(a.slug, a.url)}
+                                      className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold"
+                                    >
+                                      <Zap className="h-3 w-3" /> {a.label}
+                                    </button>
+                                  ) : (
+                                    <button
+                                      key={j}
+                                      onClick={handleSaveAlert}
+                                      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground hover:border-foreground/30"
+                                    >
+                                      <BellPlus className="h-3 w-3" /> {a.label}
+                                    </button>
+                                  ),
+                                )}
+                              </div>
+                            )}
                           </div>
                         ))}
                         {chatMut.isPending && (
                           <div className="mr-8 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("fx.chat.thinking")}
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("comparator.copilot.analyzing")}
                           </div>
                         )}
                         <div ref={chatBottomRef} />
@@ -541,6 +640,8 @@ export function ComparatorSection() {
           <ResultsBlock
             result={result}
             amount={amount}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
             handleAffiliateClick={openPreferredRate}
             tDisclaimer={t("fx.disclaimer")}
             tTrademarks={t("fx.trademarks")}
@@ -577,6 +678,8 @@ function FieldLight({ label, children }: { label: string; children: React.ReactN
 function ResultsBlock({
   result,
   amount,
+  sortBy,
+  onSortChange,
   handleAffiliateClick,
   tDisclaimer,
   tTrademarks,
@@ -592,6 +695,8 @@ function ResultsBlock({
 }: {
   result: ComparisonResult;
   amount: number;
+  sortBy: SortKey;
+  onSortChange: (k: SortKey) => void;
   handleAffiliateClick: (slug: string, url: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
@@ -606,7 +711,6 @@ function ResultsBlock({
   tProvider: string;
 }) {
   const showLargeBanner = amount >= 50000;
-  const [sortBy, setSortBy] = useState<"received" | "fee" | "speed">("received");
 
   const organic = useMemo(() => {
     const base = [...result.rows];
@@ -699,7 +803,7 @@ function ResultsBlock({
               ).map(([k, label]) => (
                 <button
                   key={k}
-                  onClick={() => setSortBy(k)}
+                  onClick={() => onSortChange(k)}
                   className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
                     sortBy === k
                       ? "bg-foreground text-background"

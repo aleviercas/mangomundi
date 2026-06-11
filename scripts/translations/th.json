@@ -424,5 +424,16 @@
   "comparator.copilot.title": "FX Copilot",
   "brand.decisionEngine": "เอนจินตัดสินใจ",
   "brand.rfqDesk": "RFQ Desk",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "เอเจนต์ AI ·",
+  "comparator.copilot.analyzing": "กำลังวิเคราะห์ผลลัพธ์…",
+  "comparator.copilot.proceed": "ดำเนินการต่อกับ {provider}",
+  "comparator.copilot.notify": "แจ้งฉันเมื่ออัตราดีขึ้น",
+  "comparator.copilot.proactive.rate": "ฉันสังเกตว่า **{provider}** ให้อัตราที่ดีที่สุดในตอนนี้สำหรับจำนวนนี้ ต้องการให้ฉันช่วยดำเนินการต่อไหม?",
+  "comparator.copilot.proactive.fee": "ข้อสังเกต: **{provider}** มีค่าธรรมเนียมรวมต่ำสุดสำหรับจำนวนนี้ ดำเนินการต่อไหม?",
+  "comparator.copilot.proactive.speed": "**{provider}** เป็นตัวเลือกที่เร็วที่สุดสำหรับเส้นทางนี้ในตอนนี้ ดำเนินการต่อไหม?",
+  "comparator.copilot.filterReact": "ฉันเห็นว่าคุณกรองตาม **{filter}** — นี่คือผู้ให้บริการที่ดีที่สุดสำหรับการเลือกนั้น:",
+  "comparator.copilot.filter.received": "อัตราดีที่สุด",
+  "comparator.copilot.filter.fee": "ค่าธรรมเนียมต่ำสุด",
+  "comparator.copilot.filter.speed": "เร็วที่สุด"
 }

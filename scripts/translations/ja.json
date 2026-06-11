@@ -424,5 +424,16 @@
   "contact.workEmailPlaceholder": "jane@institution.com",
   "comparator.copilot.title": "FX Copilot",
   "brand.rfqDesk": "RFQ デスク",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "AIエージェント ·",
+  "comparator.copilot.analyzing": "結果を分析中…",
+  "comparator.copilot.proceed": "{provider} で続行",
+  "comparator.copilot.notify": "レートが改善したら通知",
+  "comparator.copilot.proactive.rate": "この金額では **{provider}** が現在最良のレートを提供しています。続行をお手伝いしましょうか?",
+  "comparator.copilot.proactive.fee": "注目:この金額では **{provider}** の総手数料が最も低いです。進めますか?",
+  "comparator.copilot.proactive.speed": "**{provider}** はこの通路で現在最速のオプションです。続行しますか?",
+  "comparator.copilot.filterReact": "**{filter}** でフィルターされたようですね — その選択に最適なプロバイダー:",
+  "comparator.copilot.filter.received": "最良レート",
+  "comparator.copilot.filter.fee": "最低手数料",
+  "comparator.copilot.filter.speed": "最速"
 }

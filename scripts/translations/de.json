@@ -424,5 +424,16 @@
   "brand.decisionEngine": "Entscheidungs-Engine",
   "brand.partnerships": "Partnerships",
   "brand.rfqDesk": "RFQ-Desk",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "KI-Agent ·",
+  "comparator.copilot.analyzing": "Ergebnisse werden analysiert…",
+  "comparator.copilot.proceed": "Mit {provider} fortfahren",
+  "comparator.copilot.notify": "Benachrichtige mich, wenn der Kurs besser wird",
+  "comparator.copilot.proactive.rate": "Ich habe bemerkt, dass **{provider}** aktuell den besten Kurs für diesen Betrag bietet. Soll ich Ihnen beim Fortfahren helfen?",
+  "comparator.copilot.proactive.fee": "Hinweis: **{provider}** hat für diesen Betrag die niedrigsten Gesamtgebühren. Weitermachen?",
+  "comparator.copilot.proactive.speed": "**{provider}** ist aktuell die schnellste Option für diesen Korridor. Fortfahren?",
+  "comparator.copilot.filterReact": "Ich sehe, Sie haben nach **{filter}** gefiltert — hier sind die besten Anbieter für diese Auswahl:",
+  "comparator.copilot.filter.received": "Bester Kurs",
+  "comparator.copilot.filter.fee": "Niedrigste Gebühren",
+  "comparator.copilot.filter.speed": "Am schnellsten"
 }

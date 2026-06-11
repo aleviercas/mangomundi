@@ -424,5 +424,16 @@
   "brand.decisionEngine": "Công cụ ra quyết định",
   "brand.partnerships": "Quan hệ đối tác",
   "brand.rfqDesk": "Bộ phận Yêu cầu báo giá (RFQ)",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "Đại lý AI ·",
+  "comparator.copilot.analyzing": "Đang phân tích kết quả…",
+  "comparator.copilot.proceed": "Tiếp tục với {provider}",
+  "comparator.copilot.notify": "Thông báo cho tôi khi tỷ giá tốt hơn",
+  "comparator.copilot.proactive.rate": "Tôi nhận thấy **{provider}** đang cung cấp tỷ giá tốt nhất cho số tiền này. Bạn có muốn tôi giúp tiếp tục không?",
+  "comparator.copilot.proactive.fee": "Lưu ý: **{provider}** có tổng phí thấp nhất cho số tiền này. Tiếp tục nhé?",
+  "comparator.copilot.proactive.speed": "**{provider}** là lựa chọn nhanh nhất cho hành lang này hiện tại. Tiếp tục?",
+  "comparator.copilot.filterReact": "Tôi thấy bạn đã lọc theo **{filter}** — đây là các nhà cung cấp tốt nhất cho lựa chọn đó:",
+  "comparator.copilot.filter.received": "Tỷ giá tốt nhất",
+  "comparator.copilot.filter.fee": "Phí thấp nhất",
+  "comparator.copilot.filter.speed": "Nhanh nhất"
 }

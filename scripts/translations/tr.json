@@ -424,5 +424,16 @@
   "contact.fullNamePlaceholder": "Jane Doe",
   "comparator.copilot.title": "FX Copilot",
   "brand.rfqDesk": "RFQ Desk",
-  "brand.blog": "blog"
+  "brand.blog": "blog",
+  "comparator.copilot.agent": "AI Ajanı ·",
+  "comparator.copilot.analyzing": "Sonuçlar analiz ediliyor…",
+  "comparator.copilot.proceed": "{provider} ile devam et",
+  "comparator.copilot.notify": "Kur iyileşirse bana haber ver",
+  "comparator.copilot.proactive.rate": "**{provider}**'in bu tutar için şu anda en iyi kuru sunduğunu fark ettim. Devam etmenize yardım edeyim mi?",
+  "comparator.copilot.proactive.fee": "Dikkat: **{provider}** bu tutar için en düşük toplam ücretlere sahip. Devam edelim mi?",
+  "comparator.copilot.proactive.speed": "**{provider}** şu anda bu koridor için en hızlı seçenek. Devam edilsin mi?",
+  "comparator.copilot.filterReact": "**{filter}** ile filtrelediğinizi görüyorum — bu seçim için en iyi sağlayıcılar:",
+  "comparator.copilot.filter.received": "En iyi kur",
+  "comparator.copilot.filter.fee": "En düşük ücretler",
+  "comparator.copilot.filter.speed": "En hızlı"
 }

@@ -424,5 +424,16 @@
   "contact.workEmailPlaceholder": "jane@institution.com",
   "comparator.copilot.title": "FX কোপাইলট",
   "brand.rfqDesk": "RFQ ডেস্ক",
-  "brand.blog": "ব্লগ"
+  "brand.blog": "ব্লগ",
+  "comparator.copilot.agent": "AI এজেন্ট ·",
+  "comparator.copilot.analyzing": "ফলাফল বিশ্লেষণ করা হচ্ছে…",
+  "comparator.copilot.proceed": "{provider} এর সাথে চালিয়ে যান",
+  "comparator.copilot.notify": "রেট উন্নত হলে আমাকে জানান",
+  "comparator.copilot.proactive.rate": "আমি লক্ষ্য করেছি এই পরিমাণের জন্য এখন **{provider}** সেরা রেট দিচ্ছে। আপনাকে এগিয়ে যেতে সাহায্য করব?",
+  "comparator.copilot.proactive.fee": "মনোযোগ: এই পরিমাণের জন্য **{provider}** এর মোট ফি সবচেয়ে কম। এগোব?",
+  "comparator.copilot.proactive.speed": "এই করিডোরের জন্য **{provider}** এখন দ্রুততম বিকল্প। চালিয়ে যাব?",
+  "comparator.copilot.filterReact": "আমি দেখছি আপনি **{filter}** দ্বারা ফিল্টার করেছেন — এই নির্বাচনের জন্য সেরা প্রদানকারী:",
+  "comparator.copilot.filter.received": "সেরা রেট",
+  "comparator.copilot.filter.fee": "সর্বনিম্ন ফি",
+  "comparator.copilot.filter.speed": "দ্রুততম"
 }
