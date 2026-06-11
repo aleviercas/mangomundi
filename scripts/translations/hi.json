@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "मैं देख रहा हूँ कि आपने **{filter}** से फ़िल्टर किया — इस चयन के लिए सर्वश्रेष्ठ प्रदाता:",
   "comparator.copilot.filter.received": "सर्वोत्तम दर",
   "comparator.copilot.filter.fee": "सबसे कम शुल्क",
-  "comparator.copilot.filter.speed": "सबसे तेज़"
+  "comparator.copilot.filter.speed": "सबसे तेज़",
+  "comparator.tooltip.preferred_rate": "mangoglobal Preferred दर लागू करें",
+  "comparator.tooltip.discount_warning": "mangoglobal छोड़ने से आपकी विशेष छूट रद्द हो सकती है",
+  "comparator.copilot.redirecting": "**{provider}** पर रीडायरेक्ट हो रहा है। अपनी विशेष mangoglobal छूट सुरक्षित करने के लिए यहां प्रक्रिया पूरी करें।"
 }

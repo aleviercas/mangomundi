@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "Saya lihat Anda memfilter berdasarkan **{filter}** — berikut penyedia terbaik untuk pilihan tersebut:",
   "comparator.copilot.filter.received": "Kurs terbaik",
   "comparator.copilot.filter.fee": "Biaya termurah",
-  "comparator.copilot.filter.speed": "Tercepat"
+  "comparator.copilot.filter.speed": "Tercepat",
+  "comparator.tooltip.preferred_rate": "Terapkan tarif mangoglobal Preferred",
+  "comparator.tooltip.discount_warning": "Meninggalkan mangoglobal dapat membatalkan diskon eksklusif Anda",
+  "comparator.copilot.redirecting": "Mengarahkan ke **{provider}**. Selesaikan proses di sini untuk mengamankan diskon eksklusif mangoglobal Anda."
 }

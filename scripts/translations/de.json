@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "Ich sehe, Sie haben nach **{filter}** gefiltert — hier sind die besten Anbieter für diese Auswahl:",
   "comparator.copilot.filter.received": "Bester Kurs",
   "comparator.copilot.filter.fee": "Niedrigste Gebühren",
-  "comparator.copilot.filter.speed": "Am schnellsten"
+  "comparator.copilot.filter.speed": "Am schnellsten",
+  "comparator.tooltip.preferred_rate": "mangoglobal Preferred-Kurs anwenden",
+  "comparator.tooltip.discount_warning": "mangoglobal zu verlassen kann Ihren exklusiven Rabatt ungültig machen",
+  "comparator.copilot.redirecting": "Weiterleitung zu **{provider}**. Schließen Sie den Vorgang hier ab, um Ihren exklusiven mangoglobal-Rabatt zu sichern."
 }

@@ -435,5 +435,8 @@
   "comparator.copilot.filterReact": "Je vois que vous avez filtré par **{filter}** — voici les meilleurs prestataires pour cette sélection :",
   "comparator.copilot.filter.received": "Meilleur taux",
   "comparator.copilot.filter.fee": "Frais les plus bas",
-  "comparator.copilot.filter.speed": "Le plus rapide"
+  "comparator.copilot.filter.speed": "Le plus rapide",
+  "comparator.tooltip.preferred_rate": "Appliquer le taux mangoglobal Preferred",
+  "comparator.tooltip.discount_warning": "Quitter mangoglobal peut annuler votre remise exclusive",
+  "comparator.copilot.redirecting": "Redirection vers **{provider}**. Terminez le processus ici pour sécuriser votre remise mangoglobal exclusive."
 }

@@ -19,7 +19,9 @@ import {
   Check,
   MessageCircle,
   Zap,
+  Info,
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -199,7 +201,7 @@ export function ComparatorSection() {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
 
-  const openPreferredRate = (slug: string, url: string) => {
+  const openPreferredRate = (slug: string, url: string, name?: string) => {
     trackFn({
       data: {
         provider_slug: slug,
@@ -219,6 +221,10 @@ export function ComparatorSection() {
       urgency,
       source: "home_results",
     });
+    // Push reassurance message in chat (discount protection / conversion guard)
+    const providerName = name || slug;
+    const redirectMsg = t("comparator.copilot.redirecting").replace("{provider}", providerName);
+    setChat((c) => [...c, { role: "assistant", content: redirectMsg }]);
     setModalCtx({
       amount,
       fromCurrency: from,
@@ -724,7 +730,7 @@ function ResultsBlock({
   amount: number;
   sortBy: SortKey;
   onSortChange: (k: SortKey) => void;
-  handleAffiliateClick: (slug: string, url: string) => void;
+  handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
   tRatesSource: string;
@@ -860,7 +866,7 @@ function ResultsBlock({
             quote={result.quote}
             base={result.base}
             isBest={i === 0 && sortBy === "received"}
-            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url)}
+            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
           />
         ))}
@@ -899,6 +905,9 @@ function ProviderRow({
   onClick: () => void;
   tCta: string;
 }) {
+  const { t } = useI18n();
+  const tooltipPreferred = t("comparator.tooltip.preferred_rate");
+  const tooltipWarn = t("comparator.tooltip.discount_warning");
   const deliveryLabel =
     row.delivery_minutes != null
       ? row.delivery_minutes < 60
@@ -981,15 +990,39 @@ function ProviderRow({
         )}
       </div>
       <div className="col-span-2 sm:text-right">
-        <button
-          onClick={onClick}
-          aria-label={tCta}
-          title={tCta}
-          className="btn-cta inline-flex w-full items-center justify-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-semibold leading-tight sm:w-auto"
-        >
-          <span className="hidden truncate sm:inline">{tCta}</span>
-          <ArrowRight className="h-3.5 w-3.5 shrink-0" />
-        </button>
+        <TooltipProvider delayDuration={150}>
+          <div className="flex items-center justify-end gap-1.5">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={onClick}
+                  aria-label={tooltipPreferred}
+                  title={tooltipPreferred}
+                  className="btn-cta inline-flex max-w-full shrink-0 items-center justify-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] font-semibold leading-tight"
+                >
+                  <Star className="h-3.5 w-3.5 shrink-0 fill-current" />
+                  <Check className="h-3 w-3 shrink-0" />
+                  <span className="sr-only truncate">{tCta}</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top">{tooltipPreferred}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={tooltipWarn}
+                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:text-amber-600"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-[220px] bg-amber-600 text-white">
+                {tooltipWarn}
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
     </div>
   );
