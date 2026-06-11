@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
   Clock,
@@ -17,6 +18,7 @@ import {
   Share2,
   Check,
   MessageCircle,
+  Zap,
 } from "lucide-react";
 import {
   compareProviders,
