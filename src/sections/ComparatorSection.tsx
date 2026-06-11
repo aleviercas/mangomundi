@@ -201,7 +201,7 @@ export function ComparatorSection() {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
 
-  const openPreferredRate = (slug: string, url: string) => {
+  const openPreferredRate = (slug: string, url: string, name?: string) => {
     trackFn({
       data: {
         provider_slug: slug,
@@ -221,6 +221,10 @@ export function ComparatorSection() {
       urgency,
       source: "home_results",
     });
+    // Push reassurance message in chat (discount protection / conversion guard)
+    const providerName = name || slug;
+    const redirectMsg = t("comparator.copilot.redirecting").replace("{provider}", providerName);
+    setChat((c) => [...c, { role: "assistant", content: redirectMsg }]);
     setModalCtx({
       amount,
       fromCurrency: from,
