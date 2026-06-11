@@ -640,6 +640,8 @@ export function ComparatorSection() {
           <ResultsBlock
             result={result}
             amount={amount}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
             handleAffiliateClick={openPreferredRate}
             tDisclaimer={t("fx.disclaimer")}
             tTrademarks={t("fx.trademarks")}
