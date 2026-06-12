@@ -138,7 +138,15 @@ export function ComparatorSection() {
       setAiText(buildReasoning());
       setAiLoading(false);
       const intro = proactiveMessage(data, "received");
-      setChat(intro ? [intro] : []);
+      const initial: ChatMsg[] = intro ? [intro] : [];
+      // B2B upsell: retail user moving large notional → nudge to corporate desk.
+      if (segment === "retail" && amount >= B2B_UPSELL_MIN_AMOUNT) {
+        initial.push({
+          role: "assistant",
+          content: t("comparator.copilot.b2bUpsell"),
+        });
+      }
+      setChat(initial);
       track("comparator_query", {
         amount,
         from_currency: from,
