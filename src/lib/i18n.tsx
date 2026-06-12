@@ -1793,10 +1793,16 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.filter.fee": "Cheapest fees",
     "comparator.copilot.filter.speed": "Fastest",
     "comparator.copilot.redirecting": "Redirecting to **{provider}**. Complete the process here to secure your exclusive mangoglobal discount.",
+    "comparator.copilot.b2bUpsell": "Are you a company? Get better rates with our B2B program — our corporate desk negotiates custom spreads for volumes above 10,000.",
     "comparator.tooltip.preferred_rate": "Apply mangoglobal Preferred rate",
     "comparator.tooltip.discount_warning": "Leaving mangoglobal may void your exclusive discount",
     "comparator.reasoning.title": "Optimal route found",
     "comparator.reasoning.context": "Context",
+    "comparator.lastUpdate": "Last update",
+    "comparator.savings.label": "Your estimated saving",
+    "comparator.savings.baseline": "vs 3.5% market average for this corridor",
+    "comparator.disclaimer.neutrality": "mangoglobal may earn affiliate commissions; this does not alter the neutrality of the ranking.",
+
   },
   es: {
     "hero.headline": "Decisiones inteligentes de FX y pagos globales",

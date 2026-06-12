@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "सबसे तेज़",
   "comparator.tooltip.preferred_rate": "mangoglobal Preferred दर लागू करें",
   "comparator.tooltip.discount_warning": "mangoglobal छोड़ने से आपकी विशेष छूट रद्द हो सकती है",
-  "comparator.copilot.redirecting": "**{provider}** पर रीडायरेक्ट हो रहा है। अपनी विशेष mangoglobal छूट सुरक्षित करने के लिए यहां प्रक्रिया पूरी करें।"
+  "comparator.copilot.redirecting": "**{provider}** पर रीडायरेक्ट हो रहा है। अपनी विशेष mangoglobal छूट सुरक्षित करने के लिए यहां प्रक्रिया पूरी करें।",
+  "comparator.copilot.b2bUpsell": "क्या आप एक कंपनी हैं? हमारे B2B प्रोग्राम से बेहतर दरें पाएं — हमारी कॉर्पोरेट डेस्क 10,000 से अधिक मात्रा के लिए कस्टम स्प्रेड पर बातचीत करती है।",
+  "comparator.lastUpdate": "अंतिम अपडेट",
+  "comparator.savings.label": "आपकी अनुमानित बचत",
+  "comparator.savings.baseline": "इस कॉरिडोर के लिए 3.5% बाजार औसत की तुलना में",
+  "comparator.disclaimer.neutrality": "mangoglobal को संबद्ध कमीशन प्राप्त हो सकता है; इससे रैंकिंग की निष्पक्षता पर कोई प्रभाव नहीं पड़ता।"
 }

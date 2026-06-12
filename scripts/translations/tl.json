@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "Pinakamabilis",
   "comparator.tooltip.preferred_rate": "Ilapat ang mangoglobal Preferred rate",
   "comparator.tooltip.discount_warning": "Ang pag-alis sa mangoglobal ay maaaring magpawalang-bisa ng iyong eksklusibong diskwento",
-  "comparator.copilot.redirecting": "Nire-redirect sa **{provider}**. Kumpletuhin ang proseso dito upang ma-secure ang iyong eksklusibong mangoglobal discount."
+  "comparator.copilot.redirecting": "Nire-redirect sa **{provider}**. Kumpletuhin ang proseso dito upang ma-secure ang iyong eksklusibong mangoglobal discount.",
+  "comparator.copilot.b2bUpsell": "Kumpanya ka ba? Kumuha ng mas magagandang rate gamit ang aming B2B program — ang aming corporate desk ay nakikipag-usap ng custom spreads para sa volume na higit sa 10,000.",
+  "comparator.lastUpdate": "Huling update",
+  "comparator.savings.label": "Iyong tinatayang ipon",
+  "comparator.savings.baseline": "vs 3.5% market average para sa corridor na ito",
+  "comparator.disclaimer.neutrality": "Maaaring makatanggap ang mangoglobal ng affiliate commissions; hindi nito binabago ang neutralidad ng ranking."
 }

@@ -34,6 +34,7 @@ import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/providers";
 
 type Segment = "retail" | "business";
 type Urgency = "urgent" | "standard" | "flexible";
@@ -137,7 +138,15 @@ export function ComparatorSection() {
       setAiText(buildReasoning());
       setAiLoading(false);
       const intro = proactiveMessage(data, "received");
-      setChat(intro ? [intro] : []);
+      const initial: ChatMsg[] = intro ? [intro] : [];
+      // B2B upsell: retail user moving large notional → nudge to corporate desk.
+      if (segment === "retail" && amount >= B2B_UPSELL_MIN_AMOUNT) {
+        initial.push({
+          role: "assistant",
+          content: t("comparator.copilot.b2bUpsell"),
+        });
+      }
+      setChat(initial);
       track("comparator_query", {
         amount,
         from_currency: from,
@@ -196,6 +205,25 @@ export function ComparatorSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, result]);
 
+  // Segment sync: clear stale results/AI state when the user toggles retail↔business
+  // so the UI never shows numbers computed under the previous profile. Auto-refetch
+  // when there is already a valid query in flight context.
+  const didMountRef = useRef(false);
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    setResult(null);
+    setAiText("");
+    setChat([]);
+    setValidationError(null);
+    compareMut.reset();
+    if (amount > 0 && sendingCountry && receivingCountry) {
+      compareMut.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [segment]);
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -687,6 +715,10 @@ export function ComparatorSection() {
             tMidmarket={t("fx.midmarket")}
             tUpdated={t("fx.updated")}
             tProvider={t("cmp.provider")}
+            tLastUpdate={t("comparator.lastUpdate")}
+            tSavingsLabel={t("comparator.savings.label")}
+            tSavingsBaseline={t("comparator.savings.baseline")}
+            tNeutrality={t("comparator.disclaimer.neutrality")}
           />
         )}
       </div>
@@ -725,6 +757,10 @@ function ResultsBlock({
   tMidmarket,
   tUpdated,
   tProvider,
+  tLastUpdate,
+  tSavingsLabel,
+  tSavingsBaseline,
+  tNeutrality,
 }: {
   result: ComparisonResult;
   amount: number;
@@ -742,6 +778,10 @@ function ResultsBlock({
   tMidmarket: string;
   tUpdated: string;
   tProvider: string;
+  tLastUpdate: string;
+  tSavingsLabel: string;
+  tSavingsBaseline: string;
+  tNeutrality: string;
 }) {
   const showLargeBanner = amount >= 50000;
 
@@ -758,15 +798,25 @@ function ResultsBlock({
     return base;
   }, [result.rows, sortBy]);
 
+  // Savings = amount * (baseline_spread - best_provider_spread).
+  // baseline_spread is the 3.5% retail/remittance market reference.
   const savings = useMemo(() => {
-    if (result.rows.length < 2) return null;
-    const sorted = [...result.rows].sort((a, b) => b.received - a.received);
-    const best = sorted[0];
-    const worst = sorted[sorted.length - 1];
-    const diff = best.received - worst.received;
-    if (diff <= 0) return null;
-    return { diff, bestName: best.name, worstName: worst.name };
-  }, [result.rows]);
+    if (!result.rows.length || amount <= 0) return null;
+    const bestSpreadPct = Math.min(
+      ...result.rows.map((r) => Number(r.spread_applied) || 0),
+    );
+    const bestSpread = bestSpreadPct / 100;
+    const delta = MARKET_BASELINE_SPREAD - bestSpread;
+    if (delta <= 0) return null;
+    return { amountSaved: amount * delta };
+  }, [result.rows, amount]);
+
+  // Crisp HH:mm:ss for the trust line.
+  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
 
   return (
     <div className="mt-6">
@@ -788,68 +838,83 @@ function ResultsBlock({
         </Link>
       )}
 
-      {savings && (
-        <div className="mb-4 grid gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:grid-cols-3 sm:p-5">
-          <div className="flex min-w-0 items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
-              <TrendingUp className="h-4 w-4 text-emerald-600" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-                You save
-              </div>
-              <div className="font-heading text-2xl font-bold tabular-nums text-foreground">
-                {savings.diff.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-                <span className="text-sm font-normal text-muted-foreground">{result.quote}</span>
-              </div>
-              <div className="text-[11px] text-muted-foreground">
-                vs the market average for this corridor.
-              </div>
-            </div>
+      {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible */}
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-[11px] text-foreground">
+        <div className="inline-flex items-center gap-1.5">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          </span>
+          <span className="font-semibold uppercase tracking-wider text-emerald-700">
+            {tLastUpdate}:
+          </span>
+          <span className="tabular-nums">{updatedTime}</span>
+        </div>
+        <span className="truncate text-muted-foreground">
+          1 {result.base} = {result.market_rate.toFixed(6)} {result.quote} · {tMidmarket}
+        </span>
+      </div>
+
+      <div className="mb-4 grid gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:grid-cols-3 sm:p-5">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
+            <TrendingUp className="h-4 w-4 text-emerald-600" />
           </div>
-          <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              {tMidmarket}
+          <div className="min-w-0">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
+              {tSavingsLabel}
             </div>
-            <div className="truncate text-sm tabular-nums text-foreground">
-              1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
+            <div className="font-heading text-2xl font-bold tabular-nums text-foreground">
+              {savings
+                ? savings.amountSaved.toLocaleString(undefined, { maximumFractionDigits: 2 })
+                : "—"}{" "}
+              <span className="text-sm font-normal text-muted-foreground">{result.base}</span>
             </div>
-            <div className="mt-1 text-[10px] text-muted-foreground">
-              {tUpdated}{" "}
-              {new Date(result.rates_updated_at).toLocaleString(undefined, {
-                dateStyle: "short",
-                timeStyle: "short",
-              })}
-            </div>
-          </div>
-          <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
-            <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-              <ArrowDownUp className="mr-1 inline h-3 w-3" /> Sort by
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {(
-                [
-                  ["received", "Best rate"],
-                  ["fee", "Cheapest fees"],
-                  ["speed", "Fastest"],
-                ] as const
-              ).map(([k, label]) => (
-                <button
-                  key={k}
-                  onClick={() => onSortChange(k)}
-                  className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
-                    sortBy === k
-                      ? "bg-foreground text-background"
-                      : "border border-border bg-card text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
+            <div className="text-[11px] text-muted-foreground">{tSavingsBaseline}</div>
           </div>
         </div>
-      )}
+        <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
+          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            {tMidmarket}
+          </div>
+          <div className="truncate text-sm tabular-nums text-foreground">
+            1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
+          </div>
+          <div className="mt-1 text-[10px] text-muted-foreground">
+            {tUpdated}{" "}
+            {new Date(result.rates_updated_at).toLocaleString(undefined, {
+              dateStyle: "short",
+              timeStyle: "short",
+            })}
+          </div>
+        </div>
+        <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
+          <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <ArrowDownUp className="mr-1 inline h-3 w-3" /> Sort by
+          </div>
+          <div className="flex flex-wrap gap-1">
+            {(
+              [
+                ["received", "Best rate"],
+                ["fee", "Cheapest fees"],
+                ["speed", "Fastest"],
+              ] as const
+            ).map(([k, label]) => (
+              <button
+                key={k}
+                onClick={() => onSortChange(k)}
+                className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
+                  sortBy === k
+                    ? "bg-foreground text-background"
+                    : "border border-border bg-card text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="hidden grid-cols-12 gap-2 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
@@ -881,10 +946,14 @@ function ResultsBlock({
         {tRatesSource}{" "}
         <span className="font-semibold text-foreground">
           {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
-          {new Date(result.rates_updated_at).toLocaleTimeString()}
+          <span className="tabular-nums">{updatedTime}</span>
         </span>
       </div>
-      <p className="mt-3 text-[11px] text-muted-foreground">{tDisclaimer}</p>
+      <p className="mt-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
+        <span className="font-semibold text-foreground">⚖︎ </span>
+        {tNeutrality}
+      </p>
+      <p className="mt-2 text-[11px] text-muted-foreground">{tDisclaimer}</p>
       <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground/80">{tTrademarks}</p>
     </div>
   );

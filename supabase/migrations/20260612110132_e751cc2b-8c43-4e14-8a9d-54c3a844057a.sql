@@ -1,0 +1,2 @@
+CREATE INDEX IF NOT EXISTS idx_affiliate_clicks_segment_date ON public.affiliate_clicks(segment, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_enterprise_leads_status_date ON public.enterprise_leads(status, created_at DESC);

@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "가장 빠름",
   "comparator.tooltip.preferred_rate": "mangoglobal Preferred 환율 적용",
   "comparator.tooltip.discount_warning": "mangoglobal을 떠나면 독점 할인이 무효화될 수 있습니다",
-  "comparator.copilot.redirecting": "**{provider}**로 리디렉션 중입니다. 독점 mangoglobal 할인을 확보하려면 여기에서 프로세스를 완료하세요."
+  "comparator.copilot.redirecting": "**{provider}**로 리디렉션 중입니다. 독점 mangoglobal 할인을 확보하려면 여기에서 프로세스를 완료하세요.",
+  "comparator.copilot.b2bUpsell": "기업이신가요? B2B 프로그램으로 더 나은 환율을 받아보세요 — 코퍼레이트 데스크가 10,000 이상 거래에 맞춤형 스프레드를 협상합니다.",
+  "comparator.lastUpdate": "최종 업데이트",
+  "comparator.savings.label": "예상 절감액",
+  "comparator.savings.baseline": "이 코리도의 시장 평균 3.5% 대비",
+  "comparator.disclaimer.neutrality": "mangoglobal은 제휴 수수료를 받을 수 있으나, 순위의 중립성에는 영향을 주지 않습니다."
 }

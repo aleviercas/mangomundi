@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "দ্রুততম",
   "comparator.tooltip.preferred_rate": "mangoglobal Preferred হার প্রয়োগ করুন",
   "comparator.tooltip.discount_warning": "mangoglobal ছেড়ে গেলে আপনার একচেটিয়া ছাড় বাতিল হতে পারে",
-  "comparator.copilot.redirecting": "**{provider}** এ পুনঃনির্দেশিত হচ্ছে। আপনার একচেটিয়া mangoglobal ছাড় নিশ্চিত করতে এখানে প্রক্রিয়াটি সম্পূর্ণ করুন।"
+  "comparator.copilot.redirecting": "**{provider}** এ পুনঃনির্দেশিত হচ্ছে। আপনার একচেটিয়া mangoglobal ছাড় নিশ্চিত করতে এখানে প্রক্রিয়াটি সম্পূর্ণ করুন।",
+  "comparator.copilot.b2bUpsell": "আপনি কি একটি কোম্পানি? আমাদের B2B প্রোগ্রামের মাধ্যমে আরও ভালো রেট পান — আমাদের কর্পোরেট ডেস্ক ১০,০০০-এর বেশি ভলিউমের জন্য কাস্টম স্প্রেড নিয়ে আলোচনা করে।",
+  "comparator.lastUpdate": "সর্বশেষ আপডেট",
+  "comparator.savings.label": "আপনার আনুমানিক সাশ্রয়",
+  "comparator.savings.baseline": "এই করিডোরের জন্য ৩.৫% বাজার গড়ের তুলনায়",
+  "comparator.disclaimer.neutrality": "mangoglobal অ্যাফিলিয়েট কমিশন পেতে পারে; এটি র‍্যাঙ্কিংয়ের নিরপেক্ষতাকে প্রভাবিত করে না।"
 }
