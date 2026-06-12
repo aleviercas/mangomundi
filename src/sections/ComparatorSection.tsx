@@ -205,6 +205,25 @@ export function ComparatorSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, result]);
 
+  // Segment sync: clear stale results/AI state when the user toggles retail↔business
+  // so the UI never shows numbers computed under the previous profile. Auto-refetch
+  // when there is already a valid query in flight context.
+  const didMountRef = useRef(false);
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    setResult(null);
+    setAiText("");
+    setChat([]);
+    setValidationError(null);
+    compareMut.reset();
+    if (amount > 0 && sendingCountry && receivingCountry) {
+      compareMut.mutate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [segment]);
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
