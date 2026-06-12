@@ -715,6 +715,10 @@ export function ComparatorSection() {
             tMidmarket={t("fx.midmarket")}
             tUpdated={t("fx.updated")}
             tProvider={t("cmp.provider")}
+            tLastUpdate={t("comparator.lastUpdate")}
+            tSavingsLabel={t("comparator.savings.label")}
+            tSavingsBaseline={t("comparator.savings.baseline")}
+            tNeutrality={t("comparator.disclaimer.neutrality")}
           />
         )}
       </div>
