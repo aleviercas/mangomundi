@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "Più veloce",
   "comparator.tooltip.preferred_rate": "Applica la tariffa mangoglobal Preferred",
   "comparator.tooltip.discount_warning": "Lasciare mangoglobal può annullare il tuo sconto esclusivo",
-  "comparator.copilot.redirecting": "Reindirizzamento a **{provider}**. Completa il processo qui per assicurarti lo sconto esclusivo mangoglobal."
+  "comparator.copilot.redirecting": "Reindirizzamento a **{provider}**. Completa il processo qui per assicurarti lo sconto esclusivo mangoglobal.",
+  "comparator.copilot.b2bUpsell": "Sei un'azienda? Ottieni tariffe migliori con il nostro programma B2B — il nostro desk corporate negozia spread personalizzati per volumi oltre 10.000.",
+  "comparator.lastUpdate": "Ultimo aggiornamento",
+  "comparator.savings.label": "Il tuo risparmio stimato",
+  "comparator.savings.baseline": "vs 3,5% media di mercato per questo corridoio",
+  "comparator.disclaimer.neutrality": "mangoglobal può ricevere commissioni di affiliazione; ciò non altera la neutralità del ranking."
 }

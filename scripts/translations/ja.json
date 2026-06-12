@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "最速",
   "comparator.tooltip.preferred_rate": "mangoglobal Preferred レートを適用",
   "comparator.tooltip.discount_warning": "mangoglobal を離れると専用割引が無効になる可能性があります",
-  "comparator.copilot.redirecting": "**{provider}** にリダイレクトしています。専用の mangoglobal 割引を確保するには、ここでプロセスを完了してください。"
+  "comparator.copilot.redirecting": "**{provider}** にリダイレクトしています。専用の mangoglobal 割引を確保するには、ここでプロセスを完了してください。",
+  "comparator.copilot.b2bUpsell": "法人ですか？B2Bプログラムでより良いレートを — コーポレートデスクが10,000以上の取引にカスタムスプレッドを提供します。",
+  "comparator.lastUpdate": "最終更新",
+  "comparator.savings.label": "推定節約額",
+  "comparator.savings.baseline": "このコリドーの市場平均3.5%との比較",
+  "comparator.disclaimer.neutrality": "mangoglobalはアフィリエイト手数料を受け取る場合がありますが、ランキングの中立性には影響しません。"
 }

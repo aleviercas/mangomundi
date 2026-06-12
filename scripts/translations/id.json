@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "Tercepat",
   "comparator.tooltip.preferred_rate": "Terapkan tarif mangoglobal Preferred",
   "comparator.tooltip.discount_warning": "Meninggalkan mangoglobal dapat membatalkan diskon eksklusif Anda",
-  "comparator.copilot.redirecting": "Mengarahkan ke **{provider}**. Selesaikan proses di sini untuk mengamankan diskon eksklusif mangoglobal Anda."
+  "comparator.copilot.redirecting": "Mengarahkan ke **{provider}**. Selesaikan proses di sini untuk mengamankan diskon eksklusif mangoglobal Anda.",
+  "comparator.copilot.b2bUpsell": "Apakah Anda perusahaan? Dapatkan tarif lebih baik dengan program B2B kami — corporate desk kami menegosiasikan spread khusus untuk volume di atas 10.000.",
+  "comparator.lastUpdate": "Pembaruan terakhir",
+  "comparator.savings.label": "Estimasi penghematan Anda",
+  "comparator.savings.baseline": "vs rata-rata pasar 3,5% untuk koridor ini",
+  "comparator.disclaimer.neutrality": "mangoglobal dapat menerima komisi afiliasi; hal ini tidak memengaruhi netralitas peringkat."
 }

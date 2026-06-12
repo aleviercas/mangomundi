@@ -438,5 +438,10 @@
   "comparator.copilot.filter.speed": "Самый быстрый",
   "comparator.tooltip.preferred_rate": "Применить тариф mangoglobal Preferred",
   "comparator.tooltip.discount_warning": "Уход с mangoglobal может аннулировать вашу эксклюзивную скидку",
-  "comparator.copilot.redirecting": "Перенаправление на **{provider}**. Завершите процесс здесь, чтобы получить эксклюзивную скидку mangoglobal."
+  "comparator.copilot.redirecting": "Перенаправление на **{provider}**. Завершите процесс здесь, чтобы получить эксклюзивную скидку mangoglobal.",
+  "comparator.copilot.b2bUpsell": "Вы компания? Получите лучшие тарифы по нашей B2B-программе — корпоративный отдел согласует индивидуальные спреды от 10 000.",
+  "comparator.lastUpdate": "Последнее обновление",
+  "comparator.savings.label": "Ваша расчётная экономия",
+  "comparator.savings.baseline": "против 3,5% средней по рынку для этого коридора",
+  "comparator.disclaimer.neutrality": "mangoglobal может получать партнёрские комиссии; это не влияет на нейтральность рейтинга."
 }
