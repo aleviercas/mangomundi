@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,6 +20,7 @@ import {
   MessageCircle,
   Zap,
   Info,
+  ArrowLeft,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -44,14 +45,25 @@ type ChatAction =
   | { kind: "notify"; label: string };
 type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
 
-export function ComparatorSection() {
+interface ComparatorQuery {
+  origin: string;
+  destination: string;
+  segment: Segment;
+  from: string;
+  to: string;
+  amount: number;
+  lang?: string;
+}
+
+export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQuery }) {
   const { t, lang } = useI18n();
-  const [amount, setAmount] = useState<number>(0);
-  const [from, setFrom] = useState("GBP");
-  const [to, setTo] = useState("ARS");
-  const [sendingCountry, setSendingCountry] = useState("");
-  const [receivingCountry, setReceivingCountry] = useState("");
-  const [segment, setSegment] = useState<Segment>("retail");
+  const navigate = useNavigate({ from: "/compare" });
+  const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
+  const [from, setFrom] = useState(initialQuery?.from ?? "GBP");
+  const [to, setTo] = useState(initialQuery?.to ?? "USD");
+  const [sendingCountry, setSendingCountry] = useState(initialQuery?.origin ?? "GB");
+  const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "US");
+  const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
   const [urgency, setUrgency] = useState<Urgency>("standard");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -61,6 +73,7 @@ export function ComparatorSection() {
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const [sortBy, setSortBy] = useState<SortKey>("received");
+  const requestRef = useRef(0);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
@@ -128,17 +141,30 @@ export function ComparatorSection() {
   };
 
   const compareMut = useMutation({
-    mutationFn: () =>
-      compareFn({
+    mutationFn: async () => {
+      const requestId = ++requestRef.current;
+      const data = await compareFn({
         data: { amount, from, to, segment, sendingCountry, receivingCountry },
-      }),
-    onSuccess: (data) => {
+      });
+      return { data, requestId };
+    },
+    onMutate: () => {
+      setAiLoading(true);
+      setResult(null);
+      setAiText("");
+      setChat([]);
+    },
+    onSuccess: ({ data, requestId }) => {
+      if (requestId !== requestRef.current) return;
       setResult(data);
       setSortBy("received");
       setAiText(buildReasoning());
       setAiLoading(false);
       const intro = proactiveMessage(data, "received");
-      const initial: ChatMsg[] = intro ? [intro] : [];
+      const initial: ChatMsg[] = [];
+      if (segment === "business") {
+        initial.push({ role: "assistant", content: t("comparator.copilot.business.intro") });
+      } else if (intro) initial.push(intro);
       // B2B upsell: retail user moving large notional → nudge to corporate desk.
       if (segment === "retail" && amount >= B2B_UPSELL_MIN_AMOUNT) {
         initial.push({
@@ -156,6 +182,7 @@ export function ComparatorSection() {
         source: "home_comparator",
       });
     },
+    onError: () => setAiLoading(false),
   });
 
   const chatMut = useMutation({
@@ -205,25 +232,19 @@ export function ComparatorSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, result]);
 
-  // Segment sync: clear stale results/AI state when the user toggles retail↔business
-  // so the UI never shows numbers computed under the previous profile. Auto-refetch
-  // when there is already a valid query in flight context.
-  const didMountRef = useRef(false);
+  // Keep the URL shareable and refresh results immediately after a short debounce.
   useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-      return;
-    }
-    setResult(null);
-    setAiText("");
-    setChat([]);
     setValidationError(null);
-    compareMut.reset();
-    if (amount > 0 && sendingCountry && receivingCountry) {
-      compareMut.mutate();
-    }
+    if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) return;
+    void navigate({
+      search: { origin: sendingCountry, destination: receivingCountry, segment, from, to, amount, lang },
+      replace: true,
+      resetScroll: false,
+    });
+    const timer = window.setTimeout(() => compareMut.mutate(), 300);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [segment]);
+  }, [amount, from, to, segment, sendingCountry, receivingCountry]);
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -314,9 +335,12 @@ export function ComparatorSection() {
     <section
       id="comparator"
       key={lang}
-      className="bg-background py-12 sm:py-16"
+       className="min-h-screen bg-background py-8 sm:py-12"
     >
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" /> {t("search.new")}
+        </Link>
         {/* Header */}
         <div className="mb-6 text-center sm:mb-8">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -368,6 +392,11 @@ export function ComparatorSection() {
 
           {/* Form body */}
           <div className="space-y-4 p-4 sm:p-6">
+            {sendingCountry === receivingCountry && (
+              <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
+                {t("search.sameCountry")}
+              </div>
+            )}
             {/* Row 1 — Source Country | Target Country | Urgency */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FieldLight label={t("comparator.field.sourceCountry")}>
