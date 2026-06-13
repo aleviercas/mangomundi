@@ -161,9 +161,12 @@ export type Database = {
           from_currency: string | null
           id: string
           locale: string | null
+          monthly_volume: number | null
           privacy_consent: boolean
           receiving_country: string | null
           request_id: string | null
+          sector: string | null
+          segment: string | null
           sending_country: string | null
           status: string
           to_currency: string | null
@@ -177,9 +180,12 @@ export type Database = {
           from_currency?: string | null
           id?: string
           locale?: string | null
+          monthly_volume?: number | null
           privacy_consent?: boolean
           receiving_country?: string | null
           request_id?: string | null
+          sector?: string | null
+          segment?: string | null
           sending_country?: string | null
           status?: string
           to_currency?: string | null
@@ -193,9 +199,12 @@ export type Database = {
           from_currency?: string | null
           id?: string
           locale?: string | null
+          monthly_volume?: number | null
           privacy_consent?: boolean
           receiving_country?: string | null
           request_id?: string | null
+          sector?: string | null
+          segment?: string | null
           sending_country?: string | null
           status?: string
           to_currency?: string | null
