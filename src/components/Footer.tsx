@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Linkedin } from "lucide-react";
 import { Wordmark } from "@/components/Wordmark";
 import { useI18n } from "@/lib/i18n";
 
@@ -44,7 +43,7 @@ export function Footer() {
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="LinkedIn"
               >
-                <Linkedin className="h-4 w-4" />
+                <span className="text-xs font-bold" aria-hidden>in</span>
               </a>
             </div>
           </div>
