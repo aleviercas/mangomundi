@@ -9,7 +9,7 @@ interface WordmarkProps {
  * Contraste tipográfico marcado: "mango" font-black, "global" font-extralight.
  */
 export function Wordmark({ className = "", tone = "dark" }: WordmarkProps) {
-  const colour = tone === "light" ? "text-white" : "text-slate-950";
+  const colour = tone === "light" ? "text-foreground" : "text-foreground";
   return (
     <span
       className={`font-sans lowercase leading-none ${colour} ${className}`}

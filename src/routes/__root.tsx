@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "theme-color", content: "#ffffff" },
+        { name: "theme-color", content: "#151821" },
         { title: seo.title },
         { name: "description", content: seo.description },
         { name: "author", content: "mangoglobal" },
@@ -159,9 +159,9 @@ function RootComponent() {
       <I18nProvider initialLang={initialLang}>
         <ComingSoonProvider>
           {/* Technical grid background — global, sutil */}
-          <div aria-hidden className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#F8FAFC]">
-            <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#0F172A_1px,transparent_1px),linear-gradient(to_bottom,#0F172A_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-amber-200/20 to-transparent blur-[120px]" />
+          <div aria-hidden className="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-background">
+            <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(to_right,currentColor_1px,transparent_1px),linear-gradient(to_bottom,currentColor_1px,transparent_1px)] bg-[size:4rem_4rem] text-foreground" />
+            <div className="absolute top-0 left-1/2 h-[300px] w-[600px] -translate-x-1/2 bg-gradient-to-b from-accent/10 to-transparent blur-[120px]" />
           </div>
 
           <LangKeyedShell />

@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { Linkedin } from "lucide-react";
 import { Wordmark } from "@/components/Wordmark";
 import { useI18n } from "@/lib/i18n";
 
@@ -24,7 +23,7 @@ export function Footer() {
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
           <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center">
-              <Wordmark className="text-lg" />
+              <Wordmark tone="light" className="text-lg" />
             </Link>
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
               {t("footer.tagline")}
@@ -44,7 +43,7 @@ export function Footer() {
                 className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="LinkedIn"
               >
-                <Linkedin className="h-4 w-4" />
+                <span className="text-xs font-bold" aria-hidden>in</span>
               </a>
             </div>
           </div>

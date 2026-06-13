@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,6 +20,7 @@ import {
   MessageCircle,
   Zap,
   Info,
+  ArrowLeft,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -35,6 +36,8 @@ import { CountrySelect } from "@/components/ui/CountrySelect";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/providers";
+import { captureBusinessLead } from "@/lib/agent.functions";
+import { Button } from "@/components/ui/button";
 
 type Segment = "retail" | "business";
 type Urgency = "urgent" | "standard" | "flexible";
@@ -43,15 +46,27 @@ type ChatAction =
   | { kind: "proceed"; slug: string; url: string; label: string }
   | { kind: "notify"; label: string };
 type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
+type BusinessStage = "volume" | "email" | "consent" | "done";
 
-export function ComparatorSection() {
+interface ComparatorQuery {
+  origin: string;
+  destination: string;
+  segment: Segment;
+  from: string;
+  to: string;
+  amount: number;
+  lang?: string;
+}
+
+export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQuery }) {
   const { t, lang } = useI18n();
-  const [amount, setAmount] = useState<number>(0);
-  const [from, setFrom] = useState("GBP");
-  const [to, setTo] = useState("ARS");
-  const [sendingCountry, setSendingCountry] = useState("");
-  const [receivingCountry, setReceivingCountry] = useState("");
-  const [segment, setSegment] = useState<Segment>("retail");
+  const navigate = useNavigate({ from: "/compare" });
+  const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
+  const [from, setFrom] = useState(initialQuery?.from ?? "GBP");
+  const [to, setTo] = useState(initialQuery?.to ?? "USD");
+  const [sendingCountry, setSendingCountry] = useState(initialQuery?.origin ?? "GB");
+  const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "US");
+  const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
   const [urgency, setUrgency] = useState<Urgency>("standard");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -61,6 +76,9 @@ export function ComparatorSection() {
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const [sortBy, setSortBy] = useState<SortKey>("received");
+  const requestRef = useRef(0);
+  const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
+  const [businessData, setBusinessData] = useState<{ monthlyVolume?: number; sector?: string; email?: string }>({});
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
@@ -78,6 +96,7 @@ export function ComparatorSection() {
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
   const chatFn = useServerFn(chatAboutRecommendation);
+  const captureBusinessFn = useServerFn(captureBusinessLead);
   const { track } = useAnalytics();
   const [shareToast, setShareToast] = useState(false);
 
@@ -128,17 +147,32 @@ export function ComparatorSection() {
   };
 
   const compareMut = useMutation({
-    mutationFn: () =>
-      compareFn({
+    mutationFn: async () => {
+      const requestId = ++requestRef.current;
+      const data = await compareFn({
         data: { amount, from, to, segment, sendingCountry, receivingCountry },
-      }),
-    onSuccess: (data) => {
+      });
+      return { data, requestId };
+    },
+    onMutate: () => {
+      setAiLoading(true);
+      setResult(null);
+      setAiText("");
+      setChat([]);
+    },
+    onSuccess: ({ data, requestId }) => {
+      if (requestId !== requestRef.current) return;
       setResult(data);
       setSortBy("received");
       setAiText(buildReasoning());
       setAiLoading(false);
       const intro = proactiveMessage(data, "received");
-      const initial: ChatMsg[] = intro ? [intro] : [];
+      const initial: ChatMsg[] = [];
+      if (segment === "business") {
+        setBusinessStage("volume");
+        setBusinessData({});
+        initial.push({ role: "assistant", content: t("comparator.copilot.business.intro") });
+      } else if (intro) initial.push(intro);
       // B2B upsell: retail user moving large notional → nudge to corporate desk.
       if (segment === "retail" && amount >= B2B_UPSELL_MIN_AMOUNT) {
         initial.push({
@@ -156,6 +190,7 @@ export function ComparatorSection() {
         source: "home_comparator",
       });
     },
+    onError: () => setAiLoading(false),
   });
 
   const chatMut = useMutation({
@@ -205,25 +240,19 @@ export function ComparatorSection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, result]);
 
-  // Segment sync: clear stale results/AI state when the user toggles retail↔business
-  // so the UI never shows numbers computed under the previous profile. Auto-refetch
-  // when there is already a valid query in flight context.
-  const didMountRef = useRef(false);
+  // Keep the URL shareable and refresh results immediately after a short debounce.
   useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true;
-      return;
-    }
-    setResult(null);
-    setAiText("");
-    setChat([]);
     setValidationError(null);
-    compareMut.reset();
-    if (amount > 0 && sendingCountry && receivingCountry) {
-      compareMut.mutate();
-    }
+    if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) return;
+    void navigate({
+      search: { origin: sendingCountry, destination: receivingCountry, segment, from, to, amount, lang },
+      replace: true,
+      resetScroll: false,
+    });
+    const timer = window.setTimeout(() => compareMut.mutate(), 300);
+    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [segment]);
+  }, [amount, from, to, segment, sendingCountry, receivingCountry]);
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -303,20 +332,73 @@ export function ComparatorSection() {
     }
   };
 
-  const sendChat = (msg: string) => {
+  const sendChat = async (msg: string) => {
     const trimmed = msg.trim();
     if (!trimmed || chatMut.isPending) return;
     setChatInput("");
+    if (segment === "business" && businessStage !== "done") {
+      setChat((current) => [...current, { role: "user", content: trimmed }]);
+      if (businessStage === "volume") {
+        const volumeMatch = trimmed.replace(/,/g, "").match(/\d+(?:\.\d+)?/);
+        const monthlyVolume = volumeMatch ? Number(volumeMatch[0]) : 0;
+        const sector = trimmed.replace(volumeMatch?.[0] ?? "", "").replace(/^[\s,:;-]+|[\s,:;-]+$/g, "");
+        if (!monthlyVolume || sector.length < 2) {
+          setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.volumeError") }]);
+          return;
+        }
+        setBusinessData({ monthlyVolume, sector });
+        setBusinessStage("email");
+        setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.email").replace("{providers}", result?.rows.slice(0, 2).map((row) => row.name).join(" y ") ?? "—") }]);
+        return;
+      }
+      if (businessStage === "email") {
+        const email = trimmed.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0];
+        if (!email) {
+          setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.emailError") }]);
+          return;
+        }
+        setBusinessData((current) => ({ ...current, email }));
+        setBusinessStage("consent");
+        setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.consent") }]);
+        return;
+      }
+      return;
+    }
     chatMut.mutate(trimmed);
+  };
+
+  const confirmBusinessLead = async () => {
+    if (!businessData.email || !businessData.monthlyVolume || !businessData.sector) return;
+    try {
+      await captureBusinessFn({ data: {
+        email: businessData.email,
+        monthlyVolume: businessData.monthlyVolume,
+        sector: businessData.sector,
+        fromCurrency: from,
+        toCurrency: to,
+        sendingCountry,
+        receivingCountry,
+        locale: lang,
+        consent: true,
+      } });
+      setBusinessStage("done");
+      setChat((current) => [...current, { role: "user", content: t("comparator.copilot.business.yes") }, { role: "assistant", content: t("comparator.copilot.business.success") }]);
+      track("conversion_completed", { amount: businessData.monthlyVolume, from_currency: from, to_currency: to, segment, source: "business_chat" });
+    } catch {
+      setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.saveError") }]);
+    }
   };
 
   return (
     <section
       id="comparator"
       key={lang}
-      className="bg-background py-12 sm:py-16"
+       className="min-h-screen bg-background py-8 sm:py-12"
     >
-      <div className="mx-auto max-w-3xl px-4 sm:px-6">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+        <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" /> {t("search.new")}
+        </Link>
         {/* Header */}
         <div className="mb-6 text-center sm:mb-8">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
@@ -368,6 +450,11 @@ export function ComparatorSection() {
 
           {/* Form body */}
           <div className="space-y-4 p-4 sm:p-6">
+            {sendingCountry === receivingCountry && (
+              <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
+                {t("search.sameCountry")}
+              </div>
+            )}
             {/* Row 1 — Source Country | Target Country | Urgency */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <FieldLight label={t("comparator.field.sourceCountry")}>
@@ -676,6 +763,12 @@ export function ComparatorSection() {
                         <Send className="h-3.5 w-3.5" />
                       </button>
                     </form>
+                    {segment === "business" && businessStage === "consent" && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <Button type="button" size="sm" onClick={() => void confirmBusinessLead()} className="bg-accent text-accent-foreground hover:bg-accent/90">{t("comparator.copilot.business.yes")}</Button>
+                        <Button type="button" size="sm" variant="outline" onClick={() => { setBusinessStage("email"); setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.no") }]); }}>{t("comparator.copilot.business.review")}</Button>
+                      </div>
+                    )}
                   </div>
                 </>
               )}

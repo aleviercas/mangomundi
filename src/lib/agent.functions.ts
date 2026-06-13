@@ -15,6 +15,18 @@ const LeadInput = z.object({
   consent: z.literal(true),
 });
 
+const BusinessLeadInput = z.object({
+  email: z.string().trim().email().max(255),
+  monthlyVolume: z.number().positive().finite().max(1e15),
+  sector: z.string().trim().min(2).max(120),
+  fromCurrency: z.string().length(3).regex(/^[A-Z]{3}$/),
+  toCurrency: z.string().length(3).regex(/^[A-Z]{3}$/),
+  sendingCountry: z.string().length(2),
+  receivingCountry: z.string().length(2),
+  locale: z.string().min(2).max(5),
+  consent: z.literal(true),
+});
+
 // In-memory rate limit (best-effort; resets on worker recycle).
 const RATE_BUCKETS = new Map<string, { count: number; resetAt: number }>();
 const RATE_LIMIT_MAX = 20; // requests per window per session
@@ -365,4 +377,55 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
     });
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+export const captureBusinessLead = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => BusinessLeadInput.parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const consentAt = new Date().toISOString();
+    const requestId = `B2B-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
+    const { error } = await supabaseAdmin.from("enterprise_leads").insert({
+      email: data.email,
+      feature_source: "comparator_conversational_agent",
+      status: "pending",
+      request_id: requestId,
+      from_currency: data.fromCurrency,
+      to_currency: data.toCurrency,
+      amount: data.monthlyVolume,
+      monthly_volume: data.monthlyVolume,
+      sector: data.sector,
+      segment: "business",
+      sending_country: data.sendingCountry,
+      receiving_country: data.receivingCountry,
+      locale: data.locale,
+      privacy_consent: true,
+      consent_timestamp: consentAt,
+    });
+    if (error) throw new Error(error.message);
+
+    const webhookUrl = process.env.RFQ_WEBHOOK_URL;
+    if (webhookUrl) {
+      try {
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event: "enterprise_lead.created",
+            request_id: requestId,
+            email: data.email,
+            monthly_volume: data.monthlyVolume,
+            sector: data.sector,
+            from_currency: data.fromCurrency,
+            to_currency: data.toCurrency,
+            sending_country: data.sendingCountry,
+            receiving_country: data.receivingCountry,
+            consent_at: consentAt,
+          }),
+        });
+      } catch (error) {
+        console.error("[enterprise-lead] webhook dispatch failed", error);
+      }
+    }
+    return { ok: true, requestId };
   });

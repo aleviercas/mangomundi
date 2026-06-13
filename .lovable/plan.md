@@ -1,80 +1,96 @@
+# Plan: Financial Intelligence Terminal
 
-# Refactor masivo: identidad "mangoglobal" + agentes + Coming Soon
+## Objetivo
+Convertir la experiencia principal en un flujo **Home → Comparator** tipo Rome2Rio: entrada mínima, resultados precargados, refinamiento instantáneo y agente neutral. La primera entrega consolidará el buscador, la ruta real de resultados, divisas, tracking y captura B2B conversacional.
 
-## 1. Favicons y webmanifest
-- Copiar los 6 assets subidos a `public/`: `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png`, `apple-touch-icon.png`, `android-chrome-192x192.png`, `android-chrome-512x512.png`.
-- Crear `public/site.webmanifest` con el JSON indicado (name/short_name = "mangoglobal").
-- En `src/routes/__root.tsx`, reemplazar los `links` actuales (incluido el `favicon.svg`) por el set nuevo: `.ico`, `16x16`, `32x32`, `apple-touch-icon` (180), `manifest`. Añadir `meta theme-color = #ffffff`.
-- Mantener los `<link>` de Google Fonts intactos (Lightning CSS no permite @import remoto).
+## 1. Home input-first
+- Sustituir el hero/comparador actual por un buscador central con:
+  - país de origen;
+  - país de destino;
+  - segmento `Individual | Business`;
+  - CTA traducido “Consultar opciones”.
+- Mantener el wordmark tipográfico inmutable de **mangoglobal** y diseñar la pantalla como terminal financiera oscura, con acento naranja, amplio espacio negativo y controles compactos.
+- Navegar con `Link`/search params a `/compare`, preservando también el idioma activo.
+- Añadir tracking no bloqueante del inicio de búsqueda en `affiliate_clicks`.
 
-## 2. Wordmark "mangoglobal" (negro + grosor)
-- Reescribir `src/components/Wordmark.tsx`:
-  - Render: `<span class="lowercase tracking-tight"><span class="font-black text-slate-950">mango</span><span class="font-light text-slate-950">global</span></span>`.
-  - Sin amber. Solo grosor diferenciado.
-- Actualizar textos "MangoGlobal" / "Mango" en:
-  - `Footer.tsx` copyright → "mangoglobal".
-  - `__root.tsx` meta tags (title/og/twitter) → "mangoglobal — The Global FX Decision Engine".
-  - `routes/index.tsx` head meta.
-  - Cualquier string visible "MangoGlobal" / "Mango Global" en secciones (rg para verificar y reemplazar consistente).
+## 2. Comparator como ruta real
+- Convertir `/compare` en una página SSR real en lugar del redirect actual.
+- Validar y tipar search params para `origin`, `destination`, `segment`, `from`, `to` y `amount`.
+- Al entrar desde Home:
+  - inferir la divisa local de cada país;
+  - usar un importe inicial de referencia de **1.000 unidades de la divisa origen** para poder precargar resultados aunque Home capture solo países y segmento;
+  - cargar tabla y análisis automáticamente.
+- Añadir “Nueva búsqueda” arriba a la izquierda para volver al Home sin conservar resultados obsoletos.
+- Mantener enlaces compartibles: cualquier cambio de corredor, divisa, importe o segmento actualizará la URL.
 
-## 3. Grilla técnica de fondo global
-- En `RootComponent` (root.tsx), insertar antes del contenido el wrapper fijo:
-  ```
-  <div aria-hidden class="fixed inset-0 pointer-events-none z-0 overflow-hidden bg-[#F8FAFC]">
-    <div class="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#0F172A_1px,transparent_1px),linear-gradient(to_bottom,#0F172A_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-b from-amber-200/20 to-transparent blur-[120px]" />
-  </div>
-  ```
-- Cambiar el wrapper principal a `bg-transparent` y añadir `z-10` al contenido para que la grilla quede de fondo.
-- Eliminar/aliviar el grid local duplicado en `HeroSection.tsx` (queda el global).
+## 3. Motor reactivo de países y divisas
+- Crear una fuente única país → divisa local para los países soportados.
+- Cuando origen y destino sean distintos, sugerir automáticamente ambas divisas locales y permitir refinarlas en el Comparator.
+- Cuando sean el mismo país, mostrar de forma destacada ambos selectores de divisa y garantizar que no queden bloqueados en un par idéntico; el usuario podrá, por ejemplo, elegir EUR → USD.
+- Aplicar refresco con debounce corto al cambiar país, divisa, importe o segmento:
+  - invalidar tabla y análisis anteriores;
+  - mostrar estado “Analizando resultados…”;
+  - consultar sin recargar la página;
+  - evitar respuestas fuera de orden mediante identificación/cancelación lógica de la búsqueda activa.
 
-## 4. Estructura del Hero principal
-- Reescribir la columna izquierda del `HeroSection.tsx` con el bloque solicitado:
-  - Badge negra píldora "⚡ Agentic AI for Global FX | **mango**`global`" (mango font-black blanca, global font-light slate-300).
-  - H1 `text-slate-950 font-extrabold tracking-tight`: "The Global FX Decision Engine".
-  - Párrafo `text-slate-500` con destacado `text-slate-950 font-semibold` en "one optimal decision".
-- Mantener la columna derecha (widget comparador) y el form de rate alerts existentes.
-- Mantener `t()` keys donde corresponda; los nuevos strings del badge/H1/párrafo van como copy fijo (instrucción explícita del bloque).
+## 4. Agente IA neutral y contextual
+- Consolidar el agente dentro del Comparator como conversación única del flujo, usando el contexto exacto de la tabla y el corredor activo.
+- Reescribir instrucciones del agente para prohibir lenguaje de propiedad/intermediación (“nuestros proveedores”) y usar formulaciones neutrales basadas en datos de mercado.
+- Reiniciar o contextualizar de forma explícita el análisis cuando cambie el corredor, divisas o segmento, evitando mezclar recomendaciones antiguas.
+- Mantener markdown, estado de análisis, foco del composer y mensajes optimistas; adaptar la superficie al sistema Dark Terminal sin burbujas decorativas innecesarias.
 
-## 5. Backend agéntico + leads
+## 5. Captura B2B conversacional
+- Para `Business`, iniciar proactivamente esta secuencia dentro del chat:
+  1. solicitar volumen mensual y sector;
+  2. resumir las alternativas mejor posicionadas según los resultados actuales;
+  3. solicitar email corporativo;
+  4. mostrar un opt-in explícito para compartir la solicitud con los proveedores seleccionados;
+  5. guardar solo después de confirmación afirmativa.
+- Validar en servidor email, volumen, sector, corredor y consentimiento.
+- Ampliar `enterprise_leads` únicamente con los campos estructurados faltantes, como `monthly_volume`, `sector` y `segment`, conservando los campos actuales y dejando `status = 'pending'` para este flujo.
+- Registrar además divisas, países, idioma, timestamp de consentimiento y origen del lead.
+- Eliminar del flujo principal el formulario RFQ redundante; la captura se completa íntegramente en el chat.
 
-### 5a. Migración Supabase
-Nuevas tablas (con GRANTs y RLS):
-- `fx_rates` — `id`, `from_currency text`, `to_currency text`, `rate numeric`, `fee numeric default 0`, `provider_slug text`, `updated_at timestamptz default now()`. Lectura pública (`anon, authenticated`).
-- `chat_conversations` — `id uuid pk`, `session_id text` (anon), `user_id uuid null`, `created_at`. Insert público; select por `session_id` o admin.
-- `chat_messages` — `id uuid pk`, `conversation_id uuid fk`, `role text check (user|assistant)`, `content text`, `created_at`. Insert/select por conversación propia (match `session_id`) o admin.
-- `enterprise_leads` — `id`, `email text not null`, `feature_source text`, `status text default 'beta_pending'`, `created_at`. Insert público; select solo admin.
+## 6. Automatización zero-touch
+- Tras guardar el lead:
+  - enviar el payload aprobado al webhook de partners ya configurado, sin bloquear la UX si falla;
+  - confirmar en chat que la solicitud fue registrada y que los especialistas seleccionados podrán revisar el caso.
+- Preparar el resumen de mercado estructurado para el correo automático.
+- **Dependencia externa:** actualmente no hay dominio de envío configurado. La entrega por email se activará con la infraestructura de correo de Lovable cuando se configure un dominio; hasta entonces el lead y el webhook funcionarán, pero no se afirmará que el email fue enviado.
 
-Seed mínimo de `fx_rates` (GBP→ARS, USD→ARS, EUR→USD, USD→MXN) para que el agente devuelva cálculos reales.
+## 7. Dark Terminal y consolidación
+- Migrar los tokens semánticos globales a un fondo carbón/navy, superficies elevadas oscuras, texto de alto contraste y naranja reservado para acciones primarias.
+- Adaptar Header, Home, Comparator, tabla, agente, popovers y estados de carga al mismo sistema, sin colores hardcodeados en componentes.
+- Mantener navegación y páginas secundarias operativas; esta fase no elimina contenido editorial fuera del flujo principal.
+- Reutilizar componentes existentes de país, divisa, botón y wordmark, refactorizándolos para el nuevo tema.
 
-### 5b. Server functions (`src/lib/agent.functions.ts`)
-- `chatTurn({ sessionId, message })`:
-  1. Detectar patrón con RegExp: `/(\d+(?:\.\d+)?)\s*([A-Z]{3})\s*(?:to|→|->)\s*([A-Z]{3})/i`.
-  2. Si match: leer `fx_rates` para todos los providers del par, calcular `(amount * rate) - fee`, ordenar desc, devolver respuesta markdown con top 3.
-  3. Si no match: fallback a Lovable AI (`google/gemini-3-flash-preview`) vía gateway con system prompt FX-neutral. Usar `LOVABLE_API_KEY`.
-  4. Persistir user message + assistant reply en `chat_messages` (crear conversation si no existe).
-- `captureEnterpriseLead({ email, featureSource })`: validar email con zod, insertar en `enterprise_leads` con `status='beta_pending'`. Devolver `{ ok: true }`.
+## 8. I18n, tracking y calidad
+- Añadir todas las nuevas claves en inglés y en los 19 archivos traducidos, incluyendo buscador, nueva búsqueda, estados reactivos, divisas del mismo país y secuencia B2B.
+- Mantener todos los eventos existentes de afiliación y añadir contexto de corredor/segmento a búsquedas, cambios y conversiones B2B.
+- Corregir textos hardcodeados relevantes en el flujo principal.
+- Añadir pruebas E2E para:
+  - Home → `/compare` con params;
+  - resultados precargados;
+  - “Nueva búsqueda”;
+  - cambio dinámico de divisas;
+  - mismo país;
+  - separación Retail/Business;
+  - captura B2B con consentimiento;
+  - persistencia del tracking de clicks.
+- Ejecutar `bun run i18n:validate` y `bun run e2e` al finalizar.
 
-### 5c. UI Chat
-- Nuevo componente `src/components/ChatWidget.tsx`: floating button (esquina inferior derecha) que abre un panel con historial + input. Usa `sessionId` persistido en `localStorage`. Renderiza markdown (instalar `react-markdown` si no está).
-- Montar `<ChatWidget />` en `RootComponent` (debajo de `<Footer />`).
+## Cambios técnicos previstos
+- Rutas: Home y `/compare` con search params tipados.
+- Frontend: buscador Home, Comparator reactivo y chat unificado.
+- Backend: funciones de comparación y captura B2B validadas; webhook posterior al guardado.
+- Base de datos: migración mínima sobre `enterprise_leads`; sin tocar otras tablas de producción.
+- Traducciones: 20 idiomas conservados y validados.
 
-## 6. Modal "Coming Soon" (Enterprise Beta)
-- Nuevo componente `src/components/ComingSoonModal.tsx` (Radix Dialog ya disponible vía shadcn `ui/dialog`):
-  - Props: `open`, `onOpenChange`, `source` (string).
-  - Input email + botón "Solicitar acceso prioritario".
-  - On submit: llama `captureEnterpriseLead({ email, featureSource: source })`, muestra "Estamos desplegando esta automatización en fase beta cerrada. Te hemos asignado acceso prioritario."
-- Context provider `ComingSoonProvider` con hook `useComingSoon()` que expone `open(source)`.
-- Envolver en `RootComponent`.
-- Interceptar clics: añadir `data-coming-soon="<source>"` a botones marcados como Enterprise Beta / Coming Soon en `FeaturesSection`, `AISection`, `business.tsx`, `insurance.tsx`. Un listener global (delegación en el provider) abre el modal con el source correspondiente. Alternativa: helper `<ComingSoonButton source="...">` para reemplazos puntuales. Usaré la variante de helper para los CTAs evidentes y delegación global para residuales.
-
-## 7. QA
-- Verificar build TS pasa (auto).
-- Verificar que el `<link rel="icon">` antiguo a `/favicon.svg` queda removido (no romper si el archivo sigue ahí).
-- Smoke: cargar `/`, verificar wordmark "mangoglobal", grid técnico visible sutil, chat abre, modal Coming Soon captura lead.
-
-## Detalles técnicos clave
-- Lovable AI vía gateway (no exponer key al cliente): la server fn `chatTurn` hace `fetch('https://ai.gateway.lovable.dev/v1/chat/completions', ...)` con `process.env.LOVABLE_API_KEY`.
-- RLS chat: para permitir lectura anónima del propio historial sin auth, las policies se basan en `session_id` pasado en el filtro y se ejecutan vía server fn con `supabaseAdmin` (bypass RLS) — más seguro que abrir SELECT a `anon` globalmente. Insert también vía server fn.
-- Sin Edge Functions; todo en `createServerFn`.
-- No tocar `client.ts`, `client.server.ts`, `types.ts`, `.env`.
+## Criterios de aceptación
+- Home solo pide origen, destino y segmento.
+- `/compare` abre con resultados sin submit adicional y puede recargarse/compartirse sin perder estado.
+- Cambios de corredor/divisa actualizan tabla y agente sin refresh.
+- El agente nunca presenta proveedores como propios.
+- Business completa volumen, sector, email y consentimiento dentro del chat; el lead queda guardado como `pending` y el webhook se intenta automáticamente.
+- No se muestra un formulario RFQ paralelo en el flujo principal.
+- Wordmark, tracking, 20 idiomas y pipeline E2E permanecen operativos.
