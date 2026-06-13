@@ -36,6 +36,8 @@ import { CountrySelect } from "@/components/ui/CountrySelect";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/providers";
+import { captureBusinessLead } from "@/lib/agent.functions";
+import { Button } from "@/components/ui/button";
 
 type Segment = "retail" | "business";
 type Urgency = "urgent" | "standard" | "flexible";
@@ -44,6 +46,7 @@ type ChatAction =
   | { kind: "proceed"; slug: string; url: string; label: string }
   | { kind: "notify"; label: string };
 type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
+type BusinessStage = "volume" | "email" | "consent" | "done";
 
 interface ComparatorQuery {
   origin: string;
@@ -74,6 +77,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const [sortBy, setSortBy] = useState<SortKey>("received");
   const requestRef = useRef(0);
+  const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
+  const [businessData, setBusinessData] = useState<{ monthlyVolume?: number; sector?: string; email?: string }>({});
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
@@ -91,6 +96,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
   const chatFn = useServerFn(chatAboutRecommendation);
+  const captureBusinessFn = useServerFn(captureBusinessLead);
   const { track } = useAnalytics();
   const [shareToast, setShareToast] = useState(false);
 
@@ -163,6 +169,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       const intro = proactiveMessage(data, "received");
       const initial: ChatMsg[] = [];
       if (segment === "business") {
+        setBusinessStage("volume");
+        setBusinessData({});
         initial.push({ role: "assistant", content: t("comparator.copilot.business.intro") });
       } else if (intro) initial.push(intro);
       // B2B upsell: retail user moving large notional → nudge to corporate desk.
@@ -324,11 +332,61 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     }
   };
 
-  const sendChat = (msg: string) => {
+  const sendChat = async (msg: string) => {
     const trimmed = msg.trim();
     if (!trimmed || chatMut.isPending) return;
     setChatInput("");
+    if (segment === "business" && businessStage !== "done") {
+      setChat((current) => [...current, { role: "user", content: trimmed }]);
+      if (businessStage === "volume") {
+        const volumeMatch = trimmed.replace(/,/g, "").match(/\d+(?:\.\d+)?/);
+        const monthlyVolume = volumeMatch ? Number(volumeMatch[0]) : 0;
+        const sector = trimmed.replace(volumeMatch?.[0] ?? "", "").replace(/^[\s,:;-]+|[\s,:;-]+$/g, "");
+        if (!monthlyVolume || sector.length < 2) {
+          setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.volumeError") }]);
+          return;
+        }
+        setBusinessData({ monthlyVolume, sector });
+        setBusinessStage("email");
+        setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.email").replace("{providers}", result?.rows.slice(0, 2).map((row) => row.name).join(" y ") ?? "—") }]);
+        return;
+      }
+      if (businessStage === "email") {
+        const email = trimmed.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0];
+        if (!email) {
+          setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.emailError") }]);
+          return;
+        }
+        setBusinessData((current) => ({ ...current, email }));
+        setBusinessStage("consent");
+        setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.consent") }]);
+        return;
+      }
+      return;
+    }
     chatMut.mutate(trimmed);
+  };
+
+  const confirmBusinessLead = async () => {
+    if (!businessData.email || !businessData.monthlyVolume || !businessData.sector) return;
+    try {
+      await captureBusinessFn({ data: {
+        email: businessData.email,
+        monthlyVolume: businessData.monthlyVolume,
+        sector: businessData.sector,
+        fromCurrency: from,
+        toCurrency: to,
+        sendingCountry,
+        receivingCountry,
+        locale: lang,
+        consent: true,
+      } });
+      setBusinessStage("done");
+      setChat((current) => [...current, { role: "user", content: t("comparator.copilot.business.yes") }, { role: "assistant", content: t("comparator.copilot.business.success") }]);
+      track("conversion_completed", { amount: businessData.monthlyVolume, from_currency: from, to_currency: to, segment, source: "business_chat" });
+    } catch {
+      setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.saveError") }]);
+    }
   };
 
   return (
@@ -705,6 +763,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                         <Send className="h-3.5 w-3.5" />
                       </button>
                     </form>
+                    {segment === "business" && businessStage === "consent" && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        <Button type="button" size="sm" onClick={() => void confirmBusinessLead()} className="bg-accent text-accent-foreground hover:bg-accent/90">{t("comparator.copilot.business.yes")}</Button>
+                        <Button type="button" size="sm" variant="outline" onClick={() => { setBusinessStage("email"); setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.no") }]); }}>{t("comparator.copilot.business.review")}</Button>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
