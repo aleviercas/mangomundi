@@ -26,15 +26,12 @@ function BlogIndex() {
     <div key={lang} className="bg-background">
       <section className="pt-24 pb-24">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-6">
-            <BookOpen className="h-3 w-3 text-primary" /> 
-            <div className="flex flex-col items-start leading-tight">
-              <span><span className="font-black lowercase">mango</span><span className="font-extralight lowercase">global</span></span>
-              <span>· {t("brand.blog")}</span>
+          <div className="rounded-2xl border border-border bg-card p-10 flex flex-col items-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-6">
+              <BookOpen className="h-3 w-3 text-primary" /> 
+              <span><span className="font-black lowercase">mango</span><span className="font-extralight lowercase">global</span> &nbsp;· {t("brand.blog")}</span>
             </div>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-10">
-            <p className="text-muted-foreground">{t("blog.emptyState")}</p>
+            <p className="text-muted-foreground whitespace-pre-line">{t("blog.emptyState")}</p>
           </div>
         </div>
       </section>
