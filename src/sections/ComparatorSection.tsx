@@ -40,6 +40,7 @@ import { captureBusinessLead } from "@/lib/agent.functions";
 import { Button } from "@/components/ui/button";
 
 type Segment = "retail" | "business";
+type AmountMode = "send" | "receive";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = "received" | "fee" | "speed";
 type ChatAction =
@@ -67,6 +68,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const [sendingCountry, setSendingCountry] = useState(initialQuery?.origin ?? "GB");
   const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "US");
   const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
+  const [amountMode, setAmountMode] = useState<AmountMode>("send");
   const [urgency, setUrgency] = useState<Urgency>("standard");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -78,7 +80,11 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const [sortBy, setSortBy] = useState<SortKey>("received");
   const requestRef = useRef(0);
   const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
-  const [businessData, setBusinessData] = useState<{ monthlyVolume?: number; sector?: string; email?: string }>({});
+  const [businessData, setBusinessData] = useState<{
+    monthlyVolume?: number;
+    sector?: string;
+    email?: string;
+  }>({});
   const [savingBusinessLead, setSavingBusinessLead] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -92,8 +98,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     affiliateBaseUrl?: string;
   } | null>(null);
 
-  
-
   const compareFn = useServerFn(compareProviders);
   const trackFn = useServerFn(trackAffiliateClick);
   const chatFn = useServerFn(chatAboutRecommendation);
@@ -106,31 +110,28 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       urgency === "urgent"
         ? "urgent (minutes)"
         : urgency === "flexible"
-        ? "flexible (days)"
-        : "standard (same-day)";
+          ? "flexible (days)"
+          : "standard (same-day)";
     return `[LANG:${lang.toUpperCase()}] mangoglobal routing justification: for a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the engine analysed liquidity paths across indexed providers. The optimal route was selected from flat-fee optimisation and real-time interbank rates; spread, fixed fees, settlement window and regulatory coverage of each counterparty were normalised before ranking.`;
   };
 
-  const proactiveMessage = (
-    res: ComparisonResult,
-    key: SortKey,
-  ): ChatMsg | null => {
+  const proactiveMessage = (res: ComparisonResult, key: SortKey): ChatMsg | null => {
     const rows = [...res.rows];
     if (rows.length === 0) return null;
     if (key === "received") rows.sort((a, b) => b.received - a.received);
     else if (key === "fee") rows.sort((a, b) => a.fee_total - b.fee_total);
-    else rows.sort(
-      (a, b) =>
-        (a.delivery_minutes ?? a.speed_hours * 60) -
-        (b.delivery_minutes ?? b.speed_hours * 60),
-    );
+    else
+      rows.sort(
+        (a, b) =>
+          (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
+      );
     const top = rows[0];
     const tplKey =
       key === "received"
         ? "comparator.copilot.proactive.rate"
         : key === "fee"
-        ? "comparator.copilot.proactive.fee"
-        : "comparator.copilot.proactive.speed";
+          ? "comparator.copilot.proactive.fee"
+          : "comparator.copilot.proactive.speed";
     const content = t(tplKey).replace("{provider}", top.name);
     return {
       role: "assistant",
@@ -151,7 +152,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     mutationFn: async () => {
       const requestId = ++requestRef.current;
       const data = await compareFn({
-        data: { amount, from, to, segment, sendingCountry, receivingCountry },
+        data: { amount, from, to, segment, amountMode, sendingCountry, receivingCountry },
       });
       return { data, requestId };
     },
@@ -234,24 +235,33 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       sortBy === "received"
         ? t("comparator.copilot.filter.received")
         : sortBy === "fee"
-        ? t("comparator.copilot.filter.fee")
-        : t("comparator.copilot.filter.speed");
+          ? t("comparator.copilot.filter.fee")
+          : t("comparator.copilot.filter.speed");
     const intro = t("comparator.copilot.filterReact").replace("{filter}", label);
     setChat((c) => [...c, { ...msg, content: `${intro}\n\n${msg.content}` }]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, result]);
 
-  // Keep the URL shareable and refresh results immediately after a short debounce.
+  // Keep form state shareable, but only compare after the explicit CTA.
   useEffect(() => {
     setValidationError(null);
     if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) return;
+    setResult(null);
+    setAiText("");
+    setChat([]);
     void navigate({
-      search: { origin: sendingCountry, destination: receivingCountry, segment, from, to, amount, lang },
+      search: {
+        origin: sendingCountry,
+        destination: receivingCountry,
+        segment,
+        from,
+        to,
+        amount,
+        lang,
+      },
       replace: true,
       resetScroll: false,
     });
-    const timer = window.setTimeout(() => compareMut.mutate(), 300);
-    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, from, to, segment, sendingCountry, receivingCountry]);
 
@@ -342,25 +352,48 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       if (businessStage === "volume") {
         const volumeMatch = trimmed.replace(/,/g, "").match(/\d+(?:\.\d+)?/);
         const monthlyVolume = volumeMatch ? Number(volumeMatch[0]) : 0;
-        const sector = trimmed.replace(volumeMatch?.[0] ?? "", "").replace(/^[\s,:;-]+|[\s,:;-]+$/g, "");
+        const sector = trimmed
+          .replace(volumeMatch?.[0] ?? "", "")
+          .replace(/^[\s,:;-]+|[\s,:;-]+$/g, "");
         if (!monthlyVolume || sector.length < 2) {
-          setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.volumeError") }]);
+          setChat((current) => [
+            ...current,
+            { role: "assistant", content: t("comparator.copilot.business.volumeError") },
+          ]);
           return;
         }
         setBusinessData({ monthlyVolume, sector });
         setBusinessStage("email");
-        setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.email").replace("{providers}", result?.rows.slice(0, 2).map((row) => row.name).join(" y ") ?? "—") }]);
+        setChat((current) => [
+          ...current,
+          {
+            role: "assistant",
+            content: t("comparator.copilot.business.email").replace(
+              "{providers}",
+              result?.rows
+                .slice(0, 2)
+                .map((row) => row.name)
+                .join(" y ") ?? "—",
+            ),
+          },
+        ]);
         return;
       }
       if (businessStage === "email") {
         const email = trimmed.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0];
         if (!email) {
-          setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.emailError") }]);
+          setChat((current) => [
+            ...current,
+            { role: "assistant", content: t("comparator.copilot.business.emailError") },
+          ]);
           return;
         }
         setBusinessData((current) => ({ ...current, email }));
         setBusinessStage("consent");
-        setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.consent") }]);
+        setChat((current) => [
+          ...current,
+          { role: "assistant", content: t("comparator.copilot.business.consent") },
+        ]);
         return;
       }
       return;
@@ -369,48 +402,68 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   };
 
   const confirmBusinessLead = async () => {
-    if (!businessData.email || !businessData.monthlyVolume || !businessData.sector || savingBusinessLead) return;
+    if (
+      !businessData.email ||
+      !businessData.monthlyVolume ||
+      !businessData.sector ||
+      savingBusinessLead
+    )
+      return;
     setSavingBusinessLead(true);
     try {
-      await captureBusinessFn({ data: {
-        email: businessData.email,
-        monthlyVolume: businessData.monthlyVolume,
-        sector: businessData.sector,
-        fromCurrency: from,
-        toCurrency: to,
-        sendingCountry,
-        receivingCountry,
-        locale: lang,
-        consent: true,
-        topProviders: result?.rows.slice(0, 2).map((row) => row.name) ?? [],
-      } });
+      await captureBusinessFn({
+        data: {
+          email: businessData.email,
+          monthlyVolume: businessData.monthlyVolume,
+          sector: businessData.sector,
+          fromCurrency: from,
+          toCurrency: to,
+          sendingCountry,
+          receivingCountry,
+          locale: lang,
+          consent: true,
+          topProviders: result?.rows.slice(0, 2).map((row) => row.name) ?? [],
+        },
+      });
       setBusinessStage("done");
-      setChat((current) => [...current, { role: "user", content: t("comparator.copilot.business.yes") }, { role: "assistant", content: t("comparator.copilot.business.success") }]);
-      track("conversion_completed", { amount: businessData.monthlyVolume, from_currency: from, to_currency: to, segment, source: "business_chat" });
+      setChat((current) => [
+        ...current,
+        { role: "user", content: t("comparator.copilot.business.yes") },
+        { role: "assistant", content: t("comparator.copilot.business.success") },
+      ]);
+      track("conversion_completed", {
+        amount: businessData.monthlyVolume,
+        from_currency: from,
+        to_currency: to,
+        segment,
+        source: "business_chat",
+      });
     } catch {
-      setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.saveError") }]);
+      setChat((current) => [
+        ...current,
+        { role: "assistant", content: t("comparator.copilot.business.saveError") },
+      ]);
     } finally {
       setSavingBusinessLead(false);
     }
   };
 
   return (
-    <section
-      id="comparator"
-      key={lang}
-       className="min-h-screen bg-background py-8 sm:py-12"
-    >
+    <section id="comparator" key={lang} className="min-h-screen bg-background py-8 sm:py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+        <Link
+          to="/"
+          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
+        >
           <ArrowLeft className="h-4 w-4" /> {t("search.new")}
         </Link>
-        {/* Header */}
+        {/* Transfer details step */}
         <div className="mb-6 text-center sm:mb-8">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {t("comparator.title")}
+            {t("comparator.transferDetails")}
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            {t("comparator.subtitle")}
+            {t("comparator.transferDetails.subtitle")}
           </p>
         </div>
 
@@ -495,18 +548,38 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
               </FieldLight>
             </div>
 
-            {/* Row 2 — Amount | Source Currency | Target Currency */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <FieldLight label={t("comparator.field.amount")}>
+            {/* Row 2 — Amount mode | Amount | Source Currency | Target Currency */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              <FieldLight label={t("comparator.field.amountMode")}>
+                <div className="flex h-11 rounded-md border border-input bg-muted p-1">
+                  {(["send", "receive"] as AmountMode[]).map((mode) => (
+                    <Button
+                      key={mode}
+                      type="button"
+                      size="sm"
+                      variant={amountMode === mode ? "default" : "ghost"}
+                      onClick={() => setAmountMode(mode)}
+                      className="h-8 flex-1"
+                    >
+                      {t(`comparator.amountMode.${mode}`)}
+                    </Button>
+                  ))}
+                </div>
+              </FieldLight>
+              <FieldLight
+                label={
+                  amountMode === "send"
+                    ? t("comparator.field.amountSent")
+                    : t("comparator.field.amountReceived")
+                }
+              >
                 <input
                   type="number"
                   inputMode="decimal"
                   min={1}
                   value={amount || ""}
                   placeholder="1000"
-                  onChange={(e) =>
-                    setAmount(Math.max(0, Number(e.target.value) || 0))
-                  }
+                  onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                   className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm tabular-nums text-foreground shadow-sm transition-colors placeholder:text-muted-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
                 />
               </FieldLight>
@@ -534,7 +607,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
 
             {/* CTA — full width */}
             <div className="pt-1">
-              <button
+              <Button
                 onClick={() => {
                   if (!sendingCountry || !receivingCountry || amount <= 0) {
                     setValidationError(t("fx.validation"));
@@ -544,7 +617,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                   compareMut.mutate();
                 }}
                 disabled={compareMut.isPending}
-                className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold"
+                className="btn-cta h-11 w-full rounded-md px-6 text-sm font-semibold"
               >
                 {compareMut.isPending ? (
                   <>
@@ -553,11 +626,11 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                   </>
                 ) : (
                   <>
-                    <span className="truncate">{t("comparator.cta.compare")}</span>
+                    <span className="truncate">{t("comparator.cta.compareRates")}</span>
                     <ArrowRight className="h-4 w-4 shrink-0" />
                   </>
                 )}
-              </button>
+              </Button>
               {validationError && (
                 <div className="mt-3 rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
                   {validationError}
@@ -576,7 +649,9 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                 <span className="truncate">
                   {t("comparator.copilot.agent")}{" "}
                   <span className="font-black lowercase text-foreground normal-case">mango</span>
-                  <span className="font-extralight lowercase text-foreground normal-case">global</span>
+                  <span className="font-extralight lowercase text-foreground normal-case">
+                    global
+                  </span>
                 </span>
               </div>
               <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-emerald-600">
@@ -587,9 +662,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
               <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
                 <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
               </div>
-              <p className="mt-3 text-xs text-muted-foreground">
-                {t("comparator.copilot.empty")}
-              </p>
+              <p className="mt-3 text-xs text-muted-foreground">{t("comparator.copilot.empty")}</p>
             </div>
           </div>
         )}
@@ -674,8 +747,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                       <MessageCircle className="h-3.5 w-3.5 text-foreground" />
                       <span className="truncate">
                         {t("comparator.copilot.agent")}{" "}
-                        <span className="font-black lowercase text-foreground normal-case">mango</span>
-                        <span className="font-extralight lowercase text-foreground normal-case">global</span>
+                        <span className="font-black lowercase text-foreground normal-case">
+                          mango
+                        </span>
+                        <span className="font-extralight lowercase text-foreground normal-case">
+                          global
+                        </span>
                       </span>
                     </div>
 
@@ -738,7 +815,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                         ))}
                         {chatMut.isPending && (
                           <div className="mr-8 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" /> {t("comparator.copilot.analyzing")}
+                            <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}
+                            {t("comparator.copilot.analyzing")}
                           </div>
                         )}
                         <div ref={chatBottomRef} />
@@ -770,8 +848,30 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                     </form>
                     {segment === "business" && businessStage === "consent" && (
                       <div className="mt-3 flex flex-wrap gap-2">
-                        <Button type="button" size="sm" disabled={savingBusinessLead} onClick={() => void confirmBusinessLead()} className="bg-accent text-accent-foreground hover:bg-accent/90">{savingBusinessLead ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{t("comparator.copilot.business.yes")}</Button>
-                        <Button type="button" size="sm" variant="outline" onClick={() => { setBusinessStage("email"); setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.no") }]); }}>{t("comparator.copilot.business.review")}</Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          disabled={savingBusinessLead}
+                          onClick={() => void confirmBusinessLead()}
+                          className="bg-accent text-accent-foreground hover:bg-accent/90"
+                        >
+                          {savingBusinessLead ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                          {t("comparator.copilot.business.yes")}
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            setBusinessStage("email");
+                            setChat((current) => [
+                              ...current,
+                              { role: "assistant", content: t("comparator.copilot.business.no") },
+                            ]);
+                          }}
+                        >
+                          {t("comparator.copilot.business.review")}
+                        </Button>
                       </div>
                     )}
                   </div>
@@ -787,7 +887,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             {(compareMut.error as Error)?.message ?? "Couldn't load rates."}
           </div>
         )}
-
 
         {!result && !compareMut.isPending && !compareMut.isError && !aiText && (
           <div className="mt-6 rounded-2xl border border-dashed border-border bg-card/50 p-8 text-center">
@@ -807,6 +906,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             tRatesSource={t("fx.ratesSource")}
             tAt={t("fx.at")}
             tRecipient={t("fx.recipient")}
+            tAmountSent={t("comparator.table.amountSent")}
             tTotalFee={t("fx.totalFee")}
             tSpeed={t("fx.speed")}
             tCta={t("retail.cta")}
@@ -849,6 +949,7 @@ function ResultsBlock({
   tRatesSource,
   tAt,
   tRecipient,
+  tAmountSent,
   tTotalFee,
   tSpeed,
   tCta,
@@ -870,6 +971,7 @@ function ResultsBlock({
   tRatesSource: string;
   tAt: string;
   tRecipient: string;
+  tAmountSent: string;
   tTotalFee: string;
   tSpeed: string;
   tCta: string;
@@ -890,8 +992,7 @@ function ResultsBlock({
     if (sortBy === "speed")
       base.sort(
         (a, b) =>
-          (a.delivery_minutes ?? a.speed_hours * 60) -
-          (b.delivery_minutes ?? b.speed_hours * 60),
+          (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
       );
     return base;
   }, [result.rows, sortBy]);
@@ -900,9 +1001,7 @@ function ResultsBlock({
   // baseline_spread is the 3.5% retail/remittance market reference.
   const savings = useMemo(() => {
     if (!result.rows.length || amount <= 0) return null;
-    const bestSpreadPct = Math.min(
-      ...result.rows.map((r) => Number(r.spread_applied) || 0),
-    );
+    const bestSpreadPct = Math.min(...result.rows.map((r) => Number(r.spread_applied) || 0));
     const bestSpread = bestSpreadPct / 100;
     const delta = MARKET_BASELINE_SPREAD - bestSpread;
     if (delta <= 0) return null;
@@ -1014,10 +1113,11 @@ function ResultsBlock({
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="hidden grid-cols-12 gap-2 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
           <div className="col-span-3 min-w-0">{tProvider}</div>
-          <div className="col-span-3 min-w-0 text-right">{tRecipient}</div>
+          <div className="col-span-2 min-w-0 text-right">{tAmountSent}</div>
           <div className="col-span-2 min-w-0 text-right">{tTotalFee}</div>
-          <div className="col-span-2 min-w-0 text-right">{tSpeed} · Trust</div>
-          <div className="col-span-2" />
+          <div className="col-span-2 min-w-0 text-right">{tRecipient}</div>
+          <div className="col-span-2 min-w-0 text-right">{tSpeed}</div>
+          <div className="col-span-1" />
         </div>
         {organic.map((row, i) => (
           <ProviderRow
@@ -1077,22 +1177,18 @@ function ProviderRow({
       ? row.delivery_minutes < 60
         ? `${row.delivery_minutes}m`
         : row.delivery_minutes < 60 * 24
-        ? `${Math.round(row.delivery_minutes / 60)}h`
-        : `${Math.round(row.delivery_minutes / 60 / 24)}d`
+          ? `${Math.round(row.delivery_minutes / 60)}h`
+          : `${Math.round(row.delivery_minutes / 60 / 24)}d`
       : row.speed_hours < 1
-      ? "<1h"
-      : row.speed_hours <= 24
-      ? `${Math.round(row.speed_hours)}h`
-      : `${Math.round(row.speed_hours / 24)}d`;
+        ? "<1h"
+        : row.speed_hours <= 24
+          ? `${Math.round(row.speed_hours)}h`
+          : `${Math.round(row.speed_hours / 24)}d`;
 
   const ratePct = row.rate_vs_market_pct;
   const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}% vs mid-market`;
   const ratePctClass =
-    ratePct >= -0.25
-      ? "text-emerald-600"
-      : ratePct >= -1
-      ? "text-amber-600"
-      : "text-destructive";
+    ratePct >= -0.25 ? "text-emerald-600" : ratePct >= -1 ? "text-amber-600" : "text-destructive";
 
   return (
     <div
@@ -1107,7 +1203,7 @@ function ProviderRow({
             <span className="truncate font-semibold text-foreground">{row.name}</span>
             {isBest && (
               <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
-                Best
+                {t("comparator.table.bestRate")}
               </span>
             )}
           </div>
@@ -1119,27 +1215,34 @@ function ProviderRow({
             )}
             {row.review_count > 0 && row.trust_score != null && (
               <span className="inline-flex items-center gap-0.5">
-                <Star className="h-2.5 w-2.5 fill-current" />{" "}
-                {row.trust_score.toFixed(1)} ({row.review_count.toLocaleString()})
+                <Star className="h-2.5 w-2.5 fill-current" /> {row.trust_score.toFixed(1)} (
+                {row.review_count.toLocaleString()})
               </span>
             )}
           </div>
         </div>
       </div>
-      <div className="col-span-3 min-w-0 sm:text-right">
-        <div className="truncate text-lg font-bold tabular-nums text-foreground">
-          {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-          <span className="text-xs font-normal text-muted-foreground">{quote}</span>
-        </div>
-        <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
+      <div className="col-span-2 min-w-0 text-sm tabular-nums text-foreground sm:text-right">
+        <span className="sm:hidden text-[10px] uppercase text-muted-foreground">
+          {t("comparator.table.amountSent")} ·{" "}
+        </span>
+        {row.amount_sent.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
       </div>
       <div className="col-span-2 min-w-0 text-sm tabular-nums text-muted-foreground sm:text-right">
+        <span className="sm:hidden text-[10px] uppercase">{t("fx.totalFee")} · </span>
         {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
         <div className="text-[10px]">
           {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
           {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
           {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
         </div>
+      </div>
+      <div className="col-span-2 min-w-0 sm:text-right">
+        <div className="truncate text-lg font-bold tabular-nums text-foreground">
+          {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+          <span className="text-xs font-normal text-muted-foreground">{quote}</span>
+        </div>
+        <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
       </div>
       <div className="col-span-2 min-w-0 text-sm text-muted-foreground sm:text-right">
         <div className="inline-flex items-center gap-1">
@@ -1148,12 +1251,11 @@ function ProviderRow({
         {row.trust_score != null && (
           <div className="text-[10px]">
             Trust {row.trust_score.toFixed(1)}/10
-            {row.transparency_score != null &&
-              ` · Transp. ${row.transparency_score.toFixed(1)}`}
+            {row.transparency_score != null && ` · Transp. ${row.transparency_score.toFixed(1)}`}
           </div>
         )}
       </div>
-      <div className="col-span-2 sm:text-right">
+      <div className="col-span-1 sm:text-right">
         <TooltipProvider delayDuration={150}>
           <div className="flex items-center justify-end gap-1.5">
             <Tooltip>

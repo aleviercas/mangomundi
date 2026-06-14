@@ -27,11 +27,25 @@ const OUT_DIR = resolve(ROOT, "scripts/translations");
 const TARGET_LANGS = SUPPORTED_LANGS.filter((l) => l !== "en");
 
 const LANG_NAMES: Record<string, string> = {
-  es: "Spanish", pt: "Portuguese (Brazil)", ru: "Russian", tr: "Turkish",
-  bn: "Bengali", ur: "Urdu", zh: "Simplified Chinese", pl: "Polish",
-  hi: "Hindi", tl: "Tagalog (Filipino)", vi: "Vietnamese", ar: "Arabic",
-  de: "German", fr: "French", it: "Italian", ja: "Japanese",
-  ko: "Korean", id: "Indonesian", th: "Thai",
+  es: "Spanish",
+  pt: "Portuguese (Brazil)",
+  ru: "Russian",
+  tr: "Turkish",
+  bn: "Bengali",
+  ur: "Urdu",
+  zh: "Simplified Chinese",
+  pl: "Polish",
+  hi: "Hindi",
+  tl: "Tagalog (Filipino)",
+  vi: "Vietnamese",
+  ar: "Arabic",
+  de: "German",
+  fr: "French",
+  it: "Italian",
+  ja: "Japanese",
+  ko: "Korean",
+  id: "Indonesian",
+  th: "Thai",
 };
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
@@ -44,6 +58,21 @@ const FORCE_KEYS = new Set([
   "seo.home.description",
   "search.verified",
   "search.noHiddenFees",
+  "search.destinationPrompt",
+  "search.guide",
+  "search.promise",
+  "footer.tagline",
+  "footer.brandLine",
+  "comparator.transferDetails",
+  "comparator.transferDetails.subtitle",
+  "comparator.field.amountMode",
+  "comparator.amountMode.send",
+  "comparator.amountMode.receive",
+  "comparator.field.amountSent",
+  "comparator.field.amountReceived",
+  "comparator.cta.compareRates",
+  "comparator.table.amountSent",
+  "comparator.table.bestRate",
   "comparator.copilot.business.success",
   "about.title",
   "about.metric4.label",
@@ -63,8 +92,6 @@ async function loadExisting(lang: string): Promise<Record<string, string>> {
     return {};
   }
 }
-
-
 
 async function translateBatch(
   apiKey: string,
@@ -185,4 +212,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

@@ -48,6 +48,7 @@ export interface ComparisonRow {
   affiliate_url: string;
   rate: number;
   fee_total: number;
+  amount_sent: number;
   fee_percent_applied: number;
   fee_fixed_applied: number;
   spread_applied: number;
@@ -111,7 +112,10 @@ async function fetchRates(): Promise<{
 }
 
 // Pick fee tier matching the amount. Falls back to provider top-level fees.
-function resolveTier(p: Provider, amount: number): {
+function resolveTier(
+  p: Provider,
+  amount: number,
+): {
   fee_percent: number;
   fee_fixed: number;
   spread_percent: number;
@@ -127,18 +131,25 @@ function resolveTier(p: Provider, amount: number): {
   const sorted = [...tiers].sort((a, b) => (a.max ?? Infinity) - (b.max ?? Infinity));
   const match = sorted.find((t) => amount <= (t.max ?? Infinity)) ?? sorted[sorted.length - 1];
   return {
-    fee_percent: match.fee_percent ?? Number(p.fee_percent) ?? 0,
-    fee_fixed: match.fee_fixed ?? Number(p.fee_fixed) ?? 0,
-    spread_percent: match.spread_percent ?? Number(p.spread_percent) ?? 0,
+    fee_percent: match.fee_percent ?? (Number(p.fee_percent) || 0),
+    fee_fixed: match.fee_fixed ?? (Number(p.fee_fixed) || 0),
+    spread_percent: match.spread_percent ?? (Number(p.spread_percent) || 0),
   };
 }
 
 // ---------- compareProviders ----------
 const compareSchema = z.object({
   amount: z.number().min(1).max(1e15),
-  from: z.string().length(3).regex(/^[A-Z]{3}$/),
-  to: z.string().length(3).regex(/^[A-Z]{3}$/),
+  from: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
+  to: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
   segment: z.enum(["retail", "business"]).default("retail"),
+  amountMode: z.enum(["send", "receive"]).default("send"),
   sendingCountry: z.string().min(2).max(64).optional(),
   receivingCountry: z.string().min(2).max(64).optional(),
 });
@@ -161,9 +172,15 @@ export const compareProviders = createServerFn({ method: "POST" })
 
     const rows: ComparisonRow[] = (providers as Provider[]).map((p) => {
       const tier = resolveTier(p, data.amount);
-      const fee = (tier.fee_percent / 100) * data.amount + tier.fee_fixed;
       const rate = marketRate * (1 - tier.spread_percent / 100);
-      const received = Math.max(0, (data.amount - fee) * rate);
+      const feeRate = tier.fee_percent / 100;
+      const amountSent =
+        data.amountMode === "receive"
+          ? Math.max(0, (data.amount / rate + tier.fee_fixed) / Math.max(0.0001, 1 - feeRate))
+          : data.amount;
+      const fee = feeRate * amountSent + tier.fee_fixed;
+      const received =
+        data.amountMode === "receive" ? data.amount : Math.max(0, (amountSent - fee) * rate);
       const rate_vs_market_pct = ((rate - marketRate) / marketRate) * 100;
       return {
         slug: p.slug,
@@ -175,6 +192,7 @@ export const compareProviders = createServerFn({ method: "POST" })
         affiliate_url: p.affiliate_url,
         rate,
         fee_total: fee,
+        amount_sent: amountSent,
         fee_percent_applied: tier.fee_percent,
         fee_fixed_applied: tier.fee_fixed,
         spread_applied: tier.spread_percent,
@@ -318,7 +336,8 @@ In 3-4 sentences (no bullet lists, no markdown headings), recommend ONE provider
       if (!res.ok) {
         const t = await res.text();
         console.error("ai gateway error", res.status, t);
-        if (res.status === 429) return { text: "AI insight rate-limited. Try again in a moment.", error: true };
+        if (res.status === 429)
+          return { text: "AI insight rate-limited. Try again in a moment.", error: true };
         if (res.status === 402) return { text: "AI insight credits exhausted.", error: true };
         return { text: "AI insight unavailable right now.", error: true };
       }
@@ -363,10 +382,26 @@ const chatSchema = z.object({
 });
 
 const LANG_NAMES: Record<string, string> = {
-  en: "English", es: "Spanish (rioplatense)", pt: "Portuguese", ru: "Russian",
-  tr: "Turkish", bn: "Bengali", ur: "Urdu", zh: "Chinese (Simplified)", pl: "Polish",
-  hi: "Hindi", tl: "Tagalog", vi: "Vietnamese", ar: "Arabic", de: "German",
-  fr: "French", it: "Italian", ja: "Japanese", ko: "Korean", id: "Indonesian", th: "Thai",
+  en: "English",
+  es: "Spanish (rioplatense)",
+  pt: "Portuguese",
+  ru: "Russian",
+  tr: "Turkish",
+  bn: "Bengali",
+  ur: "Urdu",
+  zh: "Chinese (Simplified)",
+  pl: "Polish",
+  hi: "Hindi",
+  tl: "Tagalog",
+  vi: "Vietnamese",
+  ar: "Arabic",
+  de: "German",
+  fr: "French",
+  it: "Italian",
+  ja: "Japanese",
+  ko: "Korean",
+  id: "Indonesian",
+  th: "Thai",
 };
 function langInstrAll(code: string): string {
   if (LANG_NAMES[code]) return `Respond strictly in ${LANG_NAMES[code]}. Never mix languages.`;
@@ -420,10 +455,7 @@ Rules:
         },
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: system },
-            ...data.history,
-          ],
+          messages: [{ role: "system", content: system }, ...data.history],
         }),
       });
       if (!res.ok) {
