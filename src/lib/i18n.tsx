@@ -2203,7 +2203,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "hero.subheadline":
       "AI Agent for corporate treasury and individuals. Optimization and transparency in your currency exchange and international payment operations.",
     "comparator.subheadline": "Live rates · Neutral AI · 30+ providers",
-    "blog.emptyState": "Under construction — we're crafting new insights. Check back soon.",
+    "blog.emptyState": "\nUnder construction — we're crafting new insights. Check back soon.",
     "contact.heading": "Institutional & Partnership Inquiries",
     "contact.intro":
       "For treasury operations, liquidity partnerships, regulatory diligence and institutional onboarding.",
@@ -2342,7 +2342,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "hero.subheadline":
       "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
     "comparator.subheadline": "Tasas en vivo · IA neutral · +30 proveedores",
-    "blog.emptyState": "En construcción — estamos preparando nuevos contenidos. Vuelve pronto.",
+    "blog.emptyState": "\nEn construcción — estamos preparando nuevos contenidos. Vuelve pronto.",
     "contact.heading": "Consultas Institucionales y de Partnership",
     "contact.intro":
       "Para operaciones de tesorería, alianzas de liquidez, due diligence regulatorio y onboarding institucional.",
