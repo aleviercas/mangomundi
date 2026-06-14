@@ -1,121 +1,121 @@
 {
-  "generatedAt": "2026-06-14T16:02:14.769Z",
-  "ok": true,
-  "enKeyCount": 477,
+  "generatedAt": "2026-06-14T17:10:25.423Z",
+  "ok": false,
+  "enKeyCount": 490,
   "brokenLangs": [],
   "perLang": {
     "es": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "pt": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "ru": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "tr": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "bn": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "ur": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "zh": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "pl": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "hi": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "tl": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "vi": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "ar": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "de": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "fr": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "it": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "ja": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "ko": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "id": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     },
     "th": {
-      "coverage": 1,
+      "coverage": 0.998,
       "missing": 0,
-      "empty": 0,
+      "empty": 1,
       "missingKeys": []
     }
   }
