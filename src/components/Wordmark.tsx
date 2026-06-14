@@ -15,8 +15,8 @@ export function Wordmark({ className = "", tone = "dark" }: WordmarkProps) {
       className={`font-sans lowercase leading-none ${colour} ${className}`}
       aria-label="mangoglobal"
     >
-      <span className="font-black tracking-tight"></span>
-      <span className="font-extralight tracking-wide"></span>
+      <span className="font-black tracking-tight">mango</span>
+      <span className="font-extralight tracking-wide">global</span>
     </span>
   );
 }
