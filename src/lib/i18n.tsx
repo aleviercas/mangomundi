@@ -2333,7 +2333,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "contact.error": "We couldn't send your message. Please try again.",
   },
   es: {
-    "hero.headline": "Decisiones inteligentes de cambio de divisas.",
+    "hero.headline": "Decisiones inteligentes de cambio de divisas",
     "hero.subheadline.short":
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
     "seo.home.title": "Cambio de divisas inteligente — mangoglobal",
