@@ -40,6 +40,7 @@ import { captureBusinessLead } from "@/lib/agent.functions";
 import { Button } from "@/components/ui/button";
 
 type Segment = "retail" | "business";
+type AmountMode = "send" | "receive";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = "received" | "fee" | "speed";
 type ChatAction =
@@ -67,6 +68,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const [sendingCountry, setSendingCountry] = useState(initialQuery?.origin ?? "GB");
   const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "US");
   const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
+  const [amountMode, setAmountMode] = useState<AmountMode>("send");
   const [urgency, setUrgency] = useState<Urgency>("standard");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
@@ -151,7 +153,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     mutationFn: async () => {
       const requestId = ++requestRef.current;
       const data = await compareFn({
-        data: { amount, from, to, segment, sendingCountry, receivingCountry },
+        data: { amount, from, to, segment, amountMode, sendingCountry, receivingCountry },
       });
       return { data, requestId };
     },
@@ -241,7 +243,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, result]);
 
-  // Keep the URL shareable and refresh results immediately after a short debounce.
+  // Keep form state shareable, but only compare after the explicit CTA.
   useEffect(() => {
     setValidationError(null);
     if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) return;
@@ -250,8 +252,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       replace: true,
       resetScroll: false,
     });
-    const timer = window.setTimeout(() => compareMut.mutate(), 300);
-    return () => window.clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, from, to, segment, sendingCountry, receivingCountry]);
 
@@ -404,13 +404,13 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         <Link to="/" className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
           <ArrowLeft className="h-4 w-4" /> {t("search.new")}
         </Link>
-        {/* Header */}
+        {/* Transfer details step */}
         <div className="mb-6 text-center sm:mb-8">
           <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {t("comparator.title")}
+            {t("comparator.transferDetails")}
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            {t("comparator.subtitle")}
+            {t("comparator.transferDetails.subtitle")}
           </p>
         </div>
 
