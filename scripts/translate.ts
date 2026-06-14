@@ -37,6 +37,22 @@ const LANG_NAMES: Record<string, string> = {
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const MODEL = "google/gemini-3-flash-preview";
 const BATCH_SIZE = 40;
+const FORCE_KEYS = new Set([
+  "hero.headline",
+  "hero.subheadline.short",
+  "seo.home.title",
+  "seo.home.description",
+  "search.verified",
+  "search.noHiddenFees",
+  "comparator.copilot.business.success",
+  "about.title",
+  "about.metric4.label",
+  "about.coverage.eyebrow",
+  "about.coverage.title",
+  "about.coverage.body",
+  "contact.success",
+  "contact.error",
+]);
 
 async function loadExisting(lang: string): Promise<Record<string, string>> {
   const path = resolve(OUT_DIR, `${lang}.json`);
@@ -110,7 +126,7 @@ async function translateLang(
   const todo: Array<[string, string]> = [];
   for (const [k, en] of Object.entries(enDict)) {
     const cur = out[k];
-    if (typeof cur !== "string" || cur.trim().length === 0) todo.push([k, en]);
+    if (FORCE_KEYS.has(k) || typeof cur !== "string" || cur.trim().length === 0) todo.push([k, en]);
   }
 
   if (todo.length === 0) {
