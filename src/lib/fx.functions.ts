@@ -131,9 +131,9 @@ function resolveTier(
   const sorted = [...tiers].sort((a, b) => (a.max ?? Infinity) - (b.max ?? Infinity));
   const match = sorted.find((t) => amount <= (t.max ?? Infinity)) ?? sorted[sorted.length - 1];
   return {
-    fee_percent: match.fee_percent ?? Number(p.fee_percent) || 0,
-    fee_fixed: match.fee_fixed ?? Number(p.fee_fixed) || 0,
-    spread_percent: match.spread_percent ?? Number(p.spread_percent) || 0,
+    fee_percent: match.fee_percent ?? (Number(p.fee_percent) || 0),
+    fee_fixed: match.fee_fixed ?? (Number(p.fee_fixed) || 0),
+    spread_percent: match.spread_percent ?? (Number(p.spread_percent) || 0),
   };
 }
 
