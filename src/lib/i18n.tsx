@@ -2004,7 +2004,7 @@ export interface SeoMeta {
   description: string;
 }
 export const SEO_META: Record<Lang, SeoMeta> = {
-  en: { title: "mangoglobal | Intelligent FX and global payment decisions", description: "AI Agent for individuals and corporate treasury. Optimization and transparency in your currency exchange and international payment operations." },
+  en: { title: "Intelligent Currency Exchange — mangoglobal", description: "AI agent for global and local payments. Best rates for individuals and businesses." },
   es: { title: "mangoglobal | Decisiones inteligentes de cambio de divisas y pagos globales", description: "Agente de IA para individuos y tesorería corporativa. Optimización y transparencia en tus operaciones de cambio y pagos internacionales." },
   pt: { title: "mangoglobal | Decisões inteligentes de câmbio e pagamentos globais", description: "Agente de IA para indivíduos e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais." },
   it: { title: "mangoglobal | Decisioni intelligenti sui cambi e pagamenti globali", description: "Agente IA per privati e tesoreria aziendale. Ottimizzazione e trasparenza nelle operazioni di cambio e pagamenti internazionali." },
@@ -2057,10 +2057,6 @@ const ROUTE_SEO_EN: RouteSeoMap = {
     title: "About — mangoglobal",
     description: "mangoglobal is building the neutral AI decision and sourcing layer for fragmented markets, starting with cross-border FX.",
   },
-  "/business": {
-    title: "Business & Treasury — mangoglobal",
-    description: "Treasury, fintech and SMB tools: automated routing, API access to the decision engine, and white-label workflows for cross-border payments.",
-  },
   "/contact": {
     title: "Contact — mangoglobal",
     description: "Talk to mangoglobal: launch partners, enterprise deployments, press and general enquiries.",
@@ -2108,10 +2104,6 @@ const ROUTE_SEO_ES: RouteSeoMap = {
   "/about": {
     title: "Nosotros — mangoglobal",
     description: "mangoglobal construye la capa neutral de decisión y abastecimiento con IA para mercados fragmentados, empezando por FX transfronterizo.",
-  },
-  "/business": {
-    title: "Empresas y Tesorería — mangoglobal",
-    description: "Herramientas para tesorería, fintechs y pymes: enrutamiento automatizado, acceso API al motor de decisión y flujos white-label para pagos transfronterizos.",
   },
   "/contact": {
     title: "Contacto — mangoglobal",
