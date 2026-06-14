@@ -27,11 +27,25 @@ const OUT_DIR = resolve(ROOT, "scripts/translations");
 const TARGET_LANGS = SUPPORTED_LANGS.filter((l) => l !== "en");
 
 const LANG_NAMES: Record<string, string> = {
-  es: "Spanish", pt: "Portuguese (Brazil)", ru: "Russian", tr: "Turkish",
-  bn: "Bengali", ur: "Urdu", zh: "Simplified Chinese", pl: "Polish",
-  hi: "Hindi", tl: "Tagalog (Filipino)", vi: "Vietnamese", ar: "Arabic",
-  de: "German", fr: "French", it: "Italian", ja: "Japanese",
-  ko: "Korean", id: "Indonesian", th: "Thai",
+  es: "Spanish",
+  pt: "Portuguese (Brazil)",
+  ru: "Russian",
+  tr: "Turkish",
+  bn: "Bengali",
+  ur: "Urdu",
+  zh: "Simplified Chinese",
+  pl: "Polish",
+  hi: "Hindi",
+  tl: "Tagalog (Filipino)",
+  vi: "Vietnamese",
+  ar: "Arabic",
+  de: "German",
+  fr: "French",
+  it: "Italian",
+  ja: "Japanese",
+  ko: "Korean",
+  id: "Indonesian",
+  th: "Thai",
 };
 
 const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
@@ -78,8 +92,6 @@ async function loadExisting(lang: string): Promise<Record<string, string>> {
     return {};
   }
 }
-
-
 
 async function translateBatch(
   apiKey: string,
@@ -200,4 +212,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-

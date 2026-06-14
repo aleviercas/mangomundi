@@ -112,7 +112,10 @@ async function fetchRates(): Promise<{
 }
 
 // Pick fee tier matching the amount. Falls back to provider top-level fees.
-function resolveTier(p: Provider, amount: number): {
+function resolveTier(
+  p: Provider,
+  amount: number,
+): {
   fee_percent: number;
   fee_fixed: number;
   spread_percent: number;
@@ -137,8 +140,14 @@ function resolveTier(p: Provider, amount: number): {
 // ---------- compareProviders ----------
 const compareSchema = z.object({
   amount: z.number().min(1).max(1e15),
-  from: z.string().length(3).regex(/^[A-Z]{3}$/),
-  to: z.string().length(3).regex(/^[A-Z]{3}$/),
+  from: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
+  to: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
   segment: z.enum(["retail", "business"]).default("retail"),
   amountMode: z.enum(["send", "receive"]).default("send"),
   sendingCountry: z.string().min(2).max(64).optional(),
@@ -165,13 +174,13 @@ export const compareProviders = createServerFn({ method: "POST" })
       const tier = resolveTier(p, data.amount);
       const rate = marketRate * (1 - tier.spread_percent / 100);
       const feeRate = tier.fee_percent / 100;
-      const amountSent = data.amountMode === "receive"
-        ? Math.max(0, (data.amount / rate + tier.fee_fixed) / Math.max(0.0001, 1 - feeRate))
-        : data.amount;
+      const amountSent =
+        data.amountMode === "receive"
+          ? Math.max(0, (data.amount / rate + tier.fee_fixed) / Math.max(0.0001, 1 - feeRate))
+          : data.amount;
       const fee = feeRate * amountSent + tier.fee_fixed;
-      const received = data.amountMode === "receive"
-        ? data.amount
-        : Math.max(0, (amountSent - fee) * rate);
+      const received =
+        data.amountMode === "receive" ? data.amount : Math.max(0, (amountSent - fee) * rate);
       const rate_vs_market_pct = ((rate - marketRate) / marketRate) * 100;
       return {
         slug: p.slug,
@@ -327,7 +336,8 @@ In 3-4 sentences (no bullet lists, no markdown headings), recommend ONE provider
       if (!res.ok) {
         const t = await res.text();
         console.error("ai gateway error", res.status, t);
-        if (res.status === 429) return { text: "AI insight rate-limited. Try again in a moment.", error: true };
+        if (res.status === 429)
+          return { text: "AI insight rate-limited. Try again in a moment.", error: true };
         if (res.status === 402) return { text: "AI insight credits exhausted.", error: true };
         return { text: "AI insight unavailable right now.", error: true };
       }
@@ -372,10 +382,26 @@ const chatSchema = z.object({
 });
 
 const LANG_NAMES: Record<string, string> = {
-  en: "English", es: "Spanish (rioplatense)", pt: "Portuguese", ru: "Russian",
-  tr: "Turkish", bn: "Bengali", ur: "Urdu", zh: "Chinese (Simplified)", pl: "Polish",
-  hi: "Hindi", tl: "Tagalog", vi: "Vietnamese", ar: "Arabic", de: "German",
-  fr: "French", it: "Italian", ja: "Japanese", ko: "Korean", id: "Indonesian", th: "Thai",
+  en: "English",
+  es: "Spanish (rioplatense)",
+  pt: "Portuguese",
+  ru: "Russian",
+  tr: "Turkish",
+  bn: "Bengali",
+  ur: "Urdu",
+  zh: "Chinese (Simplified)",
+  pl: "Polish",
+  hi: "Hindi",
+  tl: "Tagalog",
+  vi: "Vietnamese",
+  ar: "Arabic",
+  de: "German",
+  fr: "French",
+  it: "Italian",
+  ja: "Japanese",
+  ko: "Korean",
+  id: "Indonesian",
+  th: "Thai",
 };
 function langInstrAll(code: string): string {
   if (LANG_NAMES[code]) return `Respond strictly in ${LANG_NAMES[code]}. Never mix languages.`;
@@ -429,10 +455,7 @@ Rules:
         },
         body: JSON.stringify({
           model: "google/gemini-3-flash-preview",
-          messages: [
-            { role: "system", content: system },
-            ...data.history,
-          ],
+          messages: [{ role: "system", content: system }, ...data.history],
         }),
       });
       if (!res.ok) {
