@@ -7,7 +7,6 @@ export function Footer() {
 
   const navigateLinks = [
     { to: "/", label: t("nav.home") },
-    { to: "/business", label: t("nav.business") },
     { to: "/about", label: t("nav.about") },
     { to: "/blog", label: t("nav.blog") },
   ] as const;

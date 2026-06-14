@@ -12,7 +12,6 @@ export function Header() {
 
   const navLinks = [
     { to: "/", label: t("nav.home") },
-    { to: "/business", label: t("nav.business") },
     { to: "/about", label: t("nav.about") },
     { to: "/blog", label: t("nav.blog") },
   ] as const;
@@ -34,7 +33,7 @@ export function Header() {
     >
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center">
-          <Wordmark tone="light" className="text-xl" />
+          <Wordmark className="text-xl" />
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
