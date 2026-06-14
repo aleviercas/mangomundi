@@ -495,9 +495,18 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
               </FieldLight>
             </div>
 
-            {/* Row 2 — Amount | Source Currency | Target Currency */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <FieldLight label={t("comparator.field.amount")}>
+            {/* Row 2 — Amount mode | Amount | Source Currency | Target Currency */}
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              <FieldLight label={t("comparator.field.amountMode")}>
+                <div className="flex h-11 rounded-md border border-input bg-muted p-1">
+                  {(["send", "receive"] as AmountMode[]).map((mode) => (
+                    <Button key={mode} type="button" size="sm" variant={amountMode === mode ? "default" : "ghost"} onClick={() => setAmountMode(mode)} className="h-8 flex-1">
+                      {t(`comparator.amountMode.${mode}`)}
+                    </Button>
+                  ))}
+                </div>
+              </FieldLight>
+              <FieldLight label={amountMode === "send" ? t("comparator.field.amountSent") : t("comparator.field.amountReceived")}>
                 <input
                   type="number"
                   inputMode="decimal"
@@ -534,7 +543,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
 
             {/* CTA — full width */}
             <div className="pt-1">
-              <button
+              <Button
                 onClick={() => {
                   if (!sendingCountry || !receivingCountry || amount <= 0) {
                     setValidationError(t("fx.validation"));
@@ -544,7 +553,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                   compareMut.mutate();
                 }}
                 disabled={compareMut.isPending}
-                className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold"
+                className="btn-cta h-11 w-full rounded-md px-6 text-sm font-semibold"
               >
                 {compareMut.isPending ? (
                   <>
@@ -553,11 +562,11 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                   </>
                 ) : (
                   <>
-                    <span className="truncate">{t("comparator.cta.compare")}</span>
+                    <span className="truncate">{t("comparator.cta.compareRates")}</span>
                     <ArrowRight className="h-4 w-4 shrink-0" />
                   </>
                 )}
-              </button>
+              </Button>
               {validationError && (
                 <div className="mt-3 rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
                   {validationError}
