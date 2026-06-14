@@ -173,7 +173,8 @@ async function translateLang(
       }
       for (const [k, en] of slice) {
         const v = translated[k];
-        out[k] = typeof v === "string" && v.trim().length > 0 ? v : en;
+        if (typeof v === "string" && v.trim().length > 0) out[k] = v;
+        else if (typeof out[k] !== "string" || out[k].trim().length === 0) out[k] = en;
       }
       process.stdout.write(`  ${lang}: ${Math.min(i + BATCH_SIZE, todo.length)}/${todo.length}\r`);
       await new Promise((r) => setTimeout(r, 250));
