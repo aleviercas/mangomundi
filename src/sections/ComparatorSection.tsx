@@ -17,7 +17,6 @@ import {
   BellPlus,
   Share2,
   Check,
-  MessageCircle,
   Zap,
   Info,
   ArrowLeft,

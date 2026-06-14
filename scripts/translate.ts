@@ -62,6 +62,8 @@ const FORCE_KEYS = new Set([
   "search.destinationPrompt",
   "search.guide",
   "search.promise",
+  "chat.welcome",
+  "comparator.copilot.agent",
   "footer.tagline",
   "footer.brandLine",
   "comparator.transferDetails",
