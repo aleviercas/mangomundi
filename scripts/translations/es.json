@@ -476,7 +476,7 @@
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
   "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
-  "search.guide": "Selecciona el país de destino y elige entre un perfil individual o de empresa.",
+  "search.guide": "Seleccione el país de destino y elija entre un perfil individual o de empresa. Para el cambio de moneda local, seleccione su país actual. Nuestro Agente de IA comparará inmediatamente los proveedores y las tasas de mercado en tiempo real para ayudarle a decidir.",
   "search.promise": "Comparativa de mercado inteligente. Sin necesidad de cuenta. Sin comisiones ocultas.",
   "comparator.transferDetails": "Transfer Details",
   "comparator.transferDetails.subtitle": "Adjust the amount and currencies before running the market comparison.",
