@@ -247,6 +247,9 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   useEffect(() => {
     setValidationError(null);
     if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) return;
+    setResult(null);
+    setAiText("");
+    setChat([]);
     void navigate({
       search: { origin: sendingCountry, destination: receivingCountry, segment, from, to, amount, lang },
       replace: true,
