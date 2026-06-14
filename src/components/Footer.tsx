@@ -27,10 +27,10 @@ export function Footer() {
             <p className="mt-3 max-w-sm text-sm text-muted-foreground">
               {t("footer.tagline")}
             </p>
-            <div className="mt-4 flex gap-3">
+            <div className="mt-4 flex items-center gap-3">
               <a
                 href="#"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex h-5 w-5 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
                 aria-label="X (Twitter)"
               >
                 <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
@@ -39,7 +39,7 @@ export function Footer() {
               </a>
               <a
                 href="#"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="inline-flex h-5 w-5 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
                 aria-label="LinkedIn"
               >
                 <span className="text-xs font-bold" aria-hidden>in</span>
@@ -83,7 +83,6 @@ export function Footer() {
             <span className="font-extralight lowercase">global</span>
             . {t("footer.copyright")}
           </p>
-          <p className="text-sm text-muted-foreground">{t("footer.brandLine")}</p>
         </div>
 
         <div className="mt-6 border-t border-border/60 pt-5">
