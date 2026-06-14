@@ -315,7 +315,7 @@ export const DICTS: Record<Lang, Dict> = {
     "biz.rfqCta": "Open the RFQ desk",
     "biz.rfqRoute": "Get routed to the right desk for your corridor",
     // About
-    "about.badge": "About mangoglobal",
+    "about.badge": "ABOUT mangoglobal",
     "about.heroTitle1": "Built for a",
     "about.heroTitleAccent": "Borderless",
     "about.heroTitle2": "World",
