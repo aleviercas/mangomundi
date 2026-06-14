@@ -2286,7 +2286,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.cta": "Continue",
     "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
     "search.guide":
-      "Select your destination country and choose between an individual or business profile.",
+      "Select your destination country and choose between individual or business profile. For local currency exchange, select your current country. Our AI Agent will immediately compare providers and real-time market rates to help you decide.",
     "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
     "search.hint": "Independent market comparison. No account required.",
     "search.verified": "Market verified",
