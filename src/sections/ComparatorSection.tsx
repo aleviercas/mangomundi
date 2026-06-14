@@ -79,6 +79,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const requestRef = useRef(0);
   const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
   const [businessData, setBusinessData] = useState<{ monthlyVolume?: number; sector?: string; email?: string }>({});
+  const [savingBusinessLead, setSavingBusinessLead] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
@@ -368,7 +369,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   };
 
   const confirmBusinessLead = async () => {
-    if (!businessData.email || !businessData.monthlyVolume || !businessData.sector) return;
+    if (!businessData.email || !businessData.monthlyVolume || !businessData.sector || savingBusinessLead) return;
+    setSavingBusinessLead(true);
     try {
       await captureBusinessFn({ data: {
         email: businessData.email,
@@ -380,12 +382,15 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         receivingCountry,
         locale: lang,
         consent: true,
+        topProviders: result?.rows.slice(0, 2).map((row) => row.name) ?? [],
       } });
       setBusinessStage("done");
       setChat((current) => [...current, { role: "user", content: t("comparator.copilot.business.yes") }, { role: "assistant", content: t("comparator.copilot.business.success") }]);
       track("conversion_completed", { amount: businessData.monthlyVolume, from_currency: from, to_currency: to, segment, source: "business_chat" });
     } catch {
       setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.saveError") }]);
+    } finally {
+      setSavingBusinessLead(false);
     }
   };
 
@@ -765,7 +770,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                     </form>
                     {segment === "business" && businessStage === "consent" && (
                       <div className="mt-3 flex flex-wrap gap-2">
-                        <Button type="button" size="sm" onClick={() => void confirmBusinessLead()} className="bg-accent text-accent-foreground hover:bg-accent/90">{t("comparator.copilot.business.yes")}</Button>
+                        <Button type="button" size="sm" disabled={savingBusinessLead} onClick={() => void confirmBusinessLead()} className="bg-accent text-accent-foreground hover:bg-accent/90">{savingBusinessLead ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{t("comparator.copilot.business.yes")}</Button>
                         <Button type="button" size="sm" variant="outline" onClick={() => { setBusinessStage("email"); setChat((current) => [...current, { role: "assistant", content: t("comparator.copilot.business.no") }]); }}>{t("comparator.copilot.business.review")}</Button>
                       </div>
                     )}
@@ -914,10 +919,7 @@ function ResultsBlock({
   return (
     <div className="mt-6">
       {showLargeBanner && (
-        <Link
-          to="/business"
-          className="mb-4 flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4 transition hover:border-primary"
-        >
+        <div className="mb-4 flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4">
           <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <div className="min-w-0 text-sm">
             <div className="truncate font-semibold text-foreground">
@@ -928,7 +930,7 @@ function ResultsBlock({
               and an account manager. →
             </div>
           </div>
-        </Link>
+        </div>
       )}
 
       {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible */}

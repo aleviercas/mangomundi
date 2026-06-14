@@ -1737,7 +1737,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
 // Unified hero/comparator/blog/contact keys (EN canonical + ES; other langs fall back to EN).
 const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
-    "hero.headline": "Intelligent FX and global payment decisions",
+    "hero.headline": "Intelligent currency exchange decisions.",
     "hero.subheadline":
       "AI Agent for corporate treasury and individuals. Optimization and transparency in your currency exchange and international payment operations.",
     "comparator.subheadline": "Live rates · Neutral AI · 30+ providers",
@@ -1766,7 +1766,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.field.targetCurrency": "Target Currency",
     "comparator.segment.retail": "Retail",
     "comparator.segment.business": "Business",
-    "hero.subheadline.short": "AI Agent for individuals and corporate treasury. Optimization and transparency in your currency exchange and international payment operations.",
+    "hero.subheadline.short": "AI agent for global and local payments. Best rates for individuals and businesses.",
+    "seo.home.title": "Intelligent Currency Exchange — mangoglobal",
+    "seo.home.description": "AI agent for global and local payments. Best rates for individuals and businesses.",
     "comparator.title": "Find the optimal route",
     "comparator.subtitle": "Geography, amount, currencies, urgency — one decision engine.",
     "comparator.cta.compare": "Compare Providers",
@@ -1811,6 +1813,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.selectCountry": "Select country…",
     "search.cta": "View options",
     "search.hint": "Independent market comparison. No account required.",
+    "search.verified": "Market verified",
+    "search.noHiddenFees": "No hidden fees",
     "search.new": "New search",
     "search.sameCountry": "Same-country route: choose two different currencies to compare conversion options.",
     "comparator.copilot.business.intro": "As a business, your treasury needs are unique. Please tell me your estimated monthly volume and sector (for example: `50000, software`).",
@@ -1821,13 +1825,22 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.business.yes": "Yes, I agree",
     "comparator.copilot.business.review": "Review email",
     "comparator.copilot.business.no": "No problem. Please enter the corporate email you want to use.",
-    "comparator.copilot.business.success": "Your market request has been registered. The selected specialists can now review whether they can improve the current market conditions for this route.",
+    "comparator.copilot.business.success": "I've registered your request. Our specialists will review your case and send the market summary to your email.",
     "comparator.copilot.business.saveError": "I couldn't register the request right now. Your details were not submitted; please try again.",
+    "about.title": "Financial intelligence for every currency decision.",
+    "about.metric4.label": "Global providers evaluated in real time",
+    "about.coverage.eyebrow": "Market Coverage",
+    "about.coverage.title": "One view across the global FX market.",
+    "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
+    "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
+    "contact.error": "We couldn't send your message. Please try again.",
 
   },
   es: {
-    "hero.headline": "Decisiones inteligentes de FX y pagos globales",
-    "hero.subheadline.short": "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
+    "hero.headline": "Decisiones inteligentes de cambio de divisas.",
+    "hero.subheadline.short": "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
+    "seo.home.title": "Cambio de divisas inteligente — mangoglobal",
+    "seo.home.description": "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
     "hero.subheadline": "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
     "comparator.subheadline": "Tasas en vivo · IA neutral · +30 proveedores",
     "blog.emptyState": "En construcción — estamos preparando nuevos contenidos. Vuelve pronto.",
@@ -1864,6 +1877,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.selectCountry": "Seleccionar país…",
     "search.cta": "Consultar opciones",
     "search.hint": "Comparación independiente de mercado. Sin registro.",
+    "search.verified": "Mercado verificado",
+    "search.noHiddenFees": "Sin comisiones ocultas",
     "search.new": "Nueva búsqueda",
     "search.sameCountry": "Ruta dentro del mismo país: elige dos divisas distintas para comparar opciones de conversión.",
     "comparator.copilot.business.intro": "Como empresa, tus necesidades de tesorería son únicas. Indícame tu volumen mensual estimado y sector (por ejemplo: `50000, software`).",
@@ -1874,8 +1889,15 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.business.yes": "Sí, acepto",
     "comparator.copilot.business.review": "Revisar email",
     "comparator.copilot.business.no": "Sin problema. Introduce el email corporativo que quieras utilizar.",
-    "comparator.copilot.business.success": "Tu solicitud de mercado ha sido registrada. Los especialistas seleccionados podrán revisar si existe una opción que mejore las condiciones actuales para esta ruta.",
+    "comparator.copilot.business.success": "He registrado tu solicitud. Nuestros especialistas revisarán tu caso y enviarán el resumen de mercado a tu email.",
     "comparator.copilot.business.saveError": "No he podido registrar la solicitud. Tus datos no se enviaron; inténtalo de nuevo.",
+    "about.title": "Inteligencia financiera para cada decisión de divisas.",
+    "about.metric4.label": "Proveedores globales evaluados en tiempo real",
+    "about.coverage.eyebrow": "Cobertura de mercado",
+    "about.coverage.title": "Una visión unificada del mercado global de divisas.",
+    "about.coverage.body": "Nuestro motor de decisión evalúa más de 50 proveedores globales en tiempo real y normaliza tasas, comisiones, velocidad y disponibilidad por corredor.",
+    "contact.success": "Gracias. Hemos recibido tu mensaje y nuestro equipo responderá pronto.",
+    "contact.error": "No hemos podido enviar tu mensaje. Inténtalo de nuevo.",
   },
 
 };
@@ -2003,8 +2025,8 @@ export interface SeoMeta {
   title: string;
   description: string;
 }
-export const SEO_META: Record<Lang, SeoMeta> = {
-  en: { title: "mangoglobal | Intelligent FX and global payment decisions", description: "AI Agent for individuals and corporate treasury. Optimization and transparency in your currency exchange and international payment operations." },
+const SEO_META_TRANSLATED: Record<Lang, SeoMeta> = {
+  en: { title: "Intelligent Currency Exchange — mangoglobal", description: "AI agent for global and local payments. Best rates for individuals and businesses." },
   es: { title: "mangoglobal | Decisiones inteligentes de cambio de divisas y pagos globales", description: "Agente de IA para individuos y tesorería corporativa. Optimización y transparencia en tus operaciones de cambio y pagos internacionales." },
   pt: { title: "mangoglobal | Decisões inteligentes de câmbio e pagamentos globais", description: "Agente de IA para indivíduos e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais." },
   it: { title: "mangoglobal | Decisioni intelligenti sui cambi e pagamenti globali", description: "Agente IA per privati e tesoreria aziendale. Ottimizzazione e trasparenza nelle operazioni di cambio e pagamenti internazionali." },
@@ -2025,6 +2047,13 @@ export const SEO_META: Record<Lang, SeoMeta> = {
   ja: { title: "mangoglobal | 為替とグローバル決済に関するインテリジェントな意思決定", description: "個人および企業財務向けの AI エージェント。外貨両替および国際決済業務における最適化と透明性を提供します。" },
   ko: { title: "mangoglobal | 환율 및 글로벌 결제에 대한 지능형 의사결정", description: "개인 및 기업 재무를 위한 AI 에이전트. 외환 거래 및 국제 결제 운영의 최적화와 투명성을 제공합니다." },
 };
+
+export const SEO_META: Record<Lang, SeoMeta> = Object.fromEntries(
+  SUPPORTED_LANGS.map((code) => [code, {
+    title: DICTS[code]?.["seo.home.title"] ?? SEO_META_TRANSLATED[code].title,
+    description: DICTS[code]?.["seo.home.description"] ?? SEO_META_TRANSLATED[code].description,
+  }]),
+) as Record<Lang, SeoMeta>;
 
 // === Per-route SEO (title + description) per language ===
 // Keys are route paths matching TanStack Router pathnames.
@@ -2056,10 +2085,6 @@ const ROUTE_SEO_EN: RouteSeoMap = {
   "/about": {
     title: "About — mangoglobal",
     description: "mangoglobal is building the neutral AI decision and sourcing layer for fragmented markets, starting with cross-border FX.",
-  },
-  "/business": {
-    title: "Business & Treasury — mangoglobal",
-    description: "Treasury, fintech and SMB tools: automated routing, API access to the decision engine, and white-label workflows for cross-border payments.",
   },
   "/contact": {
     title: "Contact — mangoglobal",
@@ -2108,10 +2133,6 @@ const ROUTE_SEO_ES: RouteSeoMap = {
   "/about": {
     title: "Nosotros — mangoglobal",
     description: "mangoglobal construye la capa neutral de decisión y abastecimiento con IA para mercados fragmentados, empezando por FX transfronterizo.",
-  },
-  "/business": {
-    title: "Empresas y Tesorería — mangoglobal",
-    description: "Herramientas para tesorería, fintechs y pymes: enrutamiento automatizado, acceso API al motor de decisión y flujos white-label para pagos transfronterizos.",
   },
   "/contact": {
     title: "Contacto — mangoglobal",

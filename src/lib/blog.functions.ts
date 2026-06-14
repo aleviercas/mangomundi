@@ -1,6 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export interface BlogListItem {
   slug: string;
@@ -24,6 +23,7 @@ export const listBlogPosts = createServerFn({ method: "GET" })
     z.object({ locale: LocaleSchema }).parse({ locale: d?.locale ?? "en" }),
   )
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("blog_posts")
       .select("slug, title, excerpt, cover_url, audience, vertical, published_at, locale")
@@ -42,6 +42,7 @@ export const getBlogPost = createServerFn({ method: "GET" })
     }),
   )
   .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     // Try locale-specific first, then fall back to any published version of the slug.
     const base = supabaseAdmin
       .from("blog_posts")

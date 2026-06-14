@@ -25,6 +25,14 @@ const BusinessLeadInput = z.object({
   receivingCountry: z.string().length(2),
   locale: z.string().min(2).max(5),
   consent: z.literal(true),
+  topProviders: z.array(z.string().trim().min(1).max(120)).max(2).default([]),
+});
+
+const InquiryInput = z.object({
+  name: z.string().trim().min(2).max(120),
+  email: z.string().trim().email().max(255),
+  company: z.string().trim().max(200).optional(),
+  message: z.string().trim().min(10).max(2000),
 });
 
 // In-memory rate limit (best-effort; resets on worker recycle).
@@ -421,11 +429,27 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
             sending_country: data.sendingCountry,
             receiving_country: data.receivingCountry,
             consent_at: consentAt,
+            top_providers: data.topProviders,
           }),
         });
       } catch (error) {
         console.error("[enterprise-lead] webhook dispatch failed", error);
       }
     }
-    return { ok: true, requestId };
+    return { ok: true, requestId, emailQueued: false };
+  });
+
+export const captureGeneralInquiry = createServerFn({ method: "POST" })
+  .inputValidator((input: unknown) => InquiryInput.parse(input))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("leads").insert({
+      name: data.name,
+      email: data.email,
+      company: data.company ?? null,
+      message: data.message,
+      source: "about_contact_form",
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });

@@ -15,6 +15,7 @@ export function CountrySelect({
   searchPlaceholder,
   emptyLabel,
   ariaLabel,
+  triggerClassName,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -22,6 +23,7 @@ export function CountrySelect({
   searchPlaceholder?: string;
   emptyLabel?: string;
   ariaLabel?: string;
+  triggerClassName?: string;
 }) {
   return (
     <Combobox
@@ -32,6 +34,7 @@ export function CountrySelect({
       searchPlaceholder={searchPlaceholder}
       emptyLabel={emptyLabel}
       ariaLabel={ariaLabel}
+      triggerClassName={triggerClassName}
     />
   );
 }

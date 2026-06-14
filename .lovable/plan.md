@@ -1,96 +1,62 @@
-# Plan: Financial Intelligence Terminal
+# Plan de actualización integral de mangoglobal
 
-## Objetivo
-Convertir la experiencia principal en un flujo **Home → Comparator** tipo Rome2Rio: entrada mínima, resultados precargados, refinamiento instantáneo y agente neutral. La primera entrega consolidará el buscador, la ruta real de resultados, divisas, tracking y captura B2B conversacional.
+## Dirección aprobada
+- Implementar la composición **Modern Institutional Terminal v4**: fondo Slate Mist luminoso, superficies blancas translúcidas, tipografía Sora para display, jerarquía editorial limpia y consola de búsqueda de ancho completo.
+- Mantener el acento mango reservado para estados y acciones clave, sin perder la sensación de terminal financiera institucional.
+- Conservar la marca tipográfica `mango` black + `global` light en Header, Hero, Comparator, About, Blog y Footer.
 
-## 1. Home input-first
-- Sustituir el hero/comparador actual por un buscador central con:
-  - país de origen;
-  - país de destino;
-  - segmento `Individual | Business`;
-  - CTA traducido “Consultar opciones”.
-- Mantener el wordmark tipográfico inmutable de **mangoglobal** y diseñar la pantalla como terminal financiera oscura, con acento naranja, amplio espacio negativo y controles compactos.
-- Navegar con `Link`/search params a `/compare`, preservando también el idioma activo.
-- Añadir tracking no bloqueante del inicio de búsqueda en `affiliate_clicks`.
+## 1. Home: nuevo mensaje y Big Search
+- Sustituir el H1 por **“Intelligent currency exchange decisions.”** y el subtítulo por **“AI agent for global and local payments. Best rates for individuals and businesses.”**.
+- Convertir Origen, Destino y Segmento en una Search Console protagonista: controles grandes, estados de foco inequívocos, separación visual clara y CTA único hacia `/compare`.
+- Mantener la detección automática de divisas, la persistencia por parámetros URL y el comportamiento responsive.
+- Adaptar Header, fondo global y Footer a la nueva variante clara de la terminal, conservando contraste y accesibilidad.
 
-## 2. Comparator como ruta real
-- Convertir `/compare` en una página SSR real en lugar del redirect actual.
-- Validar y tipar search params para `origin`, `destination`, `segment`, `from`, `to` y `amount`.
-- Al entrar desde Home:
-  - inferir la divisa local de cada país;
-  - usar un importe inicial de referencia de **1.000 unidades de la divisa origen** para poder precargar resultados aunque Home capture solo países y segmento;
-  - cargar tabla y análisis automáticamente.
-- Añadir “Nueva búsqueda” arriba a la izquierda para volver al Home sin conservar resultados obsoletos.
-- Mantener enlaces compartibles: cualquier cambio de corredor, divisa, importe o segmento actualizará la URL.
+## 2. i18n y SEO global
+- Usar las mismas claves de marca para que Hero y metadata consuman una única fuente de copy.
+- Traducir el nuevo título, subtítulo, textos del buscador, About y cierre B2B en los **20 idiomas**; eliminar fallbacks ingleses de las nuevas claves.
+- Actualizar `SEO_META` en los 20 idiomas con títulos de menos de 60 caracteres cuando el idioma lo permita y descripciones de menos de 160 caracteres.
+- Actualizar `title`, `description`, `og:title`, `og:description`, Twitter metadata, canonical y `og:url` de las rutas públicas relevantes, manteniendo metadata específica por página.
+- Retirar `/business` del sitemap y asegurar que Home, About, Compare y Blog sigan siendo indexables.
 
-## 3. Motor reactivo de países y divisas
-- Crear una fuente única país → divisa local para los países soportados.
-- Cuando origen y destino sean distintos, sugerir automáticamente ambas divisas locales y permitir refinarlas en el Comparator.
-- Cuando sean el mismo país, mostrar de forma destacada ambos selectores de divisa y garantizar que no queden bloqueados en un par idéntico; el usuario podrá, por ejemplo, elegir EUR → USD.
-- Aplicar refresco con debounce corto al cambiar país, divisa, importe o segmento:
-  - invalidar tabla y análisis anteriores;
-  - mostrar estado “Analizando resultados…”;
-  - consultar sin recargar la página;
-  - evitar respuestas fuera de orden mediante identificación/cancelación lógica de la búsqueda activa.
+## 3. Consolidación de navegación y conversión
+- Eliminar el archivo de ruta `/business` y todas sus entradas en Header, Footer, sitemap, SEO por ruta, traducciones y CTAs internos.
+- Redirigir cualquier promoción de alto volumen del comparador al chat B2B dentro de la propia experiencia, nunca a otra página.
+- Mantener Individual/Business como único selector de entrada y conservar el contexto completo del corredor en `/compare`.
 
-## 4. Agente IA neutral y contextual
-- Consolidar el agente dentro del Comparator como conversación única del flujo, usando el contexto exacto de la tabla y el corredor activo.
-- Reescribir instrucciones del agente para prohibir lenguaje de propiedad/intermediación (“nuestros proveedores”) y usar formulaciones neutrales basadas en datos de mercado.
-- Reiniciar o contextualizar de forma explícita el análisis cuando cambie el corredor, divisas o segmento, evitando mezclar recomendaciones antiguas.
-- Mantener markdown, estado de análisis, foco del composer y mensajes optimistas; adaptar la superficie al sistema Dark Terminal sin burbujas decorativas innecesarias.
+## 4. About corporativo
+- Reestructurar About en cuatro bloques esenciales: introducción, manifiesto en texto puro y sin emojis, métricas institucionales y Market Coverage.
+- Mostrar: **Founded 2026**, **150+ countries covered**, **100+ currencies supported** y **50+ global providers evaluated in real time**.
+- Eliminar “Our Principles”, iconografía decorativa y contenido redundante.
+- Simplificar el formulario y hacerlo realmente funcional mediante una acción de servidor validada, con estados de envío, éxito y error, reutilizando la infraestructura de leads existente cuando sea compatible.
 
-## 5. Captura B2B conversacional
-- Para `Business`, iniciar proactivamente esta secuencia dentro del chat:
-  1. solicitar volumen mensual y sector;
-  2. resumir las alternativas mejor posicionadas según los resultados actuales;
-  3. solicitar email corporativo;
-  4. mostrar un opt-in explícito para compartir la solicitud con los proveedores seleccionados;
-  5. guardar solo después de confirmación afirmativa.
-- Validar en servidor email, volumen, sector, corredor y consentimiento.
-- Ampliar `enterprise_leads` únicamente con los campos estructurados faltantes, como `monthly_volume`, `sector` y `segment`, conservando los campos actuales y dejando `status = 'pending'` para este flujo.
-- Registrar además divisas, países, idioma, timestamp de consentimiento y origen del lead.
-- Eliminar del flujo principal el formulario RFQ redundante; la captura se completa íntegramente en el chat.
+## 5. Captura B2B Zero-Touch
+- Consolidar el flujo conversacional como una máquina de estados ligada al segmento Business y al corredor activo.
+- Tras volumen + sector, responder con los dos proveedores mejor clasificados, pedir email corporativo y mostrar consentimiento explícito.
+- Guardar solo tras confirmación: email, consentimiento, volumen mensual, sector, monedas, países/ruta, locale, segmento y estado en `enterprise_leads`.
+- Mantener el webhook opcional desacoplado: un fallo del partner no debe perder el lead ni bloquear la confirmación al usuario.
+- Evitar duplicados mediante una clave de solicitud estable y bloquear dobles envíos mientras la operación está en curso.
+- Confirmar en chat únicamente después de que el lead quede persistido y el resumen haya sido encolado para envío.
 
-## 6. Automatización zero-touch
-- Tras guardar el lead:
-  - enviar el payload aprobado al webhook de partners ya configurado, sin bloquear la UX si falla;
-  - confirmar en chat que la solicitud fue registrada y que los especialistas seleccionados podrán revisar el caso.
-- Preparar el resumen de mercado estructurado para el correo automático.
-- **Dependencia externa:** actualmente no hay dominio de envío configurado. La entrega por email se activará con la infraestructura de correo de Lovable cuando se configure un dominio; hasta entonces el lead y el webhook funcionarán, pero no se afirmará que el email fue enviado.
+## 6. Email real del resumen
+- Configurar **Lovable Emails** y un dominio remitente de mangoglobal; actualmente no hay dominio de email configurado, por lo que esta parte requerirá una única acción de configuración de dominio al iniciar la implementación.
+- Crear una plantilla de email de resumen de mercado con corredor, volumen, sector, dos mejores alternativas y referencia de solicitud.
+- Encolar un email individual e idempotente después del consentimiento; si el envío no puede encolarse, conservar el lead y mostrar un cierre honesto en el chat en lugar de afirmar que el correo fue enviado.
+- Mantener el email estrictamente ligado a la solicitud del usuario, sin contenido promocional masivo.
 
-## 7. Dark Terminal y consolidación
-- Migrar los tokens semánticos globales a un fondo carbón/navy, superficies elevadas oscuras, texto de alto contraste y naranja reservado para acciones primarias.
-- Adaptar Header, Home, Comparator, tabla, agente, popovers y estados de carga al mismo sistema, sin colores hardcodeados en componentes.
-- Mantener navegación y páginas secundarias operativas; esta fase no elimina contenido editorial fuera del flujo principal.
-- Reutilizar componentes existentes de país, divisa, botón y wordmark, refactorizándolos para el nuevo tema.
+## 7. Blog y SEO técnico
+- Preservar tablas, funciones y rutas del blog multilingüe, sin romper la generación automática existente.
+- Mantener corredor, mercado, audiencia y locale como señales editoriales para contenido internacional.
+- Mejorar la metadata dinámica del artículo para usar título, extracto, canonical, OpenGraph y tipo `article` del post real cuando esté disponible.
+- Mantener las entradas publicadas en el sitemap dinámico.
 
-## 8. I18n, tracking y calidad
-- Añadir todas las nuevas claves en inglés y en los 19 archivos traducidos, incluyendo buscador, nueva búsqueda, estados reactivos, divisas del mismo país y secuencia B2B.
-- Mantener todos los eventos existentes de afiliación y añadir contexto de corredor/segmento a búsquedas, cambios y conversiones B2B.
-- Corregir textos hardcodeados relevantes en el flujo principal.
-- Añadir pruebas E2E para:
-  - Home → `/compare` con params;
-  - resultados precargados;
-  - “Nueva búsqueda”;
-  - cambio dinámico de divisas;
-  - mismo país;
-  - separación Retail/Business;
-  - captura B2B con consentimiento;
-  - persistencia del tracking de clicks.
-- Ejecutar `bun run i18n:validate` y `bun run e2e` al finalizar.
+## 8. Verificación
+- Extender Playwright para comprobar: nuevo Hero, Big Search y navegación URL; ausencia de Business; About simplificado; cambio de idioma; flujo Business volumen → sector → email → consentimiento; guardado único y cierre correcto.
+- Ejecutar `bun run i18n:check` y el script existente `bun run e2e`.
+- Validar Home, About, Compare y Blog en escritorio y móvil, además de revisar errores de consola y respuestas de servidor.
 
-## Cambios técnicos previstos
-- Rutas: Home y `/compare` con search params tipados.
-- Frontend: buscador Home, Comparator reactivo y chat unificado.
-- Backend: funciones de comparación y captura B2B validadas; webhook posterior al guardado.
-- Base de datos: migración mínima sobre `enterprise_leads`; sin tocar otras tablas de producción.
-- Traducciones: 20 idiomas conservados y validados.
-
-## Criterios de aceptación
-- Home solo pide origen, destino y segmento.
-- `/compare` abre con resultados sin submit adicional y puede recargarse/compartirse sin perder estado.
-- Cambios de corredor/divisa actualizan tabla y agente sin refresh.
-- El agente nunca presenta proveedores como propios.
-- Business completa volumen, sector, email y consentimiento dentro del chat; el lead queda guardado como `pending` y el webhook se intenta automáticamente.
-- No se muestra un formulario RFQ paralelo en el flujo principal.
-- Wordmark, tracking, 20 idiomas y pipeline E2E permanecen operativos.
+## Detalles técnicos
+- Frontend: TanStack Start + React, componentes de diseño existentes y tokens semánticos Tailwind v4.
+- Backend interno: funciones de servidor TanStack; acceso privilegiado cargado únicamente dentro del handler.
+- Persistencia: mantener `enterprise_leads` y sus reglas actuales de acceso; no se prevé una migración salvo que la idempotencia o el formulario About requieran un campo/índice que no exista.
+- Email: infraestructura en cola, plantilla React Email e idempotencia por `requestId`.
+- No se modificará manualmente `routeTree.gen.ts`; se regenerará desde los archivos de rutas.
