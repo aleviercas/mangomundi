@@ -48,6 +48,7 @@ export interface ComparisonRow {
   affiliate_url: string;
   rate: number;
   fee_total: number;
+  amount_sent: number;
   fee_percent_applied: number;
   fee_fixed_applied: number;
   spread_applied: number;
@@ -139,6 +140,7 @@ const compareSchema = z.object({
   from: z.string().length(3).regex(/^[A-Z]{3}$/),
   to: z.string().length(3).regex(/^[A-Z]{3}$/),
   segment: z.enum(["retail", "business"]).default("retail"),
+  amountMode: z.enum(["send", "receive"]).default("send"),
   sendingCountry: z.string().min(2).max(64).optional(),
   receivingCountry: z.string().min(2).max(64).optional(),
 });
@@ -161,9 +163,15 @@ export const compareProviders = createServerFn({ method: "POST" })
 
     const rows: ComparisonRow[] = (providers as Provider[]).map((p) => {
       const tier = resolveTier(p, data.amount);
-      const fee = (tier.fee_percent / 100) * data.amount + tier.fee_fixed;
       const rate = marketRate * (1 - tier.spread_percent / 100);
-      const received = Math.max(0, (data.amount - fee) * rate);
+      const feeRate = tier.fee_percent / 100;
+      const amountSent = data.amountMode === "receive"
+        ? Math.max(0, (data.amount / rate + tier.fee_fixed) / Math.max(0.0001, 1 - feeRate))
+        : data.amount;
+      const fee = feeRate * amountSent + tier.fee_fixed;
+      const received = data.amountMode === "receive"
+        ? data.amount
+        : Math.max(0, (amountSent - fee) * rate);
       const rate_vs_market_pct = ((rate - marketRate) / marketRate) * 100;
       return {
         slug: p.slug,
@@ -175,6 +183,7 @@ export const compareProviders = createServerFn({ method: "POST" })
         affiliate_url: p.affiliate_url,
         rate,
         fee_total: fee,
+        amount_sent: amountSent,
         fee_percent_applied: tier.fee_percent,
         fee_fixed_applied: tier.fee_fixed,
         spread_applied: tier.spread_percent,

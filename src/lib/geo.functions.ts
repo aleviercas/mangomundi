@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { COUNTRY_TO_LANG, SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
+import { COUNTRY_BY_CODE } from "@/lib/countries";
 
 /**
  * Server-side initial language detection.
@@ -25,3 +26,13 @@ export const getInitialLang = createServerFn({ method: "GET" }).handler(
     return "en";
   },
 );
+
+export const getVisitorCountry = createServerFn({ method: "GET" }).handler(async () => {
+  try {
+    const country = (getRequestHeader("cf-ipcountry") || "").toUpperCase();
+    if (country && COUNTRY_BY_CODE[country]) return country;
+  } catch {
+    // Use a stable fallback when geo headers are unavailable in local preview.
+  }
+  return "US";
+});
