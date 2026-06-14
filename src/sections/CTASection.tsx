@@ -19,7 +19,8 @@ export function CTASection() {
           </p>
           <div className="mt-8">
             <Link
-              to="/business"
+              to="/compare"
+              search={{ origin: "GB", destination: "US", segment: "business", from: "GBP", to: "USD", amount: 10000 }}
               className="btn-cta inline-flex h-11 items-center gap-2 rounded-md px-6 text-sm font-semibold"
             >
               {t("home.cta.button")}

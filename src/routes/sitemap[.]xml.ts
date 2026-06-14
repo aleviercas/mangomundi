@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const BASE_URL = "";
+const BASE_URL = "https://mangoglobal.lovable.app";
 
 interface SitemapEntry {
   path: string;
@@ -35,7 +35,6 @@ export const Route = createFileRoute("/sitemap.xml")({
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/compare", changefreq: "daily", priority: "0.95" },
-          { path: "/business", changefreq: "weekly", priority: "0.9" },
           { path: "/platform", changefreq: "monthly", priority: "0.8" },
           { path: "/insurance", changefreq: "monthly", priority: "0.6" },
           { path: "/blog", changefreq: "weekly", priority: "0.8" },
