@@ -1180,7 +1180,6 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
     "footer.navigate": "Navigate",
     "footer.tagline": "Intelligent currency exchange decisions.",
     "footer.copyright": "All rights reserved.",
-    "footer.brandLine": "",
     "footer.disclaimerLabel": "disclaimer",
     "common.close": "Close",
     "common.toggleMenu": "Toggle menu",
