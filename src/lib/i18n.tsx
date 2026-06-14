@@ -2199,7 +2199,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
 // Unified hero/comparator/blog/contact keys (EN canonical + ES; other langs fall back to EN).
 const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
-    "hero.headline": "Intelligent currency exchange decisions.",
+    "hero.headline": "Intelligent currency exchange decisions",
     "hero.subheadline":
       "AI Agent for corporate treasury and individuals. Optimization and transparency in your currency exchange and international payment operations.",
     "comparator.subheadline": "Live rates · Neutral AI · 30+ providers",
@@ -2333,7 +2333,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "contact.error": "We couldn't send your message. Please try again.",
   },
   es: {
-    "hero.headline": "Decisiones inteligentes de cambio de divisas.",
+    "hero.headline": "Decisiones inteligentes de cambio de divisas",
     "hero.subheadline.short":
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
     "seo.home.title": "Cambio de divisas inteligente — mangoglobal",
