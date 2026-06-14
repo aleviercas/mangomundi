@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, CircleCheck } from "lucide-react";
+import { ArrowRight, CircleCheck, Eye, ShieldCheck } from "lucide-react";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/button";
 import { localCurrency } from "@/lib/countries";
@@ -22,6 +22,11 @@ export function HomeSearch() {
   const from = localCurrency(origin);
   let to = localCurrency(destination);
   if (origin === destination && from === to) to = from === "USD" ? "EUR" : "USD";
+  const promiseItems = t("search.promise")
+    .split(/\.\s*/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const promiseIcons = [CircleCheck, Eye, ShieldCheck];
 
   useEffect(() => {
     detectCountry()
@@ -31,6 +36,9 @@ export function HomeSearch() {
 
   return (
     <div className="mx-auto w-full max-w-6xl">
+      <p className="mx-auto mb-4 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground">
+        {t("search.guide")}
+      </p>
       <div className="grid items-stretch gap-2 rounded-[2rem] border border-border/70 bg-card/80 p-2 shadow-[0_32px_80px_-28px_color-mix(in_oklab,var(--foreground)_22%,transparent)] backdrop-blur-xl lg:grid-cols-[1fr_auto_auto] lg:items-center">
         <label className="block min-w-0 rounded-3xl px-5 py-4 transition-colors hover:bg-background/70">
           <span className="mb-2 block text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -95,14 +103,16 @@ export function HomeSearch() {
           </Button>
         </div>
       </div>
-      <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground">
-        {t("search.guide")}
-      </p>
-      <div className="mt-5 flex items-center justify-center text-[11px] font-bold uppercase tracking-[0.13em] text-muted-foreground">
-        <span className="inline-flex items-center gap-2">
-          <CircleCheck className="h-3.5 w-3.5 text-accent" />
-          {t("search.promise")}
-        </span>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+        {promiseItems.map((item, index) => {
+          const Icon = promiseIcons[index] ?? CircleCheck;
+          return (
+            <span key={item} className="inline-flex items-center gap-2">
+              <Icon className="h-3.5 w-3.5 shrink-0 text-accent" />
+              {item}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

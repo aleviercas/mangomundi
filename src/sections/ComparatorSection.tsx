@@ -17,7 +17,6 @@ import {
   BellPlus,
   Share2,
   Check,
-  MessageCircle,
   Zap,
   Info,
   ArrowLeft,
@@ -471,17 +470,9 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         <div className="surface-card overflow-hidden">
           {/* Card header: brand + segment toggle */}
           <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
-            <div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-              <span className="relative flex h-1.5 w-1.5 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              </span>
-              <span className="truncate">
-                <span className="font-black lowercase text-foreground">mango</span>
-                <span className="font-extralight lowercase text-foreground">global</span>
-                <span className="px-1.5 text-muted-foreground/60">·</span>
-                {t("brand.decisionEngine")}
-              </span>
+            <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
+              <span className="truncate">{t("brand.decisionEngine")}</span>
             </div>
             <div
               role="tablist"
@@ -645,14 +636,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           <div className="surface-card mt-6 overflow-hidden">
             <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <MessageCircle className="h-3.5 w-3.5 text-foreground" />
-                <span className="truncate">
-                  {t("comparator.copilot.agent")}{" "}
-                  <span className="font-black lowercase text-foreground normal-case">mango</span>
-                  <span className="font-extralight lowercase text-foreground normal-case">
-                    global
-                  </span>
-                </span>
+                <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
+                <span className="truncate">{t("comparator.copilot.agent")}</span>
               </div>
               <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-emerald-600">
                 ● {lang.toUpperCase()}
@@ -744,16 +729,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                   {/* Embedded FX Copilot */}
                   <div className="mt-2 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
                     <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      <MessageCircle className="h-3.5 w-3.5 text-foreground" />
-                      <span className="truncate">
-                        {t("comparator.copilot.agent")}{" "}
-                        <span className="font-black lowercase text-foreground normal-case">
-                          mango
-                        </span>
-                        <span className="font-extralight lowercase text-foreground normal-case">
-                          global
-                        </span>
-                      </span>
+                       <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
+                       <span className="truncate">{t("comparator.copilot.agent")}</span>
                     </div>
 
                     {chat.length === 0 && (
@@ -1111,13 +1088,13 @@ function ResultsBlock({
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        <div className="hidden grid-cols-12 gap-2 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
-          <div className="col-span-3 min-w-0">{tProvider}</div>
-          <div className="col-span-2 min-w-0 text-right">{tAmountSent}</div>
-          <div className="col-span-2 min-w-0 text-right">{tTotalFee}</div>
-          <div className="col-span-2 min-w-0 text-right">{tRecipient}</div>
-          <div className="col-span-2 min-w-0 text-right">{tSpeed}</div>
-          <div className="col-span-1" />
+        <div className="hidden grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] gap-4 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground lg:grid">
+          <div className="min-w-0">{tProvider}</div>
+          <div className="min-w-0 text-right">{tAmountSent}</div>
+          <div className="min-w-0 text-right">{tTotalFee}</div>
+          <div className="min-w-0 text-right">{tRecipient}</div>
+          <div className="min-w-0 text-right">{tSpeed}</div>
+          <div />
         </div>
         {organic.map((row, i) => (
           <ProviderRow
@@ -1192,11 +1169,11 @@ function ProviderRow({
 
   return (
     <div
-      className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 sm:grid-cols-12 sm:items-center ${
+      className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 lg:grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] lg:items-center lg:gap-4 ${
         isBest ? "bg-primary/5" : ""
       }`}
     >
-      <div className="col-span-3 flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-3">
         <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} size={36} />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -1222,14 +1199,14 @@ function ProviderRow({
           </div>
         </div>
       </div>
-      <div className="col-span-2 min-w-0 text-sm tabular-nums text-foreground sm:text-right">
-        <span className="sm:hidden text-[10px] uppercase text-muted-foreground">
+      <div className="min-w-0 text-sm tabular-nums text-foreground lg:text-right">
+        <span className="text-[10px] uppercase text-muted-foreground lg:hidden">
           {t("comparator.table.amountSent")} ·{" "}
         </span>
         {row.amount_sent.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
       </div>
-      <div className="col-span-2 min-w-0 text-sm tabular-nums text-muted-foreground sm:text-right">
-        <span className="sm:hidden text-[10px] uppercase">{t("fx.totalFee")} · </span>
+      <div className="min-w-0 text-sm tabular-nums text-muted-foreground lg:text-right">
+        <span className="text-[10px] uppercase lg:hidden">{t("fx.totalFee")} · </span>
         {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
         <div className="text-[10px]">
           {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
@@ -1237,14 +1214,14 @@ function ProviderRow({
           {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
         </div>
       </div>
-      <div className="col-span-2 min-w-0 sm:text-right">
-        <div className="truncate text-lg font-bold tabular-nums text-foreground">
+      <div className="min-w-0 lg:text-right">
+        <div className="text-lg font-bold tabular-nums text-foreground">
           {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
           <span className="text-xs font-normal text-muted-foreground">{quote}</span>
         </div>
         <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
       </div>
-      <div className="col-span-2 min-w-0 text-sm text-muted-foreground sm:text-right">
+      <div className="min-w-0 text-sm text-muted-foreground lg:text-right">
         <div className="inline-flex items-center gap-1">
           <Clock className="h-3 w-3" /> {deliveryLabel}
         </div>
@@ -1255,7 +1232,7 @@ function ProviderRow({
           </div>
         )}
       </div>
-      <div className="col-span-1 sm:text-right">
+      <div className="lg:text-right">
         <TooltipProvider delayDuration={150}>
           <div className="flex items-center justify-end gap-1.5">
             <Tooltip>
@@ -1266,7 +1243,6 @@ function ProviderRow({
                   title={tooltipPreferred}
                   className="btn-cta inline-flex max-w-full shrink-0 items-center justify-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] font-semibold leading-tight"
                 >
-                  <Star className="h-3.5 w-3.5 shrink-0 fill-current" />
                   <Check className="h-3 w-3 shrink-0" />
                   <span className="sr-only truncate">{tCta}</span>
                 </button>

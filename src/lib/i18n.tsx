@@ -303,7 +303,7 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Required",
     "chat.welcome":
-      "Hi 👋 I'm the **mangoglobal** FX copilot. Try a quote (`500 GBP to ARS`) or describe your corporate case.",
+      "Hi 👋 I'm the **mangoglobal Agent**. Try a quote (`500 GBP to ARS`) or describe your corporate case.",
     "chat.placeholder": "e.g. 500 GBP to ARS · or describe your corporate case",
     "chat.error": "I couldn't process that right now. Please try again.",
     "fx.emptyState": "Enter the details to calculate the best rates.",
@@ -475,7 +475,7 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Requerido",
     "chat.welcome":
-      "Hola 👋 Soy el copiloto FX de **mangoglobal**. Probá una cotización (`500 GBP to ARS`) o contame el caso de tu empresa.",
+      "Hola 👋 Soy el **Agente mangoglobal**. Probá una cotización (`500 GBP to ARS`) o contame el caso de tu empresa.",
     "chat.placeholder": "Ej: 500 GBP to ARS · o describí tu caso corporativo",
     "chat.error": "No pude procesar eso ahora. Probá de nuevo.",
     "fx.emptyState": "Introducí los datos para calcular las mejores tasas.",
@@ -648,7 +648,7 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Obrigatório",
     "chat.welcome":
-      "Olá 👋 Sou o copiloto FX da **mangoglobal**. Teste uma cotação (`500 GBP to ARS`) ou descreva o caso da sua empresa.",
+      "Olá 👋 Sou o **Agente mangoglobal**. Teste uma cotação (`500 GBP to ARS`) ou descreva o caso da sua empresa.",
     "chat.placeholder": "Ex: 500 GBP to ARS · ou descreva seu caso corporativo",
     "chat.error": "Não consegui processar isso agora. Tente de novo.",
     "fx.emptyState": "Insira os dados para calcular as melhores taxas.",
@@ -2245,7 +2245,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.combobox.empty": "No results.",
     "comparator.combobox.placeholder": "Select…",
     "comparator.copilot.title": "FX Copilot",
-    "comparator.copilot.agent": "AI Agent ·",
+    "comparator.copilot.agent": "AI Agent",
     "comparator.copilot.placeholder": "Ask a follow-up about this route…",
     "comparator.copilot.empty": "Run a comparison to enable the copilot.",
     "comparator.copilot.send": "Send",
@@ -2286,7 +2286,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.cta": "Continue",
     "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
     "search.guide":
-      "Select your destination country and choose between individual or business account. For local currency exchange, select your current country. Our AI Agent will immediately compare providers and real-time market rates to help you decide.",
+      "Select your destination country and choose between an individual or business profile.",
     "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
     "search.hint": "Independent market comparison. No account required.",
     "search.verified": "Market verified",
