@@ -58,6 +58,7 @@ const FORCE_KEYS = new Set([
   "seo.home.description",
   "search.verified",
   "search.noHiddenFees",
+  "search.destination",
   "search.destinationPrompt",
   "search.guide",
   "search.promise",
