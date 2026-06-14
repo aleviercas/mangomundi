@@ -816,6 +816,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             tRatesSource={t("fx.ratesSource")}
             tAt={t("fx.at")}
             tRecipient={t("fx.recipient")}
+            tAmountSent={t("comparator.table.amountSent")}
             tTotalFee={t("fx.totalFee")}
             tSpeed={t("fx.speed")}
             tCta={t("retail.cta")}
@@ -858,6 +859,7 @@ function ResultsBlock({
   tRatesSource,
   tAt,
   tRecipient,
+  tAmountSent,
   tTotalFee,
   tSpeed,
   tCta,
@@ -879,6 +881,7 @@ function ResultsBlock({
   tRatesSource: string;
   tAt: string;
   tRecipient: string;
+  tAmountSent: string;
   tTotalFee: string;
   tSpeed: string;
   tCta: string;
@@ -1023,10 +1026,11 @@ function ResultsBlock({
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="hidden grid-cols-12 gap-2 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground sm:grid">
           <div className="col-span-3 min-w-0">{tProvider}</div>
-          <div className="col-span-3 min-w-0 text-right">{tRecipient}</div>
+          <div className="col-span-2 min-w-0 text-right">{tAmountSent}</div>
           <div className="col-span-2 min-w-0 text-right">{tTotalFee}</div>
-          <div className="col-span-2 min-w-0 text-right">{tSpeed} · Trust</div>
-          <div className="col-span-2" />
+          <div className="col-span-2 min-w-0 text-right">{tRecipient}</div>
+          <div className="col-span-2 min-w-0 text-right">{tSpeed}</div>
+          <div className="col-span-1" />
         </div>
         {organic.map((row, i) => (
           <ProviderRow
@@ -1116,7 +1120,7 @@ function ProviderRow({
             <span className="truncate font-semibold text-foreground">{row.name}</span>
             {isBest && (
               <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
-                Best
+                {t("comparator.table.bestRate")}
               </span>
             )}
           </div>
@@ -1135,20 +1139,25 @@ function ProviderRow({
           </div>
         </div>
       </div>
-      <div className="col-span-3 min-w-0 sm:text-right">
-        <div className="truncate text-lg font-bold tabular-nums text-foreground">
-          {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-          <span className="text-xs font-normal text-muted-foreground">{quote}</span>
-        </div>
-        <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
+      <div className="col-span-2 min-w-0 text-sm tabular-nums text-foreground sm:text-right">
+        <span className="sm:hidden text-[10px] uppercase text-muted-foreground">{t("comparator.table.amountSent")} · </span>
+        {row.amount_sent.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
       </div>
       <div className="col-span-2 min-w-0 text-sm tabular-nums text-muted-foreground sm:text-right">
+        <span className="sm:hidden text-[10px] uppercase">{t("fx.totalFee")} · </span>
         {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
         <div className="text-[10px]">
           {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
           {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
           {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
         </div>
+      </div>
+      <div className="col-span-2 min-w-0 sm:text-right">
+        <div className="truncate text-lg font-bold tabular-nums text-foreground">
+          {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+          <span className="text-xs font-normal text-muted-foreground">{quote}</span>
+        </div>
+        <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
       </div>
       <div className="col-span-2 min-w-0 text-sm text-muted-foreground sm:text-right">
         <div className="inline-flex items-center gap-1">
@@ -1162,7 +1171,7 @@ function ProviderRow({
           </div>
         )}
       </div>
-      <div className="col-span-2 sm:text-right">
+      <div className="col-span-1 sm:text-right">
         <TooltipProvider delayDuration={150}>
           <div className="flex items-center justify-end gap-1.5">
             <Tooltip>
