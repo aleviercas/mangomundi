@@ -2278,7 +2278,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "mangoglobal may earn affiliate commissions; this does not alter the neutrality of the ranking.",
     "search.eyebrow": "Financial intelligence terminal",
     "search.origin": "Origin country",
-    "search.destination": "Select the recipient country",
+    "search.destination": "SELECT THE RECIPIENT COUNTRY",
     "search.segment": "Profile",
     "search.segment.retail": "Individual",
     "search.segment.business": "Business",
