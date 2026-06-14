@@ -320,7 +320,7 @@ export const DICTS: Record<Lang, Dict> = {
     "about.heroTitleAccent": "Borderless",
     "about.heroTitle2": "World",
     "about.heroSubtitle":
-      "mangoglobal is a neutral decision engine: we connect retail and corporate flows to the best available cross-border route, without provider bias or hidden margins.",
+      "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange provider, without bias or hidden margins.",
     "about.missionTitle": "Our Mission",
     "about.missionBody":
       "Democratise access to the best foreign exchange decisions through neutral, AI-powered intelligence — eliminating information asymmetry and hidden costs from global payments.",
@@ -346,7 +346,7 @@ export const DICTS: Record<Lang, Dict> = {
     "about.v3.body":
       "Our human team is always available to guide users through operational complexity, yet absolute algorithmic impartiality is what processes, distributes, and delivers the best optimized spreads to every party, equitably and without favoritism.",
     // Home
-    "home.hero.title": "International Payments, Intelligently Routed.",
+    "home.hero.title": "International and Local Payments, Intelligently Routed. Agentic AI for Global FX.\u00a0",
     "home.hero.subtitle":
       "Utilize our neutral decision engine to analyze cross-border flow variance, validate execution strategies, and optimize multi-currency routing.",
     "home.flows.title": "Built for every institutional cross-border flow",
@@ -982,7 +982,7 @@ const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
 const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "about.manifesto.headline":
-      "International Payments, Intelligently Routed. Agentic AI for Global FX. 🌐⚡",
+      "Intelligent currency exchange decisions. AI Agent for global and local payments. Best rates for individuals and businesses.",
     "about.manifesto.kicker": "// company manifesto",
     "about.manifesto.missionTitle": "$ Our Mission",
     "about.manifesto.missionText":
@@ -2322,7 +2322,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.cta.compareRates": "Compare Rates",
     "comparator.table.amountSent": "Amount Sent",
     "comparator.table.bestRate": "Best Rate",
-    "about.title": "Financial intelligence for every currency decision.",
+    "about.title": "Financial intelligence for every currency decision",
     "about.metric4.label": "Global providers evaluated in real time",
     "about.coverage.eyebrow": "Market Coverage",
     "about.coverage.title": "One view across the global FX market.",
