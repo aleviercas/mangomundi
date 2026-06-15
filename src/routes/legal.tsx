@@ -79,7 +79,7 @@ const SECTIONS = [
   },
 ];
 
-export const Route = createFileRoute("/legal/")({
+export const Route = createFileRoute("/legal")({
   head: () => ({
     meta: [
       { title: "Legal — mangoglobal" },
