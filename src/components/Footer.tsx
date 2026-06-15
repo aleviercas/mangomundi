@@ -101,11 +101,10 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-start justify-between gap-3 border-t border-slate-200/70 pt-8 sm:flex-row sm:items-center">
+        <div className="mt-14 border-t border-slate-200/70 pt-8">
           <p className="text-xs text-slate-400">
             &copy; {new Date().getFullYear()} mangoglobal. All rights reserved.
           </p>
-          <p className="text-xs text-slate-400">A neutral decision engine.</p>
         </div>
       </div>
     </footer>

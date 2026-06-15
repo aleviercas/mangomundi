@@ -35,7 +35,7 @@ export function HomeSearch() {
   }, [detectCountry]);
 
   return (
-    <div className="mx-auto w-full max-w-lg">
+    <div className="mx-auto w-full max-w-lg lg:mx-0">
       <div className="rounded-[2rem] border border-slate-200/80 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_24px_60px_-20px_rgba(15,23,42,0.18)] sm:p-7">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
@@ -63,7 +63,7 @@ export function HomeSearch() {
         </label>
 
         <div
-          className="mt-4 grid grid-cols-2 rounded-2xl bg-slate-100 p-1.5"
+          className="mt-4 grid grid-cols-2 rounded-2xl bg-slate-200 p-1.5"
           role="tablist"
           aria-label={t("search.segment")}
         >
@@ -76,8 +76,8 @@ export function HomeSearch() {
               onClick={() => setSegment(value)}
               className={`h-11 rounded-xl text-sm font-semibold transition ${
                 segment === value
-                  ? "bg-slate-900 text-white shadow-sm"
-                  : "text-slate-600 hover:text-slate-900"
+                  ? "bg-slate-800 text-white shadow-sm"
+                  : "text-slate-500 hover:text-slate-700"
               }`}
             >
               {t(`search.segment.${value}`)}
@@ -88,7 +88,7 @@ export function HomeSearch() {
         <Button
           asChild
           size="lg"
-          className="mt-4 h-14 w-full rounded-2xl bg-slate-900 text-base font-semibold text-white hover:bg-slate-800"
+          className="mt-4 h-14 w-full rounded-2xl bg-black text-base font-semibold text-white hover:bg-black/90"
         >
           <Link
             to="/compare"
