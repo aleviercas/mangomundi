@@ -25,13 +25,13 @@ const socials = [
 ];
 
 export function Footer() {
-  const navigate = [
+  const navigate: Array<{ to: "/"; hash?: string; label: string }> = [
     { to: "/", label: "Home" },
     { to: "/", hash: "about", label: "About" },
     { to: "/", hash: "how-it-works", label: "How it works" },
     { to: "/", hash: "contact", label: "Contact" },
     { to: "/", hash: "blog", label: "Blog" },
-  ] as const;
+  ];
 
   const legal = [
     { to: "/legal", hash: "terms", label: "Terms of Service" },

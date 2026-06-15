@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PlatformRouteImport } from './routes/platform'
+import { Route as LegalRouteImport } from './routes/legal'
 import { Route as InsuranceRouteImport } from './routes/insurance'
 import { Route as FxToolRouteImport } from './routes/fx-tool'
 import { Route as FeaturesRouteImport } from './routes/features'
@@ -38,6 +39,11 @@ const PricingRoute = PricingRouteImport.update({
 const PlatformRoute = PlatformRouteImport.update({
   id: '/platform',
   path: '/platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InsuranceRoute = InsuranceRouteImport.update({
@@ -81,14 +87,14 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const LegalTermsRoute = LegalTermsRouteImport.update({
-  id: '/legal/terms',
-  path: '/legal/terms',
-  getParentRoute: () => rootRouteImport,
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => LegalRoute,
 } as any)
 const LegalRiskRoute = LegalRiskRouteImport.update({
-  id: '/legal/risk',
-  path: '/legal/risk',
-  getParentRoute: () => rootRouteImport,
+  id: '/risk',
+  path: '/risk',
+  getParentRoute: () => LegalRoute,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
+  '/legal': typeof LegalRouteWithChildren
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
+  '/legal': typeof LegalRouteWithChildren
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
+  '/legal': typeof LegalRouteWithChildren
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -164,6 +173,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/fx-tool'
     | '/insurance'
+    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
@@ -181,6 +191,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/fx-tool'
     | '/insurance'
+    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
@@ -198,6 +209,7 @@ export interface FileRouteTypes {
     | '/features'
     | '/fx-tool'
     | '/insurance'
+    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
@@ -216,12 +228,11 @@ export interface RootRouteChildren {
   FeaturesRoute: typeof FeaturesRoute
   FxToolRoute: typeof FxToolRoute
   InsuranceRoute: typeof InsuranceRoute
+  LegalRoute: typeof LegalRouteWithChildren
   PlatformRoute: typeof PlatformRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminI18nStatusRoute: typeof AdminI18nStatusRoute
-  LegalRiskRoute: typeof LegalRiskRoute
-  LegalTermsRoute: typeof LegalTermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,6 +256,13 @@ declare module '@tanstack/react-router' {
       path: '/platform'
       fullPath: '/platform'
       preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/insurance': {
@@ -305,17 +323,17 @@ declare module '@tanstack/react-router' {
     }
     '/legal/terms': {
       id: '/legal/terms'
-      path: '/legal/terms'
+      path: '/terms'
       fullPath: '/legal/terms'
       preLoaderRoute: typeof LegalTermsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof LegalRoute
     }
     '/legal/risk': {
       id: '/legal/risk'
-      path: '/legal/risk'
+      path: '/risk'
       fullPath: '/legal/risk'
       preLoaderRoute: typeof LegalRiskRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof LegalRoute
     }
     '/blog/$slug': {
       id: '/blog/$slug'
@@ -344,6 +362,18 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface LegalRouteChildren {
+  LegalRiskRoute: typeof LegalRiskRoute
+  LegalTermsRoute: typeof LegalTermsRoute
+}
+
+const LegalRouteChildren: LegalRouteChildren = {
+  LegalRiskRoute: LegalRiskRoute,
+  LegalTermsRoute: LegalTermsRoute,
+}
+
+const LegalRouteWithChildren = LegalRoute._addFileChildren(LegalRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -353,23 +383,12 @@ const rootRouteChildren: RootRouteChildren = {
   FeaturesRoute: FeaturesRoute,
   FxToolRoute: FxToolRoute,
   InsuranceRoute: InsuranceRoute,
+  LegalRoute: LegalRouteWithChildren,
   PlatformRoute: PlatformRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminI18nStatusRoute: AdminI18nStatusRoute,
-  LegalRiskRoute: LegalRiskRoute,
-  LegalTermsRoute: LegalTermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
