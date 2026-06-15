@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PlatformRouteImport } from './routes/platform'
+import { Route as LegalRouteImport } from './routes/legal'
 import { Route as InsuranceRouteImport } from './routes/insurance'
 import { Route as FxToolRouteImport } from './routes/fx-tool'
 import { Route as FeaturesRouteImport } from './routes/features'
@@ -20,8 +21,6 @@ import { Route as CompareRouteImport } from './routes/compare'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as LegalTermsRouteImport } from './routes/legal.terms'
-import { Route as LegalRiskRouteImport } from './routes/legal.risk'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminI18nStatusRouteImport } from './routes/admin.i18n-status'
 
@@ -38,6 +37,11 @@ const PricingRoute = PricingRouteImport.update({
 const PlatformRoute = PlatformRouteImport.update({
   id: '/platform',
   path: '/platform',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalRoute = LegalRouteImport.update({
+  id: '/legal',
+  path: '/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InsuranceRoute = InsuranceRouteImport.update({
@@ -80,16 +84,6 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LegalTermsRoute = LegalTermsRouteImport.update({
-  id: '/legal/terms',
-  path: '/legal/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalRiskRoute = LegalRiskRouteImport.update({
-  id: '/legal/risk',
-  path: '/legal/risk',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -110,13 +104,12 @@ export interface FileRoutesByFullPath {
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
+  '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/legal/risk': typeof LegalRiskRoute
-  '/legal/terms': typeof LegalTermsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -127,13 +120,12 @@ export interface FileRoutesByTo {
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
+  '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/legal/risk': typeof LegalRiskRoute
-  '/legal/terms': typeof LegalTermsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -145,13 +137,12 @@ export interface FileRoutesById {
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
+  '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
-  '/legal/risk': typeof LegalRiskRoute
-  '/legal/terms': typeof LegalTermsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -164,13 +155,12 @@ export interface FileRouteTypes {
     | '/features'
     | '/fx-tool'
     | '/insurance'
+    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
     | '/admin/i18n-status'
     | '/blog/$slug'
-    | '/legal/risk'
-    | '/legal/terms'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -181,13 +171,12 @@ export interface FileRouteTypes {
     | '/features'
     | '/fx-tool'
     | '/insurance'
+    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
     | '/admin/i18n-status'
     | '/blog/$slug'
-    | '/legal/risk'
-    | '/legal/terms'
   id:
     | '__root__'
     | '/'
@@ -198,13 +187,12 @@ export interface FileRouteTypes {
     | '/features'
     | '/fx-tool'
     | '/insurance'
+    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
     | '/admin/i18n-status'
     | '/blog/$slug'
-    | '/legal/risk'
-    | '/legal/terms'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -216,12 +204,11 @@ export interface RootRouteChildren {
   FeaturesRoute: typeof FeaturesRoute
   FxToolRoute: typeof FxToolRoute
   InsuranceRoute: typeof InsuranceRoute
+  LegalRoute: typeof LegalRoute
   PlatformRoute: typeof PlatformRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminI18nStatusRoute: typeof AdminI18nStatusRoute
-  LegalRiskRoute: typeof LegalRiskRoute
-  LegalTermsRoute: typeof LegalTermsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/platform'
       fullPath: '/platform'
       preLoaderRoute: typeof PlatformRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/legal': {
+      id: '/legal'
+      path: '/legal'
+      fullPath: '/legal'
+      preLoaderRoute: typeof LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/insurance': {
@@ -303,20 +297,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legal/terms': {
-      id: '/legal/terms'
-      path: '/legal/terms'
-      fullPath: '/legal/terms'
-      preLoaderRoute: typeof LegalTermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/legal/risk': {
-      id: '/legal/risk'
-      path: '/legal/risk'
-      fullPath: '/legal/risk'
-      preLoaderRoute: typeof LegalRiskRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/$slug'
@@ -353,12 +333,11 @@ const rootRouteChildren: RootRouteChildren = {
   FeaturesRoute: FeaturesRoute,
   FxToolRoute: FxToolRoute,
   InsuranceRoute: InsuranceRoute,
+  LegalRoute: LegalRoute,
   PlatformRoute: PlatformRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminI18nStatusRoute: AdminI18nStatusRoute,
-  LegalRiskRoute: LegalRiskRoute,
-  LegalTermsRoute: LegalTermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
