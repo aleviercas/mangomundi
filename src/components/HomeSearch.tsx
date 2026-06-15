@@ -35,13 +35,20 @@ export function HomeSearch() {
   }, [detectCountry]);
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      <p className="mx-auto mb-4 max-w-3xl text-center text-sm leading-relaxed text-muted-foreground">
-        {t("search.guide")}
-      </p>
-      <div className="grid items-stretch gap-2 rounded-[2rem] border border-border/70 bg-card/80 p-2 shadow-[0_32px_80px_-28px_color-mix(in_oklab,var(--foreground)_22%,transparent)] backdrop-blur-xl lg:grid-cols-[1fr_auto_auto] lg:items-center">
-        <label className="block min-w-0 rounded-3xl px-5 py-4 transition-colors hover:bg-background/70">
-          <span className="mb-2 block text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+    <div className="mx-auto w-full max-w-lg">
+      <div className="rounded-[2rem] border border-slate-200/80 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_24px_60px_-20px_rgba(15,23,42,0.18)] sm:p-7">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
+            {t("search.startTransfer")}
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            {t("search.liveRates")}
+          </span>
+        </div>
+
+        <label className="mt-6 block">
+          <span className="mb-2 block text-sm font-medium text-slate-700">
             {t("search.destination")}
           </span>
           <CountrySelect
@@ -51,64 +58,66 @@ export function HomeSearch() {
             searchPlaceholder={t("comparator.combobox.search")}
             emptyLabel={t("comparator.combobox.empty")}
             ariaLabel={t("search.destination")}
-            triggerClassName="h-12 border-0 bg-transparent px-0 text-base font-semibold shadow-none focus:ring-0"
+            triggerClassName="h-14 rounded-2xl border border-slate-200 bg-white px-4 text-base font-medium hover:border-slate-300 focus:ring-2 focus:ring-slate-900/10"
           />
         </label>
-        <div className="px-3 py-3">
-          <span className="mb-2 block text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-            {t("search.segment")}
-          </span>
-          <div
-            className="flex h-12 rounded-2xl border border-border/60 bg-muted/70 p-1.5"
-            role="tablist"
-          >
-            {(["retail", "business"] as Segment[]).map((value) => (
-              <Button
-                key={value}
-                type="button"
-                variant={segment === value ? "default" : "ghost"}
-                size="sm"
-                role="tab"
-                aria-selected={segment === value}
-                onClick={() => setSegment(value)}
-                className="h-9 flex-1 rounded-xl px-5"
-              >
-                {t(`search.segment.${value}`)}
-              </Button>
-            ))}
-          </div>
-        </div>
-        <div className="p-1">
-          <Button
-            asChild
-            size="lg"
-            className="h-16 w-full rounded-[1.6rem] bg-foreground px-8 text-background shadow-xl hover:bg-foreground/90 lg:w-auto"
-          >
-            <Link
-              to="/compare"
-              search={{ origin, destination, segment, from, to, amount: 1000, lang }}
-              aria-disabled={!ready}
-              className={!ready ? "pointer-events-none opacity-50" : ""}
-              onClick={() =>
-                track("comparator_query", {
-                  from_currency: from,
-                  to_currency: to,
-                  segment,
-                  source: "home_search",
-                })
-              }
+
+        <div
+          className="mt-4 grid grid-cols-2 rounded-2xl bg-slate-100 p-1.5"
+          role="tablist"
+          aria-label={t("search.segment")}
+        >
+          {(["retail", "business"] as Segment[]).map((value) => (
+            <button
+              key={value}
+              type="button"
+              role="tab"
+              aria-selected={segment === value}
+              onClick={() => setSegment(value)}
+              className={`h-11 rounded-xl text-sm font-semibold transition ${
+                segment === value
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
             >
-              {t("search.cta")} <ArrowRight className="h-5 w-5" />
-            </Link>
-          </Button>
+              {t(`search.segment.${value}`)}
+            </button>
+          ))}
         </div>
+
+        <Button
+          asChild
+          size="lg"
+          className="mt-4 h-14 w-full rounded-2xl bg-slate-900 text-base font-semibold text-white hover:bg-slate-800"
+        >
+          <Link
+            to="/compare"
+            search={{ origin, destination, segment, from, to, amount: 1000, lang }}
+            aria-disabled={!ready}
+            className={!ready ? "pointer-events-none opacity-50" : ""}
+            onClick={() =>
+              track("comparator_query", {
+                from_currency: from,
+                to_currency: to,
+                segment,
+                source: "home_search",
+              })
+            }
+          >
+            {t("search.cta")} <ArrowRight className="h-5 w-5" />
+          </Link>
+        </Button>
       </div>
-      <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[11px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
+
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
         {promiseItems.map((item, index) => {
           const Icon = promiseIcons[index] ?? CircleCheck;
           return (
-            <span key={item} className="inline-flex items-center gap-2">
-              <Icon className="h-3.5 w-3.5 shrink-0 text-accent" />
+            <span
+              key={item}
+              className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3.5 py-1.5 text-xs font-medium text-slate-700"
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0 text-[#ff6b5b]" />
               {item}
             </span>
           );
