@@ -35,7 +35,7 @@ export function HomeSearch() {
   }, [detectCountry]);
 
   return (
-    <div className="mx-auto w-full max-w-lg">
+    <div className="mx-auto w-full max-w-lg lg:mx-0">
       <div className="rounded-[2rem] border border-slate-200/80 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_24px_60px_-20px_rgba(15,23,42,0.18)] sm:p-7">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
