@@ -487,5 +487,7 @@
   "comparator.field.amountReceived": "Amount received",
   "comparator.cta.compareRates": "Compare Rates",
   "comparator.table.amountSent": "Amount Sent",
-  "comparator.table.bestRate": "Best Rate"
+  "comparator.table.bestRate": "Best Rate",
+  "search.startTransfer": "Start a transfer",
+  "search.liveRates": "Live rates"
 }
