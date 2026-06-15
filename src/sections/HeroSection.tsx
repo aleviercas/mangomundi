@@ -13,7 +13,6 @@ export function HeroSection() {
             >
               decisions
             </span>
-            .
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-base font-medium leading-relaxed text-slate-500 sm:text-lg">
             A neutral decision engine that compares cross-border routes and local currency exchange operators in real time — without bias or hidden margins.

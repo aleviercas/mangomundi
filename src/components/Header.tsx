@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
+import { LangSwitcher } from "@/components/LangSwitcher";
 
 export function Header() {
   return (
@@ -8,6 +9,7 @@ export function Header() {
         <Link to="/" aria-label="mangoglobal home" className="flex items-center">
           <Wordmark className="text-xl" />
         </Link>
+        <LangSwitcher />
       </div>
     </header>
   );
