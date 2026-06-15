@@ -1,122 +1,179 @@
 {
-  "generatedAt": "2026-06-14T17:58:06.480Z",
-  "ok": true,
-  "enKeyCount": 489,
+  "generatedAt": "2026-06-15T10:31:18.797Z",
+  "ok": false,
+  "enKeyCount": 491,
   "brokenLangs": [],
   "perLang": {
     "es": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "pt": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "ru": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "tr": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "bn": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "ur": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "zh": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "pl": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "hi": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "tl": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "vi": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "ar": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "de": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "fr": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "it": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "ja": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "ko": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "id": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     },
     "th": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9959,
+      "missing": 2,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "search.startTransfer",
+        "search.liveRates"
+      ]
     }
   }
 }
