@@ -1,3 +1,5 @@
+import { useI18n } from "@/lib/i18n";
+
 const STEPS = [
   {
     n: "01",
@@ -22,6 +24,7 @@ const STEPS = [
 ];
 
 export function HowItWorksSection() {
+  const { t } = useI18n();
   return (
     <section id="how-it-works" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -30,6 +33,9 @@ export function HowItWorksSection() {
           <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
             Four steps to a better exchange rate.
           </h2>
+          <p className="mt-6 text-base leading-relaxed text-slate-500 sm:text-lg">
+            {t("search.guide")}
+          </p>
         </div>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {STEPS.map((s) => (
