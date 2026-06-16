@@ -642,13 +642,13 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </div>
         )}
 
-        {/* AI reasoning + embedded chat */}
+        {/* Unified AI Agent card: summary + chat */}
         {(aiLoading || aiText) && (
           <div className="surface-card mt-6 overflow-hidden">
             <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <Sparkle className="h-3.5 w-3.5 text-foreground" />
-                <span className="truncate">{t("comparator.reasoning.title")}</span>
+                <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
+                <span className="truncate">{t("comparator.copilot.agent")}</span>
               </div>
               {aiText && !aiLoading && (
                 <div className="flex shrink-0 items-center gap-1.5">
@@ -680,49 +680,31 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                 </div>
               ) : (
                 <>
-                  <ul className="grid gap-1.5 text-sm leading-relaxed text-foreground sm:grid-cols-3">
-                    <li className="min-w-0">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Corridor
-                      </div>
-                      <div className="truncate font-semibold">
-                        {from} → {to}
-                      </div>
+                  {/* Simplified summary bullets */}
+                  <ul className="space-y-1.5 text-sm leading-relaxed text-foreground">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                      <span>
+                        Sending <strong className="tabular-nums">{amount.toLocaleString()} {from}</strong> to <strong>{to}</strong>
+                        {result && (
+                          <> · best route delivers <strong className="tabular-nums">{Math.max(...result.rows.map((r) => r.received)).toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.quote}</strong></>
+                        )}
+                      </span>
                     </li>
-                    <li className="min-w-0">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Notional
-                      </div>
-                      <div className="truncate font-semibold tabular-nums">
-                        {amount.toLocaleString()} {from}
-                      </div>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                      <span className="capitalize">{segment} · {urgency} delivery</span>
                     </li>
-                    <li className="min-w-0">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Segment · Urgency
-                      </div>
-                      <div className="truncate font-semibold capitalize">
-                        {segment} · {urgency}
-                      </div>
-                    </li>
+                    {result && result.rows[0] && (
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                        <span>Top pick: <strong>{[...result.rows].sort((a, b) => b.received - a.received)[0].name}</strong></span>
+                      </li>
+                    )}
                   </ul>
 
-                  <div className="border-t border-border pt-3">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                      {t("comparator.reasoning.context")}
-                    </div>
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-                      {aiText}
-                    </p>
-                  </div>
-
-                  {/* Embedded FX Copilot */}
-                  <div className="mt-2 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
-                    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                       <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
-                       <span className="truncate">{t("comparator.copilot.agent")}</span>
-                    </div>
-
+                  {/* Chat */}
+                  <div className="rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
                     {chat.length === 0 && (
                       <div className="mb-3 flex flex-wrap gap-2">
                         {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
