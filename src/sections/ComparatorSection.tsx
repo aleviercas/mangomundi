@@ -1120,7 +1120,6 @@ function ProviderRow({
 }) {
   const { t } = useI18n();
   const tooltipPreferred = t("comparator.tooltip.preferred_rate");
-  const tooltipWarn = t("comparator.tooltip.discount_warning");
   const deliveryLabel =
     row.delivery_minutes != null
       ? row.delivery_minutes < 60
