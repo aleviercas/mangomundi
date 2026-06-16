@@ -1140,7 +1140,7 @@ function ProviderRow({
   tCta: string;
 }) {
   const { t } = useI18n();
-  const tooltipPreferred = t("comparator.tooltip.preferred_rate");
+  const tooltipPreferred = t("comparator.tooltip.proceed");
   const deliveryLabel =
     row.delivery_minutes != null
       ? row.delivery_minutes < 60
