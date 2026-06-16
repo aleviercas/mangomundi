@@ -1227,12 +1227,11 @@ function ProviderRow({
       <div className="lg:text-right">
         <button
           onClick={onClick}
-          aria-label={tooltipPreferred}
-          title={tooltipPreferred}
-          className="btn-cta inline-flex w-full items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold leading-tight lg:w-auto"
+          aria-label={`${tCta} — ${row.name}`}
+          title={`${tCta} — ${row.name}`}
+          className="btn-cta inline-flex h-10 w-full items-center justify-center rounded-md px-3 text-xs font-semibold leading-tight lg:h-9 lg:w-10 lg:px-0"
         >
-          {tCta}
-          <ArrowRight className="h-3.5 w-3.5 shrink-0" />
+          <ArrowRight className="h-4 w-4 shrink-0" />
         </button>
       </div>
     </div>
