@@ -16,7 +16,8 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-base font-medium leading-relaxed text-slate-500 sm:text-lg lg:mx-0">
-              A transparent decision engine for global and local payments. The AI agent compares cross-border routes and local currency exchanges in real time, without bias or hidden margins, for individuals and businesses.
+              A transparent AI agent for global and local payments, comparing exchange rates, fees,
+              routes, and delivery speeds in real time to find the best option for every transfer.
             </p>
           </div>
           <div className="mt-4 lg:mt-0">

@@ -288,20 +288,10 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       urgency,
       source: "home_results",
     });
-    // Push reassurance message in chat (discount protection / conversion guard)
-    const providerName = name || slug;
-    const redirectMsg = t("comparator.copilot.redirecting").replace("{provider}", providerName);
-    setChat((c) => [...c, { role: "assistant", content: redirectMsg }]);
-    setModalCtx({
-      amount,
-      fromCurrency: from,
-      toCurrency: to,
-      sendingCountry,
-      receivingCountry,
-      providerSlug: slug,
-      affiliateBaseUrl: url,
-    });
-    setModalOpen(true);
+    void name;
+    if (typeof window !== "undefined" && url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   const handleSaveAlert = () => {
@@ -652,13 +642,13 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </div>
         )}
 
-        {/* AI reasoning + embedded chat */}
+        {/* Unified AI Agent card: summary + chat */}
         {(aiLoading || aiText) && (
           <div className="surface-card mt-6 overflow-hidden">
             <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <Sparkle className="h-3.5 w-3.5 text-foreground" />
-                <span className="truncate">{t("comparator.reasoning.title")}</span>
+                <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
+                <span className="truncate">{t("comparator.copilot.agent")}</span>
               </div>
               {aiText && !aiLoading && (
                 <div className="flex shrink-0 items-center gap-1.5">
@@ -690,49 +680,52 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                 </div>
               ) : (
                 <>
-                  <ul className="grid gap-1.5 text-sm leading-relaxed text-foreground sm:grid-cols-3">
-                    <li className="min-w-0">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Corridor
-                      </div>
-                      <div className="truncate font-semibold">
-                        {from} → {to}
-                      </div>
+                  {/* Simplified summary bullets */}
+                  <ul className="space-y-1.5 text-sm leading-relaxed text-foreground">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                      <span>
+                        Sending{" "}
+                        <strong className="tabular-nums">
+                          {amount.toLocaleString()} {from}
+                        </strong>{" "}
+                        to <strong>{to}</strong>
+                        {result && (
+                          <>
+                            {" "}
+                            · best route delivers{" "}
+                            <strong className="tabular-nums">
+                              {Math.max(...result.rows.map((r) => r.received)).toLocaleString(
+                                undefined,
+                                { maximumFractionDigits: 2 },
+                              )}{" "}
+                              {result.quote}
+                            </strong>
+                          </>
+                        )}
+                      </span>
                     </li>
-                    <li className="min-w-0">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Notional
-                      </div>
-                      <div className="truncate font-semibold tabular-nums">
-                        {amount.toLocaleString()} {from}
-                      </div>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                      <span className="capitalize">
+                        {segment} · {urgency} delivery
+                      </span>
                     </li>
-                    <li className="min-w-0">
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                        Segment · Urgency
-                      </div>
-                      <div className="truncate font-semibold capitalize">
-                        {segment} · {urgency}
-                      </div>
-                    </li>
+                    {result && result.rows[0] && (
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                        <span>
+                          Top pick:{" "}
+                          <strong>
+                            {[...result.rows].sort((a, b) => b.received - a.received)[0].name}
+                          </strong>
+                        </span>
+                      </li>
+                    )}
                   </ul>
 
-                  <div className="border-t border-border pt-3">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                      {t("comparator.reasoning.context")}
-                    </div>
-                    <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
-                      {aiText}
-                    </p>
-                  </div>
-
-                  {/* Embedded FX Copilot */}
-                  <div className="mt-2 rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
-                    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                       <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
-                       <span className="truncate">{t("comparator.copilot.agent")}</span>
-                    </div>
-
+                  {/* Chat */}
+                  <div className="rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
                     {chat.length === 0 && (
                       <div className="mb-3 flex flex-wrap gap-2">
                         {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
@@ -1148,7 +1141,6 @@ function ProviderRow({
 }) {
   const { t } = useI18n();
   const tooltipPreferred = t("comparator.tooltip.preferred_rate");
-  const tooltipWarn = t("comparator.tooltip.discount_warning");
   const deliveryLabel =
     row.delivery_minutes != null
       ? row.delivery_minutes < 60
@@ -1233,38 +1225,15 @@ function ProviderRow({
         )}
       </div>
       <div className="lg:text-right">
-        <TooltipProvider delayDuration={150}>
-          <div className="flex items-center justify-end gap-1.5">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={onClick}
-                  aria-label={tooltipPreferred}
-                  title={tooltipPreferred}
-                  className="btn-cta inline-flex max-w-full shrink-0 items-center justify-center gap-1 rounded-md px-2.5 py-1.5 text-[11px] font-semibold leading-tight"
-                >
-                  <Check className="h-3 w-3 shrink-0" />
-                  <span className="sr-only truncate">{tCta}</span>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top">{tooltipPreferred}</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  aria-label={tooltipWarn}
-                  className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:text-amber-600"
-                >
-                  <Info className="h-3.5 w-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-[220px] bg-amber-600 text-white">
-                {tooltipWarn}
-              </TooltipContent>
-            </Tooltip>
-          </div>
-        </TooltipProvider>
+        <button
+          onClick={onClick}
+          aria-label={tooltipPreferred}
+          title={tooltipPreferred}
+          className="btn-cta inline-flex w-full items-center justify-center gap-1.5 rounded-md px-3 py-2 text-xs font-semibold leading-tight lg:w-auto"
+        >
+          {tCta}
+          <ArrowRight className="h-3.5 w-3.5 shrink-0" />
+        </button>
       </div>
     </div>
   );
