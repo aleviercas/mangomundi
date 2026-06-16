@@ -288,20 +288,10 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       urgency,
       source: "home_results",
     });
-    // Push reassurance message in chat (discount protection / conversion guard)
-    const providerName = name || slug;
-    const redirectMsg = t("comparator.copilot.redirecting").replace("{provider}", providerName);
-    setChat((c) => [...c, { role: "assistant", content: redirectMsg }]);
-    setModalCtx({
-      amount,
-      fromCurrency: from,
-      toCurrency: to,
-      sendingCountry,
-      receivingCountry,
-      providerSlug: slug,
-      affiliateBaseUrl: url,
-    });
-    setModalOpen(true);
+    void name;
+    if (typeof window !== "undefined" && url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   const handleSaveAlert = () => {
