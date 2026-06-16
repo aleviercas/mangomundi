@@ -685,20 +685,41 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                     <li className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                       <span>
-                        Sending <strong className="tabular-nums">{amount.toLocaleString()} {from}</strong> to <strong>{to}</strong>
+                        Sending{" "}
+                        <strong className="tabular-nums">
+                          {amount.toLocaleString()} {from}
+                        </strong>{" "}
+                        to <strong>{to}</strong>
                         {result && (
-                          <> · best route delivers <strong className="tabular-nums">{Math.max(...result.rows.map((r) => r.received)).toLocaleString(undefined, { maximumFractionDigits: 2 })} {result.quote}</strong></>
+                          <>
+                            {" "}
+                            · best route delivers{" "}
+                            <strong className="tabular-nums">
+                              {Math.max(...result.rows.map((r) => r.received)).toLocaleString(
+                                undefined,
+                                { maximumFractionDigits: 2 },
+                              )}{" "}
+                              {result.quote}
+                            </strong>
+                          </>
                         )}
                       </span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
-                      <span className="capitalize">{segment} · {urgency} delivery</span>
+                      <span className="capitalize">
+                        {segment} · {urgency} delivery
+                      </span>
                     </li>
                     {result && result.rows[0] && (
                       <li className="flex items-start gap-2">
                         <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span>Top pick: <strong>{[...result.rows].sort((a, b) => b.received - a.received)[0].name}</strong></span>
+                        <span>
+                          Top pick:{" "}
+                          <strong>
+                            {[...result.rows].sort((a, b) => b.received - a.received)[0].name}
+                          </strong>
+                        </span>
                       </li>
                     )}
                   </ul>

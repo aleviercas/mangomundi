@@ -16,7 +16,8 @@ export function HeroSection() {
               </span>
             </h1>
             <p className="mx-auto mt-6 max-w-2xl text-base font-medium leading-relaxed text-slate-500 sm:text-lg lg:mx-0">
-              A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.
+              A transparent AI agent for global and local payments, comparing exchange rates, fees,
+              routes, and delivery speeds in real time to find the best option for every transfer.
             </p>
           </div>
           <div className="mt-4 lg:mt-0">
