@@ -5,11 +5,11 @@ const SECTIONS = [
     id: "terms",
     title: "Terms of Service",
     intro:
-      "These Terms govern your access to and use of mangomundi. By using the service you accept these Terms.",
+      "These Terms govern your access to and use of Mangomundi. By using the service you accept these Terms.",
     body: [
       {
         h: "01 — Service",
-        p: "mangomundi is a neutral decision engine that compares foreign exchange providers and corridors. We do not execute transactions or hold customer funds.",
+        p: "Mangomundi is a neutral decision engine that compares foreign exchange providers and corridors. We do not execute transactions or hold customer funds.",
       },
       {
         h: "02 — Information accuracy",
@@ -21,7 +21,7 @@ const SECTIONS = [
       },
       {
         h: "04 — Liability",
-        p: "The service is provided on an \"as is\" basis. To the maximum extent permitted by law, mangomundi is not liable for indirect or consequential losses arising from use of the service.",
+        p: "The service is provided on an \"as is\" basis. To the maximum extent permitted by law, Mangomundi is not liable for indirect or consequential losses arising from use of the service.",
       },
       {
         h: "05 — Contact",
@@ -41,7 +41,7 @@ const SECTIONS = [
       },
       {
         h: "02 — Counterparty risk",
-        p: "Transactions are executed by the provider you select. mangomundi does not guarantee the performance, solvency or regulatory status of any third-party provider.",
+        p: "Transactions are executed by the provider you select. Mangomundi does not guarantee the performance, solvency or regulatory status of any third-party provider.",
       },
       {
         h: "03 — Regulatory variation",
@@ -82,12 +82,12 @@ const SECTIONS = [
 export const Route = createFileRoute("/legal")({
   head: () => ({
     meta: [
-      { title: "Legal — mangomundi" },
+      { title: "Legal — Mangomundi" },
       {
         name: "description",
-        content: "Terms of Service, Risk Disclosure and Privacy Policy for mangomundi.",
+        content: "Terms of Service, Risk Disclosure and Privacy Policy for Mangomundi.",
       },
-      { property: "og:title", content: "Legal — mangomundi" },
+      { property: "og:title", content: "Legal — Mangomundi" },
       { property: "og:url", content: "https://mangomundi.lovable.app/legal" },
     ],
     links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/legal" }],
