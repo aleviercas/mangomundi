@@ -5,18 +5,18 @@ interface WordmarkProps {
 }
 
 /**
- * mangomundi wordmark — 100% monocromático, minúsculas.
- * Contraste tipográfico marcado: "mango" font-black, "global" font-extralight.
+ * mangomundi wordmark — bicromático, minúsculas, bold.
+ * "mango" en foreground, "mundi" en accent (coral), siguiendo el lockup oficial.
  */
 export function Wordmark({ className = "", tone = "dark" }: WordmarkProps) {
   const colour = tone === "light" ? "text-foreground" : "text-foreground";
   return (
     <span
-      className={`font-sans lowercase leading-none ${colour} ${className}`}
+      className={`font-sans lowercase leading-none font-black tracking-tight ${colour} ${className}`}
       aria-label="mangomundi"
     >
-      <span className="font-black tracking-tight">mango</span>
-      <span className="font-extralight tracking-wide">global</span>
+      <span>mango</span>
+      <span className="text-accent">mundi</span>
     </span>
   );
 }
