@@ -2235,7 +2235,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "AI agent for global and local payments. Best rates for individuals and businesses.",
     "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",
     "seo.home.description":
-      "AI agent for global and local payments. Best rates for individuals and businesses.",
+      "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.",
     "comparator.title": "Find the optimal route",
     "comparator.subtitle": "Geography, amount, currencies, urgency — one decision engine.",
     "comparator.cta.compare": "Compare Providers",
