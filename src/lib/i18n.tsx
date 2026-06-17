@@ -2342,7 +2342,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
     "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",
     "seo.home.description":
-      "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
+      "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.",
     "hero.subheadline":
       "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
     "comparator.subheadline": "Tasas en vivo · IA neutral · +30 proveedores",
