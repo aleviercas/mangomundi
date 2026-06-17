@@ -25,7 +25,7 @@ const SECTIONS = [
       },
       {
         h: "05 — Contact",
-        p: "Questions about these Terms can be sent to legal@mangomundi.com.",
+        p: "Questions about these Terms can be sent to hello@mangomundi.com.",
       },
     ],
   },
@@ -73,7 +73,7 @@ const SECTIONS = [
       },
       {
         h: "04 — Your rights",
-        p: "You can request access, correction, or deletion of your personal data by writing to privacy@mangomundi.com.",
+        p: "You can request access, correction, or deletion of your personal data by writing to hello@mangomundi.com.",
       },
     ],
   },
