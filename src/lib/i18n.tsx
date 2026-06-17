@@ -2231,7 +2231,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.segment.business": "Business",
     "hero.subheadline.short":
       "AI agent for global and local payments. Best rates for individuals and businesses.",
-    "seo.home.title": "Intelligent Currency Exchange — mangomundi",
+    "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",
     "seo.home.description":
       "AI agent for global and local payments. Best rates for individuals and businesses.",
     "comparator.title": "Find the optimal route",
@@ -2338,7 +2338,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "hero.headline": "Decisiones inteligentes de cambio de divisas",
     "hero.subheadline.short":
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
-    "seo.home.title": "Cambio de divisas inteligente — mangomundi",
+    "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",
     "seo.home.description":
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
     "hero.subheadline":
