@@ -1,83 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-
-const SECTIONS = [
-  {
-    id: "terms",
-    title: "Terms of Service",
-    intro:
-      "These Terms govern your access to and use of Mangomundi. By using the service you accept these Terms.",
-    body: [
-      {
-        h: "01 — Service",
-        p: "Mangomundi is a neutral decision engine that compares foreign exchange providers and corridors. We do not execute transactions or hold customer funds.",
-      },
-      {
-        h: "02 — Information accuracy",
-        p: "Quotes and provider data are sourced in real time from third parties. Final terms are governed by each provider at execution.",
-      },
-      {
-        h: "03 — Acceptable use",
-        p: "You agree to use the service only for lawful purposes and to not misuse the platform, attempt to interfere with its operation, or scrape data without permission.",
-      },
-      {
-        h: "04 — Liability",
-        p: "The service is provided on an \"as is\" basis. To the maximum extent permitted by law, Mangomundi is not liable for indirect or consequential losses arising from use of the service.",
-      },
-      {
-        h: "05 — Contact",
-        p: "Questions about these Terms can be sent to hello@mangomundi.com.",
-      },
-    ],
-  },
-  {
-    id: "risk",
-    title: "Risk Disclosure",
-    intro:
-      "Foreign exchange markets are volatile. Quoted rates, fees and delivery times can change between comparison and execution.",
-    body: [
-      {
-        h: "01 — Market risk",
-        p: "Exchange rates fluctuate continuously. Comparisons shown are indicative at the moment of query and may differ from the rate offered by a provider at the moment of execution.",
-      },
-      {
-        h: "02 — Counterparty risk",
-        p: "Transactions are executed by the provider you select. Mangomundi does not guarantee the performance, solvency or regulatory status of any third-party provider.",
-      },
-      {
-        h: "03 — Regulatory variation",
-        p: "Availability of corridors and providers varies by jurisdiction. You are responsible for ensuring use of a provider complies with local laws.",
-      },
-      {
-        h: "04 — No financial advice",
-        p: "Information presented is for comparison purposes only and does not constitute financial, tax, or legal advice.",
-      },
-    ],
-  },
-  {
-    id: "privacy",
-    title: "Privacy Policy",
-    intro:
-      "We collect only what we need to operate the comparison engine and improve the product. We do not sell personal data.",
-    body: [
-      {
-        h: "01 — Data we collect",
-        p: "Query parameters (corridor, amount, segment), basic device and geolocation signals, and any information you voluntarily provide via inquiry forms.",
-      },
-      {
-        h: "02 — How we use it",
-        p: "To return relevant comparisons, improve accuracy of the decision engine, and respond to partnership or institutional inquiries.",
-      },
-      {
-        h: "03 — Sharing",
-        p: "We share data with sub-processors strictly necessary to operate the service (e.g. hosting, analytics). We never sell personal data.",
-      },
-      {
-        h: "04 — Your rights",
-        p: "You can request access, correction, or deletion of your personal data by writing to hello@mangomundi.com.",
-      },
-    ],
-  },
-];
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/legal")({
   head: () => ({
@@ -96,17 +18,53 @@ export const Route = createFileRoute("/legal")({
 });
 
 function LegalPage() {
+  const { t } = useI18n();
+  const sections = [
+    {
+      id: "terms",
+      title: t("legal.terms.title"),
+      intro: t("legal.terms.intro"),
+      body: [
+        { h: t("legal.terms.h1"), p: t("legal.terms.p1") },
+        { h: t("legal.terms.h2"), p: t("legal.terms.p2") },
+        { h: t("legal.terms.h3"), p: t("legal.terms.p3") },
+        { h: t("legal.terms.h4"), p: t("legal.terms.p4") },
+        { h: t("legal.terms.h5"), p: t("legal.terms.p5") },
+      ],
+    },
+    {
+      id: "risk",
+      title: t("legal.risk.title"),
+      intro: t("legal.risk.intro"),
+      body: [
+        { h: t("legal.risk.h1"), p: t("legal.risk.p1") },
+        { h: t("legal.risk.h2"), p: t("legal.risk.p2") },
+        { h: t("legal.risk.h3"), p: t("legal.risk.p3") },
+        { h: t("legal.risk.h4"), p: t("legal.risk.p4") },
+      ],
+    },
+    {
+      id: "privacy",
+      title: t("legal.privacy.title"),
+      intro: t("legal.privacy.intro"),
+      body: [
+        { h: t("legal.privacy.h1"), p: t("legal.privacy.p1") },
+        { h: t("legal.privacy.h2"), p: t("legal.privacy.p2") },
+        { h: t("legal.privacy.h3"), p: t("legal.privacy.p3") },
+        { h: t("legal.privacy.h4"), p: t("legal.privacy.p4") },
+      ],
+    },
+  ];
+
   return (
     <main className="mx-auto max-w-4xl px-5 pt-28 pb-20 sm:px-8">
       <h1 className="font-heading text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-        Legal &amp; Compliance
+        {t("legal.pageTitle")}
       </h1>
-      <p className="mt-4 text-base text-slate-500">
-        Terms of Service, Risk Disclosure and Privacy Policy.
-      </p>
+      <p className="mt-4 text-base text-slate-500">{t("legal.pageSubtitle")}</p>
 
       <nav className="mt-8 flex flex-wrap gap-2">
-        {SECTIONS.map((s) => (
+        {sections.map((s) => (
           <a
             key={s.id}
             href={`#${s.id}`}
@@ -118,7 +76,7 @@ function LegalPage() {
       </nav>
 
       <div className="mt-12 space-y-12">
-        {SECTIONS.map((s) => (
+        {sections.map((s) => (
           <section
             key={s.id}
             id={s.id}

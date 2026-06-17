@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
+import { useI18n } from "@/lib/i18n";
 
 const socials = [
   {
@@ -25,18 +26,19 @@ const socials = [
 ];
 
 export function Footer() {
+  const { t } = useI18n();
   const navigate: Array<{ to: "/"; hash?: string; label: string }> = [
-    { to: "/", label: "Home" },
-    { to: "/", hash: "about", label: "About" },
-    { to: "/", hash: "how-it-works", label: "How it works" },
-    { to: "/", hash: "contact", label: "Contact" },
-    { to: "/", hash: "blog", label: "Blog" },
+    { to: "/", label: t("footer.nav.home") },
+    { to: "/", hash: "about", label: t("footer.nav.about") },
+    { to: "/", hash: "how-it-works", label: t("footer.nav.how") },
+    { to: "/", hash: "contact", label: t("footer.nav.contact") },
+    { to: "/", hash: "blog", label: t("footer.nav.blog") },
   ];
 
   const legal = [
-    { to: "/legal", hash: "terms", label: "Terms of Service" },
-    { to: "/legal", hash: "risk", label: "Risk Disclosure" },
-    { to: "/legal", hash: "privacy", label: "Privacy Policy" },
+    { to: "/legal", hash: "terms", label: t("footer.legal.terms") },
+    { to: "/legal", hash: "risk", label: t("footer.legal.risk") },
+    { to: "/legal", hash: "privacy", label: t("footer.legal.privacy") },
   ] as const;
 
   return (
@@ -48,7 +50,7 @@ export function Footer() {
               <Wordmark className="text-2xl" />
             </Link>
             <p className="mt-4 max-w-sm text-sm text-slate-500">
-              Intelligent currency exchange decisions.
+              {t("footer.tagline")}
             </p>
             <div className="mt-6 flex items-center gap-3">
               {socials.map((s) => (
@@ -67,7 +69,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-slate-900">Navigate</h3>
+            <h3 className="font-heading text-sm font-bold text-slate-900">{t("footer.nav.title")}</h3>
             <ul className="mt-4 space-y-3">
               {navigate.map((l) => (
                 <li key={l.label}>
@@ -84,7 +86,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-slate-900">Legal &amp; Compliance</h3>
+            <h3 className="font-heading text-sm font-bold text-slate-900">{t("footer.legal.title")}</h3>
             <ul className="mt-4 space-y-3">
               {legal.map((l) => (
                 <li key={l.label}>
@@ -103,7 +105,7 @@ export function Footer() {
 
         <div className="mt-14 border-t border-slate-200/70 pt-8">
           <p className="text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} Mangomundi. All rights reserved.
+            &copy; {new Date().getFullYear()} Mangomundi. {t("footer.rights")}
           </p>
         </div>
       </div>
