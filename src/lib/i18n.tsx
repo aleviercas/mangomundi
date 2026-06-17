@@ -2235,7 +2235,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "AI agent for global and local payments. Best rates for individuals and businesses.",
     "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",
     "seo.home.description":
-      "AI agent for global and local payments. Best rates for individuals and businesses.",
+      "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.",
     "comparator.title": "Find the optimal route",
     "comparator.subtitle": "Geography, amount, currencies, urgency — one decision engine.",
     "comparator.cta.compare": "Compare Providers",
@@ -2342,7 +2342,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
     "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",
     "seo.home.description":
-      "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
+      "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.",
     "hero.subheadline":
       "Agente de IA para tesorería corporativa e individuos. Optimización y transparencia en tus operaciones de cambio de divisas y pagos internacionales.",
     "comparator.subheadline": "Tasas en vivo · IA neutral · +30 proveedores",
@@ -2645,6 +2645,7 @@ const SEO_META_TRANSLATED: Record<Lang, SeoMeta> = {
   },
 };
 
+const UNIFIED_OG_TITLE = "Mangomundi | Intelligent currency exchange decisions";
 const UNIFIED_OG_DESCRIPTION =
   "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.";
 
@@ -2652,7 +2653,7 @@ export const SEO_META: Record<Lang, SeoMeta> = Object.fromEntries(
   SUPPORTED_LANGS.map((code) => [
     code,
     {
-      title: DICTS[code]?.["seo.home.title"] ?? SEO_META_TRANSLATED[code].title,
+      title: UNIFIED_OG_TITLE,
       description: UNIFIED_OG_DESCRIPTION,
     },
   ]),
