@@ -112,7 +112,7 @@
   "about.v3.title": "人間 + AI の公平性",
   "about.v3.body": "私たちの専門チームは、運用の複雑さをガイドするために常に待機していますが、アルゴリズムによる絶対的な中立性こそが、あらゆる当事者に対して、偏りなく公平に、最適化された最良のスプレッドを処理・配信・提供する基盤です。",
   "home.hero.title": "国際決済、インテリジェントなルーティングを。",
-  "home.hero.subtitle": "中立的な意思決定エンジンを活用して、クロスボーダー決済の差異を分析し、送金戦略を検証し、多通貨ルーティングを最適化します。",
+  "home.hero.subtitle": "国際送金と国内決済のための透明なAIエージェント。為替レート、手数料、ルート、着金速度をリアルタイムで比較し、すべての送金に最適な選択肢を見つけます。",
   "home.flows.title": "あらゆる機関投資・法人の送金フローに対応",
   "home.flows.payroll.title": "海外給与・委託先への支払い",
   "home.flows.payroll.body": "最適化されたFXルーティングと完全な監査証跡により、国際的なチームや委託先へ、現地の通貨で支払います。",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundiはアフィリエイト手数料を受け取る場合がありますが、ランキングの中立性には影響しません。",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "受取人の国",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "受取人の国",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "賢い通貨両替の",
+  "home.hero.titleAccent": "意思決定"
 }

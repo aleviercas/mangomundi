@@ -112,7 +112,7 @@
   "about.v3.title": "Impartialité de l'Humain + l'IA",
   "about.v3.body": "Notre équipe humaine est toujours disponible pour guider les utilisateurs à travers la complexité opérationnelle, mais c'est l'impartialité algorithmique absolue qui traite, distribue et fournit les meilleurs spreads optimisés à chaque partie, de manière équitable et sans favoritisme.",
   "home.hero.title": "Paiements internationaux, routés intelligemment.",
-  "home.hero.subtitle": "Utilisez notre moteur de décision neutre pour analyser la variance des flux transfrontaliers, valider les stratégies d'exécution et optimiser le routage multi-devises.",
+  "home.hero.subtitle": "Un agent IA transparent pour les paiements internationaux et locaux, qui compare en temps réel les taux de change, les frais, les itinéraires et les délais de livraison pour trouver la meilleure option à chaque transfert.",
   "home.flows.title": "Conçu pour chaque flux transfrontalier institutionnel",
   "home.flows.payroll.title": "Paie mondiale et paiements de prestataires",
   "home.flows.payroll.body": "Payez vos équipes et prestataires internationaux dans leur devise locale avec un routage FX optimisé et une piste d'audit complète.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi peut percevoir des commissions d'affiliation ; cela n'altère pas la neutralité du classement.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "Pays du destinataire",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "Pays du destinataire",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Décisions intelligentes de change de",
+  "home.hero.titleAccent": "devises"
 }

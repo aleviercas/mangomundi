@@ -113,7 +113,7 @@
   "about.v3.title": "Imparcialidade Humana + IA",
   "about.v3.body": "Nossa equipe humana está sempre disponível para guiar os usuários através da complexidade operacional, mas é a imparcialidade algorítmica absoluta que processa, distribui e entrega os melhores spreads otimizados a cada parte, de forma equitativa e sem favoritismo.",
   "home.hero.title": "Pagamentos Internacionais e Locais, Roteados com Inteligência. IA Agêntica para Câmbio Global. ",
-  "home.hero.subtitle": "Utilize nosso mecanismo de decisão neutro para analisar a variância do fluxo cross-border, validar estratégias de execução e otimizar o roteamento multimoedas.",
+  "home.hero.subtitle": "Um agente de IA transparente para pagamentos globais e locais, que compara taxas de câmbio, comissões, rotas e velocidades de entrega em tempo real para encontrar a melhor opção em cada transferência.",
   "home.flows.title": "Feito para cada fluxo institucional cross-border",
   "home.flows.payroll.title": "Folha de pagamento global e pagamentos a prestadores",
   "home.flows.payroll.body": "Pague equipes internacionais e prestadores em suas moedas locais com roteamento de câmbio otimizado e trilha de auditoria completa.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "A mangomundi pode receber comissões de afiliado; isso não altera a neutralidade do ranking.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "País do destinatário",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "País do destinatário",
   "search.guide": "Selecione o país de destino e escolha entre um perfil individual ou empresarial.",
   "search.promise": "Comparação inteligente de mercado. Sem necessidade de conta. Sem taxas ocultas.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Decisões inteligentes de câmbio de",
+  "home.hero.titleAccent": "moedas"
 }

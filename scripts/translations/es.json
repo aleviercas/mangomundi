@@ -113,7 +113,7 @@
   "about.v3.title": "Imparcialidad Humana + IA",
   "about.v3.body": "Nuestro equipo humano siempre está disponible para guiar a los usuarios en la complejidad operativa; sin embargo, la imparcialidad algorítmica absoluta es lo que procesa, distribuye y entrega los mejores diferenciales optimizados a cada parte, de forma equitativa y sin favoritismos.",
   "home.hero.title": "Pagos internacionales y locales, enrutados inteligentemente. IA Agéntica para Divisas Globales. ",
-  "home.hero.subtitle": "Utilice nuestro motor de decisión neutral para analizar la varianza del flujo transfronterizo, validar estrategias de ejecución y optimizar el enrutamiento multidivisa.",
+  "home.hero.subtitle": "Un agente de IA transparente para pagos globales y locales, que compara tipos de cambio, comisiones, rutas y tiempos de entrega en tiempo real para encontrar la mejor opción en cada transferencia.",
   "home.flows.title": "Diseñado para cada flujo transfronterizo institucional",
   "home.flows.payroll.title": "Nóminas globales y pagos a contratistas",
   "home.flows.payroll.body": "Pague a equipos internacionales y contratistas en su moneda local con un enrutamiento de divisas optimizado y trazabilidad total.",
@@ -447,7 +447,7 @@
   "seo.home.description": "AI agent for global and local payments. Best rates for individuals and businesses.",
   "search.eyebrow": "Terminal de inteligencia financiera",
   "search.origin": "País de origen",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "País del destinatario",
   "search.segment": "Perfil",
   "search.segment.retail": "Particular",
   "search.segment.business": "Empresa",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "País del destinatario",
   "search.guide": "Seleccione el país de destino y elija entre un perfil individual o de empresa. Para el cambio de moneda local, seleccione su país actual. Nuestro Agente de IA comparará inmediatamente los proveedores y las tasas de mercado en tiempo real para ayudarle a decidir.",
   "search.promise": "Comparativa de mercado inteligente. Sin necesidad de cuenta. Sin comisiones ocultas.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Decisiones inteligentes de cambio de",
+  "home.hero.titleAccent": "divisas"
 }

@@ -111,7 +111,7 @@
   "about.v3.title": "ความเป็นกลางโดยมนุษย์ + AI",
   "about.v3.body": "ทีมงานของเราพร้อมให้คำแนะนำในความซับซ้อนของการดำเนินงานเสมอ แต่อัลกอริทึมที่เป็นกลางอย่างสมบูรณ์คือสิ่งที่ประมวลผล จัดสรร และส่งมอบ Spread ที่คุ้มค่าที่สุดให้กับทุกฝ่ายอย่างเท่าเทียมและไม่มีการเลือกปฏิบัติ",
   "home.hero.title": "การชำระเงินระหว่างประเทศ จัดเส้นทางอย่างชาญฉลาด",
-  "home.hero.subtitle": "ใช้ระบบตัดสินใจที่เป็นกลางของเราเพื่อวิเคราะห์ความผันแปรของกระแสการเงินข้ามพรมแดน ตรวจสอบกลยุทธ์การดำเนินการ และเพิ่มประสิทธิภาพการจัดเส้นทางหลายสกุลเงิน",
+  "home.hero.subtitle": "เอเจนต์ AI ที่โปร่งใสสำหรับการชำระเงินทั่วโลกและในประเทศ เปรียบเทียบอัตราแลกเปลี่ยน ค่าธรรมเนียม เส้นทาง และความเร็วในการส่งแบบเรียลไทม์ เพื่อค้นหาตัวเลือกที่ดีที่สุดสำหรับทุกการโอน",
   "home.flows.title": "รองรับทุกรูปแบบกระแสการเงินข้ามพรมแดนของสถาบัน",
   "home.flows.payroll.title": "การจ่ายเงินเดือนและค่าจ้างผู้รับเหมาทั่วโลก",
   "home.flows.payroll.body": "จ่ายเงินให้ทีมงานและผู้รับเหมาต่างชาติในสกุลเงินท้องถิ่นด้วยการจัดเส้นทาง FX ที่เหมาะสมที่สุดพร้อมประวัติธุรกรรมที่ตรวจสอบได้ครบถ้วน",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi อาจได้รับค่าคอมมิชชั่นพันธมิตร; สิ่งนี้ไม่ส่งผลต่อความเป็นกลางของการจัดอันดับ",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "ประเทศผู้รับ",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "ประเทศผู้รับ",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "การตัดสินใจอย่างชาญฉลาดเรื่อง",
+  "home.hero.titleAccent": "แลกเปลี่ยนเงินตรา"
 }

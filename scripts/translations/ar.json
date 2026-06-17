@@ -112,7 +112,7 @@
   "about.v3.title": "حياد البشر والذكاء الاصطناعي",
   "about.v3.body": "فريقنا البشري متاح دائماً لتوجيه المستخدمين عبر التعقيدات التشغيلية، ومع ذلك فإن الحياد الخوارزمي المطلق هو ما يعالج ويوزع ويقدم أفضل فروق الأسعار المحسنة لكل طرف، بإنصاف ودون محاباة.",
   "home.hero.title": "مدفوعات دولية موجهة بذكاء.",
-  "home.hero.subtitle": "استخدم محرك القرار المحايد لدينا لتحليل تباين التدفقات عابرة الحدود، والتحقق من استراتيجيات التنفيذ، وتحسين توجيه العملات المتعددة.",
+  "home.hero.subtitle": "وكيل ذكاء اصطناعي شفّاف للمدفوعات العالمية والمحلية، يقارن أسعار الصرف والرسوم والمسارات وسرعات التسليم في الوقت الفعلي لإيجاد الخيار الأفضل لكل تحويل.",
   "home.flows.title": "مصمم لكل تدفق مؤسسي عابر للحدود",
   "home.flows.payroll.title": "كشوف المرتبات العالمية ومدفوعات المتعاقدين",
   "home.flows.payroll.body": "ادفع لفرق العمل والمتعاقدين الدوليين بعملاتهم المحلية مع توجيه صرف أجنبي محسن ومسار تدقيق كامل.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "قد تتلقى mangomundi عمولات تابعة؛ وهذا لا يؤثر على حيادية الترتيب.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "بلد المستلم",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "بلد المستلم",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "قرارات ذكية لصرف",
+  "home.hero.titleAccent": "العملات"
 }

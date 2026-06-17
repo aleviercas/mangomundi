@@ -78,7 +78,7 @@
   "about.v3.title": "انسانی + AI غیر جانبداری",
   "about.v3.body": "ہماری انسانی ٹیم آپریشنل پیچیدگیوں میں صارفین کی رہنمائی کے لیے ہمیشہ دستیاب ہے، تاہم مطلق الگورتھمک غیر جانبداری ہی وہ چیز ہے جو ہر فریق کو منصفانہ طور پر اور بغیر کسی طرفداری کے بہترین اسپریڈز فراہم کرتی ہے۔",
   "home.hero.title": "بین الاقوامی ادائیگیاں، ذہانت سے راستہ سازی۔",
-  "home.hero.subtitle": "سرحد پار بہاؤ کے تغیر کا تجزیہ کرنے، عملدرآمد کی حکمت عملیوں کی توثیق کرنے، اور ملٹی کرنسی روٹنگ کو بہتر بنانے کے لیے ہمارے غیر جانبدارانہ فیصلہ انجن کا استعمال کریں۔",
+  "home.hero.subtitle": "عالمی اور مقامی ادائیگیوں کے لیے ایک شفاف AI ایجنٹ، جو ہر ٹرانسفر کے بہترین انتخاب کے لیے شرحِ تبادلہ، فیس، روٹس اور ترسیل کی رفتار کا حقیقی وقت میں موازنہ کرتا ہے۔",
   "home.flows.title": "ہر ادارہ جاتی سرحد پار بہاؤ کے لیے تیار کردہ",
   "home.flows.payroll.title": "عالمی پے رول اور کنٹریکٹر کی ادائیگیاں",
   "home.flows.payroll.body": "بہتر FX روٹنگ اور مکمل آڈٹ ٹرائل کے ساتھ بین الاقوامی ٹیموں اور کنٹریکٹرز کو ان کی مقامی کرنسی میں ادائیگی کریں۔",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi ایفیلیٹ کمیشن وصول کر سکتا ہے؛ یہ رینکنگ کی غیر جانبداری کو متاثر نہیں کرتا۔",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "وصول کنندہ کا ملک",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "وصول کنندہ کا ملک",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "کرنسی کے تبادلے کے ذہین",
+  "home.hero.titleAccent": "فیصلے"
 }

@@ -112,7 +112,7 @@
   "about.v3.title": "Ketidakberpihakan Manusia + AI",
   "about.v3.body": "Tim manusia kami selalu tersedia untuk memandu pengguna melalui kompleksitas operasional, namun ketidakberpihakan algoritma secara mutlak adalah hal yang memproses, mendistribusikan, dan memberikan spread optimal terbaik kepada setiap pihak, secara adil dan tanpa pilih kasih.",
   "home.hero.title": "Pembayaran Internasional, Diarahkan Secara Cerdas.",
-  "home.hero.subtitle": "Gunakan mesin keputusan netral kami untuk menganalisis varians aliran lintas batas, memvalidasi strategi eksekusi, dan mengoptimalkan perutean multi-mata uang.",
+  "home.hero.subtitle": "Agen AI transparan untuk pembayaran global dan lokal, membandingkan nilai tukar, biaya, rute, dan kecepatan pengiriman secara real-time untuk menemukan opsi terbaik di setiap transfer.",
   "home.flows.title": "Dibangun untuk setiap alur lintas batas institusional",
   "home.flows.payroll.title": "Gaji global & pembayaran kontraktor",
   "home.flows.payroll.body": "Bayar tim internasional dan kontraktor dalam mata uang lokal mereka dengan perutean FX yang dioptimalkan dan jejak audit lengkap.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi dapat menerima komisi afiliasi; hal ini tidak memengaruhi netralitas peringkat.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "Negara penerima",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "Negara penerima",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Keputusan cerdas penukaran",
+  "home.hero.titleAccent": "mata uang"
 }

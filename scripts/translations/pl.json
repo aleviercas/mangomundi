@@ -113,7 +113,7 @@
   "about.v3.title": "Bezpstronność Człowieka + AI",
   "about.v3.body": "Nasz zespół ekspertów jest zawsze dostępny, aby pomóc użytkownikom w złożonych operacjach, jednak to absolutna bezstronność algorytmiczna przetwarza, dystrybuuje i dostarcza optymalne spready każdej stronie, sprawiedliwie i bez faworyzowania.",
   "home.hero.title": "Płatności międzynarodowe, inteligentnie kierowane.",
-  "home.hero.subtitle": "Wykorzystaj nasz neutralny silnik decyzyjny do analizy wariancji przepływów transgranicznych, walidacji strategii wykonania i optymalizacji routingu wielowalutowego.",
+  "home.hero.subtitle": "Przejrzysty agent AI do płatności globalnych i lokalnych — porównuje kursy walut, opłaty, trasy i czas dostawy w czasie rzeczywistym, aby znaleźć najlepszą opcję dla każdego przelewu.",
   "home.flows.title": "Zbudowane dla każdego instytucjonalnego przepływu transgranicznego",
   "home.flows.payroll.title": "Globalne listy płac i wypłaty dla kontrahentów",
   "home.flows.payroll.body": "Płać międzynarodowym zespołom i kontrahentom w ich lokalnej walucie dzięki zoptymalizowanemu routingowi FX i pełnej ścieżce audytu.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi może otrzymywać prowizje partnerskie; nie wpływa to na neutralność rankingu.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "Kraj odbiorcy",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "Kraj odbiorcy",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Inteligentne decyzje",
+  "home.hero.titleAccent": "walutowe"
 }

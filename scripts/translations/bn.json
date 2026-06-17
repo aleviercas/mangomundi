@@ -112,7 +112,7 @@
   "about.v3.title": "হিউম্যান + AI নিরপেক্ষতা",
   "about.v3.body": "অপারেশনাল জটিলতার মাধ্যমে ব্যবহারকারীদের গাইড করার জন্য আমাদের হিউম্যান টিম সবসময় উপলব্ধ, তবুও সম্পূর্ণ অ্যালগরিদমিক নিরপেক্ষতা প্রতিটি পক্ষকে সমানভাবে এবং কোনো পক্ষপাতিত্ব ছাড়াই সেরা অপ্টিমাইজড স্প্রেড বিতরণ এবং প্রদান নিশ্চিত করে।",
   "home.hero.title": "আন্তর্জাতিক পেমেন্ট, বুদ্ধিমত্তার সাথে রাউটেড।",
-  "home.hero.subtitle": "ক্রস-বর্ডার ফ্লো ভ্যারিয়েন্স বিশ্লেষণ করতে, এক্সিকিউশন স্ট্র্যাটেজি যাচাই করতে এবং মাল্টি-কারেন্সি রাউটিং অপ্টিমাইজ করতে আমাদের নিরপেক্ষ ডিসিশন ইঞ্জিন ব্যবহার করুন।",
+  "home.hero.subtitle": "বৈশ্বিক ও স্থানীয় পেমেন্টের জন্য একটি স্বচ্ছ AI এজেন্ট, যা প্রতিটি স্থানান্তরের জন্য সেরা বিকল্প খুঁজে পেতে রিয়েল-টাইমে এক্সচেঞ্জ রেট, ফি, রুট এবং ডেলিভারির গতি তুলনা করে।",
   "home.flows.title": "প্রতিটি প্রাতিষ্ঠানিক ক্রস-বর্ডার ফ্লো-এর জন্য তৈরি",
   "home.flows.payroll.title": "গ্লোবাল পে-রোল এবং কন্ট্রাক্টর পেমেন্ট",
   "home.flows.payroll.body": "অপ্টিমাইজড FX রাউটিং এবং সম্পূর্ণ অডিট ট্রেইল সহ আন্তর্জাতিক টিম এবং কন্ট্রাক্টরদের তাদের স্থানীয় কারেন্সিতে অর্থ প্রদান করুন।",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi অ্যাফিলিয়েট কমিশন পেতে পারে; এটি র‍্যাঙ্কিংয়ের নিরপেক্ষতাকে প্রভাবিত করে না।",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "প্রাপকের দেশ",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "প্রাপকের দেশ",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "মুদ্রা বিনিময়ের বুদ্ধিমান",
+  "home.hero.titleAccent": "সিদ্ধান্ত"
 }

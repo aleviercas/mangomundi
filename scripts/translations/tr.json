@@ -113,7 +113,7 @@
   "about.v3.title": "İnsan + Yapay Zeka Tarafsızlığı",
   "about.v3.body": "İnsan ekibimiz operasyonel karmaşıklıkta kullanıcılara rehberlik etmek için her zaman hazırdır, ancak en iyi optimize edilmiş spreadleri her tarafa adil ve tarafsız bir şekilde işleyen, dağıtan ve sunan mutlak algoritmik tarafsızlıktır.",
   "home.hero.title": "Uluslararası Ödemeler, Akıllıca Yönlendirilir.",
-  "home.hero.subtitle": "Sınır ötesi akış varyansını analiz etmek, uygulama stratejilerini doğrulamak ve çoklu para birimi yönlendirmesini optimize etmek için tarafsız karar motorumuzu kullanın.",
+  "home.hero.subtitle": "Küresel ve yerel ödemeler için şeffaf bir AI ajanı; her transferde en iyi seçeneği bulmak amacıyla döviz kurlarını, ücretleri, rotaları ve teslim hızlarını gerçek zamanlı olarak karşılaştırır.",
   "home.flows.title": "Her kurumsal sınır ötesi akış için tasarlandı",
   "home.flows.payroll.title": "Küresel bordro ve yüklenici ödemeleri",
   "home.flows.payroll.body": "Optimize edilmiş FX yönlendirmesi ve tam denetim geçmişi ile uluslararası ekiplere ve yüklenicilere yerel para birimlerinde ödeme yapın.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi bağlı kuruluş komisyonları alabilir; bu, sıralamanın tarafsızlığını etkilemez.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "Alıcı ülkesi",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "Alıcı ülkesi",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Akıllı döviz",
+  "home.hero.titleAccent": "kararları"
 }
