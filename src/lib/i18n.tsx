@@ -611,7 +611,7 @@ export const DICTS: Record<Lang, Dict> = {
     // Home
     "home.hero.title": "Pagos internacionales, ruteados con inteligencia.",
     "home.hero.subtitle":
-      "Reducí el costo de FX en nómina, proveedores y tesorería. Aprovechá nuestro motor de decisión inteligente y un dashboard interactivo para transferencias de alto valor con soporte experto dedicado.",
+      "Un agente de IA transparente para pagos globales y locales, que compara tipos de cambio, comisiones, rutas y velocidades de entrega en tiempo real para encontrar la mejor opción en cada transferencia.",
     "home.flows.title": "Diseñado para cada flujo institucional transfronterizo",
     "home.flows.payroll.title": "Nómina global y pagos a contratistas",
     "home.flows.payroll.body":
@@ -1775,8 +1775,7 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
   },
   es: {
     "footer.navigate": "Navegación",
-    "footer.tagline":
-      "El motor global de decisión cambiaria. IA neutral para pagos transfronterizos más inteligentes.",
+    "footer.tagline": "Decisiones inteligentes de cambio de divisas.",
     "footer.copyright": "Todos los derechos reservados.",
     "footer.brandLine": "FX Global, Hecho Inteligente",
     "footer.disclaimerLabel": "aviso",
