@@ -374,6 +374,10 @@ export const DICTS: Record<Lang, Dict> = {
       "Access transparent, market-backed FX routing and custom asynchronous RFQ bidding protocols for your enterprise corridors.",
     "home.finalCta.rfq": "Access RFQ Terminal",
     "home.hero.ctaCompare": "Try FX Comparator",
+    "home.hero.titlePre": "Intelligent currency exchange",
+    "home.hero.titleAccent": "decisions",
+    "home.hero.subtitle":
+      "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.",
     "home.dual.title": "Built for every cross-border flow — retail and corporate.",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
