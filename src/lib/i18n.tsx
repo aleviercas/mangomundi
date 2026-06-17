@@ -1775,8 +1775,7 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
   },
   es: {
     "footer.navigate": "Navegación",
-    "footer.tagline":
-      "El motor global de decisión cambiaria. IA neutral para pagos transfronterizos más inteligentes.",
+    "footer.tagline": "Decisiones inteligentes de cambio de divisas.",
     "footer.copyright": "Todos los derechos reservados.",
     "footer.brandLine": "FX Global, Hecho Inteligente",
     "footer.disclaimerLabel": "aviso",
