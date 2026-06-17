@@ -32,10 +32,10 @@ export function ContactSection() {
         </div>
         <div className="mt-10 text-center">
           <a
-            href="mailto:hello@mangoglobal.com"
+            href="mailto:hello@mangomundi.com"
             className="inline-flex h-14 items-center justify-center rounded-full bg-slate-900 px-10 text-base font-semibold text-white transition-colors hover:bg-black"
           >
-            hello@mangoglobal.com
+            hello@mangomundi.com
           </a>
         </div>
       </div>

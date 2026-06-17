@@ -5,7 +5,7 @@ interface WordmarkProps {
 }
 
 /**
- * mangoglobal wordmark — 100% monocromático, minúsculas.
+ * mangomundi wordmark — 100% monocromático, minúsculas.
  * Contraste tipográfico marcado: "mango" font-black, "global" font-extralight.
  */
 export function Wordmark({ className = "", tone = "dark" }: WordmarkProps) {
@@ -13,7 +13,7 @@ export function Wordmark({ className = "", tone = "dark" }: WordmarkProps) {
   return (
     <span
       className={`font-sans lowercase leading-none ${colour} ${className}`}
-      aria-label="mangoglobal"
+      aria-label="mangomundi"
     >
       <span className="font-black tracking-tight">mango</span>
       <span className="font-extralight tracking-wide">global</span>

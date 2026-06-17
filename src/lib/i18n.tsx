@@ -256,7 +256,7 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.action": "Action",
     "fx.goto": "Go to",
     "fx.disclaimer":
-      "mangoglobal is independent. Some links are affiliate links — we may earn a commission at no extra cost to you. Rates and fees are estimates; verify on the provider's site before sending.",
+      "mangomundi is independent. Some links are affiliate links — we may earn a commission at no extra cost to you. Rates and fees are estimates; verify on the provider's site before sending.",
     "fx.chat.title": "Ask Mango about this recommendation",
     "fx.chat.placeholder": "Why this provider? What if I'm not in a rush?",
     "fx.chat.send": "Send",
@@ -273,15 +273,15 @@ export const DICTS: Record<Lang, Dict> = {
     "hero.alerts.button": "Alert me",
     "hero.alerts.saving": "Saving…",
     // Preferred Rate (Retail)
-    "retail.cta": "Apply mangoglobal Preferred Channel Rate",
+    "retail.cta": "Apply mangomundi Preferred Channel Rate",
     "retail.modalTitle": "Activate the preferred rate channel",
     "retail.modalDesc":
       "Freeze the optimised institutional spread routed via our authorised affiliates.",
     "retail.disclaimer":
-      "The public rates shown are estimates for informational purposes. By activating the mangoglobal preferred channel you are requesting an optimised institutional spread routed through our authorised affiliate identifiers.",
+      "The public rates shown are estimates for informational purposes. By activating the mangomundi preferred channel you are requesting an optimised institutional spread routed through our authorised affiliate identifiers.",
     "retail.emailPlaceholder": "your.email@domain.com",
     "retail.consent":
-      "I confirm I am 18 or older and accept the mangoglobal Terms of Service and Privacy Policy.",
+      "I confirm I am 18 or older and accept the mangomundi Terms of Service and Privacy Policy.",
     "retail.submit": "Freeze preferred rate",
     "retail.success": "Preferred rate frozen. Opening your secure provider link…",
     // RFQ (Business)
@@ -303,7 +303,7 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Required",
     "chat.welcome":
-      "Hi 👋 I'm the **mangoglobal Agent**. Try a quote (`500 GBP to ARS`) or describe your corporate case.",
+      "Hi 👋 I'm the **mangomundi Agent**. Try a quote (`500 GBP to ARS`) or describe your corporate case.",
     "chat.placeholder": "e.g. 500 GBP to ARS · or describe your corporate case",
     "chat.error": "I couldn't process that right now. Please try again.",
     "fx.emptyState": "Enter the details to calculate the best rates.",
@@ -311,11 +311,11 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.ratesSource": "Values fetched directly from the wholesale interbank market. Last update:",
     "fx.at": "at",
     "fx.trademarks":
-      "All third-party trademarks, logos, and provider names (including Wise, Airwallex, OFX, Convera, and Currencies Direct) are the property of their respective owners. Their appearance on this platform is strictly for informational, comparative, and market reference purposes, and does not imply any affiliation, sponsorship, or commercial endorsement by said owners with mangoglobal.",
+      "All third-party trademarks, logos, and provider names (including Wise, Airwallex, OFX, Convera, and Currencies Direct) are the property of their respective owners. Their appearance on this platform is strictly for informational, comparative, and market reference purposes, and does not imply any affiliation, sponsorship, or commercial endorsement by said owners with mangomundi.",
     "biz.rfqCta": "Open the RFQ desk",
     "biz.rfqRoute": "Get routed to the right desk for your corridor",
     // About
-    "about.badge": "ABOUT mangoglobal",
+    "about.badge": "ABOUT mangomundi",
     "about.heroTitle1": "Built for a",
     "about.heroTitleAccent": "Borderless",
     "about.heroTitle2": "World",
@@ -428,7 +428,7 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.action": "Acción",
     "fx.goto": "Ir a",
     "fx.disclaimer":
-      "mangoglobal es independiente. Algunos enlaces son de afiliados — podemos cobrar una comisión sin costo extra para vos. Las tasas y comisiones son estimadas; verificá en el sitio del proveedor antes de enviar.",
+      "mangomundi es independiente. Algunos enlaces son de afiliados — podemos cobrar una comisión sin costo extra para vos. Las tasas y comisiones son estimadas; verificá en el sitio del proveedor antes de enviar.",
     "fx.chat.title": "Preguntale a Mango sobre esta recomendación",
     "fx.chat.placeholder": "¿Por qué este proveedor? ¿Y si no tengo apuro?",
     "fx.chat.send": "Enviar",
@@ -445,15 +445,15 @@ export const DICTS: Record<Lang, Dict> = {
     "hero.alerts.button": "Alertarme",
     "hero.alerts.saving": "Guardando…",
     // Preferred Rate (Retail)
-    "retail.cta": "Aplicar Tarifa Preferencial Canal mangoglobal",
+    "retail.cta": "Aplicar Tarifa Preferencial Canal mangomundi",
     "retail.modalTitle": "Activá el canal de tarifa preferencial",
     "retail.modalDesc":
       "Congelá el spread institucional optimizado a través de nuestros afiliados autorizados.",
     "retail.disclaimer":
-      "Las tarifas públicas mostradas son estimadas y de carácter informativo. Al activar el canal preferencial de mangoglobal, solicitás la aplicación de un spread optimizado institucional mediante nuestros identificadores de afiliación autorizados.",
+      "Las tarifas públicas mostradas son estimadas y de carácter informativo. Al activar el canal preferencial de mangomundi, solicitás la aplicación de un spread optimizado institucional mediante nuestros identificadores de afiliación autorizados.",
     "retail.emailPlaceholder": "tu.email@dominio.com",
     "retail.consent":
-      "Declaro que soy mayor de 18 años y acepto los Términos de Servicio y la Política de Privacidad de mangoglobal.",
+      "Declaro que soy mayor de 18 años y acepto los Términos de Servicio y la Política de Privacidad de mangomundi.",
     "retail.submit": "Congelar tarifa preferencial",
     "retail.success": "Tarifa preferencial congelada. Abriendo tu enlace seguro al proveedor…",
     // RFQ (Business)
@@ -475,7 +475,7 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Requerido",
     "chat.welcome":
-      "Hola 👋 Soy el **Agente mangoglobal**. Probá una cotización (`500 GBP to ARS`) o contame el caso de tu empresa.",
+      "Hola 👋 Soy el **Agente mangomundi**. Probá una cotización (`500 GBP to ARS`) o contame el caso de tu empresa.",
     "chat.placeholder": "Ej: 500 GBP to ARS · o describí tu caso corporativo",
     "chat.error": "No pude procesar eso ahora. Probá de nuevo.",
     "fx.emptyState": "Introducí los datos para calcular las mejores tasas.",
@@ -484,16 +484,16 @@ export const DICTS: Record<Lang, Dict> = {
       "Valores obtenidos directamente del mercado interbancario mayorista. Última actualización:",
     "fx.at": "a las",
     "fx.trademarks":
-      "Todas las marcas comerciales, logotipos y nombres de proveedores de terceros (incluidos Wise, Airwallex, OFX, Convera y Currencies Direct) son propiedad de sus respectivos titulares. Su aparición en esta plataforma se realiza exclusivamente con fines informativos, comparativos y de referencia de mercado, y no implica afiliación, patrocinio o endoso comercial alguno por parte de dichos titulares con mangoglobal.",
+      "Todas las marcas comerciales, logotipos y nombres de proveedores de terceros (incluidos Wise, Airwallex, OFX, Convera y Currencies Direct) son propiedad de sus respectivos titulares. Su aparición en esta plataforma se realiza exclusivamente con fines informativos, comparativos y de referencia de mercado, y no implica afiliación, patrocinio o endoso comercial alguno por parte de dichos titulares con mangomundi.",
     "biz.rfqCta": "Abrir mesa RFQ",
     "biz.rfqRoute": "Acceder a la mesa adecuada para tu corredor",
     // About
-    "about.badge": "Sobre mangoglobal",
+    "about.badge": "Sobre mangomundi",
     "about.heroTitle1": "Construido para un mundo",
     "about.heroTitleAccent": "sin fronteras",
     "about.heroTitle2": "",
     "about.heroSubtitle":
-      "mangoglobal es un motor de decisión neutral: conectamos flujos retail y corporativos con la mejor ruta transfronteriza disponible, sin sesgos de proveedor ni márgenes ocultos.",
+      "mangomundi es un motor de decisión neutral: conectamos flujos retail y corporativos con la mejor ruta transfronteriza disponible, sin sesgos de proveedor ni márgenes ocultos.",
     "about.missionTitle": "Nuestra Misión",
     "about.missionBody":
       "Democratizar el acceso a las mejores decisiones de cambio de divisas mediante inteligencia neutral basada en IA, eliminando la asimetría de información y los costos ocultos de los pagos globales.",
@@ -601,7 +601,7 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.action": "Ação",
     "fx.goto": "Ir para",
     "fx.disclaimer":
-      "mangoglobal é independente. Alguns links são de afiliados — podemos receber comissão sem custo extra para você. Taxas são estimativas; verifique no site do provedor antes de enviar.",
+      "mangomundi é independente. Alguns links são de afiliados — podemos receber comissão sem custo extra para você. Taxas são estimativas; verifique no site do provedor antes de enviar.",
     "fx.chat.title": "Pergunte à Mango sobre esta recomendação",
     "fx.chat.placeholder": "Por que este provedor? E se eu não tiver pressa?",
     "fx.chat.send": "Enviar",
@@ -618,15 +618,15 @@ export const DICTS: Record<Lang, Dict> = {
     "hero.alerts.button": "Avisar-me",
     "hero.alerts.saving": "Salvando…",
     // Preferred Rate (Retail)
-    "retail.cta": "Aplicar Tarifa Preferencial Canal mangoglobal",
+    "retail.cta": "Aplicar Tarifa Preferencial Canal mangomundi",
     "retail.modalTitle": "Ative o canal de tarifa preferencial",
     "retail.modalDesc":
       "Congele o spread institucional otimizado roteado pelos nossos afiliados autorizados.",
     "retail.disclaimer":
-      "As taxas públicas exibidas são estimativas e de caráter informativo. Ao ativar o canal preferencial mangoglobal, você solicita a aplicação de um spread institucional otimizado por meio dos nossos identificadores de afiliação autorizados.",
+      "As taxas públicas exibidas são estimativas e de caráter informativo. Ao ativar o canal preferencial mangomundi, você solicita a aplicação de um spread institucional otimizado por meio dos nossos identificadores de afiliação autorizados.",
     "retail.emailPlaceholder": "seu.email@dominio.com",
     "retail.consent":
-      "Declaro que sou maior de 18 anos e aceito os Termos de Serviço e a Política de Privacidade da mangoglobal.",
+      "Declaro que sou maior de 18 anos e aceito os Termos de Serviço e a Política de Privacidade da mangomundi.",
     "retail.submit": "Congelar tarifa preferencial",
     "retail.success": "Tarifa preferencial congelada. Abrindo seu link seguro do provedor…",
     // RFQ (Business)
@@ -648,7 +648,7 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Obrigatório",
     "chat.welcome":
-      "Olá 👋 Sou o **Agente mangoglobal**. Teste uma cotação (`500 GBP to ARS`) ou descreva o caso da sua empresa.",
+      "Olá 👋 Sou o **Agente mangomundi**. Teste uma cotação (`500 GBP to ARS`) ou descreva o caso da sua empresa.",
     "chat.placeholder": "Ex: 500 GBP to ARS · ou descreva seu caso corporativo",
     "chat.error": "Não consegui processar isso agora. Tente de novo.",
     "fx.emptyState": "Insira os dados para calcular as melhores taxas.",
@@ -657,16 +657,16 @@ export const DICTS: Record<Lang, Dict> = {
       "Valores obtidos diretamente do mercado interbancário atacadista. Última atualização:",
     "fx.at": "às",
     "fx.trademarks":
-      "Todas as marcas comerciais, logotipos e nomes de provedores terceiros (incluindo Wise, Airwallex, OFX, Convera e Currencies Direct) são de propriedade de seus respectivos titulares. Sua exibição nesta plataforma é feita exclusivamente para fins informativos, comparativos e de referência de mercado, não implicando qualquer afiliação, patrocínio ou endosso comercial por parte de tais titulares com a mangoglobal.",
+      "Todas as marcas comerciais, logotipos e nomes de provedores terceiros (incluindo Wise, Airwallex, OFX, Convera e Currencies Direct) são de propriedade de seus respectivos titulares. Sua exibição nesta plataforma é feita exclusivamente para fins informativos, comparativos e de referência de mercado, não implicando qualquer afiliação, patrocínio ou endosso comercial por parte de tais titulares com a mangomundi.",
     "biz.rfqCta": "Abrir mesa RFQ",
     "biz.rfqRoute": "Acessar a mesa adequada para o seu corredor",
     // About
-    "about.badge": "Sobre a mangoglobal",
+    "about.badge": "Sobre a mangomundi",
     "about.heroTitle1": "Construído para um mundo",
     "about.heroTitleAccent": "sem fronteiras",
     "about.heroTitle2": "",
     "about.heroSubtitle":
-      "A mangoglobal é um motor de decisão neutro: conectamos fluxos retail e corporativos à melhor rota transfronteiriça disponível, sem viés de provedor nem margens ocultas.",
+      "A mangomundi é um motor de decisão neutro: conectamos fluxos retail e corporativos à melhor rota transfronteiriça disponível, sem viés de provedor nem margens ocultas.",
     "about.missionTitle": "Nossa Missão",
     "about.missionBody":
       "Democratizar o acesso às melhores decisões de câmbio através de inteligência neutra baseada em IA, eliminando a assimetria de informação e os custos ocultos dos pagamentos globais.",
@@ -924,10 +924,10 @@ const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "footer.compliance": "Legal & Compliance",
     "footer.disclaimer":
-      "mangoglobal is a neutral information and decision-engine platform. Our AI tooling does not constitute financial, tax, or investment advice. We do not custody client funds; all transfers settle directly with the regulated provider chosen by the user. Foreign-exchange rates fluctuate continuously and users bear the full FX, settlement, and counterparty risk of any transaction.",
+      "mangomundi is a neutral information and decision-engine platform. Our AI tooling does not constitute financial, tax, or investment advice. We do not custody client funds; all transfers settle directly with the regulated provider chosen by the user. Foreign-exchange rates fluctuate continuously and users bear the full FX, settlement, and counterparty risk of any transaction.",
     "legal.terms.title": "Terms of Service",
     "legal.terms.intro":
-      "mangoglobal operates as a neutral information and decision-engine platform that aggregates publicly available FX rates and provider data. We do not hold client funds, do not execute transfers, and do not act as a money transmitter.",
+      "mangomundi operates as a neutral information and decision-engine platform that aggregates publicly available FX rates and provider data. We do not hold client funds, do not execute transfers, and do not act as a money transmitter.",
     "legal.risk.title": "Risk Disclosure",
     "legal.risk.intro":
       "Foreign-exchange rates fluctuate continuously. The mid-market reference rate shown is indicative and may change between the time a comparison is generated and the time a provider executes the transfer. Users bear the full FX, settlement, and counterparty risk of any transaction.",
@@ -935,10 +935,10 @@ const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
   es: {
     "footer.compliance": "Legal & Cumplimiento",
     "footer.disclaimer":
-      "mangoglobal es una plataforma neutral de información y motor de decisión. Nuestras herramientas de IA no constituyen asesoramiento financiero, fiscal ni de inversión. No custodiamos fondos de clientes; todas las transferencias se liquidan directamente con el proveedor regulado elegido por el usuario. Los tipos de cambio fluctúan continuamente y el usuario asume el riesgo cambiario, de liquidación y de contraparte.",
+      "mangomundi es una plataforma neutral de información y motor de decisión. Nuestras herramientas de IA no constituyen asesoramiento financiero, fiscal ni de inversión. No custodiamos fondos de clientes; todas las transferencias se liquidan directamente con el proveedor regulado elegido por el usuario. Los tipos de cambio fluctúan continuamente y el usuario asume el riesgo cambiario, de liquidación y de contraparte.",
     "legal.terms.title": "Términos del Servicio",
     "legal.terms.intro":
-      "mangoglobal opera como una plataforma neutral de información y motor de decisión que agrega tasas FX y datos de proveedores disponibles públicamente. No custodiamos fondos de clientes, no ejecutamos transferencias y no actuamos como transmisor de dinero.",
+      "mangomundi opera como una plataforma neutral de información y motor de decisión que agrega tasas FX y datos de proveedores disponibles públicamente. No custodiamos fondos de clientes, no ejecutamos transferencias y no actuamos como transmisor de dinero.",
     "legal.risk.title": "Divulgación de Riesgos",
     "legal.risk.intro":
       "Los tipos de cambio fluctúan continuamente. La tasa mid-market mostrada es indicativa y puede variar entre el momento de la comparación y la ejecución por parte del proveedor. El usuario asume íntegramente el riesgo cambiario, de liquidación y de contraparte.",
@@ -946,10 +946,10 @@ const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
   pt: {
     "footer.compliance": "Legal & Compliance",
     "footer.disclaimer":
-      "mangoglobal é uma plataforma neutra de informação e motor de decisão. Nossas ferramentas de IA não constituem aconselhamento financeiro, fiscal ou de investimento. Não custodiamos fundos de clientes; todas as transferências são liquidadas diretamente com o provedor regulado escolhido pelo usuário. As taxas de câmbio flutuam continuamente e o usuário assume o risco cambial, de liquidação e de contraparte.",
+      "mangomundi é uma plataforma neutra de informação e motor de decisão. Nossas ferramentas de IA não constituem aconselhamento financeiro, fiscal ou de investimento. Não custodiamos fundos de clientes; todas as transferências são liquidadas diretamente com o provedor regulado escolhido pelo usuário. As taxas de câmbio flutuam continuamente e o usuário assume o risco cambial, de liquidação e de contraparte.",
     "legal.terms.title": "Termos de Serviço",
     "legal.terms.intro":
-      "mangoglobal opera como uma plataforma neutra de informação e motor de decisão que agrega taxas FX e dados de provedores publicamente disponíveis. Não custodiamos fundos, não executamos transferências e não atuamos como transmissor de dinheiro.",
+      "mangomundi opera como uma plataforma neutra de informação e motor de decisão que agrega taxas FX e dados de provedores publicamente disponíveis. Não custodiamos fundos, não executamos transferências e não atuamos como transmissor de dinheiro.",
     "legal.risk.title": "Divulgação de Risco",
     "legal.risk.intro":
       "As taxas de câmbio flutuam continuamente. A taxa mid-market exibida é indicativa e pode variar entre o momento da comparação e a execução pelo provedor. O usuário assume integralmente o risco cambial, de liquidação e de contraparte.",
@@ -957,10 +957,10 @@ const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
   it: {
     "footer.compliance": "Legal & Compliance",
     "footer.disclaimer":
-      "mangoglobal è una piattaforma neutrale di informazione e motore decisionale. I nostri strumenti di IA non costituiscono consulenza finanziaria, fiscale o di investimento. Non deteniamo fondi dei clienti; tutti i trasferimenti vengono regolati direttamente con il fornitore regolamentato scelto dall'utente. I tassi di cambio fluttuano costantemente e l'utente assume integralmente il rischio cambio, di regolamento e di controparte.",
+      "mangomundi è una piattaforma neutrale di informazione e motore decisionale. I nostri strumenti di IA non costituiscono consulenza finanziaria, fiscale o di investimento. Non deteniamo fondi dei clienti; tutti i trasferimenti vengono regolati direttamente con il fornitore regolamentato scelto dall'utente. I tassi di cambio fluttuano costantemente e l'utente assume integralmente il rischio cambio, di regolamento e di controparte.",
     "legal.terms.title": "Termini di Servizio",
     "legal.terms.intro":
-      "mangoglobal opera come piattaforma neutrale di informazione e motore decisionale che aggrega tassi FX e dati di fornitori pubblicamente disponibili. Non deteniamo fondi, non eseguiamo trasferimenti e non agiamo come trasmettitore di denaro.",
+      "mangomundi opera come piattaforma neutrale di informazione e motore decisionale che aggrega tassi FX e dati di fornitori pubblicamente disponibili. Non deteniamo fondi, non eseguiamo trasferimenti e non agiamo come trasmettitore di denaro.",
     "legal.risk.title": "Informativa sul Rischio",
     "legal.risk.intro":
       "I tassi di cambio fluttuano costantemente. Il tasso mid-market mostrato è indicativo e può variare tra il momento della comparazione e l'esecuzione da parte del fornitore. L'utente assume integralmente il rischio cambio, di regolamento e di controparte.",
@@ -968,10 +968,10 @@ const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
   fr: {
     "footer.compliance": "Légal & Conformité",
     "footer.disclaimer":
-      "mangoglobal est une plateforme neutre d'information et un moteur de décision. Nos outils d'IA ne constituent pas un conseil financier, fiscal ou en investissement. Nous ne détenons pas de fonds clients ; tous les transferts sont réglés directement avec le prestataire régulé choisi par l'utilisateur. Les taux de change fluctuent continuellement et l'utilisateur assume intégralement le risque de change, de règlement et de contrepartie.",
+      "mangomundi est une plateforme neutre d'information et un moteur de décision. Nos outils d'IA ne constituent pas un conseil financier, fiscal ou en investissement. Nous ne détenons pas de fonds clients ; tous les transferts sont réglés directement avec le prestataire régulé choisi par l'utilisateur. Les taux de change fluctuent continuellement et l'utilisateur assume intégralement le risque de change, de règlement et de contrepartie.",
     "legal.terms.title": "Conditions d'utilisation",
     "legal.terms.intro":
-      "mangoglobal opère comme une plateforme neutre d'information et un moteur de décision agrégeant les taux FX et données de prestataires publiquement disponibles. Nous ne détenons pas de fonds, n'exécutons pas de transferts et n'agissons pas comme transmetteur d'argent.",
+      "mangomundi opère comme une plateforme neutre d'information et un moteur de décision agrégeant les taux FX et données de prestataires publiquement disponibles. Nous ne détenons pas de fonds, n'exécutons pas de transferts et n'agissons pas comme transmetteur d'argent.",
     "legal.risk.title": "Information sur les Risques",
     "legal.risk.intro":
       "Les taux de change fluctuent continuellement. Le taux mid-market affiché est indicatif et peut varier entre la comparaison et l'exécution par le prestataire. L'utilisateur assume intégralement le risque de change, de règlement et de contrepartie.",
@@ -992,7 +992,7 @@ const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
       "A world where every local FX or cross-border payment — from a family remittance to a multinational treasury operation — runs through a transparent, auditable, and equitable decision layer.",
     "about.manifesto.problemTitle": "$ The Problem",
     "about.manifesto.problemText":
-      "While analysing the global FX market, our team uncovered a two-sided inefficiency. On one side, retail clients sending remittances and businesses managing cross-border flows face a frustrating maze: they never know with certainty if they are getting the best rate, trapped by hidden costs and opaque structures they cannot control or understand. On the other side, competitive financial institutions are eager to acquire these volume-generating clients, yet high acquisition costs and fragmented channels prevent them from reaching them effectively. mangoglobal ends this mismatch by building an infrastructure where AI agents scan the market impartially and enable regulated institutions to submit real-time counter-offers to improve the price at that exact moment.",
+      "While analysing the global FX market, our team uncovered a two-sided inefficiency. On one side, retail clients sending remittances and businesses managing cross-border flows face a frustrating maze: they never know with certainty if they are getting the best rate, trapped by hidden costs and opaque structures they cannot control or understand. On the other side, competitive financial institutions are eager to acquire these volume-generating clients, yet high acquisition costs and fragmented channels prevent them from reaching them effectively. mangomundi ends this mismatch by building an infrastructure where AI agents scan the market impartially and enable regulated institutions to submit real-time counter-offers to improve the price at that exact moment.",
     "about.manifesto.chapterMission": "01 · Mission",
     "about.manifesto.chapterVision": "02 · Vision",
     "about.manifesto.chapterProblem": "03 · Market Inefficiency",
@@ -1009,7 +1009,7 @@ const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
       "Un mundo donde cada pago local de FX o transfronterizo — desde una remesa familiar hasta la operación de tesorería de una multinacional — se ejecute a través de una capa de decisión transparente, auditable y equitativa.",
     "about.manifesto.problemTitle": "$ El Problema",
     "about.manifesto.problemText":
-      "Al analizar el mercado global de FX, nuestro equipo descubrió una ineficiencia de doble capa. Por un lado, los clientes retail que envían remesas y las empresas que gestionan flujos transfronterizos enfrentan un laberinto frustrante: nunca saben con certeza si obtienen la mejor tasa, atrapados por costos ocultos y estructuras opacas que no pueden controlar ni comprender. Por otro lado, las instituciones financieras competitivas están deseosas de adquirir estos clientes que generan volumen, pero los altos costos de adquisición y los canales fragmentados les impiden llegar a ellos eficazmente. mangoglobal pone fin a este desajuste creando una infraestructura donde agentes de IA escrutan el mercado de forma imparcial y permiten a las instituciones reguladas ofrecer contraofertas en tiempo real para mejorar el precio en ese instante exacto.",
+      "Al analizar el mercado global de FX, nuestro equipo descubrió una ineficiencia de doble capa. Por un lado, los clientes retail que envían remesas y las empresas que gestionan flujos transfronterizos enfrentan un laberinto frustrante: nunca saben con certeza si obtienen la mejor tasa, atrapados por costos ocultos y estructuras opacas que no pueden controlar ni comprender. Por otro lado, las instituciones financieras competitivas están deseosas de adquirir estos clientes que generan volumen, pero los altos costos de adquisición y los canales fragmentados les impiden llegar a ellos eficazmente. mangomundi pone fin a este desajuste creando una infraestructura donde agentes de IA escrutan el mercado de forma imparcial y permiten a las instituciones reguladas ofrecer contraofertas en tiempo real para mejorar el precio en ese instante exacto.",
     "about.manifesto.chapterMission": "01 · Misión",
     "about.manifesto.chapterVision": "02 · Visión",
     "about.manifesto.chapterProblem": "03 · Ineficiencia del Mercado",
@@ -1026,7 +1026,7 @@ const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
       "Um mundo onde cada pagamento local de FX ou transfronteiriço — de uma remessa familiar a uma operação de tesouraria multinacional — seja executado através de uma camada de decisão transparente, auditável e equitativa.",
     "about.manifesto.problemTitle": "$ O Problema",
     "about.manifesto.problemText":
-      "Ao analisar o mercado global de FX, nossa equipe descobriu uma ineficiência de dupla camada. De um lado, os clientes retail que enviam remessas e as empresas que gerenciam fluxos transfronteiriços enfrentam um labirinto frustrante: nunca sabem com certeza se obtêm a melhor taxa, presos por custos ocultos e estruturas opacas que não conseguem controlar nem compreender. Do outro lado, as instituições financeiras competitivas estão ansiosas para adquirir esses clientes geradores de volume, mas os altos custos de aquisição e os canais fragmentados as impedem de alcançá-los eficazmente. A mangoglobal põe fim a esse desajuste construindo uma infraestrutura onde agentes de IA examinam o mercado de forma imparcial e permitem às instituições reguladas apresentar contrapropostas em tempo real para melhorar o preço naquele exato momento.",
+      "Ao analisar o mercado global de FX, nossa equipe descobriu uma ineficiência de dupla camada. De um lado, os clientes retail que enviam remessas e as empresas que gerenciam fluxos transfronteiriços enfrentam um labirinto frustrante: nunca sabem com certeza se obtêm a melhor taxa, presos por custos ocultos e estruturas opacas que não conseguem controlar nem compreender. Do outro lado, as instituições financeiras competitivas estão ansiosas para adquirir esses clientes geradores de volume, mas os altos custos de aquisição e os canais fragmentados as impedem de alcançá-los eficazmente. A mangomundi põe fim a esse desajuste construindo uma infraestrutura onde agentes de IA examinam o mercado de forma imparcial e permitem às instituições reguladas apresentar contrapropostas em tempo real para melhorar o preço naquele exato momento.",
     "about.manifesto.chapterMission": "01 · Missão",
     "about.manifesto.chapterVision": "02 · Visão",
     "about.manifesto.chapterProblem": "03 · Ineficiência de Mercado",
@@ -1043,7 +1043,7 @@ const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
       "Un mondo in cui ogni pagamento FX locale o transfrontaliero — da una rimessa familiare a un'operazione di tesoreria multinazionale — venga eseguito attraverso un livello decisionale trasparente, verificabile ed equo.",
     "about.manifesto.problemTitle": "$ Il Problema",
     "about.manifesto.problemText":
-      "Analizzando il mercato globale FX, il nostro team ha scoperto un'inefficienza a doppio strato. Da un lato, i clienti retail che inviano rimesse e le aziende che gestiscono flussi transfrontalieri affrontano un labirinto frustrante: non sanno mai con certezza se ottengono il miglior tasso, intrappolati da costi nascosti e strutture opache che non possono controllare né comprendere. Dall'altro lato, le istituzioni finanziarie competitive desiderano acquisire questi clienti generatori di volume, ma gli alti costi di acquisizione e i canali frammentati impediscono loro di raggiungerli efficacemente. mangoglobal pone fine a questo disallineamento costruendo un'infrastruttura in cui agenti di IA scrutinano il mercato in modo imparziale e permettono alle istituzioni regolamentate di presentare controfferte in tempo reale per migliorare il prezzo in quell'esatto istante.",
+      "Analizzando il mercato globale FX, il nostro team ha scoperto un'inefficienza a doppio strato. Da un lato, i clienti retail che inviano rimesse e le aziende che gestiscono flussi transfrontalieri affrontano un labirinto frustrante: non sanno mai con certezza se ottengono il miglior tasso, intrappolati da costi nascosti e strutture opache che non possono controllare né comprendere. Dall'altro lato, le istituzioni finanziarie competitive desiderano acquisire questi clienti generatori di volume, ma gli alti costi di acquisizione e i canali frammentati impediscono loro di raggiungerli efficacemente. mangomundi pone fine a questo disallineamento costruendo un'infrastruttura in cui agenti di IA scrutinano il mercato in modo imparziale e permettono alle istituzioni regolamentate di presentare controfferte in tempo reale per migliorare il prezzo in quell'esatto istante.",
     "about.manifesto.chapterMission": "01 · Missione",
     "about.manifesto.chapterVision": "02 · Visione",
     "about.manifesto.chapterProblem": "03 · Inefficienza di Mercato",
@@ -1060,7 +1060,7 @@ const MANIFESTO_KEYS: Partial<Record<Lang, Dict>> = {
       "Un monde où chaque paiement FX local ou transfrontalier — d'une remise familiale à une opération de trésorerie multinationale — s'exécute à travers une couche de décision transparente, auditable et équitable.",
     "about.manifesto.problemTitle": "$ Le Problème",
     "about.manifesto.problemText":
-      "En analysant le marché global du FX, notre équipe a identifié une inefficience à double couche. D'un côté, les clients retail envoyant des remises et les entreprises gérant des flux transfrontaliers affrontent un labyrinthe frustrant : ils ne savent jamais avec certitude s'ils obtiennent le meilleur taux, piégés par des coûts cachés et des structures opaques qu'ils ne peuvent ni contrôler ni comprendre. De l'autre côté, les institutions financières compétitives souhaitent acquérir ces clients générateurs de volume, mais des coûts d'acquisition élevés et des canaux fragmentés les empêchent de les atteindre efficacement. mangoglobal met fin à ce désalignement en construisant une infrastructure où des agents IA scrutent le marché de manière impartiale et permettent aux institutions régulées de soumettre des contre-offres en temps réel pour améliorer le prix à cet instant précis.",
+      "En analysant le marché global du FX, notre équipe a identifié une inefficience à double couche. D'un côté, les clients retail envoyant des remises et les entreprises gérant des flux transfrontaliers affrontent un labyrinthe frustrant : ils ne savent jamais avec certitude s'ils obtiennent le meilleur taux, piégés par des coûts cachés et des structures opaques qu'ils ne peuvent ni contrôler ni comprendre. De l'autre côté, les institutions financières compétitives souhaitent acquérir ces clients générateurs de volume, mais des coûts d'acquisition élevés et des canaux fragmentés les empêchent de les atteindre efficacement. mangomundi met fin à ce désalignement en construisant une infrastructure où des agents IA scrutent le marché de manière impartiale et permettent aux institutions régulées de soumettre des contre-offres en temps réel pour améliorer le prix à cet instant précis.",
     "about.manifesto.chapterMission": "01 · Mission",
     "about.manifesto.chapterVision": "02 · Vision",
     "about.manifesto.chapterProblem": "03 · Inefficience du Marché",
@@ -1075,16 +1075,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "Last updated: 07/06/2026",
     "legal.terms.s1.title": "Nature of the Platform",
     "legal.terms.s1.body":
-      "mangoglobal operates as a neutral information and decision-engine platform. We do not custody client funds, transmit money, or act as a money-services business. All comparisons, routing suggestions, and analytics are generated algorithmically for informational purposes only. Execution and settlement occur directly between the user and the regulated third-party provider selected by the user.",
+      "mangomundi operates as a neutral information and decision-engine platform. We do not custody client funds, transmit money, or act as a money-services business. All comparisons, routing suggestions, and analytics are generated algorithmically for informational purposes only. Execution and settlement occur directly between the user and the regulated third-party provider selected by the user.",
     "legal.terms.s2.title": "Disclaimer",
     "legal.terms.s2.body":
-      "The AI-powered tools, market analytics, and routing recommendations provided on this platform do not constitute financial, tax, legal, or investment advice. Users are solely responsible for conducting their own due diligence and for verifying the regulatory status, pricing, and terms of any provider before initiating a transfer. mangoglobal makes no representation or warranty regarding the accuracy, completeness, or timeliness of any data shown.",
+      "The AI-powered tools, market analytics, and routing recommendations provided on this platform do not constitute financial, tax, legal, or investment advice. Users are solely responsible for conducting their own due diligence and for verifying the regulatory status, pricing, and terms of any provider before initiating a transfer. mangomundi makes no representation or warranty regarding the accuracy, completeness, or timeliness of any data shown.",
     "legal.terms.s3.title": "Compensation Disclosure",
     "legal.terms.s3.body":
-      "mangoglobal may receive commissions or referral fees from regulated providers for transactions facilitated through the platform. This compensation is received at no additional cost to the user and does not influence the neutrality of the comparison algorithm. Providers are ranked exclusively on objective cost, speed, and reliability metrics derived from real-time market data.",
+      "mangomundi may receive commissions or referral fees from regulated providers for transactions facilitated through the platform. This compensation is received at no additional cost to the user and does not influence the neutrality of the comparison algorithm. Providers are ranked exclusively on objective cost, speed, and reliability metrics derived from real-time market data.",
     "legal.terms.s4.title": "Limitation of Liability",
     "legal.terms.s4.body":
-      "To the maximum extent permitted by applicable law, mangoglobal and its affiliates, officers, employees, and agents shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or relating to the use of the platform. This includes, without limitation, losses resulting from foreign-exchange rate fluctuations, transfer delays, provider insolvency, technical failures, or errors in algorithmic recommendations.",
+      "To the maximum extent permitted by applicable law, mangomundi and its affiliates, officers, employees, and agents shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or relating to the use of the platform. This includes, without limitation, losses resulting from foreign-exchange rate fluctuations, transfer delays, provider insolvency, technical failures, or errors in algorithmic recommendations.",
     "legal.terms.s5.title": "Contact",
     "legal.terms.s5.body":
       "For questions, clarifications, or regulatory inquiries regarding these Terms of Service, please contact",
@@ -1093,13 +1093,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "Foreign-exchange rates fluctuate continuously and unpredictably. The mid-market reference rates displayed on this platform are indicative estimates sourced from wholesale interbank data and may deviate from the actual execution rate offered by the provider. Users bear the full foreign-exchange risk of any transaction, including the risk that the rate may move adversely between the time a comparison is generated and the time the provider executes the transfer.",
     "legal.risk.s2.title": "Provider, Settlement, and Counterparty Risk",
     "legal.risk.s2.body":
-      "mangoglobal does not custody funds. All transfers settle directly with the regulated provider selected by the user. Users are exposed to the solvency, operational reliability, and regulatory status of that provider. It is the user's responsibility to verify licensing, regulatory standing, and financial health in the relevant jurisdictions before sending funds. mangoglobal assumes no liability for provider failure, settlement delays, or loss of funds.",
+      "mangomundi does not custody funds. All transfers settle directly with the regulated provider selected by the user. Users are exposed to the solvency, operational reliability, and regulatory status of that provider. It is the user's responsibility to verify licensing, regulatory standing, and financial health in the relevant jurisdictions before sending funds. mangomundi assumes no liability for provider failure, settlement delays, or loss of funds.",
     "legal.risk.s3.title": "AI-Assisted Routing Risk",
     "legal.risk.s3.body":
       "AI-assisted routing recommendations are decision-support tools based on indexed liquidity paths, retail remittance channels, flat-fee optimisation models, and real-time interbank rates. Actual delivery times, intermediary bank fees, correspondent banking charges, and beneficiary receipt amounts may vary materially from the estimates presented. Users should confirm all final terms directly with the chosen provider before execution.",
     "legal.risk.s4.title": "Sanctions and Regulatory Compliance",
     "legal.risk.s4.body":
-      "Users are solely responsible for ensuring that any cross-border transfer complies with applicable sanctions regimes, anti-money laundering (AML) laws, know-your-customer (KYC) requirements, and cross-border reporting obligations in their jurisdiction. mangoglobal does not facilitate transactions to embargoed jurisdictions or sanctioned counterparties. Violations may result in frozen funds, regulatory penalties, or criminal liability.",
+      "Users are solely responsible for ensuring that any cross-border transfer complies with applicable sanctions regimes, anti-money laundering (AML) laws, know-your-customer (KYC) requirements, and cross-border reporting obligations in their jurisdiction. mangomundi does not facilitate transactions to embargoed jurisdictions or sanctioned counterparties. Violations may result in frozen funds, regulatory penalties, or criminal liability.",
     "business.badge": "For institutions & corporate treasury",
     "business.hero.title.1": "Institutional Routing &",
     "business.hero.title.2": "Strategy Validation.",
@@ -1121,16 +1121,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "Última actualización: 07/06/2026",
     "legal.terms.s1.title": "Naturaleza de la Plataforma",
     "legal.terms.s1.body":
-      "mangoglobal opera como una plataforma neutral de información y motor de decisión. No custodiamos fondos de clientes, no transmitimos dinero ni actuamos como entidad de servicios monetarios. Todas las comparaciones, sugerencias de enrutamiento y analíticas se generan algorítmicamente con fines exclusivamente informativos. La ejecución y liquidación ocurren directamente entre el usuario y el proveedor regulado seleccionado.",
+      "mangomundi opera como una plataforma neutral de información y motor de decisión. No custodiamos fondos de clientes, no transmitimos dinero ni actuamos como entidad de servicios monetarios. Todas las comparaciones, sugerencias de enrutamiento y analíticas se generan algorítmicamente con fines exclusivamente informativos. La ejecución y liquidación ocurren directamente entre el usuario y el proveedor regulado seleccionado.",
     "legal.terms.s2.title": "Aviso Legal",
     "legal.terms.s2.body":
-      "Las herramientas de IA, analíticas de mercado y recomendaciones de enrutamiento no constituyen asesoramiento financiero, fiscal, legal ni de inversión. El usuario es el único responsable de realizar su propia diligencia debida y verificar el estatus regulatorio, precios y términos de cualquier proveedor antes de iniciar una transferencia. mangoglobal no garantiza la exactitud, integridad ni vigencia de los datos mostrados.",
+      "Las herramientas de IA, analíticas de mercado y recomendaciones de enrutamiento no constituyen asesoramiento financiero, fiscal, legal ni de inversión. El usuario es el único responsable de realizar su propia diligencia debida y verificar el estatus regulatorio, precios y términos de cualquier proveedor antes de iniciar una transferencia. mangomundi no garantiza la exactitud, integridad ni vigencia de los datos mostrados.",
     "legal.terms.s3.title": "Divulgación de Compensación",
     "legal.terms.s3.body":
-      "mangoglobal puede recibir comisiones o tarifas de referencia de proveedores regulados por transacciones facilitadas a través de la plataforma. Esta compensación se recibe sin costo adicional para el usuario y no influye en la neutralidad del algoritmo de comparación. Los proveedores se clasifican exclusivamente por métricas objetivas de coste, velocidad y fiabilidad derivadas de datos de mercado en tiempo real.",
+      "mangomundi puede recibir comisiones o tarifas de referencia de proveedores regulados por transacciones facilitadas a través de la plataforma. Esta compensación se recibe sin costo adicional para el usuario y no influye en la neutralidad del algoritmo de comparación. Los proveedores se clasifican exclusivamente por métricas objetivas de coste, velocidad y fiabilidad derivadas de datos de mercado en tiempo real.",
     "legal.terms.s4.title": "Limitación de Responsabilidad",
     "legal.terms.s4.body":
-      "En la máxima medida permitida por la ley aplicable, mangoglobal y sus filiales, directivos, empleados y agentes no serán responsables por daños directos, indirectos, incidentales, especiales, consecuentes o punitivos derivados o relacionados con el uso de la plataforma. Esto incluye, sin limitación, pérdidas resultantes de fluctuaciones cambiarias, retrasos en transferencias, insolvencia de proveedores, fallos técnicos o errores en recomendaciones algorítmicas.",
+      "En la máxima medida permitida por la ley aplicable, mangomundi y sus filiales, directivos, empleados y agentes no serán responsables por daños directos, indirectos, incidentales, especiales, consecuentes o punitivos derivados o relacionados con el uso de la plataforma. Esto incluye, sin limitación, pérdidas resultantes de fluctuaciones cambiarias, retrasos en transferencias, insolvencia de proveedores, fallos técnicos o errores en recomendaciones algorítmicas.",
     "legal.terms.s5.title": "Contacto",
     "legal.terms.s5.body":
       "Para consultas, aclaraciones o requerimientos regulatorios sobre estos Términos del Servicio, contactar a",
@@ -1139,13 +1139,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "Los tipos de cambio fluctúan de forma continua e impredecible. Las tasas mid-market mostradas en esta plataforma son estimaciones indicativas basadas en datos interbancarios mayoristas y pueden diferir de la tasa de ejecución real ofrecida por el proveedor. El usuario asume íntegramente el riesgo cambiario de cualquier transacción, incluido el riesgo de movimientos adversos entre la comparación y la ejecución.",
     "legal.risk.s2.title": "Riesgo de Proveedor, Liquidación y Contraparte",
     "legal.risk.s2.body":
-      "mangoglobal no custodia fondos. Todas las transferencias se liquidan directamente con el proveedor regulado seleccionado por el usuario. El usuario queda expuesto a la solvencia, fiabilidad operativa y estatus regulatorio de dicho proveedor. Es responsabilidad del usuario verificar licencias, situación regulatoria y salud financiera en las jurisdicciones relevantes antes de enviar fondos. mangoglobal no asume responsabilidad por fallos del proveedor, retrasos en la liquidación o pérdida de fondos.",
+      "mangomundi no custodia fondos. Todas las transferencias se liquidan directamente con el proveedor regulado seleccionado por el usuario. El usuario queda expuesto a la solvencia, fiabilidad operativa y estatus regulatorio de dicho proveedor. Es responsabilidad del usuario verificar licencias, situación regulatoria y salud financiera en las jurisdicciones relevantes antes de enviar fondos. mangomundi no asume responsabilidad por fallos del proveedor, retrasos en la liquidación o pérdida de fondos.",
     "legal.risk.s3.title": "Riesgo de Enrutamiento Asistido por IA",
     "legal.risk.s3.body":
       "Las recomendaciones de enrutamiento asistido por IA son herramientas de apoyo a la decisión basadas en rutas de liquidez indexadas, canales de remesas retail, modelos de optimización por comisión plana y tasas interbancarias en tiempo real. Los tiempos de entrega reales, comisiones de bancos intermediarios, cargos de banca corresponsal e importes recibidos por el beneficiario pueden variar materialmente respecto a las estimaciones presentadas. El usuario debe confirmar las condiciones finales directamente con el proveedor antes de ejecutar.",
     "legal.risk.s4.title": "Sanciones y Cumplimiento Regulatorio",
     "legal.risk.s4.body":
-      "El usuario es el único responsable de garantizar que cualquier transferencia transfronteriza cumple con los regímenes de sanciones aplicables, leyes de prevención de blanqueo (AML), requisitos KYC y obligaciones de reporte transfronterizo en su jurisdicción. mangoglobal no facilita transacciones hacia jurisdicciones embargadas ni contrapartes sancionadas. Las infracciones pueden derivar en congelamiento de fondos, sanciones regulatorias o responsabilidad penal.",
+      "El usuario es el único responsable de garantizar que cualquier transferencia transfronteriza cumple con los regímenes de sanciones aplicables, leyes de prevención de blanqueo (AML), requisitos KYC y obligaciones de reporte transfronterizo en su jurisdicción. mangomundi no facilita transacciones hacia jurisdicciones embargadas ni contrapartes sancionadas. Las infracciones pueden derivar en congelamiento de fondos, sanciones regulatorias o responsabilidad penal.",
     "business.badge": "Para instituciones y tesorería corporativa",
     "business.hero.title.1": "Enrutamiento Institucional y",
     "business.hero.title.2": "Validación de Estrategia.",
@@ -1167,16 +1167,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "Última atualização: 07/06/2026",
     "legal.terms.s1.title": "Natureza da Plataforma",
     "legal.terms.s1.body":
-      "mangoglobal opera como uma plataforma neutra de informação e motor de decisão. Não custodiamos fundos, não transmitimos dinheiro e não atuamos como prestador de serviços monetários. Todas as comparações, sugestões de roteamento e analíticas são geradas algoritmicamente apenas para fins informativos. A execução e liquidação ocorrem diretamente entre o usuário e o provedor regulado selecionado.",
+      "mangomundi opera como uma plataforma neutra de informação e motor de decisão. Não custodiamos fundos, não transmitimos dinheiro e não atuamos como prestador de serviços monetários. Todas as comparações, sugestões de roteamento e analíticas são geradas algoritmicamente apenas para fins informativos. A execução e liquidação ocorrem diretamente entre o usuário e o provedor regulado selecionado.",
     "legal.terms.s2.title": "Aviso Legal",
     "legal.terms.s2.body":
-      "As ferramentas de IA, analíticas de mercado e recomendações de roteamento não constituem aconselhamento financeiro, fiscal, jurídico ou de investimento. O usuário é o único responsável por sua própria diligência e por verificar o status regulatório, preços e termos de qualquer provedor antes de iniciar uma transferência. mangoglobal não garante a exatidão, integridade ou atualidade dos dados exibidos.",
+      "As ferramentas de IA, analíticas de mercado e recomendações de roteamento não constituem aconselhamento financeiro, fiscal, jurídico ou de investimento. O usuário é o único responsável por sua própria diligência e por verificar o status regulatório, preços e termos de qualquer provedor antes de iniciar uma transferência. mangomundi não garante a exatidão, integridade ou atualidade dos dados exibidos.",
     "legal.terms.s3.title": "Divulgação de Remuneração",
     "legal.terms.s3.body":
-      "mangoglobal pode receber comissões ou taxas de indicação de provedores regulados por transações facilitadas através da plataforma. Esta remuneração é recebida sem custo adicional para o usuário e não influencia a neutralidade do algoritmo de comparação. Os provedores são classificados exclusivamente por métricas objetivas de custo, velocidade e confiabilidade derivadas de dados de mercado em tempo real.",
+      "mangomundi pode receber comissões ou taxas de indicação de provedores regulados por transações facilitadas através da plataforma. Esta remuneração é recebida sem custo adicional para o usuário e não influencia a neutralidade do algoritmo de comparação. Os provedores são classificados exclusivamente por métricas objetivas de custo, velocidade e confiabilidade derivadas de dados de mercado em tempo real.",
     "legal.terms.s4.title": "Limitação de Responsabilidade",
     "legal.terms.s4.body":
-      "Na máxima extensão permitida pela lei aplicável, mangoglobal e suas afiliadas, diretores, funcionários e agentes não serão responsáveis por quaisquer danos diretos, indiretos, incidentais, especiais, consequenciais ou punitivos decorrentes ou relacionados ao uso da plataforma. Isto inclui, sem limitação, perdas resultantes de flutuações cambiais, atrasos em transferências, insolvência de provedores, falhas técnicas ou erros em recomendações algorítmicas.",
+      "Na máxima extensão permitida pela lei aplicável, mangomundi e suas afiliadas, diretores, funcionários e agentes não serão responsáveis por quaisquer danos diretos, indiretos, incidentais, especiais, consequenciais ou punitivos decorrentes ou relacionados ao uso da plataforma. Isto inclui, sem limitação, perdas resultantes de flutuações cambiais, atrasos em transferências, insolvência de provedores, falhas técnicas ou erros em recomendações algorítmicas.",
     "legal.terms.s5.title": "Contato",
     "legal.terms.s5.body":
       "Para perguntas, esclarecimentos ou consultas regulatórias sobre estes Termos de Serviço, entre em contato com",
@@ -1185,13 +1185,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "As taxas de câmbio flutuam de forma contínua e imprevisível. As taxas mid-market exibidas nesta plataforma são estimativas indicativas baseadas em dados interbancários atacadistas e podem divergir da taxa real oferecida pelo provedor. O usuário assume integralmente o risco cambial de qualquer transação, incluindo o risco de movimentos adversos entre a comparação e a execução.",
     "legal.risk.s2.title": "Risco de Provedor, Liquidação e Contraparte",
     "legal.risk.s2.body":
-      "mangoglobal não custodia fundos. Todas as transferências são liquidadas diretamente com o provedor regulado selecionado. O usuário fica exposto à solvência, confiabilidade operacional e status regulatório desse provedor. É responsabilidade do usuário verificar licenciamento, situação regulatória e saúde financeira nas jurisdições relevantes antes de enviar fundos. mangoglobal não assume responsabilidade por falha do provedor, atrasos na liquidação ou perda de fundos.",
+      "mangomundi não custodia fundos. Todas as transferências são liquidadas diretamente com o provedor regulado selecionado. O usuário fica exposto à solvência, confiabilidade operacional e status regulatório desse provedor. É responsabilidade do usuário verificar licenciamento, situação regulatória e saúde financeira nas jurisdições relevantes antes de enviar fundos. mangomundi não assume responsabilidade por falha do provedor, atrasos na liquidação ou perda de fundos.",
     "legal.risk.s3.title": "Risco de Roteamento Assistido por IA",
     "legal.risk.s3.body":
       "As recomendações de roteamento assistido por IA são ferramentas de apoio à decisão baseadas em rotas de liquidez indexadas, canais de remessa de varejo, modelos de otimização por tarifa fixa e taxas interbancárias em tempo real. Os prazos reais, tarifas de bancos intermediários, encargos de banco correspondente e valores recebidos podem variar materialmente em relação às estimativas. O usuário deve confirmar os termos finais diretamente com o provedor antes da execução.",
     "legal.risk.s4.title": "Sanções e Conformidade Regulatória",
     "legal.risk.s4.body":
-      "O usuário é o único responsável por garantir que qualquer transferência transfronteiriça cumpra os regimes de sanções aplicáveis, leis antilavagem (AML), requisitos KYC e obrigações de reporte em sua jurisdição. mangoglobal não facilita transações para jurisdições embargadas ou contrapartes sancionadas. Violações podem resultar em congelamento de fundos, sanções regulatórias ou responsabilidade criminal.",
+      "O usuário é o único responsável por garantir que qualquer transferência transfronteiriça cumpra os regimes de sanções aplicáveis, leis antilavagem (AML), requisitos KYC e obrigações de reporte em sua jurisdição. mangomundi não facilita transações para jurisdições embargadas ou contrapartes sancionadas. Violações podem resultar em congelamento de fundos, sanções regulatórias ou responsabilidade criminal.",
     "business.badge": "Para instituições e tesouraria corporativa",
     "business.hero.title.1": "Roteamento Institucional e",
     "business.hero.title.2": "Validação de Estratégia.",
@@ -1213,16 +1213,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "Ultimo aggiornamento: 07/06/2026",
     "legal.terms.s1.title": "Natura della Piattaforma",
     "legal.terms.s1.body":
-      "mangoglobal opera come piattaforma neutrale di informazione e motore decisionale. Non deteniamo fondi dei clienti, non trasmettiamo denaro e non agiamo come prestatore di servizi monetari. Tutti i confronti, suggerimenti di routing e analisi sono generati algoritmicamente a soli fini informativi. Esecuzione e regolamento avvengono direttamente tra utente e fornitore regolamentato selezionato.",
+      "mangomundi opera come piattaforma neutrale di informazione e motore decisionale. Non deteniamo fondi dei clienti, non trasmettiamo denaro e non agiamo come prestatore di servizi monetari. Tutti i confronti, suggerimenti di routing e analisi sono generati algoritmicamente a soli fini informativi. Esecuzione e regolamento avvengono direttamente tra utente e fornitore regolamentato selezionato.",
     "legal.terms.s2.title": "Avvertenza",
     "legal.terms.s2.body":
-      "Gli strumenti di IA, le analisi di mercato e le raccomandazioni di routing non costituiscono consulenza finanziaria, fiscale, legale o di investimento. L'utente è l'unico responsabile della propria due diligence e della verifica dello status regolamentare, dei prezzi e dei termini di qualsiasi fornitore prima di avviare un trasferimento. mangoglobal non garantisce l'accuratezza, completezza o tempestività dei dati mostrati.",
+      "Gli strumenti di IA, le analisi di mercato e le raccomandazioni di routing non costituiscono consulenza finanziaria, fiscale, legale o di investimento. L'utente è l'unico responsabile della propria due diligence e della verifica dello status regolamentare, dei prezzi e dei termini di qualsiasi fornitore prima di avviare un trasferimento. mangomundi non garantisce l'accuratezza, completezza o tempestività dei dati mostrati.",
     "legal.terms.s3.title": "Informativa sui Compensi",
     "legal.terms.s3.body":
-      "mangoglobal può ricevere commissioni o fee di referral da fornitori regolamentati per transazioni facilitate tramite la piattaforma. Tale compenso non comporta costi aggiuntivi per l'utente e non influenza la neutralità dell'algoritmo di confronto. I fornitori sono classificati esclusivamente in base a metriche oggettive di costo, velocità e affidabilità derivate da dati di mercato in tempo reale.",
+      "mangomundi può ricevere commissioni o fee di referral da fornitori regolamentati per transazioni facilitate tramite la piattaforma. Tale compenso non comporta costi aggiuntivi per l'utente e non influenza la neutralità dell'algoritmo di confronto. I fornitori sono classificati esclusivamente in base a metriche oggettive di costo, velocità e affidabilità derivate da dati di mercato in tempo reale.",
     "legal.terms.s4.title": "Limitazione di Responsabilità",
     "legal.terms.s4.body":
-      "Nella massima misura consentita dalla legge applicabile, mangoglobal e le sue affiliate, dirigenti, dipendenti e agenti non saranno responsabili per danni diretti, indiretti, incidentali, speciali, consequenziali o punitivi derivanti dall'uso della piattaforma. Sono incluse, senza limitazione, perdite dovute a fluttuazioni cambiarie, ritardi, insolvenza dei fornitori, guasti tecnici o errori nelle raccomandazioni algoritmiche.",
+      "Nella massima misura consentita dalla legge applicabile, mangomundi e le sue affiliate, dirigenti, dipendenti e agenti non saranno responsabili per danni diretti, indiretti, incidentali, speciali, consequenziali o punitivi derivanti dall'uso della piattaforma. Sono incluse, senza limitazione, perdite dovute a fluttuazioni cambiarie, ritardi, insolvenza dei fornitori, guasti tecnici o errori nelle raccomandazioni algoritmiche.",
     "legal.terms.s5.title": "Contatti",
     "legal.terms.s5.body":
       "Per domande, chiarimenti o richieste regolamentari relative a questi Termini di Servizio, contattare",
@@ -1231,13 +1231,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "I tassi di cambio fluttuano in modo continuo e imprevedibile. I tassi mid-market mostrati su questa piattaforma sono stime indicative basate su dati interbancari all'ingrosso e possono differire dal tasso effettivo offerto dal fornitore. L'utente si assume integralmente il rischio di cambio di qualsiasi transazione, incluso il rischio di movimenti sfavorevoli tra il confronto e l'esecuzione.",
     "legal.risk.s2.title": "Rischio Fornitore, Regolamento e Controparte",
     "legal.risk.s2.body":
-      "mangoglobal non detiene fondi. Tutti i trasferimenti vengono regolati direttamente con il fornitore regolamentato selezionato. L'utente è esposto alla solvibilità, affidabilità operativa e status regolamentare del fornitore. È responsabilità dell'utente verificare licenze, situazione regolamentare e salute finanziaria nelle giurisdizioni rilevanti prima dell'invio. mangoglobal non si assume responsabilità per guasti del fornitore, ritardi o perdita di fondi.",
+      "mangomundi non detiene fondi. Tutti i trasferimenti vengono regolati direttamente con il fornitore regolamentato selezionato. L'utente è esposto alla solvibilità, affidabilità operativa e status regolamentare del fornitore. È responsabilità dell'utente verificare licenze, situazione regolamentare e salute finanziaria nelle giurisdizioni rilevanti prima dell'invio. mangomundi non si assume responsabilità per guasti del fornitore, ritardi o perdita di fondi.",
     "legal.risk.s3.title": "Rischio del Routing Assistito da IA",
     "legal.risk.s3.body":
       "Le raccomandazioni di routing assistito da IA sono strumenti di supporto decisionale basati su percorsi di liquidità indicizzati, canali di rimesse retail, modelli di ottimizzazione a commissione fissa e tassi interbancari in tempo reale. Tempi effettivi, commissioni intermediarie, oneri di banca corrispondente e importi ricevuti possono variare in modo sostanziale rispetto alle stime. L'utente deve confermare le condizioni finali direttamente con il fornitore prima dell'esecuzione.",
     "legal.risk.s4.title": "Sanzioni e Conformità Regolamentare",
     "legal.risk.s4.body":
-      "L'utente è l'unico responsabile di garantire che qualsiasi trasferimento transfrontaliero rispetti i regimi sanzionatori applicabili, le leggi antiriciclaggio (AML), i requisiti KYC e gli obblighi di segnalazione transfrontaliera nella propria giurisdizione. mangoglobal non facilita transazioni verso giurisdizioni soggette a embargo o controparti sanzionate. Le violazioni possono comportare congelamento fondi, sanzioni regolamentari o responsabilità penale.",
+      "L'utente è l'unico responsabile di garantire che qualsiasi trasferimento transfrontaliero rispetti i regimi sanzionatori applicabili, le leggi antiriciclaggio (AML), i requisiti KYC e gli obblighi di segnalazione transfrontaliera nella propria giurisdizione. mangomundi non facilita transazioni verso giurisdizioni soggette a embargo o controparti sanzionate. Le violazioni possono comportare congelamento fondi, sanzioni regolamentari o responsabilità penale.",
     "business.badge": "Per istituzioni e tesoreria aziendale",
     "business.hero.title.1": "Routing Istituzionale e",
     "business.hero.title.2": "Validazione della Strategia.",
@@ -1259,16 +1259,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "Dernière mise à jour : 07/06/2026",
     "legal.terms.s1.title": "Nature de la Plateforme",
     "legal.terms.s1.body":
-      "mangoglobal opère comme une plateforme neutre d'information et un moteur de décision. Nous ne détenons pas les fonds des clients, ne transmettons pas d'argent et n'agissons pas comme prestataire de services monétaires. Toutes les comparaisons, suggestions de routage et analyses sont générées algorithmiquement à des fins purement informatives. L'exécution et le règlement s'effectuent directement entre l'utilisateur et le prestataire régulé sélectionné.",
+      "mangomundi opère comme une plateforme neutre d'information et un moteur de décision. Nous ne détenons pas les fonds des clients, ne transmettons pas d'argent et n'agissons pas comme prestataire de services monétaires. Toutes les comparaisons, suggestions de routage et analyses sont générées algorithmiquement à des fins purement informatives. L'exécution et le règlement s'effectuent directement entre l'utilisateur et le prestataire régulé sélectionné.",
     "legal.terms.s2.title": "Avertissement",
     "legal.terms.s2.body":
-      "Les outils d'IA, analyses de marché et recommandations de routage ne constituent pas un conseil financier, fiscal, juridique ou en investissement. L'utilisateur est seul responsable de sa diligence raisonnable et de la vérification du statut réglementaire, des prix et des conditions de tout prestataire avant d'initier un transfert. mangoglobal ne garantit ni l'exactitude, ni l'exhaustivité, ni l'actualité des données affichées.",
+      "Les outils d'IA, analyses de marché et recommandations de routage ne constituent pas un conseil financier, fiscal, juridique ou en investissement. L'utilisateur est seul responsable de sa diligence raisonnable et de la vérification du statut réglementaire, des prix et des conditions de tout prestataire avant d'initier un transfert. mangomundi ne garantit ni l'exactitude, ni l'exhaustivité, ni l'actualité des données affichées.",
     "legal.terms.s3.title": "Divulgation de Rémunération",
     "legal.terms.s3.body":
-      "mangoglobal peut percevoir des commissions ou frais d'apporteur d'affaires de prestataires régulés pour les transactions facilitées via la plateforme. Cette rémunération est perçue sans coût additionnel pour l'utilisateur et n'influence pas la neutralité de l'algorithme de comparaison. Les prestataires sont classés exclusivement selon des métriques objectives de coût, vitesse et fiabilité issues de données de marché en temps réel.",
+      "mangomundi peut percevoir des commissions ou frais d'apporteur d'affaires de prestataires régulés pour les transactions facilitées via la plateforme. Cette rémunération est perçue sans coût additionnel pour l'utilisateur et n'influence pas la neutralité de l'algorithme de comparaison. Les prestataires sont classés exclusivement selon des métriques objectives de coût, vitesse et fiabilité issues de données de marché en temps réel.",
     "legal.terms.s4.title": "Limitation de Responsabilité",
     "legal.terms.s4.body":
-      "Dans la mesure maximale autorisée par la loi applicable, mangoglobal et ses affiliés, dirigeants, employés et agents ne seront pas responsables des dommages directs, indirects, accessoires, spéciaux, consécutifs ou punitifs liés à l'usage de la plateforme. Cela inclut, sans limitation, les pertes résultant de fluctuations de change, retards, insolvabilité du prestataire, défaillances techniques ou erreurs des recommandations algorithmiques.",
+      "Dans la mesure maximale autorisée par la loi applicable, mangomundi et ses affiliés, dirigeants, employés et agents ne seront pas responsables des dommages directs, indirects, accessoires, spéciaux, consécutifs ou punitifs liés à l'usage de la plateforme. Cela inclut, sans limitation, les pertes résultant de fluctuations de change, retards, insolvabilité du prestataire, défaillances techniques ou erreurs des recommandations algorithmiques.",
     "legal.terms.s5.title": "Contact",
     "legal.terms.s5.body":
       "Pour toute question, clarification ou demande réglementaire concernant ces Conditions d'utilisation, veuillez contacter",
@@ -1277,13 +1277,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "Les taux de change fluctuent en continu et de façon imprévisible. Les taux mid-market affichés sur cette plateforme sont des estimations indicatives basées sur des données interbancaires de gros et peuvent différer du taux réel proposé par le prestataire. L'utilisateur assume intégralement le risque de change de toute transaction, y compris le risque de mouvements défavorables entre la comparaison et l'exécution.",
     "legal.risk.s2.title": "Risque Prestataire, Règlement et Contrepartie",
     "legal.risk.s2.body":
-      "mangoglobal ne détient pas de fonds. Tous les transferts sont réglés directement avec le prestataire régulé sélectionné. L'utilisateur est exposé à la solvabilité, la fiabilité opérationnelle et le statut réglementaire de ce prestataire. Il appartient à l'utilisateur de vérifier les licences, la situation réglementaire et la santé financière dans les juridictions concernées avant d'envoyer des fonds. mangoglobal n'assume aucune responsabilité en cas de défaillance du prestataire, de retards ou de perte de fonds.",
+      "mangomundi ne détient pas de fonds. Tous les transferts sont réglés directement avec le prestataire régulé sélectionné. L'utilisateur est exposé à la solvabilité, la fiabilité opérationnelle et le statut réglementaire de ce prestataire. Il appartient à l'utilisateur de vérifier les licences, la situation réglementaire et la santé financière dans les juridictions concernées avant d'envoyer des fonds. mangomundi n'assume aucune responsabilité en cas de défaillance du prestataire, de retards ou de perte de fonds.",
     "legal.risk.s3.title": "Risque du Routage Assisté par IA",
     "legal.risk.s3.body":
       "Les recommandations de routage assisté par IA sont des outils d'aide à la décision basés sur des chemins de liquidité indexés, des canaux de remises retail, des modèles d'optimisation à commission forfaitaire et des taux interbancaires en temps réel. Les délais réels, frais des banques intermédiaires, charges de banque correspondante et montants reçus peuvent différer matériellement des estimations. L'utilisateur doit confirmer les conditions finales directement avec le prestataire avant l'exécution.",
     "legal.risk.s4.title": "Sanctions et Conformité Réglementaire",
     "legal.risk.s4.body":
-      "L'utilisateur est seul responsable de garantir que tout transfert transfrontalier respecte les régimes de sanctions applicables, les lois anti-blanchiment (AML), les exigences KYC et les obligations de déclaration transfrontalière dans sa juridiction. mangoglobal ne facilite pas les transactions vers des juridictions sous embargo ni vers des contreparties sanctionnées. Les infractions peuvent entraîner le gel des fonds, des sanctions réglementaires ou une responsabilité pénale.",
+      "L'utilisateur est seul responsable de garantir que tout transfert transfrontalier respecte les régimes de sanctions applicables, les lois anti-blanchiment (AML), les exigences KYC et les obligations de déclaration transfrontalière dans sa juridiction. mangomundi ne facilite pas les transactions vers des juridictions sous embargo ni vers des contreparties sanctionnées. Les infractions peuvent entraîner le gel des fonds, des sanctions réglementaires ou une responsabilité pénale.",
     "business.badge": "Pour les institutions et la trésorerie d'entreprise",
     "business.hero.title.1": "Routage Institutionnel &",
     "business.hero.title.2": "Validation de Stratégie.",
@@ -1305,16 +1305,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "Zuletzt aktualisiert: 07.06.2026",
     "legal.terms.s1.title": "Art der Plattform",
     "legal.terms.s1.body":
-      "mangoglobal ist eine neutrale Informations- und Entscheidungsplattform. Wir verwahren keine Kundengelder, transferieren kein Geld und treten nicht als Zahlungsdienstleister auf. Alle Vergleiche, Routing-Vorschläge und Analysen werden ausschließlich zu Informationszwecken algorithmisch erzeugt. Ausführung und Abwicklung erfolgen direkt zwischen Nutzer und dem ausgewählten regulierten Anbieter.",
+      "mangomundi ist eine neutrale Informations- und Entscheidungsplattform. Wir verwahren keine Kundengelder, transferieren kein Geld und treten nicht als Zahlungsdienstleister auf. Alle Vergleiche, Routing-Vorschläge und Analysen werden ausschließlich zu Informationszwecken algorithmisch erzeugt. Ausführung und Abwicklung erfolgen direkt zwischen Nutzer und dem ausgewählten regulierten Anbieter.",
     "legal.terms.s2.title": "Haftungsausschluss",
     "legal.terms.s2.body":
-      "Die KI-Tools, Marktanalysen und Routing-Empfehlungen stellen keine Finanz-, Steuer-, Rechts- oder Anlageberatung dar. Der Nutzer ist allein verantwortlich für seine eigene Sorgfaltsprüfung und die Verifizierung des regulatorischen Status, der Preise und Bedingungen jedes Anbieters vor einem Transfer. mangoglobal gibt keine Zusicherung hinsichtlich Richtigkeit, Vollständigkeit oder Aktualität der angezeigten Daten.",
+      "Die KI-Tools, Marktanalysen und Routing-Empfehlungen stellen keine Finanz-, Steuer-, Rechts- oder Anlageberatung dar. Der Nutzer ist allein verantwortlich für seine eigene Sorgfaltsprüfung und die Verifizierung des regulatorischen Status, der Preise und Bedingungen jedes Anbieters vor einem Transfer. mangomundi gibt keine Zusicherung hinsichtlich Richtigkeit, Vollständigkeit oder Aktualität der angezeigten Daten.",
     "legal.terms.s3.title": "Vergütungsoffenlegung",
     "legal.terms.s3.body":
-      "mangoglobal kann Provisionen oder Vermittlungsgebühren von regulierten Anbietern für über die Plattform vermittelte Transaktionen erhalten. Diese Vergütung entsteht ohne Mehrkosten für den Nutzer und beeinflusst die Neutralität des Vergleichsalgorithmus nicht. Anbieter werden ausschließlich nach objektiven Kosten-, Geschwindigkeits- und Zuverlässigkeitsmetriken bewertet.",
+      "mangomundi kann Provisionen oder Vermittlungsgebühren von regulierten Anbietern für über die Plattform vermittelte Transaktionen erhalten. Diese Vergütung entsteht ohne Mehrkosten für den Nutzer und beeinflusst die Neutralität des Vergleichsalgorithmus nicht. Anbieter werden ausschließlich nach objektiven Kosten-, Geschwindigkeits- und Zuverlässigkeitsmetriken bewertet.",
     "legal.terms.s4.title": "Haftungsbeschränkung",
     "legal.terms.s4.body":
-      "Im maximal gesetzlich zulässigen Umfang haften mangoglobal sowie verbundene Unternehmen, Geschäftsführer, Mitarbeiter und Agenten nicht für direkte, indirekte, Neben-, Sonder-, Folge- oder Strafschäden, die sich aus der Nutzung der Plattform ergeben. Dies umfasst ohne Einschränkung Verluste aus Wechselkursschwankungen, Verzögerungen, Anbieterinsolvenz, technischen Ausfällen oder Fehlern algorithmischer Empfehlungen.",
+      "Im maximal gesetzlich zulässigen Umfang haften mangomundi sowie verbundene Unternehmen, Geschäftsführer, Mitarbeiter und Agenten nicht für direkte, indirekte, Neben-, Sonder-, Folge- oder Strafschäden, die sich aus der Nutzung der Plattform ergeben. Dies umfasst ohne Einschränkung Verluste aus Wechselkursschwankungen, Verzögerungen, Anbieterinsolvenz, technischen Ausfällen oder Fehlern algorithmischer Empfehlungen.",
     "legal.terms.s5.title": "Kontakt",
     "legal.terms.s5.body":
       "Für Fragen, Klarstellungen oder regulatorische Anfragen zu diesen Nutzungsbedingungen wenden Sie sich bitte an",
@@ -1323,13 +1323,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "Wechselkurse schwanken kontinuierlich und unvorhersehbar. Die angezeigten Mid-Market-Referenzkurse sind indikative Schätzungen aus Großhandels-Interbankendaten und können vom tatsächlichen Ausführungskurs des Anbieters abweichen. Der Nutzer trägt das vollständige Wechselkursrisiko, einschließlich des Risikos ungünstiger Kursbewegungen zwischen Vergleich und Ausführung.",
     "legal.risk.s2.title": "Anbieter-, Settlement- und Kontrahentenrisiko",
     "legal.risk.s2.body":
-      "mangoglobal verwahrt keine Mittel. Alle Transfers werden direkt mit dem ausgewählten regulierten Anbieter abgewickelt. Der Nutzer ist der Solvenz, operativen Zuverlässigkeit und dem regulatorischen Status dieses Anbieters ausgesetzt. Es liegt in der Verantwortung des Nutzers, Lizenzierung und finanzielle Gesundheit in den relevanten Jurisdiktionen vor dem Versand zu prüfen. mangoglobal übernimmt keine Haftung für Anbieterausfall, Settlement-Verzögerungen oder Mittelverluste.",
+      "mangomundi verwahrt keine Mittel. Alle Transfers werden direkt mit dem ausgewählten regulierten Anbieter abgewickelt. Der Nutzer ist der Solvenz, operativen Zuverlässigkeit und dem regulatorischen Status dieses Anbieters ausgesetzt. Es liegt in der Verantwortung des Nutzers, Lizenzierung und finanzielle Gesundheit in den relevanten Jurisdiktionen vor dem Versand zu prüfen. mangomundi übernimmt keine Haftung für Anbieterausfall, Settlement-Verzögerungen oder Mittelverluste.",
     "legal.risk.s3.title": "Risiko KI-gestützten Routings",
     "legal.risk.s3.body":
       "KI-gestützte Routing-Empfehlungen sind Entscheidungshilfen, basierend auf indexierten Liquiditätspfaden, Retail-Remittance-Kanälen, Flat-Fee-Optimierungsmodellen und Echtzeit-Interbankenkursen. Tatsächliche Laufzeiten, Gebühren von Korrespondenzbanken und beim Empfänger ankommende Beträge können erheblich abweichen. Der Nutzer sollte Endkonditionen direkt mit dem Anbieter bestätigen.",
     "legal.risk.s4.title": "Sanktionen und Regulatorische Compliance",
     "legal.risk.s4.body":
-      "Der Nutzer ist allein dafür verantwortlich, dass jeder grenzüberschreitende Transfer mit anwendbaren Sanktionsregimen, Geldwäschegesetzen (AML), KYC-Anforderungen und grenzüberschreitenden Meldepflichten seiner Jurisdiktion übereinstimmt. mangoglobal ermöglicht keine Transaktionen in embargobelegte Jurisdiktionen oder zu sanktionierten Kontrahenten. Verstöße können zu Mittelsperren, regulatorischen Sanktionen oder strafrechtlicher Haftung führen.",
+      "Der Nutzer ist allein dafür verantwortlich, dass jeder grenzüberschreitende Transfer mit anwendbaren Sanktionsregimen, Geldwäschegesetzen (AML), KYC-Anforderungen und grenzüberschreitenden Meldepflichten seiner Jurisdiktion übereinstimmt. mangomundi ermöglicht keine Transaktionen in embargobelegte Jurisdiktionen oder zu sanktionierten Kontrahenten. Verstöße können zu Mittelsperren, regulatorischen Sanktionen oder strafrechtlicher Haftung führen.",
     "business.badge": "Für Institutionen und Corporate Treasury",
     "business.hero.title.1": "Institutionelles Routing &",
     "business.hero.title.2": "Strategie-Validierung.",
@@ -1351,16 +1351,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "最后更新:07/06/2026",
     "legal.terms.s1.title": "平台性质",
     "legal.terms.s1.body":
-      "mangoglobal 作为中立的信息与决策引擎平台运营。我们不托管客户资金、不汇款,也不作为货币服务机构。所有比较、路由建议和分析均由算法生成,仅供参考。执行与结算直接发生在用户与其选择的受监管第三方提供商之间。",
+      "mangomundi 作为中立的信息与决策引擎平台运营。我们不托管客户资金、不汇款,也不作为货币服务机构。所有比较、路由建议和分析均由算法生成,仅供参考。执行与结算直接发生在用户与其选择的受监管第三方提供商之间。",
     "legal.terms.s2.title": "免责声明",
     "legal.terms.s2.body":
-      "本平台提供的 AI 工具、市场分析及路由建议不构成财务、税务、法律或投资建议。在发起转账前,用户须自行进行尽职调查,核实任何提供商的监管状态、价格与条款。mangoglobal 不对所示数据的准确性、完整性或时效性作出任何保证。",
+      "本平台提供的 AI 工具、市场分析及路由建议不构成财务、税务、法律或投资建议。在发起转账前,用户须自行进行尽职调查,核实任何提供商的监管状态、价格与条款。mangomundi 不对所示数据的准确性、完整性或时效性作出任何保证。",
     "legal.terms.s3.title": "报酬披露",
     "legal.terms.s3.body":
-      "mangoglobal 可能就通过本平台促成的交易向受监管的提供商收取佣金或推荐费。该报酬不会向用户收取任何额外费用,亦不会影响比较算法的中立性。提供商的排名完全基于源自实时市场数据的成本、速度与可靠性等客观指标。",
+      "mangomundi 可能就通过本平台促成的交易向受监管的提供商收取佣金或推荐费。该报酬不会向用户收取任何额外费用,亦不会影响比较算法的中立性。提供商的排名完全基于源自实时市场数据的成本、速度与可靠性等客观指标。",
     "legal.terms.s4.title": "责任限制",
     "legal.terms.s4.body":
-      "在适用法律允许的最大范围内,mangoglobal 及其关联方、董事、雇员与代理人不对因使用本平台而产生或与之相关的任何直接、间接、附带、特殊、后果性或惩罚性损害承担责任。包括但不限于因汇率波动、转账延迟、提供商破产、技术故障或算法建议错误造成的损失。",
+      "在适用法律允许的最大范围内,mangomundi 及其关联方、董事、雇员与代理人不对因使用本平台而产生或与之相关的任何直接、间接、附带、特殊、后果性或惩罚性损害承担责任。包括但不限于因汇率波动、转账延迟、提供商破产、技术故障或算法建议错误造成的损失。",
     "legal.terms.s5.title": "联系方式",
     "legal.terms.s5.body": "如对本服务条款有任何疑问、说明或监管查询,请联系",
     "legal.risk.s1.title": "外汇市场风险",
@@ -1368,13 +1368,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "外汇汇率持续且不可预测地波动。本平台显示的中间价为基于批发银行间数据的指示性估算,可能与提供商实际执行汇率不同。用户须自行承担任何交易的全部外汇风险,包括比较生成与提供商执行之间汇率不利变动的风险。",
     "legal.risk.s2.title": "提供商、结算与对手方风险",
     "legal.risk.s2.body":
-      "mangoglobal 不托管资金。所有转账直接与用户选定的受监管提供商结算。用户暴露于该提供商的偿付能力、运营可靠性及监管状况。用户有责任在发款前核实相关司法管辖区内的牌照、监管地位及财务状况。mangoglobal 不对提供商失败、结算延迟或资金损失承担任何责任。",
+      "mangomundi 不托管资金。所有转账直接与用户选定的受监管提供商结算。用户暴露于该提供商的偿付能力、运营可靠性及监管状况。用户有责任在发款前核实相关司法管辖区内的牌照、监管地位及财务状况。mangomundi 不对提供商失败、结算延迟或资金损失承担任何责任。",
     "legal.risk.s3.title": "AI 辅助路由风险",
     "legal.risk.s3.body":
       "AI 辅助路由建议是基于索引化流动性路径、零售汇款渠道、平价优化模型及实时银行间汇率的决策支持工具。实际到账时间、中间银行费用、代理行收费与收款金额可能与所示估算存在重大差异。用户应在执行前直接与所选提供商确认最终条款。",
     "legal.risk.s4.title": "制裁与监管合规",
     "legal.risk.s4.body":
-      "用户全权负责确保任何跨境转账遵守其所在司法管辖区适用的制裁制度、反洗钱(AML)法律、KYC 要求及跨境申报义务。mangoglobal 不为受禁运司法管辖区或被制裁对手方提供交易便利。违规可能导致资金冻结、监管处罚或刑事责任。",
+      "用户全权负责确保任何跨境转账遵守其所在司法管辖区适用的制裁制度、反洗钱(AML)法律、KYC 要求及跨境申报义务。mangomundi 不为受禁运司法管辖区或被制裁对手方提供交易便利。违规可能导致资金冻结、监管处罚或刑事责任。",
     "business.badge": "面向机构与企业财务",
     "business.hero.title.1": "机构路由与",
     "business.hero.title.2": "策略验证。",
@@ -1396,16 +1396,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "最終更新: 2026/06/07",
     "legal.terms.s1.title": "プラットフォームの性質",
     "legal.terms.s1.body":
-      "mangoglobal は中立的な情報および意思決定エンジンのプラットフォームとして運営しています。顧客資金の保管、送金、資金移動業の提供は行いません。比較、ルーティング提案、分析はすべて情報提供のみを目的としてアルゴリズムで生成されます。執行と決済は、ユーザーが選択した規制対象プロバイダーとの間で直接行われます。",
+      "mangomundi は中立的な情報および意思決定エンジンのプラットフォームとして運営しています。顧客資金の保管、送金、資金移動業の提供は行いません。比較、ルーティング提案、分析はすべて情報提供のみを目的としてアルゴリズムで生成されます。執行と決済は、ユーザーが選択した規制対象プロバイダーとの間で直接行われます。",
     "legal.terms.s2.title": "免責事項",
     "legal.terms.s2.body":
-      "本プラットフォームで提供される AI ツール、市場分析、ルーティング推奨は、財務、税務、法律、または投資のアドバイスを構成するものではありません。ユーザーは、送金を開始する前に、自らデューデリジェンスを行い、各プロバイダーの規制状況、価格および条件を確認する責任を負います。mangoglobal は、表示されるデータの正確性、完全性、または適時性について一切保証しません。",
+      "本プラットフォームで提供される AI ツール、市場分析、ルーティング推奨は、財務、税務、法律、または投資のアドバイスを構成するものではありません。ユーザーは、送金を開始する前に、自らデューデリジェンスを行い、各プロバイダーの規制状況、価格および条件を確認する責任を負います。mangomundi は、表示されるデータの正確性、完全性、または適時性について一切保証しません。",
     "legal.terms.s3.title": "報酬の開示",
     "legal.terms.s3.body":
-      "mangoglobal は、プラットフォーム経由で成立した取引について、規制対象プロバイダーから手数料または紹介料を受け取る場合があります。当該報酬はユーザーに追加コストを生じさせず、比較アルゴリズムの中立性に影響しません。プロバイダーはリアルタイム市場データから導かれるコスト、速度、信頼性の客観的指標のみで評価されます。",
+      "mangomundi は、プラットフォーム経由で成立した取引について、規制対象プロバイダーから手数料または紹介料を受け取る場合があります。当該報酬はユーザーに追加コストを生じさせず、比較アルゴリズムの中立性に影響しません。プロバイダーはリアルタイム市場データから導かれるコスト、速度、信頼性の客観的指標のみで評価されます。",
     "legal.terms.s4.title": "責任の制限",
     "legal.terms.s4.body":
-      "適用法で認められる最大限の範囲において、mangoglobal およびその関係会社、役員、従業員、代理人は、プラットフォームの利用に起因する直接的、間接的、付随的、特別、結果的、または懲罰的損害について一切の責任を負いません。これには為替変動、送金遅延、プロバイダーの破綻、技術的障害、アルゴリズム推奨の誤りに起因する損失を含みますが、これらに限定されません。",
+      "適用法で認められる最大限の範囲において、mangomundi およびその関係会社、役員、従業員、代理人は、プラットフォームの利用に起因する直接的、間接的、付随的、特別、結果的、または懲罰的損害について一切の責任を負いません。これには為替変動、送金遅延、プロバイダーの破綻、技術的障害、アルゴリズム推奨の誤りに起因する損失を含みますが、これらに限定されません。",
     "legal.terms.s5.title": "お問い合わせ",
     "legal.terms.s5.body":
       "本利用規約に関するご質問、説明、または規制上のお問い合わせは次のメールへ連絡してください",
@@ -1414,13 +1414,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "為替レートは継続的かつ予測不能に変動します。本プラットフォームで表示される mid-market 参考レートは、ホールセール銀行間データに基づく指示的見積りであり、プロバイダーが提供する実際の執行レートと異なる場合があります。ユーザーは、比較生成からプロバイダーによる執行までの間にレートが不利に動くリスクを含め、すべての為替リスクを負います。",
     "legal.risk.s2.title": "プロバイダー、決済、カウンターパーティ・リスク",
     "legal.risk.s2.body":
-      "mangoglobal は資金を保管しません。すべての送金はユーザーが選択した規制対象プロバイダーと直接決済されます。ユーザーは当該プロバイダーの支払能力、運営の信頼性、規制状況にさらされます。資金を送る前に、関連する法域でのライセンス、規制状況、財務健全性を確認することはユーザーの責任です。mangoglobal はプロバイダーの障害、決済遅延、資金損失について一切責任を負いません。",
+      "mangomundi は資金を保管しません。すべての送金はユーザーが選択した規制対象プロバイダーと直接決済されます。ユーザーは当該プロバイダーの支払能力、運営の信頼性、規制状況にさらされます。資金を送る前に、関連する法域でのライセンス、規制状況、財務健全性を確認することはユーザーの責任です。mangomundi はプロバイダーの障害、決済遅延、資金損失について一切責任を負いません。",
     "legal.risk.s3.title": "AI 支援ルーティングのリスク",
     "legal.risk.s3.body":
       "AI 支援によるルーティング推奨は、インデックス化された流動性経路、リテール送金チャネル、定額手数料最適化モデル、リアルタイム銀行間レートに基づく意思決定支援ツールです。実際の所要時間、中継銀行手数料、コルレス手数料、受取金額は提示した見積りと大きく異なる可能性があります。執行前にプロバイダーと最終条件を直接確認してください。",
     "legal.risk.s4.title": "制裁および規制遵守",
     "legal.risk.s4.body":
-      "ユーザーは、クロスボーダー送金が自国の法域で適用される制裁体制、マネーロンダリング防止 (AML) 法、KYC 要件、報告義務に準拠することを単独で保証する責任を負います。mangoglobal は禁輸対象法域や制裁対象先への取引を促進しません。違反は資金凍結、規制制裁、刑事責任につながる可能性があります。",
+      "ユーザーは、クロスボーダー送金が自国の法域で適用される制裁体制、マネーロンダリング防止 (AML) 法、KYC 要件、報告義務に準拠することを単独で保証する責任を負います。mangomundi は禁輸対象法域や制裁対象先への取引を促進しません。違反は資金凍結、規制制裁、刑事責任につながる可能性があります。",
     "business.badge": "機関投資家・コーポレートトレジャリー向け",
     "business.hero.title.1": "機関向けルーティングと",
     "business.hero.title.2": "戦略検証。",
@@ -1442,16 +1442,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "최종 업데이트: 2026/06/07",
     "legal.terms.s1.title": "플랫폼의 성격",
     "legal.terms.s1.body":
-      "mangoglobal 은 중립적인 정보 및 의사결정 엔진 플랫폼으로 운영됩니다. 당사는 고객 자금을 보관하지 않고, 송금을 수행하지 않으며, 자금서비스업체로 활동하지 않습니다. 모든 비교, 라우팅 제안 및 분석은 정보 제공 목적으로만 알고리즘으로 생성됩니다. 실행 및 결제는 사용자와 사용자가 선택한 규제 대상 제3자 제공업체 간에 직접 이루어집니다.",
+      "mangomundi 은 중립적인 정보 및 의사결정 엔진 플랫폼으로 운영됩니다. 당사는 고객 자금을 보관하지 않고, 송금을 수행하지 않으며, 자금서비스업체로 활동하지 않습니다. 모든 비교, 라우팅 제안 및 분석은 정보 제공 목적으로만 알고리즘으로 생성됩니다. 실행 및 결제는 사용자와 사용자가 선택한 규제 대상 제3자 제공업체 간에 직접 이루어집니다.",
     "legal.terms.s2.title": "면책 조항",
     "legal.terms.s2.body":
-      "본 플랫폼에서 제공되는 AI 도구, 시장 분석 및 라우팅 권장사항은 재무, 세무, 법률 또는 투자 자문을 구성하지 않습니다. 사용자는 송금을 개시하기 전 자신의 실사를 수행하고 각 제공업체의 규제 상태, 가격 및 조건을 확인할 단독 책임이 있습니다. mangoglobal 은 표시된 데이터의 정확성, 완전성 또는 시의성에 대해 어떠한 보증도 하지 않습니다.",
+      "본 플랫폼에서 제공되는 AI 도구, 시장 분석 및 라우팅 권장사항은 재무, 세무, 법률 또는 투자 자문을 구성하지 않습니다. 사용자는 송금을 개시하기 전 자신의 실사를 수행하고 각 제공업체의 규제 상태, 가격 및 조건을 확인할 단독 책임이 있습니다. mangomundi 은 표시된 데이터의 정확성, 완전성 또는 시의성에 대해 어떠한 보증도 하지 않습니다.",
     "legal.terms.s3.title": "보수 공시",
     "legal.terms.s3.body":
-      "mangoglobal 은 플랫폼을 통해 성사된 거래에 대해 규제 대상 제공업체로부터 수수료나 추천 수수료를 받을 수 있습니다. 이 보수는 사용자에게 추가 비용을 발생시키지 않으며 비교 알고리즘의 중립성에 영향을 미치지 않습니다. 제공업체는 실시간 시장 데이터에서 도출된 비용, 속도 및 신뢰성의 객관적 지표에 의해서만 순위가 매겨집니다.",
+      "mangomundi 은 플랫폼을 통해 성사된 거래에 대해 규제 대상 제공업체로부터 수수료나 추천 수수료를 받을 수 있습니다. 이 보수는 사용자에게 추가 비용을 발생시키지 않으며 비교 알고리즘의 중립성에 영향을 미치지 않습니다. 제공업체는 실시간 시장 데이터에서 도출된 비용, 속도 및 신뢰성의 객관적 지표에 의해서만 순위가 매겨집니다.",
     "legal.terms.s4.title": "책임의 제한",
     "legal.terms.s4.body":
-      "적용 법률이 허용하는 최대 범위 내에서, mangoglobal 및 그 계열사, 임원, 직원, 대리인은 플랫폼 사용으로 발생하거나 이와 관련된 직접적, 간접적, 부수적, 특별, 결과적 또는 징벌적 손해에 대해 책임지지 않습니다. 여기에는 환율 변동, 송금 지연, 제공업체 도산, 기술적 장애 또는 알고리즘 권장 오류로 인한 손실이 포함되며 이에 국한되지 않습니다.",
+      "적용 법률이 허용하는 최대 범위 내에서, mangomundi 및 그 계열사, 임원, 직원, 대리인은 플랫폼 사용으로 발생하거나 이와 관련된 직접적, 간접적, 부수적, 특별, 결과적 또는 징벌적 손해에 대해 책임지지 않습니다. 여기에는 환율 변동, 송금 지연, 제공업체 도산, 기술적 장애 또는 알고리즘 권장 오류로 인한 손실이 포함되며 이에 국한되지 않습니다.",
     "legal.terms.s5.title": "문의",
     "legal.terms.s5.body": "본 서비스 약관에 관한 질문, 설명 또는 규제 문의는 다음으로 연락주세요",
     "legal.risk.s1.title": "FX 시장 위험",
@@ -1459,13 +1459,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "환율은 지속적이고 예측 불가하게 변동합니다. 본 플랫폼에 표시되는 mid-market 참고 환율은 도매 은행 간 데이터에서 산출된 지표적 추정치로, 제공업체가 제시하는 실제 실행 환율과 다를 수 있습니다. 사용자는 비교 생성 시점과 제공업체의 송금 실행 시점 사이에 환율이 불리하게 변동할 위험을 포함한 모든 외환 위험을 부담합니다.",
     "legal.risk.s2.title": "제공업체, 결제 및 거래상대방 위험",
     "legal.risk.s2.body":
-      "mangoglobal 은 자금을 보관하지 않습니다. 모든 송금은 사용자가 선택한 규제 대상 제공업체와 직접 결제됩니다. 사용자는 해당 제공업체의 지급능력, 운영 신뢰성 및 규제 상태에 노출됩니다. 자금 송금 전 관련 관할권에서 라이선스, 규제 지위 및 재무 건전성을 확인하는 것은 사용자의 책임입니다. mangoglobal 은 제공업체 장애, 결제 지연 또는 자금 손실에 대해 일체 책임을 지지 않습니다.",
+      "mangomundi 은 자금을 보관하지 않습니다. 모든 송금은 사용자가 선택한 규제 대상 제공업체와 직접 결제됩니다. 사용자는 해당 제공업체의 지급능력, 운영 신뢰성 및 규제 상태에 노출됩니다. 자금 송금 전 관련 관할권에서 라이선스, 규제 지위 및 재무 건전성을 확인하는 것은 사용자의 책임입니다. mangomundi 은 제공업체 장애, 결제 지연 또는 자금 손실에 대해 일체 책임을 지지 않습니다.",
     "legal.risk.s3.title": "AI 지원 라우팅 위험",
     "legal.risk.s3.body":
       "AI 지원 라우팅 권장사항은 인덱싱된 유동성 경로, 리테일 송금 채널, 정액 수수료 최적화 모델 및 실시간 은행 간 환율을 기반으로 한 의사결정 지원 도구입니다. 실제 도착 시간, 중개은행 수수료, 코르레스폰던트 은행 비용 및 수취 금액은 제시된 추정치와 크게 다를 수 있습니다. 사용자는 실행 전에 선택한 제공업체와 최종 조건을 직접 확인해야 합니다.",
     "legal.risk.s4.title": "제재 및 규제 준수",
     "legal.risk.s4.body":
-      "사용자는 모든 국경 간 송금이 자신의 관할권에서 적용되는 제재 체제, 자금세탁방지(AML) 법규, KYC 요건 및 국경 간 보고 의무를 준수하도록 보장할 단독 책임이 있습니다. mangoglobal 은 금수 관할권 또는 제재 대상 거래상대방으로의 거래를 촉진하지 않습니다. 위반 시 자금 동결, 규제 제재 또는 형사 책임이 발생할 수 있습니다.",
+      "사용자는 모든 국경 간 송금이 자신의 관할권에서 적용되는 제재 체제, 자금세탁방지(AML) 법규, KYC 요건 및 국경 간 보고 의무를 준수하도록 보장할 단독 책임이 있습니다. mangomundi 은 금수 관할권 또는 제재 대상 거래상대방으로의 거래를 촉진하지 않습니다. 위반 시 자금 동결, 규제 제재 또는 형사 책임이 발생할 수 있습니다.",
     "business.badge": "기관 및 기업 재무를 위한 솔루션",
     "business.hero.title.1": "기관 라우팅 &",
     "business.hero.title.2": "전략 검증.",
@@ -1487,16 +1487,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "آخر تحديث: 07/06/2026",
     "legal.terms.s1.title": "طبيعة المنصة",
     "legal.terms.s1.body":
-      "تعمل mangoglobal كمنصة محايدة للمعلومات ومحرك قرار. نحن لا نحتفظ بأموال العملاء ولا نقوم بتحويل الأموال ولا نعمل كمؤسسة خدمات نقدية. تُولَّد جميع المقارنات واقتراحات التوجيه والتحليلات خوارزميًا لأغراض المعلومات فقط. يحدث التنفيذ والتسوية مباشرة بين المستخدم والمزود المرخص المختار.",
+      "تعمل mangomundi كمنصة محايدة للمعلومات ومحرك قرار. نحن لا نحتفظ بأموال العملاء ولا نقوم بتحويل الأموال ولا نعمل كمؤسسة خدمات نقدية. تُولَّد جميع المقارنات واقتراحات التوجيه والتحليلات خوارزميًا لأغراض المعلومات فقط. يحدث التنفيذ والتسوية مباشرة بين المستخدم والمزود المرخص المختار.",
     "legal.terms.s2.title": "إخلاء المسؤولية",
     "legal.terms.s2.body":
-      "لا تشكل أدوات الذكاء الاصطناعي وتحليلات السوق وتوصيات التوجيه المقدمة على هذه المنصة استشارة مالية أو ضريبية أو قانونية أو استثمارية. يتحمل المستخدم وحده مسؤولية إجراء العناية الواجبة والتحقق من الحالة التنظيمية والأسعار وشروط أي مزود قبل بدء التحويل. لا تقدم mangoglobal أي ضمان بشأن دقة أو اكتمال أو حداثة البيانات المعروضة.",
+      "لا تشكل أدوات الذكاء الاصطناعي وتحليلات السوق وتوصيات التوجيه المقدمة على هذه المنصة استشارة مالية أو ضريبية أو قانونية أو استثمارية. يتحمل المستخدم وحده مسؤولية إجراء العناية الواجبة والتحقق من الحالة التنظيمية والأسعار وشروط أي مزود قبل بدء التحويل. لا تقدم mangomundi أي ضمان بشأن دقة أو اكتمال أو حداثة البيانات المعروضة.",
     "legal.terms.s3.title": "الإفصاح عن التعويض",
     "legal.terms.s3.body":
-      "قد تتلقى mangoglobal عمولات أو رسوم إحالة من المزودين المرخصين عن المعاملات التي تتم عبر المنصة. يُتلقى هذا التعويض دون أي تكلفة إضافية على المستخدم ولا يؤثر على حياد خوارزمية المقارنة. يتم تصنيف المزودين حصريًا بناءً على مقاييس موضوعية للتكلفة والسرعة والموثوقية مستخلصة من بيانات السوق الفورية.",
+      "قد تتلقى mangomundi عمولات أو رسوم إحالة من المزودين المرخصين عن المعاملات التي تتم عبر المنصة. يُتلقى هذا التعويض دون أي تكلفة إضافية على المستخدم ولا يؤثر على حياد خوارزمية المقارنة. يتم تصنيف المزودين حصريًا بناءً على مقاييس موضوعية للتكلفة والسرعة والموثوقية مستخلصة من بيانات السوق الفورية.",
     "legal.terms.s4.title": "تحديد المسؤولية",
     "legal.terms.s4.body":
-      "إلى أقصى حد يسمح به القانون المعمول به، لن تكون mangoglobal والشركات التابعة لها ومسؤوليها وموظفيها ووكلائها مسؤولين عن أي أضرار مباشرة أو غير مباشرة أو عرضية أو خاصة أو تبعية أو عقابية تنشأ عن استخدام المنصة. يشمل ذلك دون حصر الخسائر الناتجة عن تقلبات أسعار الصرف أو تأخر التحويلات أو إفلاس المزود أو الأعطال التقنية أو أخطاء التوصيات الخوارزمية.",
+      "إلى أقصى حد يسمح به القانون المعمول به، لن تكون mangomundi والشركات التابعة لها ومسؤوليها وموظفيها ووكلائها مسؤولين عن أي أضرار مباشرة أو غير مباشرة أو عرضية أو خاصة أو تبعية أو عقابية تنشأ عن استخدام المنصة. يشمل ذلك دون حصر الخسائر الناتجة عن تقلبات أسعار الصرف أو تأخر التحويلات أو إفلاس المزود أو الأعطال التقنية أو أخطاء التوصيات الخوارزمية.",
     "legal.terms.s5.title": "التواصل",
     "legal.terms.s5.body":
       "للاستفسارات أو التوضيحات أو الاستفسارات التنظيمية بشأن شروط الخدمة هذه، يرجى التواصل مع",
@@ -1505,13 +1505,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "تتقلب أسعار الصرف باستمرار وبشكل غير متوقع. تعد أسعار mid-market المرجعية المعروضة على هذه المنصة تقديرات استرشادية مستمدة من بيانات البنوك بالجملة وقد تختلف عن سعر التنفيذ الفعلي للمزود. يتحمل المستخدم كامل مخاطر الصرف الأجنبي، بما في ذلك مخاطر التحرك السلبي للسعر بين توليد المقارنة وتنفيذ التحويل من قبل المزود.",
     "legal.risk.s2.title": "مخاطر المزود والتسوية والطرف المقابل",
     "legal.risk.s2.body":
-      "لا تحتفظ mangoglobal بالأموال. تتم تسوية جميع التحويلات مباشرة مع المزود المرخص الذي يختاره المستخدم. يتعرض المستخدم لملاءة المزود وموثوقيته التشغيلية ووضعه التنظيمي. تقع على المستخدم مسؤولية التحقق من الترخيص والوضع التنظيمي والصحة المالية في الولايات القضائية ذات الصلة قبل إرسال الأموال. لا تتحمل mangoglobal أي مسؤولية عن فشل المزود أو تأخر التسوية أو فقدان الأموال.",
+      "لا تحتفظ mangomundi بالأموال. تتم تسوية جميع التحويلات مباشرة مع المزود المرخص الذي يختاره المستخدم. يتعرض المستخدم لملاءة المزود وموثوقيته التشغيلية ووضعه التنظيمي. تقع على المستخدم مسؤولية التحقق من الترخيص والوضع التنظيمي والصحة المالية في الولايات القضائية ذات الصلة قبل إرسال الأموال. لا تتحمل mangomundi أي مسؤولية عن فشل المزود أو تأخر التسوية أو فقدان الأموال.",
     "legal.risk.s3.title": "مخاطر التوجيه المعزز بالذكاء الاصطناعي",
     "legal.risk.s3.body":
       "توصيات التوجيه بمساعدة الذكاء الاصطناعي هي أدوات دعم قرار تستند إلى مسارات السيولة المُفهرسة وقنوات تحويل الأفراد ونماذج تحسين الرسوم الثابتة وأسعار البنوك الفورية. قد تختلف أوقات الوصول الفعلية ورسوم البنوك الوسيطة ورسوم البنوك المراسلة والمبالغ المستلمة اختلافًا جوهريًا عن التقديرات. ينبغي على المستخدم تأكيد جميع الشروط النهائية مع المزود قبل التنفيذ.",
     "legal.risk.s4.title": "العقوبات والامتثال التنظيمي",
     "legal.risk.s4.body":
-      "يتحمل المستخدم وحده مسؤولية ضمان امتثال أي تحويل عبر الحدود لأنظمة العقوبات السارية وقوانين مكافحة غسل الأموال (AML) ومتطلبات اعرف عميلك (KYC) والتزامات الإبلاغ في ولايته القضائية. لا تيسر mangoglobal المعاملات إلى الولايات القضائية المحظورة أو الأطراف المعاقَب عليها. قد تؤدي المخالفات إلى تجميد الأموال أو عقوبات تنظيمية أو مسؤولية جنائية.",
+      "يتحمل المستخدم وحده مسؤولية ضمان امتثال أي تحويل عبر الحدود لأنظمة العقوبات السارية وقوانين مكافحة غسل الأموال (AML) ومتطلبات اعرف عميلك (KYC) والتزامات الإبلاغ في ولايته القضائية. لا تيسر mangomundi المعاملات إلى الولايات القضائية المحظورة أو الأطراف المعاقَب عليها. قد تؤدي المخالفات إلى تجميد الأموال أو عقوبات تنظيمية أو مسؤولية جنائية.",
     "business.badge": "للمؤسسات والخزائن المؤسسية",
     "business.hero.title.1": "التوجيه المؤسسي و",
     "business.hero.title.2": "التحقق من الاستراتيجية.",
@@ -1533,16 +1533,16 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.lastUpdated": "अंतिम अपडेट: 07/06/2026",
     "legal.terms.s1.title": "प्लेटफ़ॉर्म की प्रकृति",
     "legal.terms.s1.body":
-      "mangoglobal एक तटस्थ सूचना और निर्णय-इंजन प्लेटफ़ॉर्म के रूप में संचालित होता है। हम ग्राहक धन की हिरासत नहीं रखते, धन हस्तांतरण नहीं करते, और मनी-सर्विसेज़ व्यवसाय के रूप में कार्य नहीं करते। सभी तुलनाएँ, राउटिंग सुझाव और एनालिटिक्स केवल जानकारी हेतु एल्गोरिथमिक रूप से उत्पन्न होते हैं। निष्पादन और निपटान सीधे उपयोगकर्ता और चुने गए विनियमित प्रदाता के बीच होते हैं।",
+      "mangomundi एक तटस्थ सूचना और निर्णय-इंजन प्लेटफ़ॉर्म के रूप में संचालित होता है। हम ग्राहक धन की हिरासत नहीं रखते, धन हस्तांतरण नहीं करते, और मनी-सर्विसेज़ व्यवसाय के रूप में कार्य नहीं करते। सभी तुलनाएँ, राउटिंग सुझाव और एनालिटिक्स केवल जानकारी हेतु एल्गोरिथमिक रूप से उत्पन्न होते हैं। निष्पादन और निपटान सीधे उपयोगकर्ता और चुने गए विनियमित प्रदाता के बीच होते हैं।",
     "legal.terms.s2.title": "अस्वीकरण",
     "legal.terms.s2.body":
-      "इस प्लेटफ़ॉर्म पर प्रदान किए गए AI टूल, बाज़ार विश्लेषण और राउटिंग सिफारिशें वित्तीय, कर, कानूनी या निवेश सलाह का गठन नहीं करतीं। उपयोगकर्ता हस्तांतरण आरंभ करने से पहले अपनी स्वयं की उचित जाँच करने और किसी भी प्रदाता की नियामक स्थिति, मूल्य और शर्तों को सत्यापित करने के लिए पूरी तरह से ज़िम्मेदार है। mangoglobal दिखाए गए डेटा की सटीकता, पूर्णता या समयबद्धता की कोई गारंटी नहीं देता।",
+      "इस प्लेटफ़ॉर्म पर प्रदान किए गए AI टूल, बाज़ार विश्लेषण और राउटिंग सिफारिशें वित्तीय, कर, कानूनी या निवेश सलाह का गठन नहीं करतीं। उपयोगकर्ता हस्तांतरण आरंभ करने से पहले अपनी स्वयं की उचित जाँच करने और किसी भी प्रदाता की नियामक स्थिति, मूल्य और शर्तों को सत्यापित करने के लिए पूरी तरह से ज़िम्मेदार है। mangomundi दिखाए गए डेटा की सटीकता, पूर्णता या समयबद्धता की कोई गारंटी नहीं देता।",
     "legal.terms.s3.title": "क्षतिपूर्ति प्रकटीकरण",
     "legal.terms.s3.body":
-      "mangoglobal प्लेटफ़ॉर्म के माध्यम से संपन्न लेनदेन के लिए विनियमित प्रदाताओं से कमीशन या रेफ़रल शुल्क प्राप्त कर सकता है। यह क्षतिपूर्ति उपयोगकर्ता के लिए बिना किसी अतिरिक्त लागत के प्राप्त होती है और तुलना एल्गोरिथ्म की तटस्थता को प्रभावित नहीं करती। प्रदाताओं को विशेष रूप से लागत, गति और विश्वसनीयता के वस्तुनिष्ठ मेट्रिक्स के आधार पर रैंक किया जाता है।",
+      "mangomundi प्लेटफ़ॉर्म के माध्यम से संपन्न लेनदेन के लिए विनियमित प्रदाताओं से कमीशन या रेफ़रल शुल्क प्राप्त कर सकता है। यह क्षतिपूर्ति उपयोगकर्ता के लिए बिना किसी अतिरिक्त लागत के प्राप्त होती है और तुलना एल्गोरिथ्म की तटस्थता को प्रभावित नहीं करती। प्रदाताओं को विशेष रूप से लागत, गति और विश्वसनीयता के वस्तुनिष्ठ मेट्रिक्स के आधार पर रैंक किया जाता है।",
     "legal.terms.s4.title": "दायित्व की सीमा",
     "legal.terms.s4.body":
-      "लागू कानून द्वारा अनुमत अधिकतम सीमा तक, mangoglobal और इसकी सहयोगी कंपनियाँ, अधिकारी, कर्मचारी और एजेंट प्लेटफ़ॉर्म के उपयोग से उत्पन्न प्रत्यक्ष, अप्रत्यक्ष, आकस्मिक, विशेष, परिणामी या दंडात्मक क्षति के लिए उत्तरदायी नहीं होंगे। इसमें विदेशी मुद्रा उतार-चढ़ाव, हस्तांतरण विलंब, प्रदाता दिवालियापन, तकनीकी विफलताओं या एल्गोरिथमिक सिफारिशों में त्रुटियों से होने वाली हानि शामिल है।",
+      "लागू कानून द्वारा अनुमत अधिकतम सीमा तक, mangomundi और इसकी सहयोगी कंपनियाँ, अधिकारी, कर्मचारी और एजेंट प्लेटफ़ॉर्म के उपयोग से उत्पन्न प्रत्यक्ष, अप्रत्यक्ष, आकस्मिक, विशेष, परिणामी या दंडात्मक क्षति के लिए उत्तरदायी नहीं होंगे। इसमें विदेशी मुद्रा उतार-चढ़ाव, हस्तांतरण विलंब, प्रदाता दिवालियापन, तकनीकी विफलताओं या एल्गोरिथमिक सिफारिशों में त्रुटियों से होने वाली हानि शामिल है।",
     "legal.terms.s5.title": "संपर्क",
     "legal.terms.s5.body":
       "इन सेवा शर्तों से संबंधित प्रश्नों, स्पष्टीकरणों या नियामक पूछताछ के लिए कृपया संपर्क करें",
@@ -1551,13 +1551,13 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
       "विदेशी मुद्रा दरें निरंतर और अप्रत्याशित रूप से उतार-चढ़ाव करती हैं। इस प्लेटफ़ॉर्म पर दिखाई गई mid-market संदर्भ दरें थोक इंटरबैंक डेटा से प्राप्त सांकेतिक अनुमान हैं और प्रदाता द्वारा दी गई वास्तविक निष्पादन दर से भिन्न हो सकती हैं। उपयोगकर्ता किसी भी लेनदेन के लिए पूर्ण विदेशी मुद्रा जोखिम वहन करता है।",
     "legal.risk.s2.title": "प्रदाता, निपटान और काउंटरपार्टी जोखिम",
     "legal.risk.s2.body":
-      "mangoglobal धन की हिरासत नहीं रखता। सभी हस्तांतरण सीधे चयनित विनियमित प्रदाता के साथ निपटाए जाते हैं। उपयोगकर्ता उस प्रदाता की शोधनक्षमता, परिचालन विश्वसनीयता और नियामक स्थिति के संपर्क में आता है। धन भेजने से पहले प्रासंगिक क्षेत्राधिकारों में लाइसेंस, नियामक स्थिति और वित्तीय स्वास्थ्य सत्यापित करना उपयोगकर्ता की ज़िम्मेदारी है।",
+      "mangomundi धन की हिरासत नहीं रखता। सभी हस्तांतरण सीधे चयनित विनियमित प्रदाता के साथ निपटाए जाते हैं। उपयोगकर्ता उस प्रदाता की शोधनक्षमता, परिचालन विश्वसनीयता और नियामक स्थिति के संपर्क में आता है। धन भेजने से पहले प्रासंगिक क्षेत्राधिकारों में लाइसेंस, नियामक स्थिति और वित्तीय स्वास्थ्य सत्यापित करना उपयोगकर्ता की ज़िम्मेदारी है।",
     "legal.risk.s3.title": "AI-सहायित राउटिंग जोखिम",
     "legal.risk.s3.body":
       "AI-सहायित राउटिंग सिफारिशें इंडेक्स्ड लिक्विडिटी पथ, रिटेल रेमिटेंस चैनलों, फ्लैट-फ़ी ऑप्टिमाइज़ेशन मॉडल और रीयल-टाइम इंटरबैंक दरों पर आधारित निर्णय-सहायक उपकरण हैं। वास्तविक डिलीवरी समय, मध्यवर्ती बैंक शुल्क, कॉरेस्पॉन्डेंट बैंकिंग शुल्क और लाभार्थी प्राप्तियाँ प्रस्तुत अनुमानों से सारवाहर भिन्न हो सकती हैं।",
     "legal.risk.s4.title": "प्रतिबंध और नियामक अनुपालन",
     "legal.risk.s4.body":
-      "उपयोगकर्ता यह सुनिश्चित करने के लिए पूरी तरह से ज़िम्मेदार है कि कोई भी सीमा-पार हस्तांतरण लागू प्रतिबंध व्यवस्थाओं, मनी लॉन्डरिंग विरोधी (AML) कानूनों, KYC आवश्यकताओं और क्षेत्राधिकार की सीमा-पार रिपोर्टिंग दायित्वों का अनुपालन करता है। mangoglobal प्रतिबंधित क्षेत्राधिकारों या प्रतिबंधित काउंटरपार्टी के साथ लेनदेन की सुविधा नहीं देता।",
+      "उपयोगकर्ता यह सुनिश्चित करने के लिए पूरी तरह से ज़िम्मेदार है कि कोई भी सीमा-पार हस्तांतरण लागू प्रतिबंध व्यवस्थाओं, मनी लॉन्डरिंग विरोधी (AML) कानूनों, KYC आवश्यकताओं और क्षेत्राधिकार की सीमा-पार रिपोर्टिंग दायित्वों का अनुपालन करता है। mangomundi प्रतिबंधित क्षेत्राधिकारों या प्रतिबंधित काउंटरपार्टी के साथ लेनदेन की सुविधा नहीं देता।",
     "business.badge": "संस्थानों और कॉर्पोरेट ट्रेज़री के लिए",
     "business.hero.title.1": "संस्थागत राउटिंग और",
     "business.hero.title.2": "रणनीति सत्यापन।",
@@ -1780,7 +1780,7 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.how.s3.title": "Execute",
     "home.how.s3.desc": "Settle through the chosen provider or our RFQ protocol.",
     "home.platform.text": "FX is the first vertical.",
-    "home.platform.brand": "mangoglobal Platform",
+    "home.platform.brand": "mangomundi Platform",
     "home.platform.tail":
       "is the AI decision engine behind it — insurance, brokers, SaaS, and more are next.",
     "home.platform.learn": "Learn more",
@@ -1813,7 +1813,7 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.how.s3.title": "Ejecutar",
     "home.how.s3.desc": "Liquida con el proveedor elegido o por nuestro RFQ.",
     "home.platform.text": "FX es la primera vertical.",
-    "home.platform.brand": "mangoglobal Platform",
+    "home.platform.brand": "mangomundi Platform",
     "home.platform.tail":
       "es el motor de decisión IA detrás — seguros, brokers, SaaS y más vienen después.",
     "home.platform.learn": "Saber más",
@@ -1901,7 +1901,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
       "When you use the free comparator and choose a provider, we may earn a commission from that provider — at no extra cost to you. The recommendation is neutral and ordered by actual amount received. Pro and Enterprise plans exist for businesses that need more than a one-off comparison: continuous optimisation across corridors, an API to plug into payment flows, and rules-based routing. The subscription pays for the engine and automation — not for the comparison itself, which stays free.",
 
     // Platform page
-    "platform.eyebrow": "The platform behind mangoglobal",
+    "platform.eyebrow": "The platform behind mangomundi",
     "platform.title.a": "AI infrastructure for",
     "platform.title.b": "complex decisions",
     "platform.subtitle":
@@ -1956,7 +1956,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "ins.title.a": "Insurance, decided",
     "ins.title.b": "intelligently",
     "ins.subtitle":
-      "The same neutral AI engine that powers mangoglobal's FX comparison is being extended to insurance. Compare policies across providers with transparent pricing, coverage scoring, and a recommendation tuned to your situation.",
+      "The same neutral AI engine that powers mangomundi's FX comparison is being extended to insurance. Compare policies across providers with transparent pricing, coverage scoring, and a recommendation tuned to your situation.",
     "ins.c1.t": "Coverage scoring",
     "ins.c1.b": "Normalised coverage matrix across providers — no fine-print surprises.",
     "ins.c2.t": "Neutral AI advice",
@@ -1965,7 +1965,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "ins.c3.b": "Quote, compare, and bind in one place — across health, travel, auto and home.",
     "ins.why.t": "Why this matters",
     "ins.why.b1":
-      "mangoglobal is built as a multi-vertical decision platform. FX is the first live vertical. Insurance is next, then SaaS, lending, and brokers — all on the same provider schema, sponsored-vs-organic ranking, and AI recommendation layer. See the",
+      "mangomundi is built as a multi-vertical decision platform. FX is the first live vertical. Insurance is next, then SaaS, lending, and brokers — all on the same provider schema, sponsored-vs-organic ranking, and AI recommendation layer. See the",
     "ins.why.link": "platform vision",
     "ins.why.b2": "for the full roadmap.",
     "ins.cta1": "Be a launch partner · Enterprise Beta",
@@ -2079,7 +2079,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "pricing.faq.body":
       "Cuando usas el comparador gratuito y eliges un proveedor, podemos cobrar una comisión de ese proveedor — sin coste extra para ti. La recomendación es neutral y se ordena por importe realmente recibido. Los planes Pro y Enterprise existen para empresas que necesitan más que una comparación puntual: optimización continua entre corredores, una API para integrar en flujos de pago y enrutamiento por reglas. La suscripción paga el motor y la automatización — no la comparación, que sigue siendo gratuita.",
 
-    "platform.eyebrow": "La plataforma detrás de mangoglobal",
+    "platform.eyebrow": "La plataforma detrás de mangomundi",
     "platform.title.a": "Infraestructura de IA para",
     "platform.title.b": "decisiones complejas",
     "platform.subtitle":
@@ -2135,7 +2135,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "ins.title.a": "Seguros, decididos",
     "ins.title.b": "inteligentemente",
     "ins.subtitle":
-      "El mismo motor de IA neutral que potencia la comparación FX de mangoglobal se extiende a seguros. Compara pólizas entre proveedores con precios transparentes, puntuación de cobertura y una recomendación ajustada a tu situación.",
+      "El mismo motor de IA neutral que potencia la comparación FX de mangomundi se extiende a seguros. Compara pólizas entre proveedores con precios transparentes, puntuación de cobertura y una recomendación ajustada a tu situación.",
     "ins.c1.t": "Puntuación de cobertura",
     "ins.c1.b":
       "Matriz de cobertura normalizada entre proveedores — sin sorpresas en la letra pequeña.",
@@ -2145,7 +2145,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "ins.c3.b": "Cotiza, compara y contrata en un mismo lugar — salud, viaje, auto y hogar.",
     "ins.why.t": "Por qué importa",
     "ins.why.b1":
-      "mangoglobal está construido como una plataforma de decisión multi-vertical. FX es el primer vertical activo. Seguros es el siguiente, luego SaaS, préstamos y brókers — todos sobre el mismo esquema de proveedores, ranking patrocinado vs orgánico y capa de recomendación de IA. Mira la",
+      "mangomundi está construido como una plataforma de decisión multi-vertical. FX es el primer vertical activo. Seguros es el siguiente, luego SaaS, préstamos y brókers — todos sobre el mismo esquema de proveedores, ranking patrocinado vs orgánico y capa de recomendación de IA. Mira la",
     "ins.why.link": "visión de plataforma",
     "ins.why.b2": "para la hoja de ruta completa.",
     "ins.cta1": "Sé un socio de lanzamiento · Beta Enterprise",
@@ -2216,7 +2216,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "contact.scope": "Scope",
     "contact.scopePlaceholder": "Briefly describe your flow, corridor or partnership scope.",
     "contact.submit": "Open secure channel",
-    "contact.submitHint": "submit → hello@mangoglobal.com",
+    "contact.submitHint": "submit → hello@mangomundi.com",
     "contact.orWrite": "Or write directly to",
     "comparator.buildQuery": "build query",
     "comparator.execStrategy": "Execution Strategy",
@@ -2231,7 +2231,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.segment.business": "Business",
     "hero.subheadline.short":
       "AI agent for global and local payments. Best rates for individuals and businesses.",
-    "seo.home.title": "Intelligent Currency Exchange — mangoglobal",
+    "seo.home.title": "Intelligent Currency Exchange — mangomundi",
     "seo.home.description":
       "AI agent for global and local payments. Best rates for individuals and businesses.",
     "comparator.title": "Find the optimal route",
@@ -2264,18 +2264,18 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.filter.fee": "Cheapest fees",
     "comparator.copilot.filter.speed": "Fastest",
     "comparator.copilot.redirecting":
-      "Redirecting to **{provider}**. Complete the process here to secure your exclusive mangoglobal discount.",
+      "Redirecting to **{provider}**. Complete the process here to secure your exclusive mangomundi discount.",
     "comparator.copilot.b2bUpsell":
       "Are you a company? Get better rates with our B2B program — our corporate desk negotiates custom spreads for volumes above 10,000.",
-    "comparator.tooltip.preferred_rate": "Apply mangoglobal Preferred rate",
-    "comparator.tooltip.discount_warning": "Leaving mangoglobal may void your exclusive discount",
+    "comparator.tooltip.preferred_rate": "Apply mangomundi Preferred rate",
+    "comparator.tooltip.discount_warning": "Leaving mangomundi may void your exclusive discount",
     "comparator.reasoning.title": "Optimal route found",
     "comparator.reasoning.context": "Context",
     "comparator.lastUpdate": "Last update",
     "comparator.savings.label": "Your estimated saving",
     "comparator.savings.baseline": "vs 3.5% market average for this corridor",
     "comparator.disclaimer.neutrality":
-      "mangoglobal may earn affiliate commissions; this does not alter the neutrality of the ranking.",
+      "mangomundi may earn affiliate commissions; this does not alter the neutrality of the ranking.",
     "search.eyebrow": "Financial intelligence terminal",
     "search.origin": "Origin country",
     "search.destination": "Recipient country",
@@ -2304,7 +2304,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "Thank you. For this volume, the best institutional rates are currently **{providers}**. Please confirm your corporate email to continue.",
     "comparator.copilot.business.emailError": "Please provide a valid corporate email address.",
     "comparator.copilot.business.consent":
-      "GDPR consent: by confirming, you agree that mangoglobal may store these details and share this quote request with selected providers. Is that correct?",
+      "GDPR consent: by confirming, you agree that mangomundi may store these details and share this quote request with selected providers. Is that correct?",
     "comparator.copilot.business.yes": "Yes, I agree",
     "comparator.copilot.business.review": "Review email",
     "comparator.copilot.business.no":
@@ -2338,7 +2338,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "hero.headline": "Decisiones inteligentes de cambio de divisas",
     "hero.subheadline.short":
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
-    "seo.home.title": "Cambio de divisas inteligente — mangoglobal",
+    "seo.home.title": "Cambio de divisas inteligente — mangomundi",
     "seo.home.description":
       "Agente de IA para pagos globales y locales. Las mejores tasas para particulares y empresas.",
     "hero.subheadline":
@@ -2357,7 +2357,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "contact.scope": "Alcance",
     "contact.scopePlaceholder": "Describí brevemente tu flujo, corredor o alcance del partnership.",
     "contact.submit": "Abrir canal seguro",
-    "contact.submitHint": "enviar → hello@mangoglobal.com",
+    "contact.submitHint": "enviar → hello@mangomundi.com",
     "contact.orWrite": "O escribinos directamente a",
     "comparator.buildQuery": "construir consulta",
     "comparator.execStrategy": "Estrategia de Ejecución",
@@ -2391,7 +2391,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "Gracias. Con este volumen, las mejores tarifas institucionales son **{providers}**. Confirma tu email corporativo para continuar.",
     "comparator.copilot.business.emailError": "Introduce un email corporativo válido.",
     "comparator.copilot.business.consent":
-      "Consentimiento GDPR: al confirmar, aceptas que mangoglobal guarde estos datos y comparta la solicitud con los proveedores seleccionados. ¿Es correcto?",
+      "Consentimiento GDPR: al confirmar, aceptas que mangomundi guarde estos datos y comparta la solicitud con los proveedores seleccionados. ¿Es correcto?",
     "comparator.copilot.business.yes": "Sí, acepto",
     "comparator.copilot.business.review": "Revisar email",
     "comparator.copilot.business.no":
@@ -2543,101 +2543,101 @@ export interface SeoMeta {
 }
 const SEO_META_TRANSLATED: Record<Lang, SeoMeta> = {
   en: {
-    title: "Intelligent Currency Exchange — mangoglobal",
+    title: "Intelligent Currency Exchange — mangomundi",
     description:
       "AI agent for global and local payments. Best rates for individuals and businesses.",
   },
   es: {
-    title: "mangoglobal | Decisiones inteligentes de cambio de divisas y pagos globales",
+    title: "mangomundi | Decisiones inteligentes de cambio de divisas y pagos globales",
     description:
       "Agente de IA para individuos y tesorería corporativa. Optimización y transparencia en tus operaciones de cambio y pagos internacionales.",
   },
   pt: {
-    title: "mangoglobal | Decisões inteligentes de câmbio e pagamentos globais",
+    title: "mangomundi | Decisões inteligentes de câmbio e pagamentos globais",
     description:
       "Agente de IA para indivíduos e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais.",
   },
   it: {
-    title: "mangoglobal | Decisioni intelligenti sui cambi e pagamenti globali",
+    title: "mangomundi | Decisioni intelligenti sui cambi e pagamenti globali",
     description:
       "Agente IA per privati e tesoreria aziendale. Ottimizzazione e trasparenza nelle operazioni di cambio e pagamenti internazionali.",
   },
   fr: {
-    title: "mangoglobal | Décisions intelligentes de change et de paiements mondiaux",
+    title: "mangomundi | Décisions intelligentes de change et de paiements mondiaux",
     description:
       "Agent IA pour les particuliers et la trésorerie d'entreprise. Optimisation et transparence de vos opérations de change et paiements internationaux.",
   },
   de: {
-    title: "mangoglobal | Intelligente Entscheidungen für Devisen und globale Zahlungen",
+    title: "mangomundi | Intelligente Entscheidungen für Devisen und globale Zahlungen",
     description:
       "KI-Agent für Privatpersonen und Unternehmensschatzämter. Optimierung und Transparenz bei Ihren Devisen- und internationalen Zahlungsgeschäften.",
   },
   pl: {
-    title: "mangoglobal | Inteligentne decyzje w zakresie wymiany walut i płatności globalnych",
+    title: "mangomundi | Inteligentne decyzje w zakresie wymiany walut i płatności globalnych",
     description:
       "Agent AI dla klientów indywidualnych i skarbców korporacyjnych. Optymalizacja i przejrzystość w operacjach wymiany walut i płatnościach międzynarodowych.",
   },
   ru: {
-    title: "mangoglobal | Умные решения по обмену валют и глобальным платежам",
+    title: "mangomundi | Умные решения по обмену валют и глобальным платежам",
     description:
       "AI-агент для частных лиц и корпоративных казначейств. Оптимизация и прозрачность ваших операций по обмену валют и международным платежам.",
   },
   tr: {
-    title: "mangoglobal | Döviz ve küresel ödemeler için akıllı kararlar",
+    title: "mangomundi | Döviz ve küresel ödemeler için akıllı kararlar",
     description:
       "Bireyler ve kurumsal hazineler için AI Ajanı. Döviz ve uluslararası ödeme işlemlerinizde optimizasyon ve şeffaflık.",
   },
   bn: {
-    title: "mangoglobal | মুদ্রা বিনিময় ও বৈশ্বিক পেমেন্টের জন্য স্মার্ট সিদ্ধান্ত",
+    title: "mangomundi | মুদ্রা বিনিময় ও বৈশ্বিক পেমেন্টের জন্য স্মার্ট সিদ্ধান্ত",
     description:
       "ব্যক্তি ও কর্পোরেট ট্রেজারির জন্য AI এজেন্ট। আপনার মুদ্রা বিনিময় ও আন্তর্জাতিক পেমেন্ট পরিচালনায় অপ্টিমাইজেশন ও স্বচ্ছতা।",
   },
   ur: {
-    title: "mangoglobal | کرنسی کے تبادلے اور عالمی ادائیگیوں کے لیے ذہین فیصلے",
+    title: "mangomundi | کرنسی کے تبادلے اور عالمی ادائیگیوں کے لیے ذہین فیصلے",
     description:
       "افراد اور کارپوریٹ ٹریژری کے لیے AI ایجنٹ۔ آپ کی کرنسی ایکسچینج اور بین الاقوامی ادائیگی کے کاموں میں اصلاح اور شفافیت۔",
   },
   th: {
-    title: "mangoglobal | การตัดสินใจอัจฉริยะด้านการแลกเปลี่ยนเงินตราและการชำระเงินทั่วโลก",
+    title: "mangomundi | การตัดสินใจอัจฉริยะด้านการแลกเปลี่ยนเงินตราและการชำระเงินทั่วโลก",
     description:
       "AI Agent สำหรับบุคคลและคลังของบริษัท การเพิ่มประสิทธิภาพและความโปร่งใสในการแลกเปลี่ยนสกุลเงินและการชำระเงินระหว่างประเทศ",
   },
   hi: {
-    title: "mangoglobal | मुद्रा विनिमय और वैश्विक भुगतान के लिए स्मार्ट निर्णय",
+    title: "mangomundi | मुद्रा विनिमय और वैश्विक भुगतान के लिए स्मार्ट निर्णय",
     description:
       "व्यक्तियों और कॉर्पोरेट खजाने के लिए AI एजेंट। आपके मुद्रा विनिमय और अंतर्राष्ट्रीय भुगतान कार्यों में अनुकूलन और पारदर्शिता।",
   },
   zh: {
-    title: "mangoglobal | 智能外汇与全球支付决策",
+    title: "mangomundi | 智能外汇与全球支付决策",
     description: "面向个人与企业财务的 AI 代理。为您提供优化且透明的外汇与国际支付操作方案。",
   },
   id: {
-    title: "mangoglobal | Keputusan cerdas terkait valas dan pembayaran global",
+    title: "mangomundi | Keputusan cerdas terkait valas dan pembayaran global",
     description:
       "Agen AI untuk individu dan perbendaharaan perusahaan. Optimalisasi dan transparansi dalam operasional valas dan pembayaran internasional Anda.",
   },
   tl: {
-    title: "mangoglobal | Matalinong desisyon sa foreign exchange at global payments",
+    title: "mangomundi | Matalinong desisyon sa foreign exchange at global payments",
     description:
       "AI Agent para sa mga indibidwal at corporate treasury. Optimization at transparency sa iyong currency exchange at international payment operations.",
   },
   ar: {
-    title: "mangoglobal | قرارات ذكية بشأن العملات الأجنبية والمدفوعات العالمية",
+    title: "mangomundi | قرارات ذكية بشأن العملات الأجنبية والمدفوعات العالمية",
     description:
       "وكيل ذكاء اصطناعي للأفراد وخزائن الشركات. التحسين والشفافية في عمليات صرف العملات والمدفوعات الدولية الخاصة بك.",
   },
   vi: {
-    title: "mangoglobal | Quyết định thông minh về ngoại hối và thanh toán toàn cầu",
+    title: "mangomundi | Quyết định thông minh về ngoại hối và thanh toán toàn cầu",
     description:
       "AI Agent dành cho cá nhân và kho bạc doanh nghiệp. Tối ưu hóa và tính minh bạch trong hoạt động trao đổi tiền tệ và thanh toán quốc tế của bạn.",
   },
   ja: {
-    title: "mangoglobal | 為替とグローバル決済に関するインテリジェントな意思決定",
+    title: "mangomundi | 為替とグローバル決済に関するインテリジェントな意思決定",
     description:
       "個人および企業財務向けの AI エージェント。外貨両替および国際決済業務における最適化と透明性を提供します。",
   },
   ko: {
-    title: "mangoglobal | 환율 및 글로벌 결제에 대한 지능형 의사결정",
+    title: "mangomundi | 환율 및 글로벌 결제에 대한 지능형 의사결정",
     description:
       "개인 및 기업 재무를 위한 AI 에이전트. 외환 거래 및 국제 결제 운영의 최적화와 투명성을 제공합니다.",
   },
@@ -2664,114 +2664,114 @@ type RouteSeoMap = Record<string, SeoMeta>;
 const ROUTE_SEO_EN: RouteSeoMap = {
   "/": SEO_META.en,
   "/pricing": {
-    title: "Pricing — mangoglobal",
+    title: "Pricing — mangomundi",
     description:
       "Free for retail users — paid for businesses that need optimised routing, API access, and white-label tools. Transparent, no hidden fees.",
   },
   "/platform": {
-    title: "AI Decision Engine — mangoglobal Platform",
+    title: "AI Decision Engine — mangomundi Platform",
     description:
-      "mangoglobal is an AI-powered decision and sourcing infrastructure for complex markets. FX is the first vertical — insurance, brokers, SaaS and lending follow.",
+      "mangomundi is an AI-powered decision and sourcing infrastructure for complex markets. FX is the first vertical — insurance, brokers, SaaS and lending follow.",
   },
   "/features": {
-    title: "Features — mangoglobal",
+    title: "Features — mangomundi",
     description:
-      "Explore mangoglobal's platform features for intelligent cross-border payments: live rates, smart routing, multi-currency wallets and an enterprise API.",
+      "Explore mangomundi's platform features for intelligent cross-border payments: live rates, smart routing, multi-currency wallets and an enterprise API.",
   },
   "/insurance": {
-    title: "Insurance Comparison (Coming Soon) — mangoglobal",
+    title: "Insurance Comparison (Coming Soon) — mangomundi",
     description:
-      "mangoglobal is bringing its neutral AI decision engine to insurance: compare policies across providers with transparent pricing and coverage.",
+      "mangomundi is bringing its neutral AI decision engine to insurance: compare policies across providers with transparent pricing and coverage.",
   },
   "/blog": {
-    title: "Blog — mangoglobal",
+    title: "Blog — mangomundi",
     description:
       "Guides, deep-dives, and analyses on cross-border payments, FX transparency, and how to send money smarter — for individuals and businesses.",
   },
   "/about": {
-    title: "About — mangoglobal",
+    title: "About — mangomundi",
     description:
-      "mangoglobal is building the neutral AI decision and sourcing layer for fragmented markets, starting with cross-border FX.",
+      "mangomundi is building the neutral AI decision and sourcing layer for fragmented markets, starting with cross-border FX.",
   },
   "/contact": {
-    title: "Contact — mangoglobal",
+    title: "Contact — mangomundi",
     description:
-      "Talk to mangoglobal: launch partners, enterprise deployments, press and general enquiries.",
+      "Talk to mangomundi: launch partners, enterprise deployments, press and general enquiries.",
   },
   "/compare": {
-    title: "Compare FX providers — mangoglobal",
+    title: "Compare FX providers — mangomundi",
     description:
       "Compare 30+ FX providers across 100+ currencies. Live mid-market rates, total fees and AI-ranked recommendations.",
   },
   "/fx-tool": {
-    title: "FX Tool — mangoglobal",
+    title: "FX Tool — mangomundi",
     description:
-      "The mangoglobal FX comparator: live rates, AI recommendation and transparent fees for every cross-border transfer.",
+      "The mangomundi FX comparator: live rates, AI recommendation and transparent fees for every cross-border transfer.",
   },
   "/legal/terms": {
-    title: "Terms — mangoglobal",
-    description: "Terms of service for mangoglobal.",
+    title: "Terms — mangomundi",
+    description: "Terms of service for mangomundi.",
   },
   "/legal/risk": {
-    title: "Risk disclosures — mangoglobal",
-    description: "Risk disclosures for mangoglobal.",
+    title: "Risk disclosures — mangomundi",
+    description: "Risk disclosures for mangomundi.",
   },
 };
 
 const ROUTE_SEO_ES: RouteSeoMap = {
   "/": SEO_META.es,
   "/pricing": {
-    title: "Precios — mangoglobal",
+    title: "Precios — mangomundi",
     description:
       "Gratis para usuarios retail — de pago para empresas que necesitan enrutamiento optimizado, acceso API y herramientas white-label. Transparente, sin tarifas ocultas.",
   },
   "/platform": {
-    title: "Motor de Decisión IA — Plataforma mangoglobal",
+    title: "Motor de Decisión IA — Plataforma mangomundi",
     description:
-      "mangoglobal es una infraestructura de decisión y abastecimiento impulsada por IA para mercados complejos. FX es el primer vertical — seguros, brókers, SaaS y préstamos siguen.",
+      "mangomundi es una infraestructura de decisión y abastecimiento impulsada por IA para mercados complejos. FX es el primer vertical — seguros, brókers, SaaS y préstamos siguen.",
   },
   "/features": {
-    title: "Funcionalidades — mangoglobal",
+    title: "Funcionalidades — mangomundi",
     description:
-      "Explora las funcionalidades de la plataforma mangoglobal para pagos transfronterizos inteligentes: tipos en vivo, enrutamiento inteligente, carteras multi-divisa y API empresarial.",
+      "Explora las funcionalidades de la plataforma mangomundi para pagos transfronterizos inteligentes: tipos en vivo, enrutamiento inteligente, carteras multi-divisa y API empresarial.",
   },
   "/insurance": {
-    title: "Comparador de Seguros (Próximamente) — mangoglobal",
+    title: "Comparador de Seguros (Próximamente) — mangomundi",
     description:
-      "mangoglobal lleva su motor de decisión IA neutral a los seguros: compara pólizas entre proveedores con precios y coberturas transparentes.",
+      "mangomundi lleva su motor de decisión IA neutral a los seguros: compara pólizas entre proveedores con precios y coberturas transparentes.",
   },
   "/blog": {
-    title: "Blog — mangoglobal",
+    title: "Blog — mangomundi",
     description:
       "Guías, análisis y artículos sobre pagos transfronterizos, transparencia FX y cómo enviar dinero de forma más inteligente — para particulares y empresas.",
   },
   "/about": {
-    title: "Nosotros — mangoglobal",
+    title: "Nosotros — mangomundi",
     description:
-      "mangoglobal construye la capa neutral de decisión y abastecimiento con IA para mercados fragmentados, empezando por FX transfronterizo.",
+      "mangomundi construye la capa neutral de decisión y abastecimiento con IA para mercados fragmentados, empezando por FX transfronterizo.",
   },
   "/contact": {
-    title: "Contacto — mangoglobal",
+    title: "Contacto — mangomundi",
     description:
-      "Habla con mangoglobal: socios de lanzamiento, despliegues empresariales, prensa y consultas generales.",
+      "Habla con mangomundi: socios de lanzamiento, despliegues empresariales, prensa y consultas generales.",
   },
   "/compare": {
-    title: "Comparar proveedores FX — mangoglobal",
+    title: "Comparar proveedores FX — mangomundi",
     description:
       "Compara más de 30 proveedores FX en más de 100 divisas. Tipos mid-market en vivo, comisiones totales y recomendaciones rankeadas por IA.",
   },
   "/fx-tool": {
-    title: "Herramienta FX — mangoglobal",
+    title: "Herramienta FX — mangomundi",
     description:
-      "El comparador FX de mangoglobal: tipos en vivo, recomendación IA y comisiones transparentes para cada transferencia transfronteriza.",
+      "El comparador FX de mangomundi: tipos en vivo, recomendación IA y comisiones transparentes para cada transferencia transfronteriza.",
   },
   "/legal/terms": {
-    title: "Términos — mangoglobal",
-    description: "Términos del servicio de mangoglobal.",
+    title: "Términos — mangomundi",
+    description: "Términos del servicio de mangomundi.",
   },
   "/legal/risk": {
-    title: "Aviso de riesgo — mangoglobal",
-    description: "Aviso de riesgo de mangoglobal.",
+    title: "Aviso de riesgo — mangomundi",
+    description: "Aviso de riesgo de mangomundi.",
   },
 };
 

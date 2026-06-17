@@ -5,11 +5,11 @@ const SECTIONS = [
     id: "terms",
     title: "Terms of Service",
     intro:
-      "These Terms govern your access to and use of mangoglobal. By using the service you accept these Terms.",
+      "These Terms govern your access to and use of mangomundi. By using the service you accept these Terms.",
     body: [
       {
         h: "01 — Service",
-        p: "mangoglobal is a neutral decision engine that compares foreign exchange providers and corridors. We do not execute transactions or hold customer funds.",
+        p: "mangomundi is a neutral decision engine that compares foreign exchange providers and corridors. We do not execute transactions or hold customer funds.",
       },
       {
         h: "02 — Information accuracy",
@@ -21,11 +21,11 @@ const SECTIONS = [
       },
       {
         h: "04 — Liability",
-        p: "The service is provided on an \"as is\" basis. To the maximum extent permitted by law, mangoglobal is not liable for indirect or consequential losses arising from use of the service.",
+        p: "The service is provided on an \"as is\" basis. To the maximum extent permitted by law, mangomundi is not liable for indirect or consequential losses arising from use of the service.",
       },
       {
         h: "05 — Contact",
-        p: "Questions about these Terms can be sent to legal@mangoglobal.com.",
+        p: "Questions about these Terms can be sent to legal@mangomundi.com.",
       },
     ],
   },
@@ -41,7 +41,7 @@ const SECTIONS = [
       },
       {
         h: "02 — Counterparty risk",
-        p: "Transactions are executed by the provider you select. mangoglobal does not guarantee the performance, solvency or regulatory status of any third-party provider.",
+        p: "Transactions are executed by the provider you select. mangomundi does not guarantee the performance, solvency or regulatory status of any third-party provider.",
       },
       {
         h: "03 — Regulatory variation",
@@ -73,7 +73,7 @@ const SECTIONS = [
       },
       {
         h: "04 — Your rights",
-        p: "You can request access, correction, or deletion of your personal data by writing to privacy@mangoglobal.com.",
+        p: "You can request access, correction, or deletion of your personal data by writing to privacy@mangomundi.com.",
       },
     ],
   },
@@ -82,15 +82,15 @@ const SECTIONS = [
 export const Route = createFileRoute("/legal")({
   head: () => ({
     meta: [
-      { title: "Legal — mangoglobal" },
+      { title: "Legal — mangomundi" },
       {
         name: "description",
-        content: "Terms of Service, Risk Disclosure and Privacy Policy for mangoglobal.",
+        content: "Terms of Service, Risk Disclosure and Privacy Policy for mangomundi.",
       },
-      { property: "og:title", content: "Legal — mangoglobal" },
-      { property: "og:url", content: "https://mangoglobal.lovable.app/legal" },
+      { property: "og:title", content: "Legal — mangomundi" },
+      { property: "og:url", content: "https://mangomundi.lovable.app/legal" },
     ],
-    links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/legal" }],
+    links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/legal" }],
   }),
   component: LegalPage,
 });

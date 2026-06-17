@@ -11,9 +11,9 @@ export const Route = createFileRoute("/pricing")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
-        { property: "og:url", content: "https://mangoglobal.lovable.app/pricing" },
+        { property: "og:url", content: "https://mangomundi.lovable.app/pricing" },
       ],
-      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/pricing" }],
+      links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/pricing" }],
     };
   },
   component: PricingPage,

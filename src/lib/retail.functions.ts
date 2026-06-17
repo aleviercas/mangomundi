@@ -16,13 +16,13 @@ const RetailInput = z.object({
   }),
 });
 
-const AFFILIATE_CODE = "MANGOGLOBAL05";
+const AFFILIATE_CODE = "MANGOMUNDI05";
 
 /**
  * Capture a retail "preferred rate" lead under GDPR compliance.
  *
  * - Records privacy_consent + consent_timestamp for audit.
- * - Returns an affiliate URL stamped with MANGOGLOBAL05 + affiliate_id=mangoglobal.
+ * - Returns an affiliate URL stamped with MANGOMUNDI05 + affiliate_id=mangomundi.
  */
 export const captureRetailLead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => RetailInput.parse(input))
@@ -50,7 +50,7 @@ export const captureRetailLead = createServerFn({ method: "POST" })
       try {
         const u = new URL(data.affiliateBaseUrl);
         u.searchParams.set("ref", AFFILIATE_CODE);
-        u.searchParams.set("affiliate_id", "mangoglobal");
+        u.searchParams.set("affiliate_id", "mangomundi");
         redirectUrl = u.toString();
       } catch {
         redirectUrl = data.affiliateBaseUrl;

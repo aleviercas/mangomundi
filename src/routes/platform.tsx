@@ -11,9 +11,9 @@ export const Route = createFileRoute("/platform")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
-        { property: "og:url", content: "https://mangoglobal.lovable.app/platform" },
+        { property: "og:url", content: "https://mangomundi.lovable.app/platform" },
       ],
-      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/platform" }],
+      links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/platform" }],
     };
   },
   component: PlatformPage,

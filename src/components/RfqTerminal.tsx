@@ -81,7 +81,7 @@ export function RfqTerminal({ open, onOpenChange, defaults }: Props) {
         <div className="flex items-center gap-2 border-b border-slate-800 bg-slate-900/60 px-4 py-2.5">
           <Terminal className="h-3.5 w-3.5 text-emerald-400" />
           <span className="text-[11px] uppercase tracking-widest text-slate-400">
-            mangoglobal · rfq_desk.exec
+            mangomundi · rfq_desk.exec
           </span>
           <span className="ml-auto flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
         </div>

@@ -11,7 +11,7 @@ import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw, Filter, X } from "luc
 export const Route = createFileRoute("/admin/i18n-status")({
   head: () => ({
     meta: [
-      { title: "i18n status · admin · mangoglobal" },
+      { title: "i18n status · admin · mangomundi" },
       { name: "robots", content: "noindex, nofollow" },
       { name: "description", content: "Internal i18n coverage dashboard." },
     ],
