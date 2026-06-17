@@ -99,7 +99,7 @@
   "about.v2.body": "Idemokratisa ang wholesale interbank rates at optimized spreads, na pinupulbos ang kawalan ng impormasyon ng tradisyonal na banking.",
   "about.v3.title": "Impartiality ng Tao + AI",
   "about.v3.body": "Ang aming human team ay laging handang gabayan ang mga user sa pagiging komplikado ng operasyon, ngunit ang ganap na algorithmic impartiality ang nagpoproseso, namamahagi, at naghahatid ng pinakamahusay na optimized spreads sa bawat panig, nang patas at walang kinikilingan.",
-  "home.hero.subtitle": "Gamitin ang aming neutral decision engine upang suriin ang variance ng cross-border flow, kumpirmahin ang mga execution strategy, at i-optimize ang multi-currency routing.",
+  "home.hero.subtitle": "Isang transparent na AI agent para sa pandaigdig at lokal na pagbabayad, na naghahambing ng exchange rate, bayad, ruta, at bilis ng paghahatid sa real time upang makita ang pinakamagandang opsyon para sa bawat transfer.",
   "home.flows.title": "Binuo para sa bawat institutional cross-border flow",
   "home.flows.payroll.title": "Global payroll at kabayaran sa mga contractor",
   "home.flows.payroll.body": "Bayaran ang mga international team at contractor sa kanilang lokal na pera gamit ang optimized FX routing at kumpletong audit trail.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "Maaaring makatanggap ang mangomundi ng affiliate commissions; hindi nito binabago ang neutralidad ng ranking.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "Bansa ng tatanggap",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "Bansa ng tatanggap",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Matalinong mga desisyon sa pagpapalit ng",
+  "home.hero.titleAccent": "pera"
 }

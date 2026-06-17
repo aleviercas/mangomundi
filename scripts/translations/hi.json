@@ -112,7 +112,7 @@
   "about.v3.title": "मानव + AI निष्पक्षता",
   "about.v3.body": "हमारी मानवीय टीम परिचालन जटिलताओं के माध्यम से उपयोगकर्ताओं का मार्गदर्शन करने के लिए हमेशा उपलब्ध है, फिर भी पूर्ण एल्गोरिदमिक निष्पक्षता ही वह है जो बिना किसी पक्षपात के, हर पक्ष को समान रूप से सर्वोत्तम अनुकूलित स्प्रेड वितरित और प्रदान करती है।",
   "home.hero.title": "अंतर्राष्ट्रीय भुगतान, बुद्धिमानी से निर्देशित।",
-  "home.hero.subtitle": "क्रॉस-बॉर्डर प्रवाह भिन्नता का विश्लेषण करने, निष्पादन रणनीतियों को मान्य करने और बहु-मुद्रा रूटिंग को अनुकूलित करने के लिए हमारे तटस्थ निर्णय इंजन का उपयोग करें।",
+  "home.hero.subtitle": "वैश्विक और स्थानीय भुगतान के लिए एक पारदर्शी AI एजेंट, जो हर ट्रांसफर के लिए सर्वोत्तम विकल्प खोजने हेतु विनिमय दरों, शुल्क, मार्गों और डिलीवरी गति की वास्तविक समय में तुलना करता है।",
   "home.flows.title": "प्रत्येक संस्थागत क्रॉस-बॉर्डर प्रवाह के लिए निर्मित",
   "home.flows.payroll.title": "वैश्विक पेरोल और ठेकेदार भुगतान",
   "home.flows.payroll.body": "अनुकूलित FX रूटिंग और पूर्ण ऑडिट ट्रायल के साथ अंतरराष्ट्रीय टीमों और ठेकेदारों को उनकी स्थानीय मुद्रा में भुगतान करें।",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi को संबद्ध कमीशन प्राप्त हो सकता है; इससे रैंकिंग की निष्पक्षता पर कोई प्रभाव नहीं पड़ता।",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "प्राप्तकर्ता देश",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "प्राप्तकर्ता देश",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "मुद्रा विनिमय के बुद्धिमान",
+  "home.hero.titleAccent": "निर्णय"
 }

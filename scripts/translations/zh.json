@@ -112,7 +112,7 @@
   "about.v3.title": "人机结合的中立性",
   "about.v3.body": "我们的人工团队随时引导用户解决操作复杂性，而绝对的算法公正性则负责处理、分配并为各方提供最佳的优化点差，确保公平且无偏袒。",
   "home.hero.title": "国际支付，智能路由。",
-  "home.hero.subtitle": "利用我们的中立决策引擎分析跨境流量变动、验证执行策略并优化多币种路由。",
+  "home.hero.subtitle": "面向全球与本地支付的透明 AI 代理，实时比较汇率、手续费、路径与到账速度，为每笔转账找到最佳方案。",
   "home.flows.title": "专为各类机构跨境流量而设计",
   "home.flows.payroll.title": "全球工资及合同工发放",
   "home.flows.payroll.body": "通过优化的外汇路由和完整的审计追踪，以当地货币支付国际团队和合同工人员。",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi 可能收取联盟佣金；这不会影响排名的中立性。",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "收款人国家",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "收款人国家",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "智能货币兑换",
+  "home.hero.titleAccent": "决策"
 }

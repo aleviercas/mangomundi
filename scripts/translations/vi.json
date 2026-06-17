@@ -113,7 +113,7 @@
   "about.v3.title": "Tính khách quan giữa Con người + AI",
   "about.v3.body": "Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hướng dẫn người dùng qua các quy trình phức tạp, tuy nhiên, tính khách quan tuyệt đối của thuật toán mới là thứ xử lý, phân phối và mang lại mức chênh lệch tối ưu nhất cho mọi bên, một cách công bằng và không thiên vị.",
   "home.hero.title": "Thanh toán quốc tế, được định tuyến thông minh.",
-  "home.hero.subtitle": "Sử dụng công cụ quyết định trung lập của chúng tôi để phân tích biến động dòng tiền xuyên biên giới, xác thực chiến lược thực thi và tối ưu hóa định tuyến đa tiền tệ.",
+  "home.hero.subtitle": "Một tác nhân AI minh bạch cho thanh toán toàn cầu và nội địa, so sánh tỷ giá, phí, lộ trình và tốc độ chuyển tiền theo thời gian thực để tìm phương án tốt nhất cho mọi giao dịch.",
   "home.flows.title": "Được xây dựng cho mọi luồng thanh toán xuyên biên giới của tổ chức",
   "home.flows.payroll.title": "Trả lương toàn cầu & thanh toán cho nhà thầu",
   "home.flows.payroll.body": "Trả lương cho các nhóm quốc tế và nhà thầu bằng nội tệ của họ với định tuyến ngoại hối được tối ưu hóa và nhật ký kiểm toán đầy đủ.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi có thể nhận hoa hồng liên kết; điều này không ảnh hưởng đến tính trung lập của xếp hạng.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "Quốc gia người nhận",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "Quốc gia người nhận",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Quyết định thông minh về",
+  "home.hero.titleAccent": "ngoại hối"
 }

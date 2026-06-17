@@ -112,7 +112,7 @@
   "about.v3.title": "Беспристрастность Человека + ИИ",
   "about.v3.body": "Наша команда всегда готова помочь пользователям разобраться в операционных сложностях, однако абсолютная алгоритмическая беспристрастность — это то, что обрабатывает, распределяет и обеспечивает лучшие спреды для каждой стороны, справедливо и без фаворитизма.",
   "home.hero.title": "Международные платежи с интеллектуальной маршрутизацией.",
-  "home.hero.subtitle": "Используйте наш нейтральный механизм принятия решений для анализа отклонений трансграничных потоков, валидации стратегий исполнения и оптимизации мультивалютной маршрутизации.",
+  "home.hero.subtitle": "Прозрачный ИИ-агент для глобальных и локальных платежей, сравнивающий курсы обмена, комиссии, маршруты и скорость доставки в реальном времени, чтобы найти лучший вариант для каждого перевода.",
   "home.flows.title": "Для любого институционального трансграничного потока",
   "home.flows.payroll.title": "Глобальные зарплаты и выплаты контрагентам",
   "home.flows.payroll.body": "Платите международным командам и подрядчикам в их местной валюте с оптимизированной FX-маршрутизацией и полной историей аудита.",
@@ -445,7 +445,7 @@
   "comparator.disclaimer.neutrality": "mangomundi может получать партнёрские комиссии; это не влияет на нейтральность рейтинга.",
   "search.eyebrow": "Financial intelligence terminal",
   "search.origin": "Origin country",
-  "search.destination": "SELECT THE RECIPIENT COUNTRY",
+  "search.destination": "Страна получателя",
   "search.segment": "Profile",
   "search.segment.retail": "Individual",
   "search.segment.business": "Business",
@@ -475,7 +475,7 @@
   "about.coverage.body": "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
   "contact.success": "Thank you. Your message has been received and our team will respond shortly.",
   "contact.error": "We couldn't send your message. Please try again.",
-  "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
+  "search.destinationPrompt": "Страна получателя",
   "search.guide": "Select your destination country and choose between an individual or business profile.",
   "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
   "comparator.transferDetails": "Transfer Details",
@@ -489,5 +489,7 @@
   "comparator.table.amountSent": "Amount Sent",
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
-  "search.liveRates": "Live rates"
+  "search.liveRates": "Live rates",
+  "home.hero.titlePre": "Умные решения для обмена",
+  "home.hero.titleAccent": "валют"
 }
