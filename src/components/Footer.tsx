@@ -103,7 +103,7 @@ export function Footer() {
 
         <div className="mt-14 border-t border-slate-200/70 pt-8">
           <p className="text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} mangoglobal. All rights reserved.
+            &copy; {new Date().getFullYear()} mangomundi. All rights reserved.
           </p>
         </div>
       </div>

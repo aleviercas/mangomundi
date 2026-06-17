@@ -57,7 +57,7 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
     integrationType: "direct",
     commissionType: "CPA",
     commissionValue: 15,
-    affiliateUrlTemplate: "https://wise.com/?ref=mangoglobal&click_id={click_id}",
+    affiliateUrlTemplate: "https://wise.com/?ref=mangomundi&click_id={click_id}",
   },
   remitly: {
     slug: "remitly",

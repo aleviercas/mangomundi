@@ -11,9 +11,9 @@ export const Route = createFileRoute("/features")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
-        { property: "og:url", content: "https://mangoglobal.lovable.app/features" },
+        { property: "og:url", content: "https://mangomundi.lovable.app/features" },
       ],
-      links: [{ rel: "canonical", href: "https://mangoglobal.lovable.app/features" }],
+      links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/features" }],
     };
   },
   component: FeaturesPage,

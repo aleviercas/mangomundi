@@ -15,8 +15,8 @@ const postQuery = (slug: string, locale: string) =>
 export const Route = createFileRoute("/blog/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `${params.slug} — mangoglobal` },
-      { name: "description", content: "Read this post on mangoglobal." },
+      { title: `${params.slug} — mangomundi` },
+      { name: "description", content: "Read this post on mangomundi." },
     ],
   }),
   notFoundComponent: () => <PostNotFound />,

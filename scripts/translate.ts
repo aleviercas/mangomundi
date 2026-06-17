@@ -104,7 +104,7 @@ async function translateBatch(
   const obj: Record<string, string> = Object.fromEntries(pairs);
   const system =
     "You are a professional UI/UX translator for a fintech (FX, cross-border payments, treasury). " +
-    "Translate values into the target language while preserving: brand 'mangoglobal' verbatim, " +
+    "Translate values into the target language while preserving: brand 'mangomundi' verbatim, " +
     "ICU/markdown/HTML, placeholders like {var}, leading/trailing whitespace, punctuation and emoji. " +
     "Keep tone professional and concise. Return ONLY a valid JSON object with the same keys.";
   const user =

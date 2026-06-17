@@ -111,7 +111,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         : urgency === "flexible"
           ? "flexible (days)"
           : "standard (same-day)";
-    return `[LANG:${lang.toUpperCase()}] mangoglobal routing justification: for a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the engine analysed liquidity paths across indexed providers. The optimal route was selected from flat-fee optimisation and real-time interbank rates; spread, fixed fees, settlement window and regulatory coverage of each counterparty were normalised before ranking.`;
+    return `[LANG:${lang.toUpperCase()}] mangomundi routing justification: for a transfer of ${amount.toLocaleString()} ${from} to ${to} with ${urgencyLabel} urgency, the engine analysed liquidity paths across indexed providers. The optimal route was selected from flat-fee optimisation and real-time interbank rates; spread, fixed fees, settlement window and regulatory coverage of each counterparty were normalised before ranking.`;
   };
 
   const proactiveMessage = (res: ComparisonResult, key: SortKey): ChatMsg | null => {
@@ -321,7 +321,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     });
     try {
       if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({ title: "mangoglobal comparison", url: shareUrl });
+        await navigator.share({ title: "mangomundi comparison", url: shareUrl });
       } else if (typeof navigator !== "undefined" && navigator.clipboard) {
         await navigator.clipboard.writeText(shareUrl);
         setShareToast(true);

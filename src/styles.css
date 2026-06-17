@@ -79,13 +79,13 @@
   --secondary-foreground: oklch(0.27 0.025 257);
   --muted: oklch(0.94 0.01 255);
   --muted-foreground: oklch(0.52 0.024 257);
-  --accent: oklch(0.63 0.17 52);
+  --accent: oklch(0.71 0.18 30);
   --accent-foreground: oklch(0.99 0.003 255);
-  --destructive: oklch(0.60 0.20 25);
+  --destructive: oklch(0.55 0.22 20);
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.84 0.016 255 / 0.85);
   --input: oklch(0.82 0.018 255);
-  --ring: oklch(0.63 0.17 52);
+  --ring: oklch(0.71 0.18 30);
 
   --chart-1: oklch(0.769 0.188 70.08);
   --chart-2: oklch(0.21 0.034 264);
@@ -102,9 +102,9 @@
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
 
-  /* Mango brand extras (amber/mango gold) */
+  /* Mango brand extras (coral) */
   --mango: var(--accent);
-  --mango-glow: oklch(0.69 0.17 57);
+  --mango-glow: oklch(0.76 0.17 32);
   --mango-foreground: var(--accent-foreground);
   --surface: var(--card);
   --surface-elevated: var(--muted);
