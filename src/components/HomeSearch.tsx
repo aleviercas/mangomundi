@@ -36,18 +36,34 @@ export function HomeSearch() {
 
   return (
     <div className="mx-auto w-full max-w-lg lg:mx-0">
-      <div className="rounded-[2rem] border border-slate-200/80 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_24px_60px_-20px_rgba(15,23,42,0.18)] sm:p-7">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
-            {t("search.startTransfer")}
-          </span>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            {t("search.liveRates")}
-          </span>
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
+        {/* Compact segment toggle, top-right */}
+        <div className="flex justify-end">
+          <div
+            className="inline-flex rounded-full bg-slate-100 p-1"
+            role="tablist"
+            aria-label={t("search.segment")}
+          >
+            {(["retail", "business"] as Segment[]).map((value) => (
+              <button
+                key={value}
+                type="button"
+                role="tab"
+                aria-selected={segment === value}
+                onClick={() => setSegment(value)}
+                className={`h-7 rounded-full px-3 text-xs font-semibold transition ${
+                  segment === value
+                    ? "bg-white text-slate-900 shadow-sm"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                {t(`search.segment.${value}`)}
+              </button>
+            ))}
+          </div>
         </div>
 
-        <label className="mt-6 block">
+        <label className="mt-4 block">
           <span className="mb-2 block text-sm font-medium text-slate-700">
             {t("search.destination")}
           </span>
@@ -58,37 +74,14 @@ export function HomeSearch() {
             searchPlaceholder={t("comparator.combobox.search")}
             emptyLabel={t("comparator.combobox.empty")}
             ariaLabel={t("search.destination")}
-            triggerClassName="h-14 rounded-2xl border border-slate-200 bg-white px-4 text-base font-medium hover:border-slate-300 focus:ring-2 focus:ring-slate-900/10"
+            triggerClassName="h-14 rounded-xl border border-slate-200 bg-white px-4 text-base font-medium hover:border-slate-300 focus:ring-2 focus:ring-slate-900/10"
           />
         </label>
-
-        <div
-          className="mt-4 grid grid-cols-2 rounded-2xl bg-slate-200 p-1.5"
-          role="tablist"
-          aria-label={t("search.segment")}
-        >
-          {(["retail", "business"] as Segment[]).map((value) => (
-            <button
-              key={value}
-              type="button"
-              role="tab"
-              aria-selected={segment === value}
-              onClick={() => setSegment(value)}
-              className={`h-11 rounded-xl text-sm font-semibold transition ${
-                segment === value
-                  ? "bg-slate-800 text-white shadow-sm"
-                  : "text-slate-500 hover:text-slate-700"
-              }`}
-            >
-              {t(`search.segment.${value}`)}
-            </button>
-          ))}
-        </div>
 
         <Button
           asChild
           size="lg"
-          className="mt-4 h-14 w-full rounded-2xl bg-black text-base font-semibold text-white hover:bg-black/90"
+          className="mt-5 h-14 w-full rounded-xl bg-[#ff6b5b] text-base font-semibold text-white hover:bg-[#ff5a48]"
         >
           <Link
             to="/compare"
