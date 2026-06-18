@@ -22,10 +22,11 @@ export function HomeSearch() {
   const from = localCurrency(origin);
   let to = localCurrency(destination);
   if (origin === destination && from === to) to = from === "USD" ? "EUR" : "USD";
-  const promiseItems = t("search.promise")
-    .split(/\.\s*/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+  const promiseItems = [
+    t("home.feat.liveRates"),
+    t("home.feat.zeroFees"),
+    t("home.feat.noSignup"),
+  ];
   const promiseIcons = [CircleCheck, Eye, ShieldCheck];
 
   useEffect(() => {
@@ -36,11 +37,11 @@ export function HomeSearch() {
 
   return (
     <div className="mx-auto w-full max-w-lg lg:mx-0">
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
+      <div className="rounded-2xl border border-white/10 bg-slate-900 p-4 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] sm:p-7">
         {/* Compact segment toggle, top-right */}
         <div className="flex justify-end">
           <div
-            className="inline-flex rounded-full bg-slate-100 p-1"
+            className="inline-flex rounded-full bg-white/10 p-1"
             role="tablist"
             aria-label={t("search.segment")}
           >
@@ -54,7 +55,7 @@ export function HomeSearch() {
                 className={`h-7 rounded-full px-3 text-xs font-semibold transition ${
                   segment === value
                     ? "bg-white text-slate-900 shadow-sm"
-                    : "text-slate-500 hover:text-slate-700"
+                    : "text-slate-300 hover:text-white"
                 }`}
               >
                 {t(`search.segment.${value}`)}
@@ -63,8 +64,8 @@ export function HomeSearch() {
           </div>
         </div>
 
-        <label className="mt-4 block">
-          <span className="mb-2 block text-sm font-medium text-slate-700">
+        <label className="mt-3 block sm:mt-4">
+          <span className="mb-2 block text-xs font-medium text-slate-300 sm:text-sm">
             {t("search.destination")}
           </span>
           <CountrySelect
@@ -74,14 +75,14 @@ export function HomeSearch() {
             searchPlaceholder={t("comparator.combobox.search")}
             emptyLabel={t("comparator.combobox.empty")}
             ariaLabel={t("search.destination")}
-            triggerClassName="h-14 rounded-xl border border-slate-200 bg-white px-4 text-base font-medium hover:border-slate-300 focus:ring-2 focus:ring-slate-900/10"
+            triggerClassName="h-12 sm:h-14 rounded-xl border border-white/10 bg-white/5 px-4 text-sm sm:text-base font-medium text-white hover:border-white/20 focus:ring-2 focus:ring-white/20"
           />
         </label>
 
         <Button
           asChild
           size="lg"
-          className="mt-5 h-14 w-full rounded-xl bg-[#ff6b5b] text-base font-semibold text-white hover:bg-[#ff5a48]"
+          className="mt-3 h-12 w-full rounded-xl bg-[#ff6b5b] text-sm font-semibold text-white hover:bg-[#ff5a48] sm:mt-5 sm:h-14 sm:text-base"
         >
           <Link
             to="/compare"
@@ -102,15 +103,15 @@ export function HomeSearch() {
         </Button>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+      <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 sm:mt-6 sm:gap-2">
         {promiseItems.map((item, index) => {
           const Icon = promiseIcons[index] ?? CircleCheck;
           return (
             <span
               key={item}
-              className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3.5 py-1.5 text-xs font-medium text-slate-700"
+              className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-700 sm:px-3.5 sm:py-1.5 sm:text-xs"
             >
-              <Icon className="h-3.5 w-3.5 shrink-0 text-[#ff6b5b]" />
+              <Icon className="h-3 w-3 shrink-0 text-[#ff6b5b] sm:h-3.5 sm:w-3.5" />
               {item}
             </span>
           );
