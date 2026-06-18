@@ -104,9 +104,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { title: "Mangomundi" },
         { property: "og:title", content: "Mangomundi" },
         { name: "twitter:title", content: "Mangomundi" },
-        { name: "description", content: "Global FX decision engine for intelligent cross-border payment management." },
-        { property: "og:description", content: "Global FX decision engine for intelligent cross-border payment management." },
-        { name: "twitter:description", content: "Global FX decision engine for intelligent cross-border payment management." },
+        { name: "description", content: "Intelligent currency exchange decisions" },
+        { property: "og:description", content: "Intelligent currency exchange decisions" },
+        { name: "twitter:description", content: "Intelligent currency exchange decisions" },
       ],
       links: [
         { rel: "stylesheet", href: appCss },
