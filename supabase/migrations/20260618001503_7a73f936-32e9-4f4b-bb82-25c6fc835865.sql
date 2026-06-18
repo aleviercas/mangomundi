@@ -1,0 +1,1 @@
+UPDATE public.providers SET affiliate_url = REPLACE(affiliate_url, 'utm_source=mangoglobal', 'utm_source=mangomundi') WHERE affiliate_url LIKE '%utm_source=mangoglobal%';
