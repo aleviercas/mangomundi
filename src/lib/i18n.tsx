@@ -2857,7 +2857,7 @@ const ROUTE_SEO_EN: RouteSeoMap = {
   "/platform": {
     title: "AI Decision Engine — mangomundi Platform",
     description:
-      "mangomundi is an AI-powered decision and sourcing infrastructure for complex markets. FX is the first vertical — insurance, brokers, SaaS and lending follow.",
+      "AI-powered decision and sourcing infrastructure for complex markets. FX first; insurance, brokers, SaaS and lending follow.",
   },
   "/features": {
     title: "Features — mangomundi",

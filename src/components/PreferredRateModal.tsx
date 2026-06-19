@@ -103,7 +103,12 @@ export function PreferredRateModal({ open, onOpenChange, context }: Props) {
             <p className="text-[11px] text-slate-500 leading-relaxed border-l-2 border-slate-200 pl-3">
               {t("retail.disclaimer")}
             </p>
+            <label htmlFor="preferred-rate-email" className="sr-only">
+              {t("common.email")}
+            </label>
             <input
+              id="preferred-rate-email"
+              name="email"
               type="email"
               required
               value={email}

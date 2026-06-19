@@ -1,0 +1,19 @@
+# Mangomundi
+
+> A neutral AI decision engine that compares cross-border money transfer routes, FX rates, fees, and delivery speeds across 30+ providers in real time — without bias or hidden margins.
+
+Mangomundi is an AI-powered platform that helps individuals and businesses pick the best provider for international payments. FX is the first vertical; the same decision engine is being extended to insurance, brokers, SaaS, and lending.
+
+## Pages
+
+- [Home](/): Intelligent currency exchange decisions — live comparator and overview.
+- [Compare FX providers](/compare): Live mid-market rates and total-cost rankings across 30+ providers.
+- [Platform](/platform): The mangomundi AI decision engine and the verticals it powers.
+- [Features](/features): Live rates, smart routing, multi-currency wallets, enterprise API.
+- [Pricing](/pricing): Free for retail; paid corporate tier for optimised routing and API access.
+- [Insurance (coming soon)](/insurance): Neutral comparison for insurance products.
+- [Legal & risk](/legal): Terms of Service, risk disclosures, and privacy policy.
+
+## Optional
+
+- [Blog](/blog): Guides and deep-dives on cross-border payments and FX transparency.
