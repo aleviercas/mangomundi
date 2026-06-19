@@ -14,6 +14,24 @@ const compareSearchSchema = z.object({
 
 export const Route = createFileRoute("/compare")({
   validateSearch: (search) => compareSearchSchema.parse(search),
+  head: () => ({
+    meta: [
+      { title: "Compare FX providers — Mangomundi" },
+      {
+        name: "description",
+        content:
+          "Compare 30+ FX providers across 100+ currencies in real time. Live mid-market rates, total fees, delivery speed and AI-ranked recommendations.",
+      },
+      { property: "og:title", content: "Compare FX providers — Mangomundi" },
+      {
+        property: "og:description",
+        content:
+          "Live mid-market rates and total-cost rankings across 30+ FX providers, with neutral AI recommendations.",
+      },
+      { property: "og:url", content: "https://mangomundi.lovable.app/compare" },
+    ],
+    links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/compare" }],
+  }),
   component: ComparePage,
 });
 

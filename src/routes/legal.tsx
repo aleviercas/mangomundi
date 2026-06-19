@@ -4,12 +4,18 @@ import { useI18n } from "@/lib/i18n";
 export const Route = createFileRoute("/legal")({
   head: () => ({
     meta: [
-      { title: "Legal — Mangomundi" },
+      { title: "Legal & Risk Disclosures — Mangomundi" },
       {
         name: "description",
-        content: "Terms of Service, Risk Disclosure and Privacy Policy for Mangomundi.",
+        content:
+          "Mangomundi Terms of Service, Risk Disclosures and Privacy Policy — how the neutral FX decision engine handles data, liability and user obligations.",
       },
-      { property: "og:title", content: "Legal — Mangomundi" },
+      { property: "og:title", content: "Legal & Risk Disclosures — Mangomundi" },
+      {
+        property: "og:description",
+        content:
+          "Read Mangomundi's Terms of Service, Risk Disclosures and Privacy Policy.",
+      },
       { property: "og:url", content: "https://mangomundi.lovable.app/legal" },
     ],
     links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/legal" }],

@@ -12,13 +12,61 @@ const postQuery = (slug: string, locale: string) =>
     queryFn: () => getBlogPost({ data: { slug, locale } }),
   });
 
+const truncate = (s: string, max = 160) =>
+  s.length <= max ? s : s.slice(0, max - 1).trimEnd() + "…";
+
 export const Route = createFileRoute("/blog/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `${params.slug} — mangomundi` },
-      { name: "description", content: "Read this post on mangomundi." },
-    ],
-  }),
+  loader: ({ params, context }) =>
+    context.queryClient.ensureQueryData(postQuery(params.slug, "en")),
+  head: ({ params, loaderData }) => {
+    const url = `https://mangomundi.lovable.app/blog/${params.slug}`;
+    const post = loaderData ?? null;
+    const title = post?.title ? `${post.title} — Mangomundi` : `${params.slug} — Mangomundi`;
+    const description = post?.excerpt
+      ? truncate(post.excerpt, 160)
+      : "Read this guide on cross-border payments, FX rates and smarter money transfers — from the Mangomundi team.";
+    const meta: Array<Record<string, string>> = [
+      { title },
+      { name: "description", content: description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
+      { property: "og:type", content: "article" },
+      { property: "og:url", content: url },
+    ];
+    if (post?.cover_url) {
+      meta.push({ property: "og:image", content: post.cover_url });
+      meta.push({ name: "twitter:image", content: post.cover_url });
+    }
+    const scripts: Array<Record<string, string>> = [];
+    if (post) {
+      scripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: post.title,
+          description: post.excerpt ?? undefined,
+          image: post.cover_url ?? undefined,
+          datePublished: post.published_at ?? undefined,
+          author: { "@type": "Organization", name: "Mangomundi" },
+          publisher: {
+            "@type": "Organization",
+            name: "Mangomundi",
+            logo: {
+              "@type": "ImageObject",
+              url: "https://mangomundi.lovable.app/og-image.png",
+            },
+          },
+          mainEntityOfPage: url,
+        }),
+      });
+    }
+    return {
+      meta,
+      links: [{ rel: "canonical", href: url }],
+      scripts,
+    };
+  },
   notFoundComponent: () => <PostNotFound />,
   errorComponent: ({ error }) => <PostError error={error} />,
   component: BlogPostPage,

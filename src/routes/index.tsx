@@ -24,6 +24,35 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "https://mangomundi.lovable.app/" },
     ],
     links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Mangomundi",
+          url: "https://mangomundi.lovable.app/",
+          logo: "https://mangomundi.lovable.app/og-image.png",
+          sameAs: [],
+          description:
+            "Neutral AI decision engine for cross-border payments and currency exchange.",
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Mangomundi",
+          url: "https://mangomundi.lovable.app/",
+          potentialAction: {
+            "@type": "SearchAction",
+            target: "https://mangomundi.lovable.app/compare?from={search_term_string}",
+            "query-input": "required name=search_term_string",
+          },
+        }),
+      },
+    ],
   }),
   component: Index,
 });
