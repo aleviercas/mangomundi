@@ -1111,7 +1111,7 @@ const COMPLIANCE_KEYS: Partial<Record<Lang, Dict>> = {
       "mangomundi is a neutral information and decision-engine platform. Our AI tooling does not constitute financial, tax, or investment advice. We do not custody client funds; all transfers settle directly with the regulated provider chosen by the user. Foreign-exchange rates fluctuate continuously and users bear the full FX, settlement, and counterparty risk of any transaction.",
     "legal.terms.title": "Terms of Service",
     "legal.terms.intro":
-      "mangomundi operates as a neutral information and decision-engine platform that aggregates publicly available FX rates and provider data. We do not hold client funds, do not execute transfers, and do not act as a money transmitter.",
+      "Mangomundi operates as a neutral information and decision-engine platform that aggregates publicly available FX rates and provider data. We do not hold client funds, do not execute transfers, and do not act as a money transmitter.",
     "legal.risk.title": "Risk Disclosure",
     "legal.risk.intro":
       "Foreign-exchange rates fluctuate continuously. The mid-market reference rate shown is indicative and may change between the time a comparison is generated and the time a provider executes the transfer. Users bear the full FX, settlement, and counterparty risk of any transaction.",
