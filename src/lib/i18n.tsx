@@ -320,7 +320,7 @@ export const DICTS: Record<Lang, Dict> = {
     "about.heroTitleAccent": "Borderless",
     "about.heroTitle2": "World",
     "about.heroSubtitle":
-      "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange provider, without bias or hidden margins.",
+      "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
     "about.missionTitle": "Our Mission",
     "about.missionBody":
       "Democratise access to the best foreign exchange decisions through neutral, AI-powered intelligence — eliminating information asymmetry and hidden costs from global payments.",
@@ -401,7 +401,7 @@ export const DICTS: Record<Lang, Dict> = {
     // Home — About / Manifesto
     "home.about.eyebrow": "About",
     "home.about.title": "Financial intelligence for every currency decision.",
-    "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator — without bias or hidden margins.",
+    "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
     "home.about.mission.label": "Mission",
     "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
     "home.about.vision.label": "Vision",
