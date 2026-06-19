@@ -44,9 +44,10 @@ function PostNotFound() {
 
 function PostError({ error }: { error: Error }) {
   const { t } = useI18n();
+  console.error("blog post load error", error);
   return (
     <div className="bg-background min-h-[60vh] flex items-center justify-center px-4">
-      <p className="text-muted-foreground">{t("errors.post.load")} {error.message}</p>
+      <p className="text-muted-foreground">{t("errors.post.load")}</p>
     </div>
   );
 }
