@@ -103,6 +103,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const captureBusinessFn = useServerFn(captureBusinessLead);
   const { track } = useAnalytics();
   const [shareToast, setShareToast] = useState(false);
+  const [aiCollapsed, setAiCollapsed] = useState(true);
 
   const buildReasoning = (): string => {
     const urgencyLabel =
