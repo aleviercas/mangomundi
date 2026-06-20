@@ -349,6 +349,10 @@ export const DICTS: Record<Lang, Dict> = {
     "home.hero.title": "International and Local Payments, Intelligently Routed. Agentic AI for Global FX.\u00a0",
     "home.hero.subtitle":
       "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.",
+    "home.hero.b1": "A transparent AI agent for global and local payments.",
+    "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
+    "home.hero.b3": "Finding the best option for every transfer.",
+    "home.search.compareLabel": "COMPARE",
     "home.flows.title": "Built for every institutional cross-border flow",
     "home.flows.payroll.title": "Global payroll & contractor payouts",
     "home.flows.payroll.body":

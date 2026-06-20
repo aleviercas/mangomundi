@@ -103,6 +103,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const captureBusinessFn = useServerFn(captureBusinessLead);
   const { track } = useAnalytics();
   const [shareToast, setShareToast] = useState(false);
+  const [aiCollapsed, setAiCollapsed] = useState(true);
 
   const buildReasoning = (): string => {
     const urgencyLabel =
@@ -642,216 +643,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </div>
         )}
 
-        {/* Unified AI Agent card: summary + chat */}
-        {(aiLoading || aiText) && (
-          <div className="surface-card mt-6 overflow-hidden">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3 sm:px-5">
-              <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
-                <span className="truncate">{t("comparator.copilot.agent")}</span>
-              </div>
-              {aiText && !aiLoading && (
-                <div className="flex shrink-0 items-center gap-1.5">
-                  <button
-                    onClick={handleSaveAlert}
-                    className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-foreground/30"
-                  >
-                    <BellPlus className="h-3 w-3" /> Alert
-                  </button>
-                  <button
-                    onClick={handleShare}
-                    className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-foreground/30"
-                  >
-                    <Share2 className="h-3 w-3" /> Share
-                  </button>
-                  {shareToast && (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600">
-                      <Check className="h-3 w-3" /> Copied
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-4 p-4 sm:p-5">
-              {aiLoading ? (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
-                </div>
-              ) : (
-                <>
-                  {/* Simplified summary bullets */}
-                  <ul className="space-y-1.5 text-sm leading-relaxed text-foreground">
-                    <li className="flex items-start gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
-                      <span>
-                        Sending{" "}
-                        <strong className="tabular-nums">
-                          {amount.toLocaleString()} {from}
-                        </strong>{" "}
-                        to <strong>{to}</strong>
-                        {result && (
-                          <>
-                            {" "}
-                            · best route delivers{" "}
-                            <strong className="tabular-nums">
-                              {Math.max(...result.rows.map((r) => r.received)).toLocaleString(
-                                undefined,
-                                { maximumFractionDigits: 2 },
-                              )}{" "}
-                              {result.quote}
-                            </strong>
-                          </>
-                        )}
-                      </span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
-                      <span className="capitalize">
-                        {segment} · {urgency} delivery
-                      </span>
-                    </li>
-                    {result && result.rows[0] && (
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
-                        <span>
-                          Top pick:{" "}
-                          <strong>
-                            {[...result.rows].sort((a, b) => b.received - a.received)[0].name}
-                          </strong>
-                        </span>
-                      </li>
-                    )}
-                  </ul>
-
-                  {/* Chat */}
-                  <div className="rounded-xl border border-border bg-muted/40 p-3 sm:p-4">
-                    {chat.length === 0 && (
-                      <div className="mb-3 flex flex-wrap gap-2">
-                        {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
-                          <button
-                            key={q}
-                            onClick={() => sendChat(q)}
-                            className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-foreground/30"
-                          >
-                            {q}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    {chat.length > 0 && (
-                      <div className="mb-3 max-h-72 space-y-2 overflow-y-auto pr-1">
-                        {chat.map((m, i) => (
-                          <div
-                            key={i}
-                            className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
-                              m.role === "user"
-                                ? "ml-8 bg-foreground text-background"
-                                : "mr-8 border border-border bg-card text-foreground"
-                            }`}
-                          >
-                            {m.role === "assistant" ? (
-                              <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:text-foreground">
-                                <ReactMarkdown>{m.content}</ReactMarkdown>
-                              </div>
-                            ) : (
-                              <span className="whitespace-pre-wrap">{m.content}</span>
-                            )}
-                            {m.actions && m.actions.length > 0 && (
-                              <div className="mt-2 flex flex-wrap gap-1.5">
-                                {m.actions.map((a, j) =>
-                                  a.kind === "proceed" ? (
-                                    <button
-                                      key={j}
-                                      onClick={() => openPreferredRate(a.slug, a.url)}
-                                      className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold"
-                                    >
-                                      <Zap className="h-3 w-3" /> {a.label}
-                                    </button>
-                                  ) : (
-                                    <button
-                                      key={j}
-                                      onClick={handleSaveAlert}
-                                      className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground hover:border-foreground/30"
-                                    >
-                                      <BellPlus className="h-3 w-3" /> {a.label}
-                                    </button>
-                                  ),
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                        {chatMut.isPending && (
-                          <div className="mr-8 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}
-                            {t("comparator.copilot.analyzing")}
-                          </div>
-                        )}
-                        <div ref={chatBottomRef} />
-                      </div>
-                    )}
-
-                    <form
-                      onSubmit={(e) => {
-                        e.preventDefault();
-                        sendChat(chatInput);
-                      }}
-                      className="flex items-center gap-2"
-                    >
-                      <input
-                        value={chatInput}
-                        onChange={(e) => setChatInput(e.target.value)}
-                        placeholder={t("comparator.copilot.placeholder")}
-                        className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
-                        disabled={chatMut.isPending}
-                      />
-                      <button
-                        type="submit"
-                        disabled={chatMut.isPending || !chatInput.trim()}
-                        className="btn-cta inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold"
-                        aria-label={t("comparator.copilot.send")}
-                      >
-                        <Send className="h-3.5 w-3.5" />
-                      </button>
-                    </form>
-                    {segment === "business" && businessStage === "consent" && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <Button
-                          type="button"
-                          size="sm"
-                          disabled={savingBusinessLead}
-                          onClick={() => void confirmBusinessLead()}
-                          className="bg-accent text-accent-foreground hover:bg-accent/90"
-                        >
-                          {savingBusinessLead ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                          {t("comparator.copilot.business.yes")}
-                        </Button>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            setBusinessStage("email");
-                            setChat((current) => [
-                              ...current,
-                              { role: "assistant", content: t("comparator.copilot.business.no") },
-                            ]);
-                          }}
-                        >
-                          {t("comparator.copilot.business.review")}
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Errors / empty / results */}
+        {/* Errors / empty */}
         {compareMut.isError && (
           <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
             {(compareMut.error as Error)?.message ?? "Couldn't load rates."}
@@ -864,32 +656,270 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </div>
         )}
 
-        {result && (
-          <ResultsBlock
-            result={result}
-            amount={amount}
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            handleAffiliateClick={openPreferredRate}
-            tDisclaimer={t("fx.disclaimer")}
-            tTrademarks={t("fx.trademarks")}
-            tRatesSource={t("fx.ratesSource")}
-            tAt={t("fx.at")}
-            tRecipient={t("fx.recipient")}
-            tAmountSent={t("comparator.table.amountSent")}
-            tTotalFee={t("fx.totalFee")}
-            tSpeed={t("fx.speed")}
-            tCta={t("retail.cta")}
-            tMidmarket={t("fx.midmarket")}
-            tUpdated={t("fx.updated")}
-            tProvider={t("cmp.provider")}
-            tLastUpdate={t("comparator.lastUpdate")}
-            tSavingsLabel={t("comparator.savings.label")}
-            tSavingsBaseline={t("comparator.savings.baseline")}
-            tNeutrality={t("comparator.disclaimer.neutrality")}
-          />
+        {/* Results lead. AI is a sidebar on desktop, secondary card on mobile. */}
+        {(result || aiLoading || aiText) && (
+          <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div className="min-w-0 order-1">
+              {result && (
+                <ResultsBlock
+                  result={result}
+                  amount={amount}
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                  handleAffiliateClick={openPreferredRate}
+                  tDisclaimer={t("fx.disclaimer")}
+                  tTrademarks={t("fx.trademarks")}
+                  tRatesSource={t("fx.ratesSource")}
+                  tAt={t("fx.at")}
+                  tRecipient={t("fx.recipient")}
+                  tAmountSent={t("comparator.table.amountSent")}
+                  tTotalFee={t("fx.totalFee")}
+                  tSpeed={t("fx.speed")}
+                  tCta={t("retail.cta")}
+                  tMidmarket={t("fx.midmarket")}
+                  tUpdated={t("fx.updated")}
+                  tProvider={t("cmp.provider")}
+                  tLastUpdate={t("comparator.lastUpdate")}
+                  tSavingsLabel={t("comparator.savings.label")}
+                  tSavingsBaseline={t("comparator.savings.baseline")}
+                  tNeutrality={t("comparator.disclaimer.neutrality")}
+                />
+              )}
+            </div>
+
+            {/* AI Sales Assistant (sidebar on desktop, below results on mobile) */}
+            {(aiLoading || aiText) && (
+              <aside className="order-2 lg:sticky lg:top-4 lg:self-start">
+                <div className="surface-card overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setAiCollapsed((c) => !c)}
+                    aria-expanded={!aiCollapsed}
+                    className="flex w-full items-center justify-between gap-3 border-b border-border px-4 py-3 text-left sm:px-5"
+                  >
+                    <span className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
+                      <span className="truncate">
+                        {t("comparator.copilot.agent")} · Sales Assistant
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-[#ff6b5b]">
+                      {aiCollapsed ? "Open" : "Close"}
+                    </span>
+                  </button>
+
+                  {!aiCollapsed && (
+                    <div className="space-y-4 p-4 sm:p-5">
+                      {aiText && !aiLoading && (
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <button
+                            onClick={handleSaveAlert}
+                            className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-foreground/30"
+                          >
+                            <BellPlus className="h-3 w-3" /> Alert
+                          </button>
+                          <button
+                            onClick={handleShare}
+                            className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-medium text-foreground transition hover:border-foreground/30"
+                          >
+                            <Share2 className="h-3 w-3" /> Share
+                          </button>
+                          {shareToast && (
+                            <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+                              <Check className="h-3 w-3" /> Copied
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {aiLoading ? (
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-[11px] text-muted-foreground">
+                            Sales assistant: how to use the comparator, calculation help, and
+                            provider information only. No financial advice.
+                          </p>
+
+                          <ul className="space-y-1.5 text-sm leading-relaxed text-foreground">
+                            <li className="flex items-start gap-2">
+                              <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                              <span>
+                                Sending{" "}
+                                <strong className="tabular-nums">
+                                  {amount.toLocaleString()} {from}
+                                </strong>{" "}
+                                to <strong>{to}</strong>
+                                {result && (
+                                  <>
+                                    {" "}
+                                    · best route delivers{" "}
+                                    <strong className="tabular-nums">
+                                      {Math.max(
+                                        ...result.rows.map((r) => r.received),
+                                      ).toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+                                      {result.quote}
+                                    </strong>
+                                  </>
+                                )}
+                              </span>
+                            </li>
+                            {result && result.rows[0] && (
+                              <li className="flex items-start gap-2">
+                                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                                <span>
+                                  Top pick:{" "}
+                                  <strong>
+                                    {
+                                      [...result.rows].sort((a, b) => b.received - a.received)[0]
+                                        .name
+                                    }
+                                  </strong>
+                                </span>
+                              </li>
+                            )}
+                          </ul>
+
+                          <div className="rounded-xl border border-border bg-muted/40 p-3">
+                            {chat.length === 0 && (
+                              <div className="mb-3 flex flex-wrap gap-2">
+                                {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map(
+                                  (q) => (
+                                    <button
+                                      key={q}
+                                      onClick={() => sendChat(q)}
+                                      className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-foreground/30"
+                                    >
+                                      {q}
+                                    </button>
+                                  ),
+                                )}
+                              </div>
+                            )}
+
+                            {chat.length > 0 && (
+                              <div className="mb-3 max-h-72 space-y-2 overflow-y-auto pr-1">
+                                {chat.map((m, i) => (
+                                  <div
+                                    key={i}
+                                    className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
+                                      m.role === "user"
+                                        ? "ml-6 bg-foreground text-background"
+                                        : "mr-6 border border-border bg-card text-foreground"
+                                    }`}
+                                  >
+                                    {m.role === "assistant" ? (
+                                      <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:text-foreground">
+                                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                                      </div>
+                                    ) : (
+                                      <span className="whitespace-pre-wrap">{m.content}</span>
+                                    )}
+                                    {m.actions && m.actions.length > 0 && (
+                                      <div className="mt-2 flex flex-wrap gap-1.5">
+                                        {m.actions.map((a, j) =>
+                                          a.kind === "proceed" ? (
+                                            <button
+                                              key={j}
+                                              onClick={() => openPreferredRate(a.slug, a.url)}
+                                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold"
+                                            >
+                                              <Zap className="h-3 w-3" /> {a.label}
+                                            </button>
+                                          ) : (
+                                            <button
+                                              key={j}
+                                              onClick={handleSaveAlert}
+                                              className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground hover:border-foreground/30"
+                                            >
+                                              <BellPlus className="h-3 w-3" /> {a.label}
+                                            </button>
+                                          ),
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                                {chatMut.isPending && (
+                                  <div className="mr-6 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}
+                                    {t("comparator.copilot.analyzing")}
+                                  </div>
+                                )}
+                                <div ref={chatBottomRef} />
+                              </div>
+                            )}
+
+                            <form
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                sendChat(chatInput);
+                              }}
+                              className="flex items-center gap-2"
+                            >
+                              <input
+                                value={chatInput}
+                                onChange={(e) => setChatInput(e.target.value)}
+                                placeholder={t("comparator.copilot.placeholder")}
+                                className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
+                                disabled={chatMut.isPending}
+                              />
+                              <button
+                                type="submit"
+                                disabled={chatMut.isPending || !chatInput.trim()}
+                                className="btn-cta inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold"
+                                aria-label={t("comparator.copilot.send")}
+                              >
+                                <Send className="h-3.5 w-3.5" />
+                              </button>
+                            </form>
+                            {segment === "business" && businessStage === "consent" && (
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  disabled={savingBusinessLead}
+                                  onClick={() => void confirmBusinessLead()}
+                                  className="bg-accent text-accent-foreground hover:bg-accent/90"
+                                >
+                                  {savingBusinessLead ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : null}
+                                  {t("comparator.copilot.business.yes")}
+                                </Button>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setBusinessStage("email");
+                                    setChat((current) => [
+                                      ...current,
+                                      {
+                                        role: "assistant",
+                                        content: t("comparator.copilot.business.no"),
+                                      },
+                                    ]);
+                                  }}
+                                >
+                                  {t("comparator.copilot.business.review")}
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </aside>
+            )}
+          </div>
         )}
       </div>
+
 
       <PreferredRateModal open={modalOpen} onOpenChange={setModalOpen} context={modalCtx} />
     </section>

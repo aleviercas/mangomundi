@@ -37,9 +37,12 @@ export function HomeSearch() {
 
   return (
     <div className="mx-auto w-full max-w-lg lg:mx-0">
-      <div className="rounded-2xl border border-white/10 bg-slate-900 p-4 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] sm:p-7">
-        {/* Compact segment toggle, top-right */}
-        <div className="flex justify-end">
+      <div className="rounded-2xl border border-white/10 bg-slate-900 p-3 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] sm:p-7">
+        {/* Header: COMPARE label + segment toggle */}
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b] sm:text-sm">
+            {t("home.search.compareLabel")}
+          </p>
           <div
             className="inline-flex rounded-full bg-white/10 p-1"
             role="tablist"
@@ -64,8 +67,8 @@ export function HomeSearch() {
           </div>
         </div>
 
-        <label className="mt-3 block sm:mt-4">
-          <span className="mb-2 block text-xs font-medium text-slate-300 sm:text-sm">
+        <label className="mt-2 block sm:mt-4">
+          <span className="mb-1.5 block text-xs font-medium text-slate-300 sm:text-sm">
             {t("search.destination")}
           </span>
           <CountrySelect
