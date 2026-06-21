@@ -419,23 +419,25 @@ export const chatAboutRecommendation = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) return { text: "Chat unavailable: missing API key.", error: true };
 
+    // Sanitize untrusted text: strip control chars and our delimiter tokens to
+    // prevent prompt-injection that closes the wrapper or fakes system turns.
+    const sanitizeUntrusted = (s: string) =>
+      s
+        .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
+        .replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "");
+
+    const sanitizeName = (s: string) => sanitizeUntrusted(s).slice(0, 120);
+
     const top = data.top
       .map(
         (r, i) =>
-          `${i + 1}. ${r.name} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
+          `${i + 1}. ${sanitizeName(r.name)} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
       )
       .join("\n");
 
     const sortLine = data.sortBy
       ? `\n- Active table filter: sorted by ${data.sortBy === "received" ? "best rate" : data.sortBy === "fee" ? "lowest fees" : "fastest delivery"}.`
       : "";
-
-    // Sanitize untrusted text: strip control chars and our delimiter tokens to
-    // prevent prompt-injection that closes the wrapper or fakes system turns.
-    const sanitizeUntrusted = (s: string) =>
-      s
-        .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
-        .replace(/<\/?(user_context|previous_recommendation|user_message)>/gi, "");
 
     const safeRecommendation = sanitizeUntrusted(data.recommendation);
     const safeHistory = data.history.map((m) => ({
