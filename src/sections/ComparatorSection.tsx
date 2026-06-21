@@ -825,13 +825,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         )}
       </div>
 
-              </aside>
-            )}
-          </div>
-        )}
-      </div>
-
-
       <PreferredRateModal open={modalOpen} onOpenChange={setModalOpen} context={modalCtx} />
     </section>
   );
