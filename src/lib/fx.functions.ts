@@ -162,7 +162,7 @@ export const compareProviders = createServerFn({ method: "POST" })
       .select("*")
       .eq("active", true)
       .in("segment", [data.segment, "both"]);
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
 
     const { data: rates, base, fetchedAt } = await fetchRates();
     const fromRate = data.from === base ? 1 : rates[data.from];
@@ -269,7 +269,7 @@ export const captureLead = createServerFn({ method: "POST" })
       monthly_volume: data.monthly_volume ?? null,
       message: data.message ?? null,
     });
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
     return { ok: true };
   });
 
@@ -284,7 +284,7 @@ const aiSchema = z.object({
   top: z
     .array(
       z.object({
-        name: z.string(),
+        name: z.string().max(120),
         received: z.number(),
         fee_total: z.number(),
         speed_hours: z.number(),
@@ -307,10 +307,15 @@ export const aiRecommend = createServerFn({ method: "POST" })
     if (!apiKey) {
       return { text: "AI insight unavailable: missing API key.", error: true };
     }
+    const sanitizeName = (s: string) =>
+      s
+        .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
+        .replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "")
+        .slice(0, 120);
     const top = data.top
       .map(
         (r, i) =>
-          `${i + 1}. ${r.name} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
+          `${i + 1}. ${sanitizeName(r.name)} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
       )
       .join("\n");
 
@@ -363,7 +368,7 @@ const chatSchema = z.object({
   top: z
     .array(
       z.object({
-        name: z.string(),
+        name: z.string().max(120),
         received: z.number(),
         fee_total: z.number(),
         speed_hours: z.number(),
@@ -414,23 +419,25 @@ export const chatAboutRecommendation = createServerFn({ method: "POST" })
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) return { text: "Chat unavailable: missing API key.", error: true };
 
+    // Sanitize untrusted text: strip control chars and our delimiter tokens to
+    // prevent prompt-injection that closes the wrapper or fakes system turns.
+    const sanitizeUntrusted = (s: string) =>
+      s
+        .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
+        .replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "");
+
+    const sanitizeName = (s: string) => sanitizeUntrusted(s).slice(0, 120);
+
     const top = data.top
       .map(
         (r, i) =>
-          `${i + 1}. ${r.name} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
+          `${i + 1}. ${sanitizeName(r.name)} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
       )
       .join("\n");
 
     const sortLine = data.sortBy
       ? `\n- Active table filter: sorted by ${data.sortBy === "received" ? "best rate" : data.sortBy === "fee" ? "lowest fees" : "fastest delivery"}.`
       : "";
-
-    // Sanitize untrusted text: strip control chars and our delimiter tokens to
-    // prevent prompt-injection that closes the wrapper or fakes system turns.
-    const sanitizeUntrusted = (s: string) =>
-      s
-        .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
-        .replace(/<\/?(user_context|previous_recommendation|user_message)>/gi, "");
 
     const safeRecommendation = sanitizeUntrusted(data.recommendation);
     const safeHistory = data.history.map((m) => ({

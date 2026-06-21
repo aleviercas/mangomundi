@@ -51,7 +51,7 @@ export const initiateRfq = createServerFn({ method: "POST" })
       privacy_consent: true,
       consent_timestamp: consentAt,
     });
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
 
     // Outbound webhook — ANONYMISED payload (no email, no PII)
     const webhookUrl = process.env.RFQ_WEBHOOK_URL;

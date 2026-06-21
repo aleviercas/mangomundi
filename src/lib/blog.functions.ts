@@ -30,7 +30,7 @@ export const listBlogPosts = createServerFn({ method: "GET" })
       .eq("published", true)
       .eq("locale", data.locale)
       .order("published_at", { ascending: false });
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
     return (rows ?? []) as BlogListItem[];
   });
 
@@ -53,7 +53,7 @@ export const getBlogPost = createServerFn({ method: "GET" })
       .eq("published", true);
 
     const { data: localized, error: e1 } = await base.eq("locale", data.locale).maybeSingle();
-    if (e1) throw new Error(e1.message);
+    if (e1) { console.error("[server-fn]", e1); throw new Error("An unexpected error occurred. Please try again."); }
     if (localized) return localized as BlogPost;
 
     const { data: fallback, error: e2 } = await supabaseAdmin
@@ -65,6 +65,6 @@ export const getBlogPost = createServerFn({ method: "GET" })
       .eq("published", true)
       .limit(1)
       .maybeSingle();
-    if (e2) throw new Error(e2.message);
+    if (e2) { console.error("[server-fn]", e2); throw new Error("An unexpected error occurred. Please try again."); }
     return fallback as BlogPost | null;
   });
