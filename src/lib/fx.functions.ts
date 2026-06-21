@@ -307,10 +307,15 @@ export const aiRecommend = createServerFn({ method: "POST" })
     if (!apiKey) {
       return { text: "AI insight unavailable: missing API key.", error: true };
     }
+    const sanitizeName = (s: string) =>
+      s
+        .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
+        .replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "")
+        .slice(0, 120);
     const top = data.top
       .map(
         (r, i) =>
-          `${i + 1}. ${r.name} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
+          `${i + 1}. ${sanitizeName(r.name)} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
       )
       .join("\n");
 
