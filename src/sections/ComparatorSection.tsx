@@ -315,31 +315,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     window.alert(`Alert saved for ${from} → ${to}. We'll notify you when the rate improves.`);
   };
 
-  const handleShare = async () => {
-    const shareUrl =
-      typeof window !== "undefined"
-        ? `${window.location.origin}/compare?from=${from}&to=${to}&amount=${amount}`
-        : "";
-    track("rfq_interaction", {
-      amount,
-      from_currency: from,
-      to_currency: to,
-      segment,
-      urgency,
-      source: "share",
-    });
-    try {
-      if (typeof navigator !== "undefined" && navigator.share) {
-        await navigator.share({ title: "mangomundi comparison", url: shareUrl });
-      } else if (typeof navigator !== "undefined" && navigator.clipboard) {
-        await navigator.clipboard.writeText(shareUrl);
-        setShareToast(true);
-        setTimeout(() => setShareToast(false), 2400);
-      }
-    } catch {
-      /* user cancelled */
-    }
-  };
 
   const sendChat = async (msg: string) => {
     const trimmed = msg.trim();
