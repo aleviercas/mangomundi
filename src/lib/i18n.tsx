@@ -2416,7 +2416,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Base and quote currencies for the operation.",
     "comparator.field.sourceCurrency": "Source Currency",
     "comparator.field.targetCurrency": "Target Currency",
-    "comparator.segment.retail": "Retail",
+    "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Business",
     "hero.subheadline.short":
       "AI agent for global and local payments. Best rates for individuals and businesses.",
@@ -2557,7 +2557,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
     "comparator.field.sourceCurrency": "Divisa de Origen",
     "comparator.field.targetCurrency": "Divisa de Destino",
-    "comparator.segment.retail": "Retail",
+    "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Empresas",
     "search.eyebrow": "Terminal de inteligencia financiera",
     "search.origin": "País de origen",
