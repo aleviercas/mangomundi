@@ -15,8 +15,6 @@ import {
   ArrowDownUp,
   Sparkle,
   BellPlus,
-  Share2,
-  Check,
   Zap,
   Info,
   ArrowLeft,
@@ -102,7 +100,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const chatFn = useServerFn(chatAboutRecommendation);
   const captureBusinessFn = useServerFn(captureBusinessLead);
   const { track } = useAnalytics();
-  const [shareToast, setShareToast] = useState(false);
+  
   const [aiCollapsed, setAiCollapsed] = useState(true);
 
   const buildReasoning = (): string => {
