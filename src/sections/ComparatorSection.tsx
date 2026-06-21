@@ -170,6 +170,15 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       setAiLoading(false);
       const intro = proactiveMessage(data, "received");
       const initial: ChatMsg[] = [];
+      // Results summary as first assistant bubble (per spec: results inside chat)
+      const best = [...data.rows].sort((a, b) => b.received - a.received)[0];
+      if (best) {
+        const summary =
+          `Sending **${amount.toLocaleString()} ${from}** to **${to}** — ` +
+          `best route delivers **${best.received.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${data.quote}** ` +
+          `via **${best.name}**.`;
+        initial.push({ role: "assistant", content: summary });
+      }
       if (segment === "business") {
         setBusinessStage("volume");
         setBusinessData({});
@@ -183,6 +192,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         });
       }
       setChat(initial);
+      setAiCollapsed(false);
       track("comparator_query", {
         amount,
         from_currency: from,
