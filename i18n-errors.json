@@ -1,122 +1,217 @@
 {
-  "generatedAt": "2026-06-19T14:06:43.695Z",
-  "ok": true,
-  "enKeyCount": 562,
+  "generatedAt": "2026-06-21T22:16:25.974Z",
+  "ok": false,
+  "enKeyCount": 566,
   "brokenLangs": [],
   "perLang": {
     "es": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "pt": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "ru": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "tr": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "bn": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "ur": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "zh": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "pl": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "hi": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "tl": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "vi": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "ar": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "de": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "fr": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "it": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "ja": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "ko": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "id": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     },
     "th": {
-      "coverage": 1,
-      "missing": 0,
+      "coverage": 0.9929,
+      "missing": 4,
       "empty": 0,
-      "missingKeys": []
+      "missingKeys": [
+        "home.hero.b1",
+        "home.hero.b2",
+        "home.hero.b3",
+        "home.search.compareLabel"
+      ]
     }
   }
 }
