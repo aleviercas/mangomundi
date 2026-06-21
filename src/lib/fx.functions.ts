@@ -284,7 +284,7 @@ const aiSchema = z.object({
   top: z
     .array(
       z.object({
-        name: z.string(),
+        name: z.string().max(120),
         received: z.number(),
         fee_total: z.number(),
         speed_hours: z.number(),
@@ -363,7 +363,7 @@ const chatSchema = z.object({
   top: z
     .array(
       z.object({
-        name: z.string(),
+        name: z.string().max(120),
         received: z.number(),
         fee_total: z.number(),
         speed_hours: z.number(),
