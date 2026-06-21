@@ -334,9 +334,17 @@ export const chatTurn = createServerFn({ method: "POST" })
         .eq("conversation_id", convId)
         .order("created_at", { ascending: true })
         .limit(16);
+      // Sanitize stored history before re-injecting into the AI: strip
+      // control chars and known delimiter tokens to prevent stored
+      // prompt-injection from prior turns.
+      const sanitize = (s: string) =>
+        s
+          .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
+          .replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "")
+          .slice(0, 4000);
       const cleaned = (history || [])
         .filter((m) => m.role === "user" || m.role === "assistant")
-        .map((m) => ({ role: m.role, content: m.content }));
+        .map((m) => ({ role: m.role, content: sanitize(m.content ?? "") }));
       reply = await callLovableAI(cleaned, locale);
     }
 
