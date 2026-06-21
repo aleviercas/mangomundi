@@ -288,7 +288,7 @@ export const chatTurn = createServerFn({ method: "POST" })
         .insert({ session_id: data.sessionId })
         .select("id")
         .single();
-      if (error) throw new Error(error.message);
+      if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
       convId = created.id;
     }
 
@@ -383,7 +383,7 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
       privacy_consent: true,
       consent_timestamp: new Date().toISOString(),
     });
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
     return { ok: true };
   });
 
@@ -410,7 +410,7 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
       privacy_consent: true,
       consent_timestamp: consentAt,
     });
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
 
     const webhookUrl = process.env.RFQ_WEBHOOK_URL;
     if (webhookUrl) {
@@ -450,6 +450,6 @@ export const captureGeneralInquiry = createServerFn({ method: "POST" })
       message: data.message,
       source: "about_contact_form",
     });
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
     return { ok: true };
   });

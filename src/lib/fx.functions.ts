@@ -162,7 +162,7 @@ export const compareProviders = createServerFn({ method: "POST" })
       .select("*")
       .eq("active", true)
       .in("segment", [data.segment, "both"]);
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
 
     const { data: rates, base, fetchedAt } = await fetchRates();
     const fromRate = data.from === base ? 1 : rates[data.from];
@@ -269,7 +269,7 @@ export const captureLead = createServerFn({ method: "POST" })
       monthly_volume: data.monthly_volume ?? null,
       message: data.message ?? null,
     });
-    if (error) throw new Error(error.message);
+    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
     return { ok: true };
   });
 
