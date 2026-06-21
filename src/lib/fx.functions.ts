@@ -85,7 +85,11 @@ let ratesCache: {
   ts: number;
   fetchedAt: string;
 } | null = null;
-const RATES_TTL_MS = 10 * 60 * 1000;
+// Configurable refresh interval (default 6h) to minimize third-party API
+// consumption and stay within free tier limits. Override per-deployment via
+// RATES_REFRESH_INTERVAL_MS env var. The cache lives per worker instance;
+// for cross-worker durability, swap this for a DB-backed cache table.
+const RATES_TTL_MS = Number(process.env.RATES_REFRESH_INTERVAL_MS) || 6 * 60 * 60 * 1000;
 
 async function fetchRates(): Promise<{
   data: Record<string, number>;
