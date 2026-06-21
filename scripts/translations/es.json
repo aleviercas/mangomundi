@@ -561,5 +561,9 @@
   "footer.brandLine": "FX Global, Hecho Inteligente",
   "home.feat.liveRates": "Tasas en vivo",
   "home.feat.zeroFees": "Sin comisiones",
-  "home.feat.noSignup": "Sin registro"
+  "home.feat.noSignup": "Sin registro",
+  "home.hero.b1": "A transparent AI agent for global and local payments.",
+  "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
+  "home.hero.b3": "Finding the best option for every transfer.",
+  "home.search.compareLabel": "COMPARE"
 }

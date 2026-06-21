@@ -560,5 +560,9 @@
   "legal.privacy.title": "Privacy Policy",
   "home.feat.liveRates": "Live Rates",
   "home.feat.zeroFees": "Zero Fees",
-  "home.feat.noSignup": "No Sign-up"
+  "home.feat.noSignup": "No Sign-up",
+  "home.hero.b1": "A transparent AI agent for global and local payments.",
+  "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
+  "home.hero.b3": "Finding the best option for every transfer.",
+  "home.search.compareLabel": "COMPARE"
 }
