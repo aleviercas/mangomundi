@@ -1,6 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { fxProviderFactory } from "@/services/providers/ProviderFactory";
+import { callAiWithFailover } from "@/services/providers/aiOrchestrator";
+
 
 // ---------- Types ----------
 export interface FeeTier {
@@ -96,24 +99,24 @@ async function fetchRates(): Promise<{
   base: string;
   fetchedAt: string;
 }> {
+  // CACHE FIRST: serve from in-memory cache when fresh to minimize upstream
+  // API calls and keep responses sub-second.
   if (ratesCache && Date.now() - ratesCache.ts < RATES_TTL_MS) {
     return { data: ratesCache.data, base: ratesCache.base, fetchedAt: ratesCache.fetchedAt };
   }
-  const appId = process.env.OPENEXCHANGE_APP_ID;
-  if (!appId) throw new Error("OPENEXCHANGE_APP_ID not configured");
-  const res = await fetch(`https://openexchangerates.org/api/latest.json?app_id=${appId}`);
-  if (!res.ok) throw new Error(`Rates API ${res.status}`);
-  const json = (await res.json()) as {
-    base: string;
-    rates: Record<string, number>;
-    timestamp?: number;
+  // Cache miss / expired: refresh through the provider factory which iterates
+  // the configured providers (Open Exchange Rates → Frankfurter → ER-API) and
+  // returns the first healthy payload. Failures are silent fallbacks.
+  const payload = await fxProviderFactory.refreshRates();
+  ratesCache = {
+    data: payload.rates,
+    base: payload.base,
+    ts: Date.now(),
+    fetchedAt: payload.fetchedAt,
   };
-  const fetchedAt = json.timestamp
-    ? new Date(json.timestamp * 1000).toISOString()
-    : new Date().toISOString();
-  ratesCache = { data: json.rates, base: json.base, ts: Date.now(), fetchedAt };
-  return { data: json.rates, base: json.base, fetchedAt };
+  return { data: payload.rates, base: payload.base, fetchedAt: payload.fetchedAt };
 }
+
 
 // Pick fee tier matching the amount. Falls back to provider top-level fees.
 function resolveTier(
