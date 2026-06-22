@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
-import { LangSwitcher } from "@/components/LangSwitcher";
 
 export function Header() {
   return (
@@ -9,7 +8,8 @@ export function Header() {
         <Link to="/" aria-label="mangomundi home" className="flex items-center">
           <Wordmark className="text-xl" />
         </Link>
-        <LangSwitcher />
+        {/* Language is auto-detected from URL ?lang=, localStorage, server geo-IP,
+            and navigator.language — no manual switcher. See src/lib/i18n.tsx. */}
       </div>
     </header>
   );
