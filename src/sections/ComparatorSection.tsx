@@ -440,10 +440,11 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </p>
         </div>
 
-        {/* Decision engine (left) + AI Agent sidebar (right). Same layout pre & post comparison. */}
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        {/* Decision engine — full width. AI Agent is a floating widget (see below). */}
+        <div className="min-w-0">
           {/* Decision card */}
           <div className="surface-card overflow-hidden min-w-0">
+
           {/* Card header: brand + segment toggle */}
           <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
             <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -607,159 +608,188 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </div>
           </div>
 
-          {/* AI Agent sidebar — always rendered; same place pre & post comparison */}
-          <aside className="order-2 lg:order-none lg:sticky lg:top-4 lg:self-start min-w-0">
-            <div className="surface-card overflow-hidden">
-              <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
+        </div>
+
+        {/* Floating AI Agent — fixed bottom-right, minimized by default.
+            Chat state (history, result context) is preserved across collapse/expand
+            because we only toggle visibility, not unmount. */}
+        <div className="fixed bottom-4 right-4 z-[60] sm:bottom-6 sm:right-6">
+          {aiCollapsed ? (
+            <button
+              type="button"
+              onClick={() => setAiCollapsed(false)}
+              aria-label={t("comparator.copilot.agent")}
+              className="btn-cta group relative flex h-14 w-14 items-center justify-center rounded-full shadow-2xl ring-1 ring-foreground/10 transition hover:scale-105"
+            >
+              <Sparkle className="h-6 w-6" />
+              {chat.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-bold text-white">
+                  {chat.length}
+                </span>
+              )}
+            </button>
+          ) : (
+            <div className="surface-card flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden shadow-2xl ring-1 ring-foreground/10">
+              <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3">
                 <span className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
                   <span className="truncate">{t("comparator.copilot.agent")}</span>
                 </span>
-                <span className="shrink-0 text-[10px] font-medium uppercase tracking-wider text-emerald-600">
-                  ● {lang.toUpperCase()}
-                </span>
+                <div className="flex shrink-0 items-center gap-2">
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-600">
+                    ● {lang.toUpperCase()}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setAiCollapsed(true)}
+                    aria-label="Minimize"
+                    className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                      <path d="M3 7h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
               </div>
 
-              <div className="space-y-3 p-4 sm:p-5">
+              <div className="flex-1 space-y-3 overflow-y-auto p-4">
                 {aiLoading && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Loader2 className="h-4 w-4 animate-spin" /> {t("fx.analyzing")}
                   </div>
                 )}
 
-                <div className="rounded-xl border border-border bg-muted/40 p-3">
-                  {chat.length === 0 && !aiLoading && (
-                    <div className="mb-3 rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
-                      <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
-                    </div>
-                  )}
+                {chat.length === 0 && !aiLoading && (
+                  <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                    <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
+                  </div>
+                )}
 
-                  {chat.length === 0 && result && (
-                    <div className="mb-3 flex flex-wrap gap-2">
-                      {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
-                        <button
-                          key={q}
-                          onClick={() => sendChat(q)}
-                          className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-foreground/30"
-                        >
-                          {q}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                {chat.length === 0 && result && (
+                  <div className="flex flex-wrap gap-2">
+                    {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
+                      <button
+                        key={q}
+                        onClick={() => sendChat(q)}
+                        className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-foreground/30"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
-                  {chat.length > 0 && (
-                    <div className="mb-3 max-h-80 space-y-2 overflow-y-auto pr-1">
-                      {chat.map((m, i) => (
-                        <div
-                          key={i}
-                          className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
-                            m.role === "user"
-                              ? "ml-6 bg-foreground text-background"
-                              : "mr-6 border border-border bg-card text-foreground"
-                          }`}
-                        >
-                          {m.role === "assistant" ? (
-                            <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:text-foreground">
-                              <ReactMarkdown>{m.content}</ReactMarkdown>
-                            </div>
-                          ) : (
-                            <span className="whitespace-pre-wrap">{m.content}</span>
-                          )}
-                          {m.actions && m.actions.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-1.5">
-                              {m.actions.map((a, j) =>
-                                a.kind === "proceed" ? (
-                                  <button
-                                    key={j}
-                                    onClick={() => openPreferredRate(a.slug, a.url)}
-                                    className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold"
-                                  >
-                                    <Zap className="h-3 w-3" /> {a.label}
-                                  </button>
-                                ) : (
-                                  <button
-                                    key={j}
-                                    onClick={handleSaveAlert}
-                                    className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground hover:border-foreground/30"
-                                  >
-                                    <BellPlus className="h-3 w-3" /> {a.label}
-                                  </button>
-                                ),
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      {chatMut.isPending && (
-                        <div className="mr-6 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}
-                          {t("comparator.copilot.analyzing")}
-                        </div>
-                      )}
-                      <div ref={chatBottomRef} />
-                    </div>
-                  )}
+                {chat.length > 0 && (
+                  <div className="space-y-2">
+                    {chat.map((m, i) => (
+                      <div
+                        key={i}
+                        className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
+                          m.role === "user"
+                            ? "ml-6 bg-foreground text-background"
+                            : "mr-6 border border-border bg-card text-foreground"
+                        }`}
+                      >
+                        {m.role === "assistant" ? (
+                          <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:text-foreground">
+                            <ReactMarkdown>{m.content}</ReactMarkdown>
+                          </div>
+                        ) : (
+                          <span className="whitespace-pre-wrap">{m.content}</span>
+                        )}
+                        {m.actions && m.actions.length > 0 && (
+                          <div className="mt-2 flex flex-wrap gap-1.5">
+                            {m.actions.map((a, j) =>
+                              a.kind === "proceed" ? (
+                                <button
+                                  key={j}
+                                  onClick={() => openPreferredRate(a.slug, a.url)}
+                                  className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold"
+                                >
+                                  <Zap className="h-3 w-3" /> {a.label}
+                                </button>
+                              ) : (
+                                <button
+                                  key={j}
+                                  onClick={handleSaveAlert}
+                                  className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground hover:border-foreground/30"
+                                >
+                                  <BellPlus className="h-3 w-3" /> {a.label}
+                                </button>
+                              ),
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {chatMut.isPending && (
+                      <div className="mr-6 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}
+                        {t("comparator.copilot.analyzing")}
+                      </div>
+                    )}
+                    <div ref={chatBottomRef} />
+                  </div>
+                )}
+              </div>
 
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      sendChat(chatInput);
-                    }}
-                    className="flex items-center gap-2"
+              <div className="shrink-0 border-t border-border p-3">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    sendChat(chatInput);
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <input
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    placeholder={t("comparator.copilot.placeholder")}
+                    className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
+                    disabled={chatMut.isPending || !result}
+                  />
+                  <button
+                    type="submit"
+                    disabled={chatMut.isPending || !chatInput.trim() || !result}
+                    className="btn-cta inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold"
+                    aria-label={t("comparator.copilot.send")}
                   >
-                    <input
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      placeholder={t("comparator.copilot.placeholder")}
-                      className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
-                      disabled={chatMut.isPending || !result}
-                    />
-                    <button
-                      type="submit"
-                      disabled={chatMut.isPending || !chatInput.trim() || !result}
-                      className="btn-cta inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold"
-                      aria-label={t("comparator.copilot.send")}
+                    <Send className="h-3.5 w-3.5" />
+                  </button>
+                </form>
+                {segment === "business" && businessStage === "consent" && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={savingBusinessLead}
+                      onClick={() => void confirmBusinessLead()}
+                      className="bg-accent text-accent-foreground hover:bg-accent/90"
                     >
-                      <Send className="h-3.5 w-3.5" />
-                    </button>
-                  </form>
-                  {segment === "business" && businessStage === "consent" && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      <Button
-                        type="button"
-                        size="sm"
-                        disabled={savingBusinessLead}
-                        onClick={() => void confirmBusinessLead()}
-                        className="bg-accent text-accent-foreground hover:bg-accent/90"
-                      >
-                        {savingBusinessLead ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                        {t("comparator.copilot.business.yes")}
-                      </Button>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={() => {
-                          setBusinessStage("email");
-                          setChat((current) => [
-                            ...current,
-                            {
-                              role: "assistant",
-                              content: t("comparator.copilot.business.no"),
-                            },
-                          ]);
-                        }}
-                      >
-                        {t("comparator.copilot.business.review")}
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                      {savingBusinessLead ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                      {t("comparator.copilot.business.yes")}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => {
+                        setBusinessStage("email");
+                        setChat((current) => [
+                          ...current,
+                          { role: "assistant", content: t("comparator.copilot.business.no") },
+                        ]);
+                      }}
+                    >
+                      {t("comparator.copilot.business.review")}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
-          </aside>
+          )}
         </div>
+
 
         {/* Errors */}
         {compareMut.isError && (
