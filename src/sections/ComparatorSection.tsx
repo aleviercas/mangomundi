@@ -422,7 +422,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   };
 
   return (
-    <section id="comparator" key={lang} className="min-h-screen bg-background py-8 sm:py-12">
+    <section id="comparator" key={lang} className="min-h-screen bg-background py-8 pb-32 sm:py-12 sm:pb-40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <Link
           to="/"
