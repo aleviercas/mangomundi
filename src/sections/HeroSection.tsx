@@ -18,10 +18,10 @@ export function HeroSection() {
                 {t("home.hero.titleAccent")}
               </span>
             </h1>
-            <ul className="mx-auto mt-3 max-w-2xl space-y-1.5 text-left text-sm leading-snug text-slate-600 sm:mt-6 sm:space-y-2 sm:text-base sm:leading-relaxed lg:mx-0">
+            <ul className="mx-auto mt-3 max-w-2xl space-y-2 text-left text-base leading-relaxed text-slate-600 sm:mt-6 lg:mx-0">
               {bullets.map((b) => (
                 <li key={b} className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#ff6b5b] sm:mt-2" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#ff6b5b]" />
                   <span>{b}</span>
                 </li>
               ))}
