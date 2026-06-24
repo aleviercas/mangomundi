@@ -100,8 +100,29 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const chatFn = useServerFn(chatAboutRecommendation);
   const captureBusinessFn = useServerFn(captureBusinessLead);
   const { track } = useAnalytics();
-  
+
+  // Floating agent state: minimized by default on ALL devices. Only expands
+  // on explicit user click. Chat transcript + unread badge persist across
+  // navigation via localStorage so remounts don't reset or flicker.
+  const AGENT_STORAGE_KEY = "mm.agent.v1";
   const [aiCollapsed, setAiCollapsed] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Restore once on mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(AGENT_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; unread?: number };
+      if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
+      if (typeof parsed.unread === "number") setUnreadCount(parsed.unread);
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   const buildReasoning = (): string => {
     const urgencyLabel =
@@ -190,7 +211,10 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         });
       }
       setChat(initial);
-      setAiCollapsed(false);
+      // Do NOT auto-expand. The agent stays minimized until the user clicks
+      // it; we surface activity via the unread badge instead.
+      if (aiCollapsed) setUnreadCount((n) => n + initial.length);
+
       track("comparator_query", {
         amount,
         from_currency: from,
@@ -276,6 +300,26 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
+
+  // Persist chat + unread to survive remounts/navigation without flicker.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        AGENT_STORAGE_KEY,
+        JSON.stringify({ chat, unread: unreadCount }),
+      );
+    } catch {
+      /* ignore quota */
+    }
+  }, [chat, unreadCount]);
+
+  // Toggle handler: clears unread when the agent is opened.
+  const handleAgentToggle = (nextCollapsed: boolean) => {
+    setAiCollapsed(nextCollapsed);
+    if (!nextCollapsed) setUnreadCount(0);
+  };
+
 
   const openPreferredRate = (slug: string, url: string, name?: string) => {
     trackFn({
@@ -615,8 +659,9 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             because we only toggle visibility, not unmount. */}
         <FloatingAgent
           collapsed={aiCollapsed}
-          onToggle={(next) => setAiCollapsed(next)}
-          unreadCount={chat.length}
+          onToggle={handleAgentToggle}
+          unreadCount={unreadCount}
+
           lang={lang}
           t={t}
           aiLoading={aiLoading}
