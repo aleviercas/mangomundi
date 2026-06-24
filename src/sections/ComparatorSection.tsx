@@ -211,7 +211,10 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         });
       }
       setChat(initial);
-      setAiCollapsed(false);
+      // Do NOT auto-expand. The agent stays minimized until the user clicks
+      // it; we surface activity via the unread badge instead.
+      if (aiCollapsed) setUnreadCount((n) => n + initial.length);
+
       track("comparator_query", {
         amount,
         from_currency: from,
