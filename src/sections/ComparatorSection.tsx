@@ -100,8 +100,29 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const chatFn = useServerFn(chatAboutRecommendation);
   const captureBusinessFn = useServerFn(captureBusinessLead);
   const { track } = useAnalytics();
-  
+
+  // Floating agent state: minimized by default on ALL devices. Only expands
+  // on explicit user click. Chat transcript + unread badge persist across
+  // navigation via localStorage so remounts don't reset or flicker.
+  const AGENT_STORAGE_KEY = "mm.agent.v1";
   const [aiCollapsed, setAiCollapsed] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Restore once on mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(AGENT_STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; unread?: number };
+      if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
+      if (typeof parsed.unread === "number") setUnreadCount(parsed.unread);
+    } catch {
+      /* ignore */
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   const buildReasoning = (): string => {
     const urgencyLabel =
