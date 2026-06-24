@@ -1,3 +1,10 @@
+// Global ISO-3166-1 alpha-2 country dataset.
+// Sourced dynamically from `country-to-currency` (251 territories) plus
+// `Intl.DisplayNames` for localized names and Unicode regional-indicator
+// flag emoji. No hardcoded short-lists — the comparator and selectors
+// support every ISO country by default.
+import countryToCurrencyMap from "country-to-currency";
+
 export interface CountryInfo {
   code: string;
   name: string;
@@ -5,32 +12,42 @@ export interface CountryInfo {
   currency: string;
 }
 
-export const COUNTRIES: CountryInfo[] = [
-  { code: "ES", name: "España / Spain", flag: "🇪🇸", currency: "EUR" },
-  { code: "GB", name: "United Kingdom", flag: "🇬🇧", currency: "GBP" },
-  { code: "US", name: "United States", flag: "🇺🇸", currency: "USD" },
-  { code: "AR", name: "Argentina", flag: "🇦🇷", currency: "ARS" },
-  { code: "MX", name: "México", flag: "🇲🇽", currency: "MXN" },
-  { code: "BR", name: "Brasil", flag: "🇧🇷", currency: "BRL" },
-  { code: "CO", name: "Colombia", flag: "🇨🇴", currency: "COP" },
-  { code: "CL", name: "Chile", flag: "🇨🇱", currency: "CLP" },
-  { code: "PE", name: "Perú", flag: "🇵🇪", currency: "PEN" },
-  { code: "UY", name: "Uruguay", flag: "🇺🇾", currency: "UYU" },
-  { code: "PT", name: "Portugal", flag: "🇵🇹", currency: "EUR" },
-  { code: "FR", name: "France", flag: "🇫🇷", currency: "EUR" },
-  { code: "DE", name: "Deutschland", flag: "🇩🇪", currency: "EUR" },
-  { code: "IT", name: "Italia", flag: "🇮🇹", currency: "EUR" },
-  { code: "NL", name: "Nederland", flag: "🇳🇱", currency: "EUR" },
-  { code: "IE", name: "Ireland", flag: "🇮🇪", currency: "EUR" },
-  { code: "CH", name: "Schweiz", flag: "🇨🇭", currency: "CHF" },
-  { code: "CA", name: "Canada", flag: "🇨🇦", currency: "CAD" },
-  { code: "AU", name: "Australia", flag: "🇦🇺", currency: "AUD" },
-  { code: "AE", name: "UAE", flag: "🇦🇪", currency: "AED" },
-  { code: "IN", name: "India", flag: "🇮🇳", currency: "INR" },
-  { code: "PH", name: "Philippines", flag: "🇵🇭", currency: "PHP" },
-];
+const RAW: Record<string, string> = (countryToCurrencyMap as unknown as { default?: Record<string, string> }).default ?? (countryToCurrencyMap as unknown as Record<string, string>);
 
-export const COUNTRY_BY_CODE = Object.fromEntries(COUNTRIES.map((country) => [country.code, country]));
+function flagOf(code: string): string {
+  if (!/^[A-Z]{2}$/.test(code)) return "🏳️";
+  const A = 0x1f1e6;
+  return String.fromCodePoint(A + (code.charCodeAt(0) - 65), A + (code.charCodeAt(1) - 65));
+}
+
+let displayNames: Intl.DisplayNames | null = null;
+try {
+  displayNames = new Intl.DisplayNames(["en"], { type: "region" });
+} catch {
+  displayNames = null;
+}
+
+function nameOf(code: string): string {
+  try {
+    return displayNames?.of(code) ?? code;
+  } catch {
+    return code;
+  }
+}
+
+export const COUNTRIES: CountryInfo[] = Object.keys(RAW)
+  .filter((code) => /^[A-Z]{2}$/.test(code))
+  .map((code) => ({
+    code,
+    name: nameOf(code),
+    flag: flagOf(code),
+    currency: RAW[code],
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
+export const COUNTRY_BY_CODE: Record<string, CountryInfo> = Object.fromEntries(
+  COUNTRIES.map((country) => [country.code, country]),
+);
 
 export function localCurrency(countryCode: string): string {
   return COUNTRY_BY_CODE[countryCode]?.currency ?? "USD";
