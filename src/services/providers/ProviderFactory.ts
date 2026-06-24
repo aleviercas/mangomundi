@@ -2,52 +2,70 @@ import type { FxProvider, FxRatesPayload } from "./types";
 import { ALL_FX_PROVIDERS } from "./fxProviders";
 
 /**
- * ProviderFactory — transparent fallback for FX rate providers.
+ * ProviderFactory — coordinated round-robin + transparent fallback for FX
+ * providers.
  *
- * Iterates providers in priority order and returns the first successful
- * payload. Per-provider failures are logged but never bubble up unless every
- * provider fails. Caching lives one layer up in `fx.functions.ts` so the
- * factory stays stateless and easy to test.
+ * Each call to `refreshRates()` advances a rotating cursor so the next refresh
+ * starts on a different provider. This spreads quota consumption evenly across
+ * upstreams (Frankfurter → exchangeratesapi.io → fixer.io → ...) instead of
+ * exhausting a single one. If the chosen provider fails or is unavailable, the
+ * factory falls through to the next provider in priority order and so on.
+ *
+ * Caching lives one layer up in `fx.functions.ts`, so the factory only runs on
+ * an actual cache miss / TTL expiry — keeping per-provider request volume low.
  */
 export class ProviderFactory {
   private providers: FxProvider[];
-  /** Per-provider last-attempt timestamp, used to honor `refreshIntervalMs`. */
-  private lastAttempt = new Map<string, number>();
+  private cursor = 0;
+  /** Per-provider last-success timestamp, to honor `refreshIntervalMs`. */
+  private lastSuccess = new Map<string, number>();
 
   constructor(providers: FxProvider[] = ALL_FX_PROVIDERS) {
     this.providers = [...providers].sort((a, b) => a.priority - b.priority);
   }
 
   /**
-   * Refresh rates from the first healthy provider. Respects each provider's
-   * `refreshIntervalMs` to avoid hammering rate-limited upstreams.
+   * Refresh rates. Starts on the next provider in the rotation and walks the
+   * full list if needed. Honors each provider's `refreshIntervalMs` so we
+   * skip a provider that was just hit successfully.
    */
   async refreshRates(): Promise<FxRatesPayload> {
+    if (this.providers.length === 0) throw new Error("No FX providers configured");
     const errors: string[] = [];
     const now = Date.now();
+    const start = this.cursor % this.providers.length;
+    // Advance cursor for the next call BEFORE attempting, so even on success
+    // the next refresh visits a different provider first.
+    this.cursor = (this.cursor + 1) % this.providers.length;
 
-    for (const provider of this.providers) {
-      if (!provider.isAvailable()) {
-        errors.push(`${provider.key}: unavailable (missing env)`);
-        continue;
-      }
-      const last = this.lastAttempt.get(provider.key) ?? 0;
-      // If we tried recently and failed, skip to the next provider; full
-      // refresh-window enforcement happens at the cache layer.
-      if (now - last < 5_000 && last !== 0) {
-        // brief in-flight backoff to avoid request stampede
-      }
-      try {
-        this.lastAttempt.set(provider.key, now);
-        const payload = await provider.fetchRates();
-        if (!payload.rates || Object.keys(payload.rates).length === 0) {
-          throw new Error("empty rates payload");
+    // Two passes: first respect refreshIntervalMs (skip cooling-down providers);
+    // second pass ignores cooldown if every provider is cooling but we still
+    // need fresh data. Within each pass we walk the full list once.
+    for (const respectCooldown of [true, false]) {
+      for (let i = 0; i < this.providers.length; i++) {
+        const provider = this.providers[(start + i) % this.providers.length];
+        if (!provider.isAvailable()) {
+          if (respectCooldown) errors.push(`${provider.key}: unavailable (missing env)`);
+          continue;
         }
-        return payload;
-      } catch (err) {
-        const msg = err instanceof Error ? err.message : String(err);
-        console.warn(`[fx-provider] ${provider.key} failed:`, msg);
-        errors.push(`${provider.key}: ${msg}`);
+        if (respectCooldown) {
+          const last = this.lastSuccess.get(provider.key) ?? 0;
+          if (last !== 0 && now - last < provider.refreshIntervalMs) {
+            continue; // recently refreshed — give another provider a turn
+          }
+        }
+        try {
+          const payload = await provider.fetchRates();
+          if (!payload.rates || Object.keys(payload.rates).length === 0) {
+            throw new Error("empty rates payload");
+          }
+          this.lastSuccess.set(provider.key, Date.now());
+          return payload;
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : String(err);
+          console.warn(`[fx-provider] ${provider.key} failed:`, msg);
+          errors.push(`${provider.key}: ${msg}`);
+        }
       }
     }
 
@@ -59,5 +77,6 @@ export class ProviderFactory {
   }
 }
 
-// Singleton — reused across server-function invocations within a worker.
+// Singleton — reused across server-function invocations within a worker so the
+// round-robin cursor and per-provider cooldown state persist between calls.
 export const fxProviderFactory = new ProviderFactory();

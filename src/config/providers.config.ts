@@ -38,25 +38,41 @@ export interface AiProviderConfig {
 // and the first healthy provider that returns valid rates wins.
 export const FX_PROVIDERS: FxProviderConfig[] = [
   {
+    key: "frankfurter",
+    label: "Frankfurter (ECB, open-source)",
+    priority: 1,
+    // Free, no key. Safe to refresh hourly.
+    refreshIntervalMs: 60 * 60 * 1000,
+    healthCheckUrl: "https://api.frankfurter.dev/v1/latest",
+  },
+  {
+    key: "exchangeratesapi-io",
+    label: "exchangeratesapi.io",
+    priority: 2,
+    refreshIntervalMs: 60 * 60 * 1000,
+    healthCheckUrl: "http://api.exchangeratesapi.io/v1/latest",
+    requiresEnv: "EXCHANGERATESAPI_IO_KEY",
+  },
+  {
+    key: "fixer-io",
+    label: "Fixer.io",
+    priority: 3,
+    refreshIntervalMs: 60 * 60 * 1000,
+    healthCheckUrl: "http://data.fixer.io/api/latest",
+    requiresEnv: "FIXER_IO_KEY",
+  },
+  {
     key: "openexchangerates",
     label: "Open Exchange Rates",
-    priority: 1,
+    priority: 4,
     refreshIntervalMs: Number(process.env.RATES_REFRESH_INTERVAL_MS) || 6 * 60 * 60 * 1000,
     healthCheckUrl: "https://openexchangerates.org/api/usage.json",
     requiresEnv: "OPENEXCHANGE_APP_ID",
   },
   {
-    key: "frankfurter",
-    label: "Frankfurter (ECB)",
-    priority: 2,
-    // Frankfurter is free and rate-limit-friendly; refresh hourly.
-    refreshIntervalMs: 60 * 60 * 1000,
-    healthCheckUrl: "https://api.frankfurter.app/latest",
-  },
-  {
     key: "exchangerate-api",
     label: "ExchangeRate-API (open)",
-    priority: 3,
+    priority: 5,
     refreshIntervalMs: 60 * 60 * 1000,
     healthCheckUrl: "https://open.er-api.com/v6/latest/USD",
   },
