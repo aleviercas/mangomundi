@@ -659,8 +659,9 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             because we only toggle visibility, not unmount. */}
         <FloatingAgent
           collapsed={aiCollapsed}
-          onToggle={(next) => setAiCollapsed(next)}
-          unreadCount={chat.length}
+          onToggle={handleAgentToggle}
+          unreadCount={unreadCount}
+
           lang={lang}
           t={t}
           aiLoading={aiLoading}
