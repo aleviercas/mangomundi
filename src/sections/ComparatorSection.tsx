@@ -301,6 +301,26 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
 
+  // Persist chat + unread to survive remounts/navigation without flicker.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(
+        AGENT_STORAGE_KEY,
+        JSON.stringify({ chat, unread: unreadCount }),
+      );
+    } catch {
+      /* ignore quota */
+    }
+  }, [chat, unreadCount]);
+
+  // Toggle handler: clears unread when the agent is opened.
+  const handleAgentToggle = (nextCollapsed: boolean) => {
+    setAiCollapsed(nextCollapsed);
+    if (!nextCollapsed) setUnreadCount(0);
+  };
+
+
   const openPreferredRate = (slug: string, url: string, name?: string) => {
     trackFn({
       data: {
