@@ -34,6 +34,9 @@ import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/providers";
 import { captureBusinessLead } from "@/lib/agent.functions";
+import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
+import { MasterRateStore, type MasterRateMap, type MissingCorridorEntry } from "@/services/providers/MasterRateStore";
+import { AiCopilot, MissingCorridorCta, buildWizardContext, type WizardAction } from "@/components/AiCopilot";
 import { Button } from "@/components/ui/button";
 
 type Segment = "retail" | "business";
