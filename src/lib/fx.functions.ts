@@ -202,11 +202,22 @@ export const compareProviders = createServerFn({ method: "POST" })
       .in("segment", [data.segment, "both"]);
     if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
 
-    const { data: rates, base, fetchedAt } = await fetchRates();
-    const fromRate = data.from === base ? 1 : rates[data.from];
-    const toRate = data.to === base ? 1 : rates[data.to];
-    if (!fromRate || !toRate) throw new Error(`Currency not supported: ${data.from}/${data.to}`);
+    const { data: rates, base, fetchedAt, referenceCodes, source } = await fetchRates();
+    const fromUpper = data.from.toUpperCase();
+    const toUpper = data.to.toUpperCase();
+    const fromRate = fromUpper === base ? 1 : rates[fromUpper];
+    const toRate = toUpper === base ? 1 : rates[toUpper];
+    if (!fromRate || !toRate) {
+      // Crowdsourced discovery — log the missing corridor and surface a
+      // structured error the UI can detect to show "Request this route".
+      MasterRateStore.logMissing(fromUpper, toUpper);
+      const err = new Error(`MISSING_CORRIDOR:${fromUpper}-${toUpper}`);
+      (err as Error & { code?: string }).code = "MISSING_CORRIDOR";
+      throw err;
+    }
     const marketRate = toRate / fromRate;
+    const fromReference = fromUpper !== base && referenceCodes.has(fromUpper);
+    const toReference = toUpper !== base && referenceCodes.has(toUpper);
 
     const rows: ComparisonRow[] = (providers as Provider[]).map((p) => {
       const tier = resolveTier(p, data.amount);
@@ -228,6 +239,12 @@ export const compareProviders = createServerFn({ method: "POST" })
         featured: p.featured,
         notes: p.notes,
         affiliate_url: p.affiliate_url,
+        affiliate: {
+          url: p.affiliate_url,
+          network: null,
+          click_id_param: "click_id",
+          ready: Boolean(p.affiliate_url),
+        },
         rate,
         fee_total: fee,
         amount_sent: amountSent,
@@ -248,7 +265,6 @@ export const compareProviders = createServerFn({ method: "POST" })
         promo_text: p.promo_text ?? null,
       };
     });
-    // organic ranking: best received first; sponsored filtered out of organic block
     rows.sort((a, b) => b.received - a.received);
 
     return {
@@ -260,6 +276,10 @@ export const compareProviders = createServerFn({ method: "POST" })
       rows,
       fetched_at: new Date().toISOString(),
       rates_updated_at: fetchedAt,
+      is_reference: fromReference || toReference || source === "master-cache",
+      from_reference: fromReference,
+      to_reference: toReference,
+      rates_source: source,
     } satisfies ComparisonResult;
   });
 
