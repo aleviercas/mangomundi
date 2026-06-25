@@ -869,6 +869,8 @@ interface FloatingAgentProps {
   confirmBusinessLead: () => void;
   setBusinessStage: (s: BusinessStage) => void;
   setChat: React.Dispatch<React.SetStateAction<ChatMsg[]>>;
+  onWizardAction: (action: WizardAction) => void;
+  wizardContext: string;
 }
 
 function FloatingAgent(p: FloatingAgentProps) {
@@ -877,6 +879,7 @@ function FloatingAgent(p: FloatingAgentProps) {
     chatInput, setChatInput, sendChat, chatMutPending, chatBottomRef,
     openPreferredRate, handleSaveAlert, segment, businessStage,
     savingBusinessLead, confirmBusinessLead, setBusinessStage, setChat,
+    onWizardAction, wizardContext,
   } = p;
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
