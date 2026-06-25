@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { fxProviderFactory } from "@/services/providers/ProviderFactory";
+import { MasterRateStore } from "@/services/providers/MasterRateStore";
 import { callAiWithFailover } from "@/services/providers/aiOrchestrator";
 
 
