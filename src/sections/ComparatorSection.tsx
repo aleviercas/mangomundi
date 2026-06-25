@@ -102,6 +102,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const trackFn = useServerFn(trackAffiliateClick);
   const chatFn = useServerFn(chatAboutRecommendation);
   const captureBusinessFn = useServerFn(captureBusinessLead);
+  const getMasterFn = useServerFn(getMasterRateState);
+  const reportMissingFn = useServerFn(reportMissingCorridor);
   const { track } = useAnalytics();
 
   // Floating agent state: minimized by default on ALL devices. Only expands
@@ -111,18 +113,47 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const [aiCollapsed, setAiCollapsed] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // MasterRateMap / MissingCorridorsLog (client mirror). Hydrated from the
+  // server on mount and re-synced after each comparison so the AI Wizard
+  // always has up-to-date context.
+  const [masterMap, setMasterMap] = useState<MasterRateMap | null>(() => MasterRateStore.getMaster());
+  const [missingLog, setMissingLog] = useState<MissingCorridorEntry[]>(() => MasterRateStore.getMissing());
+  const [missingCorridor, setMissingCorridor] = useState<{ from: string; to: string } | null>(null);
+
   // Restore once on mount.
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const raw = window.localStorage.getItem(AGENT_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; unread?: number };
-      if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
-      if (typeof parsed.unread === "number") setUnreadCount(parsed.unread);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; unread?: number };
+        if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
+        if (typeof parsed.unread === "number") setUnreadCount(parsed.unread);
+      }
     } catch {
       /* ignore */
     }
+    // Subscribe to local master store changes (e.g. acknowledgements).
+    const unsub = MasterRateStore.subscribe(() => {
+      setMasterMap(MasterRateStore.getMaster());
+      setMissingLog(MasterRateStore.getMissing());
+    });
+    // Hydrate worker-side master state into local cache (additive merge).
+    getMasterFn()
+      .then((state) => {
+        MasterRateStore.hydrate(state.master);
+        // Server-side missing log entries seed the local log too.
+        for (const m of state.missing) {
+          const existing = MasterRateStore.getMissing().find(
+            (x) => x.from === m.from && x.to === m.to,
+          );
+          if (!existing) MasterRateStore.logMissing(m.from, m.to);
+        }
+      })
+      .catch(() => {/* offline / build-time — ignore */});
+    return () => {
+      unsub();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
