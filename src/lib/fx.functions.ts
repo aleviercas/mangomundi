@@ -50,6 +50,13 @@ export interface ComparisonRow {
   featured: boolean;
   notes: string | null;
   affiliate_url: string;
+  /** Structured affiliate metadata — ready for future dynamic link injection. */
+  affiliate: {
+    url: string;
+    network: string | null;
+    click_id_param: string;
+    ready: boolean;
+  };
   rate: number;
   fee_total: number;
   amount_sent: number;
@@ -58,8 +65,7 @@ export interface ComparisonRow {
   spread_applied: number;
   received: number;
   speed_hours: number;
-  // surfaced for Monito-style table
-  rate_vs_market_pct: number; // negative = worse than mid-market
+  rate_vs_market_pct: number;
   sponsored: boolean;
   sponsored_rank: number | null;
   trust_score: number | null;
@@ -80,6 +86,11 @@ export interface ComparisonResult {
   rows: ComparisonRow[];
   fetched_at: string;
   rates_updated_at: string;
+  /** True when either the source or quote rate was served from MasterRateMap cache. */
+  is_reference: boolean;
+  from_reference: boolean;
+  to_reference: boolean;
+  rates_source: string;
 }
 
 // ---------- Rates cache (per worker instance, 10 min) ----------
