@@ -1,5 +1,6 @@
 import type { FxProvider, FxRatesPayload } from "./types";
 import { ALL_FX_PROVIDERS } from "./fxProviders";
+import { MasterRateStore } from "./MasterRateStore";
 
 /**
  * ProviderFactory — coordinated round-robin + transparent fallback for FX
@@ -60,6 +61,15 @@ export class ProviderFactory {
             throw new Error("empty rates payload");
           }
           this.lastSuccess.set(provider.key, Date.now());
+          // UPSERT into the consolidated MasterRateMap. Additive — does not
+          // alter rotation, re-basing, or fallback above. Pairs missing from
+          // this payload are retained from previous fetches.
+          MasterRateStore.upsertRates({
+            base: payload.base,
+            rates: payload.rates,
+            source: payload.source,
+            fetchedAt: payload.fetchedAt,
+          });
           return payload;
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
@@ -74,6 +84,63 @@ export class ProviderFactory {
 
   listProviders(): Array<Pick<FxProvider, "key" | "label" | "priority">> {
     return this.providers.map(({ key, label, priority }) => ({ key, label, priority }));
+  }
+
+  /**
+   * Refresh and return rates merged with the MasterRateMap. Pairs absent
+   * from the live fetch are filled in with last-known prices from the master
+   * cache and flagged as `reference` so the UI can label them as non-live.
+   *
+   * If the live fetch fails entirely, falls back to the master snapshot.
+   */
+  async refreshAndMerge(): Promise<{
+    rates: Record<string, number>;
+    referenceCodes: Set<string>;
+    base: string;
+    fetchedAt: string;
+    source: string;
+  }> {
+    let payload: FxRatesPayload | null = null;
+    try {
+      payload = await this.refreshRates();
+    } catch (err) {
+      const master = MasterRateStore.getMaster();
+      if (Object.keys(master.rates).length === 0) throw err;
+      const rates: Record<string, number> = {};
+      const refs = new Set<string>();
+      for (const [code, e] of Object.entries(master.rates)) {
+        rates[code] = e.rate;
+        refs.add(code);
+      }
+      const newest = Object.values(master.rates).reduce(
+        (m, e) => Math.max(m, e.updatedAt),
+        0,
+      );
+      return {
+        rates,
+        referenceCodes: refs,
+        base: master.base,
+        fetchedAt: new Date(newest || Date.now()).toISOString(),
+        source: "master-cache",
+      };
+    }
+
+    const live = new Set(Object.keys(payload.rates).map((c) => c.toUpperCase()));
+    const merged: Record<string, number> = { ...payload.rates };
+    const refs = new Set<string>();
+    for (const [code, entry] of Object.entries(MasterRateStore.getMaster().rates)) {
+      if (!live.has(code)) {
+        merged[code] = entry.rate;
+        refs.add(code);
+      }
+    }
+    return {
+      rates: merged,
+      referenceCodes: refs,
+      base: payload.base,
+      fetchedAt: payload.fetchedAt,
+      source: payload.source,
+    };
   }
 }
 

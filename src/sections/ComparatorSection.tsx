@@ -34,6 +34,9 @@ import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/providers";
 import { captureBusinessLead } from "@/lib/agent.functions";
+import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
+import { MasterRateStore, type MasterRateMap, type MissingCorridorEntry } from "@/services/providers/MasterRateStore";
+import { AiCopilot, MissingCorridorCta, buildWizardContext, type WizardAction } from "@/components/AiCopilot";
 import { Button } from "@/components/ui/button";
 
 type Segment = "retail" | "business";
@@ -99,6 +102,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const trackFn = useServerFn(trackAffiliateClick);
   const chatFn = useServerFn(chatAboutRecommendation);
   const captureBusinessFn = useServerFn(captureBusinessLead);
+  const getMasterFn = useServerFn(getMasterRateState);
+  const reportMissingFn = useServerFn(reportMissingCorridor);
   const { track } = useAnalytics();
 
   // Floating agent state: minimized by default on ALL devices. Only expands
@@ -108,18 +113,47 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const [aiCollapsed, setAiCollapsed] = useState(true);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  // MasterRateMap / MissingCorridorsLog (client mirror). Hydrated from the
+  // server on mount and re-synced after each comparison so the AI Wizard
+  // always has up-to-date context.
+  const [masterMap, setMasterMap] = useState<MasterRateMap | null>(() => MasterRateStore.getMaster());
+  const [missingLog, setMissingLog] = useState<MissingCorridorEntry[]>(() => MasterRateStore.getMissing());
+  const [missingCorridor, setMissingCorridor] = useState<{ from: string; to: string } | null>(null);
+
   // Restore once on mount.
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
       const raw = window.localStorage.getItem(AGENT_STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; unread?: number };
-      if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
-      if (typeof parsed.unread === "number") setUnreadCount(parsed.unread);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; unread?: number };
+        if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
+        if (typeof parsed.unread === "number") setUnreadCount(parsed.unread);
+      }
     } catch {
       /* ignore */
     }
+    // Subscribe to local master store changes (e.g. acknowledgements).
+    const unsub = MasterRateStore.subscribe(() => {
+      setMasterMap(MasterRateStore.getMaster());
+      setMissingLog(MasterRateStore.getMissing());
+    });
+    // Hydrate worker-side master state into local cache (additive merge).
+    getMasterFn()
+      .then((state) => {
+        MasterRateStore.hydrate(state.master);
+        // Server-side missing log entries seed the local log too.
+        for (const m of state.missing) {
+          const existing = MasterRateStore.getMissing().find(
+            (x) => x.from === m.from && x.to === m.to,
+          );
+          if (!existing) MasterRateStore.logMissing(m.from, m.to);
+        }
+      })
+      .catch(() => {/* offline / build-time — ignore */});
+    return () => {
+      unsub();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -180,6 +214,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       setResult(null);
       setAiText("");
       setChat([]);
+      setMissingCorridor(null);
     },
     onSuccess: ({ data, requestId }) => {
       if (requestId !== requestRef.current) return;
@@ -187,15 +222,17 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       setSortBy("received");
       setAiText(buildReasoning());
       setAiLoading(false);
+      setMissingCorridor(null);
       const intro = proactiveMessage(data, "received");
       const initial: ChatMsg[] = [];
       // Results summary as first assistant bubble (per spec: results inside chat)
       const best = [...data.rows].sort((a, b) => b.received - a.received)[0];
       if (best) {
+        const referenceTag = data.is_reference ? " _(reference)_" : "";
         const summary =
           `Sending **${amount.toLocaleString()} ${from}** to **${to}** — ` +
           `best route delivers **${best.received.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${data.quote}** ` +
-          `via **${best.name}**.`;
+          `via **${best.name}**.${referenceTag}`;
         initial.push({ role: "assistant", content: summary });
       }
       if (segment === "business") {
@@ -224,8 +261,61 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         source: "home_comparator",
       });
     },
-    onError: () => setAiLoading(false),
+    onError: (err) => {
+      setAiLoading(false);
+      const msg = (err as Error)?.message ?? "";
+      const m = /MISSING_CORRIDOR:([A-Z]{3})-([A-Z]{3})/.exec(msg);
+      if (m) {
+        setMissingCorridor({ from: m[1], to: m[2] });
+        MasterRateStore.logMissing(m[1], m[2]);
+      }
+    },
   });
+
+  const requestMissingRoute = async (from: string, to: string) => {
+    MasterRateStore.logMissing(from, to);
+    try {
+      await reportMissingFn({ data: { from, to } });
+    } catch {
+      /* logged locally regardless */
+    }
+    MasterRateStore.acknowledgeMissing(from, to);
+    track("rfq_interaction", {
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      urgency,
+      source: "missing_corridor_request",
+    });
+  };
+
+  const handleWizardAction = (action: WizardAction) => {
+    if (action.id === "report") {
+      const note = `I have noted your interest in the ${from}-${to} route. It has been added to the discovery log; we will prioritize it as demand grows.`;
+      MasterRateStore.logMissing(from, to);
+      void reportMissingFn({ data: { from, to } }).catch(() => {});
+      setChat((c) => [
+        ...c,
+        { role: "user", content: `Report missing route ${from} → ${to}` },
+        { role: "assistant", content: note },
+      ]);
+      return;
+    }
+    if (!result) {
+      setChat((c) => [
+        ...c,
+        { role: "user", content: action.label },
+        {
+          role: "assistant",
+          content:
+            "Run a comparison first — I answer using the table data, not external sources.",
+        },
+      ]);
+      return;
+    }
+    void chatMut.mutate(action.prompt);
+  };
 
   const chatMut = useMutation({
     mutationFn: async (userMsg: string) => {
@@ -680,12 +770,31 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           confirmBusinessLead={confirmBusinessLead}
           setBusinessStage={setBusinessStage}
           setChat={setChat}
+          onWizardAction={handleWizardAction}
+          wizardContext={buildWizardContext(masterMap, missingLog)}
         />
 
+        {/* Missing corridor — crowdsourced discovery CTA. */}
+        {missingCorridor && (
+          <div className="mt-6">
+            <MissingCorridorCta
+              from={missingCorridor.from}
+              to={missingCorridor.to}
+              acknowledged={Boolean(
+                missingLog.find(
+                  (m) =>
+                    m.from === missingCorridor.from &&
+                    m.to === missingCorridor.to &&
+                    m.acknowledged,
+                ),
+              )}
+              onRequest={() => void requestMissingRoute(missingCorridor.from, missingCorridor.to)}
+            />
+          </div>
+        )}
 
-
-        {/* Errors */}
-        {compareMut.isError && (
+        {/* Errors (non-missing-corridor) */}
+        {compareMut.isError && !missingCorridor && (
           <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
             {(compareMut.error as Error)?.message ?? "Couldn't load rates."}
           </div>
@@ -760,6 +869,8 @@ interface FloatingAgentProps {
   confirmBusinessLead: () => void;
   setBusinessStage: (s: BusinessStage) => void;
   setChat: React.Dispatch<React.SetStateAction<ChatMsg[]>>;
+  onWizardAction: (action: WizardAction) => void;
+  wizardContext: string;
 }
 
 function FloatingAgent(p: FloatingAgentProps) {
@@ -768,6 +879,7 @@ function FloatingAgent(p: FloatingAgentProps) {
     chatInput, setChatInput, sendChat, chatMutPending, chatBottomRef,
     openPreferredRate, handleSaveAlert, segment, businessStage,
     savingBusinessLead, confirmBusinessLead, setBusinessStage, setChat,
+    onWizardAction, wizardContext,
   } = p;
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -848,24 +960,25 @@ function FloatingAgent(p: FloatingAgentProps) {
             )}
 
             {chat.length === 0 && !aiLoading && (
-              <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
-                <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
-              </div>
+              <>
+                <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                  <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
+                </div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Wizard — quick actions
+                </div>
+                <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+                {wizardContext && (
+                  <div className="rounded-md border border-dashed border-border bg-muted/30 px-2 py-1.5 text-[10px] leading-relaxed text-muted-foreground">
+                    <span className="font-semibold uppercase tracking-wider text-foreground/70">
+                      Context:
+                    </span>{" "}
+                    {wizardContext}
+                  </div>
+                )}
+              </>
             )}
 
-            {chat.length === 0 && result && (
-              <div className="flex flex-wrap gap-2">
-                {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
-                  <button
-                    key={q}
-                    onClick={() => sendChat(q)}
-                    className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            )}
 
             {chat.length > 0 && (
               <div className="space-y-2">
@@ -1081,22 +1194,32 @@ function ResultsBlock({
         </div>
       )}
 
-      {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible */}
+      {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible.
+          Shows a "Reference" badge when any rate came from MasterRateMap cache. */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-[11px] text-foreground">
         <div className="inline-flex items-center gap-1.5">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className={`absolute inline-flex h-full w-full rounded-full opacity-60 ${result.is_reference ? "bg-amber-500" : "animate-ping bg-emerald-500"}`} />
+            <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${result.is_reference ? "bg-amber-500" : "bg-emerald-500"}`} />
           </span>
-          <span className="font-semibold uppercase tracking-wider text-emerald-700">
-            {tLastUpdate}:
+          <span className={`font-semibold uppercase tracking-wider ${result.is_reference ? "text-amber-700" : "text-emerald-700"}`}>
+            {result.is_reference ? "Reference" : tLastUpdate}:
           </span>
           <span className="tabular-nums">{updatedTime}</span>
+          {result.is_reference && (
+            <span
+              className="ml-1 rounded-sm border border-amber-500/40 bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-800"
+              title="One or more rates were served from the MasterRateMap cache (last known value), not a live upstream quote."
+            >
+              Cached
+            </span>
+          )}
         </div>
         <span className="truncate text-muted-foreground">
           1 {result.base} = {result.market_rate.toFixed(6)} {result.quote} · {tMidmarket}
         </span>
       </div>
+
 
       <div className="mb-4 grid gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:grid-cols-3 sm:p-5">
         <div className="flex min-w-0 items-start gap-3">
