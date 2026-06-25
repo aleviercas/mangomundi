@@ -1,5 +1,6 @@
 import type { FxProvider, FxRatesPayload } from "./types";
 import { ALL_FX_PROVIDERS } from "./fxProviders";
+import { MasterRateStore } from "./MasterRateStore";
 
 /**
  * ProviderFactory — coordinated round-robin + transparent fallback for FX
