@@ -770,12 +770,31 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           confirmBusinessLead={confirmBusinessLead}
           setBusinessStage={setBusinessStage}
           setChat={setChat}
+          onWizardAction={handleWizardAction}
+          wizardContext={buildWizardContext(masterMap, missingLog)}
         />
 
+        {/* Missing corridor — crowdsourced discovery CTA. */}
+        {missingCorridor && (
+          <div className="mt-6">
+            <MissingCorridorCta
+              from={missingCorridor.from}
+              to={missingCorridor.to}
+              acknowledged={Boolean(
+                missingLog.find(
+                  (m) =>
+                    m.from === missingCorridor.from &&
+                    m.to === missingCorridor.to &&
+                    m.acknowledged,
+                ),
+              )}
+              onRequest={() => void requestMissingRoute(missingCorridor.from, missingCorridor.to)}
+            />
+          </div>
+        )}
 
-
-        {/* Errors */}
-        {compareMut.isError && (
+        {/* Errors (non-missing-corridor) */}
+        {compareMut.isError && !missingCorridor && (
           <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
             {(compareMut.error as Error)?.message ?? "Couldn't load rates."}
           </div>
