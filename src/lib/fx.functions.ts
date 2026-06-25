@@ -93,12 +93,14 @@ export interface ComparisonResult {
   rates_source: string;
 }
 
-// ---------- Rates cache (per worker instance, 10 min) ----------
+// ---------- Rates cache (per worker instance, with master fallback) ----------
 let ratesCache: {
   data: Record<string, number>;
+  referenceCodes: Set<string>;
   base: string;
   ts: number;
   fetchedAt: string;
+  source: string;
 } | null = null;
 // Configurable refresh interval (default 6h) to minimize third-party API
 // consumption and stay within free tier limits. Override per-deployment via
@@ -108,25 +110,42 @@ const RATES_TTL_MS = Number(process.env.RATES_REFRESH_INTERVAL_MS) || 6 * 60 * 6
 
 async function fetchRates(): Promise<{
   data: Record<string, number>;
+  referenceCodes: Set<string>;
   base: string;
   fetchedAt: string;
+  source: string;
 }> {
   // CACHE FIRST: serve from in-memory cache when fresh to minimize upstream
   // API calls and keep responses sub-second.
   if (ratesCache && Date.now() - ratesCache.ts < RATES_TTL_MS) {
-    return { data: ratesCache.data, base: ratesCache.base, fetchedAt: ratesCache.fetchedAt };
+    return {
+      data: ratesCache.data,
+      referenceCodes: ratesCache.referenceCodes,
+      base: ratesCache.base,
+      fetchedAt: ratesCache.fetchedAt,
+      source: ratesCache.source,
+    };
   }
-  // Cache miss / expired: refresh through the provider factory which iterates
-  // the configured providers (Open Exchange Rates → Frankfurter → ER-API) and
-  // returns the first healthy payload. Failures are silent fallbacks.
-  const payload = await fxProviderFactory.refreshRates();
+  // Cache miss / expired: refresh through the provider factory (round-robin
+  // across providers, transparent fallback) and merge with the MasterRateMap
+  // so any pair absent from the current upstream is retained from prior
+  // fetches and flagged as a `reference` (non-live) price.
+  const merged = await fxProviderFactory.refreshAndMerge();
   ratesCache = {
-    data: payload.rates,
-    base: payload.base,
+    data: merged.rates,
+    referenceCodes: merged.referenceCodes,
+    base: merged.base,
     ts: Date.now(),
-    fetchedAt: payload.fetchedAt,
+    fetchedAt: merged.fetchedAt,
+    source: merged.source,
   };
-  return { data: payload.rates, base: payload.base, fetchedAt: payload.fetchedAt };
+  return {
+    data: merged.rates,
+    referenceCodes: merged.referenceCodes,
+    base: merged.base,
+    fetchedAt: merged.fetchedAt,
+    source: merged.source,
+  };
 }
 
 
