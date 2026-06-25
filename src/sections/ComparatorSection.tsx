@@ -960,24 +960,25 @@ function FloatingAgent(p: FloatingAgentProps) {
             )}
 
             {chat.length === 0 && !aiLoading && (
-              <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
-                <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
-              </div>
+              <>
+                <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                  <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
+                </div>
+                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  Wizard — quick actions
+                </div>
+                <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+                {wizardContext && (
+                  <div className="rounded-md border border-dashed border-border bg-muted/30 px-2 py-1.5 text-[10px] leading-relaxed text-muted-foreground">
+                    <span className="font-semibold uppercase tracking-wider text-foreground/70">
+                      Context:
+                    </span>{" "}
+                    {wizardContext}
+                  </div>
+                )}
+              </>
             )}
 
-            {chat.length === 0 && result && (
-              <div className="flex flex-wrap gap-2">
-                {[t("fx.chat.cta1"), t("fx.chat.cta2"), t("fx.chat.cta3")].map((q) => (
-                  <button
-                    key={q}
-                    onClick={() => sendChat(q)}
-                    className="rounded-full border border-border bg-card px-3 py-1.5 text-xs text-foreground transition hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    {q}
-                  </button>
-                ))}
-              </div>
-            )}
 
             {chat.length > 0 && (
               <div className="space-y-2">
