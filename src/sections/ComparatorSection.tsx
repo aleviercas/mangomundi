@@ -1194,22 +1194,32 @@ function ResultsBlock({
         </div>
       )}
 
-      {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible */}
+      {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible.
+          Shows a "Reference" badge when any rate came from MasterRateMap cache. */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-[11px] text-foreground">
         <div className="inline-flex items-center gap-1.5">
           <span className="relative flex h-1.5 w-1.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className={`absolute inline-flex h-full w-full rounded-full opacity-60 ${result.is_reference ? "bg-amber-500" : "animate-ping bg-emerald-500"}`} />
+            <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${result.is_reference ? "bg-amber-500" : "bg-emerald-500"}`} />
           </span>
-          <span className="font-semibold uppercase tracking-wider text-emerald-700">
-            {tLastUpdate}:
+          <span className={`font-semibold uppercase tracking-wider ${result.is_reference ? "text-amber-700" : "text-emerald-700"}`}>
+            {result.is_reference ? "Reference" : tLastUpdate}:
           </span>
           <span className="tabular-nums">{updatedTime}</span>
+          {result.is_reference && (
+            <span
+              className="ml-1 rounded-sm border border-amber-500/40 bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-800"
+              title="One or more rates were served from the MasterRateMap cache (last known value), not a live upstream quote."
+            >
+              Cached
+            </span>
+          )}
         </div>
         <span className="truncate text-muted-foreground">
           1 {result.base} = {result.market_rate.toFixed(6)} {result.quote} · {tMidmarket}
         </span>
       </div>
+
 
       <div className="mb-4 grid gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:grid-cols-3 sm:p-5">
         <div className="flex min-w-0 items-start gap-3">
