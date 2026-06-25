@@ -61,6 +61,15 @@ export class ProviderFactory {
             throw new Error("empty rates payload");
           }
           this.lastSuccess.set(provider.key, Date.now());
+          // UPSERT into the consolidated MasterRateMap. Additive — does not
+          // alter rotation, re-basing, or fallback above. Pairs missing from
+          // this payload are retained from previous fetches.
+          MasterRateStore.upsertRates({
+            base: payload.base,
+            rates: payload.rates,
+            source: payload.source,
+            fetchedAt: payload.fetchedAt,
+          });
           return payload;
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
