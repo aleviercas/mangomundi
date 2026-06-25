@@ -214,6 +214,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       setResult(null);
       setAiText("");
       setChat([]);
+      setMissingCorridor(null);
     },
     onSuccess: ({ data, requestId }) => {
       if (requestId !== requestRef.current) return;
@@ -221,15 +222,17 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       setSortBy("received");
       setAiText(buildReasoning());
       setAiLoading(false);
+      setMissingCorridor(null);
       const intro = proactiveMessage(data, "received");
       const initial: ChatMsg[] = [];
       // Results summary as first assistant bubble (per spec: results inside chat)
       const best = [...data.rows].sort((a, b) => b.received - a.received)[0];
       if (best) {
+        const referenceTag = data.is_reference ? " _(reference)_" : "";
         const summary =
           `Sending **${amount.toLocaleString()} ${from}** to **${to}** — ` +
           `best route delivers **${best.received.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${data.quote}** ` +
-          `via **${best.name}**.`;
+          `via **${best.name}**.${referenceTag}`;
         initial.push({ role: "assistant", content: summary });
       }
       if (segment === "business") {
@@ -258,8 +261,61 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         source: "home_comparator",
       });
     },
-    onError: () => setAiLoading(false),
+    onError: (err) => {
+      setAiLoading(false);
+      const msg = (err as Error)?.message ?? "";
+      const m = /MISSING_CORRIDOR:([A-Z]{3})-([A-Z]{3})/.exec(msg);
+      if (m) {
+        setMissingCorridor({ from: m[1], to: m[2] });
+        MasterRateStore.logMissing(m[1], m[2]);
+      }
+    },
   });
+
+  const requestMissingRoute = async (from: string, to: string) => {
+    MasterRateStore.logMissing(from, to);
+    try {
+      await reportMissingFn({ data: { from, to } });
+    } catch {
+      /* logged locally regardless */
+    }
+    MasterRateStore.acknowledgeMissing(from, to);
+    track("rfq_interaction", {
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      urgency,
+      source: "missing_corridor_request",
+    });
+  };
+
+  const handleWizardAction = (action: WizardAction) => {
+    if (action.id === "report") {
+      const note = `I have noted your interest in the ${from}-${to} route. It has been added to the discovery log; we will prioritize it as demand grows.`;
+      MasterRateStore.logMissing(from, to);
+      void reportMissingFn({ data: { from, to } }).catch(() => {});
+      setChat((c) => [
+        ...c,
+        { role: "user", content: `Report missing route ${from} → ${to}` },
+        { role: "assistant", content: note },
+      ]);
+      return;
+    }
+    if (!result) {
+      setChat((c) => [
+        ...c,
+        { role: "user", content: action.label },
+        {
+          role: "assistant",
+          content:
+            "Run a comparison first — I answer using the table data, not external sources.",
+        },
+      ]);
+      return;
+    }
+    void chatMut.mutate(action.prompt);
+  };
 
   const chatMut = useMutation({
     mutationFn: async (userMsg: string) => {
