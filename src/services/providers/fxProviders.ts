@@ -30,8 +30,20 @@ function rebaseToUsd(
   return { rates: rebased, base: "USD" };
 }
 
-// ---------- Frankfurter (free, open-source, no key) ----------
+// ---------- Frankfurter v2 (free, open-source, no key) ----------
 const frankfurterConfig = cfg("frankfurter");
+
+/**
+ * Base URL for the Frankfurter v2 API. Defaults to the public endpoint but
+ * can be overridden (e.g. to a self-hosted Docker instance) via the
+ * `VITE_FRANKFURTER_URL` env var — read in a Worker-safe way.
+ */
+const FRANKFURTER_BASE: string =
+  (typeof import.meta !== "undefined" &&
+    (import.meta as unknown as { env?: Record<string, string | undefined> }).env
+      ?.VITE_FRANKFURTER_URL) ||
+  process.env.VITE_FRANKFURTER_URL ||
+  "https://api.frankfurter.dev/v2";
 
 export const frankfurterProvider: FxProvider = {
   key: frankfurterConfig.key,
@@ -40,22 +52,65 @@ export const frankfurterProvider: FxProvider = {
   refreshIntervalMs: frankfurterConfig.refreshIntervalMs,
   isAvailable: () => true,
   async fetchRates(): Promise<FxRatesPayload> {
-    // frankfurter.dev is the open-source successor to frankfurter.app.
-    const res = await fetch("https://api.frankfurter.dev/v1/latest?base=USD");
-    if (!res.ok) throw new Error(`frankfurter ${res.status}`);
+    // v2/rates with USD base — returns a full quote map.
+    const url = `${FRANKFURTER_BASE}/rates?base=USD`;
+    console.log("[fx-provider] frankfurter v2 GET", url);
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.warn("[fx-provider] frankfurter v2 failed", res.status, res.statusText);
+      throw new Error(`frankfurter ${res.status}`);
+    }
     const json = (await res.json()) as {
-      base: string;
-      date: string;
+      base?: string;
+      date?: string;
       rates: Record<string, number>;
     };
+    const base = json.base ?? "USD";
     return {
-      rates: { ...json.rates, [json.base]: 1 },
-      base: json.base,
-      fetchedAt: new Date(`${json.date}T00:00:00Z`).toISOString(),
+      rates: { ...json.rates, [base]: 1 },
+      base,
+      fetchedAt: json.date
+        ? new Date(`${json.date}T00:00:00Z`).toISOString()
+        : new Date().toISOString(),
       source: frankfurterConfig.key,
     };
   },
 };
+
+/**
+ * Fetch the canonical list of currency codes supported by Frankfurter v2.
+ * Used to validate user input before triggering a comparison call.
+ */
+export async function fetchFrankfurterCurrencies(): Promise<string[]> {
+  const url = `${FRANKFURTER_BASE}/currencies`;
+  console.log("[fx-provider] frankfurter v2 currencies", url);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`frankfurter currencies ${res.status}`);
+  const json = (await res.json()) as Record<string, string>;
+  return Object.keys(json).map((c) => c.toUpperCase());
+}
+
+/**
+ * Fetch a single conversion using `/v2/rate/{base}/{quote}`. Useful for
+ * one-off lookups outside the bulk comparator flow.
+ */
+export async function fetchFrankfurterRate(
+  base: string,
+  quote: string,
+): Promise<{ rate: number; date?: string } | null> {
+  const url = `${FRANKFURTER_BASE}/rate/${base.toUpperCase()}/${quote.toUpperCase()}`;
+  console.log("[fx-provider] frankfurter v2 rate", url);
+  const res = await fetch(url);
+  if (res.status === 404) {
+    console.warn("[fx-provider] frankfurter v2 rate missing", base, quote);
+    return null;
+  }
+  if (!res.ok) throw new Error(`frankfurter rate ${res.status}`);
+  const json = (await res.json()) as { rate?: number; date?: string };
+  if (typeof json.rate !== "number") return null;
+  return { rate: json.rate, date: json.date };
+}
+
 
 // ---------- exchangeratesapi.io (free tier: EUR base, HTTP) ----------
 const erApiIoConfig = cfg("exchangeratesapi-io");
