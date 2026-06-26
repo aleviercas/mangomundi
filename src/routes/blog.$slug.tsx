@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { getBlogPost } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
+import { SITE_URL } from "@/config/site";
 
 const postQuery = (slug: string, locale: string) =>
   queryOptions({
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params, context }) =>
     context.queryClient.ensureQueryData(postQuery(params.slug, "en")),
   head: ({ params, loaderData }) => {
-    const url = `https://mangomundi.lovable.app/blog/${params.slug}`;
+    const url = `${SITE_URL}/blog/${params.slug}`;
     const post = loaderData ?? null;
     const title = post?.title ? `${post.title} — Mangomundi` : `${params.slug} — Mangomundi`;
     const description = post?.excerpt
@@ -54,7 +55,7 @@ export const Route = createFileRoute("/blog/$slug")({
             name: "Mangomundi",
             logo: {
               "@type": "ImageObject",
-              url: "https://mangomundi.lovable.app/og-image.png",
+              url: `${SITE_URL}/og-image.png`,
             },
           },
           mainEntityOfPage: url,

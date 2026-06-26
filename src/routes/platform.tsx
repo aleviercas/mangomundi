@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Sparkles, Layers, Network, Bot, Building2, ShieldCheck, ArrowRight } from "lucide-react";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { SITE_URL } from "@/config/site";
 
 export const Route = createFileRoute("/platform")({
   head: () => {
@@ -11,9 +12,9 @@ export const Route = createFileRoute("/platform")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
-        { property: "og:url", content: "https://mangomundi.lovable.app/platform" },
+        { property: "og:url", content: `${SITE_URL}/platform` },
       ],
-      links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/platform" }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/platform` }],
     };
   },
   component: PlatformPage,

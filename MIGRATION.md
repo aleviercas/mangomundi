@@ -87,11 +87,23 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
   - Head meta SSR'd correctly (title/canonical/og present).
 - ⏳ AI/OpenRouter chat path is a POST server fn — verify in-browser in Phase 6.
 
-## Phase 5 — Domain & SEO cleanup ⬜
-- [ ] Replace `https://mangomundi.lovable.app` → prod domain / `SITE_URL` across 9 files
-- [ ] Point custom domain at Vercel
+## Phase 5 — Domain & SEO cleanup ✅
+- [x] Chosen production domain: **`https://mangomundi.com`** (no www).
+- [x] Centralized into a single source of truth: `src/config/site.ts` → `export const SITE_URL`. Change that one line if the domain ever changes.
+- [x] Replaced all `https://mangomundi.lovable.app` references with `SITE_URL` across 9 TS/TSX files (index, platform, pricing, features, insurance, compare, legal, blog.$slug, sitemap.xml). Hardcoded `mangomundi.com` in static `public/robots.txt`.
+- [x] Verified: zero `lovable.app` references in `src`/`public`; `bun --bun vite build` succeeds; `mangomundi.com` is baked into the build output and no `lovable.app` leaks into it.
 
 ## Phase 6 — Verify ⬜
 - [ ] `bun run build` locally with new config
 - [ ] `bun run e2e` + `bun run i18n:check`
 - [ ] Vercel preview: AI chat, FX quotes, lead forms, auth login, SSR, sitemap/robots
+
+## Phase 7 — Point mangomundi.com at Vercel ⬜
+- [ ] **(USER/owner)** Add the domain in Vercel: Project → Settings → Domains → add `mangomundi.com` (and optionally `www.mangomundi.com` → redirect to apex).
+- [ ] **(USER/owner)** Configure DNS at the registrar per Vercel's instructions:
+  - Apex `mangomundi.com` → Vercel A record `76.76.21.21` (or the ALIAS/ANAME Vercel shows).
+  - `www` → CNAME `cname.vercel-dns.com`.
+- [ ] Wait for DNS propagation + Vercel-issued TLS cert (automatic).
+- [ ] Set `mangomundi.com` as the **Production domain** in Vercel so canonical URLs match what's served.
+- [ ] Verify: `https://mangomundi.com/` serves the app (200, SSR), `/sitemap.xml` + `/robots.txt` resolve, and canonical/og tags now match the live host.
+- Note: the code already points SEO/canonical at `mangomundi.com` (Phase 5), so once DNS resolves everything is self-consistent. No redeploy needed for DNS — but a redeploy *is* needed if `SITE_URL` ever changes.

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://mangomundi.lovable.app/sitemap.xml
+Sitemap: https://mangomundi.com/sitemap.xml

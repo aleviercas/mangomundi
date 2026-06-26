@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { ComparatorSection } from "@/sections/ComparatorSection";
+import { SITE_URL } from "@/config/site";
 
 const compareSearchSchema = z.object({
   origin: z.string().length(2).default("GB"),
@@ -28,9 +29,9 @@ export const Route = createFileRoute("/compare")({
         content:
           "Live mid-market rates and total-cost rankings across 30+ FX providers, with neutral AI recommendations.",
       },
-      { property: "og:url", content: "https://mangomundi.lovable.app/compare" },
+      { property: "og:url", content: `${SITE_URL}/compare` },
     ],
-    links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/compare" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/compare` }],
   }),
   component: ComparePage,
 });

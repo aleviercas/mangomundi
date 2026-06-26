@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BarChart3, Brain, Wallet, Code, ShieldCheck, Headphones, Clock, FileText } from "lucide-react";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { SITE_URL } from "@/config/site";
 
 export const Route = createFileRoute("/features")({
   head: () => {
@@ -11,9 +12,9 @@ export const Route = createFileRoute("/features")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
-        { property: "og:url", content: "https://mangomundi.lovable.app/features" },
+        { property: "og:url", content: `${SITE_URL}/features` },
       ],
-      links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/features" }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/features` }],
     };
   },
   component: FeaturesPage,

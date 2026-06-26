@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { SITE_URL } from "@/config/site";
 
 export const Route = createFileRoute("/pricing")({
   head: () => {
@@ -11,9 +12,9 @@ export const Route = createFileRoute("/pricing")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
-        { property: "og:url", content: "https://mangomundi.lovable.app/pricing" },
+        { property: "og:url", content: `${SITE_URL}/pricing` },
       ],
-      links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/pricing" }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/pricing` }],
     };
   },
   component: PricingPage,

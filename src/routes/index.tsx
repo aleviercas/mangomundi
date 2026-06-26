@@ -5,6 +5,7 @@ import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { StatsSection } from "@/sections/StatsSection";
 import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
+import { SITE_URL } from "@/config/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,9 +22,9 @@ export const Route = createFileRoute("/")({
         content:
           "Compare 50+ FX providers in real time. Transparent rates, fees, and delivery speed for every corridor.",
       },
-      { property: "og:url", content: "https://mangomundi.lovable.app/" },
+      { property: "og:url", content: `${SITE_URL}/` },
     ],
-    links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/" }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
     scripts: [
       {
         type: "application/ld+json",
@@ -31,8 +32,8 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Mangomundi",
-          url: "https://mangomundi.lovable.app/",
-          logo: "https://mangomundi.lovable.app/og-image.png",
+          url: `${SITE_URL}/`,
+          logo: `${SITE_URL}/og-image.png`,
           sameAs: [],
           description:
             "Neutral AI decision engine for cross-border payments and currency exchange.",
@@ -44,10 +45,10 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Mangomundi",
-          url: "https://mangomundi.lovable.app/",
+          url: `${SITE_URL}/`,
           potentialAction: {
             "@type": "SearchAction",
-            target: "https://mangomundi.lovable.app/compare?from={search_term_string}",
+            target: `${SITE_URL}/compare?from={search_term_string}`,
             "query-input": "required name=search_term_string",
           },
         }),

@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Shield, Sparkles, ArrowRight, Construction } from "lucide-react";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { SITE_URL } from "@/config/site";
 
 export const Route = createFileRoute("/insurance")({
   head: () => {
@@ -11,9 +12,9 @@ export const Route = createFileRoute("/insurance")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
-        { property: "og:url", content: "https://mangomundi.lovable.app/insurance" },
+        { property: "og:url", content: `${SITE_URL}/insurance` },
       ],
-      links: [{ rel: "canonical", href: "https://mangomundi.lovable.app/insurance" }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/insurance` }],
     };
   },
   component: InsurancePage,
