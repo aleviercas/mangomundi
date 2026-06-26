@@ -49,7 +49,7 @@ const LANG_NAMES: Record<string, string> = {
 };
 
 const GATEWAY_URL = "https://openrouter.ai/api/v1/chat/completions";
-const MODEL = "google/gemini-3-flash-preview";
+const MODEL = "openai/gpt-oss-120b:free";
 const BATCH_SIZE = 40;
 const FORCE_KEYS = new Set([
   "hero.headline",

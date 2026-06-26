@@ -233,7 +233,7 @@ async function callLovableAI(
       "X-Title": "mangomundi",
     },
     body: JSON.stringify({
-      model: "google/gemini-3-flash-preview",
+      model: "openai/gpt-oss-120b:free",
       messages: [{ role: "system", content: SYSTEM_PROMPTS[locale] }, ...messages],
     }),
   });

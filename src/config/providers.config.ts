@@ -80,29 +80,32 @@ export const FX_PROVIDERS: FxProviderConfig[] = [
 
 // ---------- AI providers (smart load balancer) ----------
 // Calls run through the OpenRouter gateway; we vary the underlying model to
-// achieve provider diversity (Gemini → GPT fallback). The agent NEVER asks the
-// user to pick — selection is fully transparent.
-// NOTE: model slugs must exist in OpenRouter's catalog (https://openrouter.ai/models).
-// Verify each `model` below against the live catalog; adjust if any returns 404.
+// achieve provider diversity. The agent NEVER asks the user to pick — selection
+// is fully transparent.
+// Currently using OpenRouter ":free" models (no credit charge, but rate-limited
+// to ~50 req/day per account until $10+ credits are purchased, then ~1000/day,
+// and prompts may be logged for training). To upgrade to paid models, swap these
+// slugs for e.g. google/gemini-2.5-flash, openai/gpt-5-mini, or
+// anthropic/claude-haiku-4-5 (verify against https://openrouter.ai/models).
 export const AI_PROVIDERS: AiProviderConfig[] = [
   {
-    key: "gemini-3-flash",
-    label: "Gemini 3 Flash (primary)",
-    model: "google/gemini-3-flash-preview",
+    key: "gpt-oss-120b",
+    label: "GPT-OSS 120B (primary, free)",
+    model: "openai/gpt-oss-120b:free",
     priority: 1,
-    timeoutMs: 25_000,
+    timeoutMs: 30_000,
   },
   {
-    key: "gemini-2.5-flash",
-    label: "Gemini 2.5 Flash (fallback)",
-    model: "google/gemini-2.5-flash",
+    key: "nemotron-super-120b",
+    label: "Nemotron 3 Super 120B (fallback, free)",
+    model: "nvidia/nemotron-3-super-120b-a12b:free",
     priority: 2,
-    timeoutMs: 25_000,
+    timeoutMs: 30_000,
   },
   {
-    key: "gpt-5-mini",
-    label: "GPT-5 mini (last resort)",
-    model: "openai/gpt-5-mini",
+    key: "gpt-oss-20b",
+    label: "GPT-OSS 20B (last resort, free)",
+    model: "openai/gpt-oss-20b:free",
     priority: 3,
     timeoutMs: 30_000,
   },

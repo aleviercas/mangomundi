@@ -47,9 +47,14 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
 - [x] Added `X-Title: mangomundi` header on all calls (OpenRouter attribution; optional)
 - [x] Updated `ENV_PLACEHOLDERS`/doc comments in `providers.config.ts`, translate.ts header, and `.env.example` (`OPENROUTER_API_KEY`)
 - [x] Verified: zero `LOVABLE_API_KEY` / `ai.gateway.lovable` references remain in `src`/`scripts`
-- ⚠️ **TODO before go-live:** add real `OPENROUTER_API_KEY` to local `.env` and Vercel. App still needs the key to work.
-- ⚠️ **Model slugs:** `providers.config.ts` uses `google/gemini-3-flash-preview`, `google/gemini-2.5-flash`, `openai/gpt-5-mini`; `agent.functions.ts` + `translate.ts` hardcode `google/gemini-3-flash-preview`. OpenRouter uses the same `provider/model` convention, but **each slug must be confirmed against https://openrouter.ai/models** — the orchestrator path fails over if one 404s, but the single-model chat/translate paths do not. Test once the key is added.
-- Note: OpenRouter is OpenAI-compatible, so the `{choices:[{message:{content}}]}` parsing and 402/429 handling are unchanged.
+- [x] `OPENROUTER_API_KEY` added to local `.env` (gitignored). Key verified live; `is_free_tier: true`, $0 credits.
+- [x] **Switched to free (`:free`) models** to avoid charges (rate-limited ~50 req/day per account until $10+ credits, then ~1000/day; prompts may be logged). Smoke-tested all candidates against the live API:
+  - ✅ `openai/gpt-oss-120b:free` — reliable, clean output, good multilingual (ES/PT/EN). **Primary** for the failover chain AND both single-model paths (chat agent, translate script).
+  - Fallbacks: `nvidia/nemotron-3-super-120b-a12b:free` (works but leaks reasoning text — last-resort only), `openai/gpt-oss-20b:free`.
+  - ❌ Rejected: `qwen/qwen3-next-80b-a3b-instruct:free` and `meta-llama/llama-3.3-70b-instruct:free` — free endpoints consistently returned "Provider returned error".
+- Note: free-tier rate limits are **account-wide**, so the failover chain mainly guards transient provider errors, not quota. Upgrade path to paid models (e.g. `anthropic/claude-haiku-4-5`) documented in `providers.config.ts`.
+- Note: OpenRouter is OpenAI-compatible, so `{choices:[{message:{content}}]}` parsing and 402/429 handling are unchanged.
+- ⚠️ **TODO:** rotate this OpenRouter key before go-live (it passed through chat); add the production key to Vercel in Phase 4.
 
 ## Phase 3 — Build & hosting: Cloudflare → Vercel SSR ⬜
 - [ ] Replace `@lovable.dev/vite-tanstack-config` with hand-rolled `vite.config.ts` (tanstackStart w/ Nitro **vercel** preset, react, tailwind, tsconfig-paths)
