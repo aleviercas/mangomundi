@@ -10,7 +10,7 @@
  * Run:  bun run scripts/translate.ts            # all target languages
  *       bun run scripts/translate.ts es fr ja   # specific languages
  *
- * Requires the LOVABLE_API_KEY env var (auto-provisioned in Lovable projects).
+ * Requires the OPENROUTER_API_KEY env var (https://openrouter.ai/keys).
  */
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -48,7 +48,7 @@ const LANG_NAMES: Record<string, string> = {
   th: "Thai",
 };
 
-const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const GATEWAY_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "google/gemini-3-flash-preview";
 const BATCH_SIZE = 40;
 const FORCE_KEYS = new Set([
@@ -116,8 +116,8 @@ async function translateBatch(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Lovable-API-Key": apiKey,
-      "X-Lovable-AIG-SDK": "vercel-ai-sdk",
+      Authorization: `Bearer ${apiKey}`,
+      "X-Title": "mangomundi",
     },
     body: JSON.stringify({
       model: MODEL,
@@ -189,9 +189,9 @@ async function translateLang(
 }
 
 async function main() {
-  const apiKey = process.env.LOVABLE_API_KEY;
+  const apiKey = process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
-    console.error("Missing LOVABLE_API_KEY env var.");
+    console.error("Missing OPENROUTER_API_KEY env var.");
     process.exit(1);
   }
   const requested = process.argv.slice(2);

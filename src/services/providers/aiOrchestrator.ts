@@ -27,11 +27,12 @@ export async function callAiWithFailover(opts: CallOpts): Promise<AiCallResult> 
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), provider.timeoutMs);
     try {
-      const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${opts.apiKey}`,
           "Content-Type": "application/json",
+          "X-Title": "mangomundi",
         },
         body: JSON.stringify({ model: provider.model, messages: opts.messages }),
         signal: controller.signal,

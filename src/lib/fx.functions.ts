@@ -361,7 +361,7 @@ const LANG_INSTR: Record<string, string> = {
 export const aiRecommend = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => aiSchema.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
       return { text: "AI insight unavailable: missing API key.", error: true };
     }
@@ -454,7 +454,7 @@ function langInstrAll(code: string): string {
 export const chatAboutRecommendation = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => chatSchema.parse(input))
   .handler(async ({ data }) => {
-    const apiKey = process.env.LOVABLE_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) return { text: "Chat unavailable: missing API key.", error: true };
 
     // Sanitize untrusted text: strip control chars and our delimiter tokens to

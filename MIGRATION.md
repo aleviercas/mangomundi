@@ -38,15 +38,18 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
 - ⚠️ TODO (security): rotate DB password + service-role key after migration — they passed through chat. Low risk on empty project.
 - Supabase CLI installed as standalone binary at `…/scratchpad/supabase` (brew build failed on outdated Xcode)
 
-## Phase 2 — AI: Lovable Gateway → OpenRouter ⬜
-- [ ] Swap URL + key (`LOVABLE_API_KEY`→`OPENROUTER_API_KEY`) in:
-  - `src/services/providers/aiOrchestrator.ts:30`
-  - `src/lib/agent.functions.ts:220,228`
-  - `src/lib/fx.functions.ts:364,457`
-  - `scripts/translate.ts:51,192`
-- [ ] Verify model slugs in `src/config/providers.config.ts` against OpenRouter catalog
-- [ ] Add OpenRouter `HTTP-Referer`/`X-Title` headers (optional)
-- [ ] Update `ENV_PLACEHOLDERS` doc + `.env.example`
+## Phase 2 — AI: Lovable Gateway → OpenRouter ✅
+- [x] Swapped gateway URL → `https://openrouter.ai/api/v1/chat/completions` and key `LOVABLE_API_KEY`→`OPENROUTER_API_KEY` in:
+  - `src/services/providers/aiOrchestrator.ts` (orchestrator failover path)
+  - `src/lib/agent.functions.ts` (chat agent)
+  - `src/lib/fx.functions.ts` (×2 — aiRecommend + chatAboutRecommendation)
+  - `scripts/translate.ts` (also replaced Lovable-specific `Lovable-API-Key`/`X-Lovable-AIG-SDK` headers with `Authorization: Bearer`)
+- [x] Added `X-Title: mangomundi` header on all calls (OpenRouter attribution; optional)
+- [x] Updated `ENV_PLACEHOLDERS`/doc comments in `providers.config.ts`, translate.ts header, and `.env.example` (`OPENROUTER_API_KEY`)
+- [x] Verified: zero `LOVABLE_API_KEY` / `ai.gateway.lovable` references remain in `src`/`scripts`
+- ⚠️ **TODO before go-live:** add real `OPENROUTER_API_KEY` to local `.env` and Vercel. App still needs the key to work.
+- ⚠️ **Model slugs:** `providers.config.ts` uses `google/gemini-3-flash-preview`, `google/gemini-2.5-flash`, `openai/gpt-5-mini`; `agent.functions.ts` + `translate.ts` hardcode `google/gemini-3-flash-preview`. OpenRouter uses the same `provider/model` convention, but **each slug must be confirmed against https://openrouter.ai/models** — the orchestrator path fails over if one 404s, but the single-model chat/translate paths do not. Test once the key is added.
+- Note: OpenRouter is OpenAI-compatible, so the `{choices:[{message:{content}}]}` parsing and 402/429 handling are unchanged.
 
 ## Phase 3 — Build & hosting: Cloudflare → Vercel SSR ⬜
 - [ ] Replace `@lovable.dev/vite-tanstack-config` with hand-rolled `vite.config.ts` (tanstackStart w/ Nitro **vercel** preset, react, tailwind, tsconfig-paths)

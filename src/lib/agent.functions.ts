@@ -217,7 +217,7 @@ async function callLovableAI(
   messages: { role: string; content: string }[],
   locale: Locale,
 ): Promise<string> {
-  const key = process.env.LOVABLE_API_KEY;
+  const key = process.env.OPENROUTER_API_KEY;
   if (!key) {
     return locale === "es"
       ? "El motor IA no está configurado."
@@ -225,9 +225,13 @@ async function callLovableAI(
         ? "O motor de IA não está configurado."
         : "The AI engine is not configured.";
   }
-  const res = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
-    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": "application/json",
+      "X-Title": "mangomundi",
+    },
     body: JSON.stringify({
       model: "google/gemini-3-flash-preview",
       messages: [{ role: "system", content: SYSTEM_PROMPTS[locale] }, ...messages],

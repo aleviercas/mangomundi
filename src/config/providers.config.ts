@@ -79,9 +79,11 @@ export const FX_PROVIDERS: FxProviderConfig[] = [
 ];
 
 // ---------- AI providers (smart load balancer) ----------
-// Calls run through the Lovable AI gateway; we vary the underlying model to
+// Calls run through the OpenRouter gateway; we vary the underlying model to
 // achieve provider diversity (Gemini → GPT fallback). The agent NEVER asks the
 // user to pick — selection is fully transparent.
+// NOTE: model slugs must exist in OpenRouter's catalog (https://openrouter.ai/models).
+// Verify each `model` below against the live catalog; adjust if any returns 404.
 export const AI_PROVIDERS: AiProviderConfig[] = [
   {
     key: "gemini-3-flash",
@@ -117,7 +119,7 @@ export const AI_PROVIDERS: AiProviderConfig[] = [
  *   VITE_AI_API_KEY_SECONDARY    – optional override for secondary AI provider
  *
  * Server-only:
- *   OPENEXCHANGE_APP_ID, LOVABLE_API_KEY, RATES_REFRESH_INTERVAL_MS
+ *   OPENEXCHANGE_APP_ID, OPENROUTER_API_KEY, RATES_REFRESH_INTERVAL_MS
  */
 export const ENV_PLACEHOLDERS = [
   "VITE_FX_API_KEY_1",
