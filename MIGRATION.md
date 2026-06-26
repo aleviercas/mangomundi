@@ -71,7 +71,7 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
 - ⚠️ **Vercel project settings (Phase 4):** Node **22.x**, install `bun install`, build `bun run build`. The old local Node (20.11) hits Vite/Nitro version requirements — Vercel's 22.x avoids this. (Optional: install `dotenv` if ever building on Node < 20.12.)
 - Note: generated artifacts (`src/routeTree.gen.ts`, `i18n-errors.*`) regenerate on every build and were reverted to keep the commit focused.
 
-## Phase 4 — Vercel project & env vars 🔄
+## Phase 4 — Vercel project & env vars ✅
 - [x] Updated the "Connect Supabase in Lovable Cloud" env-var error strings → point at `.env`/Vercel, across `client.ts`, `client.server.ts`, `auth-middleware.ts`.
 - [x] Cleaned remaining stale Lovable mentions: `auth-attacher.ts` header, `providers.config.ts` secrets note + gateway comment, renamed `callLovableAI`→`callOpenRouterAI`. **Codebase now has zero inaccurate Lovable references** (only historical "was Lovable-generated" notes + Phase-5 SEO URLs remain).
 - [ ] **(USER)** Import the GitHub repo into Vercel; project settings: **Node 22.x**, Framework Preset **Other**, Install `bun install`, Build `bun run build`, Output dir default (Nitro emits `.vercel/output`).
@@ -80,6 +80,12 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
   - `VITE_SUPABASE_URL`, `VITE_SUPABASE_PROJECT_ID`, `VITE_SUPABASE_PUBLISHABLE_KEY`
   - `OPENROUTER_API_KEY`
   - (optional FX keys only if used: `OPENEXCHANGE_APP_ID`, `FIXER_IO_KEY`, …)
+- [x] Pinned build settings in-repo (`engines.node` 22.x + `vercel.json` with `bun install`/`bun run build`/`framework: null`) so dashboard build-settings access isn't required.
+- [x] **Deploy is GREEN** at `https://mangomundi.vercel.app`. Production smoke test passed:
+  - SSR: `/`, `/pricing`, `/platform` → 200 with real rendered HTML; `/sitemap.xml`, `/robots.txt` server routes → 200; `/compare`, `/blog` → app redirects → 200.
+  - Supabase: DB-context route `/compare` renders without the branded error page → new Supabase env wired correctly in prod (the lazy client Proxy would throw otherwise).
+  - Head meta SSR'd correctly (title/canonical/og present).
+- ⏳ AI/OpenRouter chat path is a POST server fn — verify in-browser in Phase 6.
 
 ## Phase 5 — Domain & SEO cleanup ⬜
 - [ ] Replace `https://mangomundi.lovable.app` → prod domain / `SITE_URL` across 9 files
