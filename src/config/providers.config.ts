@@ -25,7 +25,7 @@ export interface FxProviderConfig {
 export interface AiProviderConfig {
   key: string;
   label: string;
-  /** Model identifier passed to the Lovable AI gateway. */
+  /** Model identifier passed to the OpenRouter gateway. */
   model: string;
   /** Lower number = tried first by the smart load balancer. */
   priority: number;

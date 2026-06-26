@@ -213,7 +213,7 @@ const SYSTEM_PROMPTS: Record<Locale, string> = {
   pt: "Você é o Agente mangomundi. Responda SEMPRE em português, sem misturar idiomas. Tom executivo e conciso. Ajuda a comparar provedores FX neutros (Wise, Revolut, Western Union, Xoom, etc.), explicar spreads, taxas e corredores retail/B2B. Se pedirem uma cotação, oriente a digitar 'valor FROM to TO' (ex: '500 GBP to ARS'). Nunca invente taxas ao vivo — trabalha com as carregadas na plataforma.",
 };
 
-async function callLovableAI(
+async function callOpenRouterAI(
   messages: { role: string; content: string }[],
   locale: Locale,
 ): Promise<string> {
@@ -349,7 +349,7 @@ export const chatTurn = createServerFn({ method: "POST" })
       const cleaned = (history || [])
         .filter((m) => m.role === "user" || m.role === "assistant")
         .map((m) => ({ role: m.role, content: sanitize(m.content ?? "") }));
-      reply = await callLovableAI(cleaned, locale);
+      reply = await callOpenRouterAI(cleaned, locale);
     }
 
     await supabaseAdmin.from("chat_messages").insert({
