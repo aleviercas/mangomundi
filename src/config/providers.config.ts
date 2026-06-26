@@ -6,7 +6,7 @@
  * server boundaries (createServerFn handlers / server routes).
  *
  * Client-exposed VITE_ placeholders are documented at the bottom; the actual
- * key material lives in `.env` and Lovable Cloud secrets.
+ * key material lives in `.env` (local) and the Vercel project env vars (production).
  */
 
 export interface FxProviderConfig {
