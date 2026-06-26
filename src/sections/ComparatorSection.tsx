@@ -365,25 +365,30 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   }, [sortBy, result]);
 
   // Keep form state shareable, but only compare after the explicit CTA.
+  // Debounced 300ms so rapid input changes (e.g. typing the amount) don't
+  // hammer the router or trigger redundant state resets.
   useEffect(() => {
     setValidationError(null);
     if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) return;
-    setResult(null);
-    setAiText("");
-    setChat([]);
-    void navigate({
-      search: {
-        origin: sendingCountry,
-        destination: receivingCountry,
-        segment,
-        from,
-        to,
-        amount,
-        lang,
-      },
-      replace: true,
-      resetScroll: false,
-    });
+    const handle = setTimeout(() => {
+      setResult(null);
+      setAiText("");
+      setChat([]);
+      void navigate({
+        search: {
+          origin: sendingCountry,
+          destination: receivingCountry,
+          segment,
+          from,
+          to,
+          amount,
+          lang,
+        },
+        replace: true,
+        resetScroll: false,
+      });
+    }, 300);
+    return () => clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, from, to, segment, sendingCountry, receivingCountry]);
 
@@ -1218,6 +1223,11 @@ function ResultsBlock({
         <span className="truncate text-muted-foreground">
           1 {result.base} = {result.market_rate.toFixed(6)} {result.quote} · {tMidmarket}
         </span>
+        {result.is_reference && (
+          <p className="w-full text-[10px] leading-snug text-amber-800">
+            Rates are last known/cached, not live.
+          </p>
+        )}
       </div>
 
 
