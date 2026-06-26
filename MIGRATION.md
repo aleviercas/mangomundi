@@ -56,12 +56,20 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
 - Note: OpenRouter is OpenAI-compatible, so `{choices:[{message:{content}}]}` parsing and 402/429 handling are unchanged.
 - ⚠️ **TODO:** rotate this OpenRouter key before go-live (it passed through chat); add the production key to Vercel in Phase 4.
 
-## Phase 3 — Build & hosting: Cloudflare → Vercel SSR ⬜
-- [ ] Replace `@lovable.dev/vite-tanstack-config` with hand-rolled `vite.config.ts` (tanstackStart w/ Nitro **vercel** preset, react, tailwind, tsconfig-paths)
-- [ ] Remove Cloudflare: delete `wrangler.jsonc`, drop `@cloudflare/vite-plugin`, rework `src/server.ts` error wrapper for Nitro/Vercel
-- [ ] Replace `vercel.json` with TanStack Start Vercel output config
-- [ ] Remove Lovable entry in `bunfig.toml`; delete `.lovable/` and `.fallow/`
-- [ ] Confirm Bun-package-manager + Node-runtime on Vercel; set build cmd
+## Phase 3 — Build & hosting: Cloudflare → Vercel SSR ✅
+- [x] Replaced `@lovable.dev/vite-tanstack-config` with a hand-rolled `vite.config.ts` wiring the underlying plugins directly: `tailwindcss`, `tsConfigPaths`, `tanstackStart` (importProtection + `server.entry: "server"`), `nitro` (build-only), `viteReact`. Replicated VITE_* env `define` injection, `@`→`src` alias, React/Query dedupe, lightningcss CSS transformer, optimizeDeps.
+- [x] `src/server.ts` **kept as-is** — it's a standard web `fetch` handler wrapping TanStack Start's server entry (runs on Nitro/h3 under any preset, incl. Vercel). The `env`/`ctx` params are passed through; verified no Cloudflare/Workers-specific code in it or the error libs.
+- [x] Removed Cloudflare: deleted `wrangler.jsonc`, dropped `@cloudflare/vite-plugin` dependency.
+- [x] Deleted the SPA-rewrite `vercel.json` (harmful for SSR). Nitro's Vercel preset emits the correct Build Output API v3 — no `vercel.json` needed.
+- [x] Emptied `bunfig.toml` `minimumReleaseAgeExcludes`; deleted `.lovable/`. (`.fallow/` is already gitignored; its `cache.bin` is local-only.)
+- [x] Added `lightningcss` as an explicit devDependency (was transitive via the Lovable package).
+- [x] Added `.vercel` to `.gitignore`.
+- [x] **Verified locally** (under bun runtime, since local Node is 20.11 < required 20.19):
+  - `bun run build` → succeeds (i18n validate + vite/nitro build).
+  - Default preset → `.output/` node-server bundle; `VERCEL=1`/`NITRO_PRESET=vercel` → `.vercel/output/` Build Output API v3 (asset caching + `/__server.func` SSR fallback). **Vercel auto-detection via the `VERCEL` env var works** — no explicit preset config needed.
+  - Runtime SSR smoke test: `GET /`, `/pricing`, `/sitemap.xml` all return HTTP 200; `/` renders 26 KB of real HTML (stylesheet links, not the error page).
+- ⚠️ **Vercel project settings (Phase 4):** Node **22.x**, install `bun install`, build `bun run build`. The old local Node (20.11) hits Vite/Nitro version requirements — Vercel's 22.x avoids this. (Optional: install `dotenv` if ever building on Node < 20.12.)
+- Note: generated artifacts (`src/routeTree.gen.ts`, `i18n-errors.*`) regenerate on every build and were reverted to keep the commit focused.
 
 ## Phase 4 — Vercel project & env vars ⬜
 - [ ] Import GitHub repo into Vercel

@@ -82,4 +82,16 @@ src/
 
 ## Deployment
 
-The project is configured for deployment on Vercel (`vercel.json`) and Cloudflare (`wrangler.jsonc`).
+The app is a server-rendered TanStack Start application, built with Vite and
+[Nitro](https://nitro.build/). Nitro auto-detects the deploy target from the
+environment, so the same `bun run build` works everywhere:
+
+- **Vercel** (primary target): Nitro detects the `VERCEL` env var and emits a
+  [Build Output API v3](https://vercel.com/docs/build-output-api/v3) bundle under
+  `.vercel/output/` — no `vercel.json` needed. Configure the Vercel project with
+  **Node 22.x**, install command `bun install`, and build command `bun run build`.
+- **Local / other Node hosts**: the default `node-server` preset writes a
+  standalone server to `.output/`; run it with `node .output/server/index.mjs`.
+
+> Requires Node.js 20.19+ / 22.12+ (Nitro's config loader needs `node:util.parseEnv`).
+> The local machine's Node may be older — Vercel uses 22.x.
