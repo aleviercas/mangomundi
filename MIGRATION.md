@@ -71,10 +71,15 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
 - ⚠️ **Vercel project settings (Phase 4):** Node **22.x**, install `bun install`, build `bun run build`. The old local Node (20.11) hits Vite/Nitro version requirements — Vercel's 22.x avoids this. (Optional: install `dotenv` if ever building on Node < 20.12.)
 - Note: generated artifacts (`src/routeTree.gen.ts`, `i18n-errors.*`) regenerate on every build and were reverted to keep the commit focused.
 
-## Phase 4 — Vercel project & env vars ⬜
-- [ ] Import GitHub repo into Vercel
-- [ ] Set env vars (Prod + Preview): Supabase (6) + `OPENROUTER_API_KEY` + optional FX keys
-- [ ] Update "Connect Supabase in Lovable Cloud" error strings in 3 integration files
+## Phase 4 — Vercel project & env vars 🔄
+- [x] Updated the "Connect Supabase in Lovable Cloud" env-var error strings → point at `.env`/Vercel, across `client.ts`, `client.server.ts`, `auth-middleware.ts`.
+- [x] Cleaned remaining stale Lovable mentions: `auth-attacher.ts` header, `providers.config.ts` secrets note + gateway comment, renamed `callLovableAI`→`callOpenRouterAI`. **Codebase now has zero inaccurate Lovable references** (only historical "was Lovable-generated" notes + Phase-5 SEO URLs remain).
+- [ ] **(USER)** Import the GitHub repo into Vercel; project settings: **Node 22.x**, Framework Preset **Other**, Install `bun install`, Build `bun run build`, Output dir default (Nitro emits `.vercel/output`).
+- [ ] **(USER)** Set env vars in Vercel (Production + Preview) — the 8 below from `.env`:
+  - `SUPABASE_URL`, `SUPABASE_PROJECT_ID`, `SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`
+  - `VITE_SUPABASE_URL`, `VITE_SUPABASE_PROJECT_ID`, `VITE_SUPABASE_PUBLISHABLE_KEY`
+  - `OPENROUTER_API_KEY`
+  - (optional FX keys only if used: `OPENEXCHANGE_APP_ID`, `FIXER_IO_KEY`, …)
 
 ## Phase 5 — Domain & SEO cleanup ⬜
 - [ ] Replace `https://mangomundi.lovable.app` → prod domain / `SITE_URL` across 9 files
