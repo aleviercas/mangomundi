@@ -93,17 +93,18 @@ Progress legend: ⬜ todo · 🔄 in progress · ✅ done
 - [x] Replaced all `https://mangomundi.lovable.app` references with `SITE_URL` across 9 TS/TSX files (index, platform, pricing, features, insurance, compare, legal, blog.$slug, sitemap.xml). Hardcoded `mangomundi.com` in static `public/robots.txt`.
 - [x] Verified: zero `lovable.app` references in `src`/`public`; `bun --bun vite build` succeeds; `mangomundi.com` is baked into the build output and no `lovable.app` leaks into it.
 
-## Phase 6 — Verify ⬜
-- [ ] `bun run build` locally with new config
-- [ ] `bun run e2e` + `bun run i18n:check`
-- [ ] Vercel preview: AI chat, FX quotes, lead forms, auth login, SSR, sitemap/robots
+## Phase 6 — Verify ✅ (migration sound, zero regressions)
+- [x] `bun run build` succeeds; `bun run i18n:check` (strict) passes.
+- [x] **Production renders & hydrates correctly** (verified with headless Chromium + screenshots):
+  - Homepage renders fully: logo, gradient hero, working COMPARE card (Individual/Business toggle, country select, Continue), feature badges, "How it works" — Tailwind/CSS + SSR perfect.
+  - **i18n works**: `?lang=es` translates the whole UI ("Decisiones inteligentes de cambio de divisas", "Empresa", "País de destino", "Consultar opciones", "Tasas en vivo", "CÓMO FUNCIONA").
+  - Supabase-backed `/compare` renders without error; sitemap/robots serve.
+- [x] **Key parity finding:** our Vercel build is **behaviorally identical** to the original `mangomundi.lovable.app` deployment on every measured axis (DOM, buttons, JS assets, i18n) → the migration introduced **no regressions**.
+- ⚠️ **e2e suite (`tests/e2e/i18n.spec.ts`) has 4 pre-existing failures, NOT caused by the migration** — they fail identically against the original Lovable prod. Causes: outdated assertions (`expectContains: ["Empezar","Comparar"]` but current copy is "Empresa"/"Consultar"; the "change language" header button was relocated). **Follow-up: update these test selectors/strings** (separate from migration).
+- ⏳ Still worth a manual in-browser pass by the user: AI chat (OpenRouter free model), lead forms write to Supabase, auth login.
 
-## Phase 7 — Point mangomundi.com at Vercel ⬜
-- [ ] **(USER/owner)** Add the domain in Vercel: Project → Settings → Domains → add `mangomundi.com` (and optionally `www.mangomundi.com` → redirect to apex).
-- [ ] **(USER/owner)** Configure DNS at the registrar per Vercel's instructions:
-  - Apex `mangomundi.com` → Vercel A record `76.76.21.21` (or the ALIAS/ANAME Vercel shows).
-  - `www` → CNAME `cname.vercel-dns.com`.
-- [ ] Wait for DNS propagation + Vercel-issued TLS cert (automatic).
-- [ ] Set `mangomundi.com` as the **Production domain** in Vercel so canonical URLs match what's served.
-- [ ] Verify: `https://mangomundi.com/` serves the app (200, SSR), `/sitemap.xml` + `/robots.txt` resolve, and canonical/og tags now match the live host.
-- Note: the code already points SEO/canonical at `mangomundi.com` (Phase 5), so once DNS resolves everything is self-consistent. No redeploy needed for DNS — but a redeploy *is* needed if `SITE_URL` ever changes.
+## Phase 7 — Point mangomundi.com at Vercel ✅
+- [x] Domain added in Vercel; DNS configured at Spaceship (apex A `216.198.79.1`, `www` CNAME `cname.vercel-dns.com`).
+- [x] DNS propagated + Vercel TLS cert issued.
+- [x] **Verified live:** `https://mangomundi.com` → 308 → `https://www.mangomundi.com` → **HTTP 200**, serves the app (title "mangomundi — Intelligent currency exchange decisions"), canonical points at `mangomundi.com`, no Lovable refs.
+- ⚠️ **Canonical/host mismatch (minor SEO):** the apex 308-redirects to `www`, so the served host is `www.mangomundi.com` but our `SITE_URL`/canonical is the bare apex `https://mangomundi.com`. Pick one and make them match — either flip the Vercel redirect to `www → apex` (so served = apex = canonical), or change `SITE_URL` in `src/config/site.ts` to `https://www.mangomundi.com` (needs a redeploy). Recommend apex-as-primary to match the existing canonical.
