@@ -21,18 +21,37 @@ bun run dev
 
 The app runs on the Vite dev server. Open the URL printed in the terminal.
 
+## Backend
+
+The app uses a self-managed [Supabase](https://supabase.com/) project (Postgres + Auth)
+hosted in our own organisation (region `eu-west-1`). Database schema is versioned in
+`supabase/migrations/` and applied with the Supabase CLI:
+
+```bash
+# Apply all migrations to the linked project (use the IPv4 transaction pooler URI
+# from the dashboard → Connect → Transaction pooler if your network lacks IPv6)
+supabase db push --db-url "<transaction-pooler-connection-string>"
+```
+
+There are no storage buckets or edge functions — it is plain Postgres with row-level
+security. The project URL, project ID, and API keys live in the Supabase dashboard
+under **Settings → API**; never commit them.
+
 ## Environment variables
 
-The following variables are required (see `.env.example`):
+The following variables are required (see `.env.example`). Copy the real values from
+the Supabase dashboard (**Settings → API** and **Settings → Database**) — do **not**
+commit them:
 
-| Variable                       | Description                          |
-| ------------------------------ | ------------------------------------ |
-| `SUPABASE_URL`                 | Supabase project URL (server)        |
-| `SUPABASE_PROJECT_ID`          | Supabase project ID (server)         |
-| `SUPABASE_PUBLISHABLE_KEY`     | Supabase publishable/anon key (server) |
-| `VITE_SUPABASE_URL`            | Supabase project URL (client)        |
-| `VITE_SUPABASE_PROJECT_ID`     | Supabase project ID (client)         |
-| `VITE_SUPABASE_PUBLISHABLE_KEY`| Supabase publishable/anon key (client) |
+| Variable                        | Description                                            |
+| ------------------------------- | ----------------------------------------------------- |
+| `SUPABASE_URL`                  | Supabase project URL (server)                         |
+| `SUPABASE_PROJECT_ID`           | Supabase project ID (server)                          |
+| `SUPABASE_PUBLISHABLE_KEY`      | Supabase publishable/anon key (server)                |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Service-role key — admin, bypasses RLS. **Server only** |
+| `VITE_SUPABASE_URL`             | Supabase project URL (client)                         |
+| `VITE_SUPABASE_PROJECT_ID`      | Supabase project ID (client)                          |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable/anon key (client)                |
 
 ## Scripts
 
