@@ -170,24 +170,34 @@ async function writeSupabaseCache(snapshot: RatesSnapshot): Promise<void> {
 // reaches a working free provider immediately.
 async function fetchLiveRates(): Promise<RatesSnapshot> {
   // --- Attempt 1: Frankfurter v2 (ECB data, free, no key) ---
+  // NOTE: Frankfurter v2 returns an ARRAY: [{ base, quote, rate, date }, ...]
+  // This is different from v1 which returned: { base, rates: { CODE: number } }
   try {
     console.log("[fx] fetchLiveRates: trying Frankfurter v2");
     const res = await fetch("https://api.frankfurter.dev/v2/rates?base=USD", {
       signal: AbortSignal.timeout(7000),
     });
-    if (!res.ok) throw new Error(`Frankfurter HTTP ${res.status}`);
-    const json = (await res.json()) as { base?: string; date?: string; rates: Record<string, number> };
-    const base = (json.base ?? "USD").toUpperCase();
-    const rates: Record<string, number> = { ...json.rates, [base]: 1 };
+    if (!res.ok) throw new Error("Frankfurter HTTP " + res.status);
+    const arr = (await res.json()) as Array<{ base: string; quote: string; rate: number; date: string }>;
+    if (!Array.isArray(arr) || arr.length === 0) throw new Error("Frankfurter returned empty or non-array");
+    // Convert array of { quote, rate } objects into a flat rates map
+    const rates: Record<string, number> = { USD: 1 };
+    let latestDate = "";
+    for (const row of arr) {
+      if (row.quote && typeof row.rate === "number" && row.rate > 0) {
+        rates[row.quote.toUpperCase()] = row.rate;
+        if (row.date > latestDate) latestDate = row.date;
+      }
+    }
     const count = Object.keys(rates).length;
-    console.log(`[fx] Frankfurter OK — ${count} currencies, base=${base}, has_DKK=${!!rates.DKK}, has_GBP=${!!rates.GBP}`);
-    if (count < 5) throw new Error("Frankfurter returned too few currencies");
+    console.log("[fx] Frankfurter v2 OK — " + count + " currencies, has_DKK=" + !!rates.DKK + ", has_GBP=" + !!rates.GBP);
+    if (count < 5) throw new Error("Frankfurter returned too few currencies: " + count);
     return {
       data: rates,
       referenceCodes: new Set<string>(),
-      base,
+      base: "USD",
       ts: Date.now(),
-      fetchedAt: json.date ? new Date(\`\${json.date}T00:00:00Z\`).toISOString() : new Date().toISOString(),
+      fetchedAt: latestDate ? new Date(latestDate + "T00:00:00Z").toISOString() : new Date().toISOString(),
       source: "frankfurter",
     };
   } catch (err) {
