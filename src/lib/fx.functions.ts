@@ -1,9 +1,40 @@
 import { createServerFn } from "@tanstack/react-start";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 import { fxProviderFactory } from "@/services/providers/ProviderFactory";
 import { MasterRateStore } from "@/services/providers/MasterRateStore";
 import { callAiWithFailover } from "@/services/providers/aiOrchestrator";
+
+// ---------- AI chat abuse protection ----------
+// Best-effort in-memory limiter (resets on worker recycle — same trade-off
+// as other rate limiters in this codebase). Protects the shared OpenRouter
+// free-tier daily quota from being exhausted by a single client hammering
+// the chat endpoint, since chatAboutRecommendation previously had no limit.
+const CHAT_RATE_BUCKETS = new Map<string, { count: number; resetAt: number }>();
+const CHAT_RATE_LIMIT_MAX = 15; // AI turns per window per IP
+const CHAT_RATE_LIMIT_WINDOW_MS = 5 * 60_000;
+
+function checkChatRateLimit(key: string): boolean {
+  const now = Date.now();
+  const bucket = CHAT_RATE_BUCKETS.get(key);
+  if (!bucket || bucket.resetAt < now) {
+    CHAT_RATE_BUCKETS.set(key, { count: 1, resetAt: now + CHAT_RATE_LIMIT_WINDOW_MS });
+    return true;
+  }
+  if (bucket.count >= CHAT_RATE_LIMIT_MAX) return false;
+  bucket.count += 1;
+  return true;
+}
+
+function requestIp(): string {
+  try {
+    const fwd = getRequestHeader("x-forwarded-for") || "";
+    return fwd.split(",")[0]?.trim() || getRequestHeader("x-real-ip") || "unknown";
+  } catch {
+    return "unknown";
+  }
+}
 
 
 // ---------- Types ----------
@@ -526,62 +557,15 @@ export const captureLead = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-// ---------- aiRecommend (one-shot Gemini insight) ----------
-const aiSchema = z.object({
-  amount: z.number(),
-  from: z.string().length(3),
-  to: z.string().length(3),
-  segment: z.enum(["retail", "business"]),
-  urgency: z.enum(["urgent", "standard", "flexible"]).default("standard"),
-  lang: z.enum(["en", "es", "pt"]).default("en"),
-  top: z
-    .array(
-      z.object({
-        name: z.string().max(120),
-        received: z.number(),
-        fee_total: z.number(),
-        speed_hours: z.number(),
-      }),
-    )
-    .min(1)
-    .max(5),
-});
-
+// NOTE: aiRecommend (one-shot insight) was removed here — it was dead code,
+// not called from anywhere in the app (ComparatorSection only uses
+// chatAboutRecommendation below). Kept LANG_INSTR since chatAboutRecommendation
+// still relies on it as a fallback via langInstrAll().
 const LANG_INSTR: Record<string, string> = {
   en: "Respond in English.",
   es: "Responde en español rioplatense, claro y conciso.",
   pt: "Responda em português, claro e conciso.",
 };
-
-export const aiRecommend = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => aiSchema.parse(input))
-  .handler(async ({ data }) => {
-    const apiKey = process.env.OPENROUTER_API_KEY;
-    if (!apiKey) {
-      return { text: "AI insight unavailable: missing API key.", error: true };
-    }
-    const sanitizeName = (s: string) =>
-      s
-        .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
-        .replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "")
-        .slice(0, 120);
-    const top = data.top
-      .map(
-        (r, i) =>
-          `${i + 1}. ${sanitizeName(r.name)} — receives ${r.received.toFixed(2)} ${data.to}, fee ${r.fee_total.toFixed(2)} ${data.from}, ETA ~${r.speed_hours}h`,
-      )
-      .join("\n");
-
-    const prompt = `You are Mango, a neutral FX decision engine. The user wants to send ${data.amount} ${data.from} to ${data.to} as a ${data.segment} client with ${data.urgency} urgency.\n\nTop providers ordered by amount received:\n${top}\n\nIn 3-4 sentences (no bullet lists, no markdown headings), recommend ONE provider as the best for this specific case and explain why (consider trade-off between received amount, speed, and urgency). End with one short caveat about what to verify (regulation, account requirements, or hidden costs) for this corridor. ${LANG_INSTR[data.lang]}`;
-
-    // Smart Load Balancer: tries Gemini 3 → Gemini 2.5 → GPT-5 mini in
-    // sequence, silently failing over on any error. User never picks a model.
-    return await callAiWithFailover({
-      apiKey,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-  });
 
 // ---------- chatAboutRecommendation (interactive follow-ups) ----------
 const chatSchema = z.object({
@@ -646,6 +630,17 @@ export const chatAboutRecommendation = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) return { text: "Chat unavailable: missing API key.", error: true };
+
+    if (!checkChatRateLimit(`chat:${requestIp()}`)) {
+      const lang = data.lang;
+      const text =
+        lang === "es"
+          ? "Demasiadas consultas seguidas. Probá de nuevo en unos minutos."
+          : lang === "pt"
+            ? "Muitas consultas seguidas. Tente novamente em alguns minutos."
+            : "Too many requests in a row. Please try again in a few minutes.";
+      return { text, error: true };
+    }
 
     // Sanitize untrusted text: strip control chars and our delimiter tokens to
     // prevent prompt-injection that closes the wrapper or fakes system turns.
