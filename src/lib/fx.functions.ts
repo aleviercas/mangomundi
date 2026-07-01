@@ -165,7 +165,61 @@ async function writeSupabaseCache(snapshot: RatesSnapshot): Promise<void> {
   }
 }
 
-// Layer 3: live fetch via ProviderFactory (Frankfurter → ExchangeRate-API → …)
+// Layer 3: direct live fetch (Frankfurter primary → ExchangeRate-API fallback)
+// Bypasses ProviderFactory cursor/cooldown logic so every cold start always
+// reaches a working free provider immediately.
+async function fetchLiveRates(): Promise<RatesSnapshot> {
+  // --- Attempt 1: Frankfurter v2 (ECB data, free, no key) ---
+  try {
+    console.log("[fx] fetchLiveRates: trying Frankfurter v2");
+    const res = await fetch("https://api.frankfurter.dev/v2/rates?base=USD", {
+      signal: AbortSignal.timeout(7000),
+    });
+    if (!res.ok) throw new Error(`Frankfurter HTTP ${res.status}`);
+    const json = (await res.json()) as { base?: string; date?: string; rates: Record<string, number> };
+    const base = (json.base ?? "USD").toUpperCase();
+    const rates: Record<string, number> = { ...json.rates, [base]: 1 };
+    const count = Object.keys(rates).length;
+    console.log(`[fx] Frankfurter OK — ${count} currencies, base=${base}, has_DKK=${!!rates.DKK}, has_GBP=${!!rates.GBP}`);
+    if (count < 5) throw new Error("Frankfurter returned too few currencies");
+    return {
+      data: rates,
+      referenceCodes: new Set<string>(),
+      base,
+      ts: Date.now(),
+      fetchedAt: json.date ? new Date(\`\${json.date}T00:00:00Z\`).toISOString() : new Date().toISOString(),
+      source: "frankfurter",
+    };
+  } catch (err) {
+    console.warn("[fx] Frankfurter failed:", String(err));
+  }
+
+  // --- Attempt 2: ExchangeRate-API open endpoint (free, no key, USD base) ---
+  try {
+    console.log("[fx] fetchLiveRates: trying ExchangeRate-API");
+    const res = await fetch("https://open.er-api.com/v6/latest/USD", {
+      signal: AbortSignal.timeout(7000),
+    });
+    if (!res.ok) throw new Error(`ExchangeRate-API HTTP ${res.status}`);
+    const json = (await res.json()) as { result: string; base_code: string; rates: Record<string, number>; time_last_update_unix?: number };
+    if (json.result !== "success") throw new Error("ExchangeRate-API non-success result");
+    const count = Object.keys(json.rates).length;
+    console.log(`[fx] ExchangeRate-API OK — ${count} currencies, has_DKK=${!!json.rates.DKK}, has_GBP=${!!json.rates.GBP}`);
+    return {
+      data: json.rates,
+      referenceCodes: new Set<string>(),
+      base: json.base_code ?? "USD",
+      ts: Date.now(),
+      fetchedAt: json.time_last_update_unix ? new Date(json.time_last_update_unix * 1000).toISOString() : new Date().toISOString(),
+      source: "exchangerate-api",
+    };
+  } catch (err) {
+    console.warn("[fx] ExchangeRate-API failed:", String(err));
+  }
+
+  throw new Error("All FX rate providers failed. Check Vercel Function logs for details.");
+}
+
 async function fetchRates(): Promise<RatesSnapshot> {
   // L1: warm in-memory cache
   if (ratesCache && Date.now() - ratesCache.ts < RATES_TTL_MS) {
@@ -179,16 +233,8 @@ async function fetchRates(): Promise<RatesSnapshot> {
     return cached;
   }
 
-  // L3: live fetch via ProviderFactory round-robin
-  const merged = await fxProviderFactory.refreshAndMerge();
-  const snapshot: RatesSnapshot = {
-    data: merged.rates,
-    referenceCodes: merged.referenceCodes,
-    base: merged.base,
-    ts: Date.now(),
-    fetchedAt: merged.fetchedAt,
-    source: merged.source,
-  };
+  // L3: live fetch with direct provider calls + explicit logs
+  const snapshot = await fetchLiveRates();
 
   ratesCache = snapshot; // warm memory
   // Write to Supabase in the background — don't block the response.
