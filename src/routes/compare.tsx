@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouteContext } from "@tanstack/react-router";
 import { z } from "zod";
 import { ComparatorSection } from "@/sections/ComparatorSection";
 import { SITE_URL } from "@/config/site";
@@ -15,18 +15,6 @@ const compareSearchSchema = z.object({
 
 export const Route = createFileRoute("/compare")({
   validateSearch: (search) => compareSearchSchema.parse(search),
-  // Server loader: detect visitor country + currency via IP geolocation.
-  // Only runs server-side; result is serialized into the page as loaderData.
-  // URL params always win over geo defaults (user can override).
-  loader: async () => {
-    try {
-      const { getVisitorGeo } = await import("@/lib/geo.functions");
-      const geo = await getVisitorGeo();
-      return { geoCountry: geo.country, geoCurrency: geo.currency };
-    } catch {
-      return { geoCountry: "GB", geoCurrency: "GBP" };
-    }
-  },
   head: () => ({
     meta: [
       { title: "Compare FX providers — Mangomundi" },
@@ -50,9 +38,12 @@ export const Route = createFileRoute("/compare")({
 
 function ComparePage() {
   const search = Route.useSearch();
-  const { geoCountry, geoCurrency } = Route.useLoaderData();
+  // Read geo from root loader (runs SSR on every request, always fresh).
+  const rootData = Route.useMatch({ select: (m) => m.context });
+  // Fallback chain: URL param -> root loader geo -> hardcoded UK default
+  const geoCountry: string = (rootData as { geoCountry?: string })?.geoCountry ?? "GB";
+  const geoCurrency: string = (rootData as { geoCurrency?: string })?.geoCurrency ?? "GBP";
 
-  // URL params win; geo is the fallback for first-time visitors.
   const initialQuery = {
     origin: search.origin ?? geoCountry,
     destination: search.destination,
