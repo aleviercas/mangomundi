@@ -1,4 +1,4 @@
-import { createFileRoute, useRouteContext } from "@tanstack/react-router";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { z } from "zod";
 import { ComparatorSection } from "@/sections/ComparatorSection";
 import { SITE_URL } from "@/config/site";
@@ -38,12 +38,15 @@ export const Route = createFileRoute("/compare")({
 
 function ComparePage() {
   const search = Route.useSearch();
-  // Read geo from root loader (runs SSR on every request, always fresh).
-  const rootData = Route.useMatch({ select: (m) => m.context });
-  // Fallback chain: URL param -> root loader geo -> hardcoded UK default
-  const geoCountry: string = (rootData as { geoCountry?: string })?.geoCountry ?? "GB";
-  const geoCurrency: string = (rootData as { geoCurrency?: string })?.geoCurrency ?? "GBP";
+  // Read geo detected by the root route's loader (runs SSR on every request).
+  const rootData = useLoaderData({ from: "__root__" }) as {
+    geoCountry?: string;
+    geoCurrency?: string;
+  };
+  const geoCountry = rootData?.geoCountry ?? "GB";
+  const geoCurrency = rootData?.geoCurrency ?? "GBP";
 
+  // URL params always win; geo is only the default for first-time visitors.
   const initialQuery = {
     origin: search.origin ?? geoCountry,
     destination: search.destination,
