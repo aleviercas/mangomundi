@@ -165,22 +165,23 @@ async function writeSupabaseCache(snapshot: RatesSnapshot): Promise<void> {
   }
 }
 
-// Layer 3: direct live fetch (Frankfurter primary → ExchangeRate-API fallback)
-// Bypasses ProviderFactory cursor/cooldown logic so every cold start always
-// reaches a working free provider immediately.
+// Layer 3: direct live fetch
+// Priority: Frankfurter (free, 170+ currencies) -> ExchangeRate-API (free, 170+)
+// -> fixer.io (keyed) -> exchangeratesapi.io (keyed) -> openexchangerates (keyed)
+// Keyed providers are only attempted when their env var is set.
 async function fetchLiveRates(): Promise<RatesSnapshot> {
-  // --- Attempt 1: Frankfurter v2 (ECB data, free, no key) ---
-  // NOTE: Frankfurter v2 returns an ARRAY: [{ base, quote, rate, date }, ...]
-  // This is different from v1 which returned: { base, rates: { CODE: number } }
+
+  // ── Provider 1: Frankfurter v2 (ECB + partner banks, free, no key) ──
+  // v2 endpoint returns an array: [{ base, quote, rate, date }, ...]
+  // Covers ~170 currencies from 84 central banks.
   try {
-    console.log("[fx] fetchLiveRates: trying Frankfurter v2");
+    console.log("[fx] trying Frankfurter v2");
     const res = await fetch("https://api.frankfurter.dev/v2/rates?base=USD", {
       signal: AbortSignal.timeout(7000),
     });
     if (!res.ok) throw new Error("Frankfurter HTTP " + res.status);
     const arr = (await res.json()) as Array<{ base: string; quote: string; rate: number; date: string }>;
-    if (!Array.isArray(arr) || arr.length === 0) throw new Error("Frankfurter returned empty or non-array");
-    // Convert array of { quote, rate } objects into a flat rates map
+    if (!Array.isArray(arr) || arr.length === 0) throw new Error("Frankfurter: empty array response");
     const rates: Record<string, number> = { USD: 1 };
     let latestDate = "";
     for (const row of arr) {
@@ -190,8 +191,8 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
       }
     }
     const count = Object.keys(rates).length;
-    console.log("[fx] Frankfurter v2 OK — " + count + " currencies, has_DKK=" + !!rates.DKK + ", has_GBP=" + !!rates.GBP);
-    if (count < 5) throw new Error("Frankfurter returned too few currencies: " + count);
+    if (count < 5) throw new Error("Frankfurter: too few currencies (" + count + ")");
+    console.log("[fx] Frankfurter OK — " + count + " currencies");
     return {
       data: rates,
       referenceCodes: new Set<string>(),
@@ -204,27 +205,116 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
     console.warn("[fx] Frankfurter failed:", String(err));
   }
 
-  // --- Attempt 2: ExchangeRate-API open endpoint (free, no key, USD base) ---
+  // ── Provider 2: ExchangeRate-API open endpoint (free, no key, ~170 currencies) ──
   try {
-    console.log("[fx] fetchLiveRates: trying ExchangeRate-API");
+    console.log("[fx] trying ExchangeRate-API");
     const res = await fetch("https://open.er-api.com/v6/latest/USD", {
       signal: AbortSignal.timeout(7000),
     });
-    if (!res.ok) throw new Error(`ExchangeRate-API HTTP ${res.status}`);
-    const json = (await res.json()) as { result: string; base_code: string; rates: Record<string, number>; time_last_update_unix?: number };
-    if (json.result !== "success") throw new Error("ExchangeRate-API non-success result");
-    const count = Object.keys(json.rates).length;
-    console.log(`[fx] ExchangeRate-API OK — ${count} currencies, has_DKK=${!!json.rates.DKK}, has_GBP=${!!json.rates.GBP}`);
+    if (!res.ok) throw new Error("ExchangeRate-API HTTP " + res.status);
+    const json2 = (await res.json()) as { result: string; base_code: string; rates: Record<string, number>; time_last_update_unix?: number };
+    if (json2.result !== "success") throw new Error("ExchangeRate-API: non-success result");
+    const count = Object.keys(json2.rates).length;
+    console.log("[fx] ExchangeRate-API OK — " + count + " currencies");
     return {
-      data: json.rates,
+      data: json2.rates,
       referenceCodes: new Set<string>(),
-      base: json.base_code ?? "USD",
+      base: json2.base_code ?? "USD",
       ts: Date.now(),
-      fetchedAt: json.time_last_update_unix ? new Date(json.time_last_update_unix * 1000).toISOString() : new Date().toISOString(),
+      fetchedAt: json2.time_last_update_unix ? new Date(json2.time_last_update_unix * 1000).toISOString() : new Date().toISOString(),
       source: "exchangerate-api",
     };
   } catch (err) {
     console.warn("[fx] ExchangeRate-API failed:", String(err));
+  }
+
+  // ── Provider 3: Fixer.io (requires FIXER_IO_KEY env var) ──
+  const fixerKey = process.env.FIXER_IO_KEY;
+  if (fixerKey) {
+    try {
+      console.log("[fx] trying Fixer.io");
+      const res = await fetch("https://data.fixer.io/api/latest?access_key=" + fixerKey + "&base=EUR", {
+        signal: AbortSignal.timeout(7000),
+      });
+      if (!res.ok) throw new Error("Fixer HTTP " + res.status);
+      const json3 = (await res.json()) as { success: boolean; base: string; date: string; rates: Record<string, number> };
+      if (!json3.success) throw new Error("Fixer: API returned success=false");
+      // Normalize to USD base
+      const eurToUsd = json3.rates["USD"];
+      if (!eurToUsd) throw new Error("Fixer: missing USD rate");
+      const rates: Record<string, number> = { USD: 1 };
+      for (const [code, rate] of Object.entries(json3.rates)) {
+        rates[code] = rate / eurToUsd;
+      }
+      const count = Object.keys(rates).length;
+      console.log("[fx] Fixer OK — " + count + " currencies");
+      return {
+        data: rates,
+        referenceCodes: new Set<string>(),
+        base: "USD",
+        ts: Date.now(),
+        fetchedAt: json3.date ? new Date(json3.date + "T00:00:00Z").toISOString() : new Date().toISOString(),
+        source: "fixer",
+      };
+    } catch (err) {
+      console.warn("[fx] Fixer failed:", String(err));
+    }
+  }
+
+  // ── Provider 4: exchangeratesapi.io (requires EXCHANGERATESAPI_IO_KEY env var) ──
+  const erApiKey = process.env.EXCHANGERATESAPI_IO_KEY;
+  if (erApiKey) {
+    try {
+      console.log("[fx] trying exchangeratesapi.io");
+      const res = await fetch("https://api.exchangeratesapi.io/v1/latest?access_key=" + erApiKey + "&base=EUR", {
+        signal: AbortSignal.timeout(7000),
+      });
+      if (!res.ok) throw new Error("exchangeratesapi HTTP " + res.status);
+      const json4 = (await res.json()) as { success: boolean; base: string; date: string; rates: Record<string, number> };
+      if (!json4.success) throw new Error("exchangeratesapi: success=false");
+      const eurToUsd = json4.rates["USD"];
+      if (!eurToUsd) throw new Error("exchangeratesapi: missing USD rate");
+      const rates: Record<string, number> = { USD: 1 };
+      for (const [code, rate] of Object.entries(json4.rates)) {
+        rates[code] = rate / eurToUsd;
+      }
+      console.log("[fx] exchangeratesapi.io OK — " + Object.keys(rates).length + " currencies");
+      return {
+        data: rates,
+        referenceCodes: new Set<string>(),
+        base: "USD",
+        ts: Date.now(),
+        fetchedAt: json4.date ? new Date(json4.date + "T00:00:00Z").toISOString() : new Date().toISOString(),
+        source: "exchangeratesapi-io",
+      };
+    } catch (err) {
+      console.warn("[fx] exchangeratesapi.io failed:", String(err));
+    }
+  }
+
+  // ── Provider 5: Open Exchange Rates (requires OPENEXCHANGE_APP_ID env var) ──
+  const oxrKey = process.env.OPENEXCHANGE_APP_ID;
+  if (oxrKey) {
+    try {
+      console.log("[fx] trying Open Exchange Rates");
+      const res = await fetch("https://openexchangerates.org/api/latest.json?app_id=" + oxrKey + "&base=USD", {
+        signal: AbortSignal.timeout(7000),
+      });
+      if (!res.ok) throw new Error("OXR HTTP " + res.status);
+      const json5 = (await res.json()) as { disclaimer: string; base: string; timestamp: number; rates: Record<string, number> };
+      const count = Object.keys(json5.rates).length;
+      console.log("[fx] Open Exchange Rates OK — " + count + " currencies");
+      return {
+        data: json5.rates,
+        referenceCodes: new Set<string>(),
+        base: json5.base ?? "USD",
+        ts: Date.now(),
+        fetchedAt: json5.timestamp ? new Date(json5.timestamp * 1000).toISOString() : new Date().toISOString(),
+        source: "openexchangerates",
+      };
+    } catch (err) {
+      console.warn("[fx] Open Exchange Rates failed:", String(err));
+    }
   }
 
   throw new Error("All FX rate providers failed. Check Vercel Function logs for details.");
