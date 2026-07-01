@@ -125,6 +125,77 @@ export function MissingCorridorCta({
 }
 
 /**
+ * Local (zero-AI) Wizard replies — "how", "limits" and "fees" used to send a
+ * prompt to the AI even though the answer only needs data already on the
+ * client. Answering locally restores the original "80% resolved with zero
+ * tokens" design and removes load from the shared free-tier AI quota.
+ * Only free-form typed questions still reach the AI.
+ */
+export type WizardLocale = "en" | "es" | "pt";
+
+export function resolveWizardLocale(lang: string): WizardLocale {
+  return lang === "es" || lang === "pt" ? lang : "en";
+}
+
+const HOW_TO_COMPARE: Record<WizardLocale, string> = {
+  en: "Read the table left to right: **rate** is how much of the destination currency you get per unit sent before fees, **fee** is the total charged by that provider, and **received** is the net amount that actually arrives. Use the column headers to sort by best amount received, lowest fee, or fastest delivery time.",
+  es: "Leé la tabla de izquierda a derecha: **tasa** es cuánto recibís de la moneda destino por unidad enviada antes de fees, **fee** es el cargo total de ese proveedor, y **recibido** es el neto que realmente llega. Usá los encabezados de columna para ordenar por mejor monto recibido, menor fee, o entrega más rápida.",
+  pt: "Leia a tabela da esquerda para a direita: **taxa** é quanto você recebe da moeda de destino por unidade enviada antes das tarifas, **tarifa** é o total cobrado por esse provedor, e **recebido** é o valor líquido que realmente chega. Use os cabeçalhos de coluna para ordenar por melhor valor recebido, menor tarifa ou entrega mais rápida.",
+};
+
+interface WizardRow {
+  name: string;
+  fee_total: number;
+  fee_percent_applied?: number;
+  fee_fixed_applied?: number;
+  spread_applied?: number;
+}
+
+interface WizardResultLike {
+  base: string;
+  rows: WizardRow[];
+}
+
+export function localHowToCompare(locale: WizardLocale): string {
+  return HOW_TO_COMPARE[locale];
+}
+
+export function localTransferLimits(_result: WizardResultLike, locale: WizardLocale): string {
+  // Anti-hallucination: the comparator dataset has no per-provider min/max
+  // transfer-limit field today, so we say so plainly instead of letting an
+  // LLM improvise around a gap in the data.
+  const copy: Record<WizardLocale, string> = {
+    en: "The comparator table doesn't track per-provider transfer limits yet — that field isn't part of the current dataset, so I won't guess. Please check the provider's own site for minimum/maximum amounts before sending.",
+    es: "La tabla del comparador todavía no registra límites de transferencia por proveedor — ese dato no forma parte del dataset actual, así que no lo voy a inventar. Verificá en el sitio del proveedor los montos mínimo/máximo antes de enviar.",
+    pt: "A tabela do comparador ainda não registra limites de transferência por provedor — esse campo não faz parte do dataset atual, então não vou inventar. Verifique no site do provedor os valores mínimo/máximo antes de enviar.",
+  };
+  return copy[locale];
+}
+
+export function localFeeBreakdown(result: WizardResultLike, locale: WizardLocale): string {
+  const header: Record<WizardLocale, string> = {
+    en: "Fee breakdown from the current table:",
+    es: "Desglose de fees según la tabla actual:",
+    pt: "Detalhamento de tarifas segundo a tabela atual:",
+  };
+  const noCharges: Record<WizardLocale, string> = {
+    en: "no declared fixed/percent charges",
+    es: "sin cargos fijos/porcentuales declarados",
+    pt: "sem tarifas fixas/percentuais declaradas",
+  };
+  const top = result.rows.slice(0, 3);
+  const lines = top.map((r, i) => {
+    const parts: string[] = [];
+    if (r.fee_fixed_applied) parts.push(`${r.fee_fixed_applied.toFixed(2)} ${result.base} fixed`);
+    if (r.fee_percent_applied) parts.push(`${r.fee_percent_applied.toFixed(2)}% fee`);
+    if (r.spread_applied) parts.push(`${r.spread_applied.toFixed(2)}% spread`);
+    const desc = parts.length ? parts.join(" + ") : noCharges[locale];
+    return `${i + 1}. **${r.name}** — ${desc} → total ${r.fee_total.toFixed(2)} ${result.base}`;
+  });
+  return [header[locale], "", ...lines].join("\n");
+}
+
+/**
  * Build the AI system-prompt context block from the MasterRateMap and
  * MissingCorridorsLog. Kept small to minimize token burn.
  */
