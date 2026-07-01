@@ -36,7 +36,16 @@ import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/provider
 import { captureBusinessLead } from "@/lib/agent.functions";
 import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
 import { MasterRateStore, type MasterRateMap, type MissingCorridorEntry } from "@/services/providers/MasterRateStore";
-import { AiCopilot, MissingCorridorCta, buildWizardContext, type WizardAction } from "@/components/AiCopilot";
+import {
+  AiCopilot,
+  MissingCorridorCta,
+  buildWizardContext,
+  resolveWizardLocale,
+  localHowToCompare,
+  localTransferLimits,
+  localFeeBreakdown,
+  type WizardAction,
+} from "@/components/AiCopilot";
 import { Button } from "@/components/ui/button";
 
 type Segment = "retail" | "business";
@@ -311,6 +320,24 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           content:
             "Run a comparison first — I answer using the table data, not external sources.",
         },
+      ]);
+      return;
+    }
+    // "how" / "limits" / "fees" are answered locally from data already on
+    // the client — zero AI tokens spent, restoring the Wizard's original
+    // "resolved without AI" design. Only free-typed questions reach the AI.
+    if (action.id === "how" || action.id === "limits" || action.id === "fees") {
+      const locale = resolveWizardLocale(lang);
+      const reply =
+        action.id === "how"
+          ? localHowToCompare(locale)
+          : action.id === "limits"
+            ? localTransferLimits(result, locale)
+            : localFeeBreakdown(result, locale);
+      setChat((c) => [
+        ...c,
+        { role: "user", content: action.label },
+        { role: "assistant", content: reply },
       ]);
       return;
     }
