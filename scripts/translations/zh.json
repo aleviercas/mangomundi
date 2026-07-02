@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "正在分析结果…",
   "comparator.copilot.proceed": "继续使用 {provider}",
-  "comparator.copilot.notify": "汇率改善时通知我",
   "comparator.copilot.proactive.rate": "我注意到 **{provider}** 目前为此金额提供最佳汇率。需要我帮您继续吗?",
   "comparator.copilot.proactive.fee": "请注意:**{provider}** 此金额的总费用最低。继续吗?",
   "comparator.copilot.proactive.speed": "**{provider}** 是此通道目前最快的选择。继续吗?",
