@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "ফলাফল বিশ্লেষণ করা হচ্ছে…",
   "comparator.copilot.proceed": "{provider} এর সাথে চালিয়ে যান",
-  "comparator.copilot.notify": "রেট উন্নত হলে আমাকে জানান",
   "comparator.copilot.proactive.rate": "আমি লক্ষ্য করেছি এই পরিমাণের জন্য এখন **{provider}** সেরা রেট দিচ্ছে। আপনাকে এগিয়ে যেতে সাহায্য করব?",
   "comparator.copilot.proactive.fee": "মনোযোগ: এই পরিমাণের জন্য **{provider}** এর মোট ফি সবচেয়ে কম। এগোব?",
   "comparator.copilot.proactive.speed": "এই করিডোরের জন্য **{provider}** এখন দ্রুততম বিকল্প। চালিয়ে যাব?",
