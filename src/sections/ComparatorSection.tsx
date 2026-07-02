@@ -14,7 +14,6 @@ import {
   TrendingUp,
   ArrowDownUp,
   Sparkle,
-  BellPlus,
   Zap,
   Info,
   ArrowLeft,
@@ -54,7 +53,6 @@ type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = "received" | "fee" | "speed";
 type ChatAction =
   | { kind: "proceed"; slug: string; url: string; label: string }
-  | { kind: "notify"; label: string }
   | { kind: "compare"; from: string; to: string; label: string };
 type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
 type BusinessStage = "volume" | "email" | "consent" | "done";
@@ -206,7 +204,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           url: top.affiliate_url,
           label: t("comparator.copilot.proceed").replace("{provider}", top.name),
         },
-        { kind: "notify", label: t("comparator.copilot.notify") },
       ],
     };
   };
@@ -518,19 +515,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       window.open(url, "_blank", "noopener,noreferrer");
     }
   };
-
-  const handleSaveAlert = () => {
-    track("rfq_interaction", {
-      amount,
-      from_currency: from,
-      to_currency: to,
-      segment,
-      urgency,
-      source: "save_alert",
-    });
-    window.alert(`Alert saved for ${from} → ${to}. We'll notify you when the rate improves.`);
-  };
-
 
   const sendChat = async (msg: string) => {
     const trimmed = msg.trim();
@@ -845,7 +829,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           chatMutPending={chatMut.isPending}
           chatBottomRef={chatBottomRef}
           openPreferredRate={openPreferredRate}
-          handleSaveAlert={handleSaveAlert}
           segment={segment}
           businessStage={businessStage}
           savingBusinessLead={savingBusinessLead}
@@ -944,7 +927,6 @@ interface FloatingAgentProps {
   chatMutPending: boolean;
   chatBottomRef: React.RefObject<HTMLDivElement | null>;
   openPreferredRate: (slug: string, url: string, name?: string) => void;
-  handleSaveAlert: () => void;
   segment: Segment;
   businessStage: BusinessStage;
   savingBusinessLead: boolean;
@@ -959,7 +941,7 @@ function FloatingAgent(p: FloatingAgentProps) {
   const {
     collapsed, onToggle, unreadCount, lang, t, aiLoading, chat, result,
     chatInput, setChatInput, sendChat, chatMutPending, chatBottomRef,
-    openPreferredRate, handleSaveAlert, segment, businessStage,
+    openPreferredRate, segment, businessStage,
     savingBusinessLead, confirmBusinessLead, setBusinessStage, setChat,
     onWizardAction, wizardContext,
   } = p;
@@ -1091,7 +1073,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                             >
                               <Zap className="h-3 w-3" aria-hidden /> {a.label}
                             </button>
-                          ) : a.kind === "compare" ? (
+                          ) : (
                             <button
                               key={j}
                               onClick={() => runSuggestedCompare(a.from, a.to)}
@@ -1099,14 +1081,6 @@ function FloatingAgent(p: FloatingAgentProps) {
                               className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
                             >
                               <Zap className="h-3 w-3" aria-hidden /> {a.label}
-                            </button>
-                          ) : (
-                            <button
-                              key={j}
-                              onClick={handleSaveAlert}
-                              className="inline-flex items-center gap-1 rounded-md border border-border bg-card px-2.5 py-1 text-[11px] font-semibold text-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring"
-                            >
-                              <BellPlus className="h-3 w-3" aria-hidden /> {a.label}
                             </button>
                           ),
                         )}
