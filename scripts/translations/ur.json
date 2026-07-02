@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "نتائج کا تجزیہ ہو رہا ہے…",
   "comparator.copilot.proceed": "{provider} کے ساتھ جاری رکھیں",
-  "comparator.copilot.notify": "ریٹ بہتر ہونے پر مجھے مطلع کریں",
   "comparator.copilot.proactive.rate": "میں نے دیکھا کہ اس رقم کے لیے ابھی **{provider}** بہترین ریٹ پیش کر رہا ہے۔ کیا میں آگے بڑھنے میں مدد کروں؟",
   "comparator.copilot.proactive.fee": "نوٹ: اس رقم کے لیے **{provider}** کی کل فیس سب سے کم ہے۔ آگے بڑھیں؟",
   "comparator.copilot.proactive.speed": "اس کوریڈور کے لیے **{provider}** ابھی تیز ترین آپشن ہے۔ جاری رکھیں؟",
