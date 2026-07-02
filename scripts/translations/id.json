@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "Menganalisis hasil…",
   "comparator.copilot.proceed": "Lanjutkan dengan {provider}",
-  "comparator.copilot.notify": "Beri tahu saya jika kursnya membaik",
   "comparator.copilot.proactive.rate": "Saya perhatikan **{provider}** menawarkan kurs terbaik saat ini untuk jumlah ini. Mau saya bantu melanjutkan?",
   "comparator.copilot.proactive.fee": "Perhatian: **{provider}** memiliki total biaya terendah untuk jumlah ini. Lanjutkan?",
   "comparator.copilot.proactive.speed": "**{provider}** adalah opsi tercepat untuk koridor ini saat ini. Mau lanjutkan?",
