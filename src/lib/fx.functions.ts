@@ -428,7 +428,19 @@ export const compareProviders = createServerFn({ method: "POST" })
       .in("segment", [data.segment, "both"]);
     if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
 
-    const { data: rates, base, fetchedAt, referenceCodes, source } = await fetchRates();
+    // fetchRates() can throw if every upstream FX provider (Frankfurter,
+    // ExchangeRate-API, fixer.io, exchangeratesapi.io, OXR) is unavailable at
+    // once. That's a real, if rare, outage — surface it as a clean thrown
+    // Error (same contract as the other expected errors below) rather than
+    // letting whatever shape fetchRates() throws escape unformatted.
+    let rates: Record<string, number>, base: string, fetchedAt: string | undefined, referenceCodes: Set<string>, source: string;
+    try {
+      ({ data: rates, base, fetchedAt, referenceCodes, source } = await fetchRates());
+    } catch (err) {
+      console.error("[compareProviders] fetchRates failed", err);
+      throw new Error("Exchange rates are temporarily unavailable. Please try again in a moment.");
+    }
+
     const fromUpper = data.from.toUpperCase();
     const toUpper = data.to.toUpperCase();
     const fromRate = fromUpper === base ? 1 : rates[fromUpper];
@@ -445,68 +457,76 @@ export const compareProviders = createServerFn({ method: "POST" })
     const fromReference = fromUpper !== base && referenceCodes.has(fromUpper);
     const toReference = toUpper !== base && referenceCodes.has(toUpper);
 
-    const rows: ComparisonRow[] = (providers as Provider[]).map((p) => {
-      const tier = resolveTier(p, data.amount);
-      const rate = marketRate * (1 - tier.spread_percent / 100);
-      const feeRate = tier.fee_percent / 100;
-      const amountSent =
-        data.amountMode === "receive"
-          ? Math.max(0, (data.amount / rate + tier.fee_fixed) / Math.max(0.0001, 1 - feeRate))
-          : data.amount;
-      const fee = feeRate * amountSent + tier.fee_fixed;
-      const received =
-        data.amountMode === "receive" ? data.amount : Math.max(0, (amountSent - fee) * rate);
-      const rate_vs_market_pct = ((rate - marketRate) / marketRate) * 100;
-      return {
-        slug: p.slug,
-        name: p.name,
-        logo_emoji: p.logo_emoji,
-        segment: p.segment,
-        featured: p.featured,
-        notes: p.notes,
-        affiliate_url: p.affiliate_url,
-        affiliate: {
-          url: p.affiliate_url,
-          network: null,
-          click_id_param: "click_id",
-          ready: Boolean(p.affiliate_url),
-        },
-        rate,
-        fee_total: fee,
-        amount_sent: amountSent,
-        fee_percent_applied: tier.fee_percent,
-        fee_fixed_applied: tier.fee_fixed,
-        spread_applied: tier.spread_percent,
-        received,
-        speed_hours: Number(p.speed_hours),
-        rate_vs_market_pct,
-        sponsored: Boolean(p.sponsored),
-        sponsored_rank: p.sponsored_rank ?? null,
-        trust_score: p.trust_score != null ? Number(p.trust_score) : null,
-        transparency_score: p.transparency_score != null ? Number(p.transparency_score) : null,
-        delivery_minutes: p.delivery_minutes ?? null,
-        regulator: p.regulator ?? null,
-        website_url: p.website_url ?? null,
-        review_count: Number(p.review_count ?? 0),
-        promo_text: p.promo_text ?? null,
-      };
-    });
-    rows.sort((a, b) => b.received - a.received);
+    // Defensive boundary: a malformed provider row (e.g. bad fee_tiers data
+    // in Supabase) throwing here would otherwise escape as an unformatted
+    // error. Catch it and surface the same clean message instead.
+    try {
+      const rows: ComparisonRow[] = (providers as Provider[]).map((p) => {
+        const tier = resolveTier(p, data.amount);
+        const rate = marketRate * (1 - tier.spread_percent / 100);
+        const feeRate = tier.fee_percent / 100;
+        const amountSent =
+          data.amountMode === "receive"
+            ? Math.max(0, (data.amount / rate + tier.fee_fixed) / Math.max(0.0001, 1 - feeRate))
+            : data.amount;
+        const fee = feeRate * amountSent + tier.fee_fixed;
+        const received =
+          data.amountMode === "receive" ? data.amount : Math.max(0, (amountSent - fee) * rate);
+        const rate_vs_market_pct = ((rate - marketRate) / marketRate) * 100;
+        return {
+          slug: p.slug,
+          name: p.name,
+          logo_emoji: p.logo_emoji,
+          segment: p.segment,
+          featured: p.featured,
+          notes: p.notes,
+          affiliate_url: p.affiliate_url,
+          affiliate: {
+            url: p.affiliate_url,
+            network: null,
+            click_id_param: "click_id",
+            ready: Boolean(p.affiliate_url),
+          },
+          rate,
+          fee_total: fee,
+          amount_sent: amountSent,
+          fee_percent_applied: tier.fee_percent,
+          fee_fixed_applied: tier.fee_fixed,
+          spread_applied: tier.spread_percent,
+          received,
+          speed_hours: Number(p.speed_hours),
+          rate_vs_market_pct,
+          sponsored: Boolean(p.sponsored),
+          sponsored_rank: p.sponsored_rank ?? null,
+          trust_score: p.trust_score != null ? Number(p.trust_score) : null,
+          transparency_score: p.transparency_score != null ? Number(p.transparency_score) : null,
+          delivery_minutes: p.delivery_minutes ?? null,
+          regulator: p.regulator ?? null,
+          website_url: p.website_url ?? null,
+          review_count: Number(p.review_count ?? 0),
+          promo_text: p.promo_text ?? null,
+        };
+      });
+      rows.sort((a, b) => b.received - a.received);
 
-    return {
-      market_rate: marketRate,
-      base: data.from,
-      quote: data.to,
-      amount: data.amount,
-      segment: data.segment,
-      rows,
-      fetched_at: new Date().toISOString(),
-      rates_updated_at: fetchedAt,
-      is_reference: fromReference || toReference || source === "master-cache",
-      from_reference: fromReference,
-      to_reference: toReference,
-      rates_source: source,
-    } satisfies ComparisonResult;
+      return {
+        market_rate: marketRate,
+        base: data.from,
+        quote: data.to,
+        amount: data.amount,
+        segment: data.segment,
+        rows,
+        fetched_at: new Date().toISOString(),
+        rates_updated_at: fetchedAt,
+        is_reference: fromReference || toReference || source === "master-cache",
+        from_reference: fromReference,
+        to_reference: toReference,
+        rates_source: source,
+      } satisfies ComparisonResult;
+    } catch (err) {
+      console.error("[compareProviders] unexpected error building rows", err);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
   });
 
 // ---------- trackAffiliateClick ----------
