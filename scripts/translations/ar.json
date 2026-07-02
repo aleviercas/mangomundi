@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "جارٍ تحليل النتائج…",
   "comparator.copilot.proceed": "المتابعة مع {provider}",
-  "comparator.copilot.notify": "أعلمني إذا تحسّن السعر",
   "comparator.copilot.proactive.rate": "لاحظت أن **{provider}** يقدم أفضل سعر الآن لهذا المبلغ. هل تريد أن أساعدك في المتابعة؟",
   "comparator.copilot.proactive.fee": "تنبيه: لدى **{provider}** أقل رسوم إجمالية لهذا المبلغ. هل نتابع؟",
   "comparator.copilot.proactive.speed": "**{provider}** هو الخيار الأسرع لهذا الممر الآن. هل تريد المتابعة؟",
