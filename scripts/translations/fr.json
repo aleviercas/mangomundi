@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "Analyse des résultats…",
   "comparator.copilot.proceed": "Continuer avec {provider}",
-  "comparator.copilot.notify": "Prévenez-moi si le taux s'améliore",
   "comparator.copilot.proactive.rate": "J'ai remarqué que **{provider}** offre le meilleur taux actuellement pour ce montant. Voulez-vous que je vous aide à procéder ?",
   "comparator.copilot.proactive.fee": "À noter : **{provider}** propose les frais totaux les plus bas pour ce montant. On continue ?",
   "comparator.copilot.proactive.speed": "**{provider}** est l'option la plus rapide pour ce corridor. Voulez-vous continuer ?",
