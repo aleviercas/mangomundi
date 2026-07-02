@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "Sinusuri ang mga resulta…",
   "comparator.copilot.proceed": "Magpatuloy sa {provider}",
-  "comparator.copilot.notify": "Ipaalam sa akin kung gumanda ang rate",
   "comparator.copilot.proactive.rate": "Napansin ko na **{provider}** ang nag-aalok ng pinakamagandang rate ngayon para sa halagang ito. Tulungan kitang magpatuloy?",
   "comparator.copilot.proactive.fee": "Pansin: **{provider}** ang may pinakamababang kabuuang bayad para sa halagang ito. Magpatuloy?",
   "comparator.copilot.proactive.speed": "**{provider}** ang pinakamabilis na opsyon para sa koridor na ito ngayon. Magpatuloy?",
