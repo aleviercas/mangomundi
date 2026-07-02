@@ -393,9 +393,14 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       // it into a real "Compare X → Y" button — clicking it runs the actual
       // comparator, which only logs the route as missing if it genuinely
       // isn't supported (via compareMut.onError, unchanged).
-      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{3})-([A-Z]{3})\]\]\s*$/.exec(res.text);
+      // Models often backslash-escape square brackets in markdown-rendered
+      // output (since "[x]" is link syntax), so normalize "\[" / "\]" back
+      // to plain brackets before matching the tag. Also tolerate a trailing
+      // period/space the model might add after the tag.
+      const normalized = res.text.replace(/\\(\[|\])/g, "$1");
+      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{3})-([A-Z]{3})\]\]\s*[.!]?\s*$/.exec(normalized);
       const displayText = tagMatch
-        ? res.text.slice(0, tagMatch.index).trim()
+        ? normalized.slice(0, tagMatch.index).trim()
         : res.text;
       const suggestedFrom = tagMatch?.[1];
       const suggestedTo = tagMatch?.[2];
