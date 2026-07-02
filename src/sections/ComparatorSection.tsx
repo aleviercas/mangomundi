@@ -368,25 +368,38 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       if (!result || !aiText) throw new Error("No recommendation yet");
       const newHistory: ChatMsg[] = [...chat, { role: "user", content: userMsg }];
       setChat(newHistory);
-      const res = await chatFn({
-        data: {
-          amount,
-          from,
-          to,
-          segment,
-          urgency,
-          lang,
-          sortBy,
-          recommendation: aiText,
-          top: result.rows.slice(0, 8).map((r) => ({
-            name: r.name,
-            received: r.received,
-            fee_total: r.fee_total,
-            speed_hours: r.speed_hours,
-          })),
-          history: newHistory.map((m) => ({ role: m.role, content: m.content })),
-        },
-      });
+      // Client-side safety net: the server-side failover chain has a 24s
+      // worst case (3 providers x 8s), but if the serverless function itself
+      // gets killed by the platform's own execution limit before it can
+      // return our graceful fallback, the request would otherwise hang
+      // indefinitely and the app would crash instead of degrading nicely.
+      // Racing against a slightly longer client timeout guarantees we always
+      // land in onError with a friendly message.
+      const CHAT_TIMEOUT_MS = 26_000;
+      const res = await Promise.race([
+        chatFn({
+          data: {
+            amount,
+            from,
+            to,
+            segment,
+            urgency,
+            lang,
+            sortBy,
+            recommendation: aiText,
+            top: result.rows.slice(0, 8).map((r) => ({
+              name: r.name,
+              received: r.received,
+              fee_total: r.fee_total,
+              speed_hours: r.speed_hours,
+            })),
+            history: newHistory.map((m) => ({ role: m.role, content: m.content })),
+          },
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("chat_timeout")), CHAT_TIMEOUT_MS),
+        ),
+      ]);
       // The AI invites the user to actually run a comparison for a
       // different route they asked about by appending a machine tag as the
       // last line of its reply (see the Neutrality Protocol prompt). Parse
@@ -421,6 +434,16 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             ]
           : undefined;
       setChat((c) => [...c, { role: "assistant", content: displayText, actions }]);
+    },
+    onError: () => {
+      const locale = resolveWizardLocale(lang);
+      const content =
+        locale === "es"
+          ? "Uy, tardó demasiado en responder. Probá de nuevo en un momento."
+          : locale === "pt"
+            ? "Ops, demorou demais para responder. Tente novamente em instantes."
+            : "Sorry, that took too long to answer. Please try again in a moment.";
+      setChat((c) => [...c, { role: "assistant", content }]);
     },
   });
 
