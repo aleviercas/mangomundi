@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "Đang phân tích kết quả…",
   "comparator.copilot.proceed": "Tiếp tục với {provider}",
-  "comparator.copilot.notify": "Thông báo cho tôi khi tỷ giá tốt hơn",
   "comparator.copilot.proactive.rate": "Tôi nhận thấy **{provider}** đang cung cấp tỷ giá tốt nhất cho số tiền này. Bạn có muốn tôi giúp tiếp tục không?",
   "comparator.copilot.proactive.fee": "Lưu ý: **{provider}** có tổng phí thấp nhất cho số tiền này. Tiếp tục nhé?",
   "comparator.copilot.proactive.speed": "**{provider}** là lựa chọn nhanh nhất cho hành lang này hiện tại. Tiếp tục?",
