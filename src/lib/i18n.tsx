@@ -2440,7 +2440,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.send": "Send",
     "comparator.copilot.analyzing": "Analyzing results…",
     "comparator.copilot.proceed": "Continue with {provider}",
-    "comparator.copilot.notify": "Notify me if the rate improves",
     "comparator.copilot.proactive.rate":
       "I noticed **{provider}** offers the best rate right now for this amount. Want me to help you proceed?",
     "comparator.copilot.proactive.fee":
