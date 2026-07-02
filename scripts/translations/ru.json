@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "Анализирую результаты…",
   "comparator.copilot.proceed": "Продолжить с {provider}",
-  "comparator.copilot.notify": "Сообщите, если курс улучшится",
   "comparator.copilot.proactive.rate": "Я заметил, что **{provider}** сейчас предлагает лучший курс для этой суммы. Помочь продолжить?",
   "comparator.copilot.proactive.fee": "Обратите внимание: у **{provider}** самые низкие общие комиссии для этой суммы. Продолжим?",
   "comparator.copilot.proactive.speed": "**{provider}** — самый быстрый вариант для этого коридора. Продолжить?",
