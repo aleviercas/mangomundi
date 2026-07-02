@@ -101,21 +101,26 @@ export const AI_PROVIDERS: AiProviderConfig[] = [
     label: "GPT-OSS 120B (primary, free)",
     model: "openai/gpt-oss-120b:free",
     priority: 1,
-    timeoutMs: 30_000,
+    // Kept short on purpose: with 3 providers in the failover chain, a long
+    // per-provider timeout compounds into a worst case that can exceed the
+    // serverless function's own execution limit, which then kills the
+    // request with a hard platform crash instead of our graceful fallback
+    // message. 8s x 3 = 24s worst case, safely inside typical limits.
+    timeoutMs: 8_000,
   },
   {
     key: "nemotron-super-120b",
     label: "Nemotron 3 Super 120B (fallback, free)",
     model: "nvidia/nemotron-3-super-120b-a12b:free",
     priority: 2,
-    timeoutMs: 30_000,
+    timeoutMs: 8_000,
   },
   {
     key: "gpt-oss-20b",
     label: "GPT-OSS 20B (last resort, free)",
     model: "openai/gpt-oss-20b:free",
     priority: 3,
-    timeoutMs: 30_000,
+    timeoutMs: 8_000,
   },
 ];
 
