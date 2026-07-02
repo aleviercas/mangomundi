@@ -54,7 +54,8 @@ type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = "received" | "fee" | "speed";
 type ChatAction =
   | { kind: "proceed"; slug: string; url: string; label: string }
-  | { kind: "notify"; label: string };
+  | { kind: "notify"; label: string }
+  | { kind: "compare"; from: string; to: string; label: string };
 type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
 type BusinessStage = "volume" | "email" | "consent" | "done";
 
@@ -211,12 +212,14 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   };
 
   const compareMut = useMutation({
-    mutationFn: async () => {
+    mutationFn: async (override?: { from: string; to: string }) => {
+      const useFrom = override?.from ?? from;
+      const useTo = override?.to ?? to;
       const requestId = ++requestRef.current;
       const data = await compareFn({
-        data: { amount, from, to, segment, amountMode, sendingCountry, receivingCountry },
+        data: { amount, from: useFrom, to: useTo, segment, amountMode, sendingCountry, receivingCountry },
       });
-      return { data, requestId };
+      return { data, requestId, usedFrom: useFrom, usedTo: useTo };
     },
     onMutate: () => {
       setAiLoading(true);
@@ -225,8 +228,10 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       setChat([]);
       setMissingCorridor(null);
     },
-    onSuccess: ({ data, requestId }) => {
+    onSuccess: ({ data, requestId, usedFrom, usedTo }) => {
       if (requestId !== requestRef.current) return;
+      if (usedFrom !== from) setFrom(usedFrom);
+      if (usedTo !== to) setTo(usedTo);
       setResult(data);
       setSortBy("received");
       setAiText(buildReasoning());
@@ -299,6 +304,23 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     });
   };
 
+  // Runs an actual comparison for a route the user asked about in free-text
+  // chat, instead of assuming it's unsupported. If it genuinely isn't
+  // supported, compareMut.onError already detects MISSING_CORRIDOR and
+  // surfaces the existing request-this-route CTA — so nothing is logged as
+  // missing until a real attempt confirms it.
+  const runSuggestedCompare = (suggestedFrom: string, suggestedTo: string) => {
+    track("rfq_interaction", {
+      amount,
+      from_currency: suggestedFrom,
+      to_currency: suggestedTo,
+      segment,
+      urgency,
+      source: "chat_suggested_compare",
+    });
+    compareMut.mutate({ from: suggestedFrom, to: suggestedTo });
+  };
+
   const handleWizardAction = (action: WizardAction) => {
     if (action.id === "report") {
       const note = `I have noted your interest in the ${from}-${to} route. It has been added to the discovery log; we will prioritize it as demand grows.`;
@@ -368,20 +390,35 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           history: newHistory.map((m) => ({ role: m.role, content: m.content })),
         },
       });
-      // The AI acknowledges a corridor missing from the comparator in free
-      // chat by appending a machine tag as the last line of its reply (see
-      // the Neutrality Protocol prompt). Previously that acknowledgment was
-      // pure text with no side effect — parse the tag here and actually log
-      // it via the same path as the "Report a missing route" CTA, so it
-      // shows up in Supabase for real instead of just being said.
-      const tagMatch = /\[\[MISSING_CORRIDOR:([A-Z]{3})-([A-Z]{3})\]\]\s*$/.exec(res.text);
+      // The AI invites the user to actually run a comparison for a
+      // different route they asked about by appending a machine tag as the
+      // last line of its reply (see the Neutrality Protocol prompt). Parse
+      // it into a real "Compare X → Y" button — clicking it runs the actual
+      // comparator, which only logs the route as missing if it genuinely
+      // isn't supported (via compareMut.onError, unchanged).
+      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{3})-([A-Z]{3})\]\]\s*$/.exec(res.text);
       const displayText = tagMatch
         ? res.text.slice(0, tagMatch.index).trim()
         : res.text;
-      setChat((c) => [...c, { role: "assistant", content: displayText }]);
-      if (tagMatch) {
-        void requestMissingRoute(tagMatch[1], tagMatch[2]);
-      }
+      const suggestedFrom = tagMatch?.[1];
+      const suggestedTo = tagMatch?.[2];
+      const actions: ChatAction[] | undefined =
+        suggestedFrom && suggestedTo
+          ? [
+              {
+                kind: "compare",
+                from: suggestedFrom,
+                to: suggestedTo,
+                label:
+                  resolveWizardLocale(lang) === "es"
+                    ? `Comparar ${suggestedFrom} → ${suggestedTo}`
+                    : resolveWizardLocale(lang) === "pt"
+                      ? `Comparar ${suggestedFrom} → ${suggestedTo}`
+                      : `Compare ${suggestedFrom} → ${suggestedTo}`,
+              },
+            ]
+          : undefined;
+      setChat((c) => [...c, { role: "assistant", content: displayText, actions }]);
     },
   });
 
@@ -1051,6 +1088,15 @@ function FloatingAgent(p: FloatingAgentProps) {
                               key={j}
                               onClick={() => openPreferredRate(a.slug, a.url)}
                               className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
+                            >
+                              <Zap className="h-3 w-3" aria-hidden /> {a.label}
+                            </button>
+                          ) : a.kind === "compare" ? (
+                            <button
+                              key={j}
+                              onClick={() => runSuggestedCompare(a.from, a.to)}
+                              disabled={compareMut.isPending}
+                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
                             >
                               <Zap className="h-3 w-3" aria-hidden /> {a.label}
                             </button>
