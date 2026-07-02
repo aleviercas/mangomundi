@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "กำลังวิเคราะห์ผลลัพธ์…",
   "comparator.copilot.proceed": "ดำเนินการต่อกับ {provider}",
-  "comparator.copilot.notify": "แจ้งฉันเมื่ออัตราดีขึ้น",
   "comparator.copilot.proactive.rate": "ฉันสังเกตว่า **{provider}** ให้อัตราที่ดีที่สุดในตอนนี้สำหรับจำนวนนี้ ต้องการให้ฉันช่วยดำเนินการต่อไหม?",
   "comparator.copilot.proactive.fee": "ข้อสังเกต: **{provider}** มีค่าธรรมเนียมรวมต่ำสุดสำหรับจำนวนนี้ ดำเนินการต่อไหม?",
   "comparator.copilot.proactive.speed": "**{provider}** เป็นตัวเลือกที่เร็วที่สุดสำหรับเส้นทางนี้ในตอนนี้ ดำเนินการต่อไหม?",
