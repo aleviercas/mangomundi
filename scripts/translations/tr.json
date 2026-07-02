@@ -426,7 +426,6 @@
   "comparator.copilot.agent": "AI Agent",
   "comparator.copilot.analyzing": "Sonuçlar analiz ediliyor…",
   "comparator.copilot.proceed": "{provider} ile devam et",
-  "comparator.copilot.notify": "Kur iyileşirse bana haber ver",
   "comparator.copilot.proactive.rate": "**{provider}**'in bu tutar için şu anda en iyi kuru sunduğunu fark ettim. Devam etmenize yardım edeyim mi?",
   "comparator.copilot.proactive.fee": "Dikkat: **{provider}** bu tutar için en düşük toplam ücretlere sahip. Devam edelim mi?",
   "comparator.copilot.proactive.speed": "**{provider}** şu anda bu koridor için en hızlı seçenek. Devam edilsin mi?",
