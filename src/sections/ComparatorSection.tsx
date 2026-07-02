@@ -368,7 +368,20 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           history: newHistory.map((m) => ({ role: m.role, content: m.content })),
         },
       });
-      setChat((c) => [...c, { role: "assistant", content: res.text }]);
+      // The AI acknowledges a corridor missing from the comparator in free
+      // chat by appending a machine tag as the last line of its reply (see
+      // the Neutrality Protocol prompt). Previously that acknowledgment was
+      // pure text with no side effect — parse the tag here and actually log
+      // it via the same path as the "Report a missing route" CTA, so it
+      // shows up in Supabase for real instead of just being said.
+      const tagMatch = /\[\[MISSING_CORRIDOR:([A-Z]{3})-([A-Z]{3})\]\]\s*$/.exec(res.text);
+      const displayText = tagMatch
+        ? res.text.slice(0, tagMatch.index).trim()
+        : res.text;
+      setChat((c) => [...c, { role: "assistant", content: displayText }]);
+      if (tagMatch) {
+        void requestMissingRoute(tagMatch[1], tagMatch[2]);
+      }
     },
   });
 
