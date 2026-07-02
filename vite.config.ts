@@ -36,7 +36,19 @@ export default defineConfig(async ({ command, mode }) => {
   // Nitro produces the deployable server output; it only runs on build.
   if (command === "build") {
     const { nitro } = await import("nitro/vite");
-    plugins.push(nitro());
+    plugins.push(
+      nitro({
+        // Default Vercel function duration (10-15s unconfigured) is shorter
+        // than the AI chat endpoint's worst-case failover chain. Raising it
+        // to 60s (safe on both Hobby and Pro w/ Fluid Compute, which this
+        // preset uses by default) lets our own graceful timeouts/fallbacks
+        // run to completion instead of the platform killing the function
+        // first and showing Vercel's generic crash page.
+        vercel: {
+          functions: { maxDuration: 60 },
+        },
+      }),
+    );
   }
 
   plugins.push(viteReact());
