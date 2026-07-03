@@ -34,7 +34,11 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/providers";
 import { captureBusinessLead } from "@/lib/agent.functions";
 import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
-import { MasterRateStore, type MasterRateMap, type MissingCorridorEntry } from "@/services/providers/MasterRateStore";
+import {
+  MasterRateStore,
+  type MasterRateMap,
+  type MissingCorridorEntry,
+} from "@/services/providers/MasterRateStore";
 import {
   AiCopilot,
   MissingCorridorCta,
@@ -138,8 +142,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   // MasterRateMap / MissingCorridorsLog (client mirror). Hydrated from the
   // server on mount and re-synced after each comparison so the AI Wizard
   // always has up-to-date context.
-  const [masterMap, setMasterMap] = useState<MasterRateMap | null>(() => MasterRateStore.getMaster());
-  const [missingLog, setMissingLog] = useState<MissingCorridorEntry[]>(() => MasterRateStore.getMissing());
+  const [masterMap, setMasterMap] = useState<MasterRateMap | null>(() =>
+    MasterRateStore.getMaster(),
+  );
+  const [missingLog, setMissingLog] = useState<MissingCorridorEntry[]>(() =>
+    MasterRateStore.getMissing(),
+  );
   const [missingCorridor, setMissingCorridor] = useState<{ from: string; to: string } | null>(null);
 
   // Restore once on mount.
@@ -172,13 +180,14 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           if (!existing) MasterRateStore.logMissing(m.from, m.to);
         }
       })
-      .catch(() => {/* offline / build-time — ignore */});
+      .catch(() => {
+        /* offline / build-time — ignore */
+      });
     return () => {
       unsub();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   const buildReasoning = (): string => {
     const urgencyLabel =
@@ -245,7 +254,14 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           receivingCountry: useReceiving,
         },
       });
-      return { data, requestId, usedFrom: useFrom, usedTo: useTo, usedSending: useSending, usedReceiving: useReceiving };
+      return {
+        data,
+        requestId,
+        usedFrom: useFrom,
+        usedTo: useTo,
+        usedSending: useSending,
+        usedReceiving: useReceiving,
+      };
     },
     onMutate: () => {
       setAiLoading(true);
@@ -420,8 +436,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         { role: "user", content: action.label },
         {
           role: "assistant",
-          content:
-            "Run a comparison first — I answer using the table data, not external sources.",
+          content: "Run a comparison first — I answer using the table data, not external sources.",
         },
       ]);
       return;
@@ -501,7 +516,11 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       // the chat bubble instead of becoming a button.
       const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{2,3})-([A-Z]{2,3})\]\]/.exec(normalized);
       const displayText = tagMatch
-        ? normalized.replace(tagMatch[0], "").replace(/\s{2,}/g, " ").replace(/\s+([.!])/g, "$1").trim()
+        ? normalized
+            .replace(tagMatch[0], "")
+            .replace(/\s{2,}/g, " ")
+            .replace(/\s+([.!])/g, "$1")
+            .trim()
         : res.text;
       const fromSide = tagMatch ? resolveRouteCode(tagMatch[1]) : undefined;
       const toSide = tagMatch ? resolveRouteCode(tagMatch[2]) : undefined;
@@ -599,10 +618,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(
-        AGENT_STORAGE_KEY,
-        JSON.stringify({ chat, unread: unreadCount }),
-      );
+      window.localStorage.setItem(AGENT_STORAGE_KEY, JSON.stringify({ chat, unread: unreadCount }));
     } catch {
       /* ignore quota */
     }
@@ -613,7 +629,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     setAiCollapsed(nextCollapsed);
     if (!nextCollapsed) setUnreadCount(0);
   };
-
 
   const openPreferredRate = (slug: string, url: string, name?: string) => {
     trackFn({
@@ -747,201 +762,207 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   };
 
   return (
-    <section id="comparator" key={lang} className="min-h-screen bg-background py-8 pb-32 sm:py-12 sm:pb-40">
+    <section
+      id="comparator"
+      key={lang}
+      className="min-h-screen bg-background py-8 pb-32 sm:py-12 sm:pb-40"
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* Two-column layout once results exist: Advanced Search card on the
             left, live metrics on the right. Before the first comparison the
             card simply spans the full width (result is always null on first
             render, so this is hydration-safe). Mobile stacks card-first. */}
-        <div className={result ? "grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : ""}>
-        {/* Advanced search card. AI Agent is a floating widget (see below). */}
-        <div className="min-w-0">
-          {/* Decision card */}
-          <div className="surface-card overflow-hidden min-w-0">
-
-          {/* Card header: brand + segment toggle */}
-          <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
-            <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
-              <span className="truncate">{t("comparator.advancedSearch")}</span>
-            </div>
-            <div
-              role="tablist"
-              aria-label="Segment"
-              className="flex h-8 shrink-0 items-center gap-0.5 rounded-md border border-border bg-muted p-0.5"
-            >
-              {(["retail", "business"] as Segment[]).map((s) => (
-                <button
-                  key={s}
-                  role="tab"
-                  aria-selected={segment === s}
-                  onClick={() => setSegment(s)}
-                  className={`rounded-sm px-2.5 py-1 text-[11px] font-semibold capitalize transition ${
-                    segment === s
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
+        <div
+          className={
+            result ? "grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : ""
+          }
+        >
+          {/* Advanced search card. AI Agent is a floating widget (see below). */}
+          <div className="min-w-0">
+            {/* Decision card */}
+            <div className="surface-card overflow-hidden min-w-0">
+              {/* Card header: brand + segment toggle */}
+              <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
+                <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
+                  <span className="truncate">{t("comparator.advancedSearch")}</span>
+                </div>
+                <div
+                  role="tablist"
+                  aria-label="Segment"
+                  className="flex h-8 shrink-0 items-center gap-0.5 rounded-md border border-border bg-muted p-0.5"
                 >
-                  {t(`comparator.segment.${s}`)}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Form body. @container lets the rows adapt to the CARD's width, not
-              the viewport: 3/4 columns when the card is full-width (no results
-              yet), 2 columns once it shares the row with the metrics panel. */}
-          <div className="@container space-y-4 p-4 sm:p-6">
-            {sendingCountry === receivingCountry && (
-              <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
-                {t("search.sameCountry")}
-              </div>
-            )}
-            {/* Row 1 — Source Country | Target Country | Urgency */}
-            <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @2xl:grid-cols-3">
-              <FieldLight label={t("comparator.field.sourceCountry")}>
-                <CountrySelect
-                  value={sendingCountry}
-                  onChange={setSendingCountry}
-                  placeholder={t("comparator.combobox.placeholder")}
-                  searchPlaceholder={t("comparator.combobox.search")}
-                  emptyLabel={t("comparator.combobox.empty")}
-                  ariaLabel={t("comparator.field.sourceCountry")}
-                />
-              </FieldLight>
-              <FieldLight label={t("comparator.field.targetCountry")}>
-                <CountrySelect
-                  value={receivingCountry}
-                  onChange={setReceivingCountry}
-                  placeholder={t("comparator.combobox.placeholder")}
-                  searchPlaceholder={t("comparator.combobox.search")}
-                  emptyLabel={t("comparator.combobox.empty")}
-                  ariaLabel={t("comparator.field.targetCountry")}
-                />
-              </FieldLight>
-              <FieldLight label={t("comparator.field.urgency")}>
-                <select
-                  value={urgency}
-                  onChange={(e) => setUrgency(e.target.value as Urgency)}
-                  className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
-                >
-                  <option value="urgent">{t("fx.urgency.urgent")}</option>
-                  <option value="standard">{t("fx.urgency.standard")}</option>
-                  <option value="flexible">{t("fx.urgency.flexible")}</option>
-                </select>
-              </FieldLight>
-            </div>
-
-            {/* Row 2 — Amount mode | Amount | Source Currency | Target Currency */}
-            <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @2xl:grid-cols-4">
-              <FieldLight label={t("comparator.field.amountMode")}>
-                <div className="flex h-11 rounded-md border border-input bg-muted p-1">
-                  {(["send", "receive"] as AmountMode[]).map((mode) => (
-                    <Button
-                      key={mode}
-                      type="button"
-                      size="sm"
-                      variant={amountMode === mode ? "default" : "ghost"}
-                      onClick={() => setAmountMode(mode)}
-                      className="h-8 flex-1"
+                  {(["retail", "business"] as Segment[]).map((s) => (
+                    <button
+                      key={s}
+                      role="tab"
+                      aria-selected={segment === s}
+                      onClick={() => setSegment(s)}
+                      className={`rounded-sm px-2.5 py-1 text-[11px] font-semibold capitalize transition ${
+                        segment === s
+                          ? "bg-foreground text-background"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
                     >
-                      {t(`comparator.amountMode.${mode}`)}
-                    </Button>
+                      {t(`comparator.segment.${s}`)}
+                    </button>
                   ))}
                 </div>
-              </FieldLight>
-              <FieldLight
-                label={
-                  amountMode === "send"
-                    ? t("comparator.field.amountSent")
-                    : t("comparator.field.amountReceived")
-                }
-              >
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min={1}
-                  value={amount || ""}
-                  placeholder="1000"
-                  onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                  className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm tabular-nums text-foreground shadow-sm transition-colors placeholder:text-muted-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
-                />
-              </FieldLight>
-              <FieldLight label={t("comparator.field.sourceCurrency")}>
-                <CurrencyCombobox
-                  value={from}
-                  onChange={setFrom}
-                  placeholder={t("comparator.combobox.placeholder")}
-                  searchPlaceholder={t("comparator.combobox.search")}
-                  emptyLabel={t("comparator.combobox.empty")}
-                  ariaLabel={t("comparator.field.sourceCurrency")}
-                />
-              </FieldLight>
-              <FieldLight label={t("comparator.field.targetCurrency")}>
-                <CurrencyCombobox
-                  value={to}
-                  onChange={setTo}
-                  placeholder={t("comparator.combobox.placeholder")}
-                  searchPlaceholder={t("comparator.combobox.search")}
-                  emptyLabel={t("comparator.combobox.empty")}
-                  ariaLabel={t("comparator.field.targetCurrency")}
-                />
-              </FieldLight>
-            </div>
+              </div>
 
-            {/* CTA — full width */}
-            <div className="pt-1">
-              <Button
-                onClick={() => {
-                  if (!sendingCountry || !receivingCountry || amount <= 0) {
-                    setValidationError(t("fx.validation"));
-                    return;
-                  }
-                  setValidationError(null);
-                  compareMut.mutate(undefined);
-                }}
-                disabled={compareMut.isPending}
-                className="btn-cta h-11 w-full rounded-md px-6 text-sm font-semibold"
-              >
-                {compareMut.isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span className="truncate">…</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="truncate">{t("comparator.cta.compareRates")}</span>
-                    <ArrowRight className="h-4 w-4 shrink-0" />
-                  </>
+              {/* Form body. @container lets the rows adapt to the CARD's width, not
+              the viewport: 3/4 columns when the card is full-width (no results
+              yet), 2 columns once it shares the row with the metrics panel. */}
+              <div className="@container space-y-4 p-4 sm:p-6">
+                {sendingCountry === receivingCountry && (
+                  <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
+                    {t("search.sameCountry")}
+                  </div>
                 )}
-              </Button>
-              {validationError && (
-                <div className="mt-3 rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-                  {validationError}
+                {/* Row 1 — Source Country | Target Country | Urgency */}
+                <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @2xl:grid-cols-3">
+                  <FieldLight label={t("comparator.field.sourceCountry")}>
+                    <CountrySelect
+                      value={sendingCountry}
+                      onChange={setSendingCountry}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCountry")}
+                    />
+                  </FieldLight>
+                  <FieldLight label={t("comparator.field.targetCountry")}>
+                    <CountrySelect
+                      value={receivingCountry}
+                      onChange={setReceivingCountry}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.targetCountry")}
+                    />
+                  </FieldLight>
+                  <FieldLight label={t("comparator.field.urgency")}>
+                    <select
+                      value={urgency}
+                      onChange={(e) => setUrgency(e.target.value as Urgency)}
+                      className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                    >
+                      <option value="urgent">{t("fx.urgency.urgent")}</option>
+                      <option value="standard">{t("fx.urgency.standard")}</option>
+                      <option value="flexible">{t("fx.urgency.flexible")}</option>
+                    </select>
+                  </FieldLight>
                 </div>
-              )}
+
+                {/* Row 2 — Amount mode | Amount | Source Currency | Target Currency */}
+                <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @2xl:grid-cols-4">
+                  <FieldLight label={t("comparator.field.amountMode")}>
+                    <div className="flex h-11 rounded-md border border-input bg-muted p-1">
+                      {(["send", "receive"] as AmountMode[]).map((mode) => (
+                        <Button
+                          key={mode}
+                          type="button"
+                          size="sm"
+                          variant={amountMode === mode ? "default" : "ghost"}
+                          onClick={() => setAmountMode(mode)}
+                          className="h-8 flex-1"
+                        >
+                          {t(`comparator.amountMode.${mode}`)}
+                        </Button>
+                      ))}
+                    </div>
+                  </FieldLight>
+                  <FieldLight
+                    label={
+                      amountMode === "send"
+                        ? t("comparator.field.amountSent")
+                        : t("comparator.field.amountReceived")
+                    }
+                  >
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={1}
+                      value={amount || ""}
+                      placeholder="1000"
+                      onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                      className="flex h-11 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm tabular-nums text-foreground shadow-sm transition-colors placeholder:text-muted-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                    />
+                  </FieldLight>
+                  <FieldLight label={t("comparator.field.sourceCurrency")}>
+                    <CurrencyCombobox
+                      value={from}
+                      onChange={setFrom}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCurrency")}
+                    />
+                  </FieldLight>
+                  <FieldLight label={t("comparator.field.targetCurrency")}>
+                    <CurrencyCombobox
+                      value={to}
+                      onChange={setTo}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.targetCurrency")}
+                    />
+                  </FieldLight>
+                </div>
+
+                {/* CTA — full width */}
+                <div className="pt-1">
+                  <Button
+                    onClick={() => {
+                      if (!sendingCountry || !receivingCountry || amount <= 0) {
+                        setValidationError(t("fx.validation"));
+                        return;
+                      }
+                      setValidationError(null);
+                      compareMut.mutate(undefined);
+                    }}
+                    disabled={compareMut.isPending}
+                    className="btn-cta h-11 w-full rounded-md px-6 text-sm font-semibold"
+                  >
+                    {compareMut.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span className="truncate">…</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="truncate">{t("comparator.cta.compareRates")}</span>
+                        <ArrowRight className="h-4 w-4 shrink-0" />
+                      </>
+                    )}
+                  </Button>
+                  {validationError && (
+                    <div className="mt-3 rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                      {validationError}
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-          </div>
 
-        </div>
-
-        {/* Right column — live metrics beside the search card. */}
-        {result && (
-          <div className="min-w-0">
-            <ResultsMetrics
-              result={result}
-              amount={amount}
-              sortBy={sortBy}
-              onSortChange={setSortBy}
-              tMidmarket={t("fx.midmarket")}
-              tUpdated={t("fx.updated")}
-              tLastUpdate={t("comparator.lastUpdate")}
-              tSavingsLabel={t("comparator.savings.label")}
-              tSavingsBaseline={t("comparator.savings.baseline")}
-            />
-          </div>
-        )}
+          {/* Right column — live metrics beside the search card. */}
+          {result && (
+            <div className="min-w-0">
+              <ResultsMetrics
+                result={result}
+                amount={amount}
+                sortBy={sortBy}
+                onSortChange={setSortBy}
+                tMidmarket={t("fx.midmarket")}
+                tUpdated={t("fx.updated")}
+                tLastUpdate={t("comparator.lastUpdate")}
+                tSavingsLabel={t("comparator.savings.label")}
+                tSavingsBaseline={t("comparator.savings.baseline")}
+              />
+            </div>
+          )}
         </div>
 
         {/* Floating AI Agent — fixed bottom-right, minimized by default.
@@ -951,7 +972,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           collapsed={aiCollapsed}
           onToggle={handleAgentToggle}
           unreadCount={unreadCount}
-
           lang={lang}
           t={t}
           aiLoading={aiLoading}
@@ -1154,7 +1174,10 @@ function FloatingAgent(p: FloatingAgentProps) {
               <span className="truncate">{t("comparator.copilot.agent")}</span>
             </span>
             <div className="flex shrink-0 items-center gap-2">
-              <span className="text-[10px] font-medium uppercase tracking-wider text-emerald-600" aria-label={`Language ${lang.toUpperCase()}`}>
+              <span
+                className="text-[10px] font-medium uppercase tracking-wider text-emerald-600"
+                aria-label={`Language ${lang.toUpperCase()}`}
+              >
                 ● {lang.toUpperCase()}
               </span>
               <button
@@ -1197,7 +1220,6 @@ function FloatingAgent(p: FloatingAgentProps) {
               </>
             )}
 
-
             {chat.length > 0 && (
               <div className="space-y-2">
                 {chat.map((m, i) => (
@@ -1230,7 +1252,9 @@ function FloatingAgent(p: FloatingAgentProps) {
                           ) : (
                             <button
                               key={j}
-                              onClick={() => onSuggestedCompare(a.from, a.to, a.fromCountry, a.toCountry)}
+                              onClick={() =>
+                                onSuggestedCompare(a.from, a.to, a.fromCountry, a.toCountry)
+                              }
                               disabled={comparePending}
                               className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
                             >
@@ -1292,7 +1316,9 @@ function FloatingAgent(p: FloatingAgentProps) {
                   onClick={() => void confirmBusinessLead()}
                   className="bg-accent text-accent-foreground hover:bg-accent/90"
                 >
-                  {savingBusinessLead ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : null}
+                  {savingBusinessLead ? (
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  ) : null}
                   {t("comparator.copilot.business.yes")}
                 </Button>
                 <Button
@@ -1365,10 +1391,16 @@ function ResultsMetrics({
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-[11px] text-foreground">
         <div className="inline-flex items-center gap-1.5">
           <span className="relative flex h-1.5 w-1.5">
-            <span className={`absolute inline-flex h-full w-full rounded-full opacity-60 ${result.is_reference ? "bg-amber-500" : "animate-ping bg-emerald-500"}`} />
-            <span className={`relative inline-flex h-1.5 w-1.5 rounded-full ${result.is_reference ? "bg-amber-500" : "bg-emerald-500"}`} />
+            <span
+              className={`absolute inline-flex h-full w-full rounded-full opacity-60 ${result.is_reference ? "bg-amber-500" : "animate-ping bg-emerald-500"}`}
+            />
+            <span
+              className={`relative inline-flex h-1.5 w-1.5 rounded-full ${result.is_reference ? "bg-amber-500" : "bg-emerald-500"}`}
+            />
           </span>
-          <span className={`font-semibold uppercase tracking-wider ${result.is_reference ? "text-amber-700" : "text-emerald-700"}`}>
+          <span
+            className={`font-semibold uppercase tracking-wider ${result.is_reference ? "text-amber-700" : "text-emerald-700"}`}
+          >
             {result.is_reference ? "Reference" : tLastUpdate}:
           </span>
           <span className="tabular-nums">{updatedTime}</span>

@@ -27,11 +27,7 @@ export function HomeSearch() {
   let to = localCurrency(destination);
   // Same-currency corridors aren't comparable; nudge the target to a sane pair.
   if (from === to) to = from === "USD" ? "EUR" : "USD";
-  const promiseItems = [
-    t("home.feat.liveRates"),
-    t("home.feat.zeroFees"),
-    t("home.feat.noSignup"),
-  ];
+  const promiseItems = [t("home.feat.liveRates"), t("home.feat.zeroFees"), t("home.feat.noSignup")];
   const promiseIcons = [CircleCheck, Eye, ShieldCheck];
 
   useEffect(() => {
