@@ -52,3 +52,46 @@ export const COUNTRY_BY_CODE: Record<string, CountryInfo> = Object.fromEntries(
 export function localCurrency(countryCode: string): string {
   return COUNTRY_BY_CODE[countryCode]?.currency ?? "USD";
 }
+
+// Curated representative country for currencies that span many countries. The
+// `country-to-currency` data has no notion of a "primary" country, so a naive
+// reverse lookup would return whichever country sorts first by name (e.g.
+// USD → American Samoa). This pins the dominant-economy country for the common
+// multi-country currencies; extend as needed.
+const CURRENCY_PRIMARY_COUNTRY: Record<string, string> = {
+  EUR: "DE",
+  USD: "US",
+  GBP: "GB",
+  CHF: "CH",
+  AUD: "AU",
+  NZD: "NZ",
+  XOF: "SN",
+  XAF: "CM",
+  XCD: "AG",
+  XPF: "PF",
+  DKK: "DK",
+  NOK: "NO",
+  INR: "IN",
+  ZAR: "ZA",
+  ILS: "IL",
+  MAD: "MA",
+};
+
+// Reverse index (currency → first country by name that uses it), built once as
+// the fallback for currencies not in the curated map above. Most currencies are
+// 1:1 with a country (JPY→JP, ARS→AR), so the fallback is exact for them.
+const FIRST_COUNTRY_BY_CURRENCY: Record<string, string> = (() => {
+  const idx: Record<string, string> = {};
+  for (const c of COUNTRIES) if (!(c.currency in idx)) idx[c.currency] = c.code;
+  return idx;
+})();
+
+/**
+ * Representative country code for a currency, or `undefined` if no country
+ * uses it. Used to keep the country selects consistent when a currency changes
+ * (e.g. the agent's "Compare EUR → JPY" flow).
+ */
+export function primaryCountryForCurrency(currency: string): string | undefined {
+  const cur = currency.toUpperCase();
+  return CURRENCY_PRIMARY_COUNTRY[cur] ?? FIRST_COUNTRY_BY_CURRENCY[cur];
+}

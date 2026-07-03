@@ -26,6 +26,7 @@ import {
   type ComparisonResult,
 } from "@/lib/fx.functions";
 import { useI18n } from "@/lib/i18n";
+import { localCurrency, primaryCountryForCurrency } from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountrySelect } from "@/components/ui/CountrySelect";
@@ -87,6 +88,10 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const [sortBy, setSortBy] = useState<SortKey>("received");
   const requestRef = useRef(0);
+  // Set true when a compare just populated results for a NEW corridor, so the
+  // debounced URL-sync effect (which fires on from/to/country changes) syncs the
+  // URL without wiping the freshly-set results/chat. One-shot.
+  const skipNextSyncClearRef = useRef(false);
   const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
   const [businessData, setBusinessData] = useState<{
     monthlyVolume?: number;
@@ -209,14 +214,29 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   };
 
   const compareMut = useMutation({
-    mutationFn: async (override?: { from: string; to: string }) => {
+    mutationFn: async (override?: {
+      from: string;
+      to: string;
+      sendingCountry?: string;
+      receivingCountry?: string;
+    }) => {
       const useFrom = override?.from ?? from;
       const useTo = override?.to ?? to;
+      const useSending = override?.sendingCountry ?? sendingCountry;
+      const useReceiving = override?.receivingCountry ?? receivingCountry;
       const requestId = ++requestRef.current;
       const data = await compareFn({
-        data: { amount, from: useFrom, to: useTo, segment, amountMode, sendingCountry, receivingCountry },
+        data: {
+          amount,
+          from: useFrom,
+          to: useTo,
+          segment,
+          amountMode,
+          sendingCountry: useSending,
+          receivingCountry: useReceiving,
+        },
       });
-      return { data, requestId, usedFrom: useFrom, usedTo: useTo };
+      return { data, requestId, usedFrom: useFrom, usedTo: useTo, usedSending: useSending, usedReceiving: useReceiving };
     },
     onMutate: () => {
       setAiLoading(true);
@@ -225,10 +245,24 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       setChat([]);
       setMissingCorridor(null);
     },
-    onSuccess: ({ data, requestId, usedFrom, usedTo }) => {
+    onSuccess: ({ data, requestId, usedFrom, usedTo, usedSending, usedReceiving }) => {
       if (requestId !== requestRef.current) return;
       if (usedFrom !== from) setFrom(usedFrom);
       if (usedTo !== to) setTo(usedTo);
+      // Keep the country selects consistent with the (possibly new) currencies
+      // — a suggested compare can change the corridor, not just the currency.
+      if (usedSending !== sendingCountry) setSendingCountry(usedSending);
+      if (usedReceiving !== receivingCountry) setReceivingCountry(usedReceiving);
+      // If the corridor changed, the URL-sync effect will fire from those state
+      // changes — tell it to keep the results/chat we're about to set.
+      if (
+        usedFrom !== from ||
+        usedTo !== to ||
+        usedSending !== sendingCountry ||
+        usedReceiving !== receivingCountry
+      ) {
+        skipNextSyncClearRef.current = true;
+      }
       setResult(data);
       setSortBy("received");
       setAiText(buildReasoning());
@@ -241,7 +275,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       if (best) {
         const referenceTag = data.is_reference ? " _(reference)_" : "";
         const summary =
-          `Sending **${amount.toLocaleString()} ${from}** to **${to}** — ` +
+          `Sending **${amount.toLocaleString()} ${usedFrom}** to **${usedTo}** — ` +
           `best route delivers **${best.received.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${data.quote}** ` +
           `via **${best.name}**.${referenceTag}`;
         initial.push({ role: "assistant", content: summary });
@@ -315,7 +349,23 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       urgency,
       source: "chat_suggested_compare",
     });
-    compareMut.mutate({ from: suggestedFrom, to: suggestedTo });
+    // Keep each country consistent with the suggested currency: only change a
+    // side's country when its current country doesn't already use that currency
+    // (so a route that keeps one currency leaves that country untouched).
+    const nextOrigin =
+      localCurrency(sendingCountry) === suggestedFrom
+        ? sendingCountry
+        : (primaryCountryForCurrency(suggestedFrom) ?? sendingCountry);
+    const nextDest =
+      localCurrency(receivingCountry) === suggestedTo
+        ? receivingCountry
+        : (primaryCountryForCurrency(suggestedTo) ?? receivingCountry);
+    compareMut.mutate({
+      from: suggestedFrom,
+      to: suggestedTo,
+      sendingCountry: nextOrigin,
+      receivingCountry: nextDest,
+    });
   };
 
   const handleWizardAction = (action: WizardAction) => {
@@ -471,11 +521,20 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   // hammer the router or trigger redundant state resets.
   useEffect(() => {
     setValidationError(null);
-    if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) return;
+    if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) {
+      skipNextSyncClearRef.current = false; // don't let a stale skip leak
+      return;
+    }
     const handle = setTimeout(() => {
-      setResult(null);
-      setAiText("");
-      setChat([]);
+      // After a suggested/corridor-changing compare we keep the just-set results
+      // and only sync the URL; otherwise a manual input edit clears stale results.
+      if (skipNextSyncClearRef.current) {
+        skipNextSyncClearRef.current = false;
+      } else {
+        setResult(null);
+        setAiText("");
+        setChat([]);
+      }
       void navigate({
         search: {
           origin: sendingCountry,
