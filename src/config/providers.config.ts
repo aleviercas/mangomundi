@@ -25,12 +25,20 @@ export interface FxProviderConfig {
 export interface AiProviderConfig {
   key: string;
   label: string;
-  /** Model identifier passed to the OpenRouter gateway. */
+  /** Which gateway/API shape to call. */
+  kind: "gemini" | "openai-compatible";
+  /** Model identifier passed to the gateway. */
   model: string;
   /** Lower number = tried first by the smart load balancer. */
   priority: number;
   /** Per-request timeout in ms. */
   timeoutMs: number;
+  /** Env var holding this provider's own API key. Skipped if unset. */
+  envVar: string;
+  /** Chat-completions endpoint for "openai-compatible" providers. */
+  baseUrl?: string;
+  /** Extra headers some gateways want (e.g. OpenRouter's X-Title). */
+  extraHeaders?: Record<string, string>;
 }
 
 // ---------- FX rate providers (transparent fallback) ----------
@@ -87,40 +95,81 @@ export const FX_PROVIDERS: FxProviderConfig[] = [
 ];
 
 // ---------- AI providers (smart load balancer) ----------
-// Calls run through the OpenRouter gateway; we vary the underlying model to
-// achieve provider diversity. The agent NEVER asks the user to pick — selection
-// is fully transparent.
-// Currently using OpenRouter ":free" models (no credit charge, but rate-limited
-// to ~50 req/day per account until $10+ credits are purchased, then ~1000/day,
-// and prompts may be logged for training). To upgrade to paid models, swap these
-// slugs for e.g. google/gemini-2.5-flash, openai/gpt-5-mini, or
-// anthropic/claude-haiku-4-5 (verify against https://openrouter.ai/models).
+// The agent NEVER asks the user to pick a model — selection is fully
+// transparent and automatic.
+//
+// IMPORTANT: these are genuinely INDEPENDENT gateways with separate quota
+// buckets, not just different model names behind one account. OpenRouter's
+// three ":free" models below all share ONE account-level daily rate limit
+// (~50 req/day until $10+ credit is added, then ~1000/day) — so when
+// OpenRouter's quota is exhausted, ALL THREE fail together, which is exactly
+// what happened in production. Gemini (a separate Google account/project)
+// and DeepSeek (a separate account with its own free grant) each have their
+// own quota, so they keep working even when OpenRouter is fully rate-limited.
+//
+// Every provider is skipped automatically if its env var isn't set, so
+// adding a new key here never breaks anything for providers not yet
+// configured — see envVar below.
+//
+// Worst case if every provider times out: 5 x 8s = 40s, still safely inside
+// the 60s Vercel maxDuration configured in vite.config.ts.
+//
+//   GEMINI_API_KEY   — free, no card: https://aistudio.google.com/apikey
+//   OPENROUTER_API_KEY — existing gateway for the three free OSS models
+//   DEEPSEEK_API_KEY — 5M free tokens on signup, then ~$0.14/M tokens:
+//                      https://platform.deepseek.com/api_keys
 export const AI_PROVIDERS: AiProviderConfig[] = [
   {
-    key: "gpt-oss-120b",
-    label: "GPT-OSS 120B (primary, free)",
-    model: "openai/gpt-oss-120b:free",
+    key: "gemini-flash",
+    label: "Gemini 2.5 Flash (Google, free tier, independent quota)",
+    kind: "gemini",
+    model: "gemini-2.5-flash",
     priority: 1,
-    // Kept short on purpose: with 3 providers in the failover chain, a long
-    // per-provider timeout compounds into a worst case that can exceed the
-    // serverless function's own execution limit, which then kills the
-    // request with a hard platform crash instead of our graceful fallback
-    // message. 8s x 3 = 24s worst case, safely inside typical limits.
     timeoutMs: 8_000,
+    envVar: "GEMINI_API_KEY",
+  },
+  {
+    key: "gpt-oss-120b",
+    label: "GPT-OSS 120B (OpenRouter, free)",
+    kind: "openai-compatible",
+    model: "openai/gpt-oss-120b:free",
+    priority: 2,
+    timeoutMs: 8_000,
+    envVar: "OPENROUTER_API_KEY",
+    baseUrl: "https://openrouter.ai/api/v1/chat/completions",
+    extraHeaders: { "X-Title": "mangomundi" },
   },
   {
     key: "nemotron-super-120b",
-    label: "Nemotron 3 Super 120B (fallback, free)",
+    label: "Nemotron 3 Super 120B (OpenRouter, free)",
+    kind: "openai-compatible",
     model: "nvidia/nemotron-3-super-120b-a12b:free",
-    priority: 2,
+    priority: 3,
     timeoutMs: 8_000,
+    envVar: "OPENROUTER_API_KEY",
+    baseUrl: "https://openrouter.ai/api/v1/chat/completions",
+    extraHeaders: { "X-Title": "mangomundi" },
   },
   {
     key: "gpt-oss-20b",
-    label: "GPT-OSS 20B (last resort, free)",
+    label: "GPT-OSS 20B (OpenRouter, free)",
+    kind: "openai-compatible",
     model: "openai/gpt-oss-20b:free",
-    priority: 3,
+    priority: 4,
     timeoutMs: 8_000,
+    envVar: "OPENROUTER_API_KEY",
+    baseUrl: "https://openrouter.ai/api/v1/chat/completions",
+    extraHeaders: { "X-Title": "mangomundi" },
+  },
+  {
+    key: "deepseek-flash",
+    label: "DeepSeek V4 Flash (own account, free grant then cheap)",
+    kind: "openai-compatible",
+    model: "deepseek-v4-flash",
+    priority: 5,
+    timeoutMs: 8_000,
+    envVar: "DEEPSEEK_API_KEY",
+    baseUrl: "https://api.deepseek.com/chat/completions",
   },
 ];
 
