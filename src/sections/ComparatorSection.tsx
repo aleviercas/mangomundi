@@ -855,6 +855,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           setChatInput={setChatInput}
           sendChat={sendChat}
           chatMutPending={chatMut.isPending}
+          comparePending={compareMut.isPending}
+          onSuggestedCompare={runSuggestedCompare}
           chatBottomRef={chatBottomRef}
           openPreferredRate={openPreferredRate}
           segment={segment}
@@ -953,6 +955,8 @@ interface FloatingAgentProps {
   setChatInput: (v: string) => void;
   sendChat: (v: string) => void;
   chatMutPending: boolean;
+  comparePending: boolean;
+  onSuggestedCompare: (from: string, to: string) => void;
   chatBottomRef: React.RefObject<HTMLDivElement | null>;
   openPreferredRate: (slug: string, url: string, name?: string) => void;
   segment: Segment;
@@ -968,7 +972,8 @@ interface FloatingAgentProps {
 function FloatingAgent(p: FloatingAgentProps) {
   const {
     collapsed, onToggle, unreadCount, lang, t, aiLoading, chat, result,
-    chatInput, setChatInput, sendChat, chatMutPending, chatBottomRef,
+    chatInput, setChatInput, sendChat, chatMutPending, comparePending,
+    onSuggestedCompare, chatBottomRef,
     openPreferredRate, segment, businessStage,
     savingBusinessLead, confirmBusinessLead, setBusinessStage, setChat,
     onWizardAction, wizardContext,
@@ -1104,8 +1109,8 @@ function FloatingAgent(p: FloatingAgentProps) {
                           ) : (
                             <button
                               key={j}
-                              onClick={() => runSuggestedCompare(a.from, a.to)}
-                              disabled={compareMut.isPending}
+                              onClick={() => onSuggestedCompare(a.from, a.to)}
+                              disabled={comparePending}
                               className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
                             >
                               <Zap className="h-3 w-3" aria-hidden /> {a.label}
