@@ -5,7 +5,7 @@ import remarkGfm from "remark-gfm";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { getBlogPost } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, hreflangLinks } from "@/config/site";
 
 const postQuery = (slug: string, locale: string) =>
   queryOptions({
@@ -64,7 +64,12 @@ export const Route = createFileRoute("/blog/$slug")({
     }
     return {
       meta,
-      links: [{ rel: "canonical", href: url }],
+      // Blog content ships in en/es/pt only (see blog-publish pipeline), so
+      // alternates cover just those locales.
+      links: [
+        { rel: "canonical", href: url },
+        ...hreflangLinks(`/blog/${params.slug}`, ["en", "es", "pt"]),
+      ],
       scripts,
     };
   },

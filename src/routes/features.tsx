@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BarChart3, Brain, Wallet, Code, ShieldCheck, Headphones, Clock, FileText } from "lucide-react";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, hreflangLinks } from "@/config/site";
 
 export const Route = createFileRoute("/features")({
   head: () => {
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/features")({
         { property: "og:description", content: seo.description },
         { property: "og:url", content: `${SITE_URL}/features` },
       ],
-      links: [{ rel: "canonical", href: `${SITE_URL}/features` }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/features` }, ...hreflangLinks("/features")],
     };
   },
   component: FeaturesPage,

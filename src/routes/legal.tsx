@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, hreflangLinks } from "@/config/site";
 
 export const Route = createFileRoute("/legal")({
   head: () => ({
@@ -19,7 +19,7 @@ export const Route = createFileRoute("/legal")({
       },
       { property: "og:url", content: `${SITE_URL}/legal` },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/legal` }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/legal` }, ...hreflangLinks("/legal")],
   }),
   component: LegalPage,
 });

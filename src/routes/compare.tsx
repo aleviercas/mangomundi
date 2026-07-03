@@ -1,7 +1,7 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { z } from "zod";
 import { ComparatorSection } from "@/sections/ComparatorSection";
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, hreflangLinks } from "@/config/site";
 
 const compareSearchSchema = z.object({
   origin: z.string().length(2).optional(),
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/compare")({
       },
       { property: "og:url", content: `${SITE_URL}/compare` },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/compare` }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/compare` }, ...hreflangLinks("/compare")],
   }),
   component: ComparePage,
 });

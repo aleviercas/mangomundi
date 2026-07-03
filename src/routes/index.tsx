@@ -5,7 +5,7 @@ import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { StatsSection } from "@/sections/StatsSection";
 import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, hreflangLinks } from "@/config/site";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: `${SITE_URL}/` },
     ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/` }],
+    links: [{ rel: "canonical", href: `${SITE_URL}/` }, ...hreflangLinks("/")],
     scripts: [
       {
         type: "application/ld+json",

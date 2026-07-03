@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, HREFLANG_LANGS } from "@/config/site";
 
 const BASE_URL = SITE_URL;
 
@@ -9,6 +9,20 @@ interface SitemapEntry {
   lastmod?: string;
   changefreq?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
   priority?: string;
+  /** Locales this URL exists in (defaults to all UI languages). */
+  langs?: readonly string[];
+}
+
+// xhtml:link alternates — language is a ?lang= param; x-default is the clean
+// URL (geo-detected). Same policy as the hreflangLinks() route helper.
+function alternates(path: string, langs: readonly string[] = HREFLANG_LANGS): string {
+  const base = `${BASE_URL}${path}`;
+  const lines = langs.map(
+    (lang) =>
+      `    <xhtml:link rel="alternate" hreflang="${lang}" href="${base}?lang=${lang}"/>`,
+  );
+  lines.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${base}"/>`);
+  return lines.join("\n");
 }
 
 export const Route = createFileRoute("/sitemap.xml")({
@@ -23,11 +37,21 @@ export const Route = createFileRoute("/sitemap.xml")({
             .from("blog_posts")
             .select("slug, updated_at")
             .eq("published", true);
-          blogEntries = (data ?? []).map((p) => ({
-            path: `/blog/${p.slug}`,
-            lastmod: p.updated_at ? new Date(p.updated_at).toISOString() : undefined,
+          // One sitemap entry per slug (locales are ?lang= alternates of the
+          // same URL); newest updated_at wins for lastmod.
+          const bySlug = new Map<string, string | null>();
+          for (const p of data ?? []) {
+            const prev = bySlug.get(p.slug);
+            if (prev === undefined || (p.updated_at && (!prev || p.updated_at > prev))) {
+              bySlug.set(p.slug, p.updated_at ?? null);
+            }
+          }
+          blogEntries = [...bySlug.entries()].map(([slug, updatedAt]) => ({
+            path: `/blog/${slug}`,
+            lastmod: updatedAt ? new Date(updatedAt).toISOString() : undefined,
             changefreq: "monthly",
             priority: "0.7",
+            langs: ["en", "es", "pt"],
           }));
         } catch {
           // Sitemap should still render even if DB is unavailable
@@ -51,6 +75,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
+            alternates(e.path, e.langs),
             e.lastmod ? `    <lastmod>${e.lastmod}</lastmod>` : null,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
@@ -62,7 +87,7 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         const xml = [
           `<?xml version="1.0" encoding="UTF-8"?>`,
-          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+          `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">`,
           ...urls,
           `</urlset>`,
         ].join("\n");

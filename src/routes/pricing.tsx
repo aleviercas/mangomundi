@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, hreflangLinks } from "@/config/site";
 
 export const Route = createFileRoute("/pricing")({
   head: () => {
@@ -14,7 +14,7 @@ export const Route = createFileRoute("/pricing")({
         { property: "og:description", content: seo.description },
         { property: "og:url", content: `${SITE_URL}/pricing` },
       ],
-      links: [{ rel: "canonical", href: `${SITE_URL}/pricing` }],
+      links: [{ rel: "canonical", href: `${SITE_URL}/pricing` }, ...hreflangLinks("/pricing")],
     };
   },
   component: PricingPage,

@@ -124,8 +124,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  // Render the geo-detected language on the SSR document itself so crawlers
+  // and assistive tech see the right lang before hydration (the I18nProvider
+  // effect keeps it in sync client-side afterwards).
+  const loaderData = Route.useLoaderData();
+  const initialLang = loaderData?.initialLang ?? "en";
   return (
-    <html lang="en">
+    <html lang={initialLang} dir={initialLang === "ar" ? "rtl" : undefined}>
       <head>
         <HeadContent />
       </head>
