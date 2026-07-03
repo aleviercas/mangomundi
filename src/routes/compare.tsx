@@ -11,6 +11,11 @@ const compareSearchSchema = z.object({
   to: z.string().length(3).default("USD"),
   amount: z.coerce.number().positive().default(1000),
   lang: z.string().length(2).optional(),
+  // Auto-run flag set by the home widget so the user lands on results directly.
+  // Optional on purpose (a .default() would make it required in every typed
+  // <Link to="/compare"> across the app). Number, not coerce.boolean (which
+  // would turn the string "false" into true).
+  run: z.coerce.number().optional(),
 });
 
 export const Route = createFileRoute("/compare")({
@@ -55,6 +60,7 @@ function ComparePage() {
     to: search.to,
     amount: search.amount,
     lang: search.lang,
+    autoRun: search.run === 1,
   };
 
   return <ComparatorSection initialQuery={initialQuery} />;

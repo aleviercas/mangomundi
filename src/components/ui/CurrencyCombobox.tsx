@@ -15,6 +15,7 @@ export function CurrencyCombobox({
   searchPlaceholder,
   emptyLabel,
   ariaLabel,
+  triggerClassName,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -22,6 +23,7 @@ export function CurrencyCombobox({
   searchPlaceholder?: string;
   emptyLabel?: string;
   ariaLabel?: string;
+  triggerClassName?: string;
 }) {
   return (
     <Combobox
@@ -32,6 +34,7 @@ export function CurrencyCombobox({
       searchPlaceholder={searchPlaceholder}
       emptyLabel={emptyLabel}
       ariaLabel={ariaLabel}
+      triggerClassName={triggerClassName}
     />
   );
 }

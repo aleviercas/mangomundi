@@ -74,6 +74,8 @@ interface ComparatorQuery {
   to: string;
   amount: number;
   lang?: string;
+  /** Run the comparison immediately on mount (set by the home widget's ?run=1). */
+  autoRun?: boolean;
 }
 
 export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQuery }) {
@@ -324,6 +326,23 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       }
     },
   });
+
+  // Auto-run one comparison when arriving from the home widget (?run=1) so the
+  // user lands directly on results instead of having to click "Compare Rates"
+  // again. Fires once per mount (ref guard also survives a StrictMode
+  // double-effect). Same validation as the manual CTA, plus the corridor
+  // sanity check the URL-sync effect uses.
+  const didAutoRunRef = useRef(false);
+  useEffect(() => {
+    if (!initialQuery?.autoRun || didAutoRunRef.current) return;
+    didAutoRunRef.current = true;
+    if (!sendingCountry || !receivingCountry || amount <= 0 || from === to) return;
+    // The URL-sync effect's 300ms timer clears result/chat unless this one-shot
+    // flag is set — covers sub-300ms responses landing before the timer fires.
+    skipNextSyncClearRef.current = true;
+    compareMut.mutate(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const requestMissingRoute = async (from: string, to: string) => {
     MasterRateStore.logMissing(from, to);

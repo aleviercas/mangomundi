@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CircleCheck, Eye, ShieldCheck } from "lucide-react";
 import { CountrySelect } from "@/components/ui/CountrySelect";
+import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { Button } from "@/components/ui/button";
 import { localCurrency } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
@@ -17,11 +18,15 @@ export function HomeSearch() {
   const [origin, setOrigin] = useState("US");
   const [destination, setDestination] = useState("");
   const [segment, setSegment] = useState<Segment>("retail");
+  const [amount, setAmount] = useState(1000);
+  // null = follow the geo-detected origin's currency; set once the user picks.
+  const [fromOverride, setFromOverride] = useState<string | null>(null);
   const detectCountry = useServerFn(getVisitorCountry);
-  const ready = Boolean(destination);
-  const from = localCurrency(origin);
+  const ready = Boolean(destination) && amount > 0;
+  const from = fromOverride ?? localCurrency(origin);
   let to = localCurrency(destination);
-  if (origin === destination && from === to) to = from === "USD" ? "EUR" : "USD";
+  // Same-currency corridors aren't comparable; nudge the target to a sane pair.
+  if (from === to) to = from === "USD" ? "EUR" : "USD";
   const promiseItems = [
     t("home.feat.liveRates"),
     t("home.feat.zeroFees"),
@@ -69,6 +74,33 @@ export function HomeSearch() {
 
         <label className="mt-2 block sm:mt-4">
           <span className="mb-1.5 block text-xs font-medium text-slate-300 sm:text-sm">
+            {t("comparator.field.amount")}
+          </span>
+          <div className="grid grid-cols-[1.5fr_1fr] gap-2">
+            <input
+              type="number"
+              inputMode="decimal"
+              min={1}
+              value={amount || ""}
+              placeholder="1000"
+              onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+              aria-label={t("comparator.field.amount")}
+              className="h-12 w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-medium tabular-nums text-white placeholder:text-slate-500 hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 sm:h-14 sm:text-base"
+            />
+            <CurrencyCombobox
+              value={from}
+              onChange={setFromOverride}
+              placeholder={t("comparator.combobox.placeholder")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.sourceCurrency")}
+              triggerClassName="h-12 sm:h-14 rounded-xl border border-white/10 bg-white/5 px-4 text-sm sm:text-base font-medium text-white hover:border-white/20 focus:ring-2 focus:ring-white/20"
+            />
+          </div>
+        </label>
+
+        <label className="mt-2 block sm:mt-4">
+          <span className="mb-1.5 block text-xs font-medium text-slate-300 sm:text-sm">
             {t("search.destination")}
           </span>
           <CountrySelect
@@ -89,11 +121,12 @@ export function HomeSearch() {
         >
           <Link
             to="/compare"
-            search={{ origin, destination, segment, from, to, amount: 1000, lang }}
+            search={{ origin, destination, segment, from, to, amount, lang, run: 1 }}
             aria-disabled={!ready}
             className={!ready ? "pointer-events-none opacity-50" : ""}
             onClick={() =>
               track("comparator_query", {
+                amount,
                 from_currency: from,
                 to_currency: to,
                 segment,
