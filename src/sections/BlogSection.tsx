@@ -1,54 +1,89 @@
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight } from "lucide-react";
+import { listBlogPosts, type BlogListItem } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
 
-interface BlogCard {
-  eyebrow: string;
-  title: string;
-  body: string;
-  placeholder?: boolean;
-}
+const toBlogLocale = (lang: string) => (lang === "es" || lang === "pt" ? lang : "en");
 
 export function BlogSection() {
-  const { t } = useI18n();
-  const cards: BlogCard[] = [
-    {
-      eyebrow: t("home.blog.eyebrow"),
-      title: t("home.blog.title"),
-      body: t("home.blog.body"),
-      placeholder: true,
-    },
-  ];
+  const { t, lang } = useI18n();
+  const locale = toBlogLocale(lang);
+  const { data: posts } = useQuery({
+    queryKey: ["blog", "list", locale],
+    queryFn: () => listBlogPosts({ data: { locale } }),
+    staleTime: 5 * 60_000,
+  });
+  const latest = (posts ?? []).slice(0, 3);
+
   return (
     <section id="blog" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="mb-10 max-w-3xl">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
-            {t("home.blog.eyebrow")}
-          </p>
-          <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
-            {t("home.blog.title")}
-          </h2>
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+          <div className="max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+              {t("home.blog.eyebrow")}
+            </p>
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+              {t("home.blog.title")}
+            </h2>
+          </div>
+          {latest.length > 0 && (
+            <Link
+              to="/blog"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#ff6b5b] hover:underline"
+            >
+              {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
+            </Link>
+          )}
         </div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          {cards.map((c, i) => (
-            <article
-              key={i}
-              className="group flex h-full flex-col rounded-2xl border border-white/10 bg-slate-900 p-8 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] transition-shadow hover:shadow-[0_30px_70px_-25px_rgba(15,23,42,0.55)]"
-            >
+        {latest.length === 0 ? (
+          <div className="grid gap-5 sm:grid-cols-2">
+            <article className="group flex h-full flex-col rounded-2xl border border-white/10 bg-slate-900 p-8 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
               <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
-                {c.placeholder ? "Coming soon" : c.eyebrow}
+                {t("home.blog.eyebrow")}
               </p>
               <h3 className="mt-3 font-heading text-xl font-extrabold text-white sm:text-2xl">
-                {c.placeholder ? "Insights on global FX, coming soon" : c.title}
+                {t("home.blog.title")}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                {c.placeholder
-                  ? "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon."
-                  : c.body}
-              </p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-300">{t("home.blog.body")}</p>
             </article>
-          ))}
-        </div>
+          </div>
+        ) : (
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {latest.map((post: BlogListItem) => (
+              <Link
+                key={post.slug}
+                to="/blog/$slug"
+                params={{ slug: post.slug }}
+                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
+              >
+                {post.cover_url && (
+                  <img
+                    src={post.cover_url}
+                    alt=""
+                    className="h-40 w-full object-cover"
+                    loading="lazy"
+                  />
+                )}
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="font-heading text-lg font-bold text-slate-900 group-hover:text-[#ff6b5b]">
+                    {post.title}
+                  </h3>
+                  {post.excerpt && (
+                    <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">
+                      {post.excerpt}
+                    </p>
+                  )}
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#ff6b5b]">
+                    {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

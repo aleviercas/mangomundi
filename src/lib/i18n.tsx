@@ -442,6 +442,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.title": "Insights on global FX, coming soon.",
     "home.blog.body":
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
+    "home.blog.readMore": "Read more",
     // Footer
     "footer.tagline": "Intelligent currency exchange decisions.",
     "footer.nav.title": "Navigate",
@@ -732,6 +733,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.title": "Análisis sobre FX global, muy pronto.",
     "home.blog.body":
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
+    "home.blog.readMore": "Leer más",
     // Footer
     "footer.tagline": "Decisiones inteligentes de cambio de divisas.",
     "footer.nav.title": "Navegación",

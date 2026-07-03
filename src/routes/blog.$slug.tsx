@@ -17,8 +17,15 @@ const truncate = (s: string, max = 160) =>
   s.length <= max ? s : s.slice(0, max - 1).trimEnd() + "…";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params, context }) =>
-    context.queryClient.ensureQueryData(postQuery(params.slug, "en")),
+  loader: async ({ params, context }) => {
+    // SSR the post in the geo-detected language (cheap header read) so
+    // crawlers and the first paint get the right locale; the client keeps
+    // refetching with the live i18n lang. Non-en/es/pt langs coerce to "en".
+    const { getInitialLang } = await import("@/lib/geo.functions");
+    const detected = await getInitialLang().catch(() => "en");
+    const locale = detected === "es" || detected === "pt" ? detected : "en";
+    return context.queryClient.ensureQueryData(postQuery(params.slug, locale));
+  },
   head: ({ params, loaderData }) => {
     const url = `${SITE_URL}/blog/${params.slug}`;
     const post = loaderData ?? null;
@@ -45,6 +52,7 @@ export const Route = createFileRoute("/blog/$slug")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Article",
+          inLanguage: post.locale,
           headline: post.title,
           description: post.excerpt ?? undefined,
           image: post.cover_url ?? undefined,

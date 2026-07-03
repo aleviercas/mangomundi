@@ -565,5 +565,6 @@
   "about.coverage.title": "Una visión unificada del mercado global de divisas.",
   "about.coverage.body": "Nuestro motor de decisión evalúa más de 50 proveedores globales en tiempo real y normaliza tasas, comisiones, velocidad y disponibilidad por corredor.",
   "contact.success": "Gracias. Hemos recibido tu mensaje y nuestro equipo responderá pronto.",
-  "contact.error": "No hemos podido enviar tu mensaje. Inténtalo de nuevo."
+  "contact.error": "No hemos podido enviar tu mensaje. Inténtalo de nuevo.",
+  "home.blog.readMore": "Leer más"
 }
