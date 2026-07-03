@@ -445,13 +445,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     // the client — zero AI tokens spent, restoring the Wizard's original
     // "resolved without AI" design. Only free-typed questions reach the AI.
     if (action.id === "how" || action.id === "limits" || action.id === "fees") {
-      const locale = resolveWizardLocale(lang);
       const reply =
         action.id === "how"
-          ? localHowToCompare(locale)
+          ? localHowToCompare(t)
           : action.id === "limits"
-            ? localTransferLimits(result, locale)
-            : localFeeBreakdown(result, locale);
+            ? localTransferLimits(result, t)
+            : localFeeBreakdown(result, t);
       setChat((c) => [
         ...c,
         { role: "user", content: action.label },
@@ -534,7 +533,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                 fromCountry: fromSide.country,
                 toCountry: toSide.country,
                 // Show the country code when the user named one, else the currency.
-                label: `${resolveWizardLocale(lang) === "en" ? "Compare" : "Comparar"} ${
+                label: `${t("wizard.compare")} ${
                   fromSide.country ?? fromSide.currency
                 } → ${toSide.country ?? toSide.currency}`,
               },
@@ -1366,6 +1365,7 @@ function ResultsMetrics({
   tSavingsLabel: string;
   tSavingsBaseline: string;
 }) {
+  const { t } = useI18n();
   // Savings = amount * (baseline_spread - best_provider_spread).
   // baseline_spread is the 3.5% retail/remittance market reference.
   const savings = useMemo(() => {
@@ -1401,7 +1401,7 @@ function ResultsMetrics({
           <span
             className={`font-semibold uppercase tracking-wider ${result.is_reference ? "text-amber-700" : "text-emerald-700"}`}
           >
-            {result.is_reference ? "Reference" : tLastUpdate}:
+            {result.is_reference ? t("comparator.reference") : tLastUpdate}:
           </span>
           <span className="tabular-nums">{updatedTime}</span>
           {result.is_reference && (
@@ -1409,13 +1409,13 @@ function ResultsMetrics({
               className="ml-1 rounded-sm border border-amber-500/40 bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-800"
               title="One or more rates were served from the MasterRateMap cache (last known value), not a live upstream quote."
             >
-              Cached
+              {t("comparator.cached")}
             </span>
           )}
         </div>
         {result.is_reference && (
           <p className="w-full text-[10px] leading-snug text-amber-800">
-            Rates are last known/cached, not live.
+            {t("comparator.cachedNote")}
           </p>
         )}
       </div>
@@ -1457,14 +1457,14 @@ function ResultsMetrics({
         </div>
         <div className="min-w-0 border-t border-emerald-500/20 pt-4">
           <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <ArrowDownUp className="mr-1 inline h-3 w-3" /> Sort by
+            <ArrowDownUp className="mr-1 inline h-3 w-3" /> {t("comparator.sortBy")}
           </div>
           <div className="flex flex-wrap gap-1">
             {(
               [
-                ["received", "Best rate"],
-                ["fee", "Cheapest fees"],
-                ["speed", "Fastest"],
+                ["received", t("comparator.sort.received")],
+                ["fee", t("comparator.sort.fee")],
+                ["speed", t("comparator.sort.speed")],
               ] as const
             ).map(([k, label]) => (
               <button
@@ -1520,6 +1520,7 @@ function ResultsBlock({
   tProvider: string;
   tNeutrality: string;
 }) {
+  const { t } = useI18n();
   const showLargeBanner = amount >= 50000;
 
   const organic = useMemo(() => {
@@ -1548,12 +1549,11 @@ function ResultsBlock({
           <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <div className="min-w-0 text-sm">
             <div className="truncate font-semibold text-foreground">
-              Sending over {amount.toLocaleString()} {result.base}? Talk to our business desk.
+              {t("comparator.b2b.title")
+                .replace("{amount}", amount.toLocaleString())
+                .replace("{cur}", result.base)}
             </div>
-            <div className="mt-0.5 text-muted-foreground">
-              For high-volume transfers, dedicated providers offer custom rates, treasury tooling
-              and an account manager. →
-            </div>
+            <div className="mt-0.5 text-muted-foreground">{t("comparator.b2b.body")}</div>
           </div>
         </div>
       )}
@@ -1580,7 +1580,7 @@ function ResultsBlock({
         ))}
         {organic.length === 0 && (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            No providers available for this corridor yet.
+            {t("comparator.empty")}
           </div>
         )}
       </div>

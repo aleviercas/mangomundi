@@ -65,7 +65,11 @@ export function AiCopilot({
   className = "",
 }: AiCopilotProps) {
   return (
-    <div className={`grid grid-cols-1 gap-1.5 sm:grid-cols-2 ${className}`} role="group" aria-label="AI Wizard quick actions">
+    <div
+      className={`grid grid-cols-1 gap-1.5 sm:grid-cols-2 ${className}`}
+      role="group"
+      aria-label="AI Wizard quick actions"
+    >
       {actions.map((a) => {
         const Icon = a.icon;
         return (
@@ -108,8 +112,8 @@ export function MissingCorridorCta({
           We don't currently price {from} → {to}.
         </div>
         <p className="mt-0.5 text-xs text-amber-900/80">
-          This corridor isn't covered by any connected provider yet. You can request it and
-          we'll prioritize coverage when it has enough demand.
+          This corridor isn't covered by any connected provider yet. You can request it and we'll
+          prioritize coverage when it has enough demand.
         </p>
         <button
           type="button"
@@ -130,6 +134,9 @@ export function MissingCorridorCta({
  * client. Answering locally restores the original "80% resolved with zero
  * tokens" design and removes load from the shared free-tier AI quota.
  * Only free-form typed questions still reach the AI.
+ *
+ * Copy lives in the i18n dictionaries (wizard.* keys) so all 20 languages are
+ * covered by the translation pipeline — the functions take `t` from useI18n.
  */
 export type WizardLocale = "en" | "es" | "pt";
 
@@ -137,11 +144,7 @@ export function resolveWizardLocale(lang: string): WizardLocale {
   return lang === "es" || lang === "pt" ? lang : "en";
 }
 
-const HOW_TO_COMPARE: Record<WizardLocale, string> = {
-  en: "Read the table left to right: **rate** is how much of the destination currency you get per unit sent before fees, **fee** is the total charged by that provider, and **received** is the net amount that actually arrives. Use the column headers to sort by best amount received, lowest fee, or fastest delivery time.",
-  es: "Leé la tabla de izquierda a derecha: **tasa** es cuánto recibís de la moneda destino por unidad enviada antes de fees, **fee** es el cargo total de ese proveedor, y **recibido** es el neto que realmente llega. Usá los encabezados de columna para ordenar por mejor monto recibido, menor fee, o entrega más rápida.",
-  pt: "Leia a tabela da esquerda para a direita: **taxa** é quanto você recebe da moeda de destino por unidade enviada antes das tarifas, **tarifa** é o total cobrado por esse provedor, e **recebido** é o valor líquido que realmente chega. Use os cabeçalhos de coluna para ordenar por melhor valor recebido, menor tarifa ou entrega mais rápida.",
-};
+type T = (key: string) => string;
 
 interface WizardRow {
   name: string;
@@ -156,43 +159,30 @@ interface WizardResultLike {
   rows: WizardRow[];
 }
 
-export function localHowToCompare(locale: WizardLocale): string {
-  return HOW_TO_COMPARE[locale];
+export function localHowToCompare(t: T): string {
+  return t("wizard.howToCompare");
 }
 
-export function localTransferLimits(_result: WizardResultLike, locale: WizardLocale): string {
+export function localTransferLimits(_result: WizardResultLike, t: T): string {
   // Anti-hallucination: the comparator dataset has no per-provider min/max
   // transfer-limit field today, so we say so plainly instead of letting an
   // LLM improvise around a gap in the data.
-  const copy: Record<WizardLocale, string> = {
-    en: "The comparator table doesn't track per-provider transfer limits yet — that field isn't part of the current dataset, so I won't guess. Please check the provider's own site for minimum/maximum amounts before sending.",
-    es: "La tabla del comparador todavía no registra límites de transferencia por proveedor — ese dato no forma parte del dataset actual, así que no lo voy a inventar. Verificá en el sitio del proveedor los montos mínimo/máximo antes de enviar.",
-    pt: "A tabela do comparador ainda não registra limites de transferência por provedor — esse campo não faz parte do dataset atual, então não vou inventar. Verifique no site do provedor os valores mínimo/máximo antes de enviar.",
-  };
-  return copy[locale];
+  return t("wizard.limits");
 }
 
-export function localFeeBreakdown(result: WizardResultLike, locale: WizardLocale): string {
-  const header: Record<WizardLocale, string> = {
-    en: "Fee breakdown from the current table:",
-    es: "Desglose de fees según la tabla actual:",
-    pt: "Detalhamento de tarifas segundo a tabela atual:",
-  };
-  const noCharges: Record<WizardLocale, string> = {
-    en: "no declared fixed/percent charges",
-    es: "sin cargos fijos/porcentuales declarados",
-    pt: "sem tarifas fixas/percentuais declaradas",
-  };
+export function localFeeBreakdown(result: WizardResultLike, t: T): string {
   const top = result.rows.slice(0, 3);
   const lines = top.map((r, i) => {
     const parts: string[] = [];
-    if (r.fee_fixed_applied) parts.push(`${r.fee_fixed_applied.toFixed(2)} ${result.base} fixed`);
-    if (r.fee_percent_applied) parts.push(`${r.fee_percent_applied.toFixed(2)}% fee`);
-    if (r.spread_applied) parts.push(`${r.spread_applied.toFixed(2)}% spread`);
-    const desc = parts.length ? parts.join(" + ") : noCharges[locale];
-    return `${i + 1}. **${r.name}** — ${desc} → total ${r.fee_total.toFixed(2)} ${result.base}`;
+    if (r.fee_fixed_applied)
+      parts.push(`${r.fee_fixed_applied.toFixed(2)} ${result.base} ${t("wizard.fees.fixed")}`);
+    if (r.fee_percent_applied)
+      parts.push(`${r.fee_percent_applied.toFixed(2)}% ${t("wizard.fees.fee")}`);
+    if (r.spread_applied) parts.push(`${r.spread_applied.toFixed(2)}% ${t("wizard.fees.spread")}`);
+    const desc = parts.length ? parts.join(" + ") : t("wizard.fees.noCharges");
+    return `${i + 1}. **${r.name}** — ${desc} → ${t("wizard.fees.total")} ${r.fee_total.toFixed(2)} ${result.base}`;
   });
-  return [header[locale], "", ...lines].join("\n");
+  return [t("wizard.fees.header"), "", ...lines].join("\n");
 }
 
 /**
