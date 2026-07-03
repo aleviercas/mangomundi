@@ -28,7 +28,7 @@ async function callOpenAiCompatible(
     body: JSON.stringify({ model: provider.model, messages: opts.messages }),
   });
 
-  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
+  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}${await bodySnippet(res)}` };
 
   const json = (await res.json()) as {
     choices?: Array<{ message?: { content?: string } }>;
@@ -38,12 +38,26 @@ async function callOpenAiCompatible(
   return { ok: true, text };
 }
 
+/** Truncated response body for failure diagnostics (never throws). */
+async function bodySnippet(res: Response): Promise<string> {
+  try {
+    const t = (await res.text()).slice(0, 300).replace(/\s+/g, " ").trim();
+    return t ? ` — ${t}` : "";
+  } catch {
+    return "";
+  }
+}
+
 /**
  * Google Gemini's generateContent API. Different shape from OpenAI-style
  * chat completions: no single "messages" array — the system prompt is its
  * own field, and turns use {role: "user"|"model", parts:[{text}]}.
  */
-async function callGemini(provider: AiProviderConfig, apiKey: string, opts: CallOpts): Promise<ProviderOutcome> {
+async function callGemini(
+  provider: AiProviderConfig,
+  apiKey: string,
+  opts: CallOpts,
+): Promise<ProviderOutcome> {
   const systemMsg = opts.messages.find((m) => m.role === "system");
   const turns = opts.messages
     .filter((m) => m.role !== "system")
@@ -64,20 +78,35 @@ async function callGemini(provider: AiProviderConfig, apiKey: string, opts: Call
     },
   );
 
-  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
+  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}${await bodySnippet(res)}` };
 
   const json = (await res.json()) as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; finishReason?: string }>;
+    promptFeedback?: { blockReason?: string };
   };
   const text = json.candidates?.[0]?.content?.parts
     ?.map((p) => p.text ?? "")
     .join("")
     .trim();
-  if (!text) return { ok: false, reason: "empty response" };
+  if (!text) {
+    // Gemini can return 200 with NO parts when the prompt/response is filtered
+    // by its safety system (promptFeedback.blockReason, or a non-STOP
+    // finishReason like "SAFETY"/"RECITATION"). Surface that distinctly so it
+    // reads clearly in logs and the load balancer fails over to the next
+    // provider — rather than a bland "empty response".
+    const finish = json.candidates?.[0]?.finishReason;
+    const block =
+      json.promptFeedback?.blockReason ?? (finish && finish !== "STOP" ? finish : undefined);
+    return { ok: false, reason: block ? `blocked (${block})` : "empty response" };
+  }
   return { ok: true, text };
 }
 
-async function callProvider(provider: AiProviderConfig, apiKey: string, opts: CallOpts): Promise<ProviderOutcome> {
+async function callProvider(
+  provider: AiProviderConfig,
+  apiKey: string,
+  opts: CallOpts,
+): Promise<ProviderOutcome> {
   if (provider.kind === "gemini") return callGemini(provider, apiKey, opts);
   return callOpenAiCompatible(provider, apiKey, opts);
 }
