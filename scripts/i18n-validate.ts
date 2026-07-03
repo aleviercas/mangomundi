@@ -68,13 +68,29 @@ if (report.brokenLangs.length) {
   lines.push("");
 }
 
+// Values identical to the EN source are a strong hint the translation silently
+// fell back to English (translate.ts writes EN placeholders on model failure).
+// Warning-only: presence/non-empty is what gates the build, and some short
+// strings (brand names, "OK", "FAQ") are legitimately identical.
+const identicalToEn: Record<string, number> = {};
+{
+  const en = DICTS.en as Record<string, string>;
+  for (const code of SUPPORTED_LANGS) {
+    if (code === "en") continue;
+    const dict = (DICTS as Record<string, Record<string, string>>)[code] ?? {};
+    identicalToEn[code] = Object.keys(en).filter(
+      (k) => typeof dict[k] === "string" && dict[k] === en[k],
+    ).length;
+  }
+}
+
 lines.push(`## Per-language coverage`);
 for (const code of SUPPORTED_LANGS) {
   if (code === "en") continue;
   const r = report.perLang[code];
   const pct = Math.round(r.coverage * 100);
   lines.push(
-    `- ${code}: ${pct}% coverage — missing ${r.missing.length}, empty ${r.empty.length}`,
+    `- ${code}: ${pct}% coverage — missing ${r.missing.length}, empty ${r.empty.length}, identical-to-EN ${identicalToEn[code]} (likely untranslated)`,
   );
 }
 lines.push("");

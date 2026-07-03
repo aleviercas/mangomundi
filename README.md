@@ -65,6 +65,31 @@ commit them:
 | `bun run i18n:validate` | Validate i18n translation files              |
 | `bun run e2e`           | Run Playwright end-to-end tests              |
 
+## Internationalization (i18n)
+
+The UI ships in 20 languages, auto-detected by geography (Vercel's
+`x-vercel-ip-country` header → `COUNTRY_TO_LANG`), with `?lang=xx` as the
+explicit override (persisted to localStorage). English is the source of truth
+and the global fallback. SEO surfaces per-language URLs via `hreflang`
+alternates and the sitemap.
+
+**Adding or changing UI copy:**
+
+1. Add the key + English value to the EN dict in `src/lib/i18n.tsx` (and the
+   Spanish value to the ES block — the two hand-maintained locales).
+2. Run `OPENROUTER_API_KEY=… bun run scripts/translate.ts` to AI-fill the key
+   in the other 18 locale files (`scripts/translations/*.json`). The script is
+   incremental: it only translates missing keys plus anything in the pending
+   ledger (`scripts/translations/.pending.json`, keys whose translation failed
+   and were written as EN placeholders — retried automatically on later runs).
+   Use `--retranslate-identical` to also re-queue values identical to EN.
+3. The strict validator (`bun run i18n:check`, part of `prebuild`) fails the
+   build if any key is missing/empty in any locale; the report
+   (`i18n-errors.log`) also counts values identical to EN per language as a
+   translation-quality warning.
+
+Blog content is published in **en/es/pt** (see `scripts/blog-publish.ts`).
+
 ## Project structure
 
 ```

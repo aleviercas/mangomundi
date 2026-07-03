@@ -51,6 +51,9 @@ const LANG_NAMES: Record<string, string> = {
 const GATEWAY_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = "openai/gpt-oss-120b:free";
 const BATCH_SIZE = 40;
+// Re-queue values identical to EN (pre-ledger English placeholders). Usage:
+//   bun run scripts/translate.ts --retranslate-identical [langs...]
+const RETRANSLATE_IDENTICAL = process.argv.includes("--retranslate-identical");
 const FORCE_KEYS = new Set([
   "hero.headline",
   "hero.subheadline.short",
@@ -144,25 +147,69 @@ async function translateBatch(
   }
 }
 
+// Keys whose translation FAILED and were written with the EN value as a
+// placeholder. Without this ledger they'd look "complete" forever (the
+// incremental check only queues missing/empty values) and would never be
+// retried — permanent English. Each run re-queues a language's pending keys
+// and removes the ones that finally got a real translation.
+const PENDING_PATH = () => resolve(OUT_DIR, ".pending.json");
+
+async function loadPending(): Promise<Record<string, string[]>> {
+  try {
+    const raw = await readFile(PENDING_PATH(), "utf8");
+    const parsed = JSON.parse(raw) as Record<string, string[]>;
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+async function savePending(pending: Record<string, string[]>): Promise<void> {
+  const compact = Object.fromEntries(
+    Object.entries(pending).filter(([, keys]) => keys.length > 0),
+  );
+  await writeFile(PENDING_PATH(), JSON.stringify(compact, null, 2) + "\n", "utf8");
+}
+
 async function translateLang(
   apiKey: string,
   lang: string,
   enDict: Record<string, string>,
+  pending: Record<string, string[]>,
 ): Promise<void> {
-  // Incremental: keep any prior translation, only fill missing/empty keys.
+  // Incremental: keep prior translations; queue missing/empty keys, FORCE_KEYS,
+  // and this language's pending (EN-fallback) keys from previous runs.
   const existing = await loadExisting(lang);
-  const out: Record<string, string> = { ...existing };
+  const pendingSet = new Set(pending[lang] ?? []);
+
+  // Prune: drop keys that no longer exist in the EN source of truth.
+  const out: Record<string, string> = {};
+  for (const k of Object.keys(enDict)) {
+    if (typeof existing[k] === "string") out[k] = existing[k];
+  }
 
   const todo: Array<[string, string]> = [];
   for (const [k, en] of Object.entries(enDict)) {
     const cur = out[k];
-    if (FORCE_KEYS.has(k) || typeof cur !== "string" || cur.trim().length === 0) todo.push([k, en]);
+    if (
+      FORCE_KEYS.has(k) ||
+      pendingSet.has(k) ||
+      typeof cur !== "string" ||
+      cur.trim().length === 0 ||
+      // --retranslate-identical: queue values identical to the EN source —
+      // usually EN placeholders left by pre-ledger failed runs. Some short
+      // strings are legitimately identical; retranslating them is harmless.
+      (RETRANSLATE_IDENTICAL && cur === en)
+    ) {
+      todo.push([k, en]);
+    }
   }
 
+  const stillPending = new Set<string>();
   if (todo.length === 0) {
     console.log(`  ${lang}: already complete (${Object.keys(out).length} keys)`);
   } else {
-    console.log(`  ${lang}: filling ${todo.length} / ${Object.keys(enDict).length} missing keys`);
+    console.log(`  ${lang}: filling ${todo.length} / ${Object.keys(enDict).length} keys`);
     for (let i = 0; i < todo.length; i += BATCH_SIZE) {
       const slice = todo.slice(i, i + BATCH_SIZE);
       let translated: Record<string, string> = {};
@@ -173,13 +220,24 @@ async function translateLang(
       }
       for (const [k, en] of slice) {
         const v = translated[k];
-        if (typeof v === "string" && v.trim().length > 0) out[k] = v;
-        else if (typeof out[k] !== "string" || out[k].trim().length === 0) out[k] = en;
+        if (typeof v === "string" && v.trim().length > 0) {
+          out[k] = v;
+        } else {
+          // EN placeholder keeps the strict validator green, but the key goes
+          // on the pending ledger so the next run retries it.
+          if (typeof out[k] !== "string" || out[k].trim().length === 0) out[k] = en;
+          stillPending.add(k);
+        }
       }
       process.stdout.write(`  ${lang}: ${Math.min(i + BATCH_SIZE, todo.length)}/${todo.length}\r`);
       await new Promise((r) => setTimeout(r, 250));
     }
     process.stdout.write("\n");
+  }
+
+  pending[lang] = [...stillPending].sort();
+  if (stillPending.size > 0) {
+    console.warn(`  ! ${lang}: ${stillPending.size} key(s) fell back to EN — recorded as pending`);
   }
 
   const path = resolve(OUT_DIR, `${lang}.json`);
@@ -194,21 +252,24 @@ async function main() {
     console.error("Missing OPENROUTER_API_KEY env var.");
     process.exit(1);
   }
-  const requested = process.argv.slice(2);
+  const args = process.argv.slice(2);
+  const requested = args.filter((a) => !a.startsWith("--"));
   const langs = requested.length > 0 ? requested : [...TARGET_LANGS];
 
   const enDict = LIVE_DICTS.en;
   console.log(`→ ${Object.keys(enDict).length} EN keys × ${langs.length} languages`);
 
+  const pending = await loadPending();
   for (const lang of langs) {
     if (lang === "en") continue;
     console.log(`\n→ ${lang} (${LANG_NAMES[lang] ?? "?"})`);
     try {
-      await translateLang(apiKey, lang, enDict);
+      await translateLang(apiKey, lang, enDict, pending);
     } catch (err) {
       console.error(`  ✗ ${lang} failed:`, (err as Error).message);
     }
   }
+  await savePending(pending);
   console.log(`\nDone. Output: ${OUT_DIR}`);
 }
 
