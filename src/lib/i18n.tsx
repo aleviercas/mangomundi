@@ -2504,6 +2504,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.transferDetails": "Transfer Details",
     "comparator.transferDetails.subtitle":
       "Adjust the amount and currencies before running the market comparison.",
+    "comparator.advancedSearch": "Advanced Search",
+    "comparator.results": "Your results",
     "comparator.field.amountMode": "Calculation",
     "comparator.amountMode.send": "Send",
     "comparator.amountMode.receive": "Receive",
@@ -2591,6 +2593,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.transferDetails": "Detalles de la transferencia",
     "comparator.transferDetails.subtitle":
       "Ajusta el importe y las monedas antes de ejecutar la comparación de mercado.",
+    "comparator.advancedSearch": "Búsqueda avanzada",
+    "comparator.results": "Tus resultados",
     "comparator.field.amountMode": "Cálculo",
     "comparator.amountMode.send": "Enviar",
     "comparator.amountMode.receive": "Recibir",

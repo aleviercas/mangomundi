@@ -85,7 +85,7 @@ export function HomeSearch() {
               placeholder="1000"
               onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
               aria-label={t("comparator.field.amount")}
-              className="h-12 w-full min-w-0 rounded-xl border border-white/10 bg-white/5 px-4 text-sm font-medium tabular-nums text-white placeholder:text-slate-500 hover:border-white/20 focus:outline-none focus:ring-2 focus:ring-white/20 sm:h-14 sm:text-base"
+              className="h-12 w-full min-w-0 rounded-xl border border-transparent bg-white px-4 text-sm font-medium tabular-nums text-slate-900 shadow-sm placeholder:text-slate-400 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40 sm:h-14 sm:text-base"
             />
             <CurrencyCombobox
               value={from}
@@ -94,7 +94,7 @@ export function HomeSearch() {
               searchPlaceholder={t("comparator.combobox.search")}
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.sourceCurrency")}
-              triggerClassName="h-12 sm:h-14 rounded-xl border border-white/10 bg-white/5 px-4 text-sm sm:text-base font-medium text-white hover:border-white/20 focus:ring-2 focus:ring-white/20"
+              triggerClassName="h-12 sm:h-14 rounded-xl border border-transparent bg-white px-4 text-sm sm:text-base font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:ring-2 focus:ring-[#ff6b5b]/40"
             />
           </div>
         </label>
@@ -110,7 +110,7 @@ export function HomeSearch() {
             searchPlaceholder={t("comparator.combobox.search")}
             emptyLabel={t("comparator.combobox.empty")}
             ariaLabel={t("search.destination")}
-            triggerClassName="h-12 sm:h-14 rounded-xl border border-white/10 bg-white/5 px-4 text-sm sm:text-base font-medium text-white hover:border-white/20 focus:ring-2 focus:ring-white/20"
+            triggerClassName="h-12 sm:h-14 rounded-xl border border-transparent bg-white px-4 text-sm sm:text-base font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:ring-2 focus:ring-[#ff6b5b]/40"
           />
         </label>
 

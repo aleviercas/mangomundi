@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -16,7 +16,6 @@ import {
   Sparkle,
   Zap,
   Info,
-  ArrowLeft,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
@@ -750,23 +749,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   return (
     <section id="comparator" key={lang} className="min-h-screen bg-background py-8 pb-32 sm:py-12 sm:pb-40">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Link
-          to="/"
-          className="mb-6 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> {t("search.new")}
-        </Link>
-        {/* Transfer details step */}
-        <div className="mb-6 text-center sm:mb-8">
-          <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-            {t("comparator.transferDetails")}
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground sm:text-base">
-            {t("comparator.transferDetails.subtitle")}
-          </p>
-        </div>
-
-        {/* Decision engine — full width. AI Agent is a floating widget (see below). */}
+        {/* Two-column layout once results exist: Advanced Search card on the
+            left, live metrics on the right. Before the first comparison the
+            card simply spans the full width (result is always null on first
+            render, so this is hydration-safe). Mobile stacks card-first. */}
+        <div className={result ? "grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : ""}>
+        {/* Advanced search card. AI Agent is a floating widget (see below). */}
         <div className="min-w-0">
           {/* Decision card */}
           <div className="surface-card overflow-hidden min-w-0">
@@ -775,7 +763,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-3 sm:px-5">
             <div className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" />
-              <span className="truncate">{t("brand.decisionEngine")}</span>
+              <span className="truncate">{t("comparator.advancedSearch")}</span>
             </div>
             <div
               role="tablist"
@@ -800,15 +788,17 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             </div>
           </div>
 
-          {/* Form body */}
-          <div className="space-y-4 p-4 sm:p-6">
+          {/* Form body. @container lets the rows adapt to the CARD's width, not
+              the viewport: 3/4 columns when the card is full-width (no results
+              yet), 2 columns once it shares the row with the metrics panel. */}
+          <div className="@container space-y-4 p-4 sm:p-6">
             {sendingCountry === receivingCountry && (
               <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
                 {t("search.sameCountry")}
               </div>
             )}
             {/* Row 1 — Source Country | Target Country | Urgency */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @2xl:grid-cols-3">
               <FieldLight label={t("comparator.field.sourceCountry")}>
                 <CountrySelect
                   value={sendingCountry}
@@ -843,7 +833,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             </div>
 
             {/* Row 2 — Amount mode | Amount | Source Currency | Target Currency */}
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @2xl:grid-cols-4">
               <FieldLight label={t("comparator.field.amountMode")}>
                 <div className="flex h-11 rounded-md border border-input bg-muted p-1">
                   {(["send", "receive"] as AmountMode[]).map((mode) => (
@@ -936,6 +926,24 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
 
         </div>
 
+        {/* Right column — live metrics beside the search card. */}
+        {result && (
+          <div className="min-w-0">
+            <ResultsMetrics
+              result={result}
+              amount={amount}
+              sortBy={sortBy}
+              onSortChange={setSortBy}
+              tMidmarket={t("fx.midmarket")}
+              tUpdated={t("fx.updated")}
+              tLastUpdate={t("comparator.lastUpdate")}
+              tSavingsLabel={t("comparator.savings.label")}
+              tSavingsBaseline={t("comparator.savings.baseline")}
+            />
+          </div>
+        )}
+        </div>
+
         {/* Floating AI Agent — fixed bottom-right, minimized by default.
             Chat state (history, result context) is preserved across collapse/expand
             because we only toggle visibility, not unmount. */}
@@ -993,14 +1001,16 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </div>
         )}
 
-        {/* Results table — full width below the decision/AI grid */}
+        {/* Results — full width below the search/metrics grid */}
         {result && (
-          <div className="mt-6 min-w-0">
+          <div className="mt-8 min-w-0">
+            <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+              {t("comparator.results")}
+            </h3>
             <ResultsBlock
               result={result}
               amount={amount}
               sortBy={sortBy}
-              onSortChange={setSortBy}
               handleAffiliateClick={openPreferredRate}
               tDisclaimer={t("fx.disclaimer")}
               tTrademarks={t("fx.trademarks")}
@@ -1011,12 +1021,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
               tTotalFee={t("fx.totalFee")}
               tSpeed={t("fx.speed")}
               tCta={t("retail.cta")}
-              tMidmarket={t("fx.midmarket")}
-              tUpdated={t("fx.updated")}
               tProvider={t("cmp.provider")}
-              tLastUpdate={t("comparator.lastUpdate")}
-              tSavingsLabel={t("comparator.savings.label")}
-              tSavingsBaseline={t("comparator.savings.baseline")}
               tNeutrality={t("comparator.disclaimer.neutrality")}
             />
           </div>
@@ -1313,66 +1318,28 @@ function FloatingAgent(p: FloatingAgentProps) {
   );
 }
 
-// ===== Results table (light) =====
-function ResultsBlock({
+// ===== Live metrics (right column beside the Advanced Search card) =====
+function ResultsMetrics({
   result,
   amount,
   sortBy,
   onSortChange,
-  handleAffiliateClick,
-  tDisclaimer,
-  tTrademarks,
-  tRatesSource,
-  tAt,
-  tRecipient,
-  tAmountSent,
-  tTotalFee,
-  tSpeed,
-  tCta,
   tMidmarket,
   tUpdated,
-  tProvider,
   tLastUpdate,
   tSavingsLabel,
   tSavingsBaseline,
-  tNeutrality,
 }: {
   result: ComparisonResult;
   amount: number;
   sortBy: SortKey;
   onSortChange: (k: SortKey) => void;
-  handleAffiliateClick: (slug: string, url: string, name?: string) => void;
-  tDisclaimer: string;
-  tTrademarks: string;
-  tRatesSource: string;
-  tAt: string;
-  tRecipient: string;
-  tAmountSent: string;
-  tTotalFee: string;
-  tSpeed: string;
-  tCta: string;
   tMidmarket: string;
   tUpdated: string;
-  tProvider: string;
   tLastUpdate: string;
   tSavingsLabel: string;
   tSavingsBaseline: string;
-  tNeutrality: string;
 }) {
-  const showLargeBanner = amount >= 50000;
-
-  const organic = useMemo(() => {
-    const base = [...result.rows];
-    if (sortBy === "received") base.sort((a, b) => b.received - a.received);
-    if (sortBy === "fee") base.sort((a, b) => a.fee_total - b.fee_total);
-    if (sortBy === "speed")
-      base.sort(
-        (a, b) =>
-          (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
-      );
-    return base;
-  }, [result.rows, sortBy]);
-
   // Savings = amount * (baseline_spread - best_provider_spread).
   // baseline_spread is the 3.5% retail/remittance market reference.
   const savings = useMemo(() => {
@@ -1392,22 +1359,7 @@ function ResultsBlock({
   });
 
   return (
-    <div className="mt-6">
-      {showLargeBanner && (
-        <div className="mb-4 flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4">
-          <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <div className="min-w-0 text-sm">
-            <div className="truncate font-semibold text-foreground">
-              Sending over {amount.toLocaleString()} {result.base}? Talk to our business desk.
-            </div>
-            <div className="mt-0.5 text-muted-foreground">
-              For high-volume transfers, dedicated providers offer custom rates, treasury tooling
-              and an account manager. →
-            </div>
-          </div>
-        </div>
-      )}
-
+    <div className="min-w-0">
       {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible.
           Shows a "Reference" badge when any rate came from MasterRateMap cache. */}
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-[11px] text-foreground">
@@ -1429,9 +1381,6 @@ function ResultsBlock({
             </span>
           )}
         </div>
-        <span className="truncate text-muted-foreground">
-          1 {result.base} = {result.market_rate.toFixed(6)} {result.quote} · {tMidmarket}
-        </span>
         {result.is_reference && (
           <p className="w-full text-[10px] leading-snug text-amber-800">
             Rates are last known/cached, not live.
@@ -1439,8 +1388,9 @@ function ResultsBlock({
         )}
       </div>
 
-
-      <div className="mb-4 grid gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:grid-cols-3 sm:p-5">
+      {/* Metrics stack — savings, mid-market rate, sort controls. Single column
+          on purpose: this panel lives in the narrow right column at lg. */}
+      <div className="grid grid-cols-1 gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:p-5">
         <div className="flex min-w-0 items-start gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
             <TrendingUp className="h-4 w-4 text-emerald-600" />
@@ -1458,7 +1408,7 @@ function ResultsBlock({
             <div className="text-[11px] text-muted-foreground">{tSavingsBaseline}</div>
           </div>
         </div>
-        <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
+        <div className="min-w-0 border-t border-emerald-500/20 pt-4">
           <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             {tMidmarket}
           </div>
@@ -1473,7 +1423,7 @@ function ResultsBlock({
             })}
           </div>
         </div>
-        <div className="min-w-0 sm:border-l sm:border-emerald-500/20 sm:pl-5">
+        <div className="min-w-0 border-t border-emerald-500/20 pt-4">
           <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
             <ArrowDownUp className="mr-1 inline h-3 w-3" /> Sort by
           </div>
@@ -1500,6 +1450,81 @@ function ResultsBlock({
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ===== Results table (light) =====
+function ResultsBlock({
+  result,
+  amount,
+  sortBy,
+  handleAffiliateClick,
+  tDisclaimer,
+  tTrademarks,
+  tRatesSource,
+  tAt,
+  tRecipient,
+  tAmountSent,
+  tTotalFee,
+  tSpeed,
+  tCta,
+  tProvider,
+  tNeutrality,
+}: {
+  result: ComparisonResult;
+  amount: number;
+  sortBy: SortKey;
+  handleAffiliateClick: (slug: string, url: string, name?: string) => void;
+  tDisclaimer: string;
+  tTrademarks: string;
+  tRatesSource: string;
+  tAt: string;
+  tRecipient: string;
+  tAmountSent: string;
+  tTotalFee: string;
+  tSpeed: string;
+  tCta: string;
+  tProvider: string;
+  tNeutrality: string;
+}) {
+  const showLargeBanner = amount >= 50000;
+
+  const organic = useMemo(() => {
+    const base = [...result.rows];
+    if (sortBy === "received") base.sort((a, b) => b.received - a.received);
+    if (sortBy === "fee") base.sort((a, b) => a.fee_total - b.fee_total);
+    if (sortBy === "speed")
+      base.sort(
+        (a, b) =>
+          (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
+      );
+    return base;
+  }, [result.rows, sortBy]);
+
+  // Crisp HH:mm:ss for the trust line.
+  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  return (
+    <div className="min-w-0">
+      {showLargeBanner && (
+        <div className="mb-4 flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4">
+          <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+          <div className="min-w-0 text-sm">
+            <div className="truncate font-semibold text-foreground">
+              Sending over {amount.toLocaleString()} {result.base}? Talk to our business desk.
+            </div>
+            <div className="mt-0.5 text-muted-foreground">
+              For high-volume transfers, dedicated providers offer custom rates, treasury tooling
+              and an account manager. →
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <div className="hidden grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] gap-4 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground lg:grid">
