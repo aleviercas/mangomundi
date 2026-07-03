@@ -474,14 +474,16 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       // isn't supported (via compareMut.onError, unchanged).
       // Models often backslash-escape square brackets in markdown-rendered
       // output (since "[x]" is link syntax), so normalize "\[" / "\]" back
-      // to plain brackets before matching the tag. Also tolerate a trailing
-      // period/space the model might add after the tag.
+      // to plain brackets before matching the tag.
       const normalized = res.text.replace(/\\(\[|\])/g, "$1");
       // Each side may be a 2-letter ISO country code (when the user named a
-      // specific country) or a 3-letter currency code (currency only).
-      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{2,3})-([A-Z]{2,3})\]\]\s*[.!]?\s*$/.exec(normalized);
+      // specific country) or a 3-letter currency code (currency only). Match the
+      // tag ANYWHERE — not just at the very end — since the model doesn't always
+      // place it last; otherwise the raw "[[SUGGEST_COMPARE:…]]" text leaks into
+      // the chat bubble instead of becoming a button.
+      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{2,3})-([A-Z]{2,3})\]\]/.exec(normalized);
       const displayText = tagMatch
-        ? normalized.slice(0, tagMatch.index).trim()
+        ? normalized.replace(tagMatch[0], "").replace(/\s{2,}/g, " ").replace(/\s+([.!])/g, "$1").trim()
         : res.text;
       const fromSide = tagMatch ? resolveRouteCode(tagMatch[1]) : undefined;
       const toSide = tagMatch ? resolveRouteCode(tagMatch[2]) : undefined;
