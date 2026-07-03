@@ -971,12 +971,30 @@ interface FloatingAgentProps {
 
 function FloatingAgent(p: FloatingAgentProps) {
   const {
-    collapsed, onToggle, unreadCount, lang, t, aiLoading, chat, result,
-    chatInput, setChatInput, sendChat, chatMutPending, comparePending,
-    onSuggestedCompare, chatBottomRef,
-    openPreferredRate, segment, businessStage,
-    savingBusinessLead, confirmBusinessLead, setBusinessStage, setChat,
-    onWizardAction, wizardContext,
+    collapsed,
+    onToggle,
+    unreadCount,
+    lang,
+    t,
+    aiLoading,
+    chat,
+    result,
+    chatInput,
+    setChatInput,
+    sendChat,
+    chatMutPending,
+    comparePending,
+    onSuggestedCompare,
+    chatBottomRef,
+    openPreferredRate,
+    segment,
+    businessStage,
+    savingBusinessLead,
+    confirmBusinessLead,
+    setBusinessStage,
+    setChat,
+    onWizardAction,
+    wizardContext,
   } = p;
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
