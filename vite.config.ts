@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv, type PluginOption } from "vite";
+import { defineConfig, loadEnv, type PluginOption, type UserConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import viteReact from "@vitejs/plugin-react";
@@ -9,7 +9,7 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 // Tailwind, tsconfig paths) directly, with no Lovable- or Cloudflare-specific
 // pieces. Deploy target is Nitro-driven: `node-server` locally, auto-detected
 // `vercel` on Vercel (via the VERCEL env var, override with NITRO_PRESET).
-export default defineConfig(async ({ command, mode }) => {
+export default defineConfig(async ({ command, mode }): Promise<UserConfig> => {
   const isDevBuild = command === "build" && mode === "development";
 
   // Mirror Vite's client-only VITE_* exposure into every environment (client +

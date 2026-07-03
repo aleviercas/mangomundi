@@ -295,6 +295,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_cache: {
+        Row: {
+          base: string
+          fetched_at: string | null
+          id: string
+          rates: Json
+          source: string | null
+          updated_at: string
+        }
+        Insert: {
+          base: string
+          fetched_at?: string | null
+          id: string
+          rates: Json
+          source?: string | null
+          updated_at?: string
+        }
+        Update: {
+          base?: string
+          fetched_at?: string | null
+          id?: string
+          rates?: Json
+          source?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       providers: {
         Row: {
           active: boolean

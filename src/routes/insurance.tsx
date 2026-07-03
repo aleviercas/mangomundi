@@ -73,6 +73,7 @@ function InsurancePage() {
           </button>
           <Link
             to="/compare"
+            search={{ amount: 1000, segment: "retail", destination: "US", to: "USD" }}
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-surface-elevated"
           >
             {t("ins.cta2")}

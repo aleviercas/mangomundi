@@ -168,6 +168,7 @@ function BlogPostPage() {
           <p className="text-sm text-muted-foreground">{t("blog.cta.prompt")}</p>
           <Link
             to="/compare"
+            search={{ amount: 1000, segment: "retail", destination: "US", to: "USD" }}
             className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
             {t("blog.cta.button")}

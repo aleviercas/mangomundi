@@ -14,12 +14,13 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
     "i18n:validate": "bun run scripts/i18n-validate.ts",
     "i18n:check": "I18N_STRICT=1 bun run scripts/i18n-validate.ts",
     "e2e": "playwright test",
     "e2e:install": "playwright install --with-deps chromium",
-    "prebuild": "I18N_STRICT=1 bun run scripts/i18n-validate.ts",
-    "prebuild:dev": "I18N_STRICT=1 bun run scripts/i18n-validate.ts"
+    "prebuild": "I18N_STRICT=1 bun run scripts/i18n-validate.ts && tsc --noEmit",
+    "prebuild:dev": "I18N_STRICT=1 bun run scripts/i18n-validate.ts && tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

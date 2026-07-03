@@ -810,7 +810,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                     return;
                   }
                   setValidationError(null);
-                  compareMut.mutate();
+                  compareMut.mutate(undefined);
                 }}
                 disabled={compareMut.isPending}
                 className="btn-cta h-11 w-full rounded-md px-6 text-sm font-semibold"
