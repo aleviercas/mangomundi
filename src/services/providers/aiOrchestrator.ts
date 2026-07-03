@@ -7,30 +7,28 @@ export interface AiCallResult {
 }
 
 interface CallOpts {
-  apiKey: string;
   messages: Array<{ role: "system" | "user" | "assistant"; content: string }>;
 }
 
-type ProviderOutcome =
-  | { ok: true; text: string }
-  | { ok: false; reason: string; fatal?: boolean };
+type ProviderOutcome = { ok: true; text: string } | { ok: false; reason: string };
 
-async function callProvider(provider: AiProviderConfig, opts: CallOpts): Promise<ProviderOutcome> {
-  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+/** OpenAI-compatible chat completions (OpenRouter, DeepSeek, etc). */
+async function callOpenAiCompatible(
+  provider: AiProviderConfig,
+  apiKey: string,
+  opts: CallOpts,
+): Promise<ProviderOutcome> {
+  const res = await fetch(provider.baseUrl!, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${opts.apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
-      "X-Title": "mangomundi",
+      ...(provider.extraHeaders ?? {}),
     },
     body: JSON.stringify({ model: provider.model, messages: opts.messages }),
   });
 
-  if (!res.ok) {
-    // 402 means credits are gone for the WHOLE gateway — stop and surface.
-    if (res.status === 402) return { ok: false, reason: "credits exhausted", fatal: true };
-    return { ok: false, reason: `HTTP ${res.status}` };
-  }
+  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
 
   const json = (await res.json()) as {
     choices?: Array<{ message?: { content?: string } }>;
@@ -41,12 +39,60 @@ async function callProvider(provider: AiProviderConfig, opts: CallOpts): Promise
 }
 
 /**
+ * Google Gemini's generateContent API. Different shape from OpenAI-style
+ * chat completions: no single "messages" array — the system prompt is its
+ * own field, and turns use {role: "user"|"model", parts:[{text}]}.
+ */
+async function callGemini(provider: AiProviderConfig, apiKey: string, opts: CallOpts): Promise<ProviderOutcome> {
+  const systemMsg = opts.messages.find((m) => m.role === "system");
+  const turns = opts.messages
+    .filter((m) => m.role !== "system")
+    .map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    }));
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${provider.model}:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: turns,
+        ...(systemMsg ? { systemInstruction: { parts: [{ text: systemMsg.content }] } } : {}),
+      }),
+    },
+  );
+
+  if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
+
+  const json = (await res.json()) as {
+    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+  };
+  const text = json.candidates?.[0]?.content?.parts
+    ?.map((p) => p.text ?? "")
+    .join("")
+    .trim();
+  if (!text) return { ok: false, reason: "empty response" };
+  return { ok: true, text };
+}
+
+async function callProvider(provider: AiProviderConfig, apiKey: string, opts: CallOpts): Promise<ProviderOutcome> {
+  if (provider.kind === "gemini") return callGemini(provider, apiKey, opts);
+  return callOpenAiCompatible(provider, apiKey, opts);
+}
+
+/**
  * Smart Load Balancer for AI providers.
  *
- * Tries providers in priority order. On any failure (4xx/5xx/timeout/network)
- * silently falls back to the next provider — the user never sees a model
- * picker and never knows which model answered. Only when every provider is
- * exhausted do we surface an error.
+ * Tries providers in priority order across MULTIPLE INDEPENDENT gateways
+ * (Gemini, OpenRouter, DeepSeek), not just different models behind one
+ * account — the whole point being that if OpenRouter's account-level daily
+ * quota is exhausted, Gemini and DeepSeek have entirely separate quotas and
+ * keep working. Any provider whose env var isn't configured is skipped
+ * silently. The user never sees a model picker and never knows which
+ * provider answered. Only when every configured provider is exhausted do we
+ * surface an error.
  *
  * Timeouts are implemented as a Promise.race against a plain timer rather
  * than an AbortController tied to the fetch's signal. Aborting a fetch
@@ -58,11 +104,16 @@ async function callProvider(provider: AiProviderConfig, opts: CallOpts): Promise
 export async function callAiWithFailover(opts: CallOpts): Promise<AiCallResult> {
   const providers: AiProviderConfig[] = [...AI_PROVIDERS].sort((a, b) => a.priority - b.priority);
   let lastError = "exhausted";
+  let triedAny = false;
 
   for (const provider of providers) {
+    const apiKey = process.env[provider.envVar];
+    if (!apiKey) continue; // not configured yet — skip silently
+
+    triedAny = true;
     try {
       const outcome = await Promise.race([
-        callProvider(provider, opts),
+        callProvider(provider, apiKey, opts),
         new Promise<ProviderOutcome>((resolve) =>
           setTimeout(() => resolve({ ok: false, reason: "timeout" }), provider.timeoutMs),
         ),
@@ -70,9 +121,6 @@ export async function callAiWithFailover(opts: CallOpts): Promise<AiCallResult> 
 
       if (outcome.ok) {
         return { text: outcome.text, error: false, provider: provider.key };
-      }
-      if (outcome.fatal) {
-        return { text: "AI credits exhausted.", error: true, provider: provider.key };
       }
       lastError = `${provider.key} ${outcome.reason}`;
       console.warn("[ai-orchestrator] provider failed", lastError);
@@ -82,6 +130,10 @@ export async function callAiWithFailover(opts: CallOpts): Promise<AiCallResult> 
     }
   }
 
-  console.error("[ai-orchestrator] all providers failed:", lastError);
+  if (!triedAny) {
+    console.error("[ai-orchestrator] no AI providers configured (no API keys set)");
+  } else {
+    console.error("[ai-orchestrator] all providers failed:", lastError);
+  }
   return { text: "AI unavailable right now. Please try again shortly.", error: true };
 }
