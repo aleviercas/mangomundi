@@ -26,7 +26,7 @@ import {
   type ComparisonResult,
 } from "@/lib/fx.functions";
 import { useI18n } from "@/lib/i18n";
-import { localCurrency, primaryCountryForCurrency } from "@/lib/countries";
+import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountrySelect } from "@/components/ui/CountrySelect";
@@ -54,7 +54,15 @@ type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = "received" | "fee" | "speed";
 type ChatAction =
   | { kind: "proceed"; slug: string; url: string; label: string }
-  | { kind: "compare"; from: string; to: string; label: string };
+  | {
+      kind: "compare";
+      from: string;
+      to: string;
+      /** Explicit country (ISO-3166) when the user named one, else inferred from currency. */
+      fromCountry?: string;
+      toCountry?: string;
+      label: string;
+    };
 type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
 type BusinessStage = "volume" | "email" | "consent" | "done";
 
@@ -340,7 +348,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   // supported, compareMut.onError already detects MISSING_CORRIDOR and
   // surfaces the existing request-this-route CTA — so nothing is logged as
   // missing until a real attempt confirms it.
-  const runSuggestedCompare = (suggestedFrom: string, suggestedTo: string) => {
+  const runSuggestedCompare = (
+    suggestedFrom: string,
+    suggestedTo: string,
+    suggestedFromCountry?: string,
+    suggestedToCountry?: string,
+  ) => {
     track("rfq_interaction", {
       amount,
       from_currency: suggestedFrom,
@@ -349,17 +362,20 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       urgency,
       source: "chat_suggested_compare",
     });
-    // Keep each country consistent with the suggested currency: only change a
-    // side's country when its current country doesn't already use that currency
-    // (so a route that keeps one currency leaves that country untouched).
+    // If the user named a specific country, use it directly. Otherwise keep each
+    // country consistent with the suggested currency: only change a side's
+    // country when its current country doesn't already use that currency (so a
+    // route that keeps one currency leaves that country untouched).
     const nextOrigin =
-      localCurrency(sendingCountry) === suggestedFrom
+      suggestedFromCountry ??
+      (localCurrency(sendingCountry) === suggestedFrom
         ? sendingCountry
-        : (primaryCountryForCurrency(suggestedFrom) ?? sendingCountry);
+        : (primaryCountryForCurrency(suggestedFrom) ?? sendingCountry));
     const nextDest =
-      localCurrency(receivingCountry) === suggestedTo
+      suggestedToCountry ??
+      (localCurrency(receivingCountry) === suggestedTo
         ? receivingCountry
-        : (primaryCountryForCurrency(suggestedTo) ?? receivingCountry);
+        : (primaryCountryForCurrency(suggestedTo) ?? receivingCountry));
     compareMut.mutate({
       from: suggestedFrom,
       to: suggestedTo,
@@ -461,25 +477,27 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       // to plain brackets before matching the tag. Also tolerate a trailing
       // period/space the model might add after the tag.
       const normalized = res.text.replace(/\\(\[|\])/g, "$1");
-      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{3})-([A-Z]{3})\]\]\s*[.!]?\s*$/.exec(normalized);
+      // Each side may be a 2-letter ISO country code (when the user named a
+      // specific country) or a 3-letter currency code (currency only).
+      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{2,3})-([A-Z]{2,3})\]\]\s*[.!]?\s*$/.exec(normalized);
       const displayText = tagMatch
         ? normalized.slice(0, tagMatch.index).trim()
         : res.text;
-      const suggestedFrom = tagMatch?.[1];
-      const suggestedTo = tagMatch?.[2];
+      const fromSide = tagMatch ? resolveRouteCode(tagMatch[1]) : undefined;
+      const toSide = tagMatch ? resolveRouteCode(tagMatch[2]) : undefined;
       const actions: ChatAction[] | undefined =
-        suggestedFrom && suggestedTo
+        fromSide && toSide
           ? [
               {
                 kind: "compare",
-                from: suggestedFrom,
-                to: suggestedTo,
-                label:
-                  resolveWizardLocale(lang) === "es"
-                    ? `Comparar ${suggestedFrom} → ${suggestedTo}`
-                    : resolveWizardLocale(lang) === "pt"
-                      ? `Comparar ${suggestedFrom} → ${suggestedTo}`
-                      : `Compare ${suggestedFrom} → ${suggestedTo}`,
+                from: fromSide.currency,
+                to: toSide.currency,
+                fromCountry: fromSide.country,
+                toCountry: toSide.country,
+                // Show the country code when the user named one, else the currency.
+                label: `${resolveWizardLocale(lang) === "en" ? "Compare" : "Comparar"} ${
+                  fromSide.country ?? fromSide.currency
+                } → ${toSide.country ?? toSide.currency}`,
               },
             ]
           : undefined;
@@ -1015,7 +1033,7 @@ interface FloatingAgentProps {
   sendChat: (v: string) => void;
   chatMutPending: boolean;
   comparePending: boolean;
-  onSuggestedCompare: (from: string, to: string) => void;
+  onSuggestedCompare: (from: string, to: string, fromCountry?: string, toCountry?: string) => void;
   chatBottomRef: React.RefObject<HTMLDivElement | null>;
   openPreferredRate: (slug: string, url: string, name?: string) => void;
   segment: Segment;
@@ -1186,7 +1204,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                           ) : (
                             <button
                               key={j}
-                              onClick={() => onSuggestedCompare(a.from, a.to)}
+                              onClick={() => onSuggestedCompare(a.from, a.to, a.fromCountry, a.toCountry)}
                               disabled={comparePending}
                               className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
                             >

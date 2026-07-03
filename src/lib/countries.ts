@@ -95,3 +95,17 @@ export function primaryCountryForCurrency(currency: string): string | undefined 
   const cur = currency.toUpperCase();
   return CURRENCY_PRIMARY_COUNTRY[cur] ?? FIRST_COUNTRY_BY_CURRENCY[cur];
 }
+
+/**
+ * Resolve a code from the agent's `[[SUGGEST_COMPARE:FROM-TO]]` tag into a
+ * currency (+ explicit country when the user named one). A 2-letter ISO-3166
+ * country code (e.g. "PT") → that country and its local currency; a 3-letter
+ * code → a currency, leaving the country for the caller to infer.
+ */
+export function resolveRouteCode(code: string): { currency: string; country?: string } {
+  const c = code.toUpperCase();
+  if (c.length === 2 && COUNTRY_BY_CODE[c]) {
+    return { currency: COUNTRY_BY_CODE[c].currency, country: c };
+  }
+  return { currency: c };
+}
