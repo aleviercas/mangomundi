@@ -849,49 +849,59 @@ export function ComparatorSection({
                   advanced state: everything lives in the same box. Stacks
                   vertically (arrow rotates) below @2xl (mobile/embed). */}
               <div className="grid grid-cols-1 items-stretch gap-3 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
-                {/* FROM: amount + currency + source country */}
+                {/* FROM box: "You send" (amount + currency) and "From" (country),
+                    each labelled so the box reads on its own. */}
                 <div className="min-w-0 rounded-xl border border-white/10 p-3">
-                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                    {t("fx.field.from")}
-                  </p>
-                  <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1fr_1fr_1.2fr]">
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      min={1}
-                      value={amount || ""}
-                      placeholder="1000"
-                      onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                      aria-label={
+                  <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.4fr_1.1fr]">
+                    <FieldLight
+                      label={
                         amountMode === "send"
                           ? t("comparator.field.amount")
                           : t("comparator.field.amountReceived")
                       }
-                      className={`flex w-full min-w-0 tabular-nums placeholder:text-slate-400 transition-colors ${WHITE_FIELD}`}
-                    />
-                    <CurrencyCombobox
-                      value={from}
-                      onChange={setFrom}
-                      placeholder={t("comparator.combobox.placeholder")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.sourceCurrency")}
-                      triggerClassName={WHITE_FIELD}
-                    />
-                    <CountrySelect
-                      value={sendingCountry}
-                      onChange={(c) => {
-                        // Picking a country derives its currency (the currency
-                        // combobox next to the amount can override).
-                        setSendingCountry(c);
-                        setFrom(localCurrency(c));
-                      }}
-                      placeholder={t("comparator.combobox.placeholder")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.sourceCountry")}
-                      triggerClassName={WHITE_FIELD}
-                    />
+                    >
+                      <div className="grid grid-cols-[1.1fr_1fr] gap-2">
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={1}
+                          value={amount || ""}
+                          placeholder="1000"
+                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                          aria-label={
+                            amountMode === "send"
+                              ? t("comparator.field.amount")
+                              : t("comparator.field.amountReceived")
+                          }
+                          className={`flex w-full min-w-0 tabular-nums placeholder:text-slate-400 transition-colors ${WHITE_FIELD}`}
+                        />
+                        <CurrencyCombobox
+                          value={from}
+                          onChange={setFrom}
+                          placeholder={t("comparator.combobox.placeholder")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.sourceCurrency")}
+                          triggerClassName={WHITE_FIELD}
+                        />
+                      </div>
+                    </FieldLight>
+                    <FieldLight label={t("fx.field.from")}>
+                      <CountrySelect
+                        value={sendingCountry}
+                        onChange={(c) => {
+                          // Picking a country derives its currency (the currency
+                          // combobox next to the amount can override).
+                          setSendingCountry(c);
+                          setFrom(localCurrency(c));
+                        }}
+                        placeholder={t("comparator.combobox.placeholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.sourceCountry")}
+                        triggerClassName={WHITE_FIELD}
+                      />
+                    </FieldLight>
                   </div>
                 </div>
 
@@ -900,36 +910,37 @@ export function ComparatorSection({
                   <ArrowRight className="h-5 w-5 rotate-90 text-[#ff6b5b] @2xl:rotate-0" />
                 </div>
 
-                {/* TO: recipient country + target currency (the override that
-                    used to hide behind Advanced options) */}
+                {/* TO box: "To" (country) and "You receive" (currency), labelled
+                    like the FROM box so the route reads left to right. */}
                 <div className="min-w-0 rounded-xl border border-white/10 p-3">
-                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
-                    {t("fx.field.to")}
-                  </p>
                   <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.2fr_1fr]">
-                    <CountrySelect
-                      value={receivingCountry}
-                      onChange={(c) => {
-                        // Destination derives the target currency (the combobox
-                        // beside it can override).
-                        setReceivingCountry(c);
-                        setTo(localCurrency(c));
-                      }}
-                      placeholder={t("search.selectCountry")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("search.destination")}
-                      triggerClassName={WHITE_FIELD}
-                    />
-                    <CurrencyCombobox
-                      value={to}
-                      onChange={setTo}
-                      placeholder={t("comparator.combobox.placeholder")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.targetCurrency")}
-                      triggerClassName={WHITE_FIELD}
-                    />
+                    <FieldLight label={t("fx.field.to")}>
+                      <CountrySelect
+                        value={receivingCountry}
+                        onChange={(c) => {
+                          // Destination derives the target currency (the combobox
+                          // beside it can override).
+                          setReceivingCountry(c);
+                          setTo(localCurrency(c));
+                        }}
+                        placeholder={t("search.selectCountry")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("search.destination")}
+                        triggerClassName={WHITE_FIELD}
+                      />
+                    </FieldLight>
+                    <FieldLight label={t("comparator.field.youReceive")}>
+                      <CurrencyCombobox
+                        value={to}
+                        onChange={setTo}
+                        placeholder={t("comparator.combobox.placeholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCurrency")}
+                        triggerClassName={WHITE_FIELD}
+                      />
+                    </FieldLight>
                   </div>
                 </div>
 

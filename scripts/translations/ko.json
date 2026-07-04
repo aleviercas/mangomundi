@@ -614,5 +614,6 @@
   "home.widget.copy": "복사",
   "home.widget.copied": "복사됨!",
   "home.widget.hint": "HTML 어디에나 붙여넣으세요. 위젯은 무료이며 격리된 iframe에서 실행됩니다 — 코드 충돌 없음, 사이트에 추가되는 추적 없음.",
-  "home.hero.titlePost": "비교"
+  "home.hero.titlePost": "비교",
+  "comparator.field.youReceive": "받는 통화"
 }

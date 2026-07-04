@@ -614,5 +614,6 @@
   "home.widget.copy": "کاپی",
   "home.widget.copied": "کاپی ہو گیا!",
   "home.widget.hint": "اسے اپنے HTML میں کہیں بھی پیسٹ کریں۔ ویجٹ مفت ہے اور ایک الگ iframe میں چلتا ہے — کوئی کوڈ ٹکراؤ نہیں، آپ کی سائٹ پر کوئی ٹریکنگ شامل نہیں۔",
-  "home.hero.titlePost": "موازنہ"
+  "home.hero.titlePost": "موازنہ",
+  "comparator.field.youReceive": "آپ وصول کریں گے"
 }

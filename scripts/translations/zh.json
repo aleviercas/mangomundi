@@ -614,5 +614,6 @@
   "home.widget.copy": "复制",
   "home.widget.copied": "已复制！",
   "home.widget.hint": "粘贴到您 HTML 的任意位置。小组件免费，运行在隔离的 iframe 中——无代码冲突，不向您的网站添加任何跟踪。",
-  "home.hero.titlePost": "比较"
+  "home.hero.titlePost": "比较",
+  "comparator.field.youReceive": "您收到"
 }

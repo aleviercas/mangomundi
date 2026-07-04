@@ -614,5 +614,6 @@
   "home.widget.copy": "คัดลอก",
   "home.widget.copied": "คัดลอกแล้ว!",
   "home.widget.hint": "วางไว้ที่ใดก็ได้ใน HTML ของคุณ วิดเจ็ตนี้ฟรีและทำงานใน iframe ที่แยกออกมา — ไม่มีโค้ดขัดแย้ง ไม่มีการเพิ่มการติดตามในเว็บไซต์ของคุณ",
-  "home.hero.titlePost": "อัจฉริยะ"
+  "home.hero.titlePost": "อัจฉริยะ",
+  "comparator.field.youReceive": "คุณได้รับ"
 }

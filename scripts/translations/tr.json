@@ -614,5 +614,6 @@
   "home.widget.copy": "Kopyala",
   "home.widget.copied": "Kopyalandı!",
   "home.widget.hint": "HTML'inizin herhangi bir yerine yapıştırın. Widget ücretsizdir ve izole bir iframe içinde çalışır — kod çakışması yok, sitenize eklenen takip yok.",
-  "home.hero.titlePost": "karşılaştırması"
+  "home.hero.titlePost": "karşılaştırması",
+  "comparator.field.youReceive": "Alırsınız"
 }

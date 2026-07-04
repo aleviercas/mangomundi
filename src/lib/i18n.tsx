@@ -2520,6 +2520,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.field.sourceCountry": "Source country",
     "comparator.field.targetCountry": "Target country",
     "comparator.field.amount": "You send",
+    "comparator.field.youReceive": "You receive",
     "comparator.field.urgency": "Urgency",
     "comparator.combobox.search": "Search…",
     "comparator.combobox.empty": "No results.",

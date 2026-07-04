@@ -614,5 +614,6 @@
   "home.widget.copy": "コピー",
   "home.widget.copied": "コピーしました！",
   "home.widget.hint": "HTMLの好きな場所に貼り付けてください。ウィジェットは無料で、分離されたiframeで動作します — コードの競合なし、サイトへのトラッキング追加なし。",
-  "home.hero.titlePost": "のスマート比較"
+  "home.hero.titlePost": "のスマート比較",
+  "comparator.field.youReceive": "受取通貨"
 }

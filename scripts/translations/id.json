@@ -614,5 +614,6 @@
   "home.widget.copy": "Salin",
   "home.widget.copied": "Tersalin!",
   "home.widget.hint": "Tempel di mana saja dalam HTML Anda. Widget ini gratis dan berjalan dalam iframe terisolasi — tanpa konflik kode, tanpa pelacakan di situs Anda.",
-  "home.hero.titlePost": "dengan cerdas"
+  "home.hero.titlePost": "dengan cerdas",
+  "comparator.field.youReceive": "Anda menerima"
 }

@@ -614,5 +614,6 @@
   "home.widget.copy": "Copiar",
   "home.widget.copied": "Copiado!",
   "home.widget.hint": "Cole em qualquer lugar do seu HTML. O widget é grátis e roda em um iframe isolado — sem conflitos de código nem rastreamento adicionado ao seu site.",
-  "home.hero.titlePost": "de forma inteligente"
+  "home.hero.titlePost": "de forma inteligente",
+  "comparator.field.youReceive": "Você recebe"
 }

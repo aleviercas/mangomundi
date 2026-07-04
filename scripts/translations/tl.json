@@ -614,5 +614,6 @@
   "home.widget.copy": "Kopyahin",
   "home.widget.copied": "Nakopya!",
   "home.widget.hint": "I-paste kahit saan sa iyong HTML. Libre ang widget at tumatakbo sa isang hiwalay na iframe — walang code conflict, walang tracking na idinaragdag sa iyong site.",
-  "home.hero.titlePost": "nang matalino"
+  "home.hero.titlePost": "nang matalino",
+  "comparator.field.youReceive": "Matatanggap mo"
 }

@@ -614,5 +614,6 @@
   "home.widget.copy": "Копировать",
   "home.widget.copied": "Скопировано!",
   "home.widget.hint": "Вставьте в любое место вашего HTML. Виджет бесплатный и работает в изолированном iframe — без конфликтов кода и без трекинга на вашем сайте.",
-  "home.hero.titlePost": "с умом"
+  "home.hero.titlePost": "с умом",
+  "comparator.field.youReceive": "Вы получаете"
 }
