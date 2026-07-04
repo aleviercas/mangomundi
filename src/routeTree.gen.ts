@@ -16,6 +16,7 @@ import { Route as LegalRouteImport } from './routes/legal'
 import { Route as InsuranceRouteImport } from './routes/insurance'
 import { Route as FxToolRouteImport } from './routes/fx-tool'
 import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as EmbedRouteImport } from './routes/embed'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -57,6 +58,11 @@ const FxToolRoute = FxToolRouteImport.update({
 const FeaturesRoute = FeaturesRouteImport.update({
   id: '/features',
   path: '/features',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EmbedRoute = EmbedRouteImport.update({
+  id: '/embed',
+  path: '/embed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -101,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
+  '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRouteWithChildren
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
+  '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
+  '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/compare'
     | '/contact'
+    | '/embed'
     | '/features'
     | '/fx-tool'
     | '/insurance'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/compare'
     | '/contact'
+    | '/embed'
     | '/features'
     | '/fx-tool'
     | '/insurance'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/blog'
     | '/compare'
     | '/contact'
+    | '/embed'
     | '/features'
     | '/fx-tool'
     | '/insurance'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   CompareRoute: typeof CompareRoute
   ContactRoute: typeof ContactRoute
+  EmbedRoute: typeof EmbedRoute
   FeaturesRoute: typeof FeaturesRoute
   FxToolRoute: typeof FxToolRoute
   InsuranceRoute: typeof InsuranceRoute
@@ -260,6 +273,13 @@ declare module '@tanstack/react-router' {
       path: '/features'
       fullPath: '/features'
       preLoaderRoute: typeof FeaturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/embed': {
+      id: '/embed'
+      path: '/embed'
+      fullPath: '/embed'
+      preLoaderRoute: typeof EmbedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -330,6 +350,7 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   CompareRoute: CompareRoute,
   ContactRoute: ContactRoute,
+  EmbedRoute: EmbedRoute,
   FeaturesRoute: FeaturesRoute,
   FxToolRoute: FxToolRoute,
   InsuranceRoute: InsuranceRoute,
