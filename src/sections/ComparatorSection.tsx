@@ -81,10 +81,14 @@ export interface ComparatorQuery {
 export function ComparatorSection({
   initialQuery,
   showAdvancedCard = true,
+  embedded = false,
 }: {
   initialQuery?: ComparatorQuery;
   /** Home page collapses the Advanced Search card behind a toggle. */
   showAdvancedCard?: boolean;
+  /** Embed mode (iframe widget): drop the floating AI agent and the section
+   *  chrome (padding/max-width) so it fits inside the host container. */
+  embedded?: boolean;
 }) {
   const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
@@ -768,13 +772,19 @@ export function ComparatorSection({
   const hasComparatorContent =
     showAdvancedCard || !!result || compareMut.isError || !!missingCorridor;
 
+  // Embed mode drops the section chrome (padding/centered max-width) so the
+  // comparator fills the iframe container; otherwise it's a home section.
+  const SectionTag = embedded ? "div" : "section";
+
   return (
-    <section
-      id="comparator"
+    <SectionTag
+      id={embedded ? undefined : "comparator"}
       key={lang}
-      className={`scroll-mt-24 ${hasComparatorContent ? "py-8 sm:py-12" : ""}`}
+      className={
+        embedded ? "min-w-0" : `scroll-mt-24 ${hasComparatorContent ? "py-8 sm:py-12" : ""}`
+      }
     >
-      <div className="mx-auto max-w-6xl px-4 sm:px-6">
+      <div className={embedded ? "min-w-0" : "mx-auto max-w-6xl px-4 sm:px-6"}>
         {/* Advanced search card — collapsible on the home page (the basic
             HomeSearch widget in the hero is the primary entry point). The AI
             Agent is a floating widget (see below). */}
@@ -951,33 +961,36 @@ export function ComparatorSection({
 
         {/* Floating AI Agent — fixed bottom-right, minimized by default.
             Chat state (history, result context) is preserved across collapse/expand
-            because we only toggle visibility, not unmount. */}
-        <FloatingAgent
-          collapsed={aiCollapsed}
-          onToggle={handleAgentToggle}
-          unreadCount={unreadCount}
-          lang={lang}
-          t={t}
-          aiLoading={aiLoading}
-          chat={chat}
-          result={result}
-          chatInput={chatInput}
-          setChatInput={setChatInput}
-          sendChat={sendChat}
-          chatMutPending={chatMut.isPending}
-          comparePending={compareMut.isPending}
-          onSuggestedCompare={runSuggestedCompare}
-          chatBottomRef={chatBottomRef}
-          openPreferredRate={openPreferredRate}
-          segment={segment}
-          businessStage={businessStage}
-          savingBusinessLead={savingBusinessLead}
-          confirmBusinessLead={confirmBusinessLead}
-          setBusinessStage={setBusinessStage}
-          setChat={setChat}
-          onWizardAction={handleWizardAction}
-          wizardContext={buildWizardContext(masterMap, missingLog)}
-        />
+            because we only toggle visibility, not unmount. Hidden in embed mode:
+            a floating chat inside a third-party iframe would be out of place. */}
+        {!embedded && (
+          <FloatingAgent
+            collapsed={aiCollapsed}
+            onToggle={handleAgentToggle}
+            unreadCount={unreadCount}
+            lang={lang}
+            t={t}
+            aiLoading={aiLoading}
+            chat={chat}
+            result={result}
+            chatInput={chatInput}
+            setChatInput={setChatInput}
+            sendChat={sendChat}
+            chatMutPending={chatMut.isPending}
+            comparePending={compareMut.isPending}
+            onSuggestedCompare={runSuggestedCompare}
+            chatBottomRef={chatBottomRef}
+            openPreferredRate={openPreferredRate}
+            segment={segment}
+            businessStage={businessStage}
+            savingBusinessLead={savingBusinessLead}
+            confirmBusinessLead={confirmBusinessLead}
+            setBusinessStage={setBusinessStage}
+            setChat={setChat}
+            onWizardAction={handleWizardAction}
+            wizardContext={buildWizardContext(masterMap, missingLog)}
+          />
+        )}
 
         {/* Missing corridor — crowdsourced discovery CTA. */}
         {missingCorridor && (
@@ -1048,7 +1061,7 @@ export function ComparatorSection({
       </div>
 
       <PreferredRateModal open={modalOpen} onOpenChange={setModalOpen} context={modalCtx} />
-    </section>
+    </SectionTag>
   );
 }
 

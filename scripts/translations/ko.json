@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "위젯",
   "home.widget.title": "당신의 웹사이트에 mangomundi를.",
   "home.widget.body": "스크립트 태그 하나로 어떤 웹사이트나 앱에도 FX 비교기를 삽입하세요 — 실시간 환율, 당신의 브랜드, powered by mangomundi.",
-  "home.widget.badge": "곧 출시",
-  "home.widget.cta": "얼리 액세스 요청"
+  "home.widget.badge": "무료 임베드",
+  "home.widget.cta": "얼리 액세스 요청",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "복사",
+  "home.widget.copied": "복사됨!",
+  "home.widget.hint": "HTML 어디에나 붙여넣으세요. 위젯은 무료이며 격리된 iframe에서 실행됩니다 — 코드 충돌 없음, 사이트에 추가되는 추적 없음."
 }

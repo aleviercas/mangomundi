@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "ویجٹ",
   "home.widget.title": "آپ کی ویب سائٹ پر mangomundi۔",
   "home.widget.body": "صرف ایک اسکرپٹ ٹیگ سے کسی بھی ویب سائٹ یا ایپ میں FX موازنہ کار شامل کریں — براہ راست ریٹس، آپ کا برانڈ، powered by mangomundi۔",
-  "home.widget.badge": "جلد آ رہا ہے",
-  "home.widget.cta": "ابتدائی رسائی کی درخواست کریں"
+  "home.widget.badge": "مفت ایمبیڈ",
+  "home.widget.cta": "ابتدائی رسائی کی درخواست کریں",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "کاپی",
+  "home.widget.copied": "کاپی ہو گیا!",
+  "home.widget.hint": "اسے اپنے HTML میں کہیں بھی پیسٹ کریں۔ ویجٹ مفت ہے اور ایک الگ iframe میں چلتا ہے — کوئی کوڈ ٹکراؤ نہیں، آپ کی سائٹ پر کوئی ٹریکنگ شامل نہیں۔"
 }

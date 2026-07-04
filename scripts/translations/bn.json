@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "উইজেট",
   "home.widget.title": "আপনার ওয়েবসাইটে mangomundi।",
   "home.widget.body": "একটি স্ক্রিপ্ট ট্যাগ দিয়ে যেকোনো ওয়েবসাইট বা অ্যাপে FX তুলনাকারী যুক্ত করুন — লাইভ রেট, আপনার ব্র্যান্ড, powered by mangomundi।",
-  "home.widget.badge": "শীঘ্রই আসছে",
-  "home.widget.cta": "আর্লি অ্যাক্সেসের অনুরোধ করুন"
+  "home.widget.badge": "বিনামূল্যে এম্বেড",
+  "home.widget.cta": "আর্লি অ্যাক্সেসের অনুরোধ করুন",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "কপি",
+  "home.widget.copied": "কপি হয়েছে!",
+  "home.widget.hint": "আপনার HTML-এর যেকোনো জায়গায় পেস্ট করুন। উইজেটটি বিনামূল্যে এবং একটি বিচ্ছিন্ন iframe-এ চলে — কোনো কোড দ্বন্দ্ব নেই, আপনার সাইটে কোনো ট্র্যাকিং যোগ হয় না।"
 }

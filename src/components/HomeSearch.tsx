@@ -26,18 +26,24 @@ export interface HomeSearchSubmit {
 export function HomeSearch({
   onSubmit,
   onToggleAdvanced,
+  initialCurrency,
+  initialAmount,
 }: {
   onSubmit: (q: HomeSearchSubmit) => void;
   onToggleAdvanced: () => void;
+  /** Embed widget presets from data-* attributes (optional). */
+  initialCurrency?: string;
+  initialAmount?: number;
 }) {
   const { t, lang } = useI18n();
   const { track } = useAnalytics();
   const [origin, setOrigin] = useState("US");
   const [destination, setDestination] = useState("");
   const [segment, setSegment] = useState<Segment>("retail");
-  const [amount, setAmount] = useState(1000);
-  // null = follow the geo-detected origin's currency; set once the user picks.
-  const [fromOverride, setFromOverride] = useState<string | null>(null);
+  const [amount, setAmount] = useState(initialAmount ?? 1000);
+  // null = follow the geo-detected origin's currency; set once the user picks
+  // (or preset by the embed's data-currency).
+  const [fromOverride, setFromOverride] = useState<string | null>(initialCurrency ?? null);
   const detectCountry = useServerFn(getVisitorCountry);
   const ready = Boolean(destination) && amount > 0;
   const from = fromOverride ?? localCurrency(origin);

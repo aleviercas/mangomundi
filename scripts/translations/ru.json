@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "Виджет",
   "home.widget.title": "mangomundi на вашем сайте.",
   "home.widget.body": "Встройте FX-компаратор на любой сайт или в приложение одним скриптом — живые курсы, ваш бренд, powered by mangomundi.",
-  "home.widget.badge": "Скоро",
-  "home.widget.cta": "Запросить ранний доступ"
+  "home.widget.badge": "Бесплатная интеграция",
+  "home.widget.cta": "Запросить ранний доступ",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "Копировать",
+  "home.widget.copied": "Скопировано!",
+  "home.widget.hint": "Вставьте в любое место вашего HTML. Виджет бесплатный и работает в изолированном iframe — без конфликтов кода и без трекинга на вашем сайте."
 }

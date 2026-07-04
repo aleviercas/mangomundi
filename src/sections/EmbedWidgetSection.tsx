@@ -1,16 +1,39 @@
-import { Code2, Mail } from "lucide-react";
+import { useState } from "react";
+import { Check, Code2, Copy } from "lucide-react";
+import { EmbedComparator } from "@/components/EmbedComparator";
 import { useI18n } from "@/lib/i18n";
 
-/** Presents the upcoming embeddable comparator widget ("powered by
- *  mangomundi") that any site or app will be able to drop in. The widget
- *  itself ships later (roadmap Sprint 7) — this section announces it and
- *  collects early-access interest via email. */
+const SCRIPT_SNIPPET = `<script src="https://mangomundi.com/widget.js"
+  data-currency="USD"
+  data-lang="auto" async></script>`;
+
+const IFRAME_SNIPPET = `<iframe src="https://mangomundi.com/embed"
+  width="440" height="600" style="border:0;border-radius:16px"
+  title="Currency comparison by mangomundi" loading="lazy"></iframe>`;
+
+/** The embeddable "powered by mangomundi" comparator: a live preview of the
+ *  real widget next to copy-paste install instructions. */
 export function EmbedWidgetSection() {
   const { t } = useI18n();
+  const [tab, setTab] = useState<"script" | "iframe">("script");
+  const [copied, setCopied] = useState(false);
+  const snippet = tab === "script" ? SCRIPT_SNIPPET : IFRAME_SNIPPET;
+
+  const copy = () => {
+    navigator.clipboard?.writeText(snippet).then(
+      () => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 1600);
+      },
+      () => {},
+    );
+  };
+
   return (
     <section id="widget" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
+        <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
+          {/* Copy + install instructions */}
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
               {t("home.widget.eyebrow")}
@@ -21,42 +44,62 @@ export function EmbedWidgetSection() {
             <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600">
               {t("home.widget.body")}
             </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ff6b5b]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#ff6b5b]">
-                {t("home.widget.badge")}
-              </span>
-              <a
-                href="mailto:hello@mangomundi.com?subject=mangomundi%20widget%20early%20access"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900 underline-offset-4 hover:underline"
-              >
-                <Mail className="h-4 w-4 text-[#ff6b5b]" /> {t("home.widget.cta")}
-              </a>
+            <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-[#ff6b5b]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#ff6b5b]">
+              {t("home.widget.badge")}
+            </span>
+
+            {/* Install snippet */}
+            <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
+              <div className="flex items-center justify-between gap-2 border-b border-white/10 px-4 py-2.5">
+                <div className="flex items-center gap-1">
+                  {(["script", "iframe"] as const).map((k) => (
+                    <button
+                      key={k}
+                      type="button"
+                      onClick={() => setTab(k)}
+                      className={`rounded-md px-2.5 py-1 text-xs font-semibold transition ${
+                        tab === k ? "bg-white/10 text-white" : "text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      {k === "script" ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <Code2 className="h-3.5 w-3.5" /> {t("home.widget.tab.script")}
+                        </span>
+                      ) : (
+                        t("home.widget.tab.iframe")
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={copy}
+                  className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-slate-300 transition hover:text-white"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 text-emerald-400" /> {t("home.widget.copied")}
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5" /> {t("home.widget.copy")}
+                    </>
+                  )}
+                </button>
+              </div>
+              <pre className="overflow-x-auto p-4 text-[12px] leading-relaxed text-slate-200">
+                <code>{snippet}</code>
+              </pre>
             </div>
+            <p className="mt-3 text-xs leading-relaxed text-slate-500">{t("home.widget.hint")}</p>
           </div>
 
-          {/* Mock embed snippet — what the integration will look like. */}
-          <div className="rounded-2xl border border-white/10 bg-slate-900 p-5 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] sm:p-6">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
-              <Code2 className="h-4 w-4 text-[#ff6b5b]" /> embed.html
-            </div>
-            <pre className="mt-4 overflow-x-auto rounded-lg bg-black/30 p-4 text-[12px] leading-relaxed text-slate-200">
-              <code>{`<script src="https://mangomundi.com/widget.js"
-  data-currency="USD"
-  data-lang="auto">
-</script>`}</code>
-            </pre>
-            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4">
-              <div className="flex items-center justify-between text-[11px] text-slate-300">
-                <span className="font-semibold uppercase tracking-wider">FX Compare</span>
-                <span className="text-slate-500">
-                  powered by <span className="font-semibold text-[#ff6b5b]">mangomundi</span>
-                </span>
+          {/* Live preview — the real widget, exactly what gets embedded. */}
+          <div className="lg:pt-2">
+            <div className="mx-auto w-full max-w-[440px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
+              <div className="h-[600px]">
+                <EmbedComparator initialCurrency="USD" />
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <div className="h-9 rounded-lg bg-white/90" />
-                <div className="h-9 rounded-lg bg-white/90" />
-              </div>
-              <div className="mt-2 h-9 rounded-lg bg-[#ff6b5b]/80" />
             </div>
           </div>
         </div>

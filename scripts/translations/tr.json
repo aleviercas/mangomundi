@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "Widget",
   "home.widget.title": "mangomundi web sitenizde.",
   "home.widget.body": "FX karşılaştırıcıyı tek bir script ile herhangi bir siteye veya uygulamaya ekleyin — canlı kurlar, sizin markanız, powered by mangomundi.",
-  "home.widget.badge": "Çok yakında",
-  "home.widget.cta": "Erken erişim isteyin"
+  "home.widget.badge": "Ücretsiz yerleştirme",
+  "home.widget.cta": "Erken erişim isteyin",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "Kopyala",
+  "home.widget.copied": "Kopyalandı!",
+  "home.widget.hint": "HTML'inizin herhangi bir yerine yapıştırın. Widget ücretsizdir ve izole bir iframe içinde çalışır — kod çakışması yok, sitenize eklenen takip yok."
 }

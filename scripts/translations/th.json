@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "วิดเจ็ต",
   "home.widget.title": "mangomundi บนเว็บไซต์ของคุณ",
   "home.widget.body": "ฝังตัวเปรียบเทียบ FX ในเว็บไซต์หรือแอปใดก็ได้ด้วยสคริปต์แท็กเดียว — เรตสด แบรนด์ของคุณ powered by mangomundi",
-  "home.widget.badge": "เร็ว ๆ นี้",
-  "home.widget.cta": "ขอสิทธิ์เข้าใช้ก่อนใคร"
+  "home.widget.badge": "ฝังฟรี",
+  "home.widget.cta": "ขอสิทธิ์เข้าใช้ก่อนใคร",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "คัดลอก",
+  "home.widget.copied": "คัดลอกแล้ว!",
+  "home.widget.hint": "วางไว้ที่ใดก็ได้ใน HTML ของคุณ วิดเจ็ตนี้ฟรีและทำงานใน iframe ที่แยกออกมา — ไม่มีโค้ดขัดแย้ง ไม่มีการเพิ่มการติดตามในเว็บไซต์ของคุณ"
 }

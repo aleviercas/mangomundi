@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "विजेट",
   "home.widget.title": "आपकी वेबसाइट पर mangomundi।",
   "home.widget.body": "एक ही स्क्रिप्ट टैग से किसी भी वेबसाइट या ऐप में FX तुलनाकार जोड़ें — लाइव दरें, आपका ब्रांड, powered by mangomundi।",
-  "home.widget.badge": "जल्द आ रहा है",
-  "home.widget.cta": "अर्ली एक्सेस का अनुरोध करें"
+  "home.widget.badge": "मुफ़्त एम्बेड",
+  "home.widget.cta": "अर्ली एक्सेस का अनुरोध करें",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "कॉपी करें",
+  "home.widget.copied": "कॉपी हो गया!",
+  "home.widget.hint": "इसे अपने HTML में कहीं भी पेस्ट करें। विजेट मुफ़्त है और एक अलग iframe में चलता है — कोई कोड टकराव नहीं, आपकी साइट पर कोई ट्रैकिंग नहीं जोड़ी जाती।"
 }

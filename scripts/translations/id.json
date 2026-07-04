@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "Widget",
   "home.widget.title": "mangomundi di situs web Anda.",
   "home.widget.body": "Sematkan pembanding FX di situs atau aplikasi mana pun dengan satu script — kurs langsung, merek Anda, powered by mangomundi.",
-  "home.widget.badge": "Segera hadir",
-  "home.widget.cta": "Minta akses awal"
+  "home.widget.badge": "Gratis disematkan",
+  "home.widget.cta": "Minta akses awal",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "Salin",
+  "home.widget.copied": "Tersalin!",
+  "home.widget.hint": "Tempel di mana saja dalam HTML Anda. Widget ini gratis dan berjalan dalam iframe terisolasi — tanpa konflik kode, tanpa pelacakan di situs Anda."
 }

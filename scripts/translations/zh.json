@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "小组件",
   "home.widget.title": "把 mangomundi 放到您的网站上。",
   "home.widget.body": "只需一个脚本标签，即可将外汇比较器嵌入任何网站或应用——实时汇率、您的品牌，powered by mangomundi。",
-  "home.widget.badge": "即将上线",
-  "home.widget.cta": "申请抢先体验"
+  "home.widget.badge": "免费嵌入",
+  "home.widget.cta": "申请抢先体验",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "复制",
+  "home.widget.copied": "已复制！",
+  "home.widget.hint": "粘贴到您 HTML 的任意位置。小组件免费，运行在隔离的 iframe 中——无代码冲突，不向您的网站添加任何跟踪。"
 }

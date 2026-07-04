@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "Widget",
   "home.widget.title": "mangomundi auf Ihrer Website.",
   "home.widget.body": "Binden Sie den FX-Vergleich mit einem einzigen Script-Tag in jede Website oder App ein — Live-Kurse, Ihr Branding, powered by mangomundi.",
-  "home.widget.badge": "Demnächst",
-  "home.widget.cta": "Frühzugang anfragen"
+  "home.widget.badge": "Kostenlos einbetten",
+  "home.widget.cta": "Frühzugang anfragen",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "Kopieren",
+  "home.widget.copied": "Kopiert!",
+  "home.widget.hint": "Fügen Sie es an beliebiger Stelle in Ihr HTML ein. Das Widget ist kostenlos und läuft in einem isolierten iframe — keine Code-Konflikte, kein Tracking auf Ihrer Seite."
 }

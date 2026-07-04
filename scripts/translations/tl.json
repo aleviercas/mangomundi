@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "Widget",
   "home.widget.title": "mangomundi sa iyong website.",
   "home.widget.body": "I-embed ang FX comparator sa anumang website o app gamit ang isang script tag — live na rate, iyong brand, powered by mangomundi.",
-  "home.widget.badge": "Malapit na",
-  "home.widget.cta": "Humiling ng early access"
+  "home.widget.badge": "Libreng i-embed",
+  "home.widget.cta": "Humiling ng early access",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "Kopyahin",
+  "home.widget.copied": "Nakopya!",
+  "home.widget.hint": "I-paste kahit saan sa iyong HTML. Libre ang widget at tumatakbo sa isang hiwalay na iframe — walang code conflict, walang tracking na idinaragdag sa iyong site."
 }

@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "Widget",
   "home.widget.title": "mangomundi no seu site.",
   "home.widget.body": "Incorpore o comparador FX em qualquer site ou app com um único script — taxas ao vivo, sua marca, powered by mangomundi.",
-  "home.widget.badge": "Em breve",
-  "home.widget.cta": "Solicitar acesso antecipado"
+  "home.widget.badge": "Grátis para integrar",
+  "home.widget.cta": "Solicitar acesso antecipado",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "Copiar",
+  "home.widget.copied": "Copiado!",
+  "home.widget.hint": "Cole em qualquer lugar do seu HTML. O widget é grátis e roda em um iframe isolado — sem conflitos de código nem rastreamento adicionado ao seu site."
 }

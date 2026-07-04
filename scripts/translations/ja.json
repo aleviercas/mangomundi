@@ -607,6 +607,11 @@
   "home.widget.eyebrow": "ウィジェット",
   "home.widget.title": "あなたのサイトに mangomundi を。",
   "home.widget.body": "スクリプトタグ1つでFX比較をあらゆるサイトやアプリに埋め込めます — ライブレート、あなたのブランド、powered by mangomundi。",
-  "home.widget.badge": "近日公開",
-  "home.widget.cta": "早期アクセスをリクエスト"
+  "home.widget.badge": "無料で埋め込み",
+  "home.widget.cta": "早期アクセスをリクエスト",
+  "home.widget.tab.script": "Script",
+  "home.widget.tab.iframe": "iframe",
+  "home.widget.copy": "コピー",
+  "home.widget.copied": "コピーしました！",
+  "home.widget.hint": "HTMLの好きな場所に貼り付けてください。ウィジェットは無料で、分離されたiframeで動作します — コードの競合なし、サイトへのトラッキング追加なし。"
 }

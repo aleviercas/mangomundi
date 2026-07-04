@@ -452,8 +452,14 @@ export const DICTS: Record<Lang, Dict> = {
     "home.widget.title": "mangomundi on your website.",
     "home.widget.body":
       "Embed the FX comparator on any website or app with a single script tag — live rates, your branding, powered by mangomundi.",
-    "home.widget.badge": "Coming soon",
+    "home.widget.badge": "Free to embed",
     "home.widget.cta": "Request early access",
+    "home.widget.tab.script": "Script",
+    "home.widget.tab.iframe": "iframe",
+    "home.widget.copy": "Copy",
+    "home.widget.copied": "Copied!",
+    "home.widget.hint":
+      "Paste it anywhere in your HTML. The widget is free and runs in an isolated iframe — no code conflicts, no tracking added to your site.",
     // Footer
     "footer.tagline": "Intelligent currency exchange decisions.",
     "footer.nav.title": "Navigate",
@@ -754,8 +760,14 @@ export const DICTS: Record<Lang, Dict> = {
     "home.widget.title": "mangomundi en tu sitio web.",
     "home.widget.body":
       "Embebé el comparador FX en cualquier sitio o app con un solo script — tasas en vivo, tu marca, powered by mangomundi.",
-    "home.widget.badge": "Muy pronto",
+    "home.widget.badge": "Gratis para integrar",
     "home.widget.cta": "Pedir acceso anticipado",
+    "home.widget.tab.script": "Script",
+    "home.widget.tab.iframe": "iframe",
+    "home.widget.copy": "Copiar",
+    "home.widget.copied": "¡Copiado!",
+    "home.widget.hint":
+      "Pegalo en cualquier parte de tu HTML. El widget es gratis y corre en un iframe aislado — sin conflictos de código ni tracking agregado a tu sitio.",
     // Footer
     "footer.tagline": "Decisiones inteligentes de cambio de divisas.",
     "footer.nav.title": "Navegación",

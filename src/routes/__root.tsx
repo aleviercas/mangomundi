@@ -3,6 +3,7 @@ import {
   Outlet,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -19,10 +20,10 @@ function NotFoundComponent() {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="font-heading text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 font-heading text-xl font-semibold text-foreground">{t("errors.notFound.title")}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t("errors.notFound.body")}
-        </p>
+        <h2 className="mt-4 font-heading text-xl font-semibold text-foreground">
+          {t("errors.notFound.title")}
+        </h2>
+        <p className="mt-2 text-sm text-muted-foreground">{t("errors.notFound.body")}</p>
         <div className="mt-6">
           <a
             href="/"
@@ -113,7 +114,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-        { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap",
+        },
       ],
     };
   },
@@ -144,6 +148,18 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function LangKeyedShell() {
   const { lang } = useI18n();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // The embeddable widget (/embed) renders bare — no site chrome — so it drops
+  // cleanly into a third-party iframe. All providers still wrap it (above).
+  if (pathname === "/embed") {
+    return (
+      <div key={lang}>
+        <Outlet />
+      </div>
+    );
+  }
+
   return (
     <div key={lang} className="relative z-10 flex min-h-screen flex-col">
       <Header />
@@ -171,4 +187,3 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
-
