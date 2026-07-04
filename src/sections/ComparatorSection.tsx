@@ -4,12 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
-  ChevronDown,
   Clock,
   Loader2,
   Send,
   Shield,
-  SlidersHorizontal,
   Star,
   Building2,
   Sparkle,
@@ -101,9 +99,6 @@ export function ComparatorSection({
   // Empty until the user picks — the basic row shows "Select country…" and the
   // Compare CTA validates (same UX the old hero widget had).
   const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "");
-  // The extra fields (target-currency override, send/receive calculation)
-  // fold out below the basic row, inside the same card.
-  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
   const [amountMode, setAmountMode] = useState<AmountMode>("send");
   // Fixed: the urgency field was removed from the form (the engine never used
@@ -793,26 +788,51 @@ export function ComparatorSection({
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
               </div>
-              <div
-                role="tablist"
-                aria-label={t("search.segment")}
-                className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-1"
-              >
-                {(["retail", "business"] as Segment[]).map((s) => (
-                  <button
-                    key={s}
-                    role="tab"
-                    aria-selected={segment === s}
-                    onClick={() => setSegment(s)}
-                    className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
-                      segment === s
-                        ? "bg-white text-slate-900 shadow-sm"
-                        : "text-slate-300 hover:text-white"
-                    }`}
-                  >
-                    {t(`comparator.segment.${s}`)}
-                  </button>
-                ))}
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                {/* Fixed-side pill: which amount is exact (Wise's "recipient
+                    gets exactly"). Smaller sibling of the segment pill. */}
+                <div
+                  role="tablist"
+                  aria-label={t("comparator.field.amountMode")}
+                  className="flex h-7 shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-0.5"
+                >
+                  {(["send", "receive"] as AmountMode[]).map((mode) => (
+                    <button
+                      key={mode}
+                      role="tab"
+                      aria-selected={amountMode === mode}
+                      onClick={() => setAmountMode(mode)}
+                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition ${
+                        amountMode === mode
+                          ? "bg-white text-slate-900 shadow-sm"
+                          : "text-slate-300 hover:text-white"
+                      }`}
+                    >
+                      {t(`comparator.amountMode.${mode}`)}
+                    </button>
+                  ))}
+                </div>
+                <div
+                  role="tablist"
+                  aria-label={t("search.segment")}
+                  className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-1"
+                >
+                  {(["retail", "business"] as Segment[]).map((s) => (
+                    <button
+                      key={s}
+                      role="tab"
+                      aria-selected={segment === s}
+                      onClick={() => setSegment(s)}
+                      className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
+                        segment === s
+                          ? "bg-white text-slate-900 shadow-sm"
+                          : "text-slate-300 hover:text-white"
+                      }`}
+                    >
+                      {t(`comparator.segment.${s}`)}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -825,19 +845,16 @@ export function ComparatorSection({
                   {t("search.sameCountry")}
                 </div>
               )}
-              {/* Basic row — "You send" (amount+currency) | From country | To
-                  country | CTA. Monito-style: both countries visible upfront
-                  (origin geo-detected but editable). Horizontal on wide
-                  containers, stacked on mobile/embed. */}
-              <div className="grid grid-cols-1 gap-4 @sm:grid-cols-2 @2xl:grid-cols-[1.4fr_1fr_1fr_auto]">
-                <FieldLight
-                  label={
-                    amountMode === "send"
-                      ? t("comparator.field.amount")
-                      : t("comparator.field.amountReceived")
-                  }
-                >
-                  <div className="grid grid-cols-[1.3fr_1fr] gap-2">
+              {/* One consolidated row — FROM group → TO group → CTA. No hidden
+                  advanced state: everything lives in the same box. Stacks
+                  vertically (arrow rotates) below @2xl (mobile/embed). */}
+              <div className="grid grid-cols-1 items-stretch gap-3 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
+                {/* FROM: amount + currency + source country */}
+                <div className="min-w-0 rounded-xl border border-white/10 p-3">
+                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    {t("fx.field.from")}
+                  </p>
+                  <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1fr_1fr_1.2fr]">
                     <input
                       type="number"
                       inputMode="decimal"
@@ -861,41 +878,62 @@ export function ComparatorSection({
                       ariaLabel={t("comparator.field.sourceCurrency")}
                       triggerClassName={WHITE_FIELD}
                     />
+                    <CountrySelect
+                      value={sendingCountry}
+                      onChange={(c) => {
+                        // Picking a country derives its currency (the currency
+                        // combobox next to the amount can override).
+                        setSendingCountry(c);
+                        setFrom(localCurrency(c));
+                      }}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCountry")}
+                      triggerClassName={WHITE_FIELD}
+                    />
                   </div>
-                </FieldLight>
-                <FieldLight label={t("comparator.field.sourceCountry")}>
-                  <CountrySelect
-                    value={sendingCountry}
-                    onChange={(c) => {
-                      // Picking a country derives its currency (the visible
-                      // currency combobox next to the amount can override).
-                      setSendingCountry(c);
-                      setFrom(localCurrency(c));
-                    }}
-                    placeholder={t("comparator.combobox.placeholder")}
-                    searchPlaceholder={t("comparator.combobox.search")}
-                    emptyLabel={t("comparator.combobox.empty")}
-                    ariaLabel={t("comparator.field.sourceCountry")}
-                    triggerClassName={WHITE_FIELD}
-                  />
-                </FieldLight>
-                <FieldLight label={t("search.destination")}>
-                  <CountrySelect
-                    value={receivingCountry}
-                    onChange={(c) => {
-                      // Destination derives the target currency (the advanced
-                      // Target-currency combobox can still override).
-                      setReceivingCountry(c);
-                      setTo(localCurrency(c));
-                    }}
-                    placeholder={t("search.selectCountry")}
-                    searchPlaceholder={t("comparator.combobox.search")}
-                    emptyLabel={t("comparator.combobox.empty")}
-                    ariaLabel={t("search.destination")}
-                    triggerClassName={WHITE_FIELD}
-                  />
-                </FieldLight>
-                <div className="flex flex-col justify-end">
+                </div>
+
+                {/* Route arrow — horizontal on wide layouts, rotated when stacked */}
+                <div className="flex items-center justify-center py-0.5 @2xl:py-0">
+                  <ArrowRight className="h-5 w-5 rotate-90 text-[#ff6b5b] @2xl:rotate-0" />
+                </div>
+
+                {/* TO: recipient country + target currency (the override that
+                    used to hide behind Advanced options) */}
+                <div className="min-w-0 rounded-xl border border-white/10 p-3">
+                  <p className="mb-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                    {t("fx.field.to")}
+                  </p>
+                  <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.2fr_1fr]">
+                    <CountrySelect
+                      value={receivingCountry}
+                      onChange={(c) => {
+                        // Destination derives the target currency (the combobox
+                        // beside it can override).
+                        setReceivingCountry(c);
+                        setTo(localCurrency(c));
+                      }}
+                      placeholder={t("search.selectCountry")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("search.destination")}
+                      triggerClassName={WHITE_FIELD}
+                    />
+                    <CurrencyCombobox
+                      value={to}
+                      onChange={setTo}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.targetCurrency")}
+                      triggerClassName={WHITE_FIELD}
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col justify-end pb-0.5">
                   <Button
                     onClick={() => {
                       if (!sendingCountry || !receivingCountry || amount <= 0) {
@@ -925,57 +963,6 @@ export function ComparatorSection({
               {validationError && (
                 <div className="rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
                   {validationError}
-                </div>
-              )}
-
-              {/* Advanced options — folds out below, inside the same card. */}
-              <button
-                type="button"
-                onClick={() => setAdvancedOpen((v) => !v)}
-                aria-expanded={advancedOpen}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 transition-colors hover:text-white"
-              >
-                <SlidersHorizontal className="h-3.5 w-3.5" />
-                {t("comparator.advancedOptions")}
-                <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform ${advancedOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              {advancedOpen && (
-                /* Advanced: target-currency override + fixed-send/fixed-receive
-                   calculation (Wise-style "recipient gets exactly"). Urgency was
-                   removed — no comparator asks it upfront and the engine never
-                   used it for ranking; speed is a results column + sort. */
-                <div className="grid grid-cols-1 gap-4 border-t border-white/10 pt-4 @sm:grid-cols-2">
-                  <FieldLight label={t("comparator.field.targetCurrency")}>
-                    <CurrencyCombobox
-                      value={to}
-                      onChange={setTo}
-                      placeholder={t("comparator.combobox.placeholder")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.targetCurrency")}
-                      triggerClassName={WHITE_FIELD}
-                    />
-                  </FieldLight>
-                  <FieldLight label={t("comparator.field.amountMode")}>
-                    <div className="flex h-11 rounded-md bg-white/10 p-1">
-                      {(["send", "receive"] as AmountMode[]).map((mode) => (
-                        <button
-                          key={mode}
-                          type="button"
-                          onClick={() => setAmountMode(mode)}
-                          className={`flex-1 rounded-sm px-2 text-sm font-semibold transition ${
-                            amountMode === mode
-                              ? "bg-white text-slate-900 shadow-sm"
-                              : "text-slate-300 hover:text-white"
-                          }`}
-                        >
-                          {t(`comparator.amountMode.${mode}`)}
-                        </button>
-                      ))}
-                    </div>
-                  </FieldLight>
                 </div>
               )}
             </div>
