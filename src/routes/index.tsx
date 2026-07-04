@@ -1,5 +1,4 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
@@ -66,27 +65,12 @@ function Index() {
   const geoCountry = rootData?.geoCountry ?? "GB";
   const geoCurrency = rootData?.geoCurrency ?? "GBP";
 
-  // A submit from the hero widget remounts the comparator (key=nonce) with
-  // autoRun — reusing the exact initialQuery machinery /compare used, without
-  // sharing mutable state across the two components. The nonce (not a
-  // serialized query) guarantees a remount even for identical params, since
-  // the comparator's one-shot autoRun guard blocks re-runs within a mount.
-  const [query, setQuery] = useState<(ComparatorQuery & { nonce: number }) | null>(null);
-  const [advancedOpen, setAdvancedOpen] = useState(false);
-  // Bumped on every "Advanced options" click so repeat clicks re-scroll even
-  // when the card is already open (the effect below runs after the card
-  // renders, so the scroll target exists).
-  const [advancedScrollTick, setAdvancedScrollTick] = useState(0);
-  const nonceRef = useRef(0);
-
-  useEffect(() => {
-    if (advancedScrollTick === 0) return;
-    document.getElementById("comparator")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }, [advancedScrollTick]);
-
+  // The comparator is THE single box now (basic row + fold-out advanced
+  // options live inside it) — no hero widget to bridge, no remount machinery.
+  // Destination starts empty so the user picks it (the CTA validates).
   const geoDefaults: ComparatorQuery = {
     origin: geoCountry,
-    destination: "US",
+    destination: "",
     segment: "retail",
     from: geoCurrency,
     to: "USD",
@@ -95,18 +79,8 @@ function Index() {
 
   return (
     <>
-      <HeroSection
-        onSubmit={(q) => setQuery({ ...q, nonce: ++nonceRef.current })}
-        onToggleAdvanced={() => {
-          setAdvancedOpen(true);
-          setAdvancedScrollTick((n) => n + 1);
-        }}
-      />
-      <ComparatorSection
-        key={query?.nonce ?? 0}
-        initialQuery={query ?? geoDefaults}
-        showAdvancedCard={advancedOpen || !!query}
-      />
+      <HeroSection />
+      <ComparatorSection initialQuery={geoDefaults} />
       <HowItWorksSection />
       <AboutManifestoSection />
       <StatsSection />
