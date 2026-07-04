@@ -145,7 +145,7 @@
   "home.finalCta.subtitle": "Accedé a un ruteo FX transparente respaldado por el mercado y a protocolos personalizados de licitación RFQ asincrónica para tus corredores empresariales.",
   "home.finalCta.rfq": "Acceder a la Terminal RFQ",
   "home.hero.ctaCompare": "Probar Comparador FX",
-  "home.hero.titlePre": "Comparación inteligente de",
+  "home.hero.titlePre": "Compará",
   "home.hero.titleAccent": "cambio de divisas",
   "home.dual.title": "Construido para cada flujo transfronterizo — retail y corporativo.",
   "home.dual.retail.title": "Remesas Retail y Patrimonio Privado",
@@ -601,7 +601,7 @@
   "agent.minimize": "Minimizar Agente IA",
   "agent.unread": "{n} mensajes sin leer",
   "comparator.advancedOptions": "Opciones avanzadas",
-  "home.hero.tagline": "Tipos de cambio, fees, rutas y tiempos de entrega — comparados en tiempo real. Tasas en vivo, cero comisiones, sin registro.",
+  "home.hero.tagline": "Tipos de cambio, fees, rutas y tiempos de entrega — comparados en tiempo real con IA. Tasas en vivo, cero comisiones, sin registro.",
   "home.contact.simple.title": "Escribinos.",
   "home.contact.simple.body": "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",
   "home.widget.eyebrow": "Widget",
@@ -614,5 +614,5 @@
   "home.widget.copy": "Copiar",
   "home.widget.copied": "¡Copiado!",
   "home.widget.hint": "Pegalo en cualquier parte de tu HTML. El widget es gratis y corre en un iframe aislado — sin conflictos de código ni tracking agregado a tu sitio.",
-  "home.hero.titlePost": "con IA"
+  "home.hero.titlePost": "de forma inteligente"
 }

@@ -488,7 +488,7 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "Matalinong paghahambing ng",
+  "home.hero.titlePre": "Ihambing ang",
   "home.hero.titleAccent": "palitan ng pera",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
@@ -601,7 +601,7 @@
   "agent.minimize": "I-minimize ang AI Agent",
   "agent.unread": "{n} hindi pa nababasang mensahe",
   "comparator.advancedOptions": "Mga advanced na opsyon",
-  "home.hero.tagline": "Mga exchange rate, bayarin, ruta, at bilis ng paghahatid — inihahambing nang real time. Live na rate, walang bayarin, walang sign-up.",
+  "home.hero.tagline": "Mga exchange rate, bayarin, ruta, at bilis ng paghahatid — inihahambing nang real time gamit ang AI. Live na rate, walang bayarin, walang sign-up.",
   "home.contact.simple.title": "Makipag-ugnayan.",
   "home.contact.simple.body": "Mga tanong, feedback, o press — sumulat sa amin at sasagot kami kaagad.",
   "home.widget.eyebrow": "Widget",
@@ -614,5 +614,5 @@
   "home.widget.copy": "Kopyahin",
   "home.widget.copied": "Nakopya!",
   "home.widget.hint": "I-paste kahit saan sa iyong HTML. Libre ang widget at tumatakbo sa isang hiwalay na iframe — walang code conflict, walang tracking na idinaragdag sa iyong site.",
-  "home.hero.titlePost": "gamit ang AI"
+  "home.hero.titlePost": "nang matalino"
 }

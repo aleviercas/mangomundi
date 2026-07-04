@@ -381,7 +381,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.hero.ctaCompare": "Try FX Comparator",
     "home.hero.titlePre": "Smart",
     "home.hero.titleAccent": "currency exchange",
-    "home.hero.titlePost": "comparison with AI",
+    "home.hero.titlePost": "comparison",
     "home.dual.title": "Built for every cross-border flow — retail and corporate.",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
@@ -445,7 +445,7 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.hero.tagline":
-      "Exchange rates, fees, routes and delivery speeds — compared in real time. Live rates, zero fees, no sign-up.",
+      "Exchange rates, fees, routes and delivery speeds — compared in real time with AI. Live rates, zero fees, no sign-up.",
     "home.contact.simple.title": "Get in touch.",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
@@ -753,7 +753,7 @@ export const DICTS: Record<Lang, Dict> = {
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
     "home.hero.tagline":
-      "Tipos de cambio, fees, rutas y tiempos de entrega — comparados en tiempo real. Tasas en vivo, cero comisiones, sin registro.",
+      "Tipos de cambio, fees, rutas y tiempos de entrega — comparados en tiempo real con IA. Tasas en vivo, cero comisiones, sin registro.",
     "home.contact.simple.title": "Escribinos.",
     "home.contact.simple.body":
       "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",

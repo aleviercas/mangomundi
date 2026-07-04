@@ -488,7 +488,7 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "Intelligenter Vergleich für den",
+  "home.hero.titlePre": "Den",
   "home.hero.titleAccent": "Währungswechsel",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
@@ -601,7 +601,7 @@
   "agent.minimize": "KI-Agent minimieren",
   "agent.unread": "{n} ungelesene Nachrichten",
   "comparator.advancedOptions": "Erweiterte Optionen",
-  "home.hero.tagline": "Wechselkurse, Gebühren, Routen und Lieferzeiten — in Echtzeit verglichen. Live-Kurse, keine Gebühren, ohne Anmeldung.",
+  "home.hero.tagline": "Wechselkurse, Gebühren, Routen und Lieferzeiten — in Echtzeit mit KI verglichen. Live-Kurse, keine Gebühren, ohne Anmeldung.",
   "home.contact.simple.title": "Kontaktieren Sie uns.",
   "home.contact.simple.body": "Fragen, Feedback oder Presse — schreiben Sie uns, wir melden uns zeitnah.",
   "home.widget.eyebrow": "Widget",
@@ -614,5 +614,5 @@
   "home.widget.copy": "Kopieren",
   "home.widget.copied": "Kopiert!",
   "home.widget.hint": "Fügen Sie es an beliebiger Stelle in Ihr HTML ein. Das Widget ist kostenlos und läuft in einem isolierten iframe — keine Code-Konflikte, kein Tracking auf Ihrer Seite.",
-  "home.hero.titlePost": "mit KI"
+  "home.hero.titlePost": "clever vergleichen"
 }

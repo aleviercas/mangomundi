@@ -488,7 +488,7 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "Comparação inteligente de",
+  "home.hero.titlePre": "Compare",
   "home.hero.titleAccent": "câmbio de moedas",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
@@ -601,7 +601,7 @@
   "agent.minimize": "Minimizar Agente IA",
   "agent.unread": "{n} mensagens não lidas",
   "comparator.advancedOptions": "Opções avançadas",
-  "home.hero.tagline": "Taxas de câmbio, tarifas, rotas e prazos de entrega — comparados em tempo real. Taxas ao vivo, zero tarifas, sem cadastro.",
+  "home.hero.tagline": "Taxas de câmbio, tarifas, rotas e prazos de entrega — comparados em tempo real com IA. Taxas ao vivo, zero tarifas, sem cadastro.",
   "home.contact.simple.title": "Fale conosco.",
   "home.contact.simple.body": "Dúvidas, feedback ou imprensa — escreva para nós e responderemos em breve.",
   "home.widget.eyebrow": "Widget",
@@ -614,5 +614,5 @@
   "home.widget.copy": "Copiar",
   "home.widget.copied": "Copiado!",
   "home.widget.hint": "Cole em qualquer lugar do seu HTML. O widget é grátis e roda em um iframe isolado — sem conflitos de código nem rastreamento adicionado ao seu site.",
-  "home.hero.titlePost": "com IA"
+  "home.hero.titlePost": "de forma inteligente"
 }

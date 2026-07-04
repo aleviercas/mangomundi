@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "Умное сравнение",
-  "home.hero.titleAccent": "обмена валют",
+  "home.hero.titlePre": "Сравнивайте",
+  "home.hero.titleAccent": "обмен валют",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "Свернуть ИИ-агента",
   "agent.unread": "{n} непрочитанных сообщений",
   "comparator.advancedOptions": "Расширенные параметры",
-  "home.hero.tagline": "Курсы, комиссии, маршруты и сроки доставки — сравнение в реальном времени. Живые курсы, ноль комиссий, без регистрации.",
+  "home.hero.tagline": "Курсы, комиссии, маршруты и сроки доставки — сравнение в реальном времени с помощью ИИ. Живые курсы, ноль комиссий, без регистрации.",
   "home.contact.simple.title": "Свяжитесь с нами.",
   "home.contact.simple.body": "Вопросы, отзывы или пресса — напишите нам, и мы скоро ответим.",
   "home.widget.eyebrow": "Виджет",
@@ -614,5 +614,5 @@
   "home.widget.copy": "Копировать",
   "home.widget.copied": "Скопировано!",
   "home.widget.hint": "Вставьте в любое место вашего HTML. Виджет бесплатный и работает в изолированном iframe — без конфликтов кода и без трекинга на вашем сайте.",
-  "home.hero.titlePost": "с ИИ"
+  "home.hero.titlePost": "с умом"
 }

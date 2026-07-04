@@ -601,7 +601,7 @@
   "agent.minimize": "AI ایجنٹ چھوٹا کریں",
   "agent.unread": "{n} غیر پڑھے پیغامات",
   "comparator.advancedOptions": "جدید اختیارات",
-  "home.hero.tagline": "شرحِ مبادلہ، فیس، روٹس اور ترسیل کے اوقات — حقیقی وقت میں موازنہ۔ براہ راست ریٹس، صفر فیس، بغیر سائن اپ۔",
+  "home.hero.tagline": "شرحِ مبادلہ، فیس، روٹس اور ترسیل کے اوقات — AI کے ساتھ حقیقی وقت میں موازنہ۔ براہ راست ریٹس، صفر فیس، بغیر سائن اپ۔",
   "home.contact.simple.title": "رابطہ کریں۔",
   "home.contact.simple.body": "سوالات، رائے یا پریس — ہمیں لکھیں، ہم جلد جواب دیں گے۔",
   "home.widget.eyebrow": "ویجٹ",
@@ -614,5 +614,5 @@
   "home.widget.copy": "کاپی",
   "home.widget.copied": "کاپی ہو گیا!",
   "home.widget.hint": "اسے اپنے HTML میں کہیں بھی پیسٹ کریں۔ ویجٹ مفت ہے اور ایک الگ iframe میں چلتا ہے — کوئی کوڈ ٹکراؤ نہیں، آپ کی سائٹ پر کوئی ٹریکنگ شامل نہیں۔",
-  "home.hero.titlePost": "موازنہ، AI کے ساتھ"
+  "home.hero.titlePost": "موازنہ"
 }
