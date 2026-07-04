@@ -22,7 +22,7 @@ export function HeroSection() {
             {t("home.hero.titleAccent")}
           </span>
         </h1>
-        <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:mt-5">
+        <p className="mx-auto mt-3 max-w-5xl text-base leading-relaxed text-slate-600 sm:mt-5">
           {t("home.hero.tagline")}
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
