@@ -599,5 +599,6 @@
   "corridor.missing.request": "Solicitar esta ruta",
   "corridor.missing.requested": "✓ Ruta solicitada",
   "agent.minimize": "Minimizar Agente IA",
-  "agent.unread": "{n} mensajes sin leer"
+  "agent.unread": "{n} mensajes sin leer",
+  "comparator.advancedOptions": "Opciones avanzadas"
 }

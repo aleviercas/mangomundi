@@ -557,9 +557,9 @@
   "footer.rights": "All rights reserved.",
   "legal.pageTitle": "Legal & Compliance",
   "legal.privacy.title": "Privacy Policy",
-  "home.feat.liveRates": "Live Rates",
-  "home.feat.zeroFees": "Zero Fees",
-  "home.feat.noSignup": "No Sign-up",
+  "home.feat.liveRates": "लाइव दरें",
+  "home.feat.zeroFees": "शून्य शुल्क",
+  "home.feat.noSignup": "बिना साइन-अप",
   "home.hero.b1": "A transparent AI agent for global and local payments.",
   "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
   "home.hero.b3": "Finding the best option for every transfer.",
@@ -599,5 +599,6 @@
   "corridor.missing.request": "इस रूट का अनुरोध करें",
   "corridor.missing.requested": "✓ रूट का अनुरोध किया गया",
   "agent.minimize": "AI एजेंट छोटा करें",
-  "agent.unread": "{n} अपठित संदेश"
+  "agent.unread": "{n} अपठित संदेश",
+  "comparator.advancedOptions": "उन्नत विकल्प"
 }

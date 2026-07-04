@@ -557,9 +557,9 @@
   "footer.rights": "All rights reserved.",
   "legal.pageTitle": "Legal & Compliance",
   "legal.privacy.title": "Privacy Policy",
-  "home.feat.liveRates": "Live Rates",
-  "home.feat.zeroFees": "Zero Fees",
-  "home.feat.noSignup": "No Sign-up",
+  "home.feat.liveRates": "Canlı kurlar",
+  "home.feat.zeroFees": "Sıfır ücret",
+  "home.feat.noSignup": "Kayıt gerekmez",
   "home.hero.b1": "A transparent AI agent for global and local payments.",
   "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
   "home.hero.b3": "Finding the best option for every transfer.",
@@ -599,5 +599,6 @@
   "corridor.missing.request": "Bu rotayı talep et",
   "corridor.missing.requested": "✓ Rota talep edildi",
   "agent.minimize": "YZ Ajanını küçült",
-  "agent.unread": "{n} okunmamış mesaj"
+  "agent.unread": "{n} okunmamış mesaj",
+  "comparator.advancedOptions": "Gelişmiş seçenekler"
 }

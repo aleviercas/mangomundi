@@ -557,9 +557,9 @@
   "footer.rights": "All rights reserved.",
   "legal.pageTitle": "Legal & Compliance",
   "legal.privacy.title": "Privacy Policy",
-  "home.feat.liveRates": "Live Rates",
-  "home.feat.zeroFees": "Zero Fees",
-  "home.feat.noSignup": "No Sign-up",
+  "home.feat.liveRates": "Курсы в реальном времени",
+  "home.feat.zeroFees": "Ноль комиссий",
+  "home.feat.noSignup": "Без регистрации",
   "home.hero.b1": "A transparent AI agent for global and local payments.",
   "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
   "home.hero.b3": "Finding the best option for every transfer.",
@@ -599,5 +599,6 @@
   "corridor.missing.request": "Запросить этот маршрут",
   "corridor.missing.requested": "✓ Маршрут запрошен",
   "agent.minimize": "Свернуть ИИ-агента",
-  "agent.unread": "{n} непрочитанных сообщений"
+  "agent.unread": "{n} непрочитанных сообщений",
+  "comparator.advancedOptions": "Расширенные параметры"
 }

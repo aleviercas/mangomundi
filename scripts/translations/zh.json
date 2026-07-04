@@ -557,9 +557,9 @@
   "footer.rights": "All rights reserved.",
   "legal.pageTitle": "Legal & Compliance",
   "legal.privacy.title": "Privacy Policy",
-  "home.feat.liveRates": "Live Rates",
-  "home.feat.zeroFees": "Zero Fees",
-  "home.feat.noSignup": "No Sign-up",
+  "home.feat.liveRates": "实时汇率",
+  "home.feat.zeroFees": "零费用",
+  "home.feat.noSignup": "无需注册",
   "home.hero.b1": "A transparent AI agent for global and local payments.",
   "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
   "home.hero.b3": "Finding the best option for every transfer.",
@@ -599,5 +599,6 @@
   "corridor.missing.request": "请求添加此路线",
   "corridor.missing.requested": "✓ 已请求该路线",
   "agent.minimize": "最小化 AI 助手",
-  "agent.unread": "{n} 条未读消息"
+  "agent.unread": "{n} 条未读消息",
+  "comparator.advancedOptions": "高级选项"
 }

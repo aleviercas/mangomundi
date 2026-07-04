@@ -557,9 +557,9 @@
   "footer.rights": "All rights reserved.",
   "legal.pageTitle": "Legal & Compliance",
   "legal.privacy.title": "Privacy Policy",
-  "home.feat.liveRates": "Live Rates",
-  "home.feat.zeroFees": "Zero Fees",
-  "home.feat.noSignup": "No Sign-up",
+  "home.feat.liveRates": "Kurs langsung",
+  "home.feat.zeroFees": "Nol biaya",
+  "home.feat.noSignup": "Tanpa daftar",
   "home.hero.b1": "A transparent AI agent for global and local payments.",
   "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
   "home.hero.b3": "Finding the best option for every transfer.",
@@ -599,5 +599,6 @@
   "corridor.missing.request": "Minta rute ini",
   "corridor.missing.requested": "✓ Rute diminta",
   "agent.minimize": "Perkecil Agen AI",
-  "agent.unread": "{n} pesan belum dibaca"
+  "agent.unread": "{n} pesan belum dibaca",
+  "comparator.advancedOptions": "Opsi lanjutan"
 }

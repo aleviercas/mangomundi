@@ -2561,6 +2561,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.transferDetails.subtitle":
       "Adjust the amount and currencies before running the market comparison.",
     "comparator.advancedSearch": "Advanced Search",
+    "comparator.advancedOptions": "Advanced options",
     "comparator.results": "Your results",
     "comparator.sortBy": "Sort by",
     "comparator.sort.received": "Best rate",
@@ -2689,6 +2690,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.transferDetails.subtitle":
       "Ajusta el importe y las monedas antes de ejecutar la comparación de mercado.",
     "comparator.advancedSearch": "Búsqueda avanzada",
+    "comparator.advancedOptions": "Opciones avanzadas",
     "comparator.results": "Tus resultados",
     "comparator.sortBy": "Ordenar por",
     "comparator.sort.received": "Mejor tasa",
@@ -3025,11 +3027,6 @@ const ROUTE_SEO_EN: RouteSeoMap = {
     description:
       "Talk to mangomundi: launch partners, enterprise deployments, press and general enquiries.",
   },
-  "/compare": {
-    title: "Compare FX providers — mangomundi",
-    description:
-      "Compare 30+ FX providers across 100+ currencies. Live mid-market rates, total fees and AI-ranked recommendations.",
-  },
   "/fx-tool": {
     title: "FX Tool — mangomundi",
     description:
@@ -3081,11 +3078,6 @@ const ROUTE_SEO_ES: RouteSeoMap = {
     title: "Contacto — mangomundi",
     description:
       "Habla con mangomundi: socios de lanzamiento, despliegues empresariales, prensa y consultas generales.",
-  },
-  "/compare": {
-    title: "Comparar proveedores FX — mangomundi",
-    description:
-      "Compara más de 30 proveedores FX en más de 100 divisas. Tipos mid-market en vivo, comisiones totales y recomendaciones rankeadas por IA.",
   },
   "/fx-tool": {
     title: "Herramienta FX — mangomundi",

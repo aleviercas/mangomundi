@@ -557,9 +557,9 @@
   "footer.rights": "All rights reserved.",
   "legal.pageTitle": "Legal & Compliance",
   "legal.privacy.title": "Privacy Policy",
-  "home.feat.liveRates": "Live Rates",
-  "home.feat.zeroFees": "Zero Fees",
-  "home.feat.noSignup": "No Sign-up",
+  "home.feat.liveRates": "Taux en direct",
+  "home.feat.zeroFees": "Zéro frais",
+  "home.feat.noSignup": "Sans inscription",
   "home.hero.b1": "A transparent AI agent for global and local payments.",
   "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
   "home.hero.b3": "Finding the best option for every transfer.",
@@ -599,5 +599,6 @@
   "corridor.missing.request": "Demander cette route",
   "corridor.missing.requested": "✓ Route demandée",
   "agent.minimize": "Réduire l'Agent IA",
-  "agent.unread": "{n} messages non lus"
+  "agent.unread": "{n} messages non lus",
+  "comparator.advancedOptions": "Options avancées"
 }

@@ -1,4 +1,3 @@
-import { useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -11,8 +10,6 @@ import {
   Shield,
   Star,
   Building2,
-  TrendingUp,
-  ArrowDownUp,
   Sparkle,
   Zap,
   Info,
@@ -31,7 +28,7 @@ import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
-import { B2B_UPSELL_MIN_AMOUNT, MARKET_BASELINE_SPREAD } from "@/config/providers";
+import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { captureBusinessLead } from "@/lib/agent.functions";
 import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
 import {
@@ -69,7 +66,7 @@ type ChatAction =
 type ChatMsg = { role: "user" | "assistant"; content: string; actions?: ChatAction[] };
 type BusinessStage = "volume" | "email" | "consent" | "done";
 
-interface ComparatorQuery {
+export interface ComparatorQuery {
   origin: string;
   destination: string;
   segment: Segment;
@@ -77,13 +74,19 @@ interface ComparatorQuery {
   to: string;
   amount: number;
   lang?: string;
-  /** Run the comparison immediately on mount (set by the home widget's ?run=1). */
+  /** Run the comparison immediately on mount (set by the hero widget submit). */
   autoRun?: boolean;
 }
 
-export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQuery }) {
+export function ComparatorSection({
+  initialQuery,
+  showAdvancedCard = true,
+}: {
+  initialQuery?: ComparatorQuery;
+  /** Home page collapses the Advanced Search card behind a toggle. */
+  showAdvancedCard?: boolean;
+}) {
   const { t, lang } = useI18n();
-  const navigate = useNavigate({ from: "/compare" });
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
   const [from, setFrom] = useState(initialQuery?.from ?? "GBP");
   const [to, setTo] = useState(initialQuery?.to ?? "USD");
@@ -105,6 +108,9 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
   // URL without wiping the freshly-set results/chat. One-shot.
   const skipNextSyncClearRef = useRef(false);
+  // Auto-scroll target: the "Your Results" section (conversion: the user must
+  // land on the results right after comparing, desktop and mobile alike).
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
   const [businessData, setBusinessData] = useState<{
     monthlyVolume?: number;
@@ -571,7 +577,9 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
 
   // Keep form state shareable, but only compare after the explicit CTA.
   // Debounced 300ms so rapid input changes (e.g. typing the amount) don't
-  // hammer the router or trigger redundant state resets.
+  // trigger redundant state resets. (This used to also sync the /compare URL;
+  // the comparator now lives on the home page with a clean URL, so only the
+  // stale-result hygiene remains.)
   useEffect(() => {
     setValidationError(null);
     if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) {
@@ -579,8 +587,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
       return;
     }
     const handle = setTimeout(() => {
-      // After a suggested/corridor-changing compare we keep the just-set results
-      // and only sync the URL; otherwise a manual input edit clears stale results.
+      // After a suggested/corridor-changing compare we keep the just-set results;
+      // otherwise a manual input edit clears stale results.
       if (skipNextSyncClearRef.current) {
         skipNextSyncClearRef.current = false;
       } else {
@@ -588,19 +596,6 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
         setAiText("");
         setChat([]);
       }
-      void navigate({
-        search: {
-          origin: sendingCountry,
-          destination: receivingCountry,
-          segment,
-          from,
-          to,
-          amount,
-          lang,
-        },
-        replace: true,
-        resetScroll: false,
-      });
     }, 300);
     return () => clearTimeout(handle);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -609,6 +604,16 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
+
+  // Scroll the page to "Your Results" whenever a comparison lands. rAF waits
+  // for the results DOM to paint; the `result` guard skips the stale-clear
+  // (result → null) cycles from the debounced hygiene effect above.
+  useEffect(() => {
+    if (!result) return;
+    requestAnimationFrame(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }, [result]);
 
   // Persist chat + unread to survive remounts/navigation without flicker.
   useEffect(() => {
@@ -758,22 +763,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
   };
 
   return (
-    <section
-      id="comparator"
-      key={lang}
-      className="min-h-screen bg-background py-8 pb-32 sm:py-12 sm:pb-40"
-    >
+    <section id="comparator" key={lang} className="scroll-mt-24 bg-background py-8 sm:py-12">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        {/* Two-column layout once results exist: Advanced Search card on the
-            left, live metrics on the right. Before the first comparison the
-            card simply spans the full width (result is always null on first
-            render, so this is hydration-safe). Mobile stacks card-first. */}
-        <div
-          className={
-            result ? "grid items-start gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : ""
-          }
-        >
-          {/* Advanced search card. AI Agent is a floating widget (see below). */}
+        {/* Advanced search card — collapsible on the home page (the basic
+            HomeSearch widget in the hero is the primary entry point). The AI
+            Agent is a floating widget (see below). */}
+        {showAdvancedCard && (
           <div className="min-w-0">
             {/* Decision card */}
             <div className="surface-card overflow-hidden min-w-0">
@@ -942,24 +937,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
               </div>
             </div>
           </div>
-
-          {/* Right column — live metrics beside the search card. */}
-          {result && (
-            <div className="min-w-0">
-              <ResultsMetrics
-                result={result}
-                amount={amount}
-                sortBy={sortBy}
-                onSortChange={setSortBy}
-                tMidmarket={t("fx.midmarket")}
-                tUpdated={t("fx.updated")}
-                tLastUpdate={t("comparator.lastUpdate")}
-                tSavingsLabel={t("comparator.savings.label")}
-                tSavingsBaseline={t("comparator.savings.baseline")}
-              />
-            </div>
-          )}
-        </div>
+        )}
 
         {/* Floating AI Agent — fixed bottom-right, minimized by default.
             Chat state (history, result context) is preserved across collapse/expand
@@ -1017,12 +995,27 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
           </div>
         )}
 
-        {/* Results — full width below the search/metrics grid */}
+        {/* Your Results — a first-class home section. Auto-scrolled into view
+            when a comparison lands (see the result effect above). */}
         {result && (
-          <div className="mt-8 min-w-0">
-            <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
-              {t("comparator.results")}
-            </h3>
+          <div ref={resultsRef} className="mt-8 min-w-0 scroll-mt-24">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+                {t("comparator.results")}
+              </h3>
+              <label className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {t("comparator.sortBy")}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as SortKey)}
+                  className="h-8 rounded-md border border-input bg-card px-2 text-xs font-medium normal-case tracking-normal text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                >
+                  <option value="received">{t("comparator.sort.received")}</option>
+                  <option value="fee">{t("comparator.sort.fee")}</option>
+                  <option value="speed">{t("comparator.sort.speed")}</option>
+                </select>
+              </label>
+            </div>
             <ResultsBlock
               result={result}
               amount={amount}
@@ -1340,149 +1333,6 @@ function FloatingAgent(p: FloatingAgentProps) {
   );
 }
 
-// ===== Live metrics (right column beside the Advanced Search card) =====
-function ResultsMetrics({
-  result,
-  amount,
-  sortBy,
-  onSortChange,
-  tMidmarket,
-  tUpdated,
-  tLastUpdate,
-  tSavingsLabel,
-  tSavingsBaseline,
-}: {
-  result: ComparisonResult;
-  amount: number;
-  sortBy: SortKey;
-  onSortChange: (k: SortKey) => void;
-  tMidmarket: string;
-  tUpdated: string;
-  tLastUpdate: string;
-  tSavingsLabel: string;
-  tSavingsBaseline: string;
-}) {
-  const { t } = useI18n();
-  // Savings = amount * (baseline_spread - best_provider_spread).
-  // baseline_spread is the 3.5% retail/remittance market reference.
-  const savings = useMemo(() => {
-    if (!result.rows.length || amount <= 0) return null;
-    const bestSpreadPct = Math.min(...result.rows.map((r) => Number(r.spread_applied) || 0));
-    const bestSpread = bestSpreadPct / 100;
-    const delta = MARKET_BASELINE_SPREAD - bestSpread;
-    if (delta <= 0) return null;
-    return { amountSaved: amount * delta };
-  }, [result.rows, amount]);
-
-  // Crisp HH:mm:ss for the trust line.
-  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-
-  return (
-    <div className="min-w-0">
-      {/* Live trust strip: last-update timestamp (HH:mm:ss) always visible.
-          Shows a "Reference" badge when any rate came from MasterRateMap cache. */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-[11px] text-foreground">
-        <div className="inline-flex items-center gap-1.5">
-          <span className="relative flex h-1.5 w-1.5">
-            <span
-              className={`absolute inline-flex h-full w-full rounded-full opacity-60 ${result.is_reference ? "bg-amber-500" : "animate-ping bg-emerald-500"}`}
-            />
-            <span
-              className={`relative inline-flex h-1.5 w-1.5 rounded-full ${result.is_reference ? "bg-amber-500" : "bg-emerald-500"}`}
-            />
-          </span>
-          <span
-            className={`font-semibold uppercase tracking-wider ${result.is_reference ? "text-amber-700" : "text-emerald-700"}`}
-          >
-            {result.is_reference ? t("comparator.reference") : tLastUpdate}:
-          </span>
-          <span className="tabular-nums">{updatedTime}</span>
-          {result.is_reference && (
-            <span
-              className="ml-1 rounded-sm border border-amber-500/40 bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-800"
-              title="One or more rates were served from the MasterRateMap cache (last known value), not a live upstream quote."
-            >
-              {t("comparator.cached")}
-            </span>
-          )}
-        </div>
-        {result.is_reference && (
-          <p className="w-full text-[10px] leading-snug text-amber-800">
-            {t("comparator.cachedNote")}
-          </p>
-        )}
-      </div>
-
-      {/* Metrics stack — savings, mid-market rate, sort controls. Single column
-          on purpose: this panel lives in the narrow right column at lg. */}
-      <div className="grid grid-cols-1 gap-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/[0.06] p-4 sm:p-5">
-        <div className="flex min-w-0 items-start gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-500/15">
-            <TrendingUp className="h-4 w-4 text-emerald-600" />
-          </div>
-          <div className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-              {tSavingsLabel}
-            </div>
-            <div className="font-heading text-2xl font-bold tabular-nums text-foreground">
-              {savings
-                ? savings.amountSaved.toLocaleString(undefined, { maximumFractionDigits: 2 })
-                : "—"}{" "}
-              <span className="text-sm font-normal text-muted-foreground">{result.base}</span>
-            </div>
-            <div className="text-[11px] text-muted-foreground">{tSavingsBaseline}</div>
-          </div>
-        </div>
-        <div className="min-w-0 border-t border-emerald-500/20 pt-4">
-          <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            {tMidmarket}
-          </div>
-          <div className="truncate text-sm tabular-nums text-foreground">
-            1 {result.base} = {result.market_rate.toFixed(6)} {result.quote}
-          </div>
-          <div className="mt-1 text-[10px] text-muted-foreground">
-            {tUpdated}{" "}
-            {new Date(result.rates_updated_at).toLocaleString(undefined, {
-              dateStyle: "short",
-              timeStyle: "short",
-            })}
-          </div>
-        </div>
-        <div className="min-w-0 border-t border-emerald-500/20 pt-4">
-          <div className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-            <ArrowDownUp className="mr-1 inline h-3 w-3" /> {t("comparator.sortBy")}
-          </div>
-          <div className="flex flex-wrap gap-1">
-            {(
-              [
-                ["received", t("comparator.sort.received")],
-                ["fee", t("comparator.sort.fee")],
-                ["speed", t("comparator.sort.speed")],
-              ] as const
-            ).map(([k, label]) => (
-              <button
-                key={k}
-                onClick={() => onSortChange(k)}
-                className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition ${
-                  sortBy === k
-                    ? "bg-foreground text-background"
-                    : "border border-border bg-card text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ===== Results table (light) =====
 function ResultsBlock({
   result,
@@ -1556,7 +1406,8 @@ function ResultsBlock({
       )}
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        <div className="hidden grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] gap-4 border-b border-border bg-muted/60 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground lg:grid">
+        {/* Dark header row (brand navy + white) so the table reads as a table. */}
+        <div className="hidden grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid">
           <div className="min-w-0">{tProvider}</div>
           <div className="min-w-0 text-right">{tAmountSent}</div>
           <div className="min-w-0 text-right">{tTotalFee}</div>
@@ -1573,6 +1424,7 @@ function ResultsBlock({
             isBest={i === 0 && sortBy === "received"}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
+            updatedTime={updatedTime}
           />
         ))}
         {organic.length === 0 && (
@@ -1606,6 +1458,7 @@ function ProviderRow({
   isBest,
   onClick,
   tCta,
+  updatedTime,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -1613,6 +1466,8 @@ function ProviderRow({
   isBest: boolean;
   onClick: () => void;
   tCta: string;
+  /** Real HH:mm:ss the quote's rate snapshot was cached — shown per row. */
+  updatedTime: string;
 }) {
   const { t } = useI18n();
   const tooltipPreferred = t("comparator.tooltip.proceed");
@@ -1687,6 +1542,9 @@ function ProviderRow({
           <span className="text-xs font-normal text-muted-foreground">{quote}</span>
         </div>
         <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
+        <div className="text-[10px] tabular-nums text-muted-foreground">
+          {t("fx.updated")} {updatedTime}
+        </div>
       </div>
       <div className="min-w-0 text-sm text-muted-foreground lg:text-right">
         <div className="inline-flex items-center gap-1">

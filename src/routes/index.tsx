@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { useRef, useState } from "react";
 import { HeroSection } from "@/sections/HeroSection";
+import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { StatsSection } from "@/sections/StatsSection";
@@ -46,11 +48,6 @@ export const Route = createFileRoute("/")({
           "@type": "WebSite",
           name: "Mangomundi",
           url: `${SITE_URL}/`,
-          potentialAction: {
-            "@type": "SearchAction",
-            target: `${SITE_URL}/compare?from={search_term_string}`,
-            "query-input": "required name=search_term_string",
-          },
         }),
       },
     ],
@@ -59,9 +56,43 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  // Geo defaults for the embedded comparator (same derivation /compare used).
+  const rootData = useLoaderData({ from: "__root__" }) as {
+    geoCountry?: string;
+    geoCurrency?: string;
+  };
+  const geoCountry = rootData?.geoCountry ?? "GB";
+  const geoCurrency = rootData?.geoCurrency ?? "GBP";
+
+  // A submit from the hero widget remounts the comparator (key=nonce) with
+  // autoRun — reusing the exact initialQuery machinery /compare used, without
+  // sharing mutable state across the two components. The nonce (not a
+  // serialized query) guarantees a remount even for identical params, since
+  // the comparator's one-shot autoRun guard blocks re-runs within a mount.
+  const [query, setQuery] = useState<(ComparatorQuery & { nonce: number }) | null>(null);
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const nonceRef = useRef(0);
+
+  const geoDefaults: ComparatorQuery = {
+    origin: geoCountry,
+    destination: "US",
+    segment: "retail",
+    from: geoCurrency,
+    to: "USD",
+    amount: 1000,
+  };
+
   return (
     <>
-      <HeroSection />
+      <HeroSection
+        onSubmit={(q) => setQuery({ ...q, nonce: ++nonceRef.current })}
+        onToggleAdvanced={() => setAdvancedOpen((v) => !v)}
+      />
+      <ComparatorSection
+        key={query?.nonce ?? 0}
+        initialQuery={query ?? geoDefaults}
+        showAdvancedCard={advancedOpen || !!query}
+      />
       <HowItWorksSection />
       <AboutManifestoSection />
       <StatsSection />

@@ -72,8 +72,8 @@ function InsurancePage() {
             {t("ins.cta1")} <ArrowRight className="h-4 w-4" />
           </button>
           <Link
-            to="/compare"
-            search={{ amount: 1000, segment: "retail", destination: "US", to: "USD" }}
+            to="/"
+            hash="comparator"
             className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground transition hover:bg-surface-elevated"
           >
             {t("ins.cta2")}

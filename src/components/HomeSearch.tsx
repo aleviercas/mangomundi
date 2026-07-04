@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Link } from "@tanstack/react-router";
-import { ArrowRight, CircleCheck, Eye, ShieldCheck } from "lucide-react";
+import { ArrowRight, SlidersHorizontal } from "lucide-react";
 import { CountrySelect } from "@/components/ui/CountrySelect";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,25 @@ import { getVisitorCountry } from "@/lib/geo.functions";
 
 type Segment = "retail" | "business";
 
-export function HomeSearch() {
+/** Payload the hero widget hands to the home page to run a comparison. */
+export interface HomeSearchSubmit {
+  origin: string;
+  destination: string;
+  segment: Segment;
+  from: string;
+  to: string;
+  amount: number;
+  lang?: string;
+  autoRun: true;
+}
+
+export function HomeSearch({
+  onSubmit,
+  onToggleAdvanced,
+}: {
+  onSubmit: (q: HomeSearchSubmit) => void;
+  onToggleAdvanced: () => void;
+}) {
   const { t, lang } = useI18n();
   const { track } = useAnalytics();
   const [origin, setOrigin] = useState("US");
@@ -27,14 +44,24 @@ export function HomeSearch() {
   let to = localCurrency(destination);
   // Same-currency corridors aren't comparable; nudge the target to a sane pair.
   if (from === to) to = from === "USD" ? "EUR" : "USD";
-  const promiseItems = [t("home.feat.liveRates"), t("home.feat.zeroFees"), t("home.feat.noSignup")];
-  const promiseIcons = [CircleCheck, Eye, ShieldCheck];
 
   useEffect(() => {
     detectCountry()
       .then(setOrigin)
       .catch(() => setOrigin("US"));
   }, [detectCountry]);
+
+  const submit = () => {
+    if (!ready) return;
+    track("comparator_query", {
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      source: "home_search",
+    });
+    onSubmit({ origin, destination, segment, from, to, amount, lang, autoRun: true });
+  };
 
   return (
     <div className="mx-auto w-full max-w-lg lg:mx-0">
@@ -111,43 +138,24 @@ export function HomeSearch() {
         </label>
 
         <Button
-          asChild
           size="lg"
-          className="mt-3 h-12 w-full rounded-xl bg-[#ff6b5b] text-sm font-semibold text-white hover:bg-[#ff5a48] sm:mt-5 sm:h-14 sm:text-base"
+          onClick={submit}
+          aria-disabled={!ready}
+          className={`mt-3 h-12 w-full rounded-xl bg-[#ff6b5b] text-sm font-semibold text-white hover:bg-[#ff5a48] sm:mt-5 sm:h-14 sm:text-base ${
+            !ready ? "pointer-events-none opacity-50" : ""
+          }`}
         >
-          <Link
-            to="/compare"
-            search={{ origin, destination, segment, from, to, amount, lang, run: 1 }}
-            aria-disabled={!ready}
-            className={!ready ? "pointer-events-none opacity-50" : ""}
-            onClick={() =>
-              track("comparator_query", {
-                amount,
-                from_currency: from,
-                to_currency: to,
-                segment,
-                source: "home_search",
-              })
-            }
-          >
-            {t("search.cta")} <ArrowRight className="h-5 w-5" />
-          </Link>
+          {t("search.cta")} <ArrowRight className="h-5 w-5" />
         </Button>
-      </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 sm:mt-6 sm:gap-2">
-        {promiseItems.map((item, index) => {
-          const Icon = promiseIcons[index] ?? CircleCheck;
-          return (
-            <span
-              key={item}
-              className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-700 sm:px-3.5 sm:py-1.5 sm:text-xs"
-            >
-              <Icon className="h-3 w-3 shrink-0 text-[#ff6b5b] sm:h-3.5 sm:w-3.5" />
-              {item}
-            </span>
-          );
-        })}
+        <button
+          type="button"
+          onClick={onToggleAdvanced}
+          className="mt-3 inline-flex w-full items-center justify-center gap-1.5 text-xs font-semibold text-slate-300 transition hover:text-white"
+        >
+          <SlidersHorizontal className="h-3.5 w-3.5" />
+          {t("comparator.advancedOptions")}
+        </button>
       </div>
     </div>
   );
