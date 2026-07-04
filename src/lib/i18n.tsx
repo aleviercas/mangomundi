@@ -444,7 +444,7 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.hero.tagline":
-      "Compare exchange rates, fees, routes and delivery speeds in real time for global and local payments",
+      "Exchange rates, fees, routes and delivery speeds — compared in real time with AI",
     "home.contact.simple.title": "Get in touch.",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
@@ -752,7 +752,7 @@ export const DICTS: Record<Lang, Dict> = {
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
     "home.hero.tagline":
-      "Compará tipos de cambio, fees, rutas y tiempos de entrega en tiempo real para pagos globales y locales",
+      "Tipos de cambio, fees, rutas y tiempos de entrega — comparados en tiempo real con IA",
     "home.contact.simple.title": "Escribinos.",
     "home.contact.simple.body":
       "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",

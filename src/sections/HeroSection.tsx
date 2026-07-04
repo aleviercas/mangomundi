@@ -13,7 +13,7 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden pt-8 pb-8 sm:pt-16 sm:pb-10">
       <div className="relative mx-auto w-full max-w-7xl px-5 text-center sm:px-8">
-        <h1 className="font-heading text-[28px] font-extrabold leading-[1.1] tracking-tight text-slate-900 sm:text-6xl lg:text-[4.25rem]">
+        <h1 className="font-heading text-[26px] font-extrabold leading-[1.15] tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
           {t("home.hero.titlePre")}{" "}
           <span
             className="bg-clip-text text-transparent"
