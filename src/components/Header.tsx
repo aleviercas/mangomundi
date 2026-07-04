@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Wordmark } from "@/components/Wordmark";
+import { HOME_NAV } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
 /** Main nav — anchors into the home sections (Link with hash works from any
@@ -10,14 +11,7 @@ import { useI18n } from "@/lib/i18n";
 export function Header() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
-  const links = [
-    { hash: "how-it-works", label: t("footer.nav.how") },
-    { hash: "about", label: t("nav.about") },
-    { hash: "widget", label: t("home.widget.eyebrow") },
-    { hash: "business", label: t("nav.business") },
-    { hash: "blog", label: t("nav.blog") },
-    { hash: "contact", label: t("nav.contact") },
-  ];
+  const links = HOME_NAV.map(({ hash, labelKey }) => ({ hash, label: t(labelKey) }));
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-[#fcfcfc]/80 backdrop-blur-xl">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-5 sm:px-8">

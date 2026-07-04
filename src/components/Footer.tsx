@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
+import { HOME_NAV } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
 const socials = [
@@ -27,13 +28,7 @@ const socials = [
 
 export function Footer() {
   const { t } = useI18n();
-  const navigate: Array<{ to: "/"; hash?: string; label: string }> = [
-    { to: "/", label: t("footer.nav.home") },
-    { to: "/", hash: "about", label: t("footer.nav.about") },
-    { to: "/", hash: "how-it-works", label: t("footer.nav.how") },
-    { to: "/", hash: "contact", label: t("footer.nav.contact") },
-    { to: "/", hash: "blog", label: t("footer.nav.blog") },
-  ];
+  const navigate = HOME_NAV.map(({ hash, labelKey }) => ({ hash, label: t(labelKey) }));
 
   const legal = [
     { to: "/legal", hash: "terms", label: t("footer.legal.terms") },
@@ -49,9 +44,7 @@ export function Footer() {
             <Link to="/" className="inline-flex items-center">
               <Wordmark className="text-2xl" />
             </Link>
-            <p className="mt-4 max-w-sm text-sm text-slate-500">
-              {t("footer.tagline")}
-            </p>
+            <p className="mt-4 max-w-sm text-sm text-slate-500">{t("footer.tagline")}</p>
             <div className="mt-6 flex items-center gap-3">
               {socials.map((s) => (
                 <a
@@ -60,7 +53,12 @@ export function Footer() {
                   aria-label={s.label}
                   className="group inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition-colors hover:bg-black hover:text-white"
                 >
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
                     <path d={s.path} />
                   </svg>
                 </a>
@@ -69,12 +67,14 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-slate-900">{t("footer.nav.title")}</h3>
+            <h3 className="font-heading text-sm font-bold text-slate-900">
+              {t("footer.nav.title")}
+            </h3>
             <ul className="mt-4 space-y-3">
               {navigate.map((l) => (
                 <li key={l.label}>
                   <Link
-                    to={l.to}
+                    to="/"
                     hash={l.hash}
                     className="text-sm text-slate-500 transition-colors hover:text-slate-900"
                   >
@@ -86,7 +86,9 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-slate-900">{t("footer.legal.title")}</h3>
+            <h3 className="font-heading text-sm font-bold text-slate-900">
+              {t("footer.legal.title")}
+            </h3>
             <ul className="mt-4 space-y-3">
               {legal.map((l) => (
                 <li key={l.label}>

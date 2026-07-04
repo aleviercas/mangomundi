@@ -112,8 +112,8 @@ function Index() {
       <StatsSection />
       <EmbedWidgetSection />
       <BusinessSection />
-      <BlogSection />
       <ContactSection />
+      <BlogSection />
     </>
   );
 }
