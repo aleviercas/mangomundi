@@ -762,8 +762,18 @@ export function ComparatorSection({
     }
   };
 
+  // Nothing to show until the user opens Advanced options or runs a comparison
+  // — so the section collapses to zero height instead of leaving an empty,
+  // background-colored band between the hero and How-it-works.
+  const hasComparatorContent =
+    showAdvancedCard || !!result || compareMut.isError || !!missingCorridor;
+
   return (
-    <section id="comparator" key={lang} className="scroll-mt-24 bg-background py-8 sm:py-12">
+    <section
+      id="comparator"
+      key={lang}
+      className={`scroll-mt-24 ${hasComparatorContent ? "py-8 sm:py-12" : ""}`}
+    >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* Advanced search card — collapsible on the home page (the basic
             HomeSearch widget in the hero is the primary entry point). The AI

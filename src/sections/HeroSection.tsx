@@ -24,7 +24,7 @@ export function HeroSection({
               {t("home.hero.titlePre")}{" "}
               <span
                 className="bg-clip-text text-transparent"
-                style={{ backgroundImage: "linear-gradient(90deg, #000000 0%, #ff6b5b 100%)" }}
+                style={{ backgroundImage: "linear-gradient(90deg, #ff6b5b 0%, #ff4d3d 100%)" }}
               >
                 {t("home.hero.titleAccent")}
               </span>
@@ -37,9 +37,9 @@ export function HeroSection({
               {badges.map(({ label, icon: Icon }) => (
                 <span
                   key={label}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-medium text-slate-700 sm:px-3.5 sm:py-1.5 sm:text-xs"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-sm"
                 >
-                  <Icon className="h-3 w-3 shrink-0 text-[#ff6b5b] sm:h-3.5 sm:w-3.5" />
+                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#ff6b5b]" />
                   {label}
                 </span>
               ))}

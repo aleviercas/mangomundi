@@ -20,7 +20,7 @@ export function ContactSection() {
         <div className="mt-8">
           <a
             href="mailto:hello@mangomundi.com"
-            className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-slate-900 px-10 text-base font-semibold text-white transition-colors hover:bg-black"
+            className="inline-flex h-14 items-center justify-center gap-2 rounded-xl bg-slate-900 px-10 text-base font-semibold text-white transition-colors hover:bg-black"
           >
             <Mail className="h-4 w-4" /> hello@mangomundi.com
           </a>

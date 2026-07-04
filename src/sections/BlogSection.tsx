@@ -39,16 +39,13 @@ export function BlogSection() {
         </div>
 
         {latest.length === 0 ? (
-          <div className="grid gap-5 sm:grid-cols-2">
-            <article className="group flex h-full flex-col rounded-2xl border border-white/10 bg-slate-900 p-8 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
-              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
-                {t("home.blog.eyebrow")}
-              </p>
-              <h3 className="mt-3 font-heading text-xl font-extrabold text-white sm:text-2xl">
-                {t("home.blog.title")}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-300">{t("home.blog.body")}</p>
-            </article>
+          // Quiet placeholder — the section heading already carries the
+          // "coming soon" message, so this stays light (no repeated title, no
+          // heavy dark card competing with the Widget section above it).
+          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-6 py-10 text-center sm:py-12">
+            <p className="mx-auto max-w-md text-sm leading-relaxed text-slate-500">
+              {t("home.blog.body")}
+            </p>
           </div>
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
