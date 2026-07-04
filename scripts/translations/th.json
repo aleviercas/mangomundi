@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "เปรียบเทียบทุกวิธีแลกเปลี่ยนเงินตรา",
-  "home.hero.titleAccent": "ด้วย AI",
+  "home.hero.titlePre": "การเปรียบเทียบ",
+  "home.hero.titleAccent": "แลกเปลี่ยนเงินตรา",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "ย่อ AI Agent",
   "agent.unread": "ข้อความที่ยังไม่ได้อ่าน {n} รายการ",
   "comparator.advancedOptions": "ตัวเลือกขั้นสูง",
-  "home.hero.tagline": "อัตราแลกเปลี่ยน ค่าธรรมเนียม เส้นทาง และเวลาส่ง — เปรียบเทียบแบบเรียลไทม์ด้วย AI",
+  "home.hero.tagline": "อัตราแลกเปลี่ยน ค่าธรรมเนียม เส้นทาง และเวลาส่ง — เปรียบเทียบแบบเรียลไทม์ เรตสด ไม่มีค่าธรรมเนียม ไม่ต้องสมัคร",
   "home.contact.simple.title": "ติดต่อเรา",
   "home.contact.simple.body": "คำถาม ข้อเสนอแนะ หรือสื่อ — เขียนถึงเรา แล้วเราจะตอบกลับโดยเร็ว",
   "home.widget.eyebrow": "วิดเจ็ต",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "คัดลอก",
   "home.widget.copied": "คัดลอกแล้ว!",
-  "home.widget.hint": "วางไว้ที่ใดก็ได้ใน HTML ของคุณ วิดเจ็ตนี้ฟรีและทำงานใน iframe ที่แยกออกมา — ไม่มีโค้ดขัดแย้ง ไม่มีการเพิ่มการติดตามในเว็บไซต์ของคุณ"
+  "home.widget.hint": "วางไว้ที่ใดก็ได้ใน HTML ของคุณ วิดเจ็ตนี้ฟรีและทำงานใน iframe ที่แยกออกมา — ไม่มีโค้ดขัดแย้ง ไม่มีการเพิ่มการติดตามในเว็บไซต์ของคุณ",
+  "home.hero.titlePost": "อัจฉริยะด้วย AI"
 }

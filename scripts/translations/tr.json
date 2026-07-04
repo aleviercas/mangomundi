@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "Döviz bozdurmanın tüm yollarını karşılaştırın",
-  "home.hero.titleAccent": "yapay zekâyla",
+  "home.hero.titlePre": "Yapay zekâyla akıllı",
+  "home.hero.titleAccent": "döviz bozdurma",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "YZ Ajanını küçült",
   "agent.unread": "{n} okunmamış mesaj",
   "comparator.advancedOptions": "Gelişmiş seçenekler",
-  "home.hero.tagline": "Döviz kurları, ücretler, rotalar ve teslim süreleri — yapay zekâyla gerçek zamanlı karşılaştırma",
+  "home.hero.tagline": "Döviz kurları, ücretler, rotalar ve teslim süreleri — gerçek zamanlı karşılaştırma. Canlı kurlar, sıfır ücret, kayıt gerekmez.",
   "home.contact.simple.title": "Bize yazın.",
   "home.contact.simple.body": "Sorular, geri bildirim veya basın — bize yazın, kısa sürede dönüş yapalım.",
   "home.widget.eyebrow": "Widget",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "Kopyala",
   "home.widget.copied": "Kopyalandı!",
-  "home.widget.hint": "HTML'inizin herhangi bir yerine yapıştırın. Widget ücretsizdir ve izole bir iframe içinde çalışır — kod çakışması yok, sitenize eklenen takip yok."
+  "home.widget.hint": "HTML'inizin herhangi bir yerine yapıştırın. Widget ücretsizdir ve izole bir iframe içinde çalışır — kod çakışması yok, sitenize eklenen takip yok.",
+  "home.hero.titlePost": "karşılaştırması"
 }

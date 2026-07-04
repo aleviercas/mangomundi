@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "قارن كل طرق صرف العملات",
-  "home.hero.titleAccent": "بالذكاء الاصطناعي",
+  "home.hero.titlePre": "مقارنة ذكية لـ",
+  "home.hero.titleAccent": "صرف العملات",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "تصغير وكيل الذكاء الاصطناعي",
   "agent.unread": "{n} رسائل غير مقروءة",
   "comparator.advancedOptions": "خيارات متقدمة",
-  "home.hero.tagline": "أسعار الصرف والرسوم والمسارات وأوقات التسليم — مقارنة في الوقت الفعلي بالذكاء الاصطناعي",
+  "home.hero.tagline": "أسعار الصرف والرسوم والمسارات وأوقات التسليم — مقارنة في الوقت الفعلي. أسعار مباشرة، بدون رسوم، بدون تسجيل.",
   "home.contact.simple.title": "تواصل معنا.",
   "home.contact.simple.body": "أسئلة أو ملاحظات أو صحافة — راسلنا وسنرد عليك قريباً.",
   "home.widget.eyebrow": "الودجت",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "نسخ",
   "home.widget.copied": "تم النسخ!",
-  "home.widget.hint": "الصقه في أي مكان في HTML الخاص بك. الودجت مجاني ويعمل داخل iframe معزول — بدون تعارض في الكود ولا تتبع مُضاف إلى موقعك."
+  "home.widget.hint": "الصقه في أي مكان في HTML الخاص بك. الودجت مجاني ويعمل داخل iframe معزول — بدون تعارض في الكود ولا تتبع مُضاف إلى موقعك.",
+  "home.hero.titlePost": "بالذكاء الاصطناعي"
 }

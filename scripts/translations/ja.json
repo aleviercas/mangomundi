@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "あらゆる両替方法を比較",
-  "home.hero.titleAccent": "AIとともに",
+  "home.hero.titlePre": "AIによる",
+  "home.hero.titleAccent": "外貨両替",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "AIエージェントを最小化",
   "agent.unread": "未読メッセージ {n} 件",
   "comparator.advancedOptions": "詳細オプション",
-  "home.hero.tagline": "為替レート・手数料・ルート・所要時間を、AIがリアルタイムで比較",
+  "home.hero.tagline": "為替レート・手数料・ルート・所要時間をリアルタイムで比較。ライブレート、手数料ゼロ、登録不要。",
   "home.contact.simple.title": "お問い合わせ。",
   "home.contact.simple.body": "ご質問・フィードバック・取材は、メールにてご連絡ください。追ってご返信します。",
   "home.widget.eyebrow": "ウィジェット",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "コピー",
   "home.widget.copied": "コピーしました！",
-  "home.widget.hint": "HTMLの好きな場所に貼り付けてください。ウィジェットは無料で、分離されたiframeで動作します — コードの競合なし、サイトへのトラッキング追加なし。"
+  "home.widget.hint": "HTMLの好きな場所に貼り付けてください。ウィジェットは無料で、分離されたiframeで動作します — コードの競合なし、サイトへのトラッキング追加なし。",
+  "home.hero.titlePost": "のスマート比較"
 }

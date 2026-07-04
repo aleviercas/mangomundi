@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "Bandingkan semua cara menukar mata uang",
-  "home.hero.titleAccent": "dengan AI",
+  "home.hero.titlePre": "Perbandingan cerdas",
+  "home.hero.titleAccent": "penukaran mata uang",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "Perkecil Agen AI",
   "agent.unread": "{n} pesan belum dibaca",
   "comparator.advancedOptions": "Opsi lanjutan",
-  "home.hero.tagline": "Kurs, biaya, rute, dan waktu pengiriman — dibandingkan secara real time dengan AI",
+  "home.hero.tagline": "Kurs, biaya, rute, dan waktu pengiriman — dibandingkan secara real time. Kurs langsung, nol biaya, tanpa daftar.",
   "home.contact.simple.title": "Hubungi kami.",
   "home.contact.simple.body": "Pertanyaan, masukan, atau pers — tulis kepada kami dan kami akan segera membalas.",
   "home.widget.eyebrow": "Widget",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "Salin",
   "home.widget.copied": "Tersalin!",
-  "home.widget.hint": "Tempel di mana saja dalam HTML Anda. Widget ini gratis dan berjalan dalam iframe terisolasi — tanpa konflik kode, tanpa pelacakan di situs Anda."
+  "home.widget.hint": "Tempel di mana saja dalam HTML Anda. Widget ini gratis dan berjalan dalam iframe terisolasi — tanpa konflik kode, tanpa pelacakan di situs Anda.",
+  "home.hero.titlePost": "dengan AI"
 }

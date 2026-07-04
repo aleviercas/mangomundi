@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "比较所有货币兑换方式",
-  "home.hero.titleAccent": "用 AI",
+  "home.hero.titlePre": "AI 驱动的智能",
+  "home.hero.titleAccent": "货币兑换",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "最小化 AI 助手",
   "agent.unread": "{n} 条未读消息",
   "comparator.advancedOptions": "高级选项",
-  "home.hero.tagline": "汇率、费用、路线和到账时间——由 AI 实时比较",
+  "home.hero.tagline": "汇率、费用、路线和到账时间——实时比较。实时汇率、零费用、无需注册。",
   "home.contact.simple.title": "联系我们。",
   "home.contact.simple.body": "问题、反馈或媒体合作——欢迎来信，我们会尽快回复。",
   "home.widget.eyebrow": "小组件",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "复制",
   "home.widget.copied": "已复制！",
-  "home.widget.hint": "粘贴到您 HTML 的任意位置。小组件免费，运行在隔离的 iframe 中——无代码冲突，不向您的网站添加任何跟踪。"
+  "home.widget.hint": "粘贴到您 HTML 的任意位置。小组件免费，运行在隔离的 iframe 中——无代码冲突，不向您的网站添加任何跟踪。",
+  "home.hero.titlePost": "比较"
 }

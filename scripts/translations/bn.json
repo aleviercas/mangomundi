@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "মুদ্রা বিনিময়ের সব উপায় তুলনা করুন",
-  "home.hero.titleAccent": "AI দিয়ে",
+  "home.hero.titlePre": "স্মার্ট",
+  "home.hero.titleAccent": "মুদ্রা বিনিময়",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "AI এজেন্ট ছোট করুন",
   "agent.unread": "{n}টি অপঠিত বার্তা",
   "comparator.advancedOptions": "উন্নত বিকল্প",
-  "home.hero.tagline": "বিনিময় হার, ফি, রুট ও ডেলিভারি সময় — AI দিয়ে রিয়েল টাইমে তুলনা",
+  "home.hero.tagline": "বিনিময় হার, ফি, রুট ও ডেলিভারি সময় — রিয়েল টাইমে তুলনা। লাইভ রেট, শূন্য ফি, সাইন-আপ ছাড়া।",
   "home.contact.simple.title": "যোগাযোগ করুন।",
   "home.contact.simple.body": "প্রশ্ন, মতামত বা প্রেস — আমাদের লিখুন, আমরা শিগগিরই উত্তর দেব।",
   "home.widget.eyebrow": "উইজেট",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "কপি",
   "home.widget.copied": "কপি হয়েছে!",
-  "home.widget.hint": "আপনার HTML-এর যেকোনো জায়গায় পেস্ট করুন। উইজেটটি বিনামূল্যে এবং একটি বিচ্ছিন্ন iframe-এ চলে — কোনো কোড দ্বন্দ্ব নেই, আপনার সাইটে কোনো ট্র্যাকিং যোগ হয় না।"
+  "home.widget.hint": "আপনার HTML-এর যেকোনো জায়গায় পেস্ট করুন। উইজেটটি বিনামূল্যে এবং একটি বিচ্ছিন্ন iframe-এ চলে — কোনো কোড দ্বন্দ্ব নেই, আপনার সাইটে কোনো ট্র্যাকিং যোগ হয় না।",
+  "home.hero.titlePost": "তুলনা, AI দিয়ে"
 }

@@ -488,8 +488,8 @@
   "comparator.table.bestRate": "Best Rate",
   "search.startTransfer": "Start a transfer",
   "search.liveRates": "Live rates",
-  "home.hero.titlePre": "So sánh mọi cách đổi ngoại tệ",
-  "home.hero.titleAccent": "cùng AI",
+  "home.hero.titlePre": "So sánh thông minh",
+  "home.hero.titleAccent": "đổi ngoại tệ",
   "home.about.subtitle": "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
   "home.about.mission.body": "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
   "home.about.vision.body": "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
@@ -601,7 +601,7 @@
   "agent.minimize": "Thu nhỏ Trợ lý AI",
   "agent.unread": "{n} tin nhắn chưa đọc",
   "comparator.advancedOptions": "Tùy chọn nâng cao",
-  "home.hero.tagline": "Tỷ giá, phí, tuyến và thời gian giao — được so sánh theo thời gian thực cùng AI",
+  "home.hero.tagline": "Tỷ giá, phí, tuyến và thời gian giao — được so sánh theo thời gian thực. Tỷ giá trực tiếp, không phí, không cần đăng ký.",
   "home.contact.simple.title": "Liên hệ với chúng tôi.",
   "home.contact.simple.body": "Câu hỏi, góp ý hoặc báo chí — hãy viết cho chúng tôi, chúng tôi sẽ sớm phản hồi.",
   "home.widget.eyebrow": "Widget",
@@ -613,5 +613,6 @@
   "home.widget.tab.iframe": "iframe",
   "home.widget.copy": "Sao chép",
   "home.widget.copied": "Đã sao chép!",
-  "home.widget.hint": "Dán vào bất kỳ đâu trong HTML của bạn. Widget miễn phí và chạy trong iframe cách ly — không xung đột mã, không thêm theo dõi vào trang của bạn."
+  "home.widget.hint": "Dán vào bất kỳ đâu trong HTML của bạn. Widget miễn phí và chạy trong iframe cách ly — không xung đột mã, không thêm theo dõi vào trang của bạn.",
+  "home.hero.titlePost": "cùng AI"
 }
