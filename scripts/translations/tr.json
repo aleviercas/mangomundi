@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ Rota talep edildi",
   "agent.minimize": "YZ Ajanını küçült",
   "agent.unread": "{n} okunmamış mesaj",
-  "comparator.advancedOptions": "Gelişmiş seçenekler"
+  "comparator.advancedOptions": "Gelişmiş seçenekler",
+  "home.hero.tagline": "Küresel ve yerel ödemeler için döviz kurlarını, ücretleri, rotaları ve teslim sürelerini gerçek zamanlı karşılaştırın",
+  "home.contact.simple.title": "Bize yazın.",
+  "home.contact.simple.body": "Sorular, geri bildirim veya basın — bize yazın, kısa sürede dönüş yapalım.",
+  "home.widget.eyebrow": "Widget",
+  "home.widget.title": "mangomundi web sitenizde.",
+  "home.widget.body": "FX karşılaştırıcıyı tek bir script ile herhangi bir siteye veya uygulamaya ekleyin — canlı kurlar, sizin markanız, powered by mangomundi.",
+  "home.widget.badge": "Çok yakında",
+  "home.widget.cta": "Erken erişim isteyin"
 }

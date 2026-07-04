@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ 已请求该路线",
   "agent.minimize": "最小化 AI 助手",
   "agent.unread": "{n} 条未读消息",
-  "comparator.advancedOptions": "高级选项"
+  "comparator.advancedOptions": "高级选项",
+  "home.hero.tagline": "实时比较全球与本地支付的汇率、费用、路线和到账时间",
+  "home.contact.simple.title": "联系我们。",
+  "home.contact.simple.body": "问题、反馈或媒体合作——欢迎来信，我们会尽快回复。",
+  "home.widget.eyebrow": "小组件",
+  "home.widget.title": "把 mangomundi 放到您的网站上。",
+  "home.widget.body": "只需一个脚本标签，即可将外汇比较器嵌入任何网站或应用——实时汇率、您的品牌，powered by mangomundi。",
+  "home.widget.badge": "即将上线",
+  "home.widget.cta": "申请抢先体验"
 }

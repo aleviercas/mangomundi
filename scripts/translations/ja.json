@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ リクエスト済み",
   "agent.minimize": "AIエージェントを最小化",
   "agent.unread": "未読メッセージ {n} 件",
-  "comparator.advancedOptions": "詳細オプション"
+  "comparator.advancedOptions": "詳細オプション",
+  "home.hero.tagline": "グローバル・ローカル送金の為替レート・手数料・ルート・所要時間をリアルタイムで比較",
+  "home.contact.simple.title": "お問い合わせ。",
+  "home.contact.simple.body": "ご質問・フィードバック・取材は、メールにてご連絡ください。追ってご返信します。",
+  "home.widget.eyebrow": "ウィジェット",
+  "home.widget.title": "あなたのサイトに mangomundi を。",
+  "home.widget.body": "スクリプトタグ1つでFX比較をあらゆるサイトやアプリに埋め込めます — ライブレート、あなたのブランド、powered by mangomundi。",
+  "home.widget.badge": "近日公開",
+  "home.widget.cta": "早期アクセスをリクエスト"
 }

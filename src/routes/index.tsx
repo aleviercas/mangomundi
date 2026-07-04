@@ -1,10 +1,12 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { StatsSection } from "@/sections/StatsSection";
+import { EmbedWidgetSection } from "@/sections/EmbedWidgetSection";
+import { BusinessSection } from "@/sections/BusinessSection";
 import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
 import { SITE_URL, hreflangLinks } from "@/config/site";
@@ -71,7 +73,16 @@ function Index() {
   // the comparator's one-shot autoRun guard blocks re-runs within a mount.
   const [query, setQuery] = useState<(ComparatorQuery & { nonce: number }) | null>(null);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  // Bumped on every "Advanced options" click so repeat clicks re-scroll even
+  // when the card is already open (the effect below runs after the card
+  // renders, so the scroll target exists).
+  const [advancedScrollTick, setAdvancedScrollTick] = useState(0);
   const nonceRef = useRef(0);
+
+  useEffect(() => {
+    if (advancedScrollTick === 0) return;
+    document.getElementById("comparator")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [advancedScrollTick]);
 
   const geoDefaults: ComparatorQuery = {
     origin: geoCountry,
@@ -86,7 +97,10 @@ function Index() {
     <>
       <HeroSection
         onSubmit={(q) => setQuery({ ...q, nonce: ++nonceRef.current })}
-        onToggleAdvanced={() => setAdvancedOpen((v) => !v)}
+        onToggleAdvanced={() => {
+          setAdvancedOpen(true);
+          setAdvancedScrollTick((n) => n + 1);
+        }}
       />
       <ComparatorSection
         key={query?.nonce ?? 0}
@@ -96,8 +110,10 @@ function Index() {
       <HowItWorksSection />
       <AboutManifestoSection />
       <StatsSection />
-      <ContactSection />
+      <EmbedWidgetSection />
+      <BusinessSection />
       <BlogSection />
+      <ContactSection />
     </>
   );
 }

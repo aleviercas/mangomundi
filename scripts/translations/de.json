@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ Route angefragt",
   "agent.minimize": "KI-Agent minimieren",
   "agent.unread": "{n} ungelesene Nachrichten",
-  "comparator.advancedOptions": "Erweiterte Optionen"
+  "comparator.advancedOptions": "Erweiterte Optionen",
+  "home.hero.tagline": "Vergleichen Sie Wechselkurse, Gebühren, Routen und Lieferzeiten in Echtzeit für globale und lokale Zahlungen",
+  "home.contact.simple.title": "Kontaktieren Sie uns.",
+  "home.contact.simple.body": "Fragen, Feedback oder Presse — schreiben Sie uns, wir melden uns zeitnah.",
+  "home.widget.eyebrow": "Widget",
+  "home.widget.title": "mangomundi auf Ihrer Website.",
+  "home.widget.body": "Binden Sie den FX-Vergleich mit einem einzigen Script-Tag in jede Website oder App ein — Live-Kurse, Ihr Branding, powered by mangomundi.",
+  "home.widget.badge": "Demnächst",
+  "home.widget.cta": "Frühzugang anfragen"
 }

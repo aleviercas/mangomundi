@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ রুট অনুরোধ করা হয়েছে",
   "agent.minimize": "AI এজেন্ট ছোট করুন",
   "agent.unread": "{n}টি অপঠিত বার্তা",
-  "comparator.advancedOptions": "উন্নত বিকল্প"
+  "comparator.advancedOptions": "উন্নত বিকল্প",
+  "home.hero.tagline": "বৈশ্বিক ও স্থানীয় পেমেন্টের জন্য রিয়েল টাইমে বিনিময় হার, ফি, রুট ও ডেলিভারি সময় তুলনা করুন",
+  "home.contact.simple.title": "যোগাযোগ করুন।",
+  "home.contact.simple.body": "প্রশ্ন, মতামত বা প্রেস — আমাদের লিখুন, আমরা শিগগিরই উত্তর দেব।",
+  "home.widget.eyebrow": "উইজেট",
+  "home.widget.title": "আপনার ওয়েবসাইটে mangomundi।",
+  "home.widget.body": "একটি স্ক্রিপ্ট ট্যাগ দিয়ে যেকোনো ওয়েবসাইট বা অ্যাপে FX তুলনাকারী যুক্ত করুন — লাইভ রেট, আপনার ব্র্যান্ড, powered by mangomundi।",
+  "home.widget.badge": "শীঘ্রই আসছে",
+  "home.widget.cta": "আর্লি অ্যাক্সেসের অনুরোধ করুন"
 }

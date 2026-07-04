@@ -30,7 +30,7 @@ export function HeroSection({
               </span>
             </h1>
             <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-slate-600 sm:mt-6 lg:mx-0">
-              {t("home.hero.subtitle")}
+              {t("home.hero.tagline")}
             </p>
             {/* Trust badges — moved up from below the search card. */}
             <div className="mt-4 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 lg:justify-start">

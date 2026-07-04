@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ ส่งคำขอแล้ว",
   "agent.minimize": "ย่อ AI Agent",
   "agent.unread": "ข้อความที่ยังไม่ได้อ่าน {n} รายการ",
-  "comparator.advancedOptions": "ตัวเลือกขั้นสูง"
+  "comparator.advancedOptions": "ตัวเลือกขั้นสูง",
+  "home.hero.tagline": "เปรียบเทียบอัตราแลกเปลี่ยน ค่าธรรมเนียม เส้นทาง และเวลาส่งแบบเรียลไทม์สำหรับการชำระเงินทั่วโลกและในประเทศ",
+  "home.contact.simple.title": "ติดต่อเรา",
+  "home.contact.simple.body": "คำถาม ข้อเสนอแนะ หรือสื่อ — เขียนถึงเรา แล้วเราจะตอบกลับโดยเร็ว",
+  "home.widget.eyebrow": "วิดเจ็ต",
+  "home.widget.title": "mangomundi บนเว็บไซต์ของคุณ",
+  "home.widget.body": "ฝังตัวเปรียบเทียบ FX ในเว็บไซต์หรือแอปใดก็ได้ด้วยสคริปต์แท็กเดียว — เรตสด แบรนด์ของคุณ powered by mangomundi",
+  "home.widget.badge": "เร็ว ๆ นี้",
+  "home.widget.cta": "ขอสิทธิ์เข้าใช้ก่อนใคร"
 }

@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ Rota solicitada",
   "agent.minimize": "Minimizar Agente IA",
   "agent.unread": "{n} mensagens não lidas",
-  "comparator.advancedOptions": "Opções avançadas"
+  "comparator.advancedOptions": "Opções avançadas",
+  "home.hero.tagline": "Compare taxas de câmbio, tarifas, rotas e prazos de entrega em tempo real para pagamentos globais e locais",
+  "home.contact.simple.title": "Fale conosco.",
+  "home.contact.simple.body": "Dúvidas, feedback ou imprensa — escreva para nós e responderemos em breve.",
+  "home.widget.eyebrow": "Widget",
+  "home.widget.title": "mangomundi no seu site.",
+  "home.widget.body": "Incorpore o comparador FX em qualquer site ou app com um único script — taxas ao vivo, sua marca, powered by mangomundi.",
+  "home.widget.badge": "Em breve",
+  "home.widget.cta": "Solicitar acesso antecipado"
 }

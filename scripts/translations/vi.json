@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ Đã yêu cầu tuyến",
   "agent.minimize": "Thu nhỏ Trợ lý AI",
   "agent.unread": "{n} tin nhắn chưa đọc",
-  "comparator.advancedOptions": "Tùy chọn nâng cao"
+  "comparator.advancedOptions": "Tùy chọn nâng cao",
+  "home.hero.tagline": "So sánh tỷ giá, phí, tuyến và thời gian giao theo thời gian thực cho thanh toán toàn cầu và nội địa",
+  "home.contact.simple.title": "Liên hệ với chúng tôi.",
+  "home.contact.simple.body": "Câu hỏi, góp ý hoặc báo chí — hãy viết cho chúng tôi, chúng tôi sẽ sớm phản hồi.",
+  "home.widget.eyebrow": "Widget",
+  "home.widget.title": "mangomundi trên website của bạn.",
+  "home.widget.body": "Nhúng bộ so sánh FX vào bất kỳ website hoặc ứng dụng nào chỉ với một thẻ script — tỷ giá trực tiếp, thương hiệu của bạn, powered by mangomundi.",
+  "home.widget.badge": "Sắp ra mắt",
+  "home.widget.cta": "Yêu cầu truy cập sớm"
 }

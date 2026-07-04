@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ 경로 요청됨",
   "agent.minimize": "AI 에이전트 최소화",
   "agent.unread": "읽지 않은 메시지 {n}개",
-  "comparator.advancedOptions": "고급 옵션"
+  "comparator.advancedOptions": "고급 옵션",
+  "home.hero.tagline": "글로벌 및 로컬 결제를 위한 환율, 수수료, 경로, 배송 시간을 실시간으로 비교하세요",
+  "home.contact.simple.title": "문의하기.",
+  "home.contact.simple.body": "질문, 피드백, 언론 문의 — 메일을 보내주시면 곧 답변드리겠습니다.",
+  "home.widget.eyebrow": "위젯",
+  "home.widget.title": "당신의 웹사이트에 mangomundi를.",
+  "home.widget.body": "스크립트 태그 하나로 어떤 웹사이트나 앱에도 FX 비교기를 삽입하세요 — 실시간 환율, 당신의 브랜드, powered by mangomundi.",
+  "home.widget.badge": "곧 출시",
+  "home.widget.cta": "얼리 액세스 요청"
 }

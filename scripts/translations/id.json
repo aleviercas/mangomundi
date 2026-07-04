@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ Rute diminta",
   "agent.minimize": "Perkecil Agen AI",
   "agent.unread": "{n} pesan belum dibaca",
-  "comparator.advancedOptions": "Opsi lanjutan"
+  "comparator.advancedOptions": "Opsi lanjutan",
+  "home.hero.tagline": "Bandingkan kurs, biaya, rute, dan waktu pengiriman secara real time untuk pembayaran global dan lokal",
+  "home.contact.simple.title": "Hubungi kami.",
+  "home.contact.simple.body": "Pertanyaan, masukan, atau pers — tulis kepada kami dan kami akan segera membalas.",
+  "home.widget.eyebrow": "Widget",
+  "home.widget.title": "mangomundi di situs web Anda.",
+  "home.widget.body": "Sematkan pembanding FX di situs atau aplikasi mana pun dengan satu script — kurs langsung, merek Anda, powered by mangomundi.",
+  "home.widget.badge": "Segera hadir",
+  "home.widget.cta": "Minta akses awal"
 }

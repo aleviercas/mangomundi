@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ Trasa zgłoszona",
   "agent.minimize": "Zminimalizuj Agenta AI",
   "agent.unread": "{n} nieprzeczytanych wiadomości",
-  "comparator.advancedOptions": "Opcje zaawansowane"
+  "comparator.advancedOptions": "Opcje zaawansowane",
+  "home.hero.tagline": "Porównuj kursy walut, opłaty, trasy i czasy dostawy w czasie rzeczywistym dla płatności globalnych i lokalnych",
+  "home.contact.simple.title": "Napisz do nas.",
+  "home.contact.simple.body": "Pytania, opinie lub prasa — napisz, a wkrótce odpowiemy.",
+  "home.widget.eyebrow": "Widget",
+  "home.widget.title": "mangomundi na Twojej stronie.",
+  "home.widget.body": "Osadź porównywarkę FX na dowolnej stronie lub w aplikacji jednym skryptem — kursy na żywo, Twoja marka, powered by mangomundi.",
+  "home.widget.badge": "Wkrótce",
+  "home.widget.cta": "Poproś o wcześniejszy dostęp"
 }

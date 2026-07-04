@@ -443,6 +443,17 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.body":
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
+    "home.hero.tagline":
+      "Compare exchange rates, fees, routes and delivery speeds in real time for global and local payments",
+    "home.contact.simple.title": "Get in touch.",
+    "home.contact.simple.body":
+      "Questions, feedback or press — write to us and we'll get back to you.",
+    "home.widget.eyebrow": "Widget",
+    "home.widget.title": "mangomundi on your website.",
+    "home.widget.body":
+      "Embed the FX comparator on any website or app with a single script tag — live rates, your branding, powered by mangomundi.",
+    "home.widget.badge": "Coming soon",
+    "home.widget.cta": "Request early access",
     // Footer
     "footer.tagline": "Intelligent currency exchange decisions.",
     "footer.nav.title": "Navigate",
@@ -734,6 +745,17 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.body":
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
+    "home.hero.tagline":
+      "Compará tipos de cambio, fees, rutas y tiempos de entrega en tiempo real para pagos globales y locales",
+    "home.contact.simple.title": "Escribinos.",
+    "home.contact.simple.body":
+      "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",
+    "home.widget.eyebrow": "Widget",
+    "home.widget.title": "mangomundi en tu sitio web.",
+    "home.widget.body":
+      "Embebé el comparador FX en cualquier sitio o app con un solo script — tasas en vivo, tu marca, powered by mangomundi.",
+    "home.widget.badge": "Muy pronto",
+    "home.widget.cta": "Pedir acceso anticipado",
     // Footer
     "footer.tagline": "Decisiones inteligentes de cambio de divisas.",
     "footer.nav.title": "Navegación",

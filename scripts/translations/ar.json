@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ تم طلب المسار",
   "agent.minimize": "تصغير وكيل الذكاء الاصطناعي",
   "agent.unread": "{n} رسائل غير مقروءة",
-  "comparator.advancedOptions": "خيارات متقدمة"
+  "comparator.advancedOptions": "خيارات متقدمة",
+  "home.hero.tagline": "قارن أسعار الصرف والرسوم والمسارات وأوقات التسليم في الوقت الفعلي للمدفوعات العالمية والمحلية",
+  "home.contact.simple.title": "تواصل معنا.",
+  "home.contact.simple.body": "أسئلة أو ملاحظات أو صحافة — راسلنا وسنرد عليك قريباً.",
+  "home.widget.eyebrow": "الودجت",
+  "home.widget.title": "mangomundi على موقعك.",
+  "home.widget.body": "أدمج مقارن الصرف في أي موقع أو تطبيق بوسم سكريبت واحد — أسعار مباشرة وعلامتك التجارية، powered by mangomundi.",
+  "home.widget.badge": "قريباً",
+  "home.widget.cta": "اطلب وصولاً مبكراً"
 }

@@ -600,5 +600,13 @@
   "corridor.missing.requested": "✓ Маршрут запрошен",
   "agent.minimize": "Свернуть ИИ-агента",
   "agent.unread": "{n} непрочитанных сообщений",
-  "comparator.advancedOptions": "Расширенные параметры"
+  "comparator.advancedOptions": "Расширенные параметры",
+  "home.hero.tagline": "Сравнивайте курсы, комиссии, маршруты и сроки доставки в реальном времени для глобальных и локальных платежей",
+  "home.contact.simple.title": "Свяжитесь с нами.",
+  "home.contact.simple.body": "Вопросы, отзывы или пресса — напишите нам, и мы скоро ответим.",
+  "home.widget.eyebrow": "Виджет",
+  "home.widget.title": "mangomundi на вашем сайте.",
+  "home.widget.body": "Встройте FX-компаратор на любой сайт или в приложение одним скриптом — живые курсы, ваш бренд, powered by mangomundi.",
+  "home.widget.badge": "Скоро",
+  "home.widget.cta": "Запросить ранний доступ"
 }
