@@ -420,12 +420,12 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
 
   const handleWizardAction = (action: WizardAction) => {
     if (action.id === "report") {
-      const note = `I have noted your interest in the ${from}-${to} route. It has been added to the discovery log; we will prioritize it as demand grows.`;
+      const note = t("wizard.reportNote").replace("{from}", from).replace("{to}", to);
       MasterRateStore.logMissing(from, to);
       void reportMissingFn({ data: { from, to } }).catch(() => {});
       setChat((c) => [
         ...c,
-        { role: "user", content: `Report missing route ${from} → ${to}` },
+        { role: "user", content: `${t(action.label)} ${from} → ${to}` },
         { role: "assistant", content: note },
       ]);
       return;
@@ -433,11 +433,8 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
     if (!result) {
       setChat((c) => [
         ...c,
-        { role: "user", content: action.label },
-        {
-          role: "assistant",
-          content: "Run a comparison first — I answer using the table data, not external sources.",
-        },
+        { role: "user", content: t(action.label) },
+        { role: "assistant", content: t("wizard.runFirst") },
       ]);
       return;
     }
@@ -453,7 +450,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
             : localFeeBreakdown(result, t);
       setChat((c) => [
         ...c,
-        { role: "user", content: action.label },
+        { role: "user", content: t(action.label) },
         { role: "assistant", content: reply },
       ]);
       return;
@@ -788,7 +785,7 @@ export function ComparatorSection({ initialQuery }: { initialQuery?: ComparatorQ
                 </div>
                 <div
                   role="tablist"
-                  aria-label="Segment"
+                  aria-label={t("search.segment")}
                   className="flex h-8 shrink-0 items-center gap-0.5 rounded-md border border-border bg-muted p-0.5"
                 >
                   {(["retail", "business"] as Segment[]).map((s) => (
@@ -1149,7 +1146,7 @@ function FloatingAgent(p: FloatingAgentProps) {
           <Sparkle className="h-6 w-6" aria-hidden />
           {unreadCount > 0 && (
             <span
-              aria-label={`${unreadCount} unread messages`}
+              aria-label={t("agent.unread").replace("{n}", String(unreadCount))}
               className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-bold text-white"
             >
               {unreadCount}
@@ -1182,7 +1179,7 @@ function FloatingAgent(p: FloatingAgentProps) {
               <button
                 type="button"
                 onClick={() => onToggle(true)}
-                aria-label="Minimize AI Agent"
+                aria-label={t("agent.minimize")}
                 className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
@@ -1205,7 +1202,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                   <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
                 </div>
                 <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Wizard — quick actions
+                  {t("wizard.quickActions")}
                 </div>
                 <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
                 {wizardContext && (

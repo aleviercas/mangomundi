@@ -585,5 +585,19 @@
   "wizard.fees.fixed": "fixo",
   "wizard.fees.fee": "tarifa",
   "wizard.fees.spread": "spread",
-  "wizard.fees.total": "total"
+  "wizard.fees.total": "total",
+  "wizard.action.how": "Como comparar",
+  "wizard.action.limits": "Ver limites de transferência",
+  "wizard.action.fees": "Detalhar as tarifas",
+  "wizard.action.report": "Reportar uma rota faltante",
+  "wizard.quickActions": "Wizard — ações rápidas",
+  "wizard.quickActionsAria": "Ações rápidas do Wizard IA",
+  "wizard.reportNote": "Anotei seu interesse na rota {from}-{to}. Ela foi registrada no log de descoberta; vamos priorizá-la conforme a demanda crescer.",
+  "wizard.runFirst": "Primeiro execute uma comparação — respondo com os dados da tabela, não com fontes externas.",
+  "corridor.missing.title": "Ainda não cotamos {from} → {to}.",
+  "corridor.missing.body": "Este corredor ainda não é coberto por nenhum provedor conectado. Você pode solicitá-lo e priorizaremos a cobertura quando houver demanda suficiente.",
+  "corridor.missing.request": "Solicitar esta rota",
+  "corridor.missing.requested": "✓ Rota solicitada",
+  "agent.minimize": "Minimizar Agente IA",
+  "agent.unread": "{n} mensagens não lidas"
 }

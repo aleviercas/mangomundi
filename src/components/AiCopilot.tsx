@@ -1,4 +1,5 @@
 import { Info, MapPin, Calculator, Megaphone, type LucideIcon } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import type { MasterRateMap, MissingCorridorEntry } from "@/services/providers/MasterRateStore";
 
 /**
@@ -8,9 +9,13 @@ import type { MasterRateMap, MissingCorridorEntry } from "@/services/providers/M
  *
  * STRICT NEUTRALITY: action labels are factual ("Check transfer limits",
  * "Report a missing route") — no marketing, no "best rate" claims.
+ *
+ * `label` holds an i18n KEY (module-level constant, no hook context here);
+ * render/consumption sites translate it with t().
  */
 export interface WizardAction {
   id: "how" | "limits" | "report" | "fees" | "speed";
+  /** i18n key for the visible label — translate with t(label). */
   label: string;
   prompt: string;
   icon: LucideIcon;
@@ -19,28 +24,28 @@ export interface WizardAction {
 export const DEFAULT_WIZARD_ACTIONS: WizardAction[] = [
   {
     id: "how",
-    label: "How to compare",
+    label: "wizard.action.how",
     prompt:
       "Explain in 3 short sentences how to read the comparator table (rate, fees, delivery time) so I can pick a route myself.",
     icon: Info,
   },
   {
     id: "limits",
-    label: "Check transfer limits",
+    label: "wizard.action.limits",
     prompt:
       "Using only the data in the table, list any transfer-amount limits or tier thresholds that apply to the providers shown.",
     icon: Calculator,
   },
   {
     id: "fees",
-    label: "Break down the fees",
+    label: "wizard.action.fees",
     prompt:
       "Summarize the fee structure (fixed + percentage + spread) for the top providers using the figures in the table. No opinions.",
     icon: Calculator,
   },
   {
     id: "report",
-    label: "Report a missing route",
+    label: "wizard.action.report",
     prompt: "__report_missing__",
     icon: Megaphone,
   },
@@ -64,11 +69,12 @@ export function AiCopilot({
   disabled = false,
   className = "",
 }: AiCopilotProps) {
+  const { t } = useI18n();
   return (
     <div
       className={`grid grid-cols-1 gap-1.5 sm:grid-cols-2 ${className}`}
       role="group"
-      aria-label="AI Wizard quick actions"
+      aria-label={t("wizard.quickActionsAria")}
     >
       {actions.map((a) => {
         const Icon = a.icon;
@@ -81,7 +87,7 @@ export function AiCopilot({
             className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-2.5 py-2 text-left text-xs font-medium text-foreground transition hover:border-foreground/30 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring"
           >
             <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
-            <span className="truncate">{a.label}</span>
+            <span className="truncate">{t(a.label)}</span>
           </button>
         );
       })}
@@ -104,24 +110,22 @@ export function MissingCorridorCta({
   acknowledged: boolean;
   onRequest: () => void;
 }) {
+  const { t } = useI18n();
   return (
     <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-50 p-4 text-sm">
       <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" aria-hidden />
       <div className="min-w-0 flex-1">
         <div className="font-semibold text-amber-900">
-          We don't currently price {from} → {to}.
+          {t("corridor.missing.title").replace("{from}", from).replace("{to}", to)}
         </div>
-        <p className="mt-0.5 text-xs text-amber-900/80">
-          This corridor isn't covered by any connected provider yet. You can request it and we'll
-          prioritize coverage when it has enough demand.
-        </p>
+        <p className="mt-0.5 text-xs text-amber-900/80">{t("corridor.missing.body")}</p>
         <button
           type="button"
           onClick={onRequest}
           disabled={acknowledged}
           className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700 disabled:cursor-default disabled:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-amber-500"
         >
-          {acknowledged ? "✓ Route requested" : "Request to add this route"}
+          {acknowledged ? t("corridor.missing.requested") : t("corridor.missing.request")}
         </button>
       </div>
     </div>
