@@ -100,7 +100,10 @@ export function ComparatorSection({
   // Compare CTA validates (same UX the old hero widget had).
   const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "");
   const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
-  const [amountMode, setAmountMode] = useState<AmountMode>("send");
+  // Fixed: the Send/Receive pill was removed (it changed the meaning of the
+  // FROM amount, which read as confusing). The amount is always what you
+  // send; the server payload still expects a mode value.
+  const amountMode: AmountMode = "send";
   // Fixed: the urgency field was removed from the form (the engine never used
   // it for ranking — speed is a results column/sort), but the server schema
   // still expects a value.
@@ -788,51 +791,26 @@ export function ComparatorSection({
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
               </div>
-              <div className="flex flex-wrap items-center justify-end gap-2">
-                {/* Fixed-side pill: which amount is exact (Wise's "recipient
-                    gets exactly"). Smaller sibling of the segment pill. */}
-                <div
-                  role="tablist"
-                  aria-label={t("comparator.field.amountMode")}
-                  className="flex h-7 shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-0.5"
-                >
-                  {(["send", "receive"] as AmountMode[]).map((mode) => (
-                    <button
-                      key={mode}
-                      role="tab"
-                      aria-selected={amountMode === mode}
-                      onClick={() => setAmountMode(mode)}
-                      className={`rounded-full px-2 py-0.5 text-[10px] font-semibold transition ${
-                        amountMode === mode
-                          ? "bg-white text-slate-900 shadow-sm"
-                          : "text-slate-300 hover:text-white"
-                      }`}
-                    >
-                      {t(`comparator.amountMode.${mode}`)}
-                    </button>
-                  ))}
-                </div>
-                <div
-                  role="tablist"
-                  aria-label={t("search.segment")}
-                  className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-1"
-                >
-                  {(["retail", "business"] as Segment[]).map((s) => (
-                    <button
-                      key={s}
-                      role="tab"
-                      aria-selected={segment === s}
-                      onClick={() => setSegment(s)}
-                      className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
-                        segment === s
-                          ? "bg-white text-slate-900 shadow-sm"
-                          : "text-slate-300 hover:text-white"
-                      }`}
-                    >
-                      {t(`comparator.segment.${s}`)}
-                    </button>
-                  ))}
-                </div>
+              <div
+                role="tablist"
+                aria-label={t("search.segment")}
+                className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-1"
+              >
+                {(["retail", "business"] as Segment[]).map((s) => (
+                  <button
+                    key={s}
+                    role="tab"
+                    aria-selected={segment === s}
+                    onClick={() => setSegment(s)}
+                    className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
+                      segment === s
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-300 hover:text-white"
+                    }`}
+                  >
+                    {t(`comparator.segment.${s}`)}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -853,13 +831,7 @@ export function ComparatorSection({
                     each labelled so the box reads on its own. */}
                 <div className="min-w-0 rounded-xl border border-white/10 p-3">
                   <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.4fr_1.1fr]">
-                    <FieldLight
-                      label={
-                        amountMode === "send"
-                          ? t("comparator.field.amount")
-                          : t("comparator.field.amountReceived")
-                      }
-                    >
+                    <FieldLight label={t("comparator.field.amount")}>
                       <div className="grid grid-cols-[1.1fr_1fr] gap-2">
                         <input
                           type="number"
@@ -868,11 +840,7 @@ export function ComparatorSection({
                           value={amount || ""}
                           placeholder="1000"
                           onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                          aria-label={
-                            amountMode === "send"
-                              ? t("comparator.field.amount")
-                              : t("comparator.field.amountReceived")
-                          }
+                          aria-label={t("comparator.field.amount")}
                           className={`flex w-full min-w-0 tabular-nums placeholder:text-slate-400 transition-colors ${WHITE_FIELD}`}
                         />
                         <CurrencyCombobox

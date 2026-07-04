@@ -1,10 +1,11 @@
 import { Combobox } from "@/components/ui/Combobox";
+import { FlagIcon } from "@/components/ui/FlagIcon";
 import { CURRENCIES } from "@/lib/currencies";
 
 const OPTIONS = CURRENCIES.map((c) => ({
   value: c.code,
   label: `${c.code} — ${c.name}`,
-  leading: c.flag,
+  leading: <FlagIcon country={c.flag} />,
   keywords: [c.code, c.name],
 }));
 
