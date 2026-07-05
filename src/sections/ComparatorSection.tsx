@@ -1638,12 +1638,6 @@ function ProviderRow({
         <div className="inline-flex items-center gap-1">
           <Clock className="h-3 w-3" /> {deliveryLabel}
         </div>
-        {row.trust_score != null && (
-          <div className="text-[10px]">
-            Trust {row.trust_score.toFixed(1)}/10
-            {row.transparency_score != null && ` · Transp. ${row.transparency_score.toFixed(1)}`}
-          </div>
-        )}
       </div>
       <div className="lg:text-right">
         <button
