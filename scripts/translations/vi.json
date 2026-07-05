@@ -615,5 +615,7 @@
   "home.widget.copied": "Đã sao chép!",
   "home.widget.hint": "Dán vào bất kỳ đâu trong HTML của bạn. Widget miễn phí và chạy trong iframe cách ly — không xung đột mã, không thêm theo dõi vào trang của bạn.",
   "home.hero.titlePost": "một cách thông minh",
-  "comparator.field.youReceive": "Bạn nhận"
+  "comparator.field.youReceive": "Bạn nhận",
+  "comparator.swap": "Hoán đổi tiền tệ",
+  "comparator.midMarketRate": "Tỷ giá hối đoái trung bình thị trường"
 }
