@@ -617,5 +617,6 @@
   "home.hero.titlePost": "inteligentnie",
   "comparator.field.youReceive": "Otrzymujesz",
   "comparator.swap": "Zamień waluty",
-  "comparator.midMarketRate": "Kurs międzybankowy (mid-market)"
+  "comparator.midMarketRate": "Kurs międzybankowy (mid-market)",
+  "comparator.copilot.business.countryError": "Wybierz powyżej zarówno kraj pochodzenia, jak i docelowy, zanim będziemy kontynuować."
 }
