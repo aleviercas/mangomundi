@@ -2581,6 +2581,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "As a business, your treasury needs are unique. Please tell me your estimated monthly volume and sector (for example: `50000, software`).",
     "comparator.copilot.business.volumeError":
       "Please include both an estimated monthly volume and your sector.",
+    "comparator.copilot.business.countryError":
+      "Please select both the origin and destination country above before we continue.",
     "comparator.copilot.business.email":
       "Thank you. For this volume, the best institutional rates are currently **{providers}**. Please confirm your corporate email to continue.",
     "comparator.copilot.business.emailError": "Please provide a valid corporate email address.",
@@ -2710,6 +2712,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.business.intro":
       "Como empresa, tus necesidades de tesorería son únicas. Indícame tu volumen mensual estimado y sector (por ejemplo: `50000, software`).",
     "comparator.copilot.business.volumeError": "Incluye el volumen mensual estimado y el sector.",
+    "comparator.copilot.business.countryError": "Selecciona el país de origen y destino arriba antes de continuar.",
     "comparator.copilot.business.email":
       "Gracias. Con este volumen, las mejores tarifas institucionales son **{providers}**. Confirma tu email corporativo para continuar.",
     "comparator.copilot.business.emailError": "Introduce un email corporativo válido.",
