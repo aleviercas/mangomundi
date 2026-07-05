@@ -615,5 +615,7 @@
   "home.widget.copied": "Kopiert!",
   "home.widget.hint": "Fügen Sie es an beliebiger Stelle in Ihr HTML ein. Das Widget ist kostenlos und läuft in einem isolierten iframe — keine Code-Konflikte, kein Tracking auf Ihrer Seite.",
   "home.hero.titlePost": "clever vergleichen",
-  "comparator.field.youReceive": "Sie erhalten"
+  "comparator.field.youReceive": "Sie erhalten",
+  "comparator.swap": "Währungen tauschen",
+  "comparator.midMarketRate": "Mid-Market-Wechselkurs"
 }
