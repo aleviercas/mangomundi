@@ -615,5 +615,7 @@
   "home.widget.copied": "Skopiowano!",
   "home.widget.hint": "Wklej w dowolnym miejscu swojego HTML. Widget jest darmowy i działa w izolowanym iframe — bez konfliktów kodu i bez śledzenia na Twojej stronie.",
   "home.hero.titlePost": "inteligentnie",
-  "comparator.field.youReceive": "Otrzymujesz"
+  "comparator.field.youReceive": "Otrzymujesz",
+  "comparator.swap": "Zamień waluty",
+  "comparator.midMarketRate": "Kurs międzybankowy (mid-market)"
 }
