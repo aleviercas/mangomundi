@@ -615,5 +615,7 @@
   "home.widget.copied": "تم النسخ!",
   "home.widget.hint": "الصقه في أي مكان في HTML الخاص بك. الودجت مجاني ويعمل داخل iframe معزول — بدون تعارض في الكود ولا تتبع مُضاف إلى موقعك.",
   "home.hero.titlePost": "بذكاء",
-  "comparator.field.youReceive": "تستلم"
+  "comparator.field.youReceive": "تستلم",
+  "comparator.swap": "تبديل العملات",
+  "comparator.midMarketRate": "سعر صرف السوق المتوسط"
 }
