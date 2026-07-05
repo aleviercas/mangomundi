@@ -264,8 +264,8 @@ export function ComparatorSection({
           to: useTo,
           segment,
           amountMode,
-          sendingCountry: useSending,
-          receivingCountry: useReceiving,
+          sendingCountry: useSending || undefined,
+          receivingCountry: useReceiving || undefined,
         },
       });
       return {
@@ -686,6 +686,17 @@ export function ComparatorSection({
           ]);
           return;
         }
+        // The country panel above is a separate control the user can skip —
+        // nothing else in this flow checked it, so it was possible to reach
+        // email/consent/submit with receivingCountry still "" and fail the
+        // server-side schema (agent.functions.ts requires exactly 2 chars).
+        if (!sendingCountry || sendingCountry.length !== 2 || !receivingCountry || receivingCountry.length !== 2) {
+          setChat((current) => [
+            ...current,
+            { role: "assistant", content: t("comparator.copilot.business.countryError") },
+          ]);
+          return;
+        }
         setBusinessData({ monthlyVolume, sector });
         setBusinessStage("email");
         setChat((current) => [
@@ -730,6 +741,10 @@ export function ComparatorSection({
       !businessData.email ||
       !businessData.monthlyVolume ||
       !businessData.sector ||
+      !sendingCountry ||
+      sendingCountry.length !== 2 ||
+      !receivingCountry ||
+      receivingCountry.length !== 2 ||
       savingBusinessLead
     )
       return;
