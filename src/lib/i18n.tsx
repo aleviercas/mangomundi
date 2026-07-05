@@ -381,7 +381,6 @@ export const DICTS: Record<Lang, Dict> = {
     "home.hero.ctaCompare": "Try FX Comparator",
     "home.hero.titlePre": "Compare",
     "home.hero.titleAccent": "exchange rates",
-    "home.hero.titlePost": "",
     "home.dual.title": "Built for every cross-border flow — retail and corporate.",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
