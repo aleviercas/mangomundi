@@ -20,7 +20,7 @@ export function BlogSection() {
     <section id="blog" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
-          <div className="max-w-3xl">
+          <div className="max-w-xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
               {t("home.blog.eyebrow")}
             </p>
