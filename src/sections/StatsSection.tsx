@@ -9,7 +9,7 @@ export function StatsSection() {
     { value: "50+", label: t("home.stats.providers") },
   ];
   return (
-    <section className="py-10 sm:py-14">
+    <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="rounded-[2rem] bg-slate-900 p-8 text-white shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] sm:p-12">
           <div className="max-w-3xl">
