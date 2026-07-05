@@ -617,5 +617,6 @@
   "home.hero.titlePost": "بذكاء",
   "comparator.field.youReceive": "تستلم",
   "comparator.swap": "تبديل العملات",
-  "comparator.midMarketRate": "سعر صرف السوق المتوسط"
+  "comparator.midMarketRate": "سعر صرف السوق المتوسط",
+  "comparator.copilot.business.countryError": "يرجى تحديد بلد المنشأ والوجهة أعلاه قبل المتابعة."
 }
