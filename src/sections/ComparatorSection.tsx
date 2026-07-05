@@ -1520,7 +1520,7 @@ function ProviderRow({
       }`}
     >
       <div className="flex min-w-0 items-center gap-3">
-        <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} size={36} />
+        <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} size={44} />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">
             <span className="truncate font-semibold text-foreground">{row.name}</span>
