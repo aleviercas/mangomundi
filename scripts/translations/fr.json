@@ -617,5 +617,6 @@
   "home.hero.titlePost": "intelligemment",
   "comparator.field.youReceive": "Vous recevez",
   "comparator.swap": "Échanger les devises",
-  "comparator.midMarketRate": "Taux de change interbancaire (mid-market)"
+  "comparator.midMarketRate": "Taux de change interbancaire (mid-market)",
+  "comparator.copilot.business.countryError": "Merci de sélectionner le pays d'origine et de destination ci-dessus avant de continuer."
 }
