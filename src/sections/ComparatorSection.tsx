@@ -122,8 +122,9 @@ export function ComparatorSection({
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
   // URL without wiping the freshly-set results/chat. One-shot.
   const skipNextSyncClearRef = useRef(false);
-  // Auto-scroll target: the "Your Results" section (conversion: the user must
-  // land on the results right after comparing, desktop and mobile alike).
+  // Auto-scroll target: the mid-market rate banner inside the comparator
+  // card (Wise-style — the rate is the first thing the user should see
+  // after comparing; the results table is reachable right below it).
   const resultsRef = useRef<HTMLDivElement>(null);
   const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
   const [businessData, setBusinessData] = useState<{
@@ -1000,7 +1001,10 @@ export function ComparatorSection({
               {/* Mid-market exchange rate — shown as soon as a comparison has
                   run, right inside this same box (like Wise's compare page). */}
               {result && (
-                <div className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div
+                  ref={resultsRef}
+                  className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 scroll-mt-24"
+                >
                   <span className="font-heading text-base font-bold text-white sm:text-lg">
                     1 {from} = {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })} {to}
                   </span>
@@ -1078,10 +1082,11 @@ export function ComparatorSection({
           </div>
         )}
 
-        {/* Your Results — a first-class home section. Auto-scrolled into view
-            when a comparison lands (see the result effect above). */}
+        {/* Your Results — a first-class home section. The page auto-scrolls
+            to the mid-market rate banner above (inside the comparator card)
+            rather than straight to this table, so the rate is seen first. */}
         {result && (
-          <div ref={resultsRef} className="mt-8 min-w-0 scroll-mt-24">
+          <div className="mt-8 min-w-0 scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
                 {t("comparator.results")}
@@ -1350,6 +1355,36 @@ function FloatingAgent(p: FloatingAgentProps) {
           </div>
 
           <div className="shrink-0 border-t border-border p-3">
+            {segment === "business" && businessStage === "consent" && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={savingBusinessLead}
+                  onClick={() => void confirmBusinessLead()}
+                  className="bg-accent text-accent-foreground hover:bg-accent/90"
+                >
+                  {savingBusinessLead ? (
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  ) : null}
+                  {t("comparator.copilot.business.yes")}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setBusinessStage("email");
+                    setChat((current) => [
+                      ...current,
+                      { role: "assistant", content: t("comparator.copilot.business.no") },
+                    ]);
+                  }}
+                >
+                  {t("comparator.copilot.business.review")}
+                </Button>
+              </div>
+            )}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -1379,36 +1414,6 @@ function FloatingAgent(p: FloatingAgentProps) {
                 <Send className="h-3.5 w-3.5" aria-hidden />
               </button>
             </form>
-            {segment === "business" && businessStage === "consent" && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  disabled={savingBusinessLead}
-                  onClick={() => void confirmBusinessLead()}
-                  className="bg-accent text-accent-foreground hover:bg-accent/90"
-                >
-                  {savingBusinessLead ? (
-                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
-                  ) : null}
-                  {t("comparator.copilot.business.yes")}
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => {
-                    setBusinessStage("email");
-                    setChat((current) => [
-                      ...current,
-                      { role: "assistant", content: t("comparator.copilot.business.no") },
-                    ]);
-                  }}
-                >
-                  {t("comparator.copilot.business.review")}
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       )}
