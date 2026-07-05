@@ -617,5 +617,6 @@
   "home.hero.titlePost": "तुलना",
   "comparator.field.youReceive": "आप प्राप्त करते हैं",
   "comparator.swap": "मुद्राएं बदलें",
-  "comparator.midMarketRate": "मध्य-बाज़ार विनिमय दर"
+  "comparator.midMarketRate": "मध्य-बाज़ार विनिमय दर",
+  "comparator.copilot.business.countryError": "जारी रखने से पहले कृपया ऊपर मूल और गंतव्य देश दोनों चुनें।"
 }
