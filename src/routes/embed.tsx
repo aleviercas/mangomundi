@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { z } from "zod";
 import { EmbedComparator } from "@/components/EmbedComparator";
 
@@ -28,9 +28,23 @@ export const Route = createFileRoute("/embed")({
 
 function EmbedPage() {
   const { currency, amount } = Route.useSearch();
+  // Same geo the home page uses (computed once in __root.tsx's loader from
+  // the visitor's real IP) — an iframe embed is still a direct request from
+  // the visitor's browser to mangomundi.com, so this is accurate even on a
+  // third-party host page. Previously this route ignored it entirely and
+  // EmbedComparator defaulted to a hardcoded US/USD.
+  const rootData = useLoaderData({ from: "__root__" }) as {
+    geoCountry?: string;
+    geoCurrency?: string;
+  };
   return (
     <div className="h-screen w-full">
-      <EmbedComparator initialCurrency={currency} initialAmount={amount} />
+      <EmbedComparator
+        initialCurrency={currency}
+        initialAmount={amount}
+        geoCountry={rootData?.geoCountry}
+        geoCurrency={rootData?.geoCurrency}
+      />
     </div>
   );
 }
