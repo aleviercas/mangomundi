@@ -943,7 +943,7 @@ export function ComparatorSection({
                       amount <= 0 ||
                       (segment === "business" && (!sendingCountry || !receivingCountry))
                     }
-                    className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-auto"
+                    className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-[168px]"
                   >
                     {compareMut.isPending ? (
                       <>
