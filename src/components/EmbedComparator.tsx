@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import { Wordmark } from "@/components/Wordmark";
+import { defaultCounterCurrency } from "@/lib/countries";
 
 /**
  * Self-contained comparator for the embeddable widget — the SAME unified box
@@ -14,18 +15,28 @@ import { Wordmark } from "@/components/Wordmark";
 export function EmbedComparator({
   initialCurrency,
   initialAmount,
+  geoCountry = "GB",
+  geoCurrency = "GBP",
 }: {
   initialCurrency?: string;
   initialAmount?: number;
+  /** Visitor's geo-detected country/currency (see geo.functions.ts). Callers
+   *  that don't have it (e.g. a static preview) can omit it — the GB/GBP
+   *  fallback below matches getVisitorGeo()'s own fallback. */
+  geoCountry?: string;
+  geoCurrency?: string;
 }) {
-  // Presets from the embed's data-*/query params; destination stays empty for
-  // the user to pick (the Compare CTA validates).
+  // Presets from the embed's data-*/query params, falling back to the
+  // visitor's real geo instead of a hardcoded "US"/"USD" — destination
+  // currency is picked so it never starts equal to the origin one (that
+  // used to trigger the same-currency warning immediately on load).
+  const from = initialCurrency ?? geoCurrency;
   const initialQuery: ComparatorQuery = {
-    origin: "US",
+    origin: geoCountry,
     destination: "",
     segment: "retail",
-    from: initialCurrency ?? "USD",
-    to: "USD",
+    from,
+    to: defaultCounterCurrency(from),
     amount: initialAmount ?? 1000,
   };
 
