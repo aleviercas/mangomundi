@@ -617,5 +617,6 @@
   "home.hero.titlePost": "dengan cerdas",
   "comparator.field.youReceive": "Anda menerima",
   "comparator.swap": "Tukar mata uang",
-  "comparator.midMarketRate": "Nilai tukar mid-market"
+  "comparator.midMarketRate": "Nilai tukar mid-market",
+  "comparator.copilot.business.countryError": "Silakan pilih negara asal dan tujuan di atas sebelum melanjutkan."
 }
