@@ -34,9 +34,10 @@ function initials(name: string): string {
 }
 
 /**
- * Renders the real brand logo via Clearbit's public logo service.
- * Falls back to a clean monogram (initials on a tinted background) if the
- * logo cannot be fetched. No invented emojis are ever shown.
+ * Renders the real brand logo via unavatar.io (aggregates multiple logo
+ * sources — much sharper than a plain favicon at larger sizes). Falls back
+ * to a clean monogram (initials on a tinted background) if the logo cannot
+ * be fetched. No invented emojis are ever shown.
  */
 export function BrandLogo({ name, url, domain, size = 32, className, rounded = true }: BrandLogoProps) {
   const host = domain ?? extractDomain(url);
@@ -45,7 +46,7 @@ export function BrandLogo({ name, url, domain, size = 32, className, rounded = t
   if (host && !failed) {
     return (
       <img
-        src={`https://www.google.com/s2/favicons?domain=${host}&sz=128`}
+        src={`https://unavatar.io/${host}?fallback=false`}
         alt={`${name} logo`}
         width={size}
         height={size}
@@ -53,8 +54,8 @@ export function BrandLogo({ name, url, domain, size = 32, className, rounded = t
         referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
         className={cn(
-          "shrink-0 object-contain bg-white p-0.5",
-          rounded ? "rounded-md" : "",
+          "shrink-0 object-contain",
+          rounded ? "rounded-lg" : "",
           className,
         )}
         style={{ width: size, height: size }}
