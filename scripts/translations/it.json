@@ -617,5 +617,6 @@
   "home.hero.titlePost": "in modo intelligente",
   "comparator.field.youReceive": "Ricevi",
   "comparator.swap": "Scambia valute",
-  "comparator.midMarketRate": "Tasso di cambio mid-market"
+  "comparator.midMarketRate": "Tasso di cambio mid-market",
+  "comparator.copilot.business.countryError": "Seleziona sia il paese di origine che quello di destinazione qui sopra prima di continuare."
 }
