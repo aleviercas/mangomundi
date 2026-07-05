@@ -617,5 +617,6 @@
   "home.hero.titlePost": "с умом",
   "comparator.field.youReceive": "Вы получаете",
   "comparator.swap": "Поменять валюты местами",
-  "comparator.midMarketRate": "Средний рыночный курс (mid-market)"
+  "comparator.midMarketRate": "Средний рыночный курс (mid-market)",
+  "comparator.copilot.business.countryError": "Пожалуйста, выберите выше страну отправления и страну назначения, прежде чем продолжить."
 }
