@@ -617,5 +617,6 @@
   "home.hero.titlePost": "비교",
   "comparator.field.youReceive": "받는 통화",
   "comparator.swap": "통화 전환",
-  "comparator.midMarketRate": "중간시장 환율"
+  "comparator.midMarketRate": "중간시장 환율",
+  "comparator.copilot.business.countryError": "계속하기 전에 위에서 출발 국가와 도착 국가를 모두 선택해 주세요."
 }
