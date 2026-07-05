@@ -617,5 +617,6 @@
   "home.hero.titlePost": "อัจฉริยะ",
   "comparator.field.youReceive": "คุณได้รับ",
   "comparator.swap": "สลับสกุลเงิน",
-  "comparator.midMarketRate": "อัตราแลกเปลี่ยนกลางตลาด (Mid-market)"
+  "comparator.midMarketRate": "อัตราแลกเปลี่ยนกลางตลาด (Mid-market)",
+  "comparator.copilot.business.countryError": "โปรดเลือกประเทศต้นทางและปลายทางด้านบนก่อนดำเนินการต่อ"
 }
