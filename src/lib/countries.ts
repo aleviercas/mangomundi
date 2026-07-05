@@ -97,6 +97,16 @@ export function primaryCountryForCurrency(currency: string): string | undefined 
 }
 
 /**
+ * A "TO" default guaranteed to differ from the given "FROM" currency — used
+ * wherever the comparator picks initial currencies (home page, embed widget)
+ * so a visitor whose geo-detected currency is USD doesn't land on a
+ * same-currency warning before touching anything.
+ */
+export function defaultCounterCurrency(from: string): string {
+  return from.toUpperCase() === "USD" ? "EUR" : "USD";
+}
+
+/**
  * Resolve a code from the agent's `[[SUGGEST_COMPARE:FROM-TO]]` tag into a
  * currency (+ explicit country when the user named one). A 2-letter ISO-3166
  * country code (e.g. "PT") → that country and its local currency; a 3-letter
