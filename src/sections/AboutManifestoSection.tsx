@@ -8,7 +8,7 @@ export function AboutManifestoSection() {
     { label: t("home.about.problem.label"), body: t("home.about.problem.body") },
   ];
   return (
-    <section id="about" className="scroll-mt-24 py-14 sm:py-20">
+    <section id="about" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="rounded-[2rem] bg-white p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_50px_-22px_rgba(15,23,42,0.14)] sm:p-14">
           <div className="max-w-3xl">
