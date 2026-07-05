@@ -615,5 +615,7 @@
   "home.widget.copied": "কপি হয়েছে!",
   "home.widget.hint": "আপনার HTML-এর যেকোনো জায়গায় পেস্ট করুন। উইজেটটি বিনামূল্যে এবং একটি বিচ্ছিন্ন iframe-এ চলে — কোনো কোড দ্বন্দ্ব নেই, আপনার সাইটে কোনো ট্র্যাকিং যোগ হয় না।",
   "home.hero.titlePost": "তুলনা",
-  "comparator.field.youReceive": "আপনি পাবেন"
+  "comparator.field.youReceive": "আপনি পাবেন",
+  "comparator.swap": "মুদ্রা অদলবদল করুন",
+  "comparator.midMarketRate": "মধ্য-বাজার বিনিময় হার"
 }
