@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { sendLeadNotificationEmail } from "./email";
 
 const LeadInput = z.object({
   email: z.string().email().max(255),
@@ -91,7 +92,24 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
         console.error("[enterprise-lead] webhook dispatch failed", error);
       }
     }
-    return { ok: true, requestId, emailQueued: false };
+    // Internal notification — separate from the outbound webhook above (that
+    // one is for third-party automations; this one is for us). Best-effort:
+    // never blocks the response, the lead is already saved in Supabase.
+    const emailQueued = await sendLeadNotificationEmail({
+      subject: `New B2B lead ${requestId} — ${data.fromCurrency} → ${data.toCurrency}`,
+      html: `
+        <h2>New business FX lead</h2>
+        <p><strong>Request ID:</strong> ${requestId}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Monthly volume:</strong> ${data.monthlyVolume.toLocaleString()} ${data.fromCurrency}</p>
+        <p><strong>Sector:</strong> ${data.sector}</p>
+        <p><strong>Route:</strong> ${data.fromCurrency} → ${data.toCurrency} (${data.sendingCountry} → ${data.receivingCountry})</p>
+        <p><strong>Providers suggested to the user:</strong> ${data.topProviders.join(", ") || "—"}</p>
+        <p><strong>Locale:</strong> ${data.locale}</p>
+        <p><strong>Consent recorded at:</strong> ${consentAt}</p>
+      `,
+    });
+    return { ok: true, requestId, emailQueued };
   });
 
 export const captureGeneralInquiry = createServerFn({ method: "POST" })
