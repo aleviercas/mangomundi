@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
+  ArrowLeftRight,
   Clock,
   Loader2,
   Send,
@@ -364,7 +365,8 @@ export function ComparatorSection({
   useEffect(() => {
     if (!initialQuery?.autoRun || didAutoRunRef.current) return;
     didAutoRunRef.current = true;
-    if (!sendingCountry || !receivingCountry || amount <= 0 || from === to) return;
+    if (amount <= 0 || from === to) return;
+    if (segment === "business" && (!sendingCountry || !receivingCountry)) return;
     // The URL-sync effect's 300ms timer clears result/chat unless this one-shot
     // flag is set — covers sub-300ms responses landing before the timer fires.
     skipNextSyncClearRef.current = true;
@@ -589,7 +591,8 @@ export function ComparatorSection({
   // stale-result hygiene remains.)
   useEffect(() => {
     setValidationError(null);
-    if (amount <= 0 || !sendingCountry || !receivingCountry || from === to) {
+    const missingCountry = segment === "business" && (!sendingCountry || !receivingCountry);
+    if (amount <= 0 || missingCountry || from === to) {
       skipNextSyncClearRef.current = false; // don't let a stale skip leak
       return;
     }
@@ -818,114 +821,100 @@ export function ComparatorSection({
               the viewport: 3/4 columns when the card is full-width (no results
               yet), 2 columns once it shares the row with the metrics panel. */}
             <div className="@container space-y-4 p-4 sm:p-6">
-              {sendingCountry === receivingCountry && (
+              {from === to && (
                 <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
                   {t("search.sameCountry")}
                 </div>
               )}
-              {/* One consolidated row — FROM group → TO group → CTA. No hidden
-                  advanced state: everything lives in the same box. Stacks
-                  vertically (arrow rotates) below @2xl (mobile/embed). */}
+              {/* One consolidated row — FROM currency → swap → TO currency → CTA.
+                  Currency-only (no country picker) for the main flow, matching
+                  how consumer FX comparators (e.g. Wise) do it: the compare
+                  engine already matches providers by currency pair, not
+                  country (see fx.functions.ts), so country isn't needed here.
+                  Business keeps a country panel below (compliance/RFQ need a
+                  real jurisdiction) — see the segment === "business" block. */}
               <div className="grid grid-cols-1 items-stretch gap-3 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
-                {/* FROM box: "You send" (amount + currency) and "From" (country),
-                    each labelled so the box reads on its own. */}
+                {/* FROM box: "You send" — amount + currency unified pill. */}
                 <div className="min-w-0 rounded-xl border border-white/10 p-3">
-                  <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.4fr_1.1fr]">
-                    <FieldLight label={t("comparator.field.amount")}>
-                      {/* Unified pill: amount + currency read as one control,
-                          split by a hairline divider instead of two boxes. */}
-                      <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-transparent bg-white shadow-sm transition-colors hover:bg-slate-50 focus-within:ring-2 focus-within:ring-[#ff6b5b]/40">
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          min={1}
-                          value={amount || ""}
-                          placeholder="1000"
-                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                          aria-label={t("comparator.field.amount")}
-                          className="min-w-0 flex-1 bg-transparent px-3 text-sm font-medium tabular-nums text-slate-900 placeholder:text-slate-400 focus:outline-none"
-                        />
-                        <CurrencyCombobox
-                          value={from}
-                          onChange={setFrom}
-                          placeholder={t("comparator.combobox.placeholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCurrency")}
-                          triggerClassName="h-11 w-auto shrink-0 rounded-none border-0 border-l border-slate-200 bg-transparent px-3 shadow-none hover:bg-slate-50 focus:ring-0"
-                        />
-                      </div>
-                    </FieldLight>
-                    <FieldLight label={t("fx.field.from")}>
-                      <CountrySelect
-                        value={sendingCountry}
-                        onChange={(c) => {
-                          // Picking a country derives its currency (the currency
-                          // combobox next to the amount can override).
-                          setSendingCountry(c);
-                          setFrom(localCurrency(c));
-                        }}
+                  <FieldLight label={t("comparator.field.amount")}>
+                    {/* Unified pill: amount + currency read as one control,
+                        split by a hairline divider instead of two boxes. */}
+                    <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-transparent bg-white shadow-sm transition-colors hover:bg-slate-50 focus-within:ring-2 focus-within:ring-[#ff6b5b]/40">
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        min={1}
+                        value={amount || ""}
+                        placeholder="1000"
+                        onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                        aria-label={t("comparator.field.amount")}
+                        className="min-w-0 flex-1 bg-transparent px-3 text-sm font-medium tabular-nums text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                      />
+                      <CurrencyCombobox
+                        value={from}
+                        onChange={setFrom}
                         placeholder={t("comparator.combobox.placeholder")}
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.sourceCountry")}
-                        triggerClassName={WHITE_FIELD}
+                        ariaLabel={t("comparator.field.sourceCurrency")}
+                        triggerClassName="h-11 w-auto shrink-0 rounded-none border-0 border-l border-slate-200 bg-transparent px-3 shadow-none hover:bg-slate-50 focus:ring-0"
                       />
-                    </FieldLight>
-                  </div>
+                    </div>
+                  </FieldLight>
                 </div>
 
-                {/* Route arrow — horizontal on wide layouts, rotated when stacked */}
+                {/* Swap — click to flip FROM/TO (and the country panel below,
+                    if Business). Rotated 90° when the row stacks vertically. */}
                 <div className="flex items-center justify-center py-0.5 @2xl:py-0">
-                  <ArrowRight className="h-5 w-5 rotate-90 text-[#ff6b5b] @2xl:rotate-0" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const prevFrom = from;
+                      const prevTo = to;
+                      setFrom(prevTo);
+                      setTo(prevFrom);
+                      if (segment === "business") {
+                        const prevSending = sendingCountry;
+                        const prevReceiving = receivingCountry;
+                        setSendingCountry(prevReceiving);
+                        setReceivingCountry(prevSending);
+                      }
+                    }}
+                    aria-label={t("comparator.swap")}
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#ff6b5b] transition hover:bg-white/10 hover:text-[#ff8577] focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40"
+                  >
+                    <ArrowLeftRight className="h-4 w-4 rotate-90 @2xl:rotate-0" />
+                  </button>
                 </div>
 
-                {/* TO box: "To" (country) and "You receive" (currency), labelled
-                    like the FROM box so the route reads left to right.
-                    Highlighted while empty to nudge selection — it's the
-                    field that unlocks the Search CTA. */}
+                {/* TO box: "You receive" — currency only, highlighted while it
+                    still matches FROM (nudges picking a different currency). */}
                 <div
                   className={`min-w-0 rounded-xl border p-3 transition-colors ${
-                    !receivingCountry
+                    from === to
                       ? "border-[#ff6b5b]/60 shadow-[0_0_0_3px_rgba(255,107,91,0.15)]"
                       : "border-white/10"
                   }`}
                 >
-                  <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.2fr_1fr]">
-                    <FieldLight label={t("fx.field.to")}>
-                      <CountrySelect
-                        value={receivingCountry}
-                        onChange={(c) => {
-                          // Destination derives the target currency (the combobox
-                          // beside it can override).
-                          setReceivingCountry(c);
-                          setTo(localCurrency(c));
-                        }}
-                        placeholder={t("search.selectCountry")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("search.destination")}
-                        triggerClassName={WHITE_FIELD}
-                      />
-                    </FieldLight>
-                    <FieldLight label={t("comparator.field.youReceive")}>
-                      <CurrencyCombobox
-                        value={to}
-                        onChange={setTo}
-                        placeholder={t("comparator.combobox.placeholder")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.targetCurrency")}
-                        triggerClassName={WHITE_FIELD}
-                      />
-                    </FieldLight>
-                  </div>
+                  <FieldLight label={t("comparator.field.youReceive")}>
+                    <CurrencyCombobox
+                      value={to}
+                      onChange={setTo}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.targetCurrency")}
+                      triggerClassName={WHITE_FIELD}
+                    />
+                  </FieldLight>
                 </div>
 
                 <div className="flex flex-col justify-end pb-0.5">
                   <Button
                     onClick={() => {
-                      if (!sendingCountry || !receivingCountry || amount <= 0) {
+                      const missingCountry =
+                        segment === "business" && (!sendingCountry || !receivingCountry);
+                      if (from === to || amount <= 0 || missingCountry) {
                         setValidationError(t("fx.validation"));
                         return;
                       }
@@ -933,7 +922,10 @@ export function ComparatorSection({
                       compareMut.mutate(undefined);
                     }}
                     disabled={
-                      compareMut.isPending || !sendingCountry || !receivingCountry || amount <= 0
+                      compareMut.isPending ||
+                      from === to ||
+                      amount <= 0 ||
+                      (segment === "business" && (!sendingCountry || !receivingCountry))
                     }
                     className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-auto"
                   >
@@ -951,6 +943,58 @@ export function ComparatorSection({
                   </Button>
                 </div>
               </div>
+
+              {/* Business-only: expands below with the country pair. The RFQ/
+                  treasury flow (agent.functions.ts) requires a real
+                  jurisdiction, unlike the retail currency-only comparison. */}
+              {segment === "business" && (
+                <div className="grid grid-cols-1 gap-3 rounded-xl border border-dashed border-white/15 p-3 @sm:grid-cols-2">
+                  <FieldLight label={t("fx.field.from")}>
+                    <CountrySelect
+                      value={sendingCountry}
+                      onChange={(c) => {
+                        // Picking a country derives its currency (the currency
+                        // combobox above can still override it).
+                        setSendingCountry(c);
+                        setFrom(localCurrency(c));
+                      }}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCountry")}
+                      triggerClassName={WHITE_FIELD}
+                    />
+                  </FieldLight>
+                  <FieldLight label={t("fx.field.to")}>
+                    <CountrySelect
+                      value={receivingCountry}
+                      onChange={(c) => {
+                        setReceivingCountry(c);
+                        setTo(localCurrency(c));
+                      }}
+                      placeholder={t("search.selectCountry")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("search.destination")}
+                      triggerClassName={WHITE_FIELD}
+                    />
+                  </FieldLight>
+                </div>
+              )}
+
+              {/* Mid-market exchange rate — shown as soon as a comparison has
+                  run, right inside this same box (like Wise's compare page). */}
+              {result && (
+                <div className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3">
+                  <span className="font-heading text-base font-bold text-white sm:text-lg">
+                    1 {from} = {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })} {to}
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    {t("comparator.midMarketRate")}
+                  </span>
+                </div>
+              )}
+
               {validationError && (
                 <div className="rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
                   {validationError}
