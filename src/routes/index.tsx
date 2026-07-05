@@ -9,6 +9,7 @@ import { BusinessSection } from "@/sections/BusinessSection";
 import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
 import { SITE_URL, hreflangLinks } from "@/config/site";
+import { defaultCounterCurrency } from "@/lib/countries";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -73,7 +74,7 @@ function Index() {
     destination: "",
     segment: "retail",
     from: geoCurrency,
-    to: "USD",
+    to: defaultCounterCurrency(geoCurrency),
     amount: 1000,
   };
 
