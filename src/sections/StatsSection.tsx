@@ -12,12 +12,12 @@ export function StatsSection() {
     <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="rounded-[2rem] bg-slate-900 p-8 text-white shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] sm:p-12">
-          <div className="max-w-3xl">
+          <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">{t("home.stats.eyebrow")}</p>
             <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
               {t("home.stats.title")}
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-slate-300">
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-300">
               {t("home.stats.subtitle")}
             </p>
           </div>
