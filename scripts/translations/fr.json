@@ -615,5 +615,7 @@
   "home.widget.copied": "Copié !",
   "home.widget.hint": "Collez-le n'importe où dans votre HTML. Le widget est gratuit et s'exécute dans un iframe isolé — aucun conflit de code, aucun tracking ajouté à votre site.",
   "home.hero.titlePost": "intelligemment",
-  "comparator.field.youReceive": "Vous recevez"
+  "comparator.field.youReceive": "Vous recevez",
+  "comparator.swap": "Échanger les devises",
+  "comparator.midMarketRate": "Taux de change interbancaire (mid-market)"
 }
