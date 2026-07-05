@@ -6,7 +6,7 @@ import { useI18n } from "@/lib/i18n";
 export function ContactSection() {
   const { t } = useI18n();
   return (
-    <section id="contact" className="scroll-mt-24 py-20 sm:py-28">
+    <section id="contact" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 text-center">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
           {t("home.contact.eyebrow")}
