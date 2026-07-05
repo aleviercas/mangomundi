@@ -380,8 +380,8 @@ export const DICTS: Record<Lang, Dict> = {
     "home.finalCta.rfq": "Access RFQ Terminal",
     "home.hero.ctaCompare": "Try FX Comparator",
     "home.hero.titlePre": "Compare",
-    "home.hero.titleAccent": "exchange rates, fees",
-    "home.hero.titlePost": "and transfer routes",
+    "home.hero.titleAccent": "exchange rates",
+    "home.hero.titlePost": "",
     "home.dual.title": "Built for every cross-border flow — retail and corporate.",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
@@ -445,7 +445,7 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.hero.tagline":
-      "Exchange rates, fees, routes and delivery speeds — compared in real time with AI. Live rates, zero fees, no sign-up.",
+      "Find the best way to send money by comparing currency exchange options, fees and transfer routes in real time.",
     "home.contact.simple.title": "Get in touch.",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
