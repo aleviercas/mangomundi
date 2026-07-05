@@ -615,5 +615,7 @@
   "home.widget.copied": "कॉपी हो गया!",
   "home.widget.hint": "इसे अपने HTML में कहीं भी पेस्ट करें। विजेट मुफ़्त है और एक अलग iframe में चलता है — कोई कोड टकराव नहीं, आपकी साइट पर कोई ट्रैकिंग नहीं जोड़ी जाती।",
   "home.hero.titlePost": "तुलना",
-  "comparator.field.youReceive": "आप प्राप्त करते हैं"
+  "comparator.field.youReceive": "आप प्राप्त करते हैं",
+  "comparator.swap": "मुद्राएं बदलें",
+  "comparator.midMarketRate": "मध्य-बाज़ार विनिमय दर"
 }
