@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { sendLeadNotificationEmail } from "./email";
 
 // CRITICAL: no upper bound on amount — corporate notional can be arbitrarily large.
 // Reject only non-positive / non-finite values.
@@ -76,6 +77,22 @@ export const initiateRfq = createServerFn({ method: "POST" })
         console.error("[rfq] webhook dispatch failed", err);
       }
     }
+
+    // Internal notification only — unlike the webhook above, this goes to
+    // our own inbox, so including the email here isn't the PII leak the
+    // webhook comment warns about. Best-effort, never blocks the response.
+    await sendLeadNotificationEmail({
+      subject: `New RFQ ${requestId} — ${data.fromCurrency.toUpperCase()} → ${data.toCurrency.toUpperCase()}`,
+      html: `
+        <h2>New corporate RFQ</h2>
+        <p><strong>Request ID:</strong> ${requestId}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Amount:</strong> ${data.amount.toLocaleString()} ${data.fromCurrency.toUpperCase()}</p>
+        <p><strong>Route:</strong> ${data.fromCurrency.toUpperCase()} → ${data.toCurrency.toUpperCase()} (${data.sendingCountry} → ${data.receivingCountry})</p>
+        <p><strong>Locale:</strong> ${data.locale}</p>
+        <p><strong>Consent recorded at:</strong> ${consentAt}</p>
+      `,
+    });
 
     return { ok: true, requestId };
   });
