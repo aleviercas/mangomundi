@@ -617,5 +617,6 @@
   "home.hero.titlePost": "のスマート比較",
   "comparator.field.youReceive": "受取通貨",
   "comparator.swap": "通貨を入れ替える",
-  "comparator.midMarketRate": "仲値レート（ミッドマーケットレート）"
+  "comparator.midMarketRate": "仲値レート（ミッドマーケットレート）",
+  "comparator.copilot.business.countryError": "続ける前に、上記で出発国と受取国の両方を選択してください。"
 }
