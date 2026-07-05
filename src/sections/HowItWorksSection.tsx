@@ -9,7 +9,7 @@ export function HowItWorksSection() {
     { n: "04", title: t("home.how.s4.title"), desc: t("home.how.s4.desc") },
   ];
   return (
-    <section id="how-it-works" className="scroll-mt-24 py-14 sm:py-20">
+    <section id="how-it-works" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="max-w-3xl">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">{t("home.how.eyebrow")}</p>
