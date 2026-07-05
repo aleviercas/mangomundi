@@ -13,7 +13,11 @@
  *                         which works with zero setup. Once mangomundi.com is
  *                         verified in the Resend dashboard (SPF/DKIM records),
  *                         set this to e.g. "mangomundi <hello@mangomundi.com>".
- *   LEAD_NOTIFICATION_EMAIL — optional. Defaults to hello@mangomundi.com.
+ *   LEAD_NOTIFICATION_EMAIL — optional. Defaults to mangomundi@gmail.com (the
+ *                             Resend account's own signup address — required
+ *                             recipient while using the onboarding@resend.dev
+ *                             sandbox sender; any address works once
+ *                             RESEND_FROM_EMAIL points at a verified domain).
  */
 const RESEND_API_URL = "https://api.resend.com/emails";
 
@@ -25,7 +29,7 @@ export async function sendLeadNotificationEmail(params: {
   if (!apiKey) return false;
 
   const from = process.env.RESEND_FROM_EMAIL || "mangomundi <onboarding@resend.dev>";
-  const to = process.env.LEAD_NOTIFICATION_EMAIL || "hello@mangomundi.com";
+  const to = process.env.LEAD_NOTIFICATION_EMAIL || "mangomundi@gmail.com";
 
   try {
     const res = await fetch(RESEND_API_URL, {
