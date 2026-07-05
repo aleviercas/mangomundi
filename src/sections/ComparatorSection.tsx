@@ -832,7 +832,9 @@ export function ComparatorSection({
                 <div className="min-w-0 rounded-xl border border-white/10 p-3">
                   <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.4fr_1.1fr]">
                     <FieldLight label={t("comparator.field.amount")}>
-                      <div className="grid grid-cols-[1.1fr_1fr] gap-2">
+                      {/* Unified pill: amount + currency read as one control,
+                          split by a hairline divider instead of two boxes. */}
+                      <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-transparent bg-white shadow-sm transition-colors hover:bg-slate-50 focus-within:ring-2 focus-within:ring-[#ff6b5b]/40">
                         <input
                           type="number"
                           inputMode="decimal"
@@ -841,7 +843,7 @@ export function ComparatorSection({
                           placeholder="1000"
                           onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                           aria-label={t("comparator.field.amount")}
-                          className={`flex w-full min-w-0 tabular-nums placeholder:text-slate-400 transition-colors ${WHITE_FIELD}`}
+                          className="min-w-0 flex-1 bg-transparent px-3 text-sm font-medium tabular-nums text-slate-900 placeholder:text-slate-400 focus:outline-none"
                         />
                         <CurrencyCombobox
                           value={from}
@@ -850,7 +852,7 @@ export function ComparatorSection({
                           searchPlaceholder={t("comparator.combobox.search")}
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.sourceCurrency")}
-                          triggerClassName={WHITE_FIELD}
+                          triggerClassName="h-11 w-auto shrink-0 rounded-none border-0 border-l border-slate-200 bg-transparent px-3 shadow-none hover:bg-slate-50 focus:ring-0"
                         />
                       </div>
                     </FieldLight>
@@ -879,8 +881,16 @@ export function ComparatorSection({
                 </div>
 
                 {/* TO box: "To" (country) and "You receive" (currency), labelled
-                    like the FROM box so the route reads left to right. */}
-                <div className="min-w-0 rounded-xl border border-white/10 p-3">
+                    like the FROM box so the route reads left to right.
+                    Highlighted while empty to nudge selection — it's the
+                    field that unlocks the Search CTA. */}
+                <div
+                  className={`min-w-0 rounded-xl border p-3 transition-colors ${
+                    !receivingCountry
+                      ? "border-[#ff6b5b]/60 shadow-[0_0_0_3px_rgba(255,107,91,0.15)]"
+                      : "border-white/10"
+                  }`}
+                >
                   <div className="grid grid-cols-1 gap-2 @sm:grid-cols-[1.2fr_1fr]">
                     <FieldLight label={t("fx.field.to")}>
                       <CountrySelect
@@ -922,7 +932,9 @@ export function ComparatorSection({
                       setValidationError(null);
                       compareMut.mutate(undefined);
                     }}
-                    disabled={compareMut.isPending}
+                    disabled={
+                      compareMut.isPending || !sendingCountry || !receivingCountry || amount <= 0
+                    }
                     className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-auto"
                   >
                     {compareMut.isPending ? (
