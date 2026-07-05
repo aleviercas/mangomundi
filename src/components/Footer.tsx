@@ -41,10 +41,13 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <Link to="/" className="inline-flex items-center">
+            <Link
+              to="/"
+              className="inline-flex items-center"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
               <Wordmark className="text-2xl" />
             </Link>
-            <p className="mt-4 max-w-sm text-sm text-slate-500">{t("footer.tagline")}</p>
             <div className="mt-6 flex items-center gap-3">
               {socials.map((s) => (
                 <a
