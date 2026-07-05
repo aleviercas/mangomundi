@@ -17,7 +17,7 @@ export function BlogSection() {
   const latest = (posts ?? []).slice(0, 3);
 
   return (
-    <section id="blog" className="scroll-mt-24 py-14 sm:py-20">
+    <section id="blog" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-3xl">
