@@ -617,5 +617,6 @@
   "home.hero.titlePost": "một cách thông minh",
   "comparator.field.youReceive": "Bạn nhận",
   "comparator.swap": "Hoán đổi tiền tệ",
-  "comparator.midMarketRate": "Tỷ giá hối đoái trung bình thị trường"
+  "comparator.midMarketRate": "Tỷ giá hối đoái trung bình thị trường",
+  "comparator.copilot.business.countryError": "Vui lòng chọn cả quốc gia gửi và quốc gia nhận ở trên trước khi tiếp tục."
 }
