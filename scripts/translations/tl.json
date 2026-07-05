@@ -617,5 +617,6 @@
   "home.hero.titlePost": "nang matalino",
   "comparator.field.youReceive": "Matatanggap mo",
   "comparator.swap": "Ipagpalit ang mga currency",
-  "comparator.midMarketRate": "Mid-market na palitan ng pera"
+  "comparator.midMarketRate": "Mid-market na palitan ng pera",
+  "comparator.copilot.business.countryError": "Pakipili muna sa itaas ang bansang pinagmulan at patutunguhan bago tayo magpatuloy."
 }
