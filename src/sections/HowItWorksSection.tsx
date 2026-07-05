@@ -11,12 +11,12 @@ export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="scroll-mt-24 py-20 sm:py-28">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="max-w-3xl">
+        <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">{t("home.how.eyebrow")}</p>
           <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
             {t("home.how.title")}
           </h2>
-          <p className="mt-6 text-base leading-relaxed text-slate-500 sm:text-lg">
+          <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-500 sm:text-lg">
             {t("search.guide")}
           </p>
         </div>
