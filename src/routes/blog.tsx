@@ -36,7 +36,7 @@ export const Route = createFileRoute("/blog")({
     ],
     links: [
       { rel: "canonical", href: `${SITE_URL}/blog` },
-      ...hreflangLinks("/blog", ["en", "es", "pt"]),
+      ...hreflangLinks("/blog"),
     ],
   }),
   component: BlogIndexPage,
