@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { ArrowRight, Loader2 } from "lucide-react";
-import { listBlogPosts, type BlogListItem } from "@/lib/blog.functions";
+import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
 import { SITE_URL, hreflangLinks } from "@/config/site";
 
@@ -10,8 +10,6 @@ const listQuery = (locale: string) =>
     queryKey: ["blog", "list", locale],
     queryFn: () => listBlogPosts({ data: { locale } }),
   });
-
-const toBlogLocale = (lang: string) => (lang === "es" || lang === "pt" ? lang : "en");
 
 export const Route = createFileRoute("/blog")({
   loader: async ({ context }) => {
