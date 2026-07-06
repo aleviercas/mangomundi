@@ -1,10 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "lucide-react";
-import { listBlogPosts, type BlogListItem } from "@/lib/blog.functions";
+import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
-
-const toBlogLocale = (lang: string) => (lang === "es" || lang === "pt" ? lang : "en");
 
 export function BlogSection() {
   const { t, lang } = useI18n();
