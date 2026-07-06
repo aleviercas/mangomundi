@@ -577,6 +577,7 @@
   "comparator.empty": "Ainda não há provedores disponíveis para este corredor.",
   "comparator.b2b.title": "Enviando mais de {amount} {cur}? Fale com nossa mesa corporativa.",
   "comparator.b2b.body": "Para transferências de alto volume, provedores dedicados oferecem taxas personalizadas, ferramentas de tesouraria e um gerente de conta. →",
+  "comparator.b2b.cta": "Enviar e-mail para a mesa corporativa",
   "wizard.compare": "Comparar",
   "wizard.howToCompare": "Leia a tabela da esquerda para a direita: **taxa** é quanto você recebe da moeda de destino por unidade enviada antes das tarifas, **tarifa** é o total cobrado por esse provedor, e **recebido** é o valor líquido que realmente chega. Use os cabeçalhos de coluna para ordenar por melhor valor recebido, menor tarifa ou entrega mais rápida.",
   "wizard.limits": "A tabela do comparador ainda não registra limites de transferência por provedor — esse campo não faz parte do dataset atual, então não vou inventar. Verifique no site do provedor os valores mínimo/máximo antes de enviar.",
