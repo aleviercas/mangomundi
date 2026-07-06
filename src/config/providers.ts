@@ -291,7 +291,13 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
   },
   "western-union-business": {
     slug: "western-union-business",
-    name: "WU Business Solutions",
+    // Rebranded to Convera in 2023 after separating from Western Union.
+    // NOTE: this "name" field is reference metadata only — the DB's
+    // providers.name is authoritative for what's actually displayed. See
+    // the providers-audit note in the handoff doc: the `providers` row for
+    // this slug (name + affiliate_url domain) still needs to be updated in
+    // Supabase to reflect the Convera brand.
+    name: "Convera",
     segment: "corporate",
     integrationType: "direct",
     commissionType: "revenue_share",
