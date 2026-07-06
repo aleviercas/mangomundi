@@ -2613,6 +2613,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.b2b.title": "Sending over {amount} {cur}? Talk to our business desk.",
     "comparator.b2b.body":
       "For high-volume transfers, dedicated providers offer custom rates, treasury tooling and an account manager. →",
+    "comparator.b2b.cta": "Email our business desk",
     "wizard.compare": "Compare",
     "wizard.howToCompare":
       "Read the table left to right: **rate** is how much of the destination currency you get per unit sent before fees, **fee** is the total charged by that provider, and **received** is the net amount that actually arrives. Use the column headers to sort by best amount received, lowest fee, or fastest delivery time.",
@@ -2743,6 +2744,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.b2b.title": "¿Enviás más de {amount} {cur}? Hablá con nuestra mesa corporativa.",
     "comparator.b2b.body":
       "Para transferencias de alto volumen, hay proveedores dedicados con tasas a medida, herramientas de tesorería y un account manager. →",
+    "comparator.b2b.cta": "Escribinos a la mesa corporativa",
     "wizard.compare": "Comparar",
     "wizard.howToCompare":
       "Leé la tabla de izquierda a derecha: **tasa** es cuánto recibís de la moneda destino por unidad enviada antes de fees, **fee** es el cargo total de ese proveedor, y **recibido** es el neto que realmente llega. Usá los encabezados de columna para ordenar por mejor monto recibido, menor fee, o entrega más rápida.",
