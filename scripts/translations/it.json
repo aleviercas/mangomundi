@@ -577,6 +577,7 @@
   "comparator.empty": "Nessun provider disponibile per questo corridoio al momento.",
   "comparator.b2b.title": "Invii più di {amount} {cur}? Parla con il nostro desk aziendale.",
   "comparator.b2b.body": "Per trasferimenti ad alto volume, provider dedicati offrono tassi personalizzati, strumenti di tesoreria e un account manager. →",
+  "comparator.b2b.cta": "Contatta il nostro desk business",
   "wizard.compare": "Confronta",
   "wizard.howToCompare": "Leggi la tabella da sinistra a destra: **tasso** è quanta valuta di destinazione ricevi per unità inviata al lordo delle commissioni, **commissione** è il totale addebitato dal provider, e **ricevuto** è l'importo netto che arriva davvero. Usa le intestazioni di colonna per ordinare per miglior importo ricevuto, commissione più bassa o consegna più rapida.",
   "wizard.limits": "La tabella del comparatore non traccia ancora i limiti di trasferimento per provider — quel campo non fa parte del dataset attuale, quindi non tirerò a indovinare. Verifica gli importi min/max sul sito del provider prima di inviare.",
