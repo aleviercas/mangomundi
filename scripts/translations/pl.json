@@ -577,6 +577,7 @@
   "comparator.empty": "Brak dostępnych dostawców dla tego korytarza.",
   "comparator.b2b.title": "Wysyłasz ponad {amount} {cur}? Porozmawiaj z naszym działem biznesowym.",
   "comparator.b2b.body": "Przy transferach o dużym wolumenie dedykowani dostawcy oferują indywidualne kursy, narzędzia skarbowe i opiekuna konta. →",
+  "comparator.b2b.cta": "Napisz do naszego działu biznesowego",
   "wizard.compare": "Porównaj",
   "wizard.howToCompare": "Czytaj tabelę od lewej do prawej: **kurs** to ile waluty docelowej otrzymujesz za jednostkę wysłaną przed opłatami, **opłata** to łączna kwota pobierana przez dostawcę, a **otrzymane** to kwota netto, która faktycznie dociera. Użyj nagłówków kolumn, aby sortować według najlepszej kwoty, najniższej opłaty lub najszybszej dostawy.",
   "wizard.limits": "Tabela porównywarki nie śledzi jeszcze limitów transferów per dostawca — to pole nie jest częścią obecnego zestawu danych, więc nie będę zgadywać. Sprawdź kwoty min./maks. na stronie dostawcy przed wysłaniem.",
