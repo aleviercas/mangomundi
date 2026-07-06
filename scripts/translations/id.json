@@ -577,6 +577,7 @@
   "comparator.empty": "Belum ada penyedia untuk koridor ini.",
   "comparator.b2b.title": "Mengirim lebih dari {amount} {cur}? Bicaralah dengan tim bisnis kami.",
   "comparator.b2b.body": "Untuk transfer bervolume besar, penyedia khusus menawarkan kurs khusus, alat treasury, dan account manager. →",
+  "comparator.b2b.cta": "Hubungi meja bisnis kami",
   "wizard.compare": "Bandingkan",
   "wizard.howToCompare": "Baca tabel dari kiri ke kanan: **kurs** adalah berapa banyak mata uang tujuan yang Anda dapat per unit terkirim sebelum biaya, **biaya** adalah total yang dikenakan penyedia, dan **diterima** adalah jumlah bersih yang benar-benar sampai. Gunakan judul kolom untuk mengurutkan berdasarkan jumlah diterima terbaik, biaya terendah, atau pengiriman tercepat.",
   "wizard.limits": "Tabel pembanding belum melacak batas transfer per penyedia — kolom itu bukan bagian dari dataset saat ini, jadi saya tidak akan menebak. Periksa jumlah min/maks di situs penyedia sebelum mengirim.",
