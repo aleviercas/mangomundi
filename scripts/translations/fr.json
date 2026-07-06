@@ -577,6 +577,7 @@
   "comparator.empty": "Aucun fournisseur disponible pour ce corridor pour le moment.",
   "comparator.b2b.title": "Vous envoyez plus de {amount} {cur} ? Parlez à notre desk entreprises.",
   "comparator.b2b.body": "Pour les transferts à gros volume, des fournisseurs dédiés offrent des taux sur mesure, des outils de trésorerie et un account manager. →",
+  "comparator.b2b.cta": "Contactez notre bureau entreprises",
   "wizard.compare": "Comparer",
   "wizard.howToCompare": "Lisez le tableau de gauche à droite : **taux** est le montant de devise de destination reçu par unité envoyée avant frais, **frais** est le total facturé par ce fournisseur, et **reçu** est le montant net qui arrive réellement. Utilisez les en-têtes de colonnes pour trier par meilleur montant reçu, frais les plus bas ou livraison la plus rapide.",
   "wizard.limits": "Le tableau du comparateur ne suit pas encore les limites de transfert par fournisseur — ce champ ne fait pas partie du jeu de données actuel, donc je ne devinerai pas. Vérifiez les montants min/max sur le site du fournisseur avant d'envoyer.",
