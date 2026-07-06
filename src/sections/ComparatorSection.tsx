@@ -1643,14 +1643,22 @@ function ProviderRow({
           </div>
         </div>
       </div>
-      <div className="min-w-0 text-sm tabular-nums text-foreground lg:text-right">
-        <span className="text-[10px] uppercase text-muted-foreground lg:hidden">
+      <div
+        className={`min-w-0 text-sm tabular-nums text-foreground ${embedded ? "" : "lg:text-right"}`}
+      >
+        <span
+          className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}
+        >
           {t("comparator.table.amountSent")} ·{" "}
         </span>
         {row.amount_sent.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
       </div>
-      <div className="min-w-0 text-sm tabular-nums text-muted-foreground lg:text-right">
-        <span className="text-[10px] uppercase lg:hidden">{t("fx.totalFee")} · </span>
+      <div
+        className={`min-w-0 text-sm tabular-nums text-muted-foreground ${embedded ? "" : "lg:text-right"}`}
+      >
+        <span className={`text-[10px] uppercase ${embedded ? "" : "lg:hidden"}`}>
+          {t("fx.totalFee")} ·{" "}
+        </span>
         {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
         <div className="text-[10px]">
           {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
@@ -1658,7 +1666,7 @@ function ProviderRow({
           {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
         </div>
       </div>
-      <div className="min-w-0 lg:text-right">
+      <div className={`min-w-0 ${embedded ? "" : "lg:text-right"}`}>
         <div className="text-lg font-bold tabular-nums text-foreground">
           {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
           <span className="text-xs font-normal text-muted-foreground">{quote}</span>
@@ -1668,12 +1676,12 @@ function ProviderRow({
           {t("fx.updated")} {updatedTime}
         </div>
       </div>
-      <div className="min-w-0 text-sm text-muted-foreground lg:text-right">
+      <div className={`min-w-0 text-sm text-muted-foreground ${embedded ? "" : "lg:text-right"}`}>
         <div className="inline-flex items-center gap-1">
           <Clock className="h-3 w-3" /> {deliveryLabel}
         </div>
       </div>
-      <div className="lg:text-right">
+      <div className={embedded ? "" : "lg:text-right"}>
         <button
           onClick={onClick}
           aria-label={`${tCta} — ${row.name}`}
