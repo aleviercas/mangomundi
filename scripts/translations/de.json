@@ -577,6 +577,7 @@
   "comparator.empty": "Für diesen Korridor sind noch keine Anbieter verfügbar.",
   "comparator.b2b.title": "Sie senden mehr als {amount} {cur}? Sprechen Sie mit unserem Business-Desk.",
   "comparator.b2b.body": "Für großvolumige Transfers bieten spezialisierte Anbieter individuelle Kurse, Treasury-Tools und einen Account Manager. →",
+  "comparator.b2b.cta": "Kontaktieren Sie unser Firmenkundenteam",
   "wizard.compare": "Vergleichen",
   "wizard.howToCompare": "Lesen Sie die Tabelle von links nach rechts: **Kurs** ist, wie viel der Zielwährung Sie pro gesendeter Einheit vor Gebühren erhalten, **Gebühr** ist der Gesamtbetrag des Anbieters, und **Erhalten** ist der Nettobetrag, der tatsächlich ankommt. Sortieren Sie über die Spaltenköpfe nach bestem Erhaltsbetrag, niedrigster Gebühr oder schnellster Lieferzeit.",
   "wizard.limits": "Die Vergleichstabelle erfasst noch keine Überweisungslimits pro Anbieter — dieses Feld ist nicht Teil des aktuellen Datensatzes, daher rate ich nicht. Bitte prüfen Sie Mindest-/Höchstbeträge auf der Website des Anbieters, bevor Sie senden.",
