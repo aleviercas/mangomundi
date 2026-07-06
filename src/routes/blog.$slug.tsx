@@ -20,10 +20,11 @@ export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params, context }) => {
     // SSR the post in the geo-detected language (cheap header read) so
     // crawlers and the first paint get the right locale; the client keeps
-    // refetching with the live i18n lang. Non-en/es/pt langs coerce to "en".
+    // refetching with the live i18n lang. Falls back to "en" only if the
+    // post doesn't exist yet in the detected language (see getBlogPost).
     const { getInitialLang } = await import("@/lib/geo.functions");
     const detected = await getInitialLang().catch(() => "en");
-    const locale = detected === "es" || detected === "pt" ? detected : "en";
+    const locale = toBlogLocale(detected);
     return context.queryClient.ensureQueryData(postQuery(params.slug, locale));
   },
   head: ({ params, loaderData }) => {
@@ -72,11 +73,15 @@ export const Route = createFileRoute("/blog/$slug")({
     }
     return {
       meta,
-      // Blog content ships in en/es/pt only (see blog-publish pipeline), so
-      // alternates cover just those locales.
+      // Blog content is written natively one language at a time (see the
+      // editorial plan) — not every post exists in all 20 site languages yet.
+      // getBlogPost() falls back to the English row when a locale-specific
+      // one is missing, so advertising all 20 hreflang alternates is safe:
+      // each URL always resolves to real content (native or EN fallback),
+      // never a blank page.
       links: [
         { rel: "canonical", href: url },
-        ...hreflangLinks(`/blog/${params.slug}`, ["en", "es", "pt"]),
+        ...hreflangLinks(`/blog/${params.slug}`),
       ],
       scripts,
     };
