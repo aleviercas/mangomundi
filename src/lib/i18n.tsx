@@ -439,7 +439,7 @@ export const DICTS: Record<Lang, Dict> = {
       "We are looking to align with cross-border payment operators and currency exchange providers; let's explore synergies through integrated sponsored placements and affiliate programs designed to maximize efficiency and reduce your Customer Acquisition Cost (CAC).",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
-    "home.blog.title": "Insights on global FX, coming soon.",
+    "home.blog.title": "Insights on global FX, payments and remittances.",
     "home.blog.body":
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
@@ -747,7 +747,7 @@ export const DICTS: Record<Lang, Dict> = {
       "Buscamos alinearnos con operadores de pagos transfronterizos y proveedores de cambio de divisas; exploremos sinergias mediante colocaciones patrocinadas integradas y programas de afiliados diseñados para maximizar eficiencia y reducir tu Costo de Adquisición de Clientes (CAC).",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
-    "home.blog.title": "Análisis sobre FX global, muy pronto.",
+    "home.blog.title": "Análisis sobre FX global, pagos y remesas.",
     "home.blog.body":
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
