@@ -577,6 +577,7 @@
   "comparator.empty": "Chưa có nhà cung cấp cho tuyến này.",
   "comparator.b2b.title": "Gửi hơn {amount} {cur}? Hãy trao đổi với bộ phận doanh nghiệp của chúng tôi.",
   "comparator.b2b.body": "Với giao dịch khối lượng lớn, các nhà cung cấp chuyên biệt có tỷ giá riêng, công cụ ngân quỹ và quản lý tài khoản. →",
+  "comparator.b2b.cta": "Gửi email cho bộ phận doanh nghiệp của chúng tôi",
   "wizard.compare": "So sánh",
   "wizard.howToCompare": "Đọc bảng từ trái sang phải: **tỷ giá** là số tiền tệ đích bạn nhận trên mỗi đơn vị gửi trước phí, **phí** là tổng khoản nhà cung cấp thu, và **nhận được** là số tiền ròng thực đến. Dùng tiêu đề cột để sắp xếp theo số nhận tốt nhất, phí thấp nhất hoặc giao nhanh nhất.",
   "wizard.limits": "Bảng so sánh chưa theo dõi hạn mức chuyển tiền theo nhà cung cấp — trường đó chưa có trong dữ liệu hiện tại nên tôi sẽ không đoán. Vui lòng kiểm tra mức tối thiểu/tối đa trên trang của nhà cung cấp trước khi gửi.",
