@@ -18,6 +18,13 @@ export interface BlogPost extends BlogListItem {
 
 const LocaleSchema = z.enum(["en", "es", "pt"]).default("en");
 
+/** Blog content ships in en/es/pt only (see blog-publish pipeline). Any other
+ *  UI language (of the 19 the rest of the site supports) coerces to "en" —
+ *  used both by the listing (blog.tsx) and the individual post page
+ *  (blog.$slug.tsx) so the two never disagree about what locale to query. */
+export const toBlogLocale = (lang: string): "en" | "es" | "pt" =>
+  lang === "es" || lang === "pt" ? lang : "en";
+
 export const listBlogPosts = createServerFn({ method: "GET" })
   .inputValidator((d: { locale?: string } | undefined) =>
     z.object({ locale: LocaleSchema }).parse({ locale: d?.locale ?? "en" }),
