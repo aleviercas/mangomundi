@@ -9,7 +9,7 @@ interface WordmarkProps {
  * "mango" en foreground, "mundi" en accent (coral), siguiendo el lockup oficial.
  */
 export function Wordmark({ className = "", tone = "dark" }: WordmarkProps) {
-  const colour = tone === "light" ? "text-foreground" : "text-foreground";
+  const colour = tone === "light" ? "text-white" : "text-foreground";
   return (
     <span
       className={`font-sans lowercase leading-none font-black tracking-tight ${colour} ${className}`}
