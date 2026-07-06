@@ -3,7 +3,7 @@ import { useQuery, queryOptions } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { getBlogPost } from "@/lib/blog.functions";
+import { getBlogPost, toBlogLocale } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
 import { SITE_URL, hreflangLinks } from "@/config/site";
 
@@ -117,7 +117,15 @@ function PostError({ error }: { error: Error }) {
 function BlogPostPage() {
   const { slug } = Route.useParams();
   const { lang, t } = useI18n();
-  const { data: post, isLoading } = useQuery(postQuery(slug, lang));
+  // BUG FIX: `lang` can be any of the site's 19 UI languages, but blog
+  // content only ships in en/es/pt. Passing the raw `lang` straight into the
+  // query made the server function's Zod schema reject anything outside
+  // en/es/pt (throwing → error screen) instead of ever reaching the
+  // server-side "fall back to English" logic that already existed in
+  // getBlogPost. This is exactly why clicking through from the listing
+  // (which already normalizes via toBlogLocale) could still land on a
+  // "not found" / error box instead of the full article.
+  const { data: post, isLoading } = useQuery(postQuery(slug, toBlogLocale(lang)));
 
   if (isLoading) {
     return (
