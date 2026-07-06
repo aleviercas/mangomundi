@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { HREFLANG_LANGS } from "@/config/site";
 
 export interface BlogListItem {
   slug: string;
@@ -16,14 +17,22 @@ export interface BlogPost extends BlogListItem {
   content_md: string | null;
 }
 
-const LocaleSchema = z.enum(["en", "es", "pt"]).default("en");
+// Blog locale now covers the same 20 languages as the rest of the site
+// (HREFLANG_LANGS), not just en/es/pt. Previously this schema hard-capped the
+// blog at 3 locales even though the editorial plan and the site's own i18n
+// cover 20 — that mismatch is what caused "only 3 languages" confusion.
+const LocaleSchema = z.enum(HREFLANG_LANGS).default("en");
 
-/** Blog content ships in en/es/pt only (see blog-publish pipeline). Any other
- *  UI language (of the 19 the rest of the site supports) coerces to "en" —
- *  used both by the listing (blog.tsx) and the individual post page
- *  (blog.$slug.tsx) so the two never disagree about what locale to query. */
-export const toBlogLocale = (lang: string): "en" | "es" | "pt" =>
-  lang === "es" || lang === "pt" ? lang : "en";
+/** Blog content today may not exist in every one of the 20 site languages for
+ *  every post (articles are written natively, one language at a time — see
+ *  the mangomundi skill's editorial plan). `getBlogPost` already falls back
+ *  to the English row when a locale-specific one doesn't exist, so passing
+ *  through any of the 20 codes here is safe — it's never rejected, and worst
+ *  case falls back to English rather than erroring. */
+export const toBlogLocale = (lang: string): (typeof HREFLANG_LANGS)[number] =>
+  (HREFLANG_LANGS as readonly string[]).includes(lang)
+    ? (lang as (typeof HREFLANG_LANGS)[number])
+    : "en";
 
 export const listBlogPosts = createServerFn({ method: "GET" })
   .inputValidator((d: { locale?: string } | undefined) =>
