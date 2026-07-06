@@ -37,7 +37,7 @@ export function Footer() {
   ] as const;
 
   return (
-    <footer className="bg-[#fcfcfc] border-t border-slate-200/70">
+    <footer className="bg-slate-900 border-t border-white/10">
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
@@ -46,7 +46,7 @@ export function Footer() {
               className="inline-flex items-center"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <Wordmark className="text-2xl" />
+              <Wordmark className="text-2xl" tone="light" />
             </Link>
             <div className="mt-6 flex items-center gap-3">
               {socials.map((s) => (
@@ -54,7 +54,7 @@ export function Footer() {
                   key={s.label}
                   href={s.href}
                   aria-label={s.label}
-                  className="group inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition-colors hover:bg-black hover:text-white"
+                  className="group inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white hover:text-slate-900"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -70,7 +70,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-slate-900">
+            <h3 className="font-heading text-sm font-bold text-white">
               {t("footer.nav.title")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -79,7 +79,7 @@ export function Footer() {
                   <Link
                     to="/"
                     hash={l.hash}
-                    className="text-sm text-slate-500 transition-colors hover:text-slate-900"
+                    className="text-sm text-slate-300 transition-colors hover:text-white"
                   >
                     {l.label}
                   </Link>
@@ -89,7 +89,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-slate-900">
+            <h3 className="font-heading text-sm font-bold text-white">
               {t("footer.legal.title")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -98,7 +98,7 @@ export function Footer() {
                   <Link
                     to={l.to}
                     hash={l.hash}
-                    className="text-sm text-slate-500 transition-colors hover:text-slate-900"
+                    className="text-sm text-slate-300 transition-colors hover:text-white"
                   >
                     {l.label}
                   </Link>
@@ -108,7 +108,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 border-t border-slate-200/70 pt-8">
+        <div className="mt-14 border-t border-white/10 pt-8">
           <p className="text-xs text-slate-400">
             &copy; {new Date().getFullYear()} Mangomundi. {t("footer.rights")}
           </p>
