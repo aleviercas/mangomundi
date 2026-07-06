@@ -1120,6 +1120,7 @@ export function ComparatorSection({
               tCta={t("retail.cta")}
               tProvider={t("cmp.provider")}
               tNeutrality={t("comparator.disclaimer.neutrality")}
+              embedded={embedded}
             />
           </div>
         )}
@@ -1438,6 +1439,7 @@ function ResultsBlock({
   tCta,
   tProvider,
   tNeutrality,
+  embedded = false,
 }: {
   result: ComparisonResult;
   amount: number;
@@ -1454,6 +1456,14 @@ function ResultsBlock({
   tCta: string;
   tProvider: string;
   tNeutrality: string;
+  /** True inside the embeddable widget (narrow, fixed-width container). When
+   *  true we force the mobile/stacked row layout unconditionally instead of
+   *  relying on the `lg:` viewport breakpoint — a widget rendered inline in
+   *  a wide host page (e.g. the home page's own live preview, which isn't
+   *  sandboxed in an iframe) would otherwise switch to the desktop table
+   *  layout, which is wider than the widget's container and gets clipped by
+   *  `overflow-hidden`, hiding the rightmost column (the CTA button). */
+  embedded?: boolean;
 }) {
   const { t } = useI18n();
   const showLargeBanner = amount >= 50000;
@@ -1489,13 +1499,30 @@ function ResultsBlock({
                 .replace("{cur}", result.base)}
             </div>
             <div className="mt-0.5 text-muted-foreground">{t("comparator.b2b.body")}</div>
+            <a
+              href={`mailto:hello@mangomundi.com?subject=${encodeURIComponent(
+                `Business FX inquiry — ${amount.toLocaleString()} ${result.base}`,
+              )}`}
+              className="btn-cta mt-2 inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold"
+            >
+              {t("comparator.b2b.cta")}
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+            </a>
           </div>
         </div>
       )}
 
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        {/* Dark header row (brand navy + white) so the table reads as a table. */}
-        <div className="hidden grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid">
+        {/* Dark header row (brand navy + white) so the table reads as a table.
+            Never shown when embedded — the widget always uses the stacked
+            mobile row layout below, which has no separate header row. */}
+        <div
+          className={
+            embedded
+              ? "hidden"
+              : "hidden grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
+          }
+        >
           <div className="min-w-0">{tProvider}</div>
           <div className="min-w-0 text-right">{tAmountSent}</div>
           <div className="min-w-0 text-right">{tTotalFee}</div>
@@ -1513,6 +1540,7 @@ function ResultsBlock({
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             updatedTime={updatedTime}
+            embedded={embedded}
           />
         ))}
         {organic.length === 0 && (
@@ -1547,6 +1575,7 @@ function ProviderRow({
   onClick,
   tCta,
   updatedTime,
+  embedded = false,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -1556,6 +1585,9 @@ function ProviderRow({
   tCta: string;
   /** Real HH:mm:ss the quote's rate snapshot was cached — shown per row. */
   updatedTime: string;
+  /** See ResultsBlock — forces the stacked mobile row instead of the
+   *  `lg:` desktop grid, which would overflow and clip the CTA button. */
+  embedded?: boolean;
 }) {
   const { t } = useI18n();
   const tooltipPreferred = t("comparator.tooltip.proceed");
@@ -1579,9 +1611,11 @@ function ProviderRow({
 
   return (
     <div
-      className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 lg:grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] lg:items-center lg:gap-4 ${
-        isBest ? "bg-primary/5" : ""
-      }`}
+      className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 ${
+        embedded
+          ? ""
+          : "lg:grid-cols-[minmax(180px,2.2fr)_minmax(105px,1.15fr)_minmax(120px,1.25fr)_minmax(125px,1.35fr)_minmax(90px,1fr)_64px] lg:items-center lg:gap-4"
+      } ${isBest ? "bg-primary/5" : ""}`}
     >
       <div className="flex min-w-0 items-center gap-3">
         <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} size={44} />
@@ -1644,7 +1678,9 @@ function ProviderRow({
           onClick={onClick}
           aria-label={`${tCta} — ${row.name}`}
           title={`${tCta} — ${row.name}`}
-          className="btn-cta inline-flex h-10 w-full items-center justify-center rounded-md px-3 text-xs font-semibold leading-tight lg:h-9 lg:w-10 lg:px-0"
+          className={`btn-cta inline-flex h-10 w-full items-center justify-center rounded-md px-3 text-xs font-semibold leading-tight ${
+            embedded ? "" : "lg:h-9 lg:w-10 lg:px-0"
+          }`}
         >
           <ArrowRight className="h-4 w-4 shrink-0" />
         </button>
