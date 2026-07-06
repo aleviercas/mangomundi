@@ -577,6 +577,7 @@
   "comparator.empty": "Bu koridor için henüz sağlayıcı yok.",
   "comparator.b2b.title": "{amount} {cur} üzerinde mi gönderiyorsunuz? Kurumsal masamızla görüşün.",
   "comparator.b2b.body": "Yüksek hacimli transferlerde özel sağlayıcılar size özel kurlar, hazine araçları ve bir müşteri temsilcisi sunar. →",
+  "comparator.b2b.cta": "Kurumsal masamıza e-posta gönderin",
   "wizard.compare": "Karşılaştır",
   "wizard.howToCompare": "Tabloyu soldan sağa okuyun: **kur**, ücretlerden önce gönderilen birim başına aldığınız hedef para miktarıdır; **ücret**, sağlayıcının aldığı toplamdır; **alınan**, gerçekten ulaşan net tutardır. Sütun başlıklarıyla en iyi alınan tutara, en düşük ücrete veya en hızlı teslimata göre sıralayın.",
   "wizard.limits": "Karşılaştırma tablosu henüz sağlayıcı bazında transfer limitlerini izlemiyor — bu alan mevcut veri setinde yok, bu yüzden tahmin etmeyeceğim. Göndermeden önce min/maks tutarları sağlayıcının sitesinden kontrol edin.",
