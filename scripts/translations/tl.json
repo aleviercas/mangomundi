@@ -577,6 +577,7 @@
   "comparator.empty": "Wala pang provider para sa koridor na ito.",
   "comparator.b2b.title": "Nagpapadala ng higit {amount} {cur}? Makipag-usap sa aming business desk.",
   "comparator.b2b.body": "Para sa malalaking transfer, may mga dedikadong provider na nag-aalok ng custom na rate, treasury tools, at account manager. →",
+  "comparator.b2b.cta": "Mag-email sa aming business desk",
   "wizard.compare": "Ihambing",
   "wizard.howToCompare": "Basahin ang talahanayan mula kaliwa pakanan: ang **rate** ay kung magkano ang makukuhang destination currency kada yunit na ipinadala bago ang bayarin, ang **bayarin** ay kabuuang siningil ng provider, at ang **natanggap** ay ang netong halagang aktwal na dumarating. Gamitin ang mga column header para mag-ayos ayon sa pinakamagandang natanggap, pinakamababang bayarin, o pinakamabilis na paghahatid.",
   "wizard.limits": "Hindi pa sinusubaybayan ng talahanayan ang transfer limits kada provider — wala pa ang field na iyon sa kasalukuyang dataset, kaya hindi ako manghuhula. Pakisuri ang min/max na halaga sa site ng provider bago magpadala.",
