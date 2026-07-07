@@ -379,8 +379,8 @@ export const DICTS: Record<Lang, Dict> = {
       "Access transparent, market-backed FX routing and custom asynchronous RFQ bidding protocols for your enterprise corridors.",
     "home.finalCta.rfq": "Access RFQ Terminal",
     "home.hero.ctaCompare": "Try FX Comparator",
-    "home.hero.titlePre": "Compare",
-    "home.hero.titleAccent": "exchange rates",
+    "home.hero.titlePre": "Compare currency exchange rates and",
+    "home.hero.titleAccent": "international money transfer options",
     "home.dual.title": "Built for every cross-border flow — retail and corporate.",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
@@ -444,7 +444,7 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.hero.tagline":
-      "Find the best way to send money by comparing currency exchange options in real time.",
+      "Find the best way to send money internationally by comparing currency exchange rates, fees, transfer speeds and global payment providers in real time. No subscription. No hidden fees. Powered by neutral AI.",
     "home.contact.simple.title": "Get in touch.",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
@@ -751,8 +751,10 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.body":
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
+    "home.hero.titlePre": "Compará tipos de cambio y",
+    "home.hero.titleAccent": "opciones de transferencia internacional",
     "home.hero.tagline":
-      "Tipos de cambio, fees, rutas y tiempos de entrega — comparados en tiempo real con IA. Tasas en vivo, cero comisiones, sin registro.",
+      "Encontrá la mejor forma de enviar dinero al exterior comparando tipos de cambio, comisiones, velocidad de transferencia y proveedores de pago globales en tiempo real. Sin suscripción. Sin comisiones ocultas. Impulsado por IA neutral.",
     "home.contact.simple.title": "Escribinos.",
     "home.contact.simple.body":
       "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",
