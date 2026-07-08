@@ -26,7 +26,6 @@ import { useI18n } from "@/lib/i18n";
 import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
-import { CountrySelect } from "@/components/ui/CountrySelect";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
@@ -367,13 +366,26 @@ export function ComparatorSection({
     if (!initialQuery?.autoRun || didAutoRunRef.current) return;
     didAutoRunRef.current = true;
     if (amount <= 0 || from === to) return;
-    if (segment === "business" && (!sendingCountry || !receivingCountry)) return;
     // The URL-sync effect's 300ms timer clears result/chat unless this one-shot
     // flag is set — covers sub-300ms responses landing before the timer fires.
     skipNextSyncClearRef.current = true;
     compareMut.mutate(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Business no longer has a visible country field, but the optional "request
+  // a manual quote" chat flow still sends sendingCountry/receivingCountry in
+  // its lead — so keep them in sync with whatever currencies are selected,
+  // silently, instead of asking the user to pick a country nobody needs for
+  // the actual rate comparison.
+  useEffect(() => {
+    if (segment !== "business") return;
+    const nextSending = primaryCountryForCurrency(from);
+    if (nextSending && nextSending !== sendingCountry) setSendingCountry(nextSending);
+    const nextReceiving = primaryCountryForCurrency(to);
+    if (nextReceiving && nextReceiving !== receivingCountry) setReceivingCountry(nextReceiving);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [segment, from, to]);
 
   const requestMissingRoute = async (from: string, to: string) => {
     MasterRateStore.logMissing(from, to);
@@ -592,8 +604,7 @@ export function ComparatorSection({
   // stale-result hygiene remains.)
   useEffect(() => {
     setValidationError(null);
-    const missingCountry = segment === "business" && (!sendingCountry || !receivingCountry);
-    if (amount <= 0 || missingCountry || from === to) {
+    if (amount <= 0 || from === to) {
       skipNextSyncClearRef.current = false; // don't let a stale skip leak
       return;
     }
@@ -926,21 +937,14 @@ export function ComparatorSection({
                 <div className="flex flex-col justify-end">
                   <Button
                     onClick={() => {
-                      const missingCountry =
-                        segment === "business" && (!sendingCountry || !receivingCountry);
-                      if (from === to || amount <= 0 || missingCountry) {
+                      if (from === to || amount <= 0) {
                         setValidationError(t("fx.validation"));
                         return;
                       }
                       setValidationError(null);
                       compareMut.mutate(undefined);
                     }}
-                    disabled={
-                      compareMut.isPending ||
-                      from === to ||
-                      amount <= 0 ||
-                      (segment === "business" && (!sendingCountry || !receivingCountry))
-                    }
+                    disabled={compareMut.isPending || from === to || amount <= 0}
                     className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-[168px]"
                   >
                     {compareMut.isPending ? (
@@ -958,43 +962,15 @@ export function ComparatorSection({
                 </div>
               </div>
 
-              {/* Business-only: expands below with the country pair. The RFQ/
-                  treasury flow (agent.functions.ts) requires a real
-                  jurisdiction, unlike the retail currency-only comparison. */}
-              {segment === "business" && (
-                <div className="grid grid-cols-1 gap-3 @sm:grid-cols-2">
-                  <FieldLight label={t("fx.field.from")}>
-                    <CountrySelect
-                      value={sendingCountry}
-                      onChange={(c) => {
-                        // Picking a country derives its currency (the currency
-                        // combobox above can still override it).
-                        setSendingCountry(c);
-                        setFrom(localCurrency(c));
-                      }}
-                      placeholder={t("comparator.combobox.placeholder")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.sourceCountry")}
-                      triggerClassName={WHITE_FIELD}
-                    />
-                  </FieldLight>
-                  <FieldLight label={t("fx.field.to")}>
-                    <CountrySelect
-                      value={receivingCountry}
-                      onChange={(c) => {
-                        setReceivingCountry(c);
-                        setTo(localCurrency(c));
-                      }}
-                      placeholder={t("search.selectCountry")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("search.destination")}
-                      triggerClassName={WHITE_FIELD}
-                    />
-                  </FieldLight>
-                </div>
-              )}
+              {/* Business no longer shows a country panel here — confirmed the
+                  provider query (`compareProviders`) filters only by segment +
+                  currency, never by country, so requiring it before "Compare
+                  Rates" was pure friction with zero effect on the results.
+                  sendingCountry/receivingCountry are still auto-derived below
+                  (via primaryCountryForCurrency) purely so the optional
+                  "request a manual quote" chat flow still has a real country
+                  to send if the user chooses that path — it's just never
+                  shown or required as a blocking field in the main flow. */}
 
               {/* Mid-market exchange rate — shown as soon as a comparison has
                   run, right inside this same box (like Wise's compare page). */}
