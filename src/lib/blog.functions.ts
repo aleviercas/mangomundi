@@ -40,17 +40,38 @@ export const listBlogPosts = createServerFn({ method: "GET" })
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Every published post across every locale, not just an exact match on
+    // `data.locale` — a post only written in EN/ES/PT/IT/DE/FR so far should
+    // still show up for a visitor browsing in, say, Japanese (as its English
+    // version) instead of silently disappearing from the listing. This
+    // mirrors the fallback getBlogPost already does for the detail page —
+    // previously the listing was stricter than the detail page, which meant
+    // a post could be reachable by direct link but invisible in the grid.
     const { data: rows, error } = await supabaseAdmin
       .from("blog_posts")
       .select("slug, title, excerpt, cover_url, audience, vertical, published_at, locale")
       .eq("published", true)
-      .eq("locale", data.locale)
       .order("published_at", { ascending: false });
     if (error) {
       console.error("[server-fn]", error);
       throw new Error("An unexpected error occurred. Please try again.");
     }
-    return (rows ?? []) as BlogListItem[];
+    // One card per slug: prefer the visitor's locale, else English, else
+    // whatever locale happens to exist first (still better than hiding it).
+    const bySlug = new Map<string, BlogListItem>();
+    for (const row of (rows ?? []) as BlogListItem[]) {
+      const existing = bySlug.get(row.slug);
+      if (!existing) {
+        bySlug.set(row.slug, row);
+        continue;
+      }
+      const existingScore = existing.locale === data.locale ? 2 : existing.locale === "en" ? 1 : 0;
+      const rowScore = row.locale === data.locale ? 2 : row.locale === "en" ? 1 : 0;
+      if (rowScore > existingScore) bySlug.set(row.slug, row);
+    }
+    return Array.from(bySlug.values()).sort(
+      (a, b) => new Date(b.published_at ?? 0).getTime() - new Date(a.published_at ?? 0).getTime(),
+    );
   });
 
 export const getBlogPost = createServerFn({ method: "GET" })
