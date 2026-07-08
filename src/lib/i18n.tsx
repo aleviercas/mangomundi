@@ -394,7 +394,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.how.title": "Four steps to a better exchange rate.",
     "home.how.s1.title": "Select",
     "home.how.s1.desc":
-      "Tell us who you are (individual or business) and where you are sending money.",
+      "Tell us who you are (individual or business), the currency you are sending, and the currency your recipient will receive.",
     "home.how.s2.title": "Compare",
     "home.how.s2.desc":
       "Choose your currency and see all available routes and rates. Find your best match.",
@@ -2052,7 +2052,7 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.how.subtitle": "Four simple steps to smarter cross-border payments",
     "home.how.s1.title": "Select",
     "home.how.s1.desc":
-      "Tell us who you are (individual or business) and where you are sending money.",
+      "Contanos quién sos (particular o empresa), la moneda que enviás y la moneda que va a recibir el destinatario.",
     "home.how.s2.title": "Compare",
     "home.how.s2.desc":
       "Choose your currency and see all available routes and rates. Find your best match.",
