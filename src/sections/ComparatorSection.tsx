@@ -851,7 +851,7 @@ export function ComparatorSection({
                   real jurisdiction) — see the segment === "business" block. */}
               <div className="grid grid-cols-1 items-stretch gap-3 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
                 {/* FROM box: "You send" — amount + currency unified pill. */}
-                <div className="min-w-0 rounded-xl border border-white/10 p-3">
+                <div className="min-w-0">
                   <FieldLight label={t("comparator.field.amount")}>
                     {/* Unified pill: amount + currency read as one control,
                         split by a hairline divider instead of two boxes. */}
@@ -905,13 +905,7 @@ export function ComparatorSection({
 
                 {/* TO box: "You receive" — currency only, highlighted while it
                     still matches FROM (nudges picking a different currency). */}
-                <div
-                  className={`min-w-0 rounded-xl border p-3 transition-colors ${
-                    from === to
-                      ? "border-[#ff6b5b]/60 shadow-[0_0_0_3px_rgba(255,107,91,0.15)]"
-                      : "border-white/10"
-                  }`}
-                >
+                <div className="min-w-0">
                   <FieldLight label={t("comparator.field.youReceive")}>
                     <CurrencyCombobox
                       value={to}
@@ -920,12 +914,16 @@ export function ComparatorSection({
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.targetCurrency")}
-                      triggerClassName={WHITE_FIELD}
+                      triggerClassName={
+                        from === to
+                          ? `${WHITE_FIELD} ring-2 ring-[#ff6b5b]/60`
+                          : WHITE_FIELD
+                      }
                     />
                   </FieldLight>
                 </div>
 
-                <div className="flex flex-col justify-end pb-0.5">
+                <div className="flex flex-col justify-end">
                   <Button
                     onClick={() => {
                       const missingCountry =
@@ -964,7 +962,7 @@ export function ComparatorSection({
                   treasury flow (agent.functions.ts) requires a real
                   jurisdiction, unlike the retail currency-only comparison. */}
               {segment === "business" && (
-                <div className="grid grid-cols-1 gap-3 rounded-xl border border-dashed border-white/15 p-3 @sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-3 @sm:grid-cols-2">
                   <FieldLight label={t("fx.field.from")}>
                     <CountrySelect
                       value={sendingCountry}
