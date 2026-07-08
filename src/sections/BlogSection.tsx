@@ -26,14 +26,6 @@ export function BlogSection() {
               {t("home.blog.title")}
             </h2>
           </div>
-          {latest.length > 0 && (
-            <Link
-              to="/blog"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#ff6b5b] hover:underline"
-            >
-              {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
-            </Link>
-          )}
         </div>
 
         {latest.length === 0 ? (
