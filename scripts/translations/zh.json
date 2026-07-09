@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "您收到",
   "comparator.swap": "交换货币",
   "comparator.midMarketRate": "中间市场汇率",
-  "comparator.copilot.business.countryError": "请先在上方选择出发国家和目的地国家，然后再继续。"
+  "comparator.copilot.business.countryError": "请先在上方选择出发国家和目的地国家，然后再继续。",
+  "blog.share.label": "分享",
+  "blog.share.copyLink": "复制链接"
 }
