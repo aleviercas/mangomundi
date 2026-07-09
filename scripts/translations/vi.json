@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "Bạn nhận",
   "comparator.swap": "Hoán đổi tiền tệ",
   "comparator.midMarketRate": "Tỷ giá hối đoái trung bình thị trường",
-  "comparator.copilot.business.countryError": "Vui lòng chọn cả quốc gia gửi và quốc gia nhận ở trên trước khi tiếp tục."
+  "comparator.copilot.business.countryError": "Vui lòng chọn cả quốc gia gửi và quốc gia nhận ở trên trước khi tiếp tục.",
+  "blog.share.label": "Chia sẻ",
+  "blog.share.copyLink": "Sao chép liên kết"
 }
