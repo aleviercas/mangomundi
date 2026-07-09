@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "Sie erhalten",
   "comparator.swap": "Währungen tauschen",
   "comparator.midMarketRate": "Mid-Market-Wechselkurs",
-  "comparator.copilot.business.countryError": "Bitte wählen Sie oben sowohl das Herkunfts- als auch das Zielland aus, bevor wir fortfahren."
+  "comparator.copilot.business.countryError": "Bitte wählen Sie oben sowohl das Herkunfts- als auch das Zielland aus, bevor wir fortfahren.",
+  "blog.share.label": "Teilen",
+  "blog.share.copyLink": "Link kopieren"
 }
