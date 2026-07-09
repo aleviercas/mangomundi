@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
 import { getBlogPost, toBlogLocale } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
 import { SITE_URL, hreflangLinks } from "@/config/site";
@@ -119,6 +120,73 @@ function PostError({ error }: { error: Error }) {
   );
 }
 
+const SHARE_ICONS = [
+  {
+    label: "WhatsApp",
+    path: "M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.71 14.02c-.24.68-1.39 1.32-1.93 1.4-.5.08-1.09.11-1.76-.11-.4-.13-.92-.3-1.58-.58-2.78-1.2-4.6-4-4.74-4.19-.14-.19-1.13-1.5-1.13-2.86 0-1.36.71-2.03.97-2.3.26-.28.56-.35.75-.35.19 0 .38 0 .54.01.17.01.41-.06.64.49.24.57.81 1.98.88 2.12.07.15.12.32.02.51-.09.19-.14.31-.28.48-.14.17-.29.37-.42.5-.14.14-.28.29-.12.57.16.28.71 1.17 1.52 1.9 1.05.94 1.93 1.23 2.21 1.37.28.14.44.12.6-.07.17-.19.71-.83.9-1.11.19-.28.38-.24.64-.14.26.09 1.66.79 1.94.93.28.14.47.21.54.33.07.12.07.68-.17 1.36z",
+    href: (url: string, title: string) =>
+      `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}`,
+  },
+  {
+    label: "X",
+    path: "M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z",
+    href: (url: string, title: string) =>
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+  },
+  {
+    label: "LinkedIn",
+    path: "M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z",
+    href: (url: string) =>
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+  },
+];
+
+function ShareRow({ url, title }: { url: string; title: string }) {
+  const { t } = useI18n();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard API can fail (permissions, insecure context) — fail
+      // silently rather than showing a broken "copied" state.
+    }
+  };
+
+  return (
+    <div className="mt-6 flex flex-wrap items-center gap-2">
+      <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        {t("blog.share.label")}
+      </span>
+      {SHARE_ICONS.map((s) => (
+        <a
+          key={s.label}
+          href={s.href(url, title)}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${t("blog.share.label")} — ${s.label}`}
+          className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
+            <path d={s.path} />
+          </svg>
+        </a>
+      ))}
+      <button
+        type="button"
+        onClick={handleCopy}
+        aria-label={t("blog.share.copyLink")}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+      >
+        {copied ? <Check className="h-4 w-4" /> : <Link2 className="h-4 w-4" />}
+      </button>
+    </div>
+  );
+}
+
 function BlogPostPage() {
   const { slug } = Route.useParams();
   const { lang, t } = useI18n();
@@ -175,6 +243,8 @@ function BlogPostPage() {
         {post.excerpt && (
           <p className="mt-4 text-lg text-muted-foreground leading-relaxed">{post.excerpt}</p>
         )}
+
+        <ShareRow url={`${SITE_URL}/blog/${post.slug}`} title={post.title} />
 
         {post.cover_url && (
           <img
