@@ -444,7 +444,7 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.hero.tagline":
-      "Find the best way to send money internationally by comparing rates, fees, transfer speeds and payment providers in real time. Powered by neutral AI.",
+      "Find the best way to send money. Compare rates, fees, transfer speeds, and providers in real time. Powered by neutral AI.",
     "home.contact.simple.title": "Get in touch.",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
@@ -754,7 +754,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.hero.titlePre": "Compará",
     "home.hero.titleAccent": "tipos de cambio",
     "home.hero.tagline":
-      "Encontrá la mejor forma de enviar dinero al exterior comparando tasas, comisiones, velocidad de transferencia y proveedores de pago en tiempo real. Impulsado por IA neutral.",
+      "Encontrá la mejor forma de enviar dinero. Compará tasas, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
     "home.contact.simple.title": "Escribinos.",
     "home.contact.simple.body":
       "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",
