@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "আপনি পাবেন",
   "comparator.swap": "মুদ্রা অদলবদল করুন",
   "comparator.midMarketRate": "মধ্য-বাজার বিনিময় হার",
-  "comparator.copilot.business.countryError": "চালিয়ে যাওয়ার আগে অনুগ্রহ করে উপরে উৎস ও গন্তব্য দেশ নির্বাচন করুন।"
+  "comparator.copilot.business.countryError": "চালিয়ে যাওয়ার আগে অনুগ্রহ করে উপরে উৎস ও গন্তব্য দেশ নির্বাচন করুন।",
+  "blog.share.label": "শেয়ার করুন",
+  "blog.share.copyLink": "লিঙ্ক কপি করুন"
 }
