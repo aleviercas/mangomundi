@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "Você recebe",
   "comparator.swap": "Trocar moedas",
   "comparator.midMarketRate": "Taxa de câmbio interbancária (mid-market)",
-  "comparator.copilot.business.countryError": "Selecione o país de origem e o de destino acima antes de continuarmos."
+  "comparator.copilot.business.countryError": "Selecione o país de origem e o de destino acima antes de continuarmos.",
+  "blog.share.label": "Partilhar",
+  "blog.share.copyLink": "Copiar link"
 }
