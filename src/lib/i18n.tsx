@@ -2128,6 +2128,8 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     // Blog
     "blog.empty": "No posts yet. Check back soon.",
     "blog.backShort": "Back to blog",
+    "blog.share.label": "Share",
+    "blog.share.copyLink": "Copy link",
     "blog.cta.prompt": "Ready to compare your transfer?",
     "blog.cta.button": "Open the comparator",
     "blog.audience.business": "Business",
@@ -2308,6 +2310,8 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
 
     "blog.empty": "Aún no hay publicaciones. Vuelve pronto.",
     "blog.backShort": "Volver al blog",
+    "blog.share.label": "Compartir",
+    "blog.share.copyLink": "Copiar enlace",
     "blog.cta.prompt": "¿Listo para comparar tu transferencia?",
     "blog.cta.button": "Abrir el comparador",
     "blog.audience.business": "Empresas",
