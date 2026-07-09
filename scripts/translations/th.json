@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "คุณได้รับ",
   "comparator.swap": "สลับสกุลเงิน",
   "comparator.midMarketRate": "อัตราแลกเปลี่ยนกลางตลาด (Mid-market)",
-  "comparator.copilot.business.countryError": "โปรดเลือกประเทศต้นทางและปลายทางด้านบนก่อนดำเนินการต่อ"
+  "comparator.copilot.business.countryError": "โปรดเลือกประเทศต้นทางและปลายทางด้านบนก่อนดำเนินการต่อ",
+  "blog.share.label": "แชร์",
+  "blog.share.copyLink": "คัดลอกลิงก์"
 }
