@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "Otrzymujesz",
   "comparator.swap": "Zamień waluty",
   "comparator.midMarketRate": "Kurs międzybankowy (mid-market)",
-  "comparator.copilot.business.countryError": "Wybierz powyżej zarówno kraj pochodzenia, jak i docelowy, zanim będziemy kontynuować."
+  "comparator.copilot.business.countryError": "Wybierz powyżej zarówno kraj pochodzenia, jak i docelowy, zanim będziemy kontynuować.",
+  "blog.share.label": "Udostępnij",
+  "blog.share.copyLink": "Kopiuj link"
 }
