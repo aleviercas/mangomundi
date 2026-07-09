@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "Alırsınız",
   "comparator.swap": "Para birimlerini değiştir",
   "comparator.midMarketRate": "Piyasa ortalama döviz kuru (mid-market)",
-  "comparator.copilot.business.countryError": "Devam etmeden önce lütfen yukarıdan hem çıkış hem de varış ülkesini seçin."
+  "comparator.copilot.business.countryError": "Devam etmeden önce lütfen yukarıdan hem çıkış hem de varış ülkesini seçin.",
+  "blog.share.label": "Paylaş",
+  "blog.share.copyLink": "Bağlantıyı kopyala"
 }
