@@ -2052,7 +2052,7 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.how.subtitle": "Four simple steps to smarter cross-border payments",
     "home.how.s1.title": "Select",
     "home.how.s1.desc":
-      "Contanos quién sos (particular o empresa), la moneda que enviás y la moneda que va a recibir el destinatario.",
+      "Tell us who you are (individual or business), the currency you are sending, and the currency your recipient will receive.",
     "home.how.s2.title": "Compare",
     "home.how.s2.desc":
       "Choose your currency and see all available routes and rates. Find your best match.",
