@@ -619,5 +619,7 @@
   "comparator.field.youReceive": "تستلم",
   "comparator.swap": "تبديل العملات",
   "comparator.midMarketRate": "سعر صرف السوق المتوسط",
-  "comparator.copilot.business.countryError": "يرجى تحديد بلد المنشأ والوجهة أعلاه قبل المتابعة."
+  "comparator.copilot.business.countryError": "يرجى تحديد بلد المنشأ والوجهة أعلاه قبل المتابعة.",
+  "blog.share.label": "مشاركة",
+  "blog.share.copyLink": "نسخ الرابط"
 }
