@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Taux de change interbancaire (mid-market)",
   "comparator.copilot.business.countryError": "Merci de sélectionner le pays d'origine et de destination ci-dessus avant de continuer.",
   "blog.share.label": "Partager",
-  "blog.share.copyLink": "Copier le lien"
+  "blog.share.copyLink": "Copier le lien",
+  "wizard.action.example": "Voir un exemple",
+  "wizard.action.about": "Qu'est-ce que mangomundi ?",
+  "wizard.action.free": "Est-ce gratuit ?",
+  "wizard.action.neutral": "Êtes-vous neutres ?",
+  "wizard.action.providers": "Quels prestataires ?",
+  "wizard.action.send": "Comment envoyer de l'argent ?",
+  "wizard.about": "mangomundi est un comparateur neutre de change. Saisissez un montant et une route, et il compare en temps réel taux en direct, frais, délais de livraison et modes de réception de plus de 50 prestataires — pour choisir la meilleure façon de transférer votre argent. Sans compte, sans inscription.",
+  "wizard.free": "Oui — comparer est entièrement gratuit, sans inscription. mangomundi n'ajoute jamais de marge aux taux ; vous traitez toujours directement avec le prestataire choisi. (Les entreprises peuvent opter pour des outils payants comme l'accès API et le routage.)",
+  "wizard.neutral": "mangomundi est neutre : les prestataires sont classés uniquement selon les chiffres — montant reçu, frais totaux et délai — jamais selon qui nous paie. Nous pouvons percevoir une commission d'apport quand vous continuez vers un prestataire, mais cela ne change jamais le classement ni les taux affichés.",
+  "wizard.providers": "mangomundi compare plus de 50 prestataires de transfert et services de change réglementés — banques, fintechs et spécialistes — pour chaque route. La liste exacte dépend du corridor comparé.",
+  "wizard.providers.current": "Pour cette route, il compare :",
+  "wizard.send": "mangomundi ne déplace pas l'argent — il vous montre la meilleure option puis vous envoie directement chez ce prestataire pour finaliser le transfert sur son site. Comparez, choisissez une ligne et cliquez pour terminer. Aucun compte chez nous requis.",
+  "wizard.exampleNote": "Voici un exemple en direct — comparaison d'une route populaire. Modifiez le montant ou les pays ci-dessus pour comparer la vôtre.",
+  "wizard.moreQuestions": "Plus de questions"
 }

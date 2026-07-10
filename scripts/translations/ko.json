@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "중간시장 환율",
   "comparator.copilot.business.countryError": "계속하기 전에 위에서 출발 국가와 도착 국가를 모두 선택해 주세요.",
   "blog.share.label": "공유",
-  "blog.share.copyLink": "링크 복사"
+  "blog.share.copyLink": "링크 복사",
+  "wizard.action.example": "예시 보기",
+  "wizard.action.about": "mangomundi란?",
+  "wizard.action.free": "무료인가요?",
+  "wizard.action.neutral": "중립적인가요?",
+  "wizard.action.providers": "어떤 업체?",
+  "wizard.action.send": "송금 방법은?",
+  "wizard.about": "mangomundi는 환전을 위한 중립적인 비교 도구입니다. 금액과 경로를 입력하면 50개 이상 업체의 실시간 환율·수수료·배송 시간·수령 방법을 실시간으로 비교해 — 돈을 옮기는 최선의 방법을 고를 수 있습니다. 계정 불필요, 가입 불필요.",
+  "wizard.free": "네 — 비교는 완전 무료이며 가입이 필요 없습니다. mangomundi는 환율에 마진을 붙이지 않으며, 항상 선택한 업체와 직접 거래합니다. (기업은 API 액세스와 라우팅 같은 유료 도구를 선택할 수 있습니다.)",
+  "wizard.neutral": "mangomundi는 중립적입니다. 업체는 오직 숫자로만 순위가 매겨집니다 — 수령액, 총수수료, 배송 시간 — 누가 우리에게 돈을 내는지가 아닙니다. 업체로 이동하면 추천 수수료를 받을 수 있지만, 순위나 표시된 환율을 절대 바꾸지 않습니다.",
+  "wizard.providers": "mangomundi는 각 경로마다 50개 이상의 규제된 송금 업체와 환전 서비스 — 은행, 핀테크, 전문업체 — 를 비교합니다. 정확한 목록은 비교하는 구간에 따라 다릅니다.",
+  "wizard.providers.current": "이 경로에서 비교 중:",
+  "wizard.send": "mangomundi는 돈을 직접 옮기지 않습니다 — 최선의 옵션을 보여주고, 해당 업체 사이트로 바로 안내해 송금을 완료합니다. 비교하고 한 줄을 선택해 클릭하면 끝. 저희 계정은 필요 없습니다.",
+  "wizard.exampleNote": "여기 실시간 예시입니다 — 인기 경로를 비교 중. 위에서 금액이나 국가를 바꿔 직접 비교해 보세요.",
+  "wizard.moreQuestions": "추가 질문"
 }

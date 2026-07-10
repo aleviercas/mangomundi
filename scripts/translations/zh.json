@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "中间市场汇率",
   "comparator.copilot.business.countryError": "请先在上方选择出发国家和目的地国家，然后再继续。",
   "blog.share.label": "分享",
-  "blog.share.copyLink": "复制链接"
+  "blog.share.copyLink": "复制链接",
+  "wizard.action.example": "查看示例",
+  "wizard.action.about": "mangomundi 是什么？",
+  "wizard.action.free": "免费吗？",
+  "wizard.action.neutral": "你们中立吗？",
+  "wizard.action.providers": "哪些服务商？",
+  "wizard.action.send": "如何汇款？",
+  "wizard.about": "mangomundi 是一个中立的货币兑换比较工具。输入金额和路线，它就会实时比较 50+ 服务商的实时汇率、费用、到账时间和收款方式——让你选择转移资金的最佳方式。无需账户，无需注册。",
+  "wizard.free": "是的——比较完全免费，无需注册。mangomundi 从不在汇率上加价；你始终与所选服务商直接交易。（企业可选择 API 接入、路由等付费工具。）",
+  "wizard.neutral": "mangomundi 保持中立：服务商仅按数字排名——到账金额、总费用和到账时间——绝不按谁付钱给我们。当你前往某服务商时我们可能获得推荐费，但这绝不会改变排名或你看到的汇率。",
+  "wizard.providers": "mangomundi 为每条路线比较 50+ 家受监管的转账服务商和兑换服务——银行、金融科技和专业机构。确切名单取决于你比较的通道。",
+  "wizard.providers.current": "此路线正在比较：",
+  "wizard.send": "mangomundi 本身不转移资金——它为你展示最佳选项，然后直接把你带到该服务商，在其网站上完成转账。比较、选择一行、点击即可完成。无需在我们这里开户。",
+  "wizard.exampleNote": "这是一个实时示例——正在比较一条热门路线。修改上方的金额或国家以比较你自己的路线。",
+  "wizard.moreQuestions": "更多问题"
 }

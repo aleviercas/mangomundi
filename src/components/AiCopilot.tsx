@@ -1,4 +1,16 @@
-import { Info, MapPin, Calculator, Megaphone, type LucideIcon } from "lucide-react";
+import {
+  Info,
+  MapPin,
+  Calculator,
+  Megaphone,
+  Sparkles,
+  HelpCircle,
+  BadgeDollarSign,
+  Scale,
+  Building2,
+  Send,
+  type LucideIcon,
+} from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import type { MasterRateMap, MissingCorridorEntry } from "@/services/providers/MasterRateStore";
 
@@ -14,41 +26,52 @@ import type { MasterRateMap, MissingCorridorEntry } from "@/services/providers/M
  * render/consumption sites translate it with t().
  */
 export interface WizardAction {
-  id: "how" | "limits" | "report" | "fees" | "speed";
+  id:
+    | "example"
+    | "about"
+    | "how"
+    | "free"
+    | "neutral"
+    | "providers"
+    | "send"
+    | "fees"
+    | "limits"
+    | "report";
   /** i18n key for the visible label — translate with t(label). */
   label: string;
   prompt: string;
   icon: LucideIcon;
+  /** Answered from local data / static copy — no AI tokens, and no prior
+   *  comparison required (info actions). `fees`/`limits` still need a result. */
+  local?: boolean;
 }
 
+// Ordered for a first-time user: run an example first, then the "what/how/is
+// it free/neutral/who/how do I send" tree — every one answered locally so the
+// product is fully usable without the AI. `fees`/`limits`/`report` operate on
+// the current comparison.
 export const DEFAULT_WIZARD_ACTIONS: WizardAction[] = [
   {
-    id: "how",
-    label: "wizard.action.how",
-    prompt:
-      "Explain in 3 short sentences how to read the comparator table (rate, fees, delivery time) so I can pick a route myself.",
-    icon: Info,
+    id: "example",
+    label: "wizard.action.example",
+    prompt: "__run_example__",
+    icon: Sparkles,
+    local: true,
   },
+  { id: "about", label: "wizard.action.about", prompt: "", icon: HelpCircle, local: true },
+  { id: "how", label: "wizard.action.how", prompt: "", icon: Info, local: true },
+  { id: "free", label: "wizard.action.free", prompt: "", icon: BadgeDollarSign, local: true },
+  { id: "neutral", label: "wizard.action.neutral", prompt: "", icon: Scale, local: true },
   {
-    id: "limits",
-    label: "wizard.action.limits",
-    prompt:
-      "Using only the data in the table, list any transfer-amount limits or tier thresholds that apply to the providers shown.",
-    icon: Calculator,
+    id: "providers",
+    label: "wizard.action.providers",
+    prompt: "",
+    icon: Building2,
+    local: true,
   },
-  {
-    id: "fees",
-    label: "wizard.action.fees",
-    prompt:
-      "Summarize the fee structure (fixed + percentage + spread) for the top providers using the figures in the table. No opinions.",
-    icon: Calculator,
-  },
-  {
-    id: "report",
-    label: "wizard.action.report",
-    prompt: "__report_missing__",
-    icon: Megaphone,
-  },
+  { id: "send", label: "wizard.action.send", prompt: "", icon: Send, local: true },
+  { id: "fees", label: "wizard.action.fees", prompt: "", icon: Calculator },
+  { id: "report", label: "wizard.action.report", prompt: "__report_missing__", icon: Megaphone },
 ];
 
 interface AiCopilotProps {
@@ -165,6 +188,31 @@ interface WizardResultLike {
 
 export function localHowToCompare(t: T): string {
   return t("wizard.howToCompare");
+}
+
+// Static, no-AI answers to the product/onboarding questions. Copy lives in the
+// wizard.* i18n keys (all 20 languages) so the whole tree is self-serve.
+export function localAbout(t: T): string {
+  return t("wizard.about");
+}
+export function localFree(t: T): string {
+  return t("wizard.free");
+}
+export function localNeutral(t: T): string {
+  return t("wizard.neutral");
+}
+export function localSend(t: T): string {
+  return t("wizard.send");
+}
+
+/** Providers answer — names the actual providers from the current comparison
+ *  when one exists, otherwise the generic coverage statement. */
+export function localProviders(result: WizardResultLike | null, t: T): string {
+  if (result && result.rows.length > 0) {
+    const names = result.rows.map((r) => r.name).join(", ");
+    return `${t("wizard.providers")}\n\n${t("wizard.providers.current")} ${names}.`;
+  }
+  return t("wizard.providers");
 }
 
 export function localTransferLimits(_result: WizardResultLike, t: T): string {

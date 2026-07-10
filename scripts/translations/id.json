@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Nilai tukar mid-market",
   "comparator.copilot.business.countryError": "Silakan pilih negara asal dan tujuan di atas sebelum melanjutkan.",
   "blog.share.label": "Bagikan",
-  "blog.share.copyLink": "Salin tautan"
+  "blog.share.copyLink": "Salin tautan",
+  "wizard.action.example": "Lihat contoh",
+  "wizard.action.about": "Apa itu mangomundi?",
+  "wizard.action.free": "Apakah gratis?",
+  "wizard.action.neutral": "Apakah Anda netral?",
+  "wizard.action.providers": "Penyedia mana?",
+  "wizard.action.send": "Bagaimana mengirim uang?",
+  "wizard.about": "mangomundi adalah pembanding netral untuk penukaran mata uang. Masukkan jumlah dan rute, lalu ia membandingkan kurs langsung, biaya, waktu pengiriman, dan opsi pembayaran dari 50+ penyedia secara real time — agar Anda memilih cara terbaik memindahkan uang. Tanpa akun, tanpa daftar.",
+  "wizard.free": "Ya — membandingkan sepenuhnya gratis, tanpa daftar. mangomundi tidak pernah menaikkan kurs; Anda selalu bertransaksi langsung dengan penyedia pilihan Anda. (Bisnis dapat memilih alat berbayar seperti akses API dan perutean.)",
+  "wizard.neutral": "mangomundi netral: penyedia diperingkat murni berdasarkan angka — jumlah diterima, total biaya, dan waktu pengiriman — tidak pernah berdasarkan siapa yang membayar kami. Kami mungkin memperoleh biaya rujukan saat Anda lanjut ke penyedia, tetapi itu tidak pernah mengubah peringkat atau kurs yang Anda lihat.",
+  "wizard.providers": "mangomundi membandingkan 50+ penyedia transfer dan layanan penukaran teregulasi — bank, fintech, dan spesialis — untuk setiap rute. Daftar tepatnya tergantung koridor yang Anda bandingkan.",
+  "wizard.providers.current": "Untuk rute ini sedang membandingkan:",
+  "wizard.send": "mangomundi tidak memindahkan uang sendiri — ia menunjukkan opsi terbaik lalu mengarahkan Anda langsung ke penyedia untuk menyelesaikan transfer di situs mereka. Bandingkan, pilih satu baris, dan klik untuk selesai. Tidak perlu akun dengan kami.",
+  "wizard.exampleNote": "Ini contoh langsung — membandingkan rute populer. Ubah jumlah atau negara di atas untuk membandingkan milik Anda.",
+  "wizard.moreQuestions": "Pertanyaan lain"
 }

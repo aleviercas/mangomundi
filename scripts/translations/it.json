@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Tasso di cambio mid-market",
   "comparator.copilot.business.countryError": "Seleziona sia il paese di origine che quello di destinazione qui sopra prima di continuare.",
   "blog.share.label": "Condividi",
-  "blog.share.copyLink": "Copia link"
+  "blog.share.copyLink": "Copia link",
+  "wizard.action.example": "Vedi un esempio",
+  "wizard.action.about": "Cos'è mangomundi?",
+  "wizard.action.free": "È gratis?",
+  "wizard.action.neutral": "Siete neutrali?",
+  "wizard.action.providers": "Quali provider?",
+  "wizard.action.send": "Come invio denaro?",
+  "wizard.about": "mangomundi è un comparatore neutrale di cambio valute. Inserisci un importo e una rotta e confronta in tempo reale tassi live, commissioni, tempi di consegna e modalità di incasso di oltre 50 provider — così scegli il modo migliore per spostare il tuo denaro. Senza account, senza registrazione.",
+  "wizard.free": "Sì — confrontare è del tutto gratuito, senza registrazione. mangomundi non aggiunge mai margini ai tassi; operi sempre direttamente con il provider scelto. (Le aziende possono attivare strumenti a pagamento come accesso API e routing.)",
+  "wizard.neutral": "mangomundi è neutrale: i provider sono ordinati solo in base ai numeri — importo ricevuto, commissioni totali e tempi di consegna — mai in base a chi ci paga. Possiamo ricevere una commissione di segnalazione quando prosegui verso un provider, ma questo non cambia mai l'ordine o i tassi mostrati.",
+  "wizard.providers": "mangomundi confronta oltre 50 provider di trasferimento e servizi di cambio regolamentati — banche, fintech e specialisti — per ogni rotta. L'elenco esatto dipende dal corridoio confrontato.",
+  "wizard.providers.current": "Per questa rotta sta confrontando:",
+  "wizard.send": "mangomundi non sposta il denaro — ti mostra l'opzione migliore e ti porta direttamente dal provider per completare il trasferimento sul suo sito. Confronta, scegli una riga e clicca per finire. Nessun account con noi.",
+  "wizard.exampleNote": "Ecco un esempio dal vivo — confronto di una rotta popolare. Cambia importo o paesi sopra per confrontare la tua.",
+  "wizard.moreQuestions": "Altre domande"
 }

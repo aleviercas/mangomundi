@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Kurs międzybankowy (mid-market)",
   "comparator.copilot.business.countryError": "Wybierz powyżej zarówno kraj pochodzenia, jak i docelowy, zanim będziemy kontynuować.",
   "blog.share.label": "Udostępnij",
-  "blog.share.copyLink": "Kopiuj link"
+  "blog.share.copyLink": "Kopiuj link",
+  "wizard.action.example": "Zobacz przykład",
+  "wizard.action.about": "Czym jest mangomundi?",
+  "wizard.action.free": "Czy to za darmo?",
+  "wizard.action.neutral": "Czy jesteście neutralni?",
+  "wizard.action.providers": "Którzy dostawcy?",
+  "wizard.action.send": "Jak wysłać pieniądze?",
+  "wizard.about": "mangomundi to neutralna porównywarka wymiany walut. Wpisz kwotę i trasę, a porówna w czasie rzeczywistym kursy na żywo, opłaty, czasy dostawy i formy wypłaty u ponad 50 dostawców — abyś wybrał najlepszy sposób na przesłanie pieniędzy. Bez konta, bez rejestracji.",
+  "wizard.free": "Tak — porównywanie jest całkowicie darmowe, bez rejestracji. mangomundi nigdy nie dolicza marży do kursów; zawsze realizujesz transakcję bezpośrednio u wybranego dostawcy. (Firmy mogą wykupić płatne narzędzia, np. dostęp API i routing.)",
+  "wizard.neutral": "mangomundi jest neutralne: dostawcy są sortowani wyłącznie według liczb — otrzymana kwota, łączne opłaty i czas dostawy — nigdy według tego, kto nam płaci. Możemy otrzymać prowizję polecającą, gdy przechodzisz do dostawcy, ale to nigdy nie zmienia rankingu ani widocznych kursów.",
+  "wizard.providers": "mangomundi porównuje ponad 50 regulowanych dostawców przelewów i usług wymiany — banki, fintechy i specjalistów — dla każdej trasy. Dokładna lista zależy od porównywanego korytarza.",
+  "wizard.providers.current": "Dla tej trasy porównuje:",
+  "wizard.send": "mangomundi nie przenosi pieniędzy — pokazuje najlepszą opcję i kieruje Cię prosto do dostawcy, aby dokończyć przelew na jego stronie. Porównaj, wybierz wiersz i kliknij, aby zakończyć. Konto u nas nie jest potrzebne.",
+  "wizard.exampleNote": "Oto przykład na żywo — porównujemy popularną trasę. Zmień kwotę lub kraje powyżej, aby porównać własną.",
+  "wizard.moreQuestions": "Więcej pytań"
 }

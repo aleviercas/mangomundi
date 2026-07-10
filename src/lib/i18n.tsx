@@ -2639,6 +2639,26 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "wizard.action.limits": "Check transfer limits",
     "wizard.action.fees": "Break down the fees",
     "wizard.action.report": "Report a missing route",
+    "wizard.action.example": "Run an example",
+    "wizard.action.about": "What is mangomundi?",
+    "wizard.action.free": "Is it free?",
+    "wizard.action.neutral": "Are you neutral?",
+    "wizard.action.providers": "Which providers?",
+    "wizard.action.send": "How do I send money?",
+    "wizard.about":
+      "mangomundi is a neutral comparator for currency exchange. Enter an amount and a route and it compares live rates, fees, delivery speed and payout options across 50+ providers in real time — so you can pick the best way to move your money. No account, no sign-up.",
+    "wizard.free":
+      "Yes — comparing is completely free, with no sign-up. mangomundi never marks up the rates; you always transact directly with the provider you choose. (Businesses can opt into paid tools like API access and routing.)",
+    "wizard.neutral":
+      "mangomundi is neutral: providers are ranked purely by the numbers — amount received, total fees and delivery speed — never by who pays us. We may earn a referral fee when you continue to a provider, but that never changes the ranking or the rates you see.",
+    "wizard.providers":
+      "mangomundi compares 50+ regulated money-transfer providers and exchange services — banks, fintechs and specialists — for each route. The exact list depends on the corridor you compare.",
+    "wizard.providers.current": "For this route it's comparing:",
+    "wizard.send":
+      "mangomundi doesn't move the money itself — it shows you the best option, then sends you straight to that provider to complete the transfer on their site. Run a comparison, pick a row and tap through to finish. No account with us needed.",
+    "wizard.exampleNote":
+      "Here's a live example — comparing a popular route now. Change the amount or countries above to compare your own.",
+    "wizard.moreQuestions": "More questions",
     "wizard.quickActions": "Wizard — quick actions",
     "wizard.quickActionsAria": "AI Wizard quick actions",
     "wizard.reportNote":

@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Piyasa ortalama döviz kuru (mid-market)",
   "comparator.copilot.business.countryError": "Devam etmeden önce lütfen yukarıdan hem çıkış hem de varış ülkesini seçin.",
   "blog.share.label": "Paylaş",
-  "blog.share.copyLink": "Bağlantıyı kopyala"
+  "blog.share.copyLink": "Bağlantıyı kopyala",
+  "wizard.action.example": "Örnek göster",
+  "wizard.action.about": "mangomundi nedir?",
+  "wizard.action.free": "Ücretsiz mi?",
+  "wizard.action.neutral": "Tarafsız mısınız?",
+  "wizard.action.providers": "Hangi sağlayıcılar?",
+  "wizard.action.send": "Nasıl para gönderirim?",
+  "wizard.about": "mangomundi, döviz için tarafsız bir karşılaştırıcıdır. Bir tutar ve rota girin; 50+ sağlayıcının canlı kurlarını, ücretlerini, teslim sürelerini ve ödeme seçeneklerini gerçek zamanlı karşılaştırır — paranızı taşımanın en iyi yolunu seçin. Hesap yok, kayıt yok.",
+  "wizard.free": "Evet — karşılaştırma tamamen ücretsiz, kayıt gerektirmez. mangomundi kurlara asla marj eklemez; her zaman seçtiğiniz sağlayıcıyla doğrudan işlem yaparsınız. (Şirketler API erişimi ve yönlendirme gibi ücretli araçları tercih edebilir.)",
+  "wizard.neutral": "mangomundi tarafsızdır: sağlayıcılar yalnızca sayılara göre sıralanır — alınan tutar, toplam ücretler ve teslim süresi — asla bize kim ödeme yaptığına göre değil. Bir sağlayıcıya geçtiğinizde yönlendirme ücreti alabiliriz, ancak bu sıralamayı veya gördüğünüz kurları asla değiştirmez.",
+  "wizard.providers": "mangomundi her rota için 50+ düzenlenmiş transfer sağlayıcısını ve döviz hizmetini — bankalar, fintech'ler ve uzmanlar — karşılaştırır. Tam liste karşılaştırdığınız koridora bağlıdır.",
+  "wizard.providers.current": "Bu rota için karşılaştırılanlar:",
+  "wizard.send": "mangomundi parayı kendisi taşımaz — size en iyi seçeneği gösterir ve transferi tamamlamanız için doğrudan o sağlayıcının sitesine yönlendirir. Karşılaştırın, bir satır seçin ve tıklayıp bitirin. Bizde hesap gerekmez.",
+  "wizard.exampleNote": "İşte canlı bir örnek — popüler bir rotayı karşılaştırıyoruz. Kendinizinkini karşılaştırmak için yukarıdan tutarı veya ülkeleri değiştirin.",
+  "wizard.moreQuestions": "Daha fazla soru"
 }

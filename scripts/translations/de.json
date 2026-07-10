@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Mid-Market-Wechselkurs",
   "comparator.copilot.business.countryError": "Bitte wählen Sie oben sowohl das Herkunfts- als auch das Zielland aus, bevor wir fortfahren.",
   "blog.share.label": "Teilen",
-  "blog.share.copyLink": "Link kopieren"
+  "blog.share.copyLink": "Link kopieren",
+  "wizard.action.example": "Beispiel ansehen",
+  "wizard.action.about": "Was ist mangomundi?",
+  "wizard.action.free": "Ist es kostenlos?",
+  "wizard.action.neutral": "Seid ihr neutral?",
+  "wizard.action.providers": "Welche Anbieter?",
+  "wizard.action.send": "Wie sende ich Geld?",
+  "wizard.about": "mangomundi ist ein neutraler Vergleich für Währungsumtausch. Geben Sie Betrag und Route ein, und es vergleicht in Echtzeit Live-Kurse, Gebühren, Lieferzeiten und Auszahlungsoptionen von 50+ Anbietern — damit Sie den besten Weg für Ihr Geld wählen. Ohne Konto, ohne Anmeldung.",
+  "wizard.free": "Ja — der Vergleich ist komplett kostenlos, ohne Anmeldung. mangomundi schlägt nie etwas auf die Kurse auf; Sie handeln immer direkt mit dem gewählten Anbieter. (Unternehmen können kostenpflichtige Tools wie API-Zugang und Routing hinzubuchen.)",
+  "wizard.neutral": "mangomundi ist neutral: Anbieter werden rein nach den Zahlen sortiert — Empfangsbetrag, Gesamtgebühren und Lieferzeit — nie danach, wer uns bezahlt. Wir erhalten evtl. eine Vermittlungsprovision, wenn Sie zu einem Anbieter weitergehen, aber das ändert nie die Rangfolge oder die angezeigten Kurse.",
+  "wizard.providers": "mangomundi vergleicht 50+ regulierte Transfer-Anbieter und Wechseldienste — Banken, Fintechs und Spezialisten — für jede Route. Die genaue Liste hängt vom verglichenen Korridor ab.",
+  "wizard.providers.current": "Für diese Route wird verglichen:",
+  "wizard.send": "mangomundi bewegt das Geld nicht selbst — es zeigt Ihnen die beste Option und leitet Sie direkt zum Anbieter, um den Transfer auf dessen Seite abzuschließen. Vergleichen, eine Zeile wählen und durchklicken. Kein Konto bei uns nötig.",
+  "wizard.exampleNote": "Hier ein Live-Beispiel — eine beliebte Route wird verglichen. Ändern Sie oben Betrag oder Länder, um Ihre eigene zu vergleichen.",
+  "wizard.moreQuestions": "Weitere Fragen"
 }

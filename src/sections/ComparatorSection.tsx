@@ -44,6 +44,11 @@ import {
   localHowToCompare,
   localTransferLimits,
   localFeeBreakdown,
+  localAbout,
+  localFree,
+  localNeutral,
+  localSend,
+  localProviders,
   type WizardAction,
 } from "@/components/AiCopilot";
 import { Button } from "@/components/ui/button";
@@ -458,6 +463,43 @@ export function ComparatorSection({
       ]);
       return;
     }
+
+    // "Run an example" — the no-AI path INTO the comparator: fill a sensible
+    // corridor if the form is incomplete, then run the real comparison. Guides
+    // a first-time user straight to results without typing anything.
+    if (action.id === "example") {
+      if (!receivingCountry) setReceivingCountry(sendingCountry === "US" ? "MX" : "US");
+      setValidationError(null);
+      setChat((c) => [
+        ...c,
+        { role: "user", content: t(action.label) },
+        { role: "assistant", content: t("wizard.exampleNote") },
+      ]);
+      requestAnimationFrame(() => compareMut.mutate(undefined));
+      return;
+    }
+
+    // Product / onboarding answers — static copy, no AI, and NO prior
+    // comparison required, so the whole tree works for a first-time visitor.
+    const infoReply: Record<string, () => string> = {
+      about: () => localAbout(t),
+      how: () => localHowToCompare(t),
+      free: () => localFree(t),
+      neutral: () => localNeutral(t),
+      send: () => localSend(t),
+      providers: () => localProviders(result, t),
+    };
+    if (infoReply[action.id]) {
+      setChat((c) => [
+        ...c,
+        { role: "user", content: t(action.label) },
+        { role: "assistant", content: infoReply[action.id]() },
+      ]);
+      return;
+    }
+
+    // Data-dependent answers (fees / limits) read the current table — need a
+    // comparison first.
     if (!result) {
       setChat((c) => [
         ...c,
@@ -466,16 +508,9 @@ export function ComparatorSection({
       ]);
       return;
     }
-    // "how" / "limits" / "fees" are answered locally from data already on
-    // the client — zero AI tokens spent, restoring the Wizard's original
-    // "resolved without AI" design. Only free-typed questions reach the AI.
-    if (action.id === "how" || action.id === "limits" || action.id === "fees") {
+    if (action.id === "limits" || action.id === "fees") {
       const reply =
-        action.id === "how"
-          ? localHowToCompare(t)
-          : action.id === "limits"
-            ? localTransferLimits(result, t)
-            : localFeeBreakdown(result, t);
+        action.id === "limits" ? localTransferLimits(result, t) : localFeeBreakdown(result, t);
       setChat((c) => [
         ...c,
         { role: "user", content: t(action.label) },
@@ -702,7 +737,12 @@ export function ComparatorSection({
         // nothing else in this flow checked it, so it was possible to reach
         // email/consent/submit with receivingCountry still "" and fail the
         // server-side schema (agent.functions.ts requires exactly 2 chars).
-        if (!sendingCountry || sendingCountry.length !== 2 || !receivingCountry || receivingCountry.length !== 2) {
+        if (
+          !sendingCountry ||
+          sendingCountry.length !== 2 ||
+          !receivingCountry ||
+          receivingCountry.length !== 2
+        ) {
           setChat((current) => [
             ...current,
             { role: "assistant", content: t("comparator.copilot.business.countryError") },
@@ -926,9 +966,7 @@ export function ComparatorSection({
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.targetCurrency")}
                       triggerClassName={
-                        from === to
-                          ? `${WHITE_FIELD} ring-2 ring-[#ff6b5b]/60`
-                          : WHITE_FIELD
+                        from === to ? `${WHITE_FIELD} ring-2 ring-[#ff6b5b]/60` : WHITE_FIELD
                       }
                     />
                   </FieldLight>
@@ -980,11 +1018,11 @@ export function ComparatorSection({
                   className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 scroll-mt-24"
                 >
                   <span className="font-heading text-base font-bold text-white sm:text-lg">
-                    1 {from} = {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })} {to}
+                    1 {from} ={" "}
+                    {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+                    {to}
                   </span>
-                  <span className="text-xs text-slate-400">
-                    {t("comparator.midMarketRate")}
-                  </span>
+                  <span className="text-xs text-slate-400">{t("comparator.midMarketRate")}</span>
                 </div>
               )}
 
@@ -1325,6 +1363,17 @@ function FloatingAgent(p: FloatingAgentProps) {
                   </div>
                 )}
                 <div ref={chatBottomRef} />
+              </div>
+            )}
+
+            {/* Persistent quick-action tree — stays available after answers so
+                the whole product can be explored without free-typing/AI. */}
+            {chat.length > 0 && !aiLoading && (
+              <div className="pt-1">
+                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t("wizard.moreQuestions")}
+                </div>
+                <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
               </div>
             )}
           </div>

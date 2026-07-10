@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Tỷ giá hối đoái trung bình thị trường",
   "comparator.copilot.business.countryError": "Vui lòng chọn cả quốc gia gửi và quốc gia nhận ở trên trước khi tiếp tục.",
   "blog.share.label": "Chia sẻ",
-  "blog.share.copyLink": "Sao chép liên kết"
+  "blog.share.copyLink": "Sao chép liên kết",
+  "wizard.action.example": "Xem ví dụ",
+  "wizard.action.about": "mangomundi là gì?",
+  "wizard.action.free": "Có miễn phí không?",
+  "wizard.action.neutral": "Bạn có trung lập không?",
+  "wizard.action.providers": "Nhà cung cấp nào?",
+  "wizard.action.send": "Làm sao gửi tiền?",
+  "wizard.about": "mangomundi là công cụ so sánh trung lập cho đổi ngoại tệ. Nhập số tiền và tuyến, nó so sánh theo thời gian thực tỷ giá trực tiếp, phí, thời gian giao và cách nhận tiền của hơn 50 nhà cung cấp — để bạn chọn cách tốt nhất chuyển tiền. Không tài khoản, không đăng ký.",
+  "wizard.free": "Có — so sánh hoàn toàn miễn phí, không cần đăng ký. mangomundi không bao giờ cộng thêm vào tỷ giá; bạn luôn giao dịch trực tiếp với nhà cung cấp đã chọn. (Doanh nghiệp có thể chọn công cụ trả phí như truy cập API và định tuyến.)",
+  "wizard.neutral": "mangomundi trung lập: nhà cung cấp được xếp hạng thuần theo các con số — số tiền nhận, tổng phí và thời gian giao — không bao giờ theo ai trả tiền cho chúng tôi. Chúng tôi có thể nhận phí giới thiệu khi bạn tiếp tục đến nhà cung cấp, nhưng điều đó không bao giờ thay đổi thứ hạng hay tỷ giá bạn thấy.",
+  "wizard.providers": "mangomundi so sánh hơn 50 nhà cung cấp chuyển tiền và dịch vụ đổi tiền được quản lý — ngân hàng, fintech và chuyên gia — cho mỗi tuyến. Danh sách chính xác tùy theo hành lang bạn so sánh.",
+  "wizard.providers.current": "Cho tuyến này đang so sánh:",
+  "wizard.send": "mangomundi không tự chuyển tiền — nó cho bạn lựa chọn tốt nhất rồi đưa bạn thẳng đến nhà cung cấp để hoàn tất giao dịch trên trang của họ. So sánh, chọn một hàng và nhấp để hoàn tất. Không cần tài khoản với chúng tôi.",
+  "wizard.exampleNote": "Đây là ví dụ trực tiếp — đang so sánh một tuyến phổ biến. Đổi số tiền hoặc quốc gia ở trên để so sánh tuyến của bạn.",
+  "wizard.moreQuestions": "Thêm câu hỏi"
 }

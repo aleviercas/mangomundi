@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Mid-market na palitan ng pera",
   "comparator.copilot.business.countryError": "Pakipili muna sa itaas ang bansang pinagmulan at patutunguhan bago tayo magpatuloy.",
   "blog.share.label": "I-share",
-  "blog.share.copyLink": "Kopyahin ang link"
+  "blog.share.copyLink": "Kopyahin ang link",
+  "wizard.action.example": "Tingnan ang halimbawa",
+  "wizard.action.about": "Ano ang mangomundi?",
+  "wizard.action.free": "Libre ba?",
+  "wizard.action.neutral": "Neutral ba kayo?",
+  "wizard.action.providers": "Aling mga provider?",
+  "wizard.action.send": "Paano magpadala ng pera?",
+  "wizard.about": "Ang mangomundi ay isang neutral na comparator para sa palitan ng pera. Maglagay ng halaga at ruta, at inihahambing nito nang real time ang live na rate, bayarin, bilis ng paghahatid, at paraan ng pagtanggap ng 50+ provider — para mapili mo ang pinakamahusay na paraan ng paglipat ng pera. Walang account, walang sign-up.",
+  "wizard.free": "Oo — libre nang lubos ang paghahambing, walang sign-up. Hindi kailanman nagdaragdag ng markup ang mangomundi sa rate; palaging direkta kang nakikipagtransaksyon sa napili mong provider. (Maaaring pumili ang mga negosyo ng bayad na tool tulad ng API access at routing.)",
+  "wizard.neutral": "Neutral ang mangomundi: niraranggo ang mga provider batay lang sa mga numero — halagang natanggap, kabuuang bayarin, at bilis ng paghahatid — hindi kailanman batay sa kung sino ang nagbabayad sa amin. Maaari kaming kumita ng referral fee kapag nagpatuloy ka sa isang provider, pero hindi nito binabago ang ranggo o ang mga rate na nakikita mo.",
+  "wizard.providers": "Naghahambing ang mangomundi ng 50+ regulated na provider ng transfer at serbisyo ng palitan — mga bangko, fintech, at espesyalista — para sa bawat ruta. Ang eksaktong listahan ay nakadepende sa corridor na inihahambing mo.",
+  "wizard.providers.current": "Para sa rutang ito, inihahambing:",
+  "wizard.send": "Hindi mismo naglilipat ng pera ang mangomundi — ipinapakita nito ang pinakamahusay na opsyon, tapos dinadala ka diretso sa provider na iyon para tapusin ang transfer sa site nila. Maghambing, pumili ng row, at mag-click para matapos. Walang account na kailangan sa amin.",
+  "wizard.exampleNote": "Narito ang live na halimbawa — naghahambing ng sikat na ruta ngayon. Baguhin ang halaga o mga bansa sa itaas para ihambing ang sa iyo.",
+  "wizard.moreQuestions": "Iba pang tanong"
 }

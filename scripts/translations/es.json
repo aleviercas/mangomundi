@@ -618,5 +618,19 @@
   "home.hero.titlePost": "de forma inteligente",
   "comparator.field.youReceive": "Recibís",
   "comparator.swap": "Intercambiar monedas",
-  "comparator.midMarketRate": "Tipo de cambio interbancario (mid-market)"
+  "comparator.midMarketRate": "Tipo de cambio interbancario (mid-market)",
+  "wizard.action.example": "Ver un ejemplo",
+  "wizard.action.about": "¿Qué es mangomundi?",
+  "wizard.action.free": "¿Es gratis?",
+  "wizard.action.neutral": "¿Son neutrales?",
+  "wizard.action.providers": "¿Qué proveedores?",
+  "wizard.action.send": "¿Cómo envío dinero?",
+  "wizard.about": "mangomundi es un comparador neutral de cambio de divisas. Ingresá un monto y una ruta y compara en tiempo real tipos en vivo, comisiones, tiempos de entrega y formas de cobro de 50+ proveedores — para que elijas la mejor forma de mover tu dinero. Sin cuenta, sin registro.",
+  "wizard.free": "Sí — comparar es totalmente gratis, sin registro. mangomundi nunca agrega margen a los tipos; siempre operás directo con el proveedor que elegís. (Las empresas pueden sumar herramientas de pago como acceso API y enrutamiento.)",
+  "wizard.neutral": "mangomundi es neutral: los proveedores se ordenan solo por los números — monto recibido, comisiones totales y tiempo de entrega — nunca por quién nos paga. Podemos cobrar una comisión de referido cuando seguís a un proveedor, pero eso nunca cambia el orden ni los tipos que ves.",
+  "wizard.providers": "mangomundi compara 50+ proveedores de transferencias y servicios de cambio regulados — bancos, fintechs y especialistas — para cada ruta. La lista exacta depende del corredor que compares.",
+  "wizard.providers.current": "Para esta ruta está comparando:",
+  "wizard.send": "mangomundi no mueve el dinero: te muestra la mejor opción y te lleva directo a ese proveedor para completar la transferencia en su sitio. Compará, elegí una fila y hacé clic para terminar. No necesitás cuenta con nosotros.",
+  "wizard.exampleNote": "Acá tenés un ejemplo en vivo — comparando una ruta popular. Cambiá el monto o los países arriba para comparar la tuya.",
+  "wizard.moreQuestions": "Más preguntas"
 }

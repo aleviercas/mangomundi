@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "仲値レート（ミッドマーケットレート）",
   "comparator.copilot.business.countryError": "続ける前に、上記で出発国と受取国の両方を選択してください。",
   "blog.share.label": "シェア",
-  "blog.share.copyLink": "リンクをコピー"
+  "blog.share.copyLink": "リンクをコピー",
+  "wizard.action.example": "例を見る",
+  "wizard.action.about": "mangomundiとは？",
+  "wizard.action.free": "無料ですか？",
+  "wizard.action.neutral": "中立ですか？",
+  "wizard.action.providers": "どの事業者？",
+  "wizard.action.send": "送金方法は？",
+  "wizard.about": "mangomundiは外貨両替の中立的な比較ツールです。金額とルートを入力すると、50社以上のライブレート・手数料・所要時間・受取方法をリアルタイムで比較 — お金を動かす最適な方法を選べます。アカウント不要、登録不要。",
+  "wizard.free": "はい — 比較は完全無料で登録不要です。mangomundiがレートに上乗せすることはなく、常に選んだ事業者と直接取引します。（企業はAPIアクセスやルーティングなどの有料ツールを利用できます。）",
+  "wizard.neutral": "mangomundiは中立です。事業者は数字だけで順位付けされます — 受取額・合計手数料・所要時間 — 誰が支払うかは関係ありません。事業者へ進むと紹介手数料を得ることがありますが、順位や表示レートを変えることは一切ありません。",
+  "wizard.providers": "mangomundiは各ルートで50社以上の規制対象の送金事業者・両替サービス（銀行・フィンテック・専門業者）を比較します。正確なリストは比較する回廊によって変わります。",
+  "wizard.providers.current": "このルートで比較中：",
+  "wizard.send": "mangomundi自体はお金を動かしません — 最適な選択肢を示し、その事業者のサイトへ直接ご案内して送金を完了します。比較して行を選び、クリックして完了。当社のアカウントは不要です。",
+  "wizard.exampleNote": "こちらがライブの例です — 人気ルートを比較中。上の金額や国を変えてご自身のルートを比較できます。",
+  "wizard.moreQuestions": "他の質問"
 }

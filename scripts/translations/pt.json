@@ -621,5 +621,19 @@
   "comparator.midMarketRate": "Taxa de câmbio interbancária (mid-market)",
   "comparator.copilot.business.countryError": "Selecione o país de origem e o de destino acima antes de continuarmos.",
   "blog.share.label": "Partilhar",
-  "blog.share.copyLink": "Copiar link"
+  "blog.share.copyLink": "Copiar link",
+  "wizard.action.example": "Ver um exemplo",
+  "wizard.action.about": "O que é a mangomundi?",
+  "wizard.action.free": "É grátis?",
+  "wizard.action.neutral": "Vocês são neutros?",
+  "wizard.action.providers": "Quais provedores?",
+  "wizard.action.send": "Como envio dinheiro?",
+  "wizard.about": "A mangomundi é um comparador neutro de câmbio. Insira um valor e uma rota e ela compara em tempo real taxas ao vivo, tarifas, prazos de entrega e formas de recebimento de mais de 50 provedores — para você escolher a melhor forma de mover seu dinheiro. Sem conta, sem cadastro.",
+  "wizard.free": "Sim — comparar é totalmente grátis, sem cadastro. A mangomundi nunca adiciona margem às taxas; você sempre transaciona direto com o provedor escolhido. (Empresas podem optar por ferramentas pagas como acesso à API e roteamento.)",
+  "wizard.neutral": "A mangomundi é neutra: os provedores são ordenados só pelos números — valor recebido, tarifas totais e prazo de entrega — nunca por quem nos paga. Podemos receber uma comissão de indicação quando você segue para um provedor, mas isso nunca muda a ordem nem as taxas que você vê.",
+  "wizard.providers": "A mangomundi compara mais de 50 provedores de transferência e serviços de câmbio regulados — bancos, fintechs e especialistas — para cada rota. A lista exata depende do corredor comparado.",
+  "wizard.providers.current": "Para esta rota está comparando:",
+  "wizard.send": "A mangomundi não move o dinheiro — ela mostra a melhor opção e leva você direto ao provedor para concluir a transferência no site dele. Compare, escolha uma linha e clique para finalizar. Não precisa de conta conosco.",
+  "wizard.exampleNote": "Aqui está um exemplo ao vivo — comparando uma rota popular. Altere o valor ou os países acima para comparar a sua.",
+  "wizard.moreQuestions": "Mais perguntas"
 }
