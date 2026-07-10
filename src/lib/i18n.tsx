@@ -461,7 +461,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.widget.hint":
       "Paste it anywhere in your HTML. The widget is free and runs in an isolated iframe — no code conflicts, no tracking added to your site.",
     // Footer
-    "footer.tagline": "Intelligent currency exchange decisions.",
+    "footer.tagline": "Smart currency exchange comparison, powered by AI.",
     "footer.nav.title": "Navigate",
     "footer.legal.title": "Legal & Compliance",
     "footer.nav.home": "Home",
@@ -771,7 +771,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.widget.hint":
       "Pegalo en cualquier parte de tu HTML. El widget es gratis y corre en un iframe aislado — sin conflictos de código ni tracking agregado a tu sitio.",
     // Footer
-    "footer.tagline": "Decisiones inteligentes de cambio de divisas.",
+    "footer.tagline": "Comparación inteligente de cambio de divisas, con IA.",
     "footer.nav.title": "Navegación",
     "footer.legal.title": "Legal y Cumplimiento",
     "footer.nav.home": "Inicio",
@@ -1860,7 +1860,7 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
 const UI_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "footer.navigate": "Navigate",
-    "footer.tagline": "Intelligent currency exchange decisions.",
+    "footer.tagline": "Smart currency exchange comparison, powered by AI.",
     "footer.copyright": "All rights reserved.",
     "footer.disclaimerLabel": "disclaimer",
     "common.close": "Close",
@@ -2917,121 +2917,108 @@ export interface SeoMeta {
   title: string;
   description: string;
 }
-const SEO_META_TRANSLATED: Record<Lang, SeoMeta> = {
+export const SEO_META: Record<Lang, SeoMeta> = {
   en: {
-    title: "Intelligent Currency Exchange — mangomundi",
+    title: "mangomundi — Smart currency exchange comparison with AI",
     description:
-      "AI agent for global and local payments. Best rates for individuals and businesses.",
+      "Compare exchange rates, fees, routes and delivery speeds across 50+ providers in real time with AI. Live rates, zero fees, no sign-up.",
   },
   es: {
-    title: "mangomundi | Decisiones inteligentes de cambio de divisas y pagos globales",
+    title: "mangomundi — Comparador inteligente de cambio de divisas con IA",
     description:
-      "Agente de IA para individuos y tesorería corporativa. Optimización y transparencia en tus operaciones de cambio y pagos internacionales.",
+      "Compará tipos de cambio, fees, rutas y tiempos de entrega de 50+ proveedores en tiempo real con IA. Tasas en vivo, cero comisiones, sin registro.",
   },
   pt: {
-    title: "mangomundi | Decisões inteligentes de câmbio e pagamentos globais",
+    title: "mangomundi — Comparador inteligente de câmbio com IA",
     description:
-      "Agente de IA para indivíduos e tesouraria corporativa. Otimização e transparência em suas operações de câmbio e pagamentos internacionais.",
+      "Compare taxas de câmbio, tarifas, rotas e prazos de entrega de mais de 50 provedores em tempo real com IA. Taxas ao vivo, zero tarifas, sem cadastro.",
   },
   it: {
-    title: "mangomundi | Decisioni intelligenti sui cambi e pagamenti globali",
+    title: "mangomundi — Comparatore intelligente di cambio valute con IA",
     description:
-      "Agente IA per privati e tesoreria aziendale. Ottimizzazione e trasparenza nelle operazioni di cambio e pagamenti internazionali.",
+      "Confronta tassi di cambio, commissioni, rotte e tempi di consegna di oltre 50 provider in tempo reale con l'IA. Tassi live, zero commissioni, senza registrazione.",
   },
   fr: {
-    title: "mangomundi | Décisions intelligentes de change et de paiements mondiaux",
+    title: "mangomundi — Comparateur intelligent de change avec l'IA",
     description:
-      "Agent IA pour les particuliers et la trésorerie d'entreprise. Optimisation et transparence de vos opérations de change et paiements internationaux.",
+      "Comparez taux de change, frais, routes et délais de livraison de 50+ prestataires en temps réel avec l'IA. Taux en direct, zéro frais, sans inscription.",
   },
   de: {
-    title: "mangomundi | Intelligente Entscheidungen für Devisen und globale Zahlungen",
+    title: "mangomundi — Intelligenter Währungsvergleich mit KI",
     description:
-      "KI-Agent für Privatpersonen und Unternehmensschatzämter. Optimierung und Transparenz bei Ihren Devisen- und internationalen Zahlungsgeschäften.",
+      "Vergleichen Sie Wechselkurse, Gebühren, Routen und Lieferzeiten von 50+ Anbietern in Echtzeit mit KI. Live-Kurse, keine Gebühren, ohne Anmeldung.",
   },
   pl: {
-    title: "mangomundi | Inteligentne decyzje w zakresie wymiany walut i płatności globalnych",
+    title: "mangomundi — Inteligentny porównywacz wymiany walut z AI",
     description:
-      "Agent AI dla klientów indywidualnych i skarbców korporacyjnych. Optymalizacja i przejrzystość w operacjach wymiany walut i płatnościach międzynarodowych.",
+      "Porównaj kursy walut, opłaty, trasy i czasy dostawy ponad 50 dostawców w czasie rzeczywistym z AI. Kursy na żywo, zero opłat, bez rejestracji.",
   },
   ru: {
-    title: "mangomundi | Умные решения по обмену валют и глобальным платежам",
+    title: "mangomundi — Умное сравнение обмена валют с ИИ",
     description:
-      "AI-агент для частных лиц и корпоративных казначейств. Оптимизация и прозрачность ваших операций по обмену валют и международным платежам.",
+      "Сравнивайте курсы, комиссии, маршруты и сроки доставки 50+ провайдеров в реальном времени с ИИ. Живые курсы, ноль комиссий, без регистрации.",
   },
   tr: {
-    title: "mangomundi | Döviz ve küresel ödemeler için akıllı kararlar",
+    title: "mangomundi — Yapay zekâ ile akıllı döviz karşılaştırma",
     description:
-      "Bireyler ve kurumsal hazineler için AI Ajanı. Döviz ve uluslararası ödeme işlemlerinizde optimizasyon ve şeffaflık.",
+      "50+ sağlayıcının döviz kurlarını, ücretlerini, rotalarını ve teslim sürelerini yapay zekâyla gerçek zamanlı karşılaştırın. Canlı kurlar, sıfır ücret, kayıt yok.",
   },
   bn: {
-    title: "mangomundi | মুদ্রা বিনিময় ও বৈশ্বিক পেমেন্টের জন্য স্মার্ট সিদ্ধান্ত",
+    title: "mangomundi — AI দিয়ে স্মার্ট মুদ্রা বিনিময় তুলনা",
     description:
-      "ব্যক্তি ও কর্পোরেট ট্রেজারির জন্য AI এজেন্ট। আপনার মুদ্রা বিনিময় ও আন্তর্জাতিক পেমেন্ট পরিচালনায় অপ্টিমাইজেশন ও স্বচ্ছতা।",
+      "৫০+ প্রদানকারীর বিনিময় হার, ফি, রুট ও ডেলিভারি সময় AI দিয়ে রিয়েল টাইমে তুলনা করুন। লাইভ রেট, শূন্য ফি, সাইন-আপ ছাড়া।",
   },
   ur: {
-    title: "mangomundi | کرنسی کے تبادلے اور عالمی ادائیگیوں کے لیے ذہین فیصلے",
+    title: "mangomundi — AI کے ساتھ اسمارٹ کرنسی ایکسچینج موازنہ",
     description:
-      "افراد اور کارپوریٹ ٹریژری کے لیے AI ایجنٹ۔ آپ کی کرنسی ایکسچینج اور بین الاقوامی ادائیگی کے کاموں میں اصلاح اور شفافیت۔",
+      "50+ فراہم کنندگان کی شرحِ مبادلہ، فیس، روٹس اور ترسیل کے اوقات کا AI کے ساتھ حقیقی وقت میں موازنہ کریں۔ براہ راست ریٹس، صفر فیس، بغیر سائن اپ۔",
   },
   th: {
-    title: "mangomundi | การตัดสินใจอัจฉริยะด้านการแลกเปลี่ยนเงินตราและการชำระเงินทั่วโลก",
+    title: "mangomundi — เปรียบเทียบแลกเปลี่ยนเงินตราอัจฉริยะด้วย AI",
     description:
-      "AI Agent สำหรับบุคคลและคลังของบริษัท การเพิ่มประสิทธิภาพและความโปร่งใสในการแลกเปลี่ยนสกุลเงินและการชำระเงินระหว่างประเทศ",
+      "เปรียบเทียบอัตราแลกเปลี่ยน ค่าธรรมเนียม เส้นทาง และเวลาส่งของผู้ให้บริการ 50+ รายแบบเรียลไทม์ด้วย AI เรตสด ไม่มีค่าธรรมเนียม ไม่ต้องสมัคร",
   },
   hi: {
-    title: "mangomundi | मुद्रा विनिमय और वैश्विक भुगतान के लिए स्मार्ट निर्णय",
+    title: "mangomundi — AI के साथ स्मार्ट मुद्रा विनिमय तुलना",
     description:
-      "व्यक्तियों और कॉर्पोरेट खजाने के लिए AI एजेंट। आपके मुद्रा विनिमय और अंतर्राष्ट्रीय भुगतान कार्यों में अनुकूलन और पारदर्शिता।",
+      "50+ प्रदाताओं की विनिमय दरें, शुल्क, रूट और डिलीवरी समय की AI के साथ रीयल-टाइम में तुलना करें। लाइव दरें, शून्य शुल्क, बिना साइन-अप।",
   },
   zh: {
-    title: "mangomundi | 智能外汇与全球支付决策",
-    description: "面向个人与企业财务的 AI 代理。为您提供优化且透明的外汇与国际支付操作方案。",
+    title: "mangomundi — 用 AI 智能比较货币兑换",
+    description:
+      "用 AI 实时比较 50+ 服务商的汇率、费用、路线和到账时间。实时汇率、零费用、无需注册。",
   },
   id: {
-    title: "mangomundi | Keputusan cerdas terkait valas dan pembayaran global",
+    title: "mangomundi — Perbandingan penukaran mata uang cerdas dengan AI",
     description:
-      "Agen AI untuk individu dan perbendaharaan perusahaan. Optimalisasi dan transparansi dalam operasional valas dan pembayaran internasional Anda.",
+      "Bandingkan kurs, biaya, rute, dan waktu pengiriman dari 50+ penyedia secara real time dengan AI. Kurs langsung, nol biaya, tanpa daftar.",
   },
   tl: {
-    title: "mangomundi | Matalinong desisyon sa foreign exchange at global payments",
+    title: "mangomundi — Matalinong paghahambing ng palitan ng pera gamit ang AI",
     description:
-      "AI Agent para sa mga indibidwal at corporate treasury. Optimization at transparency sa iyong currency exchange at international payment operations.",
+      "Ihambing ang mga exchange rate, bayarin, ruta, at bilis ng paghahatid ng 50+ provider nang real time gamit ang AI. Live na rate, walang bayarin, walang sign-up.",
   },
   ar: {
-    title: "mangomundi | قرارات ذكية بشأن العملات الأجنبية والمدفوعات العالمية",
+    title: "mangomundi — مقارنة ذكية لصرف العملات بالذكاء الاصطناعي",
     description:
-      "وكيل ذكاء اصطناعي للأفراد وخزائن الشركات. التحسين والشفافية في عمليات صرف العملات والمدفوعات الدولية الخاصة بك.",
+      "قارن أسعار الصرف والرسوم والمسارات وأوقات التسليم لأكثر من 50 مزودًا في الوقت الفعلي بالذكاء الاصطناعي. أسعار مباشرة، بدون رسوم، بدون تسجيل.",
   },
   vi: {
-    title: "mangomundi | Quyết định thông minh về ngoại hối và thanh toán toàn cầu",
+    title: "mangomundi — So sánh đổi ngoại tệ thông minh với AI",
     description:
-      "AI Agent dành cho cá nhân và kho bạc doanh nghiệp. Tối ưu hóa và tính minh bạch trong hoạt động trao đổi tiền tệ và thanh toán quốc tế của bạn.",
+      "So sánh tỷ giá, phí, tuyến và thời gian giao của 50+ nhà cung cấp theo thời gian thực với AI. Tỷ giá trực tiếp, không phí, không cần đăng ký.",
   },
   ja: {
-    title: "mangomundi | 為替とグローバル決済に関するインテリジェントな意思決定",
+    title: "mangomundi — AIによるスマートな外貨両替比較",
     description:
-      "個人および企業財務向けの AI エージェント。外貨両替および国際決済業務における最適化と透明性を提供します。",
+      "50社以上の為替レート・手数料・ルート・所要時間をAIでリアルタイムに比較。ライブレート、手数料ゼロ、登録不要。",
   },
   ko: {
-    title: "mangomundi | 환율 및 글로벌 결제에 대한 지능형 의사결정",
+    title: "mangomundi — AI로 스마트하게 환전 비교",
     description:
-      "개인 및 기업 재무를 위한 AI 에이전트. 외환 거래 및 국제 결제 운영의 최적화와 투명성을 제공합니다.",
+      "50개 이상 업체의 환율, 수수료, 경로, 배송 시간을 AI로 실시간 비교하세요. 실시간 환율, 수수료 없음, 가입 불필요.",
   },
 };
-
-const UNIFIED_OG_TITLE = "Mangomundi | Intelligent currency exchange decisions";
-const UNIFIED_OG_DESCRIPTION =
-  "A transparent AI agent for global and local payments, comparing exchange rates, fees, routes, and delivery speeds in real time to find the best option for every transfer.";
-
-export const SEO_META: Record<Lang, SeoMeta> = Object.fromEntries(
-  SUPPORTED_LANGS.map((code) => [
-    code,
-    {
-      title: UNIFIED_OG_TITLE,
-      description: UNIFIED_OG_DESCRIPTION,
-    },
-  ]),
-) as Record<Lang, SeoMeta>;
 
 // === Per-route SEO (title + description) per language ===
 // Keys are route paths matching TanStack Router pathnames.
@@ -3046,9 +3033,9 @@ const ROUTE_SEO_EN: RouteSeoMap = {
       "Free for retail users — paid for businesses that need optimised routing, API access, and white-label tools. Transparent, no hidden fees.",
   },
   "/platform": {
-    title: "AI Decision Engine — mangomundi Platform",
+    title: "Platform — mangomundi",
     description:
-      "AI-powered decision and sourcing infrastructure for complex markets. FX first; insurance, brokers, SaaS and lending follow.",
+      "The AI comparison layer for cross-border payments: live rates, smart routing and transparent fees across 50+ providers. FX first; more verticals follow.",
   },
   "/features": {
     title: "Features — mangomundi",
@@ -3058,7 +3045,7 @@ const ROUTE_SEO_EN: RouteSeoMap = {
   "/insurance": {
     title: "Insurance Comparison (Coming Soon) — mangomundi",
     description:
-      "mangomundi is bringing its neutral AI decision engine to insurance: compare policies across providers with transparent pricing and coverage.",
+      "mangomundi is bringing its AI comparison engine to insurance: compare policies across providers with transparent pricing and coverage.",
   },
   "/blog": {
     title: "Blog — mangomundi",
@@ -3068,7 +3055,7 @@ const ROUTE_SEO_EN: RouteSeoMap = {
   "/about": {
     title: "About — mangomundi",
     description:
-      "mangomundi is building the neutral AI decision and sourcing layer for fragmented markets, starting with cross-border FX.",
+      "mangomundi is the AI-powered comparator for currency exchange — neutral, transparent, and built to find you the best way to move money across borders.",
   },
   "/contact": {
     title: "Contact — mangomundi",
@@ -3098,9 +3085,9 @@ const ROUTE_SEO_ES: RouteSeoMap = {
       "Gratis para usuarios retail — de pago para empresas que necesitan enrutamiento optimizado, acceso API y herramientas white-label. Transparente, sin tarifas ocultas.",
   },
   "/platform": {
-    title: "Motor de Decisión IA — Plataforma mangomundi",
+    title: "Plataforma — mangomundi",
     description:
-      "mangomundi es una infraestructura de decisión y abastecimiento impulsada por IA para mercados complejos. FX es el primer vertical — seguros, brókers, SaaS y préstamos siguen.",
+      "La capa de comparación con IA para pagos transfronterizos: tipos en vivo, enrutamiento inteligente y comisiones transparentes de 50+ proveedores. FX primero; siguen más verticales.",
   },
   "/features": {
     title: "Funcionalidades — mangomundi",
@@ -3110,7 +3097,7 @@ const ROUTE_SEO_ES: RouteSeoMap = {
   "/insurance": {
     title: "Comparador de Seguros (Próximamente) — mangomundi",
     description:
-      "mangomundi lleva su motor de decisión IA neutral a los seguros: compara pólizas entre proveedores con precios y coberturas transparentes.",
+      "mangomundi lleva su motor de comparación con IA a los seguros: compará pólizas entre proveedores con precios y coberturas transparentes.",
   },
   "/blog": {
     title: "Blog — mangomundi",
@@ -3120,7 +3107,7 @@ const ROUTE_SEO_ES: RouteSeoMap = {
   "/about": {
     title: "Nosotros — mangomundi",
     description:
-      "mangomundi construye la capa neutral de decisión y abastecimiento con IA para mercados fragmentados, empezando por FX transfronterizo.",
+      "mangomundi es el comparador de cambio de divisas con IA — neutral, transparente y hecho para encontrarte la mejor forma de mover dinero entre países.",
   },
   "/contact": {
     title: "Contacto — mangomundi",

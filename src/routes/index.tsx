@@ -12,22 +12,11 @@ import { SITE_URL, hreflangLinks } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
 
 export const Route = createFileRoute("/")({
+  // Title/description/OG come from the root head, which is per-language
+  // (SEO_META). The home just adds its own canonical, og:url, hreflang and
+  // JSON-LD so it doesn't re-pin an English-only title over the localized one.
   head: () => ({
-    meta: [
-      { title: "mangomundi — Intelligent currency exchange decisions" },
-      {
-        name: "description",
-        content:
-          "A neutral decision engine that compares cross-border routes and local currency exchange operators in real time — without bias or hidden margins.",
-      },
-      { property: "og:title", content: "mangomundi — Intelligent currency exchange decisions" },
-      {
-        property: "og:description",
-        content:
-          "Compare 50+ FX providers in real time. Transparent rates, fees, and delivery speed for every corridor.",
-      },
-      { property: "og:url", content: `${SITE_URL}/` },
-    ],
+    meta: [{ property: "og:url", content: `${SITE_URL}/` }],
     links: [{ rel: "canonical", href: `${SITE_URL}/` }, ...hreflangLinks("/")],
     scripts: [
       {
@@ -35,12 +24,12 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Mangomundi",
+          name: "mangomundi",
           url: `${SITE_URL}/`,
           logo: `${SITE_URL}/og-image.png`,
           sameAs: [],
           description:
-            "Neutral AI decision engine for cross-border payments and currency exchange.",
+            "AI-powered currency exchange comparator — compare exchange rates, fees, routes and delivery speeds across 50+ providers in real time.",
         }),
       },
       {
@@ -48,7 +37,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Mangomundi",
+          name: "mangomundi",
           url: `${SITE_URL}/`,
         }),
       },

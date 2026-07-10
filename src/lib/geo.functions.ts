@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader } from "@tanstack/react-start/server";
+import { getRequestHeader, getRequest } from "@tanstack/react-start/server";
 import { COUNTRY_TO_LANG, SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
 import { COUNTRY_BY_CODE, localCurrency } from "@/lib/countries";
 
@@ -25,6 +25,14 @@ function detectCountryFromHeaders(): string {
  */
 export const getInitialLang = createServerFn({ method: "GET" }).handler(async (): Promise<Lang> => {
   try {
+    // An explicit ?lang= wins — this is what the hreflang alternates point to
+    // (/?lang=de, /?lang=es …), so crawlers hitting an alternate must get that
+    // language's SSR <title>/<meta>, not the geo-IP default.
+    const url = getRequest()?.url;
+    if (url) {
+      const q = new URL(url).searchParams.get("lang")?.toLowerCase();
+      if (q && (SUPPORTED_LANGS as string[]).includes(q)) return q as Lang;
+    }
     const country = detectCountryFromHeaders();
     if (country && country in COUNTRY_TO_LANG) {
       return COUNTRY_TO_LANG[country];
@@ -51,17 +59,19 @@ export const getVisitorCountry = createServerFn({ method: "GET" }).handler(async
 });
 
 /** Returns { country, currency } for the visitor based on IP geolocation. */
-export const getVisitorGeo = createServerFn({ method: "GET" }).handler(async (): Promise<{
-  country: string;
-  currency: string;
-}> => {
-  try {
-    const country = detectCountryFromHeaders();
-    if (country) {
-      return { country, currency: localCurrency(country) };
+export const getVisitorGeo = createServerFn({ method: "GET" }).handler(
+  async (): Promise<{
+    country: string;
+    currency: string;
+  }> => {
+    try {
+      const country = detectCountryFromHeaders();
+      if (country) {
+        return { country, currency: localCurrency(country) };
+      }
+    } catch {
+      // fall through
     }
-  } catch {
-    // fall through
-  }
-  return { country: "GB", currency: "GBP" };
-});
+    return { country: "GB", currency: "GBP" };
+  },
+);

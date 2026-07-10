@@ -12,6 +12,7 @@ import { Footer } from "@/components/Footer";
 import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 
+import { SITE_URL } from "@/config/site";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -84,6 +85,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   },
   head: ({ loaderData }) => {
     const seo = SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en;
+    // Absolute URL — social crawlers (WhatsApp/X/LinkedIn/Facebook) reject
+    // relative og:image paths, so the card would never render.
+    const ogImage = `${SITE_URL}/og-image.png`;
     return {
       meta: [
         { charSet: "utf-8" },
@@ -95,19 +99,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
         { property: "og:type", content: "website" },
-        { property: "og:image", content: "/og-image.png" },
+        { property: "og:image", content: ogImage },
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+        { property: "og:image:alt", content: "mangomundi — smart currency exchange comparison" },
         { property: "og:site_name", content: "mangomundi" },
         { name: "twitter:card", content: "summary_large_image" },
         { name: "twitter:site", content: "@mangomundi" },
         { name: "twitter:title", content: seo.title },
         { name: "twitter:description", content: seo.description },
-        { name: "twitter:image", content: "/og-image.png" },
-        { title: "Mangomundi" },
-        { property: "og:title", content: "Mangomundi" },
-        { name: "twitter:title", content: "Mangomundi" },
-        { name: "description", content: "Intelligent currency exchange decisions" },
-        { property: "og:description", content: "Intelligent currency exchange decisions" },
-        { name: "twitter:description", content: "Intelligent currency exchange decisions" },
+        { name: "twitter:image", content: ogImage },
       ],
       links: [
         { rel: "stylesheet", href: appCss },
