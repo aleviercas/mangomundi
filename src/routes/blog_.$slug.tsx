@@ -17,7 +17,7 @@ const postQuery = (slug: string, locale: string) =>
 const truncate = (s: string, max = 160) =>
   s.length <= max ? s : s.slice(0, max - 1).trimEnd() + "…";
 
-export const Route = createFileRoute("/blog/$slug")({
+export const Route = createFileRoute("/blog_/$slug")({
   loader: async ({ params, context }) => {
     // SSR the post in the geo-detected language (cheap header read) so
     // crawlers and the first paint get the right locale; the client keeps

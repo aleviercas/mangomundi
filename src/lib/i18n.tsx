@@ -392,16 +392,18 @@ export const DICTS: Record<Lang, Dict> = {
     // Home — How it works
     "home.how.eyebrow": "How it works",
     "home.how.title": "Four steps to a better exchange rate.",
-    "home.how.s1.title": "Select",
+    "home.how.s1.title": "Enter your transfer",
     "home.how.s1.desc":
-      "Tell us who you are (individual or business), the currency you are sending, and the currency your recipient will receive.",
-    "home.how.s2.title": "Compare",
+      "Type the amount, then pick where the money is coming from and where it is going — the currencies fill in automatically.",
+    "home.how.s2.title": "Compare in real time",
     "home.how.s2.desc":
-      "Choose your currency and see all available routes and rates. Find your best match.",
-    "home.how.s3.title": "Adjust",
-    "home.how.s3.desc": "Chat with our AI agent to fine-tune the solution for your specific needs.",
-    "home.how.s4.title": "Go",
-    "home.how.s4.desc": "Complete your transfer directly with your chosen provider.",
+      "See live rates, total fees and delivery speed across 50+ providers, ranked instantly in the same box.",
+    "home.how.s3.title": "Ask the AI (optional)",
+    "home.how.s3.desc":
+      "Open the mangomundi agent to break down fees, try another route, or double-check the best option — no account needed.",
+    "home.how.s4.title": "Send with your provider",
+    "home.how.s4.desc":
+      "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
     "home.feat.liveRates": "Live Rates",
     "home.feat.zeroFees": "Zero Fees",
     "home.feat.noSignup": "No Sign-up",
@@ -2050,16 +2052,18 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.cta.button": "Access Institutional Desk",
     "home.how.title": "Four steps to a better exchange rate.",
     "home.how.subtitle": "Four simple steps to smarter cross-border payments",
-    "home.how.s1.title": "Select",
+    "home.how.s1.title": "Enter your transfer",
     "home.how.s1.desc":
-      "Tell us who you are (individual or business), the currency you are sending, and the currency your recipient will receive.",
-    "home.how.s2.title": "Compare",
+      "Type the amount, then pick where the money is coming from and where it is going — the currencies fill in automatically.",
+    "home.how.s2.title": "Compare in real time",
     "home.how.s2.desc":
-      "Choose your currency and see all available routes and rates. Find your best match.",
-    "home.how.s3.title": "Adjust",
-    "home.how.s3.desc": "Chat with our AI agent to fine-tune the solution for your specific needs.",
-    "home.how.s4.title": "Go",
-    "home.how.s4.desc": "Complete your transfer directly with your chosen provider.",
+      "See live rates, total fees and delivery speed across 50+ providers, ranked instantly in the same box.",
+    "home.how.s3.title": "Ask the AI (optional)",
+    "home.how.s3.desc":
+      "Open the mangomundi agent to break down fees, try another route, or double-check the best option — no account needed.",
+    "home.how.s4.title": "Send with your provider",
+    "home.how.s4.desc":
+      "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
     "home.platform.text": "FX is the first vertical.",
     "home.platform.brand": "mangomundi Platform",
     "home.platform.tail":
@@ -2575,7 +2579,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.liveRates": "Live rates",
     "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
     "search.guide":
-      "Select your currencies and choose between individual or business profile. Our AI Agent will immediately compare providers and real-time market rates to help you decide.",
+      "Enter an amount and choose the source and destination countries — mangomundi instantly compares live rates, fees and delivery speed across dozens of providers, no sign-up needed.",
     "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
     "search.hint": "Independent market comparison. No account required.",
     "search.verified": "Market verified",
@@ -2719,7 +2723,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.business.intro":
       "Como empresa, tus necesidades de tesorería son únicas. Indícame tu volumen mensual estimado y sector (por ejemplo: `50000, software`).",
     "comparator.copilot.business.volumeError": "Incluye el volumen mensual estimado y el sector.",
-    "comparator.copilot.business.countryError": "Selecciona el país de origen y destino arriba antes de continuar.",
+    "comparator.copilot.business.countryError":
+      "Selecciona el país de origen y destino arriba antes de continuar.",
     "comparator.copilot.business.email":
       "Gracias. Con este volumen, las mejores tarifas institucionales son **{providers}**. Confirma tu email corporativo para continuar.",
     "comparator.copilot.business.emailError": "Introduce un email corporativo válido.",
