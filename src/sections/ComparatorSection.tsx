@@ -932,7 +932,7 @@ export function ComparatorSection({
 
                 {/* Swap — click to flip FROM/TO (and the country panel below,
                     if Business). Rotated 90° when the row stacks vertically. */}
-                <div className="flex items-center justify-center py-0.5 @2xl:py-0">
+                <div className="flex items-center justify-center py-0.5 @2xl:flex-col @2xl:justify-end @2xl:pb-1">
                   <button
                     type="button"
                     onClick={() => {
