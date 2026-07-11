@@ -634,5 +634,6 @@
   "wizard.send": "mangomundi non sposta il denaro — ti mostra l'opzione migliore e ti porta direttamente dal provider per completare il trasferimento sul suo sito. Confronta, scegli una riga e clicca per finire. Nessun account con noi.",
   "wizard.exampleNote": "Ecco un esempio dal vivo — confronto di una rotta popolare. Cambia importo o paesi sopra per confrontare la tua.",
   "wizard.moreQuestions": "Altre domande",
-  "home.how.aiAside": "Apri l'agente mangomundi per scomporre le commissioni, provare un'altra rotta o verificare l'opzione migliore — senza account."
+  "home.how.aiAside": "Apri l'agente mangomundi per scomporre le commissioni, provare un'altra rotta o verificare l'opzione migliore — senza account.",
+  "home.blog.viewAll": "Vedi tutti gli articoli"
 }
