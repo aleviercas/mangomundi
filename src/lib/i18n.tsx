@@ -391,19 +391,18 @@ export const DICTS: Record<Lang, Dict> = {
     "compare.calculating": "Calculating optimal paths…",
     // Home — How it works
     "home.how.eyebrow": "How it works",
-    "home.how.title": "Four steps to a better exchange rate.",
+    "home.how.title": "3 steps to a better exchange rate.",
     "home.how.s1.title": "Enter your transfer",
     "home.how.s1.desc":
-      "Type the amount, then pick where the money is coming from and where it is going — the currencies fill in automatically.",
+      "Enter the amount, then choose the currency you're sending and the currency you want to receive.",
     "home.how.s2.title": "Compare in real time",
     "home.how.s2.desc":
       "See live rates, total fees and delivery speed across 50+ providers, ranked instantly in the same box.",
-    "home.how.s3.title": "Ask the AI (optional)",
+    "home.how.s3.title": "Send with your provider",
     "home.how.s3.desc":
-      "Open the mangomundi agent to break down fees, try another route, or double-check the best option — no account needed.",
-    "home.how.s4.title": "Send with your provider",
-    "home.how.s4.desc":
       "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
+    "home.how.aiAside":
+      "Not sure which option fits best? Ask the mangomundi AI agent, free and with no account needed, to break down fees or double-check your options.",
     "home.feat.liveRates": "Live Rates",
     "home.feat.zeroFees": "Zero Fees",
     "home.feat.noSignup": "No Sign-up",
@@ -700,18 +699,18 @@ export const DICTS: Record<Lang, Dict> = {
     "compare.calculating": "Calculando rutas óptimas…",
     // Home — Cómo funciona
     "home.how.eyebrow": "Cómo funciona",
-    "home.how.title": "Cuatro pasos hacia un mejor tipo de cambio.",
-    "home.how.s1.title": "Elegí",
+    "home.how.title": "3 pasos hacia un mejor tipo de cambio.",
+    "home.how.s1.title": "Elegí las monedas",
     "home.how.s1.desc":
-      "Contanos quién sos (particular o empresa) y a dónde estás enviando dinero.",
-    "home.how.s2.title": "Compará",
+      "Ingresá el monto y elegí la moneda que enviás y la que querés recibir.",
+    "home.how.s2.title": "Compará en tiempo real",
     "home.how.s2.desc":
-      "Elegí tu divisa y mirá todas las rutas y tasas disponibles. Encontrá tu mejor opción.",
-    "home.how.s3.title": "Ajustá",
+      "Mirá tasas en vivo, comisiones totales y velocidad de entrega de más de 50 proveedores, ordenados al instante en el mismo cuadro.",
+    "home.how.s3.title": "Enviá con tu proveedor",
     "home.how.s3.desc":
-      "Chateá con nuestro agente IA para afinar la solución según tus necesidades.",
-    "home.how.s4.title": "Listo",
-    "home.how.s4.desc": "Completá tu transferencia directamente con el proveedor elegido.",
+      "Andá directo al proveedor elegido para completar la transferencia. Sin registro, sin recargos ocultos.",
+    "home.how.aiAside":
+      "¿No estás seguro cuál conviene? Preguntale al agente de IA de mangomundi, gratis y sin necesidad de cuenta, para desglosar comisiones o confirmar la mejor opción.",
     "home.feat.liveRates": "Tasas en vivo",
     "home.feat.zeroFees": "Sin comisiones",
     "home.feat.noSignup": "Sin registro",
@@ -2050,20 +2049,19 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.cta.subtitle":
       "Direct access to our multi-currency infrastructure, private RFQ protocols and dedicated coverage for corporate FX programmes and high-volume cross-border flows.",
     "home.cta.button": "Access Institutional Desk",
-    "home.how.title": "Four steps to a better exchange rate.",
-    "home.how.subtitle": "Four simple steps to smarter cross-border payments",
+    "home.how.title": "3 steps to a better exchange rate.",
+    "home.how.subtitle": "3 simple steps to smarter cross-border payments",
     "home.how.s1.title": "Enter your transfer",
     "home.how.s1.desc":
-      "Type the amount, then pick where the money is coming from and where it is going — the currencies fill in automatically.",
+      "Enter the amount, then choose the currency you're sending and the currency you want to receive.",
     "home.how.s2.title": "Compare in real time",
     "home.how.s2.desc":
       "See live rates, total fees and delivery speed across 50+ providers, ranked instantly in the same box.",
-    "home.how.s3.title": "Ask the AI (optional)",
+    "home.how.s3.title": "Send with your provider",
     "home.how.s3.desc":
-      "Open the mangomundi agent to break down fees, try another route, or double-check the best option — no account needed.",
-    "home.how.s4.title": "Send with your provider",
-    "home.how.s4.desc":
       "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
+    "home.how.aiAside":
+      "Not sure which option fits best? Ask the mangomundi AI agent, free and with no account needed, to break down fees or double-check your options.",
     "home.platform.text": "FX is the first vertical.",
     "home.platform.brand": "mangomundi Platform",
     "home.platform.tail":
@@ -2089,14 +2087,14 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.cta.subtitle":
       "Acceso directo a nuestra infraestructura multidivisa, protocolos privados de RFQ y cobertura dedicada para programas corporativos de FX y flujos transfronterizos de alto volumen.",
     "home.cta.button": "Acceder a Mesa Institucional",
-    "home.how.title": "Cómo Funciona",
-    "home.how.subtitle": "Tres pasos simples para pagos transfronterizos más inteligentes",
-    "home.how.s1.title": "Comparar",
-    "home.how.s1.desc": "Escaneo en tiempo real de liquidez y tarifas.",
-    "home.how.s2.title": "Optimizar",
-    "home.how.s2.desc": "IA neutral evalúa velocidad, coste y fiabilidad — sin sesgos.",
-    "home.how.s3.title": "Ejecutar",
-    "home.how.s3.desc": "Liquida con el proveedor elegido o por nuestro RFQ.",
+    "home.how.title": "3 pasos hacia un mejor tipo de cambio.",
+    "home.how.subtitle": "3 pasos simples para pagos transfronterizos más inteligentes",
+    "home.how.s1.title": "Elegí las monedas",
+    "home.how.s1.desc": "Ingresá el monto y elegí la moneda que enviás y la que querés recibir.",
+    "home.how.s2.title": "Compará en tiempo real",
+    "home.how.s2.desc": "Mirá tasas en vivo, comisiones totales y velocidad de entrega en el mismo cuadro.",
+    "home.how.s3.title": "Enviá con tu proveedor",
+    "home.how.s3.desc": "Liquidá directamente con el proveedor elegido, sin registro.",
     "home.platform.text": "FX es la primera vertical.",
     "home.platform.brand": "mangomundi Platform",
     "home.platform.tail":
@@ -2944,14 +2942,14 @@ export interface SeoMeta {
 }
 export const SEO_META: Record<Lang, SeoMeta> = {
   en: {
-    title: "mangomundi — Smart currency exchange comparison with AI",
+    title: "Mangomundi | Compare Currency Exchange Rates",
     description:
-      "Compare exchange rates, fees, routes and delivery speeds across 50+ providers in real time with AI. Live rates, zero fees, no sign-up.",
+      "Compare currency exchange rates, fees, transfer speeds and payment providers in real time. Powered by neutral AI.",
   },
   es: {
-    title: "mangomundi — Comparador inteligente de cambio de divisas con IA",
+    title: "Mangomundi | Comparar tipos de cambio",
     description:
-      "Compará tipos de cambio, fees, rutas y tiempos de entrega de 50+ proveedores en tiempo real con IA. Tasas en vivo, cero comisiones, sin registro.",
+      "Comparã tasas de cambio, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
   },
   pt: {
     title: "mangomundi — Comparador inteligente de câmbio com IA",
