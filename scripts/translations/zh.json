@@ -634,5 +634,6 @@
   "wizard.send": "mangomundi 本身不转移资金——它为你展示最佳选项，然后直接把你带到该服务商，在其网站上完成转账。比较、选择一行、点击即可完成。无需在我们这里开户。",
   "wizard.exampleNote": "这是一个实时示例——正在比较一条热门路线。修改上方的金额或国家以比较你自己的路线。",
   "wizard.moreQuestions": "更多问题",
-  "home.how.aiAside": "打开 mangomundi 智能助手，拆解费用、试试其他路线或复核最佳选项——无需账户。"
+  "home.how.aiAside": "打开 mangomundi 智能助手，拆解费用、试试其他路线或复核最佳选项——无需账户。",
+  "home.blog.viewAll": "查看所有文章"
 }
