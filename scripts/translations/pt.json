@@ -634,5 +634,6 @@
   "wizard.send": "A mangomundi não move o dinheiro — ela mostra a melhor opção e leva você direto ao provedor para concluir a transferência no site dele. Compare, escolha uma linha e clique para finalizar. Não precisa de conta conosco.",
   "wizard.exampleNote": "Aqui está um exemplo ao vivo — comparando uma rota popular. Altere o valor ou os países acima para comparar a sua.",
   "wizard.moreQuestions": "Mais perguntas",
-  "home.how.aiAside": "Abra o agente da mangomundi para detalhar tarifas, testar outra rota ou conferir a melhor opção — sem criar conta."
+  "home.how.aiAside": "Abra o agente da mangomundi para detalhar tarifas, testar outra rota ou conferir a melhor opção — sem criar conta.",
+  "home.blog.viewAll": "Ver todas as notas"
 }
