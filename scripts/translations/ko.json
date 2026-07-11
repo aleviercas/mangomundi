@@ -634,5 +634,6 @@
   "wizard.send": "mangomundi는 돈을 직접 옮기지 않습니다 — 최선의 옵션을 보여주고, 해당 업체 사이트로 바로 안내해 송금을 완료합니다. 비교하고 한 줄을 선택해 클릭하면 끝. 저희 계정은 필요 없습니다.",
   "wizard.exampleNote": "여기 실시간 예시입니다 — 인기 경로를 비교 중. 위에서 금액이나 국가를 바꿔 직접 비교해 보세요.",
   "wizard.moreQuestions": "추가 질문",
-  "home.how.aiAside": "mangomundi 에이전트를 열어 수수료 분석, 다른 경로 시도, 최적 옵션 재확인을 — 계정 불필요."
+  "home.how.aiAside": "mangomundi 에이전트를 열어 수수료 분석, 다른 경로 시도, 최적 옵션 재확인을 — 계정 불필요.",
+  "home.blog.viewAll": "모든 게시물 보기"
 }
