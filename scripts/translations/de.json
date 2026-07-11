@@ -634,5 +634,6 @@
   "wizard.send": "mangomundi bewegt das Geld nicht selbst — es zeigt Ihnen die beste Option und leitet Sie direkt zum Anbieter, um den Transfer auf dessen Seite abzuschließen. Vergleichen, eine Zeile wählen und durchklicken. Kein Konto bei uns nötig.",
   "wizard.exampleNote": "Hier ein Live-Beispiel — eine beliebte Route wird verglichen. Ändern Sie oben Betrag oder Länder, um Ihre eigene zu vergleichen.",
   "wizard.moreQuestions": "Weitere Fragen",
-  "home.how.aiAside": "Öffnen Sie den mangomundi-Agenten, um Gebühren aufzuschlüsseln, eine andere Route zu testen oder die beste Option zu prüfen — ohne Konto."
+  "home.how.aiAside": "Öffnen Sie den mangomundi-Agenten, um Gebühren aufzuschlüsseln, eine andere Route zu testen oder die beste Option zu prüfen — ohne Konto.",
+  "home.blog.viewAll": "Alle Beiträge ansehen"
 }
