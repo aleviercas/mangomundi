@@ -634,5 +634,6 @@
   "wizard.send": "mangomundi ne déplace pas l'argent — il vous montre la meilleure option puis vous envoie directement chez ce prestataire pour finaliser le transfert sur son site. Comparez, choisissez une ligne et cliquez pour terminer. Aucun compte chez nous requis.",
   "wizard.exampleNote": "Voici un exemple en direct — comparaison d'une route populaire. Modifiez le montant ou les pays ci-dessus pour comparer la vôtre.",
   "wizard.moreQuestions": "Plus de questions",
-  "home.how.aiAside": "Ouvrez l'agent mangomundi pour détailler les frais, tester une autre route ou vérifier la meilleure option — sans compte."
+  "home.how.aiAside": "Ouvrez l'agent mangomundi pour détailler les frais, tester une autre route ou vérifier la meilleure option — sans compte.",
+  "home.blog.viewAll": "Voir tous les articles"
 }
