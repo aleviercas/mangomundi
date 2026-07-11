@@ -634,5 +634,6 @@
   "wizard.send": "mangomundi parayı kendisi taşımaz — size en iyi seçeneği gösterir ve transferi tamamlamanız için doğrudan o sağlayıcının sitesine yönlendirir. Karşılaştırın, bir satır seçin ve tıklayıp bitirin. Bizde hesap gerekmez.",
   "wizard.exampleNote": "İşte canlı bir örnek — popüler bir rotayı karşılaştırıyoruz. Kendinizinkini karşılaştırmak için yukarıdan tutarı veya ülkeleri değiştirin.",
   "wizard.moreQuestions": "Daha fazla soru",
-  "home.how.aiAside": "Ücretleri ayrıştırmak, başka bir rota denemek veya en iyi seçeneği doğrulamak için mangomundi ajanını aç — hesap gerekmez."
+  "home.how.aiAside": "Ücretleri ayrıştırmak, başka bir rota denemek veya en iyi seçeneği doğrulamak için mangomundi ajanını aç — hesap gerekmez.",
+  "home.blog.viewAll": "Tüm yazıları görüntüle"
 }
