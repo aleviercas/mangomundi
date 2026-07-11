@@ -6,7 +6,6 @@ export function HowItWorksSection() {
     { n: "01", title: t("home.how.s1.title"), desc: t("home.how.s1.desc") },
     { n: "02", title: t("home.how.s2.title"), desc: t("home.how.s2.desc") },
     { n: "03", title: t("home.how.s3.title"), desc: t("home.how.s3.desc") },
-    { n: "04", title: t("home.how.s4.title"), desc: t("home.how.s4.desc") },
   ];
   return (
     <section id="how-it-works" className="scroll-mt-24 py-20 sm:py-28">
@@ -20,7 +19,7 @@ export function HowItWorksSection() {
             {t("search.guide")}
           </p>
         </div>
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-12 grid gap-5 sm:grid-cols-3">
           {steps.map((s) => (
             <div
               key={s.n}
@@ -32,6 +31,9 @@ export function HowItWorksSection() {
             </div>
           ))}
         </div>
+        {/* The AI agent is optional and not part of the core 3-step flow, so it
+            gets a lighter mention instead of its own numbered card. */}
+        <p className="mt-8 text-center text-sm text-slate-500">{t("home.how.aiAside")}</p>
       </div>
     </section>
   );
