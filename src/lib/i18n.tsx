@@ -444,6 +444,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.body":
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
+    "home.blog.viewAll": "View all posts",
     "home.hero.tagline":
       "Find the best way to send money. Compare rates, fees, transfer speeds, and providers in real time. Powered by neutral AI.",
     "home.contact.simple.title": "Get in touch.",
@@ -752,6 +753,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.body":
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
+    "home.blog.viewAll": "Ver todas las notas",
     "home.hero.titlePre": "Compará",
     "home.hero.titleAccent": "tipos de cambio",
     "home.hero.tagline":
