@@ -2954,94 +2954,94 @@ export const SEO_META: Record<Lang, SeoMeta> = {
       "Comparã tasas de cambio, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
   },
   pt: {
-    title: "mangomundi — Comparador inteligente de câmbio com IA",
+    title: "Mangomundi | Compare Taxas de Câmbio",
     description:
-      "Compare taxas de câmbio, tarifas, rotas e prazos de entrega de mais de 50 provedores em tempo real com IA. Taxas ao vivo, zero tarifas, sem cadastro.",
+      "Encontre a melhor forma de enviar dinheiro. Compare taxas, taxas de serviço, velocidade de transferência e fornecedores em tempo real. Alimentado por IA neutra.",
   },
   it: {
-    title: "mangomundi — Comparatore intelligente di cambio valute con IA",
+    title: "Mangomundi | Confronta i Tassi di Cambio",
     description:
-      "Confronta tassi di cambio, commissioni, rotte e tempi di consegna di oltre 50 provider in tempo reale con l'IA. Tassi live, zero commissioni, senza registrazione.",
+      "Trova il modo migliore per inviare denaro. Confronta tassi, commissioni, velocità di trasferimento e fornitori in tempo reale. Basato su un'IA neutrale.",
   },
   fr: {
-    title: "mangomundi — Comparateur intelligent de change avec l'IA",
+    title: "Mangomundi | Comparez les Taux de Change",
     description:
-      "Comparez taux de change, frais, routes et délais de livraison de 50+ prestataires en temps réel avec l'IA. Taux en direct, zéro frais, sans inscription.",
+      "Trouvez la meilleure façon d'envoyer de l'argent. Comparez les taux, les frais, la rapidité des transferts et les prestataires en temps réel. Propulsé par une IA neutre.",
   },
   de: {
-    title: "mangomundi — Intelligenter Währungsvergleich mit KI",
+    title: "Mangomundi | Wechselkurse Vergleichen",
     description:
-      "Vergleichen Sie Wechselkurse, Gebühren, Routen und Lieferzeiten von 50+ Anbietern in Echtzeit mit KI. Live-Kurse, keine Gebühren, ohne Anmeldung.",
+      "Finden Sie die beste Möglichkeit, Geld zu senden. Vergleichen Sie Kurse, Gebühren, Transfergeschwindigkeit und Anbieter in Echtzeit. Angetrieben von neutraler KI.",
   },
   pl: {
-    title: "mangomundi — Inteligentny porównywacz wymiany walut z AI",
+    title: "Mangomundi | Porównaj Kursy Walut",
     description:
-      "Porównaj kursy walut, opłaty, trasy i czasy dostawy ponad 50 dostawców w czasie rzeczywistym z AI. Kursy na żywo, zero opłat, bez rejestracji.",
+      "Znajdź najlepszy sposób na wysłanie pieniędzy. Porównaj stawki, opłaty, szybkość przelewu i dostawców w czasie rzeczywistym. Napędzane przez neutralną sztuczną inteligencję.",
   },
   ru: {
-    title: "mangomundi — Умное сравнение обмена валют с ИИ",
+    title: "Mangomundi | Сравните Курсы Валют",
     description:
-      "Сравнивайте курсы, комиссии, маршруты и сроки доставки 50+ провайдеров в реальном времени с ИИ. Живые курсы, ноль комиссий, без регистрации.",
+      "Найдите лучший способ отправить деньги. Сравнивайте тарифы, комиссии, скорость перевода и провайдеров в режиме реального времени. На основе нейтрального ИИ.",
   },
   tr: {
-    title: "mangomundi — Yapay zekâ ile akıllı döviz karşılaştırma",
+    title: "Mangomundi | Döviz Kurlarını Karşılaştırın",
     description:
-      "50+ sağlayıcının döviz kurlarını, ücretlerini, rotalarını ve teslim sürelerini yapay zekâyla gerçek zamanlı karşılaştırın. Canlı kurlar, sıfır ücret, kayıt yok.",
+      "Para göndermenin en iyi yolunu bulun. Oranları, ücretleri, transfer hızını ve sağlayıcıları gerçek zamanlı olarak karşılaştırın. Tarafsız yapay zeka ile desteklenmektedir.",
   },
   bn: {
-    title: "mangomundi — AI দিয়ে স্মার্ট মুদ্রা বিনিময় তুলনা",
+    title: "Mangomundi | মুদ্রা বিনিময় হার তুলনা করুন",
     description:
-      "৫০+ প্রদানকারীর বিনিময় হার, ফি, রুট ও ডেলিভারি সময় AI দিয়ে রিয়েল টাইমে তুলনা করুন। লাইভ রেট, শূন্য ফি, সাইন-আপ ছাড়া।",
+      "টাকা পাঠানোর সেরা উপায় খুঁজুন। রিয়েল টাইমে হার, ফি, ট্রান্সফারের গতি এবং প্রদানকারীদের তুলনা করুন। নিরপেক্ষ এআই দ্বারা চালিত।",
   },
   ur: {
-    title: "mangomundi — AI کے ساتھ اسمارٹ کرنسی ایکسچینج موازنہ",
+    title: "Mangomundi | کرنسی ایکسچینج ریٹس کا موازنہ کریں",
     description:
-      "50+ فراہم کنندگان کی شرحِ مبادلہ، فیس، روٹس اور ترسیل کے اوقات کا AI کے ساتھ حقیقی وقت میں موازنہ کریں۔ براہ راست ریٹس، صفر فیس، بغیر سائن اپ۔",
+      "پیسے بھیجنے کا بہترین طریقہ تلاش کریں۔ شرحوں، فیس، ٹرانسفر کی رفتار اور فراہم کنندگان کا حقیقی وقت میں موازنہ کریں۔ غیر جانبدار AI سے تقویت یافتہ۔",
   },
   th: {
-    title: "mangomundi — เปรียบเทียบแลกเปลี่ยนเงินตราอัจฉริยะด้วย AI",
+    title: "Mangomundi | เปรียบเทียบอัตราแลกเปลี่ยน",
     description:
-      "เปรียบเทียบอัตราแลกเปลี่ยน ค่าธรรมเนียม เส้นทาง และเวลาส่งของผู้ให้บริการ 50+ รายแบบเรียลไทม์ด้วย AI เรตสด ไม่มีค่าธรรมเนียม ไม่ต้องสมัคร",
+      "ค้นหาวิธีที่ดีที่สุดในการส่งเงิน เปรียบเทียบอัตรา ค่าธรรมเนียม ความเร็วในการโอน และผู้ให้บริการแบบเรียลไทม์ ขับเคลื่อนโดย AI ที่เป็นกลาง",
   },
   hi: {
-    title: "mangomundi — AI के साथ स्मार्ट मुद्रा विनिमय तुलना",
+    title: "Mangomundi | मुद्रा विनिमय दरों की तुलना करें",
     description:
-      "50+ प्रदाताओं की विनिमय दरें, शुल्क, रूट और डिलीवरी समय की AI के साथ रीयल-टाइम में तुलना करें। लाइव दरें, शून्य शुल्क, बिना साइन-अप।",
+      "पैसे भेजने का सबसे अच्छा तरीका खोजें। दरों, शुल्क, ट्रांसफर की गति और प्रदाताओं की रीयल-टाइम तुलना करें। निष्पक्ष एआई द्वारा संचालित।",
   },
   zh: {
-    title: "mangomundi — 用 AI 智能比较货币兑换",
+    title: "Mangomundi | 比较汇率",
     description:
-      "用 AI 实时比较 50+ 服务商的汇率、费用、路线和到账时间。实时汇率、零费用、无需注册。",
+      "找到汇款的最佳方式。实时比较费率、手续费、到账速度和服务商。由中立人工智能驱动。",
   },
   id: {
-    title: "mangomundi — Perbandingan penukaran mata uang cerdas dengan AI",
+    title: "Mangomundi | Bandingkan Kurs Mata Uang",
     description:
-      "Bandingkan kurs, biaya, rute, dan waktu pengiriman dari 50+ penyedia secara real time dengan AI. Kurs langsung, nol biaya, tanpa daftar.",
+      "Temukan cara terbaik untuk mengirim uang. Bandingkan kurs, biaya, kecepatan transfer, dan penyedia secara real-time. Didukung oleh AI netral.",
   },
   tl: {
-    title: "mangomundi — Matalinong paghahambing ng palitan ng pera gamit ang AI",
+    title: "Mangomundi | Ihambing ang Currency Exchange Rate",
     description:
-      "Ihambing ang mga exchange rate, bayarin, ruta, at bilis ng paghahatid ng 50+ provider nang real time gamit ang AI. Live na rate, walang bayarin, walang sign-up.",
+      "Hanapin ang pinakamahusay na paraan para magpadala ng pera. Ihambing ang mga rate, bayarin, bilis ng paglilipat, at mga provider nang real-time. Pinapatakbo ng neutral na AI.",
   },
   ar: {
-    title: "mangomundi — مقارنة ذكية لصرف العملات بالذكاء الاصطناعي",
+    title: "Mangomundi | قارن أسعار صرف العملات",
     description:
-      "قارن أسعار الصرف والرسوم والمسارات وأوقات التسليم لأكثر من 50 مزودًا في الوقت الفعلي بالذكاء الاصطناعي. أسعار مباشرة، بدون رسوم، بدون تسجيل.",
+      "ابحث عن أفضل طريقة لإرسال الأموال. قارن الأسعار والرسوم وسرعة التحويل ومزودي الخدمة في الوقت الفعلي. مدعوم بذكاء اصطناعي محايد.",
   },
   vi: {
-    title: "mangomundi — So sánh đổi ngoại tệ thông minh với AI",
+    title: "Mangomundi | So Sánh Tỷ Giá Hối Đoái",
     description:
-      "So sánh tỷ giá, phí, tuyến và thời gian giao của 50+ nhà cung cấp theo thời gian thực với AI. Tỷ giá trực tiếp, không phí, không cần đăng ký.",
+      "Tìm cách tốt nhất để chuyển tiền. So sánh tỷ giá, phí, tốc độ chuyển tiền và các nhà cung cấp theo thời gian thực. Được hỗ trợ bởi AI trung lập.",
   },
   ja: {
-    title: "mangomundi — AIによるスマートな外貨両替比較",
+    title: "Mangomundi | 為替レートを比較",
     description:
-      "50社以上の為替レート・手数料・ルート・所要時間をAIでリアルタイムに比較。ライブレート、手数料ゼロ、登録不要。",
+      "送金の最適な方法を見つけましょう。レート、手数料、送金スピード、プロバイダーをリアルタイムで比較。中立なAIが分析します。",
   },
   ko: {
-    title: "mangomundi — AI로 스마트하게 환전 비교",
+    title: "Mangomundi | 환율 비교",
     description:
-      "50개 이상 업체의 환율, 수수료, 경로, 배송 시간을 AI로 실시간 비교하세요. 실시간 환율, 수수료 없음, 가입 불필요.",
+      "송금의 최적의 방법을 찾아보세요. 요율, 수수료, 송금 속도, 제공업체를 실시간으로 비교하세요. 중립적인 AI가 지원합니다.",
   },
 };
 
