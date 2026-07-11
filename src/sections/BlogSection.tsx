@@ -38,38 +38,50 @@ export function BlogSection() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {latest.map((post: BlogListItem) => (
-              <Link
-                key={post.slug}
-                to="/blog/$slug"
-                params={{ slug: post.slug }}
-                className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
-              >
-                {post.cover_url && (
-                  <img
-                    src={post.cover_url}
-                    alt=""
-                    className="h-40 w-full object-cover"
-                    loading="lazy"
-                  />
-                )}
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="font-heading text-lg font-bold text-slate-900 group-hover:text-[#ff6b5b]">
-                    {post.title}
-                  </h3>
-                  {post.excerpt && (
-                    <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">
-                      {post.excerpt}
-                    </p>
+          <>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {latest.map((post: BlogListItem) => (
+                <Link
+                  key={post.slug}
+                  to="/blog/$slug"
+                  params={{ slug: post.slug }}
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
+                >
+                  {post.cover_url && (
+                    <img
+                      src={post.cover_url}
+                      alt=""
+                      className="h-40 w-full object-cover"
+                      loading="lazy"
+                    />
                   )}
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#ff6b5b]">
-                    {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
-                  </span>
-                </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="font-heading text-lg font-bold text-slate-900 group-hover:text-[#ff6b5b]">
+                      {post.title}
+                    </h3>
+                    {post.excerpt && (
+                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">
+                        {post.excerpt}
+                      </p>
+                    )}
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#ff6b5b]">
+                      {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            {/* Separate from each card's own "Read more" — this one goes to
+                the full listing, not a specific post. */}
+            <div className="mt-10 text-center">
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition-colors hover:border-[#ff6b5b] hover:text-[#ff6b5b]"
+              >
+                {t("home.blog.viewAll")} <ArrowRight className="h-4 w-4" />
               </Link>
-            ))}
-          </div>
+            </div>
+          </>
         )}
       </div>
     </section>
