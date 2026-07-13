@@ -30,7 +30,7 @@ export function EmbedWidgetSection() {
   };
 
   return (
-    <section id="widget" className="scroll-mt-24 py-20 sm:py-28">
+    <section id="widget" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
           {/* Copy + install instructions */}
