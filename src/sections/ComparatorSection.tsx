@@ -662,15 +662,10 @@ export function ComparatorSection({
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chat, chatMut.isPending]);
 
-  // Scroll the page to "Your Results" whenever a comparison lands. rAF waits
-  // for the results DOM to paint; the `result` guard skips the stale-clear
-  // (result → null) cycles from the debounced hygiene effect above.
-  useEffect(() => {
-    if (!result) return;
-    requestAnimationFrame(() => {
-      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  }, [result]);
+  // NOTE: previously auto-scrolled the page to "Your Results" whenever a
+  // comparison landed. Removed — the results panel already renders inline
+  // right below the form, and jumping the page felt disorienting rather
+  // than helpful.
 
   // Persist chat + unread to survive remounts/navigation without flicker.
   useEffect(() => {
