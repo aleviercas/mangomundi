@@ -5,7 +5,7 @@ export function FeaturesSection() {
   const { t } = useI18n();
 
   return (
-    <section className="bg-background py-20 lg:py-28">
+    <section className="bg-background py-14 lg:py-20">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-14">
           <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
