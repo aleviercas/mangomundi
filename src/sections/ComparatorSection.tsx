@@ -856,7 +856,7 @@ export function ComparatorSection({
           {/* Decision card — dark, matching the brand widget (white inputs). */}
           <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
             {/* Card header: brand + segment toggle */}
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-3 sm:px-5">
+            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2.5 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
@@ -887,7 +887,7 @@ export function ComparatorSection({
             {/* Form body. @container lets the rows adapt to the CARD's width, not
               the viewport: 3/4 columns when the card is full-width (no results
               yet), 2 columns once it shares the row with the metrics panel. */}
-            <div className="@container space-y-4 p-4 sm:p-6">
+            <div className="@container space-y-3 p-4 sm:p-5">
               {from === to && (
                 <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
                   {t("search.sameCountry")}
