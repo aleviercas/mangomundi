@@ -10,7 +10,7 @@ export function BusinessSection() {
     { title: t("home.contact.partners.title"), body: t("home.contact.partners.body") },
   ];
   return (
-    <section id="business" className="scroll-mt-24 py-20 sm:py-28">
+    <section id="business" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
