@@ -8,7 +8,7 @@ export function HowItWorksSection() {
     { n: "03", title: t("home.how.s3.title"), desc: t("home.how.s3.desc") },
   ];
   return (
-    <section id="how-it-works" className="scroll-mt-24 py-20 sm:py-28">
+    <section id="how-it-works" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">{t("home.how.eyebrow")}</p>
