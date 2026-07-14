@@ -12,13 +12,23 @@ export function BusinessSection() {
   return (
     <section id="business" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
-            {t("nav.business")}
-          </p>
-          <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
-            {t("home.contact.title")}
-          </h2>
+        <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+              {t("nav.business")}
+            </p>
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+              {t("home.contact.title")}
+            </h2>
+          </div>
+          <img
+            src="/images/business-person.jpg"
+            alt=""
+            width={1120}
+            height={610}
+            className="aspect-[16/9] w-full rounded-2xl object-cover shadow-[0_16px_40px_-20px_rgba(15,23,42,0.3)]"
+            loading="lazy"
+          />
         </div>
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {cards.map((c) => (
