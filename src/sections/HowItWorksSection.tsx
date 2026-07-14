@@ -10,14 +10,24 @@ export function HowItWorksSection() {
   return (
     <section id="how-it-works" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div>
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">{t("home.how.eyebrow")}</p>
-          <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
-            {t("home.how.title")}
-          </h2>
-          <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-500 sm:text-lg">
-            {t("search.guide")}
-          </p>
+        <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">{t("home.how.eyebrow")}</p>
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+              {t("home.how.title")}
+            </h2>
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-500 sm:text-lg">
+              {t("search.guide")}
+            </p>
+          </div>
+          <img
+            src="/images/howitworks-person.jpg"
+            alt=""
+            width={1120}
+            height={610}
+            className="aspect-[16/9] w-full rounded-2xl object-cover shadow-[0_16px_40px_-20px_rgba(15,23,42,0.3)]"
+            loading="lazy"
+          />
         </div>
         <div className="mt-12 grid gap-5 sm:grid-cols-3">
           {steps.map((s) => (
