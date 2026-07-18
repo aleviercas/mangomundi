@@ -115,7 +115,7 @@ export function Footer() {
           <p className="text-xs text-slate-400">
             &copy; {new Date().getFullYear()} Mangomundi. {t("footer.rights")}
           </p>
-          <LangSwitcher />
+          <LangSwitcher direction="up" />
         </div>
       </div>
     </footer>
