@@ -20,6 +20,9 @@ export function BusinessSection() {
             <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
               {t("home.contact.title")}
             </h2>
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-500">
+              {t("home.contact.subtitle")}
+            </p>
           </div>
           <img
             src="/images/business-person.jpg"
