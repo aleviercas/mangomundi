@@ -44,9 +44,17 @@ export function BrandLogo({ name, url, domain, size = 32, className, rounded = t
   const [failed, setFailed] = useState(false);
 
   if (host && !failed) {
+    // Always request a higher-resolution source (at least 128px) regardless
+    // of the display size, then let the browser scale it down via CSS.
+    // Some of unavatar's underlying sources (plain favicons especially) are
+    // tiny by default — if we ask for exactly the display size, we can get
+    // e.g. a 16px favicon stretched up to 44px, which is what was showing
+    // as blurry/pixelated. Downscaling a larger image always looks sharp;
+    // upscaling a small one never does.
+    const requestSize = Math.max(size * 3, 128);
     return (
       <img
-        src={`https://unavatar.io/${host}?fallback=false`}
+        src={`https://unavatar.io/${host}?fallback=false&size=${requestSize}`}
         alt={`${name} logo`}
         width={size}
         height={size}
