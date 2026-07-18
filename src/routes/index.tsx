@@ -27,7 +27,12 @@ export const Route = createFileRoute("/")({
           name: "mangomundi",
           url: `${SITE_URL}/`,
           logo: `${SITE_URL}/og-image.png`,
-          sameAs: [],
+          sameAs: [
+            "https://www.linkedin.com/company/mangomundi",
+            "https://x.com/mangomundi",
+            "https://www.facebook.com/people/Mangomundi/61591687365990/",
+            "https://www.instagram.com/mangomundi/",
+          ],
           description:
             "AI-powered currency exchange comparator — compare exchange rates, fees, routes and delivery speeds across 50+ providers in real time.",
         }),
