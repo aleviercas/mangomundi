@@ -18,6 +18,18 @@ const LOCAL_LOGOS = new Set([
   "cab-payments",
   "atlantic-money",
   "paysend",
+  "lemfi",
+  "remitly",
+  "hsbc",
+  "western-union",
+  "moneygram",
+  "ria",
+  "xoom",
+  "transfergo",
+  "revolut",
+  "wise",
+  "currencyfair",
+  "instarem",
 ]);
 
 interface BrandLogoProps {
