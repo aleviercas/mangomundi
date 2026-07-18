@@ -110,7 +110,7 @@ export function ComparatorSection({
   // product agrees on one line between "individual" and "business" instead
   // of two separate magic numbers. This also removes an interactive control
   // from the card header, letting the box sit a bit shorter.
-  const segment: Segment = amount >= B2B_UPSELL_MIN_AMOUNT ? "business" : "retail";
+  const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
   // Fixed: the Send/Receive pill was removed (it changed the meaning of the
   // FROM amount, which read as confusing). The amount is always what you
   // send; the server payload still expects a mode value.
