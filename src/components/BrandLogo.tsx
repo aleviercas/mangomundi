@@ -52,9 +52,19 @@ export function BrandLogo({ name, url, domain, size = 32, className, rounded = t
     // as blurry/pixelated. Downscaling a larger image always looks sharp;
     // upscaling a small one never does.
     const requestSize = Math.max(size * 3, 128);
+    // The anonymous tier is capped at 25 requests/day per IP — real traffic
+    // blows through that almost immediately (every provider logo on every
+    // page load is its own request), which is why logos started silently
+    // falling back to initials. A publishable key (safe to expose
+    // client-side — see unavatar.io/docs) unlocks a much higher, paid-as-
+    // you-go limit. Set VITE_UNAVATAR_TOKEN in Vercel once a key exists;
+    // until then this just omits the token and keeps the old (rate-limited)
+    // behavior instead of breaking anything.
+    const token = import.meta.env.VITE_UNAVATAR_TOKEN as string | undefined;
+    const tokenParam = token ? `&token=${token}` : "";
     return (
       <img
-        src={`https://unavatar.io/${host}?fallback=false&size=${requestSize}`}
+        src={`https://unavatar.io/${host}?fallback=false&size=${requestSize}${tokenParam}`}
         alt={`${name} logo`}
         width={size}
         height={size}
