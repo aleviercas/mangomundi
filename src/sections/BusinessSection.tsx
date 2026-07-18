@@ -1,3 +1,4 @@
+import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 /** Institutional / partnership cards — the former "Contact" section, renamed:
@@ -23,6 +24,17 @@ export function BusinessSection() {
             <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-500">
               {t("home.contact.subtitle")}
             </p>
+            {/* Moved here from the comparator's "sending a large amount?"
+                banner — same message, but as a stable part of the page
+                instead of something that popped in and out of the card
+                depending on the amount typed. */}
+            <a
+              href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
+              className="btn-cta mt-6 inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold"
+            >
+              {t("comparator.b2b.cta")}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
           </div>
           <img
             src="/images/business-person.jpg"
