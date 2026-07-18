@@ -850,7 +850,7 @@ export function ComparatorSection({
       key={lang}
       className={embedded ? "min-w-0" : "scroll-mt-24 pb-8 sm:pb-12"}
     >
-      <div className={embedded ? "min-w-0" : "mx-auto max-w-6xl px-4 sm:px-6"}>
+      <div className={embedded ? "min-w-0" : "mx-auto max-w-7xl px-5 sm:px-8"}>
         {/* THE comparator box — the single entry point. Basic row always
             visible; advanced fields fold out below inside the same card. */}
         <div className="min-w-0">
