@@ -104,7 +104,13 @@ export function ComparatorSection({
   // Empty until the user picks — the basic row shows "Select country…" and the
   // Compare CTA validates (same UX the old hero widget had).
   const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "");
-  const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
+  // Segment used to be a manual tab the user toggled. Now it's derived
+  // automatically from the amount — same threshold already used for the
+  // business-desk upsell banner (B2B_UPSELL_MIN_AMOUNT), so the whole
+  // product agrees on one line between "individual" and "business" instead
+  // of two separate magic numbers. This also removes an interactive control
+  // from the card header, letting the box sit a bit shorter.
+  const segment: Segment = amount >= B2B_UPSELL_MIN_AMOUNT ? "business" : "retail";
   // Fixed: the Send/Receive pill was removed (it changed the meaning of the
   // FROM amount, which read as confusing). The amount is always what you
   // send; the server payload still expects a mode value.
@@ -1700,16 +1706,18 @@ function ProviderRow({
         </div>
       </div>
       <div className={embedded ? "" : "lg:text-right"}>
-        <button
-          onClick={onClick}
-          aria-label={`${tCta} — ${row.name}`}
-          title={`${tCta} — ${row.name}`}
-          className={`btn-cta inline-flex h-10 w-full items-center justify-center rounded-md px-3 text-xs font-semibold leading-tight ${
-            embedded ? "" : "lg:h-9 lg:w-10 lg:px-0"
-          }`}
-        >
-          <ArrowRight className="h-4 w-4 shrink-0" />
-        </button>
+        {row.affiliate_url && (
+          <button
+            onClick={onClick}
+            aria-label={`${tCta} — ${row.name}`}
+            title={`${tCta} — ${row.name}`}
+            className={`btn-cta inline-flex h-10 w-full items-center justify-center rounded-md px-3 text-xs font-semibold leading-tight ${
+              embedded ? "" : "lg:h-9 lg:w-10 lg:px-0"
+            }`}
+          >
+            <ArrowRight className="h-4 w-4 shrink-0" />
+          </button>
+        )}
       </div>
     </div>
   );
