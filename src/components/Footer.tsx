@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
 import { HOME_NAV } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
+import { LangSwitcher } from "@/components/LangSwitcher";
 
 const socials = [
   {
@@ -110,10 +111,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 border-t border-white/10 pt-8">
+        <div className="mt-14 flex flex-col-reverse items-center gap-4 border-t border-white/10 pt-8 sm:flex-row sm:justify-between">
           <p className="text-xs text-slate-400">
             &copy; {new Date().getFullYear()} Mangomundi. {t("footer.rights")}
           </p>
+          <LangSwitcher />
         </div>
       </div>
     </footer>
