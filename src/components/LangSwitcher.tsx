@@ -4,7 +4,7 @@ import { useMemo, useRef, useState, useEffect } from "react";
 
 const LANGS = SUPPORTED_LANGS.map((code) => LANGUAGE_METADATA[code]);
 
-export function LangSwitcher() {
+export function LangSwitcher({ direction = "down" }: { direction?: "up" | "down" }) {
   const { lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -54,7 +54,9 @@ export function LangSwitcher() {
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
           <div
             role="listbox"
-            className="absolute right-0 z-50 mt-1.5 min-w-[240px] rounded-lg border border-border/80 bg-background/95 backdrop-blur-xl shadow-2xl ring-1 ring-primary/10"
+            className={`absolute right-0 z-50 min-w-[240px] rounded-lg border border-border/80 bg-background/95 backdrop-blur-xl shadow-2xl ring-1 ring-primary/10 ${
+              direction === "up" ? "bottom-full mb-1.5" : "mt-1.5"
+            }`}
           >
             <div className="border-b border-border/60 px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
               · Language · {LANGS.length} locales
