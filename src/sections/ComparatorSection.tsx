@@ -856,7 +856,7 @@ export function ComparatorSection({
           {/* Decision card — dark, matching the brand widget (white inputs). */}
           <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
             {/* Card header: brand + segment toggle */}
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2 sm:px-5">
+            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-1.5 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
@@ -887,7 +887,7 @@ export function ComparatorSection({
             {/* Form body. @container lets the rows adapt to the CARD's width, not
               the viewport: 3/4 columns when the card is full-width (no results
               yet), 2 columns once it shares the row with the metrics panel. */}
-            <div className="@container space-y-2.5 p-3 sm:p-4">
+            <div className="@container space-y-2 p-2.5 sm:p-3.5">
               {from === to && (
                 <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
                   {t("search.sameCountry")}
@@ -900,7 +900,7 @@ export function ComparatorSection({
                   country (see fx.functions.ts), so country isn't needed here.
                   Business keeps a country panel below (compliance/RFQ need a
                   real jurisdiction) — see the segment === "business" block. */}
-              <div className="grid grid-cols-1 items-stretch gap-3 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
+              <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
                 {/* FROM box: "You send" — amount + currency unified pill. */}
                 <div className="min-w-0">
                   <FieldLight label={t("comparator.field.amount")}>
@@ -1098,7 +1098,7 @@ export function ComparatorSection({
             to the mid-market rate banner above (inside the comparator card)
             rather than straight to this table, so the rate is seen first. */}
         {result && (
-          <div className="mt-8 min-w-0 scroll-mt-24">
+          <div className="mt-5 min-w-0 scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
                 {t("comparator.results")}
