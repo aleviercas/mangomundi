@@ -234,7 +234,7 @@ export const DICTS: Record<Lang, Dict> = {
     "hero.trust.1": "Mid-market rates",
     "hero.trust.2": "Independent comparison",
     "hero.trust.3": "AI-powered routing",
-    "fx.title": "Compare every FX route.",
+    "fx.title": "Compare every FX route",
     "fx.titleAccent": "In one click.",
     "fx.subtitle":
       "Real mid-market rates against 30+ providers — retail and business. Mango's AI tells you which one actually wins for your case.",
@@ -374,14 +374,14 @@ export const DICTS: Record<Lang, Dict> = {
     "home.infra.advisory.title": "Dedicated Advisory",
     "home.infra.advisory.body":
       "Tailored support with direct lines to our specialists to manage large-ticket compliance and execution.",
-    "home.finalCta.title": "Optimise your corporate treasury layout today.",
+    "home.finalCta.title": "Optimise your corporate treasury layout today",
     "home.finalCta.subtitle":
       "Access transparent, market-backed FX routing and custom asynchronous RFQ bidding protocols for your enterprise corridors.",
     "home.finalCta.rfq": "Access RFQ Terminal",
     "home.hero.ctaCompare": "Try FX Comparator",
     "home.hero.titlePre": "Compare currency",
     "home.hero.titleAccent": "exchange rates",
-    "home.dual.title": "Built for every cross-border flow — retail and corporate.",
+    "home.dual.title": "Built for every cross-border flow — retail and corporate",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
       "Send money internationally, pay for global travel, or manage personal cross-border transfers. Access wholesale interbank rates with zero hidden markups, absolute transparency, and automated tracking.",
@@ -391,7 +391,7 @@ export const DICTS: Record<Lang, Dict> = {
     "compare.calculating": "Calculating optimal paths…",
     // Home — How it works
     "home.how.eyebrow": "How it works",
-    "home.how.title": "3 steps to a better exchange rate.",
+    "home.how.title": "3 steps to a better exchange rate",
     "home.how.s1.title": "Enter your transfer",
     "home.how.s1.desc":
       "Enter the amount, then choose the currency you're sending and the currency you want to receive.",
@@ -408,7 +408,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.feat.noSignup": "No Sign-up",
     // Home — About / Manifesto
     "home.about.eyebrow": "About",
-    "home.about.title": "Financial intelligence for every currency decision.",
+    "home.about.title": "Financial intelligence for every currency decision",
     "home.about.subtitle":
       "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
     "home.about.mission.label": "Mission",
@@ -422,7 +422,7 @@ export const DICTS: Record<Lang, Dict> = {
       "A two-sided inefficiency. On one side, retail clients and businesses face a frustrating maze regarding best rates. On the other, financial institutions struggle with high acquisition costs and fragmented channels.",
     // Home — Stats / Market coverage
     "home.stats.eyebrow": "Market coverage",
-    "home.stats.title": "One view across the global FX market.",
+    "home.stats.title": "One view across the global FX market",
     "home.stats.subtitle":
       "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
     "home.stats.founded": "Founded",
@@ -431,7 +431,9 @@ export const DICTS: Record<Lang, Dict> = {
     "home.stats.providers": "Global providers evaluated in real time",
     // Home — Contact
     "home.contact.eyebrow": "Contact",
-    "home.contact.title": "Institutional & Partnership Inquiries.",
+    "home.contact.title": "Institutional & Partnership Inquiries",
+    "home.contact.subtitle":
+      "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
     "home.contact.treasury.title": "For Treasury Operations",
     "home.contact.treasury.body":
       "We can develop custom, on-premise AI agents as a service, tailored to your corporate treasury team's workflow to optimize trade finance and liquidity operations.",
@@ -440,18 +442,18 @@ export const DICTS: Record<Lang, Dict> = {
       "We are looking to align with cross-border payment operators and currency exchange providers; let's explore synergies through integrated sponsored placements and affiliate programs designed to maximize efficiency and reduce your Customer Acquisition Cost (CAC).",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
-    "home.blog.title": "Insights on global FX, payments and remittances.",
+    "home.blog.title": "Insights on global FX, payments and remittances",
     "home.blog.body":
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.blog.viewAll": "View all posts",
     "home.hero.tagline":
       "Find the best way to send money. Compare rates, fees, transfer speeds, and providers in real time. Powered by neutral AI.",
-    "home.contact.simple.title": "Get in touch.",
+    "home.contact.simple.title": "Get in touch",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
     "home.widget.eyebrow": "Widget",
-    "home.widget.title": "mangomundi on your website.",
+    "home.widget.title": "mangomundi on your website",
     "home.widget.body":
       "Embed the FX comparator on any website or app with a single script tag — live rates, your branding, powered by mangomundi.",
     "home.widget.badge": "Free to embed",
@@ -549,7 +551,7 @@ export const DICTS: Record<Lang, Dict> = {
     "hero.trust.1": "Tasas mid-market",
     "hero.trust.2": "Comparación independiente",
     "hero.trust.3": "Ruteo con IA",
-    "fx.title": "Compará cada ruta FX.",
+    "fx.title": "Compará cada ruta FX",
     "fx.titleAccent": "En un clic.",
     "fx.subtitle":
       "Tasas mid-market reales contra +30 proveedores — retail y negocios. La IA de Mango te dice cuál realmente conviene para tu caso.",
@@ -685,12 +687,12 @@ export const DICTS: Record<Lang, Dict> = {
     "home.infra.advisory.title": "Asesoría Dedicada",
     "home.infra.advisory.body":
       "Soporte a medida con líneas directas a nuestros especialistas para gestionar cumplimiento y ejecución de gran ticket.",
-    "home.finalCta.title": "Optimizá hoy la arquitectura de tu tesorería corporativa.",
+    "home.finalCta.title": "Optimizá hoy la arquitectura de tu tesorería corporativa",
     "home.finalCta.subtitle":
       "Accedé a un ruteo FX transparente respaldado por el mercado y a protocolos personalizados de licitación RFQ asincrónica para tus corredores empresariales.",
     "home.finalCta.rfq": "Acceder a la Terminal RFQ",
     "home.hero.ctaCompare": "Probar Comparador FX",
-    "home.dual.title": "Construido para cada flujo transfronterizo — retail y corporativo.",
+    "home.dual.title": "Construido para cada flujo transfronterizo — retail y corporativo",
     "home.dual.retail.title": "Remesas Retail y Patrimonio Privado",
     "home.dual.retail.body":
       "Enviá dinero internacionalmente, pagá viajes globales o gestioná transferencias personales. Accedé a tasas mayoristas interbancarias sin recargos ocultos, con transparencia absoluta y seguimiento automatizado.",
@@ -700,7 +702,7 @@ export const DICTS: Record<Lang, Dict> = {
     "compare.calculating": "Calculando rutas óptimas…",
     // Home — Cómo funciona
     "home.how.eyebrow": "Cómo funciona",
-    "home.how.title": "3 pasos hacia un mejor tipo de cambio.",
+    "home.how.title": "3 pasos hacia un mejor tipo de cambio",
     "home.how.s1.title": "Elegí las monedas",
     "home.how.s1.desc":
       "Ingresá el monto y elegí la moneda que enviás y la que querés recibir.",
@@ -717,7 +719,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.feat.noSignup": "Sin registro",
     // Home — About / Manifiesto
     "home.about.eyebrow": "Nosotros",
-    "home.about.title": "Inteligencia financiera para cada decisión de divisas.",
+    "home.about.title": "Inteligencia financiera para cada decisión de divisas",
     "home.about.subtitle":
       "Un motor de decisión neutral: conectamos flujos retail y corporativos con la mejor ruta transfronteriza o el mejor operador local de cambio, sin sesgos ni márgenes ocultos.",
     "home.about.mission.label": "Misión",
@@ -731,7 +733,7 @@ export const DICTS: Record<Lang, Dict> = {
       "Una ineficiencia de doble cara. Por un lado, clientes retail y empresas enfrentan un laberinto frustrante para encontrar las mejores tasas. Por el otro, las instituciones financieras enfrentan altos costos de adquisición y canales fragmentados.",
     // Home — Cobertura de mercado
     "home.stats.eyebrow": "Cobertura de mercado",
-    "home.stats.title": "Una vista completa del mercado global de divisas.",
+    "home.stats.title": "Una vista completa del mercado global de divisas",
     "home.stats.subtitle":
       "Nuestro motor de decisión evalúa más de 50 proveedores globales en tiempo real, normalizando tasas, comisiones, velocidad de entrega y disponibilidad por corredor en una comparación clara.",
     "home.stats.founded": "Fundada en",
@@ -740,7 +742,9 @@ export const DICTS: Record<Lang, Dict> = {
     "home.stats.providers": "Proveedores globales evaluados en tiempo real",
     // Home — Contacto
     "home.contact.eyebrow": "Contacto",
-    "home.contact.title": "Consultas institucionales y de partnerships.",
+    "home.contact.title": "Consultas institucionales y de partnerships",
+    "home.contact.subtitle":
+      "Para equipos de tesorería y partners de FX que buscan tasas dedicadas, integraciones a medida, o una línea directa con nuestro equipo.",
     "home.contact.treasury.title": "Para operaciones de tesorería",
     "home.contact.treasury.body":
       "Desarrollamos agentes de IA personalizados, on-premise, adaptados al flujo de trabajo de tu equipo de tesorería corporativa para optimizar operaciones de financiamiento comercial y liquidez.",
@@ -749,7 +753,7 @@ export const DICTS: Record<Lang, Dict> = {
       "Buscamos alinearnos con operadores de pagos transfronterizos y proveedores de cambio de divisas; exploremos sinergias mediante colocaciones patrocinadas integradas y programas de afiliados diseñados para maximizar eficiencia y reducir tu Costo de Adquisición de Clientes (CAC).",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
-    "home.blog.title": "Análisis sobre FX global, pagos y remesas.",
+    "home.blog.title": "Análisis sobre FX global, pagos y remesas",
     "home.blog.body":
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
@@ -758,11 +762,11 @@ export const DICTS: Record<Lang, Dict> = {
     "home.hero.titleAccent": "tipos de cambio",
     "home.hero.tagline":
       "Encontrá la mejor forma de enviar dinero. Compará tasas, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
-    "home.contact.simple.title": "Escribinos.",
+    "home.contact.simple.title": "Escribinos",
     "home.contact.simple.body":
       "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",
     "home.widget.eyebrow": "Widget",
-    "home.widget.title": "mangomundi en tu sitio web.",
+    "home.widget.title": "mangomundi en tu sitio web",
     "home.widget.body":
       "Embebé el comparador FX en cualquier sitio o app con un solo script — tasas en vivo, tu marca, powered by mangomundi.",
     "home.widget.badge": "Gratis para integrar",
@@ -860,7 +864,7 @@ export const DICTS: Record<Lang, Dict> = {
     "hero.trust.1": "Taxas mid-market",
     "hero.trust.2": "Comparação independente",
     "hero.trust.3": "Roteamento com IA",
-    "fx.title": "Compare cada rota de FX.",
+    "fx.title": "Compare cada rota de FX",
     "fx.titleAccent": "Em um clique.",
     "fx.subtitle":
       "Taxas mid-market reais contra +30 provedores — retail e empresas. A IA da Mango diz qual realmente vale a pena para o seu caso.",
@@ -996,12 +1000,12 @@ export const DICTS: Record<Lang, Dict> = {
     "home.infra.advisory.title": "Consultoria Dedicada",
     "home.infra.advisory.body":
       "Suporte sob medida com linhas diretas com nossos especialistas para gerenciar compliance e execução de grande porte.",
-    "home.finalCta.title": "Otimize hoje a arquitetura da sua tesouraria corporativa.",
+    "home.finalCta.title": "Otimize hoje a arquitetura da sua tesouraria corporativa",
     "home.finalCta.subtitle":
       "Acesse roteamento FX transparente, respaldado pelo mercado, e protocolos personalizados de licitação RFQ assíncrona para seus corredores corporativos.",
     "home.finalCta.rfq": "Acessar Terminal RFQ",
     "home.hero.ctaCompare": "Testar Comparador FX",
-    "home.dual.title": "Construído para cada fluxo transfronteiriço — retail e corporativo.",
+    "home.dual.title": "Construído para cada fluxo transfronteiriço — retail e corporativo",
     "home.dual.retail.title": "Remessas Retail e Patrimônio Privado",
     "home.dual.retail.body":
       "Envie dinheiro internacionalmente, pague viagens globais ou gerencie transferências pessoais. Acesse taxas atacadistas interbancárias sem markups ocultos, com transparência absoluta e rastreamento automatizado.",
@@ -2047,11 +2051,11 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
 const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "home.cta.badge": "Institutional Desk",
-    "home.cta.title": "Treasury operations at institutional scale.",
+    "home.cta.title": "Treasury operations at institutional scale",
     "home.cta.subtitle":
       "Direct access to our multi-currency infrastructure, private RFQ protocols and dedicated coverage for corporate FX programmes and high-volume cross-border flows.",
     "home.cta.button": "Access Institutional Desk",
-    "home.how.title": "3 steps to a better exchange rate.",
+    "home.how.title": "3 steps to a better exchange rate",
     "home.how.subtitle": "3 simple steps to smarter cross-border payments",
     "home.how.s1.title": "Enter your transfer",
     "home.how.s1.desc":
@@ -2085,11 +2089,11 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
   },
   es: {
     "home.cta.badge": "Mesa Institucional",
-    "home.cta.title": "Operaciones de tesorería a escala institucional.",
+    "home.cta.title": "Operaciones de tesorería a escala institucional",
     "home.cta.subtitle":
       "Acceso directo a nuestra infraestructura multidivisa, protocolos privados de RFQ y cobertura dedicada para programas corporativos de FX y flujos transfronterizos de alto volumen.",
     "home.cta.button": "Acceder a Mesa Institucional",
-    "home.how.title": "3 pasos hacia un mejor tipo de cambio.",
+    "home.how.title": "3 pasos hacia un mejor tipo de cambio",
     "home.how.subtitle": "3 pasos simples para pagos transfronterizos más inteligentes",
     "home.how.s1.title": "Elegí las monedas",
     "home.how.s1.desc": "Ingresá el monto y elegí la moneda que enviás y la que querés recibir.",
@@ -2683,7 +2687,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "about.title": "Financial intelligence for every currency decision",
     "about.metric4.label": "Global providers evaluated in real time",
     "about.coverage.eyebrow": "Market Coverage",
-    "about.coverage.title": "One view across the global FX market.",
+    "about.coverage.title": "One view across the global FX market",
     "about.coverage.body":
       "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
     "contact.success":
@@ -2812,10 +2816,10 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.cta.compareRates": "Buscar",
     "comparator.table.amountSent": "Importe enviado",
     "comparator.table.bestRate": "Mejor tasa",
-    "about.title": "Inteligencia financiera para cada decisión de divisas.",
+    "about.title": "Inteligencia financiera para cada decisión de divisas",
     "about.metric4.label": "Proveedores globales evaluados en tiempo real",
     "about.coverage.eyebrow": "Cobertura de mercado",
-    "about.coverage.title": "Una visión unificada del mercado global de divisas.",
+    "about.coverage.title": "Una visión unificada del mercado global de divisas",
     "about.coverage.body":
       "Nuestro motor de decisión evalúa más de 50 proveedores globales en tiempo real y normaliza tasas, comisiones, velocidad y disponibilidad por corredor.",
     "contact.success": "Gracias. Hemos recibido tu mensaje y nuestro equipo responderá pronto.",
