@@ -10,7 +10,6 @@ import {
   Send,
   Shield,
   Star,
-  Building2,
   Sparkle,
   Zap,
   Info,
@@ -1490,7 +1489,6 @@ function ResultsBlock({
   embedded?: boolean;
 }) {
   const { t } = useI18n();
-  const showLargeBanner = amount >= 50000;
 
   const organic = useMemo(() => {
     const base = [...result.rows];
@@ -1513,29 +1511,6 @@ function ResultsBlock({
 
   return (
     <div className="min-w-0">
-      {showLargeBanner && (
-        <div className="mb-4 flex items-start gap-3 rounded-xl border border-primary/40 bg-primary/5 p-4">
-          <Building2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-          <div className="min-w-0 text-sm">
-            <div className="truncate font-semibold text-foreground">
-              {t("comparator.b2b.title")
-                .replace("{amount}", amount.toLocaleString())
-                .replace("{cur}", result.base)}
-            </div>
-            <div className="mt-0.5 text-muted-foreground">{t("comparator.b2b.body")}</div>
-            <a
-              href={`mailto:hello@mangomundi.com?subject=${encodeURIComponent(
-                `Business FX inquiry — ${amount.toLocaleString()} ${result.base}`,
-              )}`}
-              className="btn-cta mt-2 inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold"
-            >
-              {t("comparator.b2b.cta")}
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-            </a>
-          </div>
-        </div>
-      )}
-
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
         {/* Dark header row (brand navy + white) so the table reads as a table.
             Never shown when embedded — the widget always uses the stacked
