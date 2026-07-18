@@ -1,12 +1,33 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
+// Providers whose logo we host ourselves in /public/logos/{slug}.png instead
+// of asking unavatar.io for it on every page view. unavatar's free anonymous
+// tier is capped at 25 requests/day per IP — real traffic burns through that
+// almost instantly (every visible provider logo is its own request), which
+// is what was causing logos to silently fall back to initials. Self-hosting
+// removes the dependency entirely for whichever providers we've saved a
+// logo for; unavatar stays as a live fallback for the rest. Add a slug here
+// whenever a new logo gets uploaded to /public/logos/.
+const LOCAL_LOGOS = new Set([
+  "worldremit",
+  "sendwave",
+  "chase",
+  "skrill",
+  "santander",
+  "cab-payments",
+  "atlantic-money",
+  "paysend",
+]);
+
 interface BrandLogoProps {
   name: string;
   /** Any URL belonging to the brand (website, affiliate link, etc.). The hostname is extracted automatically. */
   url?: string | null;
   /** Explicit domain (e.g. "wise.com"). Takes precedence over `url`. */
   domain?: string | null;
+  /** Provider slug — checked against a self-hosted /public/logos/ set first. */
+  slug?: string | null;
   size?: number;
   className?: string;
   rounded?: boolean;
@@ -39,9 +60,29 @@ function initials(name: string): string {
  * to a clean monogram (initials on a tinted background) if the logo cannot
  * be fetched. No invented emojis are ever shown.
  */
-export function BrandLogo({ name, url, domain, size = 32, className, rounded = true }: BrandLogoProps) {
+export function BrandLogo({ name, url, domain, slug, size = 32, className, rounded = true }: BrandLogoProps) {
   const host = domain ?? extractDomain(url);
   const [failed, setFailed] = useState(false);
+  const hasLocalLogo = slug && LOCAL_LOGOS.has(slug) && !failed;
+
+  if (hasLocalLogo) {
+    return (
+      <img
+        src={`/logos/${slug}.png`}
+        alt={`${name} logo`}
+        width={size}
+        height={size}
+        loading="lazy"
+        onError={() => setFailed(true)}
+        className={cn(
+          "shrink-0 object-contain",
+          rounded ? "rounded-lg" : "",
+          className,
+        )}
+        style={{ width: size, height: size }}
+      />
+    );
+  }
 
   if (host && !failed) {
     // Always request a higher-resolution source (at least 128px) regardless
