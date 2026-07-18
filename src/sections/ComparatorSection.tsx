@@ -856,7 +856,7 @@ export function ComparatorSection({
           {/* Decision card — dark, matching the brand widget (white inputs). */}
           <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
             {/* Card header: brand + segment toggle */}
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2.5 sm:px-5">
+            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-2 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
@@ -887,7 +887,7 @@ export function ComparatorSection({
             {/* Form body. @container lets the rows adapt to the CARD's width, not
               the viewport: 3/4 columns when the card is full-width (no results
               yet), 2 columns once it shares the row with the metrics panel. */}
-            <div className="@container space-y-3 p-4 sm:p-5">
+            <div className="@container space-y-2.5 p-3 sm:p-4">
               {from === to && (
                 <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
                   {t("search.sameCountry")}
@@ -948,7 +948,7 @@ export function ComparatorSection({
                       }
                     }}
                     aria-label={t("comparator.swap")}
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#ff6b5b] transition hover:bg-white/10 hover:text-[#ff8577] focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#ff6b5b] transition hover:bg-white/10 hover:text-[#ff8577] focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40"
                   >
                     <ArrowLeftRight className="h-4 w-4 rotate-90 @2xl:rotate-0" />
                   </button>
@@ -1146,7 +1146,7 @@ export function ComparatorSection({
 function FieldLight({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1.5 block truncate text-[11px] font-semibold uppercase tracking-wider text-slate-300">
+      <span className="mb-1 block truncate text-[11px] font-semibold uppercase tracking-wider text-slate-300">
         {label}
       </span>
       <div className="min-w-0">{children}</div>
