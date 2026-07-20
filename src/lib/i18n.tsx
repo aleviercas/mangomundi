@@ -664,7 +664,7 @@ export const DICTS: Record<Lang, Dict> = {
     "about.v3.body":
       "Nuestro equipo humano está siempre disponible para acompañar a los usuarios en la complejidad operativa, pero la imparcialidad algorítmica absoluta es la que procesa, distribuye y entrega los mejores spreads optimizados a cada parte, de forma equitativa y sin favoritismos.",
     // Home
-    "home.hero.title": "Pagos internacionales, ruteados con inteligencia.",
+    "home.hero.title": "Pagos internacionales, ruteados con inteligencia",
     "home.hero.subtitle":
       "Un agente de IA transparente para pagos globales y locales, que compara tipos de cambio, comisiones, rutas y velocidades de entrega en tiempo real para encontrar la mejor opción en cada transferencia.",
     "home.flows.title": "Diseñado para cada flujo institucional transfronterizo",
@@ -762,7 +762,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.hero.titleAccent": "tipos de cambio",
     "home.hero.tagline":
       "Encontrá la mejor forma de enviar dinero. Compará tasas, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
-    "home.contact.simple.title": "Escribinos",
+    "home.contact.simple.title": "Contáctanos",
     "home.contact.simple.body":
       "Consultas, feedback o prensa — escribinos y te respondemos a la brevedad.",
     "home.widget.eyebrow": "Widget",
