@@ -742,13 +742,13 @@ export const DICTS: Record<Lang, Dict> = {
     "home.stats.providers": "Proveedores globales evaluados en tiempo real",
     // Home — Contacto
     "home.contact.eyebrow": "Contacto",
-    "home.contact.title": "Consultas institucionales y de partnerships",
+    "home.contact.title": "Consultas institucionales y de alianzas",
     "home.contact.subtitle":
       "Para equipos de tesorería y partners de FX que buscan tasas dedicadas, integraciones a medida, o una línea directa con nuestro equipo.",
     "home.contact.treasury.title": "Para operaciones de tesorería",
     "home.contact.treasury.body":
       "Desarrollamos agentes de IA personalizados, on-premise, adaptados al flujo de trabajo de tu equipo de tesorería corporativa para optimizar operaciones de financiamiento comercial y liquidez.",
-    "home.contact.partners.title": "Para partnerships de FX y pagos",
+    "home.contact.partners.title": "Para alianzas de FX y pagos",
     "home.contact.partners.body":
       "Buscamos alinearnos con operadores de pagos transfronterizos y proveedores de cambio de divisas; exploremos sinergias mediante colocaciones patrocinadas integradas y programas de afiliados diseñados para maximizar eficiencia y reducir tu Costo de Adquisición de Clientes (CAC).",
     // Home — Blog
@@ -833,7 +833,7 @@ export const DICTS: Record<Lang, Dict> = {
       "Parámetros de consulta (corredor, monto, segmento), señales básicas de dispositivo y geolocalización, y cualquier información que proporciones voluntariamente en formularios de contacto.",
     "legal.privacy.h2": "02 — Cómo los usamos",
     "legal.privacy.p2":
-      "Para devolver comparaciones relevantes, mejorar la precisión del motor de decisión y responder consultas institucionales o de partnerships.",
+      "Para devolver comparaciones relevantes, mejorar la precisión del motor de decisión y responder consultas institucionales o de alianzas.",
     "legal.privacy.h3": "03 — Compartición",
     "legal.privacy.p3":
       "Compartimos datos con sub-procesadores estrictamente necesarios para operar el servicio (p. ej. hosting, analítica). Nunca vendemos datos personales.",
