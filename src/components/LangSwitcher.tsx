@@ -1,4 +1,5 @@
 import { useI18n, LANGUAGE_METADATA, SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
+import { FlagIcon } from "@/components/ui/FlagIcon";
 import { Globe, ChevronDown, Search } from "lucide-react";
 import { useMemo, useRef, useState, useEffect } from "react";
 
@@ -59,7 +60,7 @@ export function LangSwitcher({ direction = "down" }: { direction?: "up" | "down"
             }`}
           >
             <div className="border-b border-border/60 px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-              · Language · {LANGS.length} locales
+              Language
             </div>
             <div className="border-b border-border/60 px-2 py-1.5">
               <div className="flex items-center gap-1.5 rounded-md border border-border/60 bg-background/60 px-2 py-1">
@@ -94,7 +95,9 @@ export function LangSwitcher({ direction = "down" }: { direction?: "up" | "down"
                         : "text-foreground hover:bg-surface-elevated hover:text-primary"
                     }`}
                   >
-                    <span className="shrink-0 text-base leading-none">{l.flag}</span>
+                    <span className="shrink-0 text-base leading-none">
+                      <FlagIcon country={l.flag} />
+                    </span>
                     <span className="w-7 shrink-0 font-mono text-xs font-semibold">{l.label}</span>
                     <span className="min-w-0 flex-1 truncate whitespace-nowrap text-xs text-muted-foreground">
                       {l.native}

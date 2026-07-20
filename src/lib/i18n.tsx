@@ -353,7 +353,7 @@ export const DICTS: Record<Lang, Dict> = {
     "home.hero.b1": "A transparent AI agent for global and local payments.",
     "home.hero.b2": "Comparing exchange rates, fees, routes, and delivery speeds in real time.",
     "home.hero.b3": "Finding the best option for every transfer.",
-    "home.search.compareLabel": "SEARCH",
+    "home.search.compareLabel": "Compare",
     "home.flows.title": "Built for every institutional cross-border flow",
     "home.flows.payroll.title": "Global payroll & contractor payouts",
     "home.flows.payroll.body":
@@ -2583,7 +2583,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.liveRates": "Live rates",
     "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
     "search.guide":
-      "Enter an amount and choose the source and destination countries — mangomundi instantly compares live rates, fees and delivery speed across dozens of providers, no sign-up needed.",
+      "Enter an amount and choose your currencies — mangomundi instantly compares live rates, fees and delivery speed across dozens of providers, no sign-up needed.",
     "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
     "search.hint": "Independent market comparison. No account required.",
     "search.verified": "Market verified",
