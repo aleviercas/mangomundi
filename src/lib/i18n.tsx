@@ -703,7 +703,7 @@ export const DICTS: Record<Lang, Dict> = {
     // Home — Cómo funciona
     "home.how.eyebrow": "Cómo funciona",
     "home.how.title": "3 pasos hacia un mejor tipo de cambio",
-    "home.how.s1.title": "Elegí las monedas",
+    "home.how.s1.title": "Ingresá tu transferencia",
     "home.how.s1.desc":
       "Ingresá el monto y elegí la moneda que enviás y la que querés recibir.",
     "home.how.s2.title": "Compará en tiempo real",
@@ -2095,7 +2095,7 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.cta.button": "Acceder a Mesa Institucional",
     "home.how.title": "3 pasos hacia un mejor tipo de cambio",
     "home.how.subtitle": "3 pasos simples para pagos transfronterizos más inteligentes",
-    "home.how.s1.title": "Elegí las monedas",
+    "home.how.s1.title": "Ingresá tu transferencia",
     "home.how.s1.desc": "Ingresá el monto y elegí la moneda que enviás y la que querés recibir.",
     "home.how.s2.title": "Compará en tiempo real",
     "home.how.s2.desc": "Mirá tasas en vivo, comisiones totales y velocidad de entrega en el mismo cuadro.",
