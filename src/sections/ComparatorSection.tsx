@@ -1064,7 +1064,6 @@ export function ComparatorSection({
             setBusinessStage={setBusinessStage}
             setChat={setChat}
             onWizardAction={handleWizardAction}
-            wizardContext={buildWizardContext(masterMap, missingLog)}
           />
         )}
 
@@ -1179,7 +1178,6 @@ interface FloatingAgentProps {
   setBusinessStage: (s: BusinessStage) => void;
   setChat: React.Dispatch<React.SetStateAction<ChatMsg[]>>;
   onWizardAction: (action: WizardAction) => void;
-  wizardContext: string;
 }
 
 function FloatingAgent(p: FloatingAgentProps) {
@@ -1207,7 +1205,6 @@ function FloatingAgent(p: FloatingAgentProps) {
     setBusinessStage,
     setChat,
     onWizardAction,
-    wizardContext,
   } = p;
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -1299,14 +1296,6 @@ function FloatingAgent(p: FloatingAgentProps) {
                   {t("wizard.quickActions")}
                 </div>
                 <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
-                {wizardContext && (
-                  <div className="rounded-md border border-dashed border-border bg-muted/30 px-2 py-1.5 text-[10px] leading-relaxed text-muted-foreground">
-                    <span className="font-semibold uppercase tracking-wider text-foreground/70">
-                      Context:
-                    </span>{" "}
-                    {wizardContext}
-                  </div>
-                )}
               </>
             )}
 
