@@ -1413,8 +1413,8 @@ function FloatingAgent(p: FloatingAgentProps) {
                 ref={inputRef}
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder={t("comparator.copilot.placeholder")}
-                aria-label={t("comparator.copilot.placeholder")}
+                placeholder={result ? t("comparator.copilot.placeholder") : t("wizard.runFirst")}
+                aria-label={result ? t("comparator.copilot.placeholder") : t("wizard.runFirst")}
                 className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
                 disabled={chatMutPending || !result}
               />
