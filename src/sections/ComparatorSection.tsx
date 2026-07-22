@@ -785,6 +785,14 @@ export function ComparatorSection({
       }
       return;
     }
+    if (!result) {
+      setChat((current) => [
+        ...current,
+        { role: "user", content: trimmed },
+        { role: "assistant", content: t("wizard.runFirst") },
+      ]);
+      return;
+    }
     chatMut.mutate(trimmed);
   };
 
@@ -1413,14 +1421,14 @@ function FloatingAgent(p: FloatingAgentProps) {
                 ref={inputRef}
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
-                placeholder={result ? t("comparator.copilot.placeholder") : t("wizard.runFirst")}
-                aria-label={result ? t("comparator.copilot.placeholder") : t("wizard.runFirst")}
+                placeholder={t("comparator.copilot.placeholder")}
+                aria-label={t("comparator.copilot.placeholder")}
                 className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
-                disabled={chatMutPending || !result}
+                disabled={chatMutPending}
               />
               <button
                 type="submit"
-                disabled={chatMutPending || !chatInput.trim() || !result}
+                disabled={chatMutPending || !chatInput.trim()}
                 className="btn-cta inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
                 aria-label={t("comparator.copilot.send")}
               >
