@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
 import { getBlogPost, toBlogLocale } from "@/lib/blog.functions";
+import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
 import { SITE_URL, hreflangLinks } from "@/config/site";
 
@@ -71,6 +72,27 @@ export const Route = createFileRoute("/blog_/$slug")({
           mainEntityOfPage: url,
         }),
       });
+
+      // Every blog post has a FAQ section written natively per locale (no
+      // shared i18n key for the heading text), so the extractor detects it
+      // structurally instead of matching a translated header string. Only
+      // emit FAQPage when at least 2 real Q/A pairs were found, to avoid
+      // ever shipping an empty/near-empty rich result.
+      const faqPairs = extractFaqPairs(post.content_md);
+      if (faqPairs && faqPairs.length >= 2) {
+        scripts.push({
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqPairs.map((qa) => ({
+              "@type": "Question",
+              name: qa.question,
+              acceptedAnswer: { "@type": "Answer", text: qa.answer },
+            })),
+          }),
+        });
+      }
     }
     return {
       meta,
