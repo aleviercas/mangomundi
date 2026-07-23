@@ -8,46 +8,52 @@ import { EmbedWidgetSection } from "@/sections/EmbedWidgetSection";
 import { BusinessSection } from "@/sections/BusinessSection";
 import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
-import { SITE_URL, hreflangLinks } from "@/config/site";
+import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
 
 export const Route = createFileRoute("/")({
   // Title/description/OG come from the root head, which is per-language
   // (SEO_META). The home just adds its own canonical, og:url, hreflang and
   // JSON-LD so it doesn't re-pin an English-only title over the localized one.
-  head: () => ({
-    meta: [{ property: "og:url", content: `${SITE_URL}/` }],
-    links: [{ rel: "canonical", href: `${SITE_URL}/` }, ...hreflangLinks("/")],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Organization",
-          name: "mangomundi",
-          url: `${SITE_URL}/`,
-          logo: `${SITE_URL}/og-image.png`,
-          sameAs: [
-            "https://www.linkedin.com/company/mangomundi",
-            "https://x.com/mangomundi",
-            "https://www.facebook.com/people/Mangomundi/61591687365990/",
-            "https://www.instagram.com/mangomundi/",
-          ],
-          description:
-            "AI-powered currency exchange comparator — compare exchange rates, fees, routes and delivery speeds across 50+ providers in real time.",
-        }),
-      },
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "mangomundi",
-          url: `${SITE_URL}/`,
-        }),
-      },
-    ],
-  }),
+  head: ({ matches }) => {
+    const root = matches.find((m) => m.routeId === "__root__");
+    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
+      ?.explicitLang;
+    const canonical = selfCanonical("/", explicitLang);
+    return {
+      meta: [{ property: "og:url", content: canonical }],
+      links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/")],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "mangomundi",
+            url: `${SITE_URL}/`,
+            logo: `${SITE_URL}/og-image.png`,
+            sameAs: [
+              "https://www.linkedin.com/company/mangomundi",
+              "https://x.com/mangomundi",
+              "https://www.facebook.com/people/Mangomundi/61591687365990/",
+              "https://www.instagram.com/mangomundi/",
+            ],
+            description:
+              "AI-powered currency exchange comparator — compare exchange rates, fees, routes and delivery speeds across 50+ providers in real time.",
+          }),
+        },
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "mangomundi",
+            url: `${SITE_URL}/`,
+          }),
+        },
+      ],
+    };
+  },
   component: Index,
 });
 
