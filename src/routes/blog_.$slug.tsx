@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
+import { z } from "zod";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
@@ -8,6 +9,8 @@ import { getBlogPost, toBlogLocale } from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
+
+const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
 const postQuery = (slug: string, locale: string) =>
   queryOptions({
@@ -19,6 +22,7 @@ const truncate = (s: string, max = 160) =>
   s.length <= max ? s : s.slice(0, max - 1).trimEnd() + "…";
 
 export const Route = createFileRoute("/blog_/$slug")({
+  validateSearch: (search) => searchSchema.parse(search),
   loader: async ({ params, context }) => {
     // SSR the post in the geo-detected language (cheap header read) so
     // crawlers and the first paint get the right locale; the client keeps
@@ -29,13 +33,8 @@ export const Route = createFileRoute("/blog_/$slug")({
     const locale = toBlogLocale(detected);
     return context.queryClient.ensureQueryData(postQuery(params.slug, locale));
   },
-  head: ({ params, loaderData, matches }) => {
-    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
-      (m) => m.routeId === "__root__",
-    );
-    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
-      ?.explicitLang;
-    const url = selfCanonical(`/blog/${params.slug}`, explicitLang);
+  head: ({ params, loaderData, match }) => {
+    const url = selfCanonical(`/blog/${params.slug}`, match.search.lang);
     const post = loaderData ?? null;
     const title = post?.title ? `${post.title} — Mangomundi` : `${params.slug} — Mangomundi`;
     const description = post?.excerpt
