@@ -19,7 +19,9 @@ export const Route = createFileRoute("/blog")({
     return context.queryClient.ensureQueryData(listQuery(toBlogLocale(detected)));
   },
   head: ({ matches }) => {
-    const root = matches.find((m) => m.routeId === "__root__");
+    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
+      (m) => m.routeId === "__root__",
+    );
     const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
       ?.explicitLang;
     const canonical = selfCanonical("/blog", explicitLang);
