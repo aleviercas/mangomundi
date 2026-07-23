@@ -3,7 +3,7 @@ import { useQuery, queryOptions } from "@tanstack/react-query";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
-import { SITE_URL, hreflangLinks } from "@/config/site";
+import { hreflangLinks, selfCanonical } from "@/config/site";
 
 const listQuery = (locale: string) =>
   queryOptions({
@@ -18,27 +18,33 @@ export const Route = createFileRoute("/blog")({
     const detected = await getInitialLang().catch(() => "en");
     return context.queryClient.ensureQueryData(listQuery(toBlogLocale(detected)));
   },
-  head: () => ({
-    meta: [
-      { title: "Blog — Mangomundi" },
-      {
-        name: "description",
-        content:
-          "Guides and analysis on cross-border payments, FX rates, corridor economics and smarter money transfers — from the Mangomundi team.",
-      },
-      { property: "og:title", content: "Blog — Mangomundi" },
-      {
-        property: "og:description",
-        content:
-          "Guides and analysis on cross-border payments, FX rates and smarter money transfers.",
-      },
-      { property: "og:url", content: `${SITE_URL}/blog` },
-    ],
-    links: [
-      { rel: "canonical", href: `${SITE_URL}/blog` },
-      ...hreflangLinks("/blog"),
-    ],
-  }),
+  head: ({ matches }) => {
+    const root = matches.find((m) => m.routeId === "__root__");
+    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
+      ?.explicitLang;
+    const canonical = selfCanonical("/blog", explicitLang);
+    return {
+      meta: [
+        { title: "Blog — Mangomundi" },
+        {
+          name: "description",
+          content:
+            "Guides and analysis on cross-border payments, FX rates, corridor economics and smarter money transfers — from the Mangomundi team.",
+        },
+        { property: "og:title", content: "Blog — Mangomundi" },
+        {
+          property: "og:description",
+          content:
+            "Guides and analysis on cross-border payments, FX rates and smarter money transfers.",
+        },
+        { property: "og:url", content: canonical },
+      ],
+      links: [
+        { rel: "canonical", href: canonical },
+        ...hreflangLinks("/blog"),
+      ],
+    };
+  },
   component: BlogIndexPage,
 });
 
