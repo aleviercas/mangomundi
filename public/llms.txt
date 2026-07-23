@@ -6,10 +6,7 @@ Mangomundi is an AI-powered platform that helps individuals and businesses pick 
 
 ## Pages
 
-- [Home](/): Intelligent currency exchange decisions — live comparator and overview.
-- [Compare FX providers](/compare): Live mid-market rates and total-cost rankings across 30+ providers.
-- [Platform](/platform): The mangomundi AI decision engine and the verticals it powers.
-- [Features](/features): Live rates, smart routing, multi-currency wallets, enterprise API.
+- [Home](/): Intelligent currency exchange decisions — live comparator and overview. The comparator, how-it-works, about, business, and contact info all live here as sections.
 - [Pricing](/pricing): Free for retail; paid corporate tier for optimised routing and API access.
 - [Insurance (coming soon)](/insurance): Neutral comparison for insurance products.
 - [Legal & risk](/legal): Terms of Service, risk disclosures, and privacy policy.
