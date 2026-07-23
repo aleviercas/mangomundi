@@ -4,7 +4,9 @@ import { hreflangLinks, selfCanonical } from "@/config/site";
 
 export const Route = createFileRoute("/legal")({
   head: ({ matches }) => {
-    const root = matches.find((m) => m.routeId === "__root__");
+    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
+      (m) => m.routeId === "__root__",
+    );
     const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
       ?.explicitLang;
     const canonical = selfCanonical("/legal", explicitLang);
