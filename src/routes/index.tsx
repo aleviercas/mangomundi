@@ -1,4 +1,5 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { z } from "zod";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
@@ -11,17 +12,21 @@ import { BlogSection } from "@/sections/BlogSection";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
 
+// Only used to read ?lang= for the self-referencing canonical below (see
+// selfCanonical). Reading it via validateSearch — rather than reaching into
+// the root route's async loaderData through `matches` — avoids a known
+// TanStack Start ordering issue where head() can run before a parent
+// route's loader has resolved (search validation happens synchronously
+// during route matching, before any loader runs).
+const searchSchema = z.object({ lang: z.string().optional() }).catch({});
+
 export const Route = createFileRoute("/")({
+  validateSearch: (search) => searchSchema.parse(search),
   // Title/description/OG come from the root head, which is per-language
   // (SEO_META). The home just adds its own canonical, og:url, hreflang and
   // JSON-LD so it doesn't re-pin an English-only title over the localized one.
-  head: ({ matches }) => {
-    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
-      (m) => m.routeId === "__root__",
-    );
-    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
-      ?.explicitLang;
-    const canonical = selfCanonical("/", explicitLang);
+  head: ({ match }) => {
+    const canonical = selfCanonical("/", match.search.lang);
     return {
       meta: [{ property: "og:url", content: canonical }],
       links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/")],
