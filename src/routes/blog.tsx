@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
+import { z } from "zod";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
 import { useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
+
+const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
 const listQuery = (locale: string) =>
   queryOptions({
@@ -12,19 +15,15 @@ const listQuery = (locale: string) =>
   });
 
 export const Route = createFileRoute("/blog")({
+  validateSearch: (search) => searchSchema.parse(search),
   loader: async ({ context }) => {
     // SSR the list in the geo-detected language; client refetches live lang.
     const { getInitialLang } = await import("@/lib/geo.functions");
     const detected = await getInitialLang().catch(() => "en");
     return context.queryClient.ensureQueryData(listQuery(toBlogLocale(detected)));
   },
-  head: ({ matches }) => {
-    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
-      (m) => m.routeId === "__root__",
-    );
-    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
-      ?.explicitLang;
-    const canonical = selfCanonical("/blog", explicitLang);
+  head: ({ match }) => {
+    const canonical = selfCanonical("/blog", match.search.lang);
     return {
       meta: [
         { title: "Blog — Mangomundi" },
