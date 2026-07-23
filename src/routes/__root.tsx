@@ -128,22 +128,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap",
         },
       ],
-      // GA4 — production only, so local `bun run dev` / Claude sessions
-      // don't pollute real analytics with test traffic.
-      scripts: import.meta.env.PROD
-        ? [
-            {
-              src: `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`,
-              async: true,
-            },
-            {
-              children: `window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', '${GA4_MEASUREMENT_ID}');`,
-            },
-          ]
-        : [],
     };
   },
   shellComponent: RootShell,
@@ -151,6 +135,32 @@ gtag('config', '${GA4_MEASUREMENT_ID}');`,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
+// GA4 gtag.js — production only, so local `bun run dev` / Claude sessions
+// don't pollute real analytics with test traffic.
+//
+// Deliberately rendered as plain JSX inside RootShell below, NOT through
+// routeOptions.head()'s `scripts` field. TanStack Router has an open bug
+// (github.com/TanStack/router issues #7104 and #6569) where head-managed
+// <script> tags get duplicated or dropped during client hydration. Plain
+// JSX in the component tree goes through React's normal (well-tested)
+// hydration path instead, avoiding it entirely.
+function GoogleAnalytics() {
+  if (!import.meta.env.PROD) return null;
+  return (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`} />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA4_MEASUREMENT_ID}');`,
+        }}
+      />
+    </>
+  );
+}
 
 function RootShell({ children }: { children: React.ReactNode }) {
   // Render the geo-detected language on the SSR document itself so crawlers
@@ -162,6 +172,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
     <html lang={initialLang} dir={initialLang === "ar" ? "rtl" : undefined}>
       <head>
         <HeadContent />
+        <GoogleAnalytics />
       </head>
       <body>
         {children}
