@@ -1,26 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
-import { SITE_URL, hreflangLinks } from "@/config/site";
+import { hreflangLinks, selfCanonical } from "@/config/site";
 
 export const Route = createFileRoute("/legal")({
-  head: () => ({
-    meta: [
-      { title: "Legal & Risk Disclosures — Mangomundi" },
-      {
-        name: "description",
-        content:
-          "Mangomundi Terms of Service, Risk Disclosures and Privacy Policy — how the neutral FX decision engine handles data, liability and user obligations.",
-      },
-      { property: "og:title", content: "Legal & Risk Disclosures — Mangomundi" },
-      {
-        property: "og:description",
-        content:
-          "Read Mangomundi's Terms of Service, Risk Disclosures and Privacy Policy.",
-      },
-      { property: "og:url", content: `${SITE_URL}/legal` },
-    ],
-    links: [{ rel: "canonical", href: `${SITE_URL}/legal` }, ...hreflangLinks("/legal")],
-  }),
+  head: ({ matches }) => {
+    const root = matches.find((m) => m.routeId === "__root__");
+    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
+      ?.explicitLang;
+    const canonical = selfCanonical("/legal", explicitLang);
+    return {
+      meta: [
+        { title: "Legal & Risk Disclosures — Mangomundi" },
+        {
+          name: "description",
+          content:
+            "Mangomundi Terms of Service, Risk Disclosures and Privacy Policy — how the neutral FX decision engine handles data, liability and user obligations.",
+        },
+        { property: "og:title", content: "Legal & Risk Disclosures — Mangomundi" },
+        {
+          property: "og:description",
+          content:
+            "Read Mangomundi's Terms of Service, Risk Disclosures and Privacy Policy.",
+        },
+        { property: "og:url", content: canonical },
+      ],
+      links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/legal")],
+    };
+  },
   component: LegalPage,
 });
 
