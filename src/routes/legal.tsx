@@ -1,15 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 import { useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 
+const searchSchema = z.object({ lang: z.string().optional() }).catch({});
+
 export const Route = createFileRoute("/legal")({
-  head: ({ matches }) => {
-    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
-      (m) => m.routeId === "__root__",
-    );
-    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
-      ?.explicitLang;
-    const canonical = selfCanonical("/legal", explicitLang);
+  validateSearch: (search) => searchSchema.parse(search),
+  head: ({ match }) => {
+    const canonical = selfCanonical("/legal", match.search.lang);
     return {
       meta: [
         { title: "Legal & Risk Disclosures — Mangomundi" },
