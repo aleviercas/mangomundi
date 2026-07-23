@@ -51,7 +51,13 @@ export const Route = createFileRoute("/sitemap.xml")({
             lastmod: updatedAt ? new Date(updatedAt).toISOString() : undefined,
             changefreq: "monthly",
             priority: "0.7",
-            langs: ["en", "es", "pt"],
+            // No `langs` override — defaults to all HREFLANG_LANGS below,
+            // matching the per-post head() in blog_.$slug.tsx exactly.
+            // getBlogPost() always resolves to real content (native
+            // translation or EN fallback), so advertising all 20 is safe.
+            // This used to be hardcoded to ["en","es","pt"], which disagreed
+            // with what each post page itself declared — the kind of
+            // mismatch GSC's hreflang report flags.
           }));
         } catch {
           // Sitemap should still render even if DB is unavailable
@@ -59,6 +65,7 @@ export const Route = createFileRoute("/sitemap.xml")({
 
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
+          { path: "/compare", changefreq: "weekly", priority: "0.9" },
           { path: "/features", changefreq: "monthly", priority: "0.8" },
           { path: "/pricing", changefreq: "monthly", priority: "0.8" },
           { path: "/platform", changefreq: "monthly", priority: "0.8" },
