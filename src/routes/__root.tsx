@@ -12,7 +12,7 @@ import { Footer } from "@/components/Footer";
 import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 
-import { SITE_URL } from "@/config/site";
+import { SITE_URL, GA4_MEASUREMENT_ID } from "@/config/site";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -128,6 +128,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap",
         },
       ],
+      // GA4 — production only, so local `bun run dev` / Claude sessions
+      // don't pollute real analytics with test traffic.
+      scripts: import.meta.env.PROD
+        ? [
+            {
+              src: `https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`,
+              async: true,
+            },
+            {
+              children: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA4_MEASUREMENT_ID}');`,
+            },
+          ]
+        : [],
     };
   },
   shellComponent: RootShell,
