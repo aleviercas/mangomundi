@@ -15,6 +15,17 @@ export const HREFLANG_LANGS = [
 ] as const;
 
 /**
+ * Canonical URL for a route: self-references the ?lang= variant when one
+ * was explicitly present in the request, or the clean URL otherwise (the
+ * x-default entry). Every hreflang alternate must be canonical to itself —
+ * pointing all of them at one shared URL is what made technicalseo.com's
+ * checker flag every ?lang= alternate as "not indexable".
+ */
+export function selfCanonical(path: string, explicitLang?: string | null): string {
+  return explicitLang ? `${SITE_URL}${path}?lang=${explicitLang}` : `${SITE_URL}${path}`;
+}
+
+/**
  * rel=alternate hreflang link descriptors for a route path (e.g. "/pricing").
  * Pass a subset of langs for content that only exists in some locales (blog).
  */
