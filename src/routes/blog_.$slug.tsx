@@ -7,7 +7,7 @@ import { ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
 import { getBlogPost, toBlogLocale } from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
-import { SITE_URL, hreflangLinks } from "@/config/site";
+import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 
 const postQuery = (slug: string, locale: string) =>
   queryOptions({
@@ -29,8 +29,11 @@ export const Route = createFileRoute("/blog_/$slug")({
     const locale = toBlogLocale(detected);
     return context.queryClient.ensureQueryData(postQuery(params.slug, locale));
   },
-  head: ({ params, loaderData }) => {
-    const url = `${SITE_URL}/blog/${params.slug}`;
+  head: ({ params, loaderData, matches }) => {
+    const root = matches.find((m) => m.routeId === "__root__");
+    const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
+      ?.explicitLang;
+    const url = selfCanonical(`/blog/${params.slug}`, explicitLang);
     const post = loaderData ?? null;
     const title = post?.title ? `${post.title} — Mangomundi` : `${params.slug} — Mangomundi`;
     const description = post?.excerpt
