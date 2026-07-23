@@ -76,11 +76,17 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   loader: async () => {
     try {
-      const { getInitialLang, getVisitorGeo } = await import("@/lib/geo.functions");
-      const [initialLang, geo] = await Promise.all([getInitialLang(), getVisitorGeo()]);
-      return { initialLang, geoCountry: geo.country, geoCurrency: geo.currency };
+      const { getInitialLang, getVisitorGeo, getExplicitLangParam } = await import(
+        "@/lib/geo.functions"
+      );
+      const [initialLang, geo, explicitLang] = await Promise.all([
+        getInitialLang(),
+        getVisitorGeo(),
+        getExplicitLangParam(),
+      ]);
+      return { initialLang, geoCountry: geo.country, geoCurrency: geo.currency, explicitLang };
     } catch {
-      return { initialLang: "en" as const, geoCountry: "GB", geoCurrency: "GBP" };
+      return { initialLang: "en" as const, geoCountry: "GB", geoCurrency: "GBP", explicitLang: null };
     }
   },
   head: ({ loaderData }) => {
