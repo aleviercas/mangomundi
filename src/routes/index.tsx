@@ -16,7 +16,9 @@ export const Route = createFileRoute("/")({
   // (SEO_META). The home just adds its own canonical, og:url, hreflang and
   // JSON-LD so it doesn't re-pin an English-only title over the localized one.
   head: ({ matches }) => {
-    const root = matches.find((m) => m.routeId === "__root__");
+    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
+      (m) => m.routeId === "__root__",
+    );
     const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
       ?.explicitLang;
     const canonical = selfCanonical("/", explicitLang);
