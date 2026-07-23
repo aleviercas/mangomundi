@@ -30,7 +30,9 @@ export const Route = createFileRoute("/blog_/$slug")({
     return context.queryClient.ensureQueryData(postQuery(params.slug, locale));
   },
   head: ({ params, loaderData, matches }) => {
-    const root = matches.find((m) => m.routeId === "__root__");
+    const root = (matches as Array<{ routeId: string; loaderData?: unknown }>).find(
+      (m) => m.routeId === "__root__",
+    );
     const explicitLang = (root?.loaderData as { explicitLang?: string | null } | undefined)
       ?.explicitLang;
     const url = selfCanonical(`/blog/${params.slug}`, explicitLang);
