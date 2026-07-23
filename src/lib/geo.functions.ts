@@ -48,6 +48,31 @@ export const getInitialLang = createServerFn({ method: "GET" }).handler(async ()
   return "en";
 });
 
+/**
+ * Raw ?lang= query param, if present and valid — independent of the geo/
+ * Accept-Language fallback cascade in getInitialLang(). Used to build
+ * self-referencing canonical URLs: only a request that explicitly asked for
+ * ?lang=xx should canonicalize to a ?lang=xx URL. The clean x-default URL
+ * (no ?lang= at all) must canonicalize to itself, never to whatever
+ * language geo-IP or Accept-Language happened to resolve for this
+ * particular visitor — that resolution isn't part of the URL and isn't
+ * what a crawler hitting the bare URL actually requested.
+ */
+export const getExplicitLangParam = createServerFn({ method: "GET" }).handler(
+  async (): Promise<Lang | null> => {
+    try {
+      const url = getRequest()?.url;
+      if (url) {
+        const q = new URL(url).searchParams.get("lang")?.toLowerCase();
+        if (q && (SUPPORTED_LANGS as string[]).includes(q)) return q as Lang;
+      }
+    } catch {
+      // fall through
+    }
+    return null;
+  },
+);
+
 export const getVisitorCountry = createServerFn({ method: "GET" }).handler(async () => {
   try {
     const country = detectCountryFromHeaders();
