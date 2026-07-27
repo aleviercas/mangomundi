@@ -38,7 +38,7 @@ export const Route = createFileRoute("/")({
             "@type": "Organization",
             name: "mangomundi",
             url: `${SITE_URL}/`,
-            logo: `${SITE_URL}/og-image.png`,
+            logo: `${SITE_URL}/og-image.jpg`,
             sameAs: [
               "https://www.linkedin.com/company/mangomundi",
               "https://x.com/mangomundi",
