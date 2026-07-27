@@ -21,8 +21,8 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "e2e:install": "playwright install --with-deps chromium",
-    "prebuild": "I18N_STRICT=1 bun run scripts/i18n-validate.ts && tsc --noEmit",
-    "prebuild:dev": "I18N_STRICT=1 bun run scripts/i18n-validate.ts && tsc --noEmit"
+    "prebuild": "I18N_STRICT=1 bun run scripts/i18n-validate.ts && tsc --noEmit && vitest run",
+    "prebuild:dev": "I18N_STRICT=1 bun run scripts/i18n-validate.ts && tsc --noEmit && vitest run"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
