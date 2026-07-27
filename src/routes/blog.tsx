@@ -3,7 +3,7 @@ import { useQuery, queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
@@ -19,25 +19,19 @@ export const Route = createFileRoute("/blog")({
   loader: async ({ context }) => {
     // SSR the list in the geo-detected language; client refetches live lang.
     const { getInitialLang } = await import("@/lib/geo.functions");
-    const detected = await getInitialLang().catch(() => "en");
-    return context.queryClient.ensureQueryData(listQuery(toBlogLocale(detected)));
+    const detected = await getInitialLang().catch(() => "en" as const);
+    await context.queryClient.ensureQueryData(listQuery(toBlogLocale(detected)));
+    return { lang: detected };
   },
-  head: ({ match }) => {
+  head: ({ match, loaderData }) => {
     const canonical = selfCanonical("/blog", match.search.lang);
+    const seo = getRouteSeo(loaderData?.lang ?? "en", "/blog");
     return {
       meta: [
-        { title: "Blog — Mangomundi" },
-        {
-          name: "description",
-          content:
-            "Guides and analysis on cross-border payments, FX rates, corridor economics and smarter money transfers — from the Mangomundi team.",
-        },
-        { property: "og:title", content: "Blog — Mangomundi" },
-        {
-          property: "og:description",
-          content:
-            "Guides and analysis on cross-border payments, FX rates and smarter money transfers.",
-        },
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
         { property: "og:url", content: canonical },
       ],
       links: [
