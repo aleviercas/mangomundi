@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     const seo = SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en;
     // Absolute URL — social crawlers (WhatsApp/X/LinkedIn/Facebook) reject
     // relative og:image paths, so the card would never render.
-    const ogImage = `${SITE_URL}/og-image.png`;
+    const ogImage = `${SITE_URL}/og-image.jpg`;
     return {
       meta: [
         { charSet: "utf-8" },
