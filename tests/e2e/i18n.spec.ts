@@ -10,11 +10,15 @@ import { test, expect, type Page } from "@playwright/test";
  * language is auto-detected by geo (x-vercel-ip-country) with ?lang as the
  * explicit override — so there is no dropdown test here anymore.
  *
+ * `/compare`, `/pricing`, etc. are redirect-only stubs to home now (see
+ * src/routes/compare.tsx and friends) — home is the only route with its own
+ * comparator/i18n content, so it's the only one tested here.
+ *
  * expectContains tokens come from the live dictionaries (comparator/search
  * keys rendered on these routes) — update them if that copy changes.
  */
 
-const ROUTES = ["/", "/compare"];
+const ROUTES = ["/"];
 
 const CASES: Array<{ lang: string; htmlLang: string; expectContains: string[] }> = [
   // Spanish — comparator/search copy
@@ -64,7 +68,9 @@ test.describe("i18n — locale from ?lang is live in the browser", () => {
     expect(await page.evaluate(() => localStorage.getItem("mg.lang"))).toBe("es");
 
     // A later visit WITHOUT ?lang should restore the persisted language.
-    await page.goto("/pricing", { waitUntil: "domcontentloaded" });
+    // (/legal — a real, distinct page, not a redirect stub — is a better
+    // cross-route check than a route that just bounces back to home.)
+    await page.goto("/legal", { waitUntil: "domcontentloaded" });
     await expect
       .poll(async () => page.evaluate(() => document.documentElement.lang))
       .toBe("es");
