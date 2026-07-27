@@ -3050,119 +3050,137 @@ export const SEO_META: Record<Lang, SeoMeta> = {
 };
 
 // === Per-route SEO (title + description) per language ===
-// Keys are route paths matching TanStack Router pathnames.
-// Other 14 languages fall back to EN; unknown routes fall back to SEO_META.
+// Keys are route paths matching TanStack Router pathnames. Covers only the
+// routes that are actual distinct pages today: "/blog" (index) and "/legal".
+// Home ("/") gets its title/description from SEO_META directly (see
+// __root.tsx); blog POSTS get their own dynamic per-post title from the post
+// content itself (see blog_.$slug.tsx) — neither needs an entry here.
+// All 20 site languages are covered; getRouteSeo() falls back to SEO_META[lang]
+// (then English) for any route/language combination missing below.
 type RouteSeoMap = Record<string, SeoMeta>;
 
 const ROUTE_SEO_EN: RouteSeoMap = {
-  "/": SEO_META.en,
-  "/pricing": {
-    title: "Pricing — mangomundi",
-    description:
-      "Free for retail users — paid for businesses that need optimised routing, API access, and white-label tools. Transparent, no hidden fees.",
-  },
-  "/platform": {
-    title: "Platform — mangomundi",
-    description:
-      "The AI comparison layer for cross-border payments: live rates, smart routing and transparent fees across 50+ providers. FX first; more verticals follow.",
-  },
-  "/features": {
-    title: "Features — mangomundi",
-    description:
-      "Explore mangomundi's platform features for intelligent cross-border payments: live rates, smart routing, multi-currency wallets and an enterprise API.",
-  },
-  "/insurance": {
-    title: "Insurance Comparison (Coming Soon) — mangomundi",
-    description:
-      "mangomundi is bringing its AI comparison engine to insurance: compare policies across providers with transparent pricing and coverage.",
-  },
-  "/blog": {
-    title: "Blog — mangomundi",
-    description:
-      "Guides, deep-dives, and analyses on cross-border payments, FX transparency, and how to send money smarter — for individuals and businesses.",
-  },
-  "/about": {
-    title: "About — mangomundi",
-    description:
-      "mangomundi is the AI-powered comparator for currency exchange — neutral, transparent, and built to find you the best way to move money across borders.",
-  },
-  "/contact": {
-    title: "Contact — mangomundi",
-    description:
-      "Talk to mangomundi: launch partners, enterprise deployments, press and general enquiries.",
-  },
-  "/fx-tool": {
-    title: "FX Tool — mangomundi",
-    description:
-      "The mangomundi FX comparator: live rates, AI recommendation and transparent fees for every cross-border transfer.",
-  },
-  "/legal/terms": {
-    title: "Terms — mangomundi",
-    description: "Terms of service for mangomundi.",
-  },
-  "/legal/risk": {
-    title: "Risk disclosures — mangomundi",
-    description: "Risk disclosures for mangomundi.",
-  },
+  "/blog": { title: "Blog — mangomundi", description: "Guides and analysis on cross-border payments, FX rates, corridor economics and smarter money transfers — from the mangomundi team." },
+  "/legal": { title: "Legal & Risk Disclosures — mangomundi", description: "mangomundi Terms of Service, Risk Disclosures and Privacy Policy — how the neutral FX decision engine handles data, liability and user obligations." },
 };
 
 const ROUTE_SEO_ES: RouteSeoMap = {
-  "/": SEO_META.es,
-  "/pricing": {
-    title: "Precios — mangomundi",
-    description:
-      "Gratis para usuarios retail — de pago para empresas que necesitan enrutamiento optimizado, acceso API y herramientas white-label. Transparente, sin tarifas ocultas.",
-  },
-  "/platform": {
-    title: "Plataforma — mangomundi",
-    description:
-      "La capa de comparación con IA para pagos transfronterizos: tipos en vivo, enrutamiento inteligente y comisiones transparentes de 50+ proveedores. FX primero; siguen más verticales.",
-  },
-  "/features": {
-    title: "Funcionalidades — mangomundi",
-    description:
-      "Explora las funcionalidades de la plataforma mangomundi para pagos transfronterizos inteligentes: tipos en vivo, enrutamiento inteligente, carteras multi-divisa y API empresarial.",
-  },
-  "/insurance": {
-    title: "Comparador de Seguros (Próximamente) — mangomundi",
-    description:
-      "mangomundi lleva su motor de comparación con IA a los seguros: compará pólizas entre proveedores con precios y coberturas transparentes.",
-  },
-  "/blog": {
-    title: "Blog — mangomundi",
-    description:
-      "Guías, análisis y artículos sobre pagos transfronterizos, transparencia FX y cómo enviar dinero de forma más inteligente — para particulares y empresas.",
-  },
-  "/about": {
-    title: "Nosotros — mangomundi",
-    description:
-      "mangomundi es el comparador de cambio de divisas con IA — neutral, transparente y hecho para encontrarte la mejor forma de mover dinero entre países.",
-  },
-  "/contact": {
-    title: "Contacto — mangomundi",
-    description:
-      "Habla con mangomundi: socios de lanzamiento, despliegues empresariales, prensa y consultas generales.",
-  },
-  "/fx-tool": {
-    title: "Herramienta FX — mangomundi",
-    description:
-      "El comparador FX de mangomundi: tipos en vivo, recomendación IA y comisiones transparentes para cada transferencia transfronteriza.",
-  },
-  "/legal/terms": {
-    title: "Términos — mangomundi",
-    description: "Términos del servicio de mangomundi.",
-  },
-  "/legal/risk": {
-    title: "Aviso de riesgo — mangomundi",
-    description: "Aviso de riesgo de mangomundi.",
-  },
+  "/blog": { title: "Blog — mangomundi", description: "Guías, análisis y artículos sobre pagos transfronterizos, transparencia FX y cómo enviar dinero de forma más inteligente — para particulares y empresas." },
+  "/legal": { title: "Legal y Riesgos — mangomundi", description: "Términos de Servicio, Avisos de Riesgo y Política de Privacidad de mangomundi — cómo el motor de decisión FX neutral maneja datos, responsabilidad y obligaciones del usuario." },
+};
+
+const ROUTE_SEO_PT: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Guias e análises sobre pagamentos internacionais, taxas de câmbio e como enviar dinheiro de forma mais inteligente — para pessoas e empresas." },
+  "/legal": { title: "Legal e Riscos — mangomundi", description: "Termos de Serviço, Avisos de Risco e Política de Privacidade da mangomundi — como o motor de decisão FX neutro trata dados, responsabilidade e obrigações do usuário." },
+};
+
+const ROUTE_SEO_IT: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Guide e analisi su pagamenti internazionali, tassi di cambio e come inviare denaro in modo più intelligente — per privati e aziende." },
+  "/legal": { title: "Note Legali e Rischi — mangomundi", description: "Termini di Servizio, Avvisi sui Rischi e Informativa sulla Privacy di mangomundi — come il motore di decisione FX neutrale gestisce dati, responsabilità e obblighi dell'utente." },
+};
+
+const ROUTE_SEO_FR: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Guides et analyses sur les paiements internationaux, les taux de change et l'envoi d'argent plus intelligent — pour particuliers et entreprises." },
+  "/legal": { title: "Mentions Légales et Risques — mangomundi", description: "Conditions d'Utilisation, Avertissements sur les Risques et Politique de Confidentialité de mangomundi — comment le moteur de décision FX neutre gère les données, la responsabilité et les obligations de l'utilisateur." },
+};
+
+const ROUTE_SEO_DE: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Leitfäden und Analysen zu grenzüberschreitenden Zahlungen, Wechselkursen und smarterem Geldtransfer — für Privatpersonen und Unternehmen." },
+  "/legal": { title: "Rechtliches & Risikohinweise — mangomundi", description: "Nutzungsbedingungen, Risikohinweise und Datenschutzrichtlinie von mangomundi — wie die neutrale FX-Entscheidungs-Engine Daten, Haftung und Nutzerpflichten handhabt." },
+};
+
+const ROUTE_SEO_PL: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Poradniki i analizy dotyczące płatności transgranicznych, kursów walut i mądrzejszego przesyłania pieniędzy — dla osób prywatnych i firm." },
+  "/legal": { title: "Informacje Prawne i Ryzyko — mangomundi", description: "Regulamin, informacje o ryzyku i polityka prywatności mangomundi — jak neutralny silnik decyzyjny FX obsługuje dane, odpowiedzialność i obowiązki użytkownika." },
+};
+
+const ROUTE_SEO_RU: RouteSeoMap = {
+  "/blog": { title: "Блог — mangomundi", description: "Руководства и аналитика по международным платежам, курсам валют и более разумным денежным переводам — для частных лиц и компаний." },
+  "/legal": { title: "Правовая информация и риски — mangomundi", description: "Условия использования, раскрытие рисков и политика конфиденциальности mangomundi — как нейтральный механизм принятия решений по валютным операциям обрабатывает данные, ответственность и обязательства пользователя." },
+};
+
+const ROUTE_SEO_TR: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Sınır ötesi ödemeler, döviz kurları ve daha akıllı para transferi hakkında rehberler ve analizler — bireyler ve işletmeler için." },
+  "/legal": { title: "Yasal Bilgiler ve Riskler — mangomundi", description: "mangomundi Hizmet Şartları, Risk Bildirimleri ve Gizlilik Politikası — tarafsız FX karar motoru verileri, sorumluluğu ve kullanıcı yükümlülüklerini nasıl ele alır." },
+};
+
+const ROUTE_SEO_BN: RouteSeoMap = {
+  "/blog": { title: "ব্লগ — mangomundi", description: "সীমান্ত-পার পেমেন্ট, বিনিময় হার এবং আরও স্মার্টভাবে টাকা পাঠানো নিয়ে গাইড ও বিশ্লেষণ — ব্যক্তি ও ব্যবসার জন্য।" },
+  "/legal": { title: "আইনি ও ঝুঁকি প্রকাশ — mangomundi", description: "mangomundi-এর সেবার শর্তাবলী, ঝুঁকি প্রকাশ এবং গোপনীয়তা নীতি — নিরপেক্ষ এফএক্স সিদ্ধান্ত ইঞ্জিন কীভাবে ডেটা, দায়বদ্ধতা এবং ব্যবহারকারীর দায়িত্ব পরিচালনা করে।" },
+};
+
+const ROUTE_SEO_UR: RouteSeoMap = {
+  "/blog": { title: "بلاگ — mangomundi", description: "بین الاقوامی ادائیگیوں، شرح مبادلہ اور زیادہ ہوشیاری سے رقم بھیجنے کے بارے میں رہنما اور تجزیے — افراد اور کاروبار کے لیے۔" },
+  "/legal": { title: "قانونی معلومات اور خطرات — mangomundi", description: "mangomundi کی شرائط خدمت، خطرے کے انکشافات اور رازداری کی پالیسی — غیر جانبدار ایف ایکس فیصلہ انجن ڈیٹا، ذمہ داری اور صارف کی ذمہ داریوں کو کیسے سنبھالتا ہے۔" },
+};
+
+const ROUTE_SEO_TH: RouteSeoMap = {
+  "/blog": { title: "บล็อก — mangomundi", description: "คู่มือและบทวิเคราะห์เกี่ยวกับการชำระเงินข้ามพรมแดน อัตราแลกเปลี่ยน และการโอนเงินอย่างชาญฉลาดยิ่งขึ้น — สำหรับบุคคลและธุรกิจ" },
+  "/legal": { title: "ข้อกฎหมายและความเสี่ยง — mangomundi", description: "ข้อกำหนดการให้บริการ การเปิดเผยความเสี่ยง และนโยบายความเป็นส่วนตัวของ mangomundi — วิธีที่เครื่องมือตัดสินใจ FX ที่เป็นกลางจัดการข้อมูล ความรับผิด และภาระผูกพันของผู้ใช้" },
+};
+
+const ROUTE_SEO_HI: RouteSeoMap = {
+  "/blog": { title: "ब्लॉग — mangomundi", description: "सीमा-पार भुगतान, विनिमय दरों और अधिक समझदारी से पैसे भेजने पर गाइड और विश्लेषण — व्यक्तियों और व्यवसायों के लिए।" },
+  "/legal": { title: "कानूनी और जोखिम प्रकटीकरण — mangomundi", description: "mangomundi की सेवा शर्तें, जोखिम प्रकटीकरण और गोपनीयता नीति — निष्पक्ष एफएक्स निर्णय इंजन डेटा, दायित्व और उपयोगकर्ता की जिम्मेदारियों को कैसे संभालता है।" },
+};
+
+const ROUTE_SEO_ZH: RouteSeoMap = {
+  "/blog": { title: "博客 — mangomundi", description: "关于跨境支付、汇率和更智能汇款方式的指南与分析 — 面向个人和企业。" },
+  "/legal": { title: "法律与风险披露 — mangomundi", description: "mangomundi 服务条款、风险披露和隐私政策 — 中立的外汇决策引擎如何处理数据、责任和用户义务。" },
+};
+
+const ROUTE_SEO_ID: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Panduan dan analisis tentang pembayaran lintas batas, kurs mata uang, dan cara mengirim uang yang lebih cerdas — untuk individu dan bisnis." },
+  "/legal": { title: "Hukum & Pengungkapan Risiko — mangomundi", description: "Syarat Layanan, Pengungkapan Risiko, dan Kebijakan Privasi mangomundi — bagaimana mesin keputusan FX netral menangani data, tanggung jawab, dan kewajiban pengguna." },
+};
+
+const ROUTE_SEO_TL: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Mga gabay at pagsusuri tungkol sa cross-border payments, currency exchange rates, at mas matalinong paraan ng pagpapadala ng pera — para sa mga indibidwal at negosyo." },
+  "/legal": { title: "Legal at Pagsisiwalat ng Panganib — mangomundi", description: "Mga Tuntunin ng Serbisyo, Pagsisiwalat ng Panganib, at Patakaran sa Privacy ng mangomundi — kung paano hinahawakan ng neutral na FX decision engine ang datos, pananagutan, at mga obligasyon ng user." },
+};
+
+const ROUTE_SEO_AR: RouteSeoMap = {
+  "/blog": { title: "المدونة — mangomundi", description: "أدلة وتحليلات حول المدفوعات عبر الحدود وأسعار الصرف وطرق أذكى لإرسال الأموال — للأفراد والشركات." },
+  "/legal": { title: "الشؤون القانونية والمخاطر — mangomundi", description: "شروط الخدمة والإفصاح عن المخاطر وسياسة الخصوصية الخاصة بـ mangomundi — كيف يتعامل محرك القرار المحايد لصرف العملات مع البيانات والمسؤولية والتزامات المستخدم." },
+};
+
+const ROUTE_SEO_VI: RouteSeoMap = {
+  "/blog": { title: "Blog — mangomundi", description: "Hướng dẫn và phân tích về thanh toán xuyên biên giới, tỷ giá hối đoái và cách chuyển tiền thông minh hơn — dành cho cá nhân và doanh nghiệp." },
+  "/legal": { title: "Pháp Lý & Công Bố Rủi Ro — mangomundi", description: "Điều khoản Dịch vụ, Công bố Rủi ro và Chính sách Quyền riêng tư của mangomundi — cách công cụ ra quyết định FX trung lập xử lý dữ liệu, trách nhiệm pháp lý và nghĩa vụ người dùng." },
+};
+
+const ROUTE_SEO_JA: RouteSeoMap = {
+  "/blog": { title: "ブログ — mangomundi", description: "国際送金、為替レート、より賢い送金方法に関するガイドと分析 — 個人・法人向け。" },
+  "/legal": { title: "法的情報とリスク開示 — mangomundi", description: "mangomundiの利用規約、リスク開示、プライバシーポリシー — 中立的なFX意思決定エンジンがデータ、責任、ユーザーの義務をどのように扱うか。" },
+};
+
+const ROUTE_SEO_KO: RouteSeoMap = {
+  "/blog": { title: "블로그 — mangomundi", description: "국경 간 결제, 환율, 더 스마트한 송금 방법에 대한 가이드와 분석 — 개인 및 기업을 위한 콘텐츠." },
+  "/legal": { title: "법적 고지 및 위험 공시 — mangomundi", description: "mangomundi 서비스 약관, 위험 공시 및 개인정보 처리방침 — 중립적인 외환 의사결정 엔진이 데이터, 책임, 사용자 의무를 처리하는 방식." },
 };
 
 export const SEO_PER_ROUTE: Partial<Record<Lang, RouteSeoMap>> = {
   en: ROUTE_SEO_EN,
   es: ROUTE_SEO_ES,
+  pt: ROUTE_SEO_PT,
+  it: ROUTE_SEO_IT,
+  fr: ROUTE_SEO_FR,
+  de: ROUTE_SEO_DE,
+  pl: ROUTE_SEO_PL,
+  ru: ROUTE_SEO_RU,
+  tr: ROUTE_SEO_TR,
+  bn: ROUTE_SEO_BN,
+  ur: ROUTE_SEO_UR,
+  th: ROUTE_SEO_TH,
+  hi: ROUTE_SEO_HI,
+  zh: ROUTE_SEO_ZH,
+  id: ROUTE_SEO_ID,
+  tl: ROUTE_SEO_TL,
+  ar: ROUTE_SEO_AR,
+  vi: ROUTE_SEO_VI,
+  ja: ROUTE_SEO_JA,
+  ko: ROUTE_SEO_KO,
 };
-
 function normalizePath(path: string): string {
   if (!path) return "/";
   // Strip trailing slash except for root
