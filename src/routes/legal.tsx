@@ -1,28 +1,29 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
 export const Route = createFileRoute("/legal")({
   validateSearch: (search) => searchSchema.parse(search),
-  head: ({ match }) => {
+  loader: async () => {
+    // SSR the title/description in the geo-detected language so crawlers and
+    // first paint get it right; I18nProvider's client-side effect keeps it
+    // in sync afterwards if the user switches language without reloading.
+    const { getInitialLang } = await import("@/lib/geo.functions");
+    const lang = await getInitialLang().catch(() => "en" as const);
+    return { lang };
+  },
+  head: ({ match, loaderData }) => {
     const canonical = selfCanonical("/legal", match.search.lang);
+    const seo = getRouteSeo(loaderData?.lang ?? "en", "/legal");
     return {
       meta: [
-        { title: "Legal & Risk Disclosures — Mangomundi" },
-        {
-          name: "description",
-          content:
-            "Mangomundi Terms of Service, Risk Disclosures and Privacy Policy — how the neutral FX decision engine handles data, liability and user obligations.",
-        },
-        { property: "og:title", content: "Legal & Risk Disclosures — Mangomundi" },
-        {
-          property: "og:description",
-          content:
-            "Read Mangomundi's Terms of Service, Risk Disclosures and Privacy Policy.",
-        },
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
         { property: "og:url", content: canonical },
       ],
       links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/legal")],
