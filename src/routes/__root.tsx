@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
@@ -218,6 +219,7 @@ function RootComponent() {
           <div className="min-h-screen bg-[#fcfcfc]">
             <LangKeyedShell />
           </div>
+          <SpeedInsights />
         </ComingSoonProvider>
       </I18nProvider>
     </QueryClientProvider>
