@@ -11,6 +11,12 @@ export const SITE_URL = "https://mangomundi.com";
  */
 export const GA4_MEASUREMENT_ID = "G-GGN9K3YTWF";
 
+/**
+ * Google Tag Manager container ID. Same visibility profile as the GA4 ID
+ * above (rendered in every page's HTML), so a plain constant is fine here.
+ */
+export const GTM_CONTAINER_ID = "GTM-KQKZ9FDC";
+
 // Language is expressed as a ?lang= search param (no path-based locales), so
 // alternates point at the same path with the param; x-default is the clean URL
 // (which auto-detects by geo). Mirrors SUPPORTED_LANGS in src/lib/i18n.tsx —
