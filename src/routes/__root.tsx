@@ -13,7 +13,7 @@ import { Footer } from "@/components/Footer";
 import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 
-import { SITE_URL, GA4_MEASUREMENT_ID } from "@/config/site";
+import { SITE_URL, GA4_MEASUREMENT_ID, GTM_CONTAINER_ID } from "@/config/site";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
@@ -163,6 +163,41 @@ gtag('config', '${GA4_MEASUREMENT_ID}');`,
   );
 }
 
+// Google Tag Manager — same rationale and gating as GoogleAnalytics above:
+// plain JSX inside RootShell (not routeOptions.head()'s `scripts` field) to
+// avoid TanStack Router's script duplication/drop bug on hydration
+// (github.com/TanStack/router issues #7104 and #6569), and production-only
+// so local `bun run dev` / Claude sessions don't pollute real analytics.
+function GoogleTagManager() {
+  if (!import.meta.env.PROD) return null;
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_CONTAINER_ID}');`,
+      }}
+    />
+  );
+}
+
+function GoogleTagManagerNoScript() {
+  if (!import.meta.env.PROD) return null;
+  return (
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${GTM_CONTAINER_ID}`}
+        height="0"
+        width="0"
+        style={{ display: "none", visibility: "hidden" }}
+        title="gtm"
+      />
+    </noscript>
+  );
+}
+
 function RootShell({ children }: { children: React.ReactNode }) {
   // Render the geo-detected language on the SSR document itself so crawlers
   // and assistive tech see the right lang before hydration (the I18nProvider
@@ -172,10 +207,12 @@ function RootShell({ children }: { children: React.ReactNode }) {
   return (
     <html lang={initialLang} dir={initialLang === "ar" ? "rtl" : undefined}>
       <head>
+        <GoogleTagManager />
         <HeadContent />
         <GoogleAnalytics />
       </head>
       <body>
+        <GoogleTagManagerNoScript />
         {children}
         <Scripts />
       </body>
