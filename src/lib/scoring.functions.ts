@@ -191,3 +191,70 @@ export function explainTopPick(row: ScorableRow, profile: ScoreProfileKey): stri
   if (weights.cashPickup >= 0.3 && row.cash_pickup_available) reasons.push("cash pickup available");
   return reasons;
 }
+
+/**
+ * Fairness audit — NOT used at request time, this is a diagnostic tool for
+ * data/product review (run it whenever Phase 1 data changes meaningfully).
+ *
+ * Samples `iterations` random weight vectors (Dirichlet-like: 6 non-negative
+ * numbers summing to 1) and counts how often each provider would rank #1
+ * under *some* legitimate weighting — not just the 6 fixed profiles above.
+ *
+ * A provider with 0 wins across many thousand random weight vectors is
+ * mathematically Pareto-dominated by at least one other provider: it is
+ * worse on every single criterion than something else in the set, so no
+ * honest weighted score can ever put it first. That is not a bug to patch
+ * by rigging the algorithm — surfacing it honestly is the point. If that
+ * happens, the fix is either (a) get that provider real data on a criterion
+ * where it might actually be competitive (it may just be missing data,
+ * which normalizes as neutral and silently caps its ceiling), or (b) accept
+ * that on true merit it doesn't lead any comparison today, and let it
+ * appear lower but never hidden (see `sortByScore` — it never filters).
+ */
+export function auditProviderChances<T extends ScorableRow>(
+  rows: T[],
+  iterations = 5000,
+): Map<string, { wins: number; winRate: number }> {
+  const counts = new Map<string, number>();
+  rows.forEach((r) => counts.set(r.slug, 0));
+  if (rows.length === 0) return new Map();
+
+  for (let i = 0; i < iterations; i++) {
+    // Dirichlet-ish: 6 random non-negative draws, normalized to sum to 1.
+    const raw = Array.from({ length: 6 }, () => -Math.log(Math.random()));
+    const sum = raw.reduce((a, b) => a + b, 0);
+    const [rate, speed, trust, business, cashPickup, coverage] = raw.map((v) => v / sum);
+    const weights: ScoreWeights = { rate, speed, trust, business, cashPickup, coverage };
+
+    const scoreRate = buildNormalizer(rows.map((r) => r.received), true);
+    const scoreSpeed = buildNormalizer(rows.map((r) => r.speed_hours), false);
+    const scoreTrust = buildNormalizer(rows.map((r) => r.trust_score), true);
+    const scoreBusiness = buildNormalizer(rows.map((r) => r.business_focus_score), true);
+    const scoreCoverage = buildNormalizer(rows.map((r) => r.countries_covered), true);
+
+    let bestSlug = rows[0].slug;
+    let bestScore = -Infinity;
+    for (const r of rows) {
+      const cashScore =
+        r.cash_pickup_available === true ? 1 : r.cash_pickup_available === false ? 0 : 0.5;
+      const total =
+        weights.rate * scoreRate(r.received) +
+        weights.speed * scoreSpeed(r.speed_hours) +
+        weights.trust * scoreTrust(r.trust_score) +
+        weights.business * scoreBusiness(r.business_focus_score) +
+        weights.cashPickup * cashScore +
+        weights.coverage * scoreCoverage(r.countries_covered);
+      if (total > bestScore) {
+        bestScore = total;
+        bestSlug = r.slug;
+      }
+    }
+    counts.set(bestSlug, (counts.get(bestSlug) ?? 0) + 1);
+  }
+
+  const result = new Map<string, { wins: number; winRate: number }>();
+  for (const [slug, wins] of counts) {
+    result.set(slug, { wins, winRate: wins / iterations });
+  }
+  return result;
+}
