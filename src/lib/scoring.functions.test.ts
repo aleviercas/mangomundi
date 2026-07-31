@@ -4,6 +4,7 @@ import {
   computeCompositeScores,
   sortByScore,
   deriveBadges,
+  auditProviderChances,
   type ScorableRow,
 } from "./scoring.functions";
 
@@ -84,7 +85,32 @@ describe("computeCompositeScores / sortByScore", () => {
   });
 });
 
-describe("deriveBadges", () => {
+describe("auditProviderChances", () => {
+  it("a provider that is worse than another on every criterion never wins", () => {
+    const dominated: ScorableRow[] = [
+      ...rows,
+      {
+        slug: "strictly_worse_than_most_trusted",
+        received: 900, // worse than most_trusted's 985
+        fee_total: 10, // worse than most_trusted's 6
+        speed_hours: 30, // worse than most_trusted's 24
+        trust_score: 4.0, // worse than most_trusted's 4.8
+        business_focus_score: 5, // worse than most_trusted's 8
+        cash_pickup_available: false, // worse than most_trusted's true
+        countries_covered: 40, // worse than most_trusted's 50
+      },
+    ];
+    const audit = auditProviderChances(dominated, 3000);
+    expect(audit.get("strictly_worse_than_most_trusted")?.wins).toBe(0);
+  });
+
+  it("non-dominated providers each win at least sometimes across random weights", () => {
+    const audit = auditProviderChances(rows, 3000);
+    for (const r of rows) {
+      expect(audit.get(r.slug)?.wins ?? 0).toBeGreaterThan(0);
+    }
+  });
+});
   it("awards lowest_fee to the cheapest provider", () => {
     const badges = deriveBadges(rows);
     expect(badges.get("cheapest")).toContain("lowest_fee");
