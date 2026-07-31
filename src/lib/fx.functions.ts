@@ -71,6 +71,11 @@ export interface Provider {
   promo_text?: string | null;
   supports_large_tickets?: boolean;
   audience?: string;
+  // ---- multi-criteria ranking fields (feature/multi-criteria-ranking) ----
+  cash_pickup_available?: boolean | null;
+  business_focus_score?: number | null;
+  countries_covered?: number | null;
+  mobile_app_rating?: number | null;
 }
 
 export interface ComparisonRow {
@@ -106,6 +111,11 @@ export interface ComparisonRow {
   website_url: string | null;
   review_count: number;
   promo_text: string | null;
+  // ---- multi-criteria ranking fields (feature/multi-criteria-ranking) ----
+  cash_pickup_available: boolean | null;
+  business_focus_score: number | null;
+  countries_covered: number | null;
+  mobile_app_rating: number | null;
 }
 
 export interface ComparisonResult {
@@ -505,6 +515,10 @@ export const compareProviders = createServerFn({ method: "POST" })
           website_url: p.website_url ?? null,
           review_count: Number(p.review_count ?? 0),
           promo_text: p.promo_text ?? null,
+          cash_pickup_available: p.cash_pickup_available ?? null,
+          business_focus_score: p.business_focus_score != null ? Number(p.business_focus_score) : null,
+          countries_covered: p.countries_covered != null ? Number(p.countries_covered) : null,
+          mobile_app_rating: p.mobile_app_rating != null ? Number(p.mobile_app_rating) : null,
         };
       });
       rows.sort((a, b) => b.received - a.received);
