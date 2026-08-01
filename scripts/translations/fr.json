@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "Plus de questions",
   "home.how.aiAside": "Ouvrez l'agent mangomundi pour détailler les frais, tester une autre route ou vérifier la meilleure option — sans compte.",
   "home.blog.viewAll": "Voir tous les articles",
-  "home.contact.subtitle": "Pour les équipes de trésorerie et les partenaires FX à la recherche de taux dédiés, d'intégrations personnalisées ou d'une ligne directe avec notre équipe."
+  "home.contact.subtitle": "Pour les équipes de trésorerie et les partenaires FX à la recherche de taux dédiés, d'intégrations personnalisées ou d'une ligne directe avec notre équipe.",
+  "comparator.sort.overall": "Global",
+  "comparator.sort.mostTrusted": "Le plus fiable",
+  "comparator.sort.bestBusiness": "Idéal entreprise",
+  "comparator.sort.cashPickup": "Retrait en espèces",
+  "comparator.copilot.proactive.trust": "J'ai remarqué que **{provider}** a la meilleure note de confiance pour ce corridor. On continue ?",
+  "comparator.copilot.proactive.business": "**{provider}** est le mieux adapté aux transferts d'entreprise sur ce corridor. On continue ?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** propose le retrait en espèces pour ce corridor. On continue ?"
 }
