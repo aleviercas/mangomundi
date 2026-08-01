@@ -76,6 +76,8 @@ export interface Provider {
   business_focus_score?: number | null;
   countries_covered?: number | null;
   mobile_app_rating?: number | null;
+  /** Disclosed exclusive mangomundi offer — must render with an explicit label. */
+  has_exclusive_deal?: boolean | null;
 }
 
 export interface ComparisonRow {
@@ -116,6 +118,7 @@ export interface ComparisonRow {
   business_focus_score: number | null;
   countries_covered: number | null;
   mobile_app_rating: number | null;
+  has_exclusive_deal: boolean | null;
 }
 
 export interface ComparisonResult {
@@ -519,6 +522,7 @@ export const compareProviders = createServerFn({ method: "POST" })
           business_focus_score: p.business_focus_score != null ? Number(p.business_focus_score) : null,
           countries_covered: p.countries_covered != null ? Number(p.countries_covered) : null,
           mobile_app_rating: p.mobile_app_rating != null ? Number(p.mobile_app_rating) : null,
+          has_exclusive_deal: p.has_exclusive_deal ?? null,
         };
       });
       rows.sort((a, b) => b.received - a.received);
