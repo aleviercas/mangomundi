@@ -46,7 +46,7 @@
 | **TorFX** | 4.8–4.9 | ~8,000-10,000 | uk.trustpilot.com/review/www.torfx.com (jul 2026), topmoneycompare.co.uk | Broker especializado en transferencias grandes (`supports_large_tickets: true`). Menos competitivo para montos chicos según reviewers |
 | **Payoneer** | 3.6 | no especificado (miles) | uk.trustpilot.com/review/www.payoneer.com (feb 2026) | Rating "Average", el más bajo de Tier 2 investigado. **business_focus_score alto** (8-9/10) — 100% orientado a SMBs/freelancers globales |
 | **Moneycorp** | 4.7 | ~7,000 | trustpilot.com/review/www.moneycorp.com (jul 2026) | Rating "Excellent", reviews destacan servicio personalizado para transferencias grandes |
-| Convera | *pendiente* | — | — | No investigado todavía |
+| Convera | 3.6 | ~325 | trustpilot.com/review/www.convera.com (may 2026) | Ver detalle completo en tabla de Tier 3 (se investigó junto con Xoom) — `business_focus_score`: 9/10, sin cash pickup |
 | Instarem | 4.4 | ~7,000 | moneytransfers.com | "Excellent" rating |
 | CAB Payments | N/A | — | — | Sin programa de afiliados, sin necesidad de trust_score (no es opción de comparación para retail) |
 
@@ -57,7 +57,13 @@
 | TransferGo | 4.6 | ~38,000-39,000 | trustpilot.com/review/transfergo.com (jul 2026) | |
 | Paysend | 4.1–4.2 | ~41,000 | Trustpilot (citado desde página de TransferGo) | |
 | CurrencyFair | 4.2–4.9 (fuentes muy dispersas — usar 4.6 de Trustpilot directo hasta confirmar) | ~8,000-12,000 | trustpilot.com (citado desde TransferGo), compareremit.com | Modelo peer-to-peer |
-| Xoom, Skrill, TapTap Send (cash pickup), Sendwave, LemFi, NALA | *pendiente* | — | — | Sin investigar todavía en esta tanda |
+| **Xoom (PayPal)** | 4.6–4.7 en trustpilot.com directo (múltiples snapshots recientes coinciden); **algunos sitios de reseñas de terceros citan 1.6-1.7 ("Bad")** — posible error de esos agregadores o metodología distinta de scoring de Trustpilot. Uso 4.6 (fuente directa, más confiable) | ~180,000-194,000 | trustpilot.com/review/www.xoom.com (jul 2026, "5 días") | **cash pickup: sí, confirmado** (cash pickup, home delivery, mobile wallet, recarga celular). Cobertura: 150+ países |
+| **Convera** | 3.6 | ~325 | trustpilot.com/review/www.convera.com (may 2026) | Muestra chica. **100% B2B** (pagos comerciales, universidades) — `business_focus_score`: 9/10. Sin cash pickup |
+| **Skrill** | ⚠️ Dos páginas Trustpilot distintas dan resultados opuestos: `transfers.skrill.com` (brazo de money transfer) = 4.3-4.4 "Excellent" (~13,000-14,000 reviews); `skrill.com` (wallet principal) = 2.2 "Poor". Mantener la advertencia ya documentada (puede no cubrir P2P) hasta confirmar con ellos directo cuál aplica al caso de uso de mangomundi | ~13,500 (transfers) | trustpilot.com | No cargar sin aclarar con el proveedor qué producto están evaluando |
+| **Sendwave** | 4.4 | ~25,000-26,000 | trustpilot.com/review/sendwave.com (jul 2026) | Reviews recientes incluyen al menos un caso de disputa por fondos no acreditados — normal a esta escala, no descalifica el dato |
+| **LemFi** | 4.5 | ~12,000 | Trustpilot (citado desde página de NALA) | Programa de afiliados es de influencers (ya documentado en Sprint 5) — este trust_score puede cargarse igual aunque no se persiga el afiliado |
+| **NALA** | 4.2 | ~1,046 | ca.trustpilot.com/review/nala.money (ene 2026) | Muestra chica, 21% de reviews son 1-estrella — volatilidad más alta que el resto |
+| **TapTap Send** | 4.7 (confirmado, coincide con dato de Tier 1) | ~36,000 | trustpilot.com | cash pickup: **no confirmado todavía** — el producto parece enfocado en mobile money/bank, no en agentes de retiro físico como Western Union |
 
 ## ⚠️ Alerta — Atlantic Money: caída fuerte y reciente en Trustpilot
 
@@ -89,11 +95,15 @@ Supabase — mismo patrón que se usó para las 400 filas de blog.
 apruebe explícitamente** — la rama de código no protege la base de datos,
 Supabase es compartida entre ramas.
 
-## Pendiente de investigar (próxima tanda)
+## Pendiente de investigar (queda poco)
 
-Convera, Xoom, Skrill (trust — ya sabíamos que probablemente no cubre
-P2P), TapTap Send (cash pickup — trust ya está en 4.7), Sendwave, LemFi,
-NALA. Mismo patrón de búsqueda: "[Proveedor] Trustpilot rating" suele traer
-trust_score + review_count en el primer resultado; para cash pickup y
-transparency_score conviene revisar la página de "delivery methods"/"fees"
-del proveedor directamente.
+**Fase 1 de trust_score está prácticamente completa** para los 27
+proveedores no-bancarios. Lo que falta es más fino:
+- Confirmar cash pickup para TapTap Send y Sendwave (probable que sí, no
+  100% confirmado con fuente directa).
+- Resolver la ambigüedad de Skrill (dos productos, dos ratings opuestos)
+  antes de cargar cualquier dato — mejor preguntarles directo en el mail de
+  outreach que ya está en el plan de afiliados.
+- `countries_covered`, `mobile_app_rating` y `transparency_score` siguen sin
+  investigar para la mayoría — son más bajo impacto porque el motor de
+  score los trata como neutral si faltan, así que no bloquean nada.
