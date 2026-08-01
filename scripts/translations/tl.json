@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "Iba pang tanong",
   "home.how.aiAside": "Buksan ang mangomundi agent para hatiin ang bayarin, sumubok ng ibang ruta, o i-double-check ang pinakamagandang opsyon — walang account.",
   "home.blog.viewAll": "Tingnan lahat ng post",
-  "home.contact.subtitle": "Para sa mga treasury team at FX partner na naghahanap ng dedikadong rate, custom na integrasyon, o direktang linya sa aming team."
+  "home.contact.subtitle": "Para sa mga treasury team at FX partner na naghahanap ng dedikadong rate, custom na integrasyon, o direktang linya sa aming team.",
+  "comparator.sort.overall": "Pangkalahatan",
+  "comparator.sort.mostTrusted": "Pinaka-mapagkakatiwalaan",
+  "comparator.sort.bestBusiness": "Pinakamainam para sa negosyo",
+  "comparator.sort.cashPickup": "Pagkuha ng cash",
+  "comparator.copilot.proactive.trust": "Napansin kong **{provider}** ang may pinakamataas na trust rating para sa corridor na ito. Magpatuloy?",
+  "comparator.copilot.proactive.business": "**{provider}** ang pinakaangkop para sa business transfers sa corridor na ito. Magpatuloy?",
+  "comparator.copilot.proactive.cashPickup": "Nag-aalok ng cash pickup ang **{provider}** para sa corridor na ito. Magpatuloy?"
 }
