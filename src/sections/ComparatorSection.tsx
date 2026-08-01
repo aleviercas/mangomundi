@@ -51,6 +51,12 @@ import {
   type WizardAction,
 } from "@/components/AiCopilot";
 import { Button } from "@/components/ui/button";
+import {
+  sortByScore,
+  deriveBadges,
+  type ScoreProfileKey,
+  type BadgeKey,
+} from "@/lib/scoring.functions";
 
 type Segment = "retail" | "business";
 type AmountMode = "send" | "receive";
@@ -59,7 +65,36 @@ type AmountMode = "send" | "receive";
 const WHITE_FIELD =
   "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40";
 type Urgency = "urgent" | "standard" | "flexible";
-type SortKey = "received" | "fee" | "speed";
+type SortKey = ScoreProfileKey;
+/** Chips shown to the user, in display order. Deliberately a curated subset
+ *  of every profile the engine supports (most_transparent/best_large_transfers/
+ *  best_deal exist and can be surfaced later — see scoring.functions.ts). */
+const SORT_CHIPS: SortKey[] = [
+  "overall",
+  "lowest_cost",
+  "fastest",
+  "most_trusted",
+  "best_business",
+  "best_cash_pickup",
+];
+/** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
+ *  concept lines up 1:1, so we don't duplicate translated strings. */
+function sortLabelKey(p: SortKey): string {
+  switch (p) {
+    case "lowest_cost":
+      return "comparator.sort.fee";
+    case "fastest":
+      return "comparator.sort.speed";
+    case "most_trusted":
+      return "comparator.sort.mostTrusted";
+    case "best_business":
+      return "comparator.sort.bestBusiness";
+    case "best_cash_pickup":
+      return "comparator.sort.cashPickup";
+    default:
+      return "comparator.sort.overall";
+  }
+}
 type ChatAction =
   | { kind: "proceed"; slug: string; url: string; label: string }
   | {
@@ -125,7 +160,7 @@ export function ComparatorSection({
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
-  const [sortBy, setSortBy] = useState<SortKey>("received");
+  const [sortBy, setSortBy] = useState<SortKey>("overall");
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -226,20 +261,20 @@ export function ComparatorSection({
   const proactiveMessage = (res: ComparisonResult, key: SortKey): ChatMsg | null => {
     const rows = [...res.rows];
     if (rows.length === 0) return null;
-    if (key === "received") rows.sort((a, b) => b.received - a.received);
-    else if (key === "fee") rows.sort((a, b) => a.fee_total - b.fee_total);
-    else
-      rows.sort(
-        (a, b) =>
-          (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
-      );
-    const top = rows[0];
+    const sorted = sortByScore(rows, key);
+    const top = sorted[0];
     const tplKey =
-      key === "received"
-        ? "comparator.copilot.proactive.rate"
-        : key === "fee"
-          ? "comparator.copilot.proactive.fee"
-          : "comparator.copilot.proactive.speed";
+      key === "lowest_cost"
+        ? "comparator.copilot.proactive.fee"
+        : key === "fastest"
+          ? "comparator.copilot.proactive.speed"
+          : key === "most_trusted"
+            ? "comparator.copilot.proactive.trust"
+            : key === "best_business"
+              ? "comparator.copilot.proactive.business"
+              : key === "best_cash_pickup"
+                ? "comparator.copilot.proactive.cashPickup"
+                : "comparator.copilot.proactive.rate";
     const content = t(tplKey).replace("{provider}", top.name);
     return {
       role: "assistant",
@@ -313,11 +348,11 @@ export function ComparatorSection({
         skipNextSyncClearRef.current = true;
       }
       setResult(data);
-      setSortBy("received");
+      setSortBy("overall");
       setAiText(buildReasoning());
       setAiLoading(false);
       setMissingCorridor(null);
-      const intro = proactiveMessage(data, "received");
+      const intro = proactiveMessage(data, "overall");
       const initial: ChatMsg[] = [];
       // Results summary as first assistant bubble (per spec: results inside chat)
       const best = [...data.rows].sort((a, b) => b.received - a.received)[0];
@@ -619,19 +654,14 @@ export function ComparatorSection({
   });
 
   // React to filter changes in the table: append a short assistant note.
-  const lastSortRef = useRef<SortKey>("received");
+  const lastSortRef = useRef<SortKey>("overall");
   useEffect(() => {
     if (!result) return;
     if (lastSortRef.current === sortBy) return;
     lastSortRef.current = sortBy;
     const msg = proactiveMessage(result, sortBy);
     if (!msg) return;
-    const label =
-      sortBy === "received"
-        ? t("comparator.copilot.filter.received")
-        : sortBy === "fee"
-          ? t("comparator.copilot.filter.fee")
-          : t("comparator.copilot.filter.speed");
+    const label = t(sortLabelKey(sortBy));
     const intro = t("comparator.copilot.filterReact").replace("{filter}", label);
     setChat((c) => [...c, { ...msg, content: `${intro}\n\n${msg.content}` }]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1110,18 +1140,26 @@ export function ComparatorSection({
               <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
                 {t("comparator.results")}
               </h3>
-              <label className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+            </div>
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {t("comparator.sortBy")}
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as SortKey)}
-                  className="h-8 rounded-md border border-input bg-card px-2 text-xs font-medium normal-case tracking-normal text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+              </span>
+              {SORT_CHIPS.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setSortBy(key)}
+                  aria-pressed={sortBy === key}
+                  className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    sortBy === key
+                      ? "border-transparent bg-[#ff6b5b] text-white"
+                      : "border-input bg-card text-foreground hover:border-foreground/30"
+                  }`}
                 >
-                  <option value="received">{t("comparator.sort.received")}</option>
-                  <option value="fee">{t("comparator.sort.fee")}</option>
-                  <option value="speed">{t("comparator.sort.speed")}</option>
-                </select>
-              </label>
+                  {t(sortLabelKey(key))}
+                </button>
+              ))}
             </div>
             <ResultsBlock
               result={result}
@@ -1487,17 +1525,8 @@ function ResultsBlock({
 }) {
   const { t } = useI18n();
 
-  const organic = useMemo(() => {
-    const base = [...result.rows];
-    if (sortBy === "received") base.sort((a, b) => b.received - a.received);
-    if (sortBy === "fee") base.sort((a, b) => a.fee_total - b.fee_total);
-    if (sortBy === "speed")
-      base.sort(
-        (a, b) =>
-          (a.delivery_minutes ?? a.speed_hours * 60) - (b.delivery_minutes ?? b.speed_hours * 60),
-      );
-    return base;
-  }, [result.rows, sortBy]);
+  const organic = useMemo(() => sortByScore(result.rows, sortBy), [result.rows, sortBy]);
+  const badgesBySlug = useMemo(() => deriveBadges(result.rows), [result.rows]);
 
   // Crisp HH:mm:ss for the trust line.
   const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
@@ -1532,7 +1561,9 @@ function ResultsBlock({
             row={row}
             quote={result.quote}
             base={result.base}
-            isBest={i === 0 && sortBy === "received"}
+            isBest={i === 0}
+            sortBy={sortBy}
+            badges={badgesBySlug.get(row.slug) ?? []}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             updatedTime={updatedTime}
@@ -1563,11 +1594,33 @@ function ResultsBlock({
   );
 }
 
+/** Only a subset of the engine's badges have UI copy wired up so far
+ *  (most_transparent/large_transfers/exclusive_deal exist in the engine but
+ *  aren't shown yet — see scoring.functions.ts). Returns null to skip. */
+function badgeLabelKey(b: BadgeKey): string | null {
+  switch (b) {
+    case "lowest_fee":
+      return "comparator.sort.fee";
+    case "fastest_delivery":
+      return "comparator.sort.speed";
+    case "most_trusted":
+      return "comparator.sort.mostTrusted";
+    case "best_business":
+      return "comparator.sort.bestBusiness";
+    case "cash_pickup":
+      return "comparator.sort.cashPickup";
+    default:
+      return null;
+  }
+}
+
 function ProviderRow({
   row,
   quote,
   base,
   isBest,
+  sortBy,
+  badges,
   onClick,
   tCta,
   updatedTime,
@@ -1577,6 +1630,8 @@ function ProviderRow({
   quote: string;
   base: string;
   isBest: boolean;
+  sortBy: SortKey;
+  badges: BadgeKey[];
   onClick: () => void;
   tCta: string;
   /** Real HH:mm:ss the quote's rate snapshot was cached — shown per row. */
@@ -1620,9 +1675,20 @@ function ProviderRow({
             <span className="truncate font-semibold text-foreground">{row.name}</span>
             {isBest && (
               <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
-                {t("comparator.table.bestRate")}
+                {t(sortLabelKey(sortBy))}
               </span>
             )}
+            {badges
+              .filter((b) => badgeLabelKey(b) != null)
+              .slice(0, 3)
+              .map((b) => (
+                <span
+                  key={b}
+                  className="rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                >
+                  {t(badgeLabelKey(b)!)}
+                </span>
+              ))}
           </div>
           <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
             {row.regulator && (
