@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "추가 질문",
   "home.how.aiAside": "mangomundi 에이전트를 열어 수수료 분석, 다른 경로 시도, 최적 옵션 재확인을 — 계정 불필요.",
   "home.blog.viewAll": "모든 게시물 보기",
-  "home.contact.subtitle": "전용 요율, 맞춤 통합, 또는 저희 팀과의 직접 연락을 원하는 재무팀 및 외환 파트너를 위한 안내입니다."
+  "home.contact.subtitle": "전용 요율, 맞춤 통합, 또는 저희 팀과의 직접 연락을 원하는 재무팀 및 외환 파트너를 위한 안내입니다.",
+  "comparator.sort.overall": "종합",
+  "comparator.sort.mostTrusted": "신뢰도 최고",
+  "comparator.sort.bestBusiness": "기업에 최적",
+  "comparator.sort.cashPickup": "현금 수령",
+  "comparator.copilot.proactive.trust": "이 송금 구간에서는 **{provider}**의 신뢰도 평가가 가장 높습니다. 진행할까요?",
+  "comparator.copilot.proactive.business": "이 구간의 기업 송금에는 **{provider}**가 가장 적합합니다. 진행할까요?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}**는 이 구간에서 현금 수령이 가능합니다. 진행할까요?"
 }
