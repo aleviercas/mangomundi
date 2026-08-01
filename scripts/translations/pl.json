@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "Więcej pytań",
   "home.how.aiAside": "Otwórz agenta mangomundi, aby rozbić opłaty, wypróbować inną trasę lub sprawdzić najlepszą opcję — bez konta.",
   "home.blog.viewAll": "Zobacz wszystkie wpisy",
-  "home.contact.subtitle": "Dla zespołów treasury i partnerów FX szukających dedykowanych kursów, indywidualnych integracji lub bezpośredniego kontaktu z naszym zespołem."
+  "home.contact.subtitle": "Dla zespołów treasury i partnerów FX szukających dedykowanych kursów, indywidualnych integracji lub bezpośredniego kontaktu z naszym zespołem.",
+  "comparator.sort.overall": "Ogólnie",
+  "comparator.sort.mostTrusted": "Najbardziej zaufany",
+  "comparator.sort.bestBusiness": "Najlepszy dla firm",
+  "comparator.sort.cashPickup": "Odbiór gotówki",
+  "comparator.copilot.proactive.trust": "Zauważyłem, że **{provider}** ma najwyższą ocenę zaufania dla tego korytarza. Kontynuować?",
+  "comparator.copilot.proactive.business": "**{provider}** najlepiej sprawdza się w przelewach firmowych na tej trasie. Kontynuować?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** oferuje odbiór gotówki dla tej trasy. Kontynuować?"
 }
