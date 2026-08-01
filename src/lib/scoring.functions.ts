@@ -76,6 +76,13 @@ export interface ScorableRow {
   countries_covered?: number | null;
   /** Disclosed exclusive mangomundi offer — never folded silently into other scores. */
   has_exclusive_deal?: boolean | null;
+  /**
+   * Trustpilot score from the last time this row was checked before the
+   * current one (snapshot, not live). Used only by `getTrustTrend` below —
+   * never fed into the composite score itself, since "used to be worse/
+   * better" isn't a live quality signal, it's a red/green flag for humans.
+   */
+  trust_score_previous?: number | null;
 }
 
 /**
@@ -355,4 +362,59 @@ export function pickFeaturedAmongTies<T extends ScorableRow>(
   // Simple deterministic hash of the seed → stable index into `tied`.
   const index = Math.abs(Math.sin(seed) * 10000) % tied.length;
   return tied[Math.floor(index)];
+}
+
+export type TrustTrend = "rising" | "stable" | "declining";
+
+/**
+ * Compares a provider's current `trust_score` against its last recorded
+ * snapshot (`trust_score_previous`). This is how the Atlantic Money
+ * situation gets caught automatically next time, instead of a human
+ * happening to re-search it: any provider whose Trustpilot score has
+ * genuinely dropped surfaces a warning, without a person having to notice.
+ *
+ * Threshold is 0.3 stars — smaller moves are normal noise (Trustpilot
+ * scores wobble slightly review to review), a real "something changed"
+ * signal tends to be bigger, as in Atlantic Money's ~1.5-star drop.
+ *
+ * This never feeds into the composite score — a provider mid-decline still
+ * gets scored on its *current* trust_score like everyone else. The trend is
+ * a separate, purely informational signal for the team (and optionally the
+ * UI) to flag for manual review, exactly like this conversation did for
+ * Atlantic Money.
+ */
+export function getTrustTrend(
+  row: Pick<ScorableRow, "trust_score" | "trust_score_previous">,
+  threshold = 0.3,
+): TrustTrend | null {
+  if (row.trust_score == null || row.trust_score_previous == null) return null;
+  const delta = row.trust_score - row.trust_score_previous;
+  if (delta <= -threshold) return "declining";
+  if (delta >= threshold) return "rising";
+  return "stable";
+}
+
+/**
+ * Providers whose trust trend is "declining" — meant for an internal
+ * dashboard/alert, not necessarily user-facing. Run this whenever Phase 1
+ * data gets refreshed (re-checking Trustpilot periodically) to catch
+ * situations like Atlantic Money's drop automatically.
+ */
+export function flagDecliningProviders<T extends ScorableRow>(
+  rows: T[],
+  threshold = 0.3,
+): Array<{ slug: string; from: number; to: number; delta: number }> {
+  const flagged: Array<{ slug: string; from: number; to: number; delta: number }> = [];
+  for (const r of rows) {
+    const trend = getTrustTrend(r, threshold);
+    if (trend === "declining" && r.trust_score != null && r.trust_score_previous != null) {
+      flagged.push({
+        slug: r.slug,
+        from: r.trust_score_previous,
+        to: r.trust_score,
+        delta: r.trust_score - r.trust_score_previous,
+      });
+    }
+  }
+  return flagged.sort((a, b) => a.delta - b.delta); // biggest drop first
 }
