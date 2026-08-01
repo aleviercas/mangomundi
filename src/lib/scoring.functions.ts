@@ -330,34 +330,44 @@ export function auditProviderChances<T extends ScorableRow>(
 /**
  * Statistically-honest near-tie rotation.
  *
- * When the top N providers under a profile are within `thresholdPct` of each
- * other's composite score, the gap is noise, not a real signal — an
- * arbitrary tiebreak (e.g. "whoever loads first in the array") would
- * silently and permanently favor the same provider every time. Instead,
- * pick which of the tied providers gets featured using a seed, so it's
- * deterministic per seed (e.g. per session or per day) but rotates across
- * seeds — spreading the "featured" slot fairly among genuine near-equals
- * without ever claiming a false distinction between them.
+ * IMPORTANT DESIGN NOTE: this deliberately does NOT compare composite
+ * scores to detect ties. Min-max normalization scales to whatever range
+ * exists in the current result set, so a trivial $0.50 difference in
+ * `received` on a $1,000 transfer can get stretched to 0..1 and look like
+ * a huge score gap even though no real person would call that a
+ * meaningful difference. Instead, "tie" is defined on the real-world
+ * quantity a user actually perceives: the relative difference in amount
+ * received. This is profile-independent by design — a $0.40 difference is
+ * noise no matter which criteria the user says matter to them.
+ *
+ * When the top N providers are within `thresholdPct` of each other's
+ * `received` amount, the gap is noise, not a real signal — an arbitrary
+ * tiebreak (e.g. "whoever loads first in the array") would silently and
+ * permanently favor the same provider every time. Instead, pick which of
+ * the tied providers gets featured using a seed, so it's deterministic per
+ * seed (e.g. per session or per day) but rotates across seeds — spreading
+ * the "featured" slot fairly among genuine near-equals without ever
+ * claiming a false distinction between them.
  *
  * This never changes who's "correct" to feature — it only decides, among
- * providers that are honestly tied, who gets the spotlight this time.
+ * providers that are honestly tied on real money, who gets the spotlight
+ * this time. `sortedRows` should already be sorted by `sortByScore` for the
+ * chosen profile; this only re-picks among the top cluster if they're
+ * within noise of each other on `received`.
  */
 export function pickFeaturedAmongTies<T extends ScorableRow>(
   sortedRows: T[],
   profile: ScoreProfileKey,
   seed: number,
-  thresholdPct = 0.015,
+  thresholdPct = 0.005,
 ): T | null {
   if (sortedRows.length === 0) return null;
-  const scores = computeCompositeScores(sortedRows, profile);
-  const topScore = scores.get(sortedRows[0].slug) ?? 0;
-  if (topScore <= 0) return sortedRows[0];
-
+  const top = sortedRows[0];
   const tied = sortedRows.filter((r) => {
-    const s = scores.get(r.slug) ?? 0;
-    return (topScore - s) / topScore <= thresholdPct;
+    if (top.received === 0) return r.slug === top.slug;
+    return Math.abs(top.received - r.received) / Math.abs(top.received) <= thresholdPct;
   });
-  if (tied.length <= 1) return sortedRows[0];
+  if (tied.length <= 1) return top;
 
   // Simple deterministic hash of the seed → stable index into `tied`.
   const index = Math.abs(Math.sin(seed) * 10000) % tied.length;
