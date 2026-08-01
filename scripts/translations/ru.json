@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "Ещё вопросы",
   "home.how.aiAside": "Откройте агента mangomundi, чтобы разобрать комиссии, попробовать другой маршрут или перепроверить лучший вариант — без аккаунта.",
   "home.blog.viewAll": "Смотреть все статьи",
-  "home.contact.subtitle": "Для казначейских команд и FX-партнёров, которым нужны индивидуальные курсы, специальные интеграции или прямая связь с нашей командой."
+  "home.contact.subtitle": "Для казначейских команд и FX-партнёров, которым нужны индивидуальные курсы, специальные интеграции или прямая связь с нашей командой.",
+  "comparator.sort.overall": "Общий рейтинг",
+  "comparator.sort.mostTrusted": "Самый надёжный",
+  "comparator.sort.bestBusiness": "Лучший для бизнеса",
+  "comparator.sort.cashPickup": "Выдача наличными",
+  "comparator.copilot.proactive.trust": "Я заметил, что у **{provider}** самый высокий рейтинг доверия для этого коридора. Продолжим?",
+  "comparator.copilot.proactive.business": "**{provider}** лучше всего подходит для бизнес-переводов по этому коридору. Продолжим?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** предлагает выдачу наличными для этого коридора. Продолжим?"
 }
