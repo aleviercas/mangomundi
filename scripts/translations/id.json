@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "Pertanyaan lain",
   "home.how.aiAside": "Buka agen mangomundi untuk merinci biaya, mencoba rute lain, atau memeriksa opsi terbaik — tanpa akun.",
   "home.blog.viewAll": "Lihat semua artikel",
-  "home.contact.subtitle": "Untuk tim treasury dan mitra FX yang mencari kurs khusus, integrasi kustom, atau jalur langsung ke tim kami."
+  "home.contact.subtitle": "Untuk tim treasury dan mitra FX yang mencari kurs khusus, integrasi kustom, atau jalur langsung ke tim kami.",
+  "comparator.sort.overall": "Keseluruhan",
+  "comparator.sort.mostTrusted": "Paling terpercaya",
+  "comparator.sort.bestBusiness": "Terbaik untuk bisnis",
+  "comparator.sort.cashPickup": "Pengambilan tunai",
+  "comparator.copilot.proactive.trust": "Saya melihat **{provider}** memiliki rating kepercayaan tertinggi untuk koridor ini. Lanjutkan?",
+  "comparator.copilot.proactive.business": "**{provider}** paling cocok untuk transfer bisnis di koridor ini. Lanjutkan?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** menawarkan pengambilan tunai untuk koridor ini. Lanjutkan?"
 }
