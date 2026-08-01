@@ -66,6 +66,19 @@ UPDATE providers SET trust_score = 4.6, review_count = 38500 WHERE slug = 'trans
 UPDATE providers SET trust_score = 4.15, review_count = 41000 WHERE slug = 'paysend';
 UPDATE providers SET trust_score = 4.6, review_count = 10000 WHERE slug = 'currencyfair'; -- ver nota de fuentes dispersas en findings.md
 
+-- Tier 3 (continuación)
+UPDATE providers SET trust_score = 4.6, review_count = 190000, cash_pickup_available = true, countries_covered = 150 WHERE slug = 'xoom';
+UPDATE providers SET trust_score = 3.6, review_count = 325, business_focus_score = 9, cash_pickup_available = false WHERE slug = 'convera';
+UPDATE providers SET trust_score = 4.4, review_count = 25500, cash_pickup_available = true WHERE slug = 'sendwave'; -- cash pickup: probable, no 100% confirmado
+UPDATE providers SET trust_score = 4.5, review_count = 12000 WHERE slug = 'lemfi';
+UPDATE providers SET trust_score = 4.2, review_count = 1046 WHERE slug = 'nala';
+UPDATE providers SET trust_score = 4.7, review_count = 36000 WHERE slug = 'taptap-send'; -- ya estaba, se repite con cash_pickup aún sin confirmar
+
+-- ⚠️ Skrill: NO cargar todavía. Dos páginas de Trustpilot dan resultados
+-- opuestos (transfers.skrill.com = 4.3-4.4 "Excellent" vs skrill.com = 2.2
+-- "Poor") — resolver primero con el proveedor mismo (via el mail de
+-- outreach del plan de afiliados) qué producto aplica a mangomundi.
+
 -- ⚠️ Atlantic Money: NO cargar sin que Alejandro confirme el tier tras leer
 -- la alerta en scoring-data-findings.md (rating cayó de 4.1 a 2.3-2.7 reciente).
 -- UPDATE providers SET trust_score = 2.5, review_count = 175 WHERE slug = 'atlantic-money';
