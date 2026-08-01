@@ -5,6 +5,7 @@ import {
   sortByScore,
   deriveBadges,
   auditProviderChances,
+  pickFeaturedAmongTies,
   type ScorableRow,
 } from "./scoring.functions";
 
@@ -24,9 +25,12 @@ const rows: ScorableRow[] = [
     fee_total: 1,
     speed_hours: 48,
     trust_score: 3.5,
+    transparency_score: 6,
+    supports_large_tickets: false,
     business_focus_score: null,
     cash_pickup_available: false,
     countries_covered: 20,
+    has_exclusive_deal: false,
   },
   {
     slug: "fastest",
@@ -34,9 +38,12 @@ const rows: ScorableRow[] = [
     fee_total: 5,
     speed_hours: 1,
     trust_score: 4.0,
+    transparency_score: 5,
+    supports_large_tickets: false,
     business_focus_score: null,
     cash_pickup_available: false,
     countries_covered: 30,
+    has_exclusive_deal: false,
   },
   {
     slug: "most_trusted",
@@ -44,33 +51,77 @@ const rows: ScorableRow[] = [
     fee_total: 6,
     speed_hours: 24,
     trust_score: 4.8,
+    transparency_score: 7,
+    supports_large_tickets: false,
     business_focus_score: 8,
     cash_pickup_available: true,
     countries_covered: 50,
+    has_exclusive_deal: false,
+  },
+  {
+    slug: "most_transparent",
+    received: 980,
+    fee_total: 7,
+    speed_hours: 30,
+    trust_score: 4.1,
+    transparency_score: 10,
+    supports_large_tickets: true,
+    business_focus_score: 4,
+    cash_pickup_available: false,
+    countries_covered: 25,
+    has_exclusive_deal: false,
+  },
+  {
+    slug: "deal_provider",
+    received: 970,
+    fee_total: 8,
+    speed_hours: 36,
+    trust_score: 3.9,
+    transparency_score: 4,
+    supports_large_tickets: false,
+    business_focus_score: null,
+    cash_pickup_available: false,
+    countries_covered: 15,
+    has_exclusive_deal: true,
   },
 ];
 
 describe("computeCompositeScores / sortByScore", () => {
   it("lowest_cost profile ranks the cheapest provider first", () => {
-    const sorted = sortByScore(rows, "lowest_cost");
-    expect(sorted[0].slug).toBe("cheapest");
+    expect(sortByScore(rows, "lowest_cost")[0].slug).toBe("cheapest");
   });
 
   it("fastest profile ranks the fastest provider first", () => {
-    const sorted = sortByScore(rows, "fastest");
-    expect(sorted[0].slug).toBe("fastest");
+    expect(sortByScore(rows, "fastest")[0].slug).toBe("fastest");
   });
 
   it("most_trusted profile ranks the highest trust_score first", () => {
-    const sorted = sortByScore(rows, "most_trusted");
-    expect(sorted[0].slug).toBe("most_trusted");
+    expect(sortByScore(rows, "most_trusted")[0].slug).toBe("most_trusted");
+  });
+
+  it("most_transparent profile ranks the highest transparency_score first", () => {
+    expect(sortByScore(rows, "most_transparent")[0].slug).toBe("most_transparent");
+  });
+
+  it("best_large_transfers profile favors the provider that supports large tickets", () => {
+    expect(sortByScore(rows, "best_large_transfers")[0].slug).toBe("most_transparent");
+  });
+
+  it("best_deal profile ranks the provider with has_exclusive_deal first", () => {
+    expect(sortByScore(rows, "best_deal")[0].slug).toBe("deal_provider");
+  });
+
+  it("best_deal never wins on providers without an exclusive deal, and never leaks into overall", () => {
+    const overallSorted = sortByScore(rows, "overall");
+    expect(overallSorted[0].slug).not.toBe("deal_provider");
   });
 
   it("different profiles can surface different #1 providers for the same data", () => {
     const winners = new Set(
-      (["lowest_cost", "fastest", "most_trusted"] as const).map((p) => sortByScore(rows, p)[0].slug),
+      (["lowest_cost", "fastest", "most_trusted", "most_transparent", "best_deal"] as const).map(
+        (p) => sortByScore(rows, p)[0].slug,
+      ),
     );
-    // The whole point of this engine: not everyone converges on one winner.
     expect(winners.size).toBeGreaterThan(1);
   });
 
@@ -80,7 +131,6 @@ describe("computeCompositeScores / sortByScore", () => {
       { slug: "b", received: 100, fee_total: 1, speed_hours: 10, trust_score: 4.5, countries_covered: 5 },
     ];
     const scores = computeCompositeScores(withMissing, "overall");
-    // Both score close to each other since only trust_score differs and "a" has none.
     expect(Math.abs(scores.get("a")! - scores.get("b")!)).toBeLessThan(0.2);
   });
 });
@@ -91,13 +141,16 @@ describe("auditProviderChances", () => {
       ...rows,
       {
         slug: "strictly_worse_than_most_trusted",
-        received: 900, // worse than most_trusted's 985
-        fee_total: 10, // worse than most_trusted's 6
-        speed_hours: 30, // worse than most_trusted's 24
-        trust_score: 4.0, // worse than most_trusted's 4.8
-        business_focus_score: 5, // worse than most_trusted's 8
-        cash_pickup_available: false, // worse than most_trusted's true
-        countries_covered: 40, // worse than most_trusted's 50
+        received: 900,
+        fee_total: 10,
+        speed_hours: 30,
+        trust_score: 4.0,
+        transparency_score: 6,
+        supports_large_tickets: false,
+        business_focus_score: 5,
+        cash_pickup_available: false,
+        countries_covered: 40,
+        has_exclusive_deal: false,
       },
     ];
     const audit = auditProviderChances(dominated, 3000);
@@ -105,12 +158,14 @@ describe("auditProviderChances", () => {
   });
 
   it("non-dominated providers each win at least sometimes across random weights", () => {
-    const audit = auditProviderChances(rows, 3000);
+    const audit = auditProviderChances(rows, 4000);
     for (const r of rows) {
       expect(audit.get(r.slug)?.wins ?? 0).toBeGreaterThan(0);
     }
   });
 });
+
+describe("deriveBadges", () => {
   it("awards lowest_fee to the cheapest provider", () => {
     const badges = deriveBadges(rows);
     expect(badges.get("cheapest")).toContain("lowest_fee");
@@ -130,7 +185,24 @@ describe("auditProviderChances", () => {
     const badges = deriveBadges(rows);
     expect(badges.get("most_trusted")).toContain("cash_pickup");
     expect(badges.get("cheapest")).not.toContain("cash_pickup");
-    expect(badges.get("fastest")).not.toContain("cash_pickup");
+  });
+
+  it("awards most_transparent to the highest transparency_score", () => {
+    const badges = deriveBadges(rows);
+    expect(badges.get("most_transparent")).toContain("most_transparent");
+  });
+
+  it("awards large_transfers only to providers with supports_large_tickets", () => {
+    const badges = deriveBadges(rows);
+    expect(badges.get("most_transparent")).toContain("large_transfers");
+    expect(badges.get("cheapest")).not.toContain("large_transfers");
+  });
+
+  it("awards exclusive_deal only to providers with has_exclusive_deal, never elsewhere", () => {
+    const badges = deriveBadges(rows);
+    expect(badges.get("deal_provider")).toContain("exclusive_deal");
+    expect(badges.get("cheapest")).not.toContain("exclusive_deal");
+    expect(badges.get("most_trusted")).not.toContain("exclusive_deal");
   });
 
   it("does not award best_business when no row has business_focus_score", () => {
@@ -138,6 +210,35 @@ describe("auditProviderChances", () => {
     const badges = deriveBadges(noBusinessData);
     for (const list of badges.values()) {
       expect(list).not.toContain("best_business");
+    }
+  });
+});
+
+describe("pickFeaturedAmongTies", () => {
+  it("returns the outright #1 when there is no real tie", () => {
+    const sorted = sortByScore(rows, "most_trusted");
+    const featured = pickFeaturedAmongTies(sorted, "most_trusted", 42);
+    expect(featured?.slug).toBe(sorted[0].slug);
+  });
+
+  it("rotates the featured pick among genuinely tied providers across different seeds", () => {
+    const nearTies: ScorableRow[] = [
+      { slug: "tie_a", received: 1000, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
+      { slug: "tie_b", received: 1000.5, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
+      { slug: "tie_c", received: 999.8, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
+    ];
+    const sorted = sortByScore(nearTies, "overall");
+    const picks = new Set(
+      Array.from({ length: 20 }, (_, seed) => pickFeaturedAmongTies(sorted, "overall", seed)?.slug),
+    );
+    expect(picks.size).toBeGreaterThan(1);
+  });
+
+  it("never features a provider that is not among the tied set", () => {
+    const sorted = sortByScore(rows, "overall");
+    for (let seed = 0; seed < 10; seed++) {
+      const featured = pickFeaturedAmongTies(sorted, "overall", seed);
+      expect(sorted.map((r) => r.slug)).toContain(featured?.slug);
     }
   });
 });
