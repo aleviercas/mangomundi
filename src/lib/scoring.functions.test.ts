@@ -6,6 +6,8 @@ import {
   deriveBadges,
   auditProviderChances,
   pickFeaturedAmongTies,
+  getTrustTrend,
+  flagDecliningProviders,
   type ScorableRow,
 } from "./scoring.functions";
 
@@ -240,5 +242,35 @@ describe("pickFeaturedAmongTies", () => {
       const featured = pickFeaturedAmongTies(sorted, "overall", seed);
       expect(sorted.map((r) => r.slug)).toContain(featured?.slug);
     }
+  });
+});
+
+describe("getTrustTrend / flagDecliningProviders", () => {
+  it("flags a real-world case: Atlantic Money's Trustpilot drop (4.1 -> 2.5)", () => {
+    expect(getTrustTrend({ trust_score: 2.5, trust_score_previous: 4.1 })).toBe("declining");
+  });
+
+  it("returns stable for a small, normal wobble", () => {
+    expect(getTrustTrend({ trust_score: 4.3, trust_score_previous: 4.4 })).toBe("stable");
+  });
+
+  it("returns rising when a provider genuinely improves", () => {
+    expect(getTrustTrend({ trust_score: 4.2, trust_score_previous: 3.5 })).toBe("rising");
+  });
+
+  it("returns null when there's no previous snapshot to compare against", () => {
+    expect(getTrustTrend({ trust_score: 4.3, trust_score_previous: null })).toBeNull();
+  });
+
+  it("flagDecliningProviders sorts the biggest drop first and ignores stable/rising providers", () => {
+    const snapshot: ScorableRow[] = [
+      { slug: "atlantic-money", received: 0, fee_total: 0, speed_hours: 0, trust_score: 2.5, trust_score_previous: 4.1 },
+      { slug: "wise", received: 0, fee_total: 0, speed_hours: 0, trust_score: 4.3, trust_score_previous: 4.3 },
+      { slug: "small_dip", received: 0, fee_total: 0, speed_hours: 0, trust_score: 4.0, trust_score_previous: 4.5 },
+      { slug: "improving_provider", received: 0, fee_total: 0, speed_hours: 0, trust_score: 4.5, trust_score_previous: 3.8 },
+    ];
+    const flagged = flagDecliningProviders(snapshot);
+    expect(flagged.map((f) => f.slug)).toEqual(["atlantic-money", "small_dip"]);
+    expect(flagged[0].delta).toBeLessThan(flagged[1].delta); // atlantic-money's drop is bigger (more negative)
   });
 });
