@@ -19,7 +19,12 @@ ALTER TABLE providers
   ADD COLUMN IF NOT EXISTS business_focus_score numeric, -- escala 0-10
   ADD COLUMN IF NOT EXISTS countries_covered integer,
   ADD COLUMN IF NOT EXISTS mobile_app_rating numeric, -- escala 0-5, App Store/Play Store
-  ADD COLUMN IF NOT EXISTS has_exclusive_deal boolean DEFAULT false;
+  ADD COLUMN IF NOT EXISTS has_exclusive_deal boolean DEFAULT false,
+  ADD COLUMN IF NOT EXISTS trust_score_previous numeric, -- snapshot del trust_score anterior
+  ADD COLUMN IF NOT EXISTS trust_score_checked_at timestamptz DEFAULT now(); -- cuándo se verificó el trust_score actual
+
+COMMENT ON COLUMN providers.trust_score_previous IS
+  'Snapshot del trust_score de la verificación anterior. Se usa junto con getTrustTrend()/flagDecliningProviders() en scoring.functions.ts para detectar caídas reales (ej. Atlantic Money 4.1 -> 2.5) sin depender de que alguien lo note manualmente. Al re-verificar un proveedor: primero copiar el trust_score actual acá, después actualizar trust_score con el nuevo valor.';
 
 COMMENT ON COLUMN providers.has_exclusive_deal IS
   'Oferta/código exclusivo negociado por mangomundi. SIEMPRE debe renderizarse con label explícito "Oferta exclusiva mangomundi" en el frontend — nunca se mezcla invisible en el score general (ver best_deal profile en scoring.functions.ts).';
@@ -81,4 +86,6 @@ UPDATE providers SET trust_score = 4.7, review_count = 36000 WHERE slug = 'tapta
 
 -- ⚠️ Atlantic Money: NO cargar sin que Alejandro confirme el tier tras leer
 -- la alerta en scoring-data-findings.md (rating cayó de 4.1 a 2.3-2.7 reciente).
--- UPDATE providers SET trust_score = 2.5, review_count = 175 WHERE slug = 'atlantic-money';
+-- Si decidís cargarlo, sembrá trust_score_previous con el valor viejo (4.1)
+-- para que el sistema de tendencia lo detecte automáticamente en el futuro:
+-- UPDATE providers SET trust_score = 2.5, trust_score_previous = 4.1, review_count = 175 WHERE slug = 'atlantic-money';
