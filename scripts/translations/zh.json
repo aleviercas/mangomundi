@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "更多问题",
   "home.how.aiAside": "打开 mangomundi 智能助手，拆解费用、试试其他路线或复核最佳选项——无需账户。",
   "home.blog.viewAll": "查看所有文章",
-  "home.contact.subtitle": "适合寻求专属汇率、定制集成或与我们团队直接联系的资金团队和外汇合作伙伴。"
+  "home.contact.subtitle": "适合寻求专属汇率、定制集成或与我们团队直接联系的资金团队和外汇合作伙伴。",
+  "comparator.sort.overall": "综合",
+  "comparator.sort.mostTrusted": "最值得信赖",
+  "comparator.sort.bestBusiness": "最适合企业",
+  "comparator.sort.cashPickup": "现金提取",
+  "comparator.copilot.proactive.trust": "我注意到 **{provider}** 在这条路线上的信任评分最高。要继续吗?",
+  "comparator.copilot.proactive.business": "**{provider}** 最适合这条路线上的企业汇款。要继续吗?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** 在这条路线上支持现金提取。要继续吗?"
 }
