@@ -25,7 +25,10 @@ export type ScoreProfileKey =
   | "fastest"
   | "most_trusted"
   | "best_business"
-  | "best_cash_pickup";
+  | "best_cash_pickup"
+  | "most_transparent"
+  | "best_large_transfers"
+  | "best_deal";
 
 export interface ScoreWeights {
   rate: number;
@@ -34,17 +37,27 @@ export interface ScoreWeights {
   business: number;
   cashPickup: number;
   coverage: number;
+  transparency: number;
+  largeTransfers: number;
+  exclusiveDeal: number;
 }
 
 // Weights per profile must sum to 1.0 — enforced by the test in
 // scoring.functions.test.ts, not just by convention here.
 export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
-  overall: { rate: 0.3, speed: 0.2, trust: 0.25, business: 0.05, cashPickup: 0.1, coverage: 0.1 },
-  lowest_cost: { rate: 0.7, speed: 0.1, trust: 0.1, business: 0.0, cashPickup: 0.05, coverage: 0.05 },
-  fastest: { rate: 0.15, speed: 0.6, trust: 0.15, business: 0.0, cashPickup: 0.05, coverage: 0.05 },
-  most_trusted: { rate: 0.15, speed: 0.1, trust: 0.6, business: 0.05, cashPickup: 0.05, coverage: 0.05 },
-  best_business: { rate: 0.2, speed: 0.15, trust: 0.2, business: 0.35, cashPickup: 0.0, coverage: 0.1 },
-  best_cash_pickup: { rate: 0.2, speed: 0.15, trust: 0.15, business: 0.0, cashPickup: 0.45, coverage: 0.05 },
+  overall: { rate: 0.25, speed: 0.18, trust: 0.2, business: 0.05, cashPickup: 0.08, coverage: 0.09, transparency: 0.1, largeTransfers: 0.05, exclusiveDeal: 0.0 },
+  lowest_cost: { rate: 0.65, speed: 0.08, trust: 0.08, business: 0.0, cashPickup: 0.04, coverage: 0.04, transparency: 0.06, largeTransfers: 0.05, exclusiveDeal: 0.0 },
+  fastest: { rate: 0.13, speed: 0.55, trust: 0.13, business: 0.0, cashPickup: 0.04, coverage: 0.04, transparency: 0.06, largeTransfers: 0.05, exclusiveDeal: 0.0 },
+  most_trusted: { rate: 0.13, speed: 0.08, trust: 0.55, business: 0.04, cashPickup: 0.04, coverage: 0.04, transparency: 0.08, largeTransfers: 0.04, exclusiveDeal: 0.0 },
+  best_business: { rate: 0.17, speed: 0.12, trust: 0.15, business: 0.3, cashPickup: 0.0, coverage: 0.08, transparency: 0.08, largeTransfers: 0.1, exclusiveDeal: 0.0 },
+  best_cash_pickup: { rate: 0.17, speed: 0.12, trust: 0.12, business: 0.0, cashPickup: 0.4, coverage: 0.04, transparency: 0.1, largeTransfers: 0.05, exclusiveDeal: 0.0 },
+  most_transparent: { rate: 0.12, speed: 0.08, trust: 0.15, business: 0.0, cashPickup: 0.05, coverage: 0.05, transparency: 0.5, largeTransfers: 0.05, exclusiveDeal: 0.0 },
+  best_large_transfers: { rate: 0.15, speed: 0.08, trust: 0.15, business: 0.12, cashPickup: 0.0, coverage: 0.05, transparency: 0.1, largeTransfers: 0.35, exclusiveDeal: 0.0 },
+  // "best_deal" is deliberately narrow: mostly weighted on the disclosed
+  // exclusive-offer flag itself, not a claim of overall quality. Kept as
+  // its own profile so a promo NEVER quietly inflates "overall" or other
+  // scores — same disclosure principle already used for sponsored_rank.
+  best_deal: { rate: 0.15, speed: 0.05, trust: 0.1, business: 0.0, cashPickup: 0.0, coverage: 0.0, transparency: 0.05, largeTransfers: 0.0, exclusiveDeal: 0.65 },
 };
 
 export const SCORE_PROFILE_KEYS = Object.keys(SCORE_PROFILES) as ScoreProfileKey[];
@@ -56,9 +69,13 @@ export interface ScorableRow {
   fee_total: number;
   speed_hours: number;
   trust_score: number | null;
+  transparency_score?: number | null;
+  supports_large_tickets?: boolean | null;
   business_focus_score?: number | null;
   cash_pickup_available?: boolean | null;
   countries_covered?: number | null;
+  /** Disclosed exclusive mangomundi offer — never folded silently into other scores. */
+  has_exclusive_deal?: boolean | null;
 }
 
 /**
@@ -97,18 +114,25 @@ export function computeCompositeScores<T extends ScorableRow>(
   const scoreTrust = buildNormalizer(rows.map((r) => r.trust_score), true);
   const scoreBusiness = buildNormalizer(rows.map((r) => r.business_focus_score), true);
   const scoreCoverage = buildNormalizer(rows.map((r) => r.countries_covered), true);
+  const scoreTransparency = buildNormalizer(rows.map((r) => r.transparency_score), true);
 
   const result = new Map<string, number>();
   for (const r of rows) {
     const cashScore =
       r.cash_pickup_available === true ? 1 : r.cash_pickup_available === false ? 0 : 0.5;
+    const largeTicketScore =
+      r.supports_large_tickets === true ? 1 : r.supports_large_tickets === false ? 0 : 0.5;
+    const exclusiveDealScore = r.has_exclusive_deal === true ? 1 : 0;
     const total =
       weights.rate * scoreRate(r.received) +
       weights.speed * scoreSpeed(r.speed_hours) +
       weights.trust * scoreTrust(r.trust_score) +
       weights.business * scoreBusiness(r.business_focus_score) +
       weights.cashPickup * cashScore +
-      weights.coverage * scoreCoverage(r.countries_covered);
+      weights.coverage * scoreCoverage(r.countries_covered) +
+      weights.transparency * scoreTransparency(r.transparency_score) +
+      weights.largeTransfers * largeTicketScore +
+      weights.exclusiveDeal * exclusiveDealScore;
     result.set(r.slug, total);
   }
   return result;
@@ -126,14 +150,17 @@ export type BadgeKey =
   | "most_trusted"
   | "best_business"
   | "cash_pickup"
-  | "wide_coverage";
+  | "wide_coverage"
+  | "most_transparent"
+  | "large_transfers"
+  | "exclusive_deal";
 
 /**
  * Derives per-provider badges by finding the category winner(s) in the
  * current result set. Never invents a winner when there's no data for that
  * category (e.g. no row has trust_score → nobody gets "most_trusted").
- * `cash_pickup` is a capability flag, not a "best of" — every provider that
- * supports it gets the badge, not just one.
+ * `cash_pickup`, `large_transfers`, and `exclusive_deal` are capability/offer
+ * flags, not a "best of" — every provider that has them gets the badge.
  */
 export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, BadgeKey[]> {
   const badges = new Map<string, BadgeKey[]>();
@@ -163,6 +190,8 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
   }
 
   rows.filter((r) => r.cash_pickup_available === true).forEach((r) => add(r.slug, "cash_pickup"));
+  rows.filter((r) => r.supports_large_tickets === true).forEach((r) => add(r.slug, "large_transfers"));
+  rows.filter((r) => r.has_exclusive_deal === true).forEach((r) => add(r.slug, "exclusive_deal"));
 
   const coverageCandidates = rows.filter((r) => r.countries_covered != null);
   if (coverageCandidates.length > 0) {
@@ -170,6 +199,14 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
       (a, b) => b.countries_covered! - a.countries_covered!,
     )[0];
     add(coverage.slug, "wide_coverage");
+  }
+
+  const transparencyCandidates = rows.filter((r) => r.transparency_score != null);
+  if (transparencyCandidates.length > 0) {
+    const transparent = [...transparencyCandidates].sort(
+      (a, b) => b.transparency_score! - a.transparency_score!,
+    )[0];
+    add(transparent.slug, "most_transparent");
   }
 
   return badges;
@@ -189,6 +226,9 @@ export function explainTopPick(row: ScorableRow, profile: ScoreProfileKey): stri
   if (weights.trust >= 0.3 && row.trust_score != null) reasons.push(`trust score ${row.trust_score}`);
   if (weights.business >= 0.3 && row.business_focus_score != null) reasons.push("strong business/corporate fit");
   if (weights.cashPickup >= 0.3 && row.cash_pickup_available) reasons.push("cash pickup available");
+  if (weights.transparency >= 0.3 && row.transparency_score != null) reasons.push("high fee transparency");
+  if (weights.largeTransfers >= 0.3 && row.supports_large_tickets) reasons.push("supports large transfers");
+  if (weights.exclusiveDeal >= 0.3 && row.has_exclusive_deal) reasons.push("exclusive mangomundi offer");
   return reasons;
 }
 
@@ -219,31 +259,52 @@ export function auditProviderChances<T extends ScorableRow>(
   rows.forEach((r) => counts.set(r.slug, 0));
   if (rows.length === 0) return new Map();
 
-  for (let i = 0; i < iterations; i++) {
-    // Dirichlet-ish: 6 random non-negative draws, normalized to sum to 1.
-    const raw = Array.from({ length: 6 }, () => -Math.log(Math.random()));
-    const sum = raw.reduce((a, b) => a + b, 0);
-    const [rate, speed, trust, business, cashPickup, coverage] = raw.map((v) => v / sum);
-    const weights: ScoreWeights = { rate, speed, trust, business, cashPickup, coverage };
+  const scoreRate = buildNormalizer(rows.map((r) => r.received), true);
+  const scoreSpeed = buildNormalizer(rows.map((r) => r.speed_hours), false);
+  const scoreTrust = buildNormalizer(rows.map((r) => r.trust_score), true);
+  const scoreBusiness = buildNormalizer(rows.map((r) => r.business_focus_score), true);
+  const scoreCoverage = buildNormalizer(rows.map((r) => r.countries_covered), true);
+  const scoreTransparency = buildNormalizer(rows.map((r) => r.transparency_score), true);
 
-    const scoreRate = buildNormalizer(rows.map((r) => r.received), true);
-    const scoreSpeed = buildNormalizer(rows.map((r) => r.speed_hours), false);
-    const scoreTrust = buildNormalizer(rows.map((r) => r.trust_score), true);
-    const scoreBusiness = buildNormalizer(rows.map((r) => r.business_focus_score), true);
-    const scoreCoverage = buildNormalizer(rows.map((r) => r.countries_covered), true);
+  for (let i = 0; i < iterations; i++) {
+    // Dirichlet-ish: 9 random non-negative draws, normalized to sum to 1.
+    // exclusiveDeal is included so a provider with a disclosed deal isn't
+    // artificially excluded from the audit, but note it only ever helps
+    // providers that actually have has_exclusive_deal === true.
+    const raw = Array.from({ length: 9 }, () => -Math.log(Math.random()));
+    const sum = raw.reduce((a, b) => a + b, 0);
+    const [rate, speed, trust, business, cashPickup, coverage, transparency, largeTransfers, exclusiveDeal] =
+      raw.map((v) => v / sum);
+    const weights: ScoreWeights = {
+      rate,
+      speed,
+      trust,
+      business,
+      cashPickup,
+      coverage,
+      transparency,
+      largeTransfers,
+      exclusiveDeal,
+    };
 
     let bestSlug = rows[0].slug;
     let bestScore = -Infinity;
     for (const r of rows) {
       const cashScore =
         r.cash_pickup_available === true ? 1 : r.cash_pickup_available === false ? 0 : 0.5;
+      const largeTicketScore =
+        r.supports_large_tickets === true ? 1 : r.supports_large_tickets === false ? 0 : 0.5;
+      const exclusiveDealScore = r.has_exclusive_deal === true ? 1 : 0;
       const total =
         weights.rate * scoreRate(r.received) +
         weights.speed * scoreSpeed(r.speed_hours) +
         weights.trust * scoreTrust(r.trust_score) +
         weights.business * scoreBusiness(r.business_focus_score) +
         weights.cashPickup * cashScore +
-        weights.coverage * scoreCoverage(r.countries_covered);
+        weights.coverage * scoreCoverage(r.countries_covered) +
+        weights.transparency * scoreTransparency(r.transparency_score) +
+        weights.largeTransfers * largeTicketScore +
+        weights.exclusiveDeal * exclusiveDealScore;
       if (total > bestScore) {
         bestScore = total;
         bestSlug = r.slug;
@@ -257,4 +318,41 @@ export function auditProviderChances<T extends ScorableRow>(
     result.set(slug, { wins, winRate: wins / iterations });
   }
   return result;
+}
+
+/**
+ * Statistically-honest near-tie rotation.
+ *
+ * When the top N providers under a profile are within `thresholdPct` of each
+ * other's composite score, the gap is noise, not a real signal — an
+ * arbitrary tiebreak (e.g. "whoever loads first in the array") would
+ * silently and permanently favor the same provider every time. Instead,
+ * pick which of the tied providers gets featured using a seed, so it's
+ * deterministic per seed (e.g. per session or per day) but rotates across
+ * seeds — spreading the "featured" slot fairly among genuine near-equals
+ * without ever claiming a false distinction between them.
+ *
+ * This never changes who's "correct" to feature — it only decides, among
+ * providers that are honestly tied, who gets the spotlight this time.
+ */
+export function pickFeaturedAmongTies<T extends ScorableRow>(
+  sortedRows: T[],
+  profile: ScoreProfileKey,
+  seed: number,
+  thresholdPct = 0.015,
+): T | null {
+  if (sortedRows.length === 0) return null;
+  const scores = computeCompositeScores(sortedRows, profile);
+  const topScore = scores.get(sortedRows[0].slug) ?? 0;
+  if (topScore <= 0) return sortedRows[0];
+
+  const tied = sortedRows.filter((r) => {
+    const s = scores.get(r.slug) ?? 0;
+    return (topScore - s) / topScore <= thresholdPct;
+  });
+  if (tied.length <= 1) return sortedRows[0];
+
+  // Simple deterministic hash of the seed → stable index into `tied`.
+  const index = Math.abs(Math.sin(seed) * 10000) % tied.length;
+  return tied[Math.floor(index)];
 }
