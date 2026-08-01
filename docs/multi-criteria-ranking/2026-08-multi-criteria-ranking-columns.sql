@@ -79,10 +79,12 @@ UPDATE providers SET trust_score = 4.5, review_count = 12000 WHERE slug = 'lemfi
 UPDATE providers SET trust_score = 4.2, review_count = 1046 WHERE slug = 'nala';
 UPDATE providers SET trust_score = 4.7, review_count = 36000 WHERE slug = 'taptap-send'; -- ya estaba, se repite con cash_pickup aún sin confirmar
 
--- ⚠️ Skrill: NO cargar todavía. Dos páginas de Trustpilot dan resultados
--- opuestos (transfers.skrill.com = 4.3-4.4 "Excellent" vs skrill.com = 2.2
--- "Poor") — resolver primero con el proveedor mismo (via el mail de
--- outreach del plan de afiliados) qué producto aplica a mangomundi.
+-- Skrill: RESUELTO. Usa el rating de transfers.skrill.com (producto de money
+-- transfer real), no el de skrill.com (wallet principal, 2.2 "Poor").
+-- Afiliado confirmado como no aplicable (gaming industry only) — se carga
+-- el trust_score igual por completitud del comparador, pero no perseguir el
+-- programa de afiliados.
+UPDATE providers SET trust_score = 4.35, review_count = 13500 WHERE slug = 'skrill';
 
 -- ⚠️ Atlantic Money: NO cargar sin que Alejandro confirme el tier tras leer
 -- la alerta en scoring-data-findings.md (rating cayó de 4.1 a 2.3-2.7 reciente).
