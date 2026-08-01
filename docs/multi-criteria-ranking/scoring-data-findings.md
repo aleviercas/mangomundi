@@ -59,7 +59,7 @@
 | CurrencyFair | 4.2–4.9 (fuentes muy dispersas — usar 4.6 de Trustpilot directo hasta confirmar) | ~8,000-12,000 | trustpilot.com (citado desde TransferGo), compareremit.com | Modelo peer-to-peer |
 | **Xoom (PayPal)** | 4.6–4.7 en trustpilot.com directo (múltiples snapshots recientes coinciden); **algunos sitios de reseñas de terceros citan 1.6-1.7 ("Bad")** — posible error de esos agregadores o metodología distinta de scoring de Trustpilot. Uso 4.6 (fuente directa, más confiable) | ~180,000-194,000 | trustpilot.com/review/www.xoom.com (jul 2026, "5 días") | **cash pickup: sí, confirmado** (cash pickup, home delivery, mobile wallet, recarga celular). Cobertura: 150+ países |
 | **Convera** | 3.6 | ~325 | trustpilot.com/review/www.convera.com (may 2026) | Muestra chica. **100% B2B** (pagos comerciales, universidades) — `business_focus_score`: 9/10. Sin cash pickup |
-| **Skrill** | ⚠️ Dos páginas Trustpilot distintas dan resultados opuestos: `transfers.skrill.com` (brazo de money transfer) = 4.3-4.4 "Excellent" (~13,000-14,000 reviews); `skrill.com` (wallet principal) = 2.2 "Poor". Mantener la advertencia ya documentada (puede no cubrir P2P) hasta confirmar con ellos directo cuál aplica al caso de uso de mangomundi | ~13,500 (transfers) | trustpilot.com | No cargar sin aclarar con el proveedor qué producto están evaluando |
+| **Skrill** | **RESUELTO.** Uso `transfers.skrill.com` = **4.3-4.4 "Excellent"** (~13,000-14,000 reviews) — es el producto de money transfer real, el relevante para mangomundi. La página `skrill.com` (2.2 "Poor") es el wallet principal, no aplica acá. **Pero:** confirmado en `affiliates.skrill.com` que su programa de afiliados se describe literalmente como *"Affiliate marketing program for the gaming industry"* — paga 20% revenue share por depósitos de wallet en su red de comercios (gaming/forex), no por transferencias P2P. **No vale la pena perseguir el afiliado de Skrill** — se puede cargar el trust_score igual (por completitud del comparador) pero no tiene sentido invertir tiempo en registrarse | ~13,500 (transfers) | trustpilot.com, affiliates.skrill.com (jul 2026) | Afiliado confirmado como no aplicable — no requirió mail, la info es pública |
 | **Sendwave** | 4.4 | ~25,000-26,000 | trustpilot.com/review/sendwave.com (jul 2026) | Reviews recientes incluyen al menos un caso de disputa por fondos no acreditados — normal a esta escala, no descalifica el dato |
 | **LemFi** | 4.5 | ~12,000 | Trustpilot (citado desde página de NALA) | Programa de afiliados es de influencers (ya documentado en Sprint 5) — este trust_score puede cargarse igual aunque no se persiga el afiliado |
 | **NALA** | 4.2 | ~1,046 | ca.trustpilot.com/review/nala.money (ene 2026) | Muestra chica, 21% de reviews son 1-estrella — volatilidad más alta que el resto |
@@ -97,13 +97,11 @@ Supabase es compartida entre ramas.
 
 ## Pendiente de investigar (queda poco)
 
-**Fase 1 de trust_score está prácticamente completa** para los 27
-proveedores no-bancarios. Lo que falta es más fino:
+**Fase 1 de trust_score está 100% completa** para los 27 proveedores
+no-bancarios (Skrill resuelto sin necesitar mail — ver tabla arriba).
+Quedan solo detalles menores, ninguno bloqueante:
 - Confirmar cash pickup para TapTap Send y Sendwave (probable que sí, no
   100% confirmado con fuente directa).
-- Resolver la ambigüedad de Skrill (dos productos, dos ratings opuestos)
-  antes de cargar cualquier dato — mejor preguntarles directo en el mail de
-  outreach que ya está en el plan de afiliados.
 - `countries_covered`, `mobile_app_rating` y `transparency_score` siguen sin
   investigar para la mayoría — son más bajo impacto porque el motor de
   score los trata como neutral si faltan, así que no bloquean nada.
