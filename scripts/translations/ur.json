@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "مزید سوالات",
   "home.how.aiAside": "فیس کی تفصیل، دوسرا روٹ آزمانے یا بہترین آپشن جانچنے کے لیے mangomundi ایجنٹ کھولیں — بغیر اکاؤنٹ۔",
   "home.blog.viewAll": "تمام پوسٹس دیکھیں",
-  "home.contact.subtitle": "ٹریژری ٹیموں اور ایف ایکس پارٹنرز کے لیے جو مخصوص ریٹس، حسب ضرورت انٹیگریشنز، یا ہماری ٹیم سے براہ راست رابطہ چاہتے ہیں۔"
+  "home.contact.subtitle": "ٹریژری ٹیموں اور ایف ایکس پارٹنرز کے لیے جو مخصوص ریٹس، حسب ضرورت انٹیگریشنز، یا ہماری ٹیم سے براہ راست رابطہ چاہتے ہیں۔",
+  "comparator.sort.overall": "مجموعی",
+  "comparator.sort.mostTrusted": "سب سے قابل اعتماد",
+  "comparator.sort.bestBusiness": "کاروبار کے لیے بہترین",
+  "comparator.sort.cashPickup": "نقد وصولی",
+  "comparator.copilot.proactive.trust": "میں نے دیکھا کہ **{provider}** کے پاس اس کوریڈور کے لیے سب سے زیادہ اعتماد کی درجہ بندی ہے۔ آگے بڑھیں؟",
+  "comparator.copilot.proactive.business": "اس کوریڈور پر کاروباری ترسیلات کے لیے **{provider}** سب سے موزوں ہے۔ آگے بڑھیں؟",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** اس کوریڈور کے لیے نقد وصولی کی سہولت فراہم کرتا ہے۔ آگے بڑھیں؟"
 }
