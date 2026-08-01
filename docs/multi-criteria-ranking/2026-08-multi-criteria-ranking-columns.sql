@@ -11,7 +11,11 @@ ALTER TABLE providers
   ADD COLUMN IF NOT EXISTS cash_pickup_available boolean,
   ADD COLUMN IF NOT EXISTS business_focus_score numeric, -- escala 0-10
   ADD COLUMN IF NOT EXISTS countries_covered integer,
-  ADD COLUMN IF NOT EXISTS mobile_app_rating numeric; -- escala 0-5, App Store/Play Store
+  ADD COLUMN IF NOT EXISTS mobile_app_rating numeric, -- escala 0-5, App Store/Play Store
+  ADD COLUMN IF NOT EXISTS has_exclusive_deal boolean DEFAULT false;
+
+COMMENT ON COLUMN providers.has_exclusive_deal IS
+  'Oferta/código exclusivo negociado por mangomundi. SIEMPRE debe renderizarse con label explícito "Oferta exclusiva mangomundi" en el frontend — nunca se mezcla invisible en el score general (ver best_deal profile en scoring.functions.ts).';
 
 COMMENT ON COLUMN providers.cash_pickup_available IS
   'Si el proveedor ofrece retiro en efectivo como método de entrega, no solo transferencia bancaria.';
