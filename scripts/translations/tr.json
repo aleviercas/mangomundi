@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "Daha fazla soru",
   "home.how.aiAside": "Ücretleri ayrıştırmak, başka bir rota denemek veya en iyi seçeneği doğrulamak için mangomundi ajanını aç — hesap gerekmez.",
   "home.blog.viewAll": "Tüm yazıları görüntüle",
-  "home.contact.subtitle": "Özel oranlar, özel entegrasyonlar veya ekibimizle doğrudan iletişim arayan hazine ekipleri ve FX ortakları için."
+  "home.contact.subtitle": "Özel oranlar, özel entegrasyonlar veya ekibimizle doğrudan iletişim arayan hazine ekipleri ve FX ortakları için.",
+  "comparator.sort.overall": "Genel",
+  "comparator.sort.mostTrusted": "En güvenilir",
+  "comparator.sort.bestBusiness": "İşletmeler için en iyi",
+  "comparator.sort.cashPickup": "Nakit teslim",
+  "comparator.copilot.proactive.trust": "**{provider}**'in bu koridor için en yüksek güven puanına sahip olduğunu fark ettim. Devam edelim mi?",
+  "comparator.copilot.proactive.business": "Bu koridorda iş transferleri için en uygun seçenek **{provider}**. Devam edelim mi?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** bu koridor için nakit teslim sunuyor. Devam edelim mi?"
 }
