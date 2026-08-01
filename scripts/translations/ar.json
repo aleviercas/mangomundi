@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "أسئلة أخرى",
   "home.how.aiAside": "افتح وكيل mangomundi لتفصيل الرسوم أو تجربة مسار آخر أو التحقق من الخيار الأفضل — دون حساب.",
   "home.blog.viewAll": "عرض جميع المقالات",
-  "home.contact.subtitle": "لفرق الخزينة وشركاء الصرف الأجنبي الباحثين عن أسعار مخصصة أو عمليات تكامل مخصصة أو تواصل مباشر مع فريقنا."
+  "home.contact.subtitle": "لفرق الخزينة وشركاء الصرف الأجنبي الباحثين عن أسعار مخصصة أو عمليات تكامل مخصصة أو تواصل مباشر مع فريقنا.",
+  "comparator.sort.overall": "عام",
+  "comparator.sort.mostTrusted": "الأكثر ثقة",
+  "comparator.sort.bestBusiness": "الأفضل للأعمال",
+  "comparator.sort.cashPickup": "استلام نقدي",
+  "comparator.copilot.proactive.trust": "لاحظت أن **{provider}** لديه أعلى تقييم ثقة لهذا المسار. هل تريد المتابعة؟",
+  "comparator.copilot.proactive.business": "**{provider}** هو الأنسب لتحويلات الأعمال في هذا المسار. هل نتابع؟",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** يوفر استلام نقدي لهذا المسار. هل نتابع؟"
 }
