@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "আরও প্রশ্ন",
   "home.how.aiAside": "ফি ভাঙতে, অন্য রুট চেষ্টা করতে বা সেরা বিকল্প যাচাই করতে mangomundi এজেন্ট খুলুন — অ্যাকাউন্ট ছাড়াই।",
   "home.blog.viewAll": "সব পোস্ট দেখুন",
-  "home.contact.subtitle": "যেসব ট্রেজারি টিম এবং এফএক্স পার্টনার নির্দিষ্ট রেট, কাস্টম ইন্টিগ্রেশন, অথবা আমাদের টিমের সাথে সরাসরি যোগাযোগ খুঁজছেন, তাদের জন্য।"
+  "home.contact.subtitle": "যেসব ট্রেজারি টিম এবং এফএক্স পার্টনার নির্দিষ্ট রেট, কাস্টম ইন্টিগ্রেশন, অথবা আমাদের টিমের সাথে সরাসরি যোগাযোগ খুঁজছেন, তাদের জন্য।",
+  "comparator.sort.overall": "সামগ্রিক",
+  "comparator.sort.mostTrusted": "সবচেয়ে বিশ্বস্ত",
+  "comparator.sort.bestBusiness": "ব্যবসার জন্য সেরা",
+  "comparator.sort.cashPickup": "নগদ উত্তোলন",
+  "comparator.copilot.proactive.trust": "লক্ষ্য করেছি **{provider}** এই করিডরের জন্য সবচেয়ে বেশি বিশ্বস্ততা রেটিং পেয়েছে। এগিয়ে যেতে চান?",
+  "comparator.copilot.proactive.business": "এই করিডরে ব্যবসায়িক লেনদেনের জন্য **{provider}** সবচেয়ে উপযুক্ত। এগিয়ে যাই?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** এই করিডরের জন্য নগদ উত্তোলনের সুবিধা দেয়। এগিয়ে যাই?"
 }
