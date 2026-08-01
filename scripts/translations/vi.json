@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "Thêm câu hỏi",
   "home.how.aiAside": "Mở trợ lý mangomundi để bóc tách phí, thử tuyến khác hoặc kiểm tra lại lựa chọn tốt nhất — không cần tài khoản.",
   "home.blog.viewAll": "Xem tất cả bài viết",
-  "home.contact.subtitle": "Dành cho các đội ngũ tài chính doanh nghiệp và đối tác FX đang tìm kiếm tỷ giá riêng, tích hợp tùy chỉnh, hoặc đường dây liên hệ trực tiếp với đội ngũ của chúng tôi."
+  "home.contact.subtitle": "Dành cho các đội ngũ tài chính doanh nghiệp và đối tác FX đang tìm kiếm tỷ giá riêng, tích hợp tùy chỉnh, hoặc đường dây liên hệ trực tiếp với đội ngũ của chúng tôi.",
+  "comparator.sort.overall": "Tổng quan",
+  "comparator.sort.mostTrusted": "Đáng tin cậy nhất",
+  "comparator.sort.bestBusiness": "Tốt nhất cho doanh nghiệp",
+  "comparator.sort.cashPickup": "Nhận tiền mặt",
+  "comparator.copilot.proactive.trust": "Tôi nhận thấy **{provider}** có đánh giá tin cậy cao nhất cho hành lang này. Tiếp tục nhé?",
+  "comparator.copilot.proactive.business": "**{provider}** phù hợp nhất cho chuyển tiền doanh nghiệp trên hành lang này. Tiếp tục nhé?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** hỗ trợ nhận tiền mặt cho hành lang này. Tiếp tục nhé?"
 }
