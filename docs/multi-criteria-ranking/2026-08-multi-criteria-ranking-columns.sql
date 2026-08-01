@@ -7,6 +7,13 @@
 -- (src/lib/scoring.functions.ts). Todas NULLABLE, así que no rompe nada
 -- existente ni bloquea el deploy actual de main.
 
+-- ⚠️ IMPORTANTE: los `slug` usados abajo (ej. 'wise', 'ofx', 'xe-money-transfer')
+-- son mi mejor estimación del patrón de slugs de la tabla, pero NO los verifiqué
+-- contra el valor real en Supabase. Antes de correr cualquier UPDATE, confirmar
+-- con `SELECT slug, name FROM providers ORDER BY name;` que coinciden exactamente
+-- — si no, el UPDATE simplemente no afecta ninguna fila (no rompe nada, pero
+-- tampoco carga el dato).
+
 ALTER TABLE providers
   ADD COLUMN IF NOT EXISTS cash_pickup_available boolean,
   ADD COLUMN IF NOT EXISTS business_focus_score numeric, -- escala 0-10
@@ -26,13 +33,39 @@ COMMENT ON COLUMN providers.countries_covered IS
 COMMENT ON COLUMN providers.mobile_app_rating IS
   'Rating promedio App Store / Play Store, cuando esté disponible.';
 
--- Ejemplo de carga (reemplazar con datos reales verificados, ver
--- scoring-data-findings.md para las fuentes de cada valor):
---
--- UPDATE providers SET trust_score = 4.3, review_count = 294000 WHERE slug = 'wise';
--- UPDATE providers SET trust_score = 4.6, review_count = 116000, cash_pickup_available = true WHERE slug = 'remitly';
--- UPDATE providers SET trust_score = 4.7, review_count = 429000 WHERE slug = 'revolut';
--- UPDATE providers SET trust_score = 4.3, review_count = 165000, cash_pickup_available = true WHERE slug = 'western-union';
--- UPDATE providers SET trust_score = 4.0, review_count = 95000, cash_pickup_available = true WHERE slug = 'worldremit';
--- UPDATE providers SET trust_score = 4.0, review_count = 47000, cash_pickup_available = true WHERE slug = 'moneygram';
--- UPDATE providers SET trust_score = 3.5, review_count = 2300, business_focus_score = 8.5 WHERE slug = 'airwallex';
+-- ============================================================================
+-- UPDATEs con datos reales investigados (ver scoring-data-findings.md para
+-- fuentes completas y notas). Faltan: Convera, Xoom, Skrill, TapTap Send
+-- (cash pickup), Sendwave, LemFi, NALA, Atlantic Money (ver alerta en
+-- scoring-data-findings.md antes de cargar su trust_score).
+-- NADA de esto se ejecutó contra Supabase — es un draft para revisión.
+-- ============================================================================
+
+-- Tier 1
+UPDATE providers SET trust_score = 4.3, review_count = 294000 WHERE slug = 'wise';
+UPDATE providers SET trust_score = 4.6, review_count = 116000, cash_pickup_available = true WHERE slug = 'remitly';
+UPDATE providers SET trust_score = 4.7, review_count = 429000 WHERE slug = 'revolut';
+UPDATE providers SET trust_score = 4.3, review_count = 165000, cash_pickup_available = true WHERE slug = 'western-union';
+UPDATE providers SET trust_score = 4.7, review_count = 36000 WHERE slug = 'taptap-send'; -- cash_pickup_available: pendiente
+UPDATE providers SET trust_score = 4.3, review_count = 36000 WHERE slug = 'ria-money-transfer';
+UPDATE providers SET trust_score = 4.0, review_count = 95000, cash_pickup_available = true WHERE slug = 'worldremit';
+UPDATE providers SET trust_score = 4.0, review_count = 47000, cash_pickup_available = true WHERE slug = 'moneygram';
+UPDATE providers SET trust_score = 3.5, review_count = 2300, business_focus_score = 8.5 WHERE slug = 'airwallex';
+UPDATE providers SET trust_score = 4.3, review_count = 11200, cash_pickup_available = false, supports_large_tickets = true, countries_covered = 170, mobile_app_rating = 4.75 WHERE slug = 'ofx';
+
+-- Tier 2
+UPDATE providers SET trust_score = 4.2, review_count = 63000, cash_pickup_available = true, countries_covered = 195, business_focus_score = 3 WHERE slug = 'xe-money-transfer';
+UPDATE providers SET trust_score = 4.85, review_count = 18500, business_focus_score = 4 WHERE slug = 'currencies-direct';
+UPDATE providers SET trust_score = 4.85, review_count = 9000, supports_large_tickets = true, business_focus_score = 5 WHERE slug = 'torfx';
+UPDATE providers SET trust_score = 3.6, business_focus_score = 9 WHERE slug = 'payoneer';
+UPDATE providers SET trust_score = 4.7, review_count = 7000, supports_large_tickets = true, business_focus_score = 5 WHERE slug = 'moneycorp';
+UPDATE providers SET trust_score = 4.4, review_count = 7000 WHERE slug = 'instarem';
+
+-- Tier 3
+UPDATE providers SET trust_score = 4.6, review_count = 38500 WHERE slug = 'transfergo';
+UPDATE providers SET trust_score = 4.15, review_count = 41000 WHERE slug = 'paysend';
+UPDATE providers SET trust_score = 4.6, review_count = 10000 WHERE slug = 'currencyfair'; -- ver nota de fuentes dispersas en findings.md
+
+-- ⚠️ Atlantic Money: NO cargar sin que Alejandro confirme el tier tras leer
+-- la alerta en scoring-data-findings.md (rating cayó de 4.1 a 2.3-2.7 reciente).
+-- UPDATE providers SET trust_score = 2.5, review_count = 175 WHERE slug = 'atlantic-money';
