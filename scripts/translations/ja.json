@@ -636,5 +636,12 @@
   "wizard.moreQuestions": "他の質問",
   "home.how.aiAside": "mangomundiエージェントを開いて手数料の内訳、別ルートの試算、最適解の確認を — アカウント不要。",
   "home.blog.viewAll": "すべての記事を見る",
-  "home.contact.subtitle": "専用レート、カスタム統合、または当社チームとの直接窓口をお探しの財務チームおよびFXパートナーの方へ。"
+  "home.contact.subtitle": "専用レート、カスタム統合、または当社チームとの直接窓口をお探しの財務チームおよびFXパートナーの方へ。",
+  "comparator.sort.overall": "総合",
+  "comparator.sort.mostTrusted": "最も信頼できる",
+  "comparator.sort.bestBusiness": "法人向け",
+  "comparator.sort.cashPickup": "現金受け取り",
+  "comparator.copilot.proactive.trust": "この送金経路では **{provider}** の信頼度評価が最も高いようです。進めますか?",
+  "comparator.copilot.proactive.business": "この経路のビジネス送金には **{provider}** が最適です。進めますか?",
+  "comparator.copilot.proactive.cashPickup": "**{provider}** はこの経路で現金受け取りに対応しています。進めますか?"
 }
