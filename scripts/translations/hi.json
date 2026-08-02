@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "सबसे पारदर्शी",
   "comparator.sort.largeTransfers": "बड़े ट्रांसफर",
   "comparator.sort.bestDeal": "विशेष ऑफर",
-  "comparator.copilot.proactive.generic": "इस कॉरिडोर के लिए **{provider}** **{criterion}** में सबसे आगे है। आगे बढ़ें?"
+  "comparator.copilot.proactive.generic": "इस कॉरिडोर के लिए **{provider}** **{criterion}** में सबसे आगे है। आगे बढ़ें?",
+  "comparator.table.features": "विशेषताएं"
 }
