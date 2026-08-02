@@ -1563,6 +1563,21 @@ function ResultsBlock({
     () => pickFeaturedAmongTies(organic, sortBy, tieBreakSeed)?.slug ?? organic[0]?.slug,
     [organic, sortBy, tieBreakSeed],
   );
+  // The featured provider must render FIRST — a "recommended" ribbon on a
+  // row that isn't visually at the top reads as broken, not as a fair
+  // rotation. This only ever reorders among rows that are already within
+  // the near-tie threshold of each other (pickFeaturedAmongTies never picks
+  // outside that cluster), so it never contradicts the actual ranking —
+  // it just decides who leads among genuine equals, and puts them first.
+  const displayRows = useMemo(() => {
+    if (!featuredSlug) return organic;
+    const idx = organic.findIndex((r) => r.slug === featuredSlug);
+    if (idx <= 0) return organic;
+    const copy = [...organic];
+    const [featured] = copy.splice(idx, 1);
+    copy.unshift(featured);
+    return copy;
+  }, [organic, featuredSlug]);
 
   // Crisp HH:mm:ss for the trust line.
   const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
@@ -1591,7 +1606,7 @@ function ResultsBlock({
           <div className="min-w-0 text-right">{tSpeed}</div>
           <div />
         </div>
-        {organic.map((row) => (
+        {displayRows.map((row) => (
           <ProviderRow
             key={row.slug}
             row={row}
