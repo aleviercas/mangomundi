@@ -643,5 +643,6 @@
   "comparator.sort.mostTransparent": "Más transparente",
   "comparator.sort.largeTransfers": "Transferencias grandes",
   "comparator.sort.bestDeal": "Oferta exclusiva",
-  "comparator.copilot.proactive.generic": "**{provider}** se destaca en **{criterion}** para este corredor. ¿Avanzamos?"
+  "comparator.copilot.proactive.generic": "**{provider}** se destaca en **{criterion}** para este corredor. ¿Avanzamos?",
+  "comparator.table.features": "Características"
 }
