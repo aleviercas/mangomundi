@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "Pinaka-transparent",
   "comparator.sort.largeTransfers": "Malalaking transfer",
   "comparator.sort.bestDeal": "Eksklusibong alok",
-  "comparator.copilot.proactive.generic": "Natatangi ang **{provider}** sa **{criterion}** para sa corridor na ito. Magpatuloy?"
+  "comparator.copilot.proactive.generic": "Natatangi ang **{provider}** sa **{criterion}** para sa corridor na ito. Magpatuloy?",
+  "comparator.table.features": "Mga tampok"
 }
