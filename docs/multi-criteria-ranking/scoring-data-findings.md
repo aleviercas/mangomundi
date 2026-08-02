@@ -64,6 +64,40 @@
 | **LemFi** | 4.5 | ~12,000 | Trustpilot (citado desde página de NALA) | Programa de afiliados es de influencers (ya documentado en Sprint 5) — este trust_score puede cargarse igual aunque no se persiga el afiliado |
 | **NALA** | 4.2 | ~1,046 | ca.trustpilot.com/review/nala.money (ene 2026) | Muestra chica, 21% de reviews son 1-estrella — volatilidad más alta que el resto |
 | **TapTap Send** | 4.7 (confirmado, coincide con dato de Tier 1) | ~36,000 | trustpilot.com | cash pickup: **no confirmado todavía** — el producto parece enfocado en mobile money/bank, no en agentes de retiro físico como Western Union |
+| **Small World FS** | 4.2–4.3 | ~27,500 | trustpilot.com/review/smallworldfs.com (may 2026) | Rating "Great". **cash pickup: sí, confirmado** (250,000+ locations). Cobertura: ~190-195 países. Encontrado en la tabla real de Supabase, no estaba en la clasificación original de 27 |
+
+## ⚠️ Corrección de slugs (importante)
+
+Al comparar contra la tabla real de `providers` en Supabase, 3 slugs que
+asumí en el SQL draft estaban mal — ya corregidos ahí:
+- `ria-money-transfer` → real es **`ria`**
+- `xe-money-transfer` → real es **`xe`**
+- `convera` → Convera está guardado con slug **`western-union-business`**
+  (resabio histórico: se llamaba "Western Union Business Solutions" antes
+  del spin-off de 2021; la columna `name` sí dice "Convera" correctamente)
+
+## ⚠️⚠️ Alerta urgente — Zing y Azimo posiblemente discontinuados
+
+Estos dos aparecieron en la tabla real de `providers` de Supabase (no estaban
+en la clasificación original de 27 proveedores no-bancarios). Antes de
+cargar cualquier dato, **confirmar si siguen operando** — no es un tema de
+completar un número, es un tema de si deberían seguir apareciendo en el
+comparador.
+
+**Zing (HSBC), slug `zing`:** Múltiples reviews recientes de Trustpilot
+afirman literalmente *"Zing is now closed"*, con quejas de usuarios sobre
+fondos retenidos durante el cierre. Todo indica que HSBC discontinuó el
+servicio. **Si se confirma, la acción correcta es sacarlo del comparador
+(marcar inactivo), no solo dejarlo sin trust_score.**
+
+**Azimo (Papaya), slug `azimo`:** Según Wikipedia, fue adquirida por Papaya
+Global en 2022 y figura como "Defunct: August 1, 2023". Papaya Global (la
+matriz) pivotó a un producto B2B de payroll/EOR para empresas — sus reviews
+de Trustpilot (58 reviews) son de ese producto, no de remesas P2P. El
+dominio azimo.com todavía tiene un Trustpilot activo con ~58,000 reviews
+históricas (4 estrellas), así que no está claro si el servicio de
+consumidor sigue operando bajo otro dueño o si son reviews legado.
+**Confirmar en azimo.com antes de decidir si sigue activo.**
 
 ## ⚠️ Alerta — Atlantic Money: caída fuerte y reciente en Trustpilot
 
