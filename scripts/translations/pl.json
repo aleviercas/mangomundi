@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "Odbiór gotówki",
   "comparator.copilot.proactive.trust": "Zauważyłem, że **{provider}** ma najwyższą ocenę zaufania dla tego korytarza. Kontynuować?",
   "comparator.copilot.proactive.business": "**{provider}** najlepiej sprawdza się w przelewach firmowych na tej trasie. Kontynuować?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** oferuje odbiór gotówki dla tej trasy. Kontynuować?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** oferuje odbiór gotówki dla tej trasy. Kontynuować?",
+  "comparator.sort.mostTransparent": "Najbardziej przejrzysty",
+  "comparator.sort.largeTransfers": "Duże przelewy",
+  "comparator.sort.bestDeal": "Oferta ekskluzywna",
+  "comparator.copilot.proactive.generic": "**{provider}** wyróżnia się pod względem **{criterion}** na tej trasie. Kontynuować?"
 }
