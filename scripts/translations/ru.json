@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "Крупные переводы",
   "comparator.sort.bestDeal": "Эксклюзивное предложение",
   "comparator.copilot.proactive.generic": "**{provider}** выделяется по критерию **{criterion}** для этого коридора. Продолжим?",
-  "comparator.table.features": "Особенности"
+  "comparator.table.features": "Особенности",
+  "comparator.table.reviews": "отзывов"
 }
