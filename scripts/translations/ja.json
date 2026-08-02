@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "最も透明性が高い",
   "comparator.sort.largeTransfers": "高額送金",
   "comparator.sort.bestDeal": "限定オファー",
-  "comparator.copilot.proactive.generic": "この経路では **{provider}** が **{criterion}** で優れています。進めますか?"
+  "comparator.copilot.proactive.generic": "この経路では **{provider}** が **{criterion}** で優れています。進めますか?",
+  "comparator.table.features": "特徴"
 }
