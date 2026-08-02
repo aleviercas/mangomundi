@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "Minh bạch nhất",
   "comparator.sort.largeTransfers": "Chuyển khoản lớn",
   "comparator.sort.bestDeal": "Ưu đãi độc quyền",
-  "comparator.copilot.proactive.generic": "**{provider}** nổi bật về **{criterion}** cho hành lang này. Tiếp tục nhé?"
+  "comparator.copilot.proactive.generic": "**{provider}** nổi bật về **{criterion}** cho hành lang này. Tiếp tục nhé?",
+  "comparator.table.features": "Tính năng"
 }
