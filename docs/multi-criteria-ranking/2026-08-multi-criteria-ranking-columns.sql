@@ -52,14 +52,14 @@ UPDATE providers SET trust_score = 4.6, review_count = 116000, cash_pickup_avail
 UPDATE providers SET trust_score = 4.7, review_count = 429000 WHERE slug = 'revolut';
 UPDATE providers SET trust_score = 4.3, review_count = 165000, cash_pickup_available = true WHERE slug = 'western-union';
 UPDATE providers SET trust_score = 4.7, review_count = 36000 WHERE slug = 'taptap-send'; -- cash_pickup_available: pendiente
-UPDATE providers SET trust_score = 4.3, review_count = 36000 WHERE slug = 'ria-money-transfer';
+UPDATE providers SET trust_score = 4.3, review_count = 36000 WHERE slug = 'ria';
 UPDATE providers SET trust_score = 4.0, review_count = 95000, cash_pickup_available = true WHERE slug = 'worldremit';
 UPDATE providers SET trust_score = 4.0, review_count = 47000, cash_pickup_available = true WHERE slug = 'moneygram';
 UPDATE providers SET trust_score = 3.5, review_count = 2300, business_focus_score = 8.5 WHERE slug = 'airwallex';
 UPDATE providers SET trust_score = 4.3, review_count = 11200, cash_pickup_available = false, supports_large_tickets = true, countries_covered = 170, mobile_app_rating = 4.75 WHERE slug = 'ofx';
 
 -- Tier 2
-UPDATE providers SET trust_score = 4.2, review_count = 63000, cash_pickup_available = true, countries_covered = 195, business_focus_score = 3 WHERE slug = 'xe-money-transfer';
+UPDATE providers SET trust_score = 4.2, review_count = 63000, cash_pickup_available = true, countries_covered = 195, business_focus_score = 3 WHERE slug = 'xe';
 UPDATE providers SET trust_score = 4.85, review_count = 18500, business_focus_score = 4 WHERE slug = 'currencies-direct';
 UPDATE providers SET trust_score = 4.85, review_count = 9000, supports_large_tickets = true, business_focus_score = 5 WHERE slug = 'torfx';
 UPDATE providers SET trust_score = 3.6, business_focus_score = 9 WHERE slug = 'payoneer';
@@ -73,7 +73,10 @@ UPDATE providers SET trust_score = 4.6, review_count = 10000 WHERE slug = 'curre
 
 -- Tier 3 (continuación)
 UPDATE providers SET trust_score = 4.6, review_count = 190000, cash_pickup_available = true, countries_covered = 150 WHERE slug = 'xoom';
-UPDATE providers SET trust_score = 3.6, review_count = 325, business_focus_score = 9, cash_pickup_available = false WHERE slug = 'convera';
+-- Nota: Convera figura en la tabla con slug 'western-union-business' (resabio
+-- histórico — se llamaba "Western Union Business Solutions" antes del spin-off
+-- de 2021). El nombre mostrado (columna `name`) ya dice "Convera" correctamente.
+UPDATE providers SET trust_score = 3.6, review_count = 325, business_focus_score = 9, cash_pickup_available = false WHERE slug = 'western-union-business';
 UPDATE providers SET trust_score = 4.4, review_count = 25500, cash_pickup_available = true WHERE slug = 'sendwave'; -- cash pickup: probable, no 100% confirmado
 UPDATE providers SET trust_score = 4.5, review_count = 12000 WHERE slug = 'lemfi';
 UPDATE providers SET trust_score = 4.2, review_count = 1046 WHERE slug = 'nala';
@@ -91,3 +94,28 @@ UPDATE providers SET trust_score = 4.35, review_count = 13500 WHERE slug = 'skri
 -- Si decidís cargarlo, sembrá trust_score_previous con el valor viejo (4.1)
 -- para que el sistema de tendencia lo detecte automáticamente en el futuro:
 -- UPDATE providers SET trust_score = 2.5, trust_score_previous = 4.1, review_count = 175 WHERE slug = 'atlantic-money';
+
+-- Small World Financial Services (slug: small-world) — investigado en esta
+-- tanda, activo y con buen dato. Trustpilot 4.2-4.3 "Great", ~27,500 reviews.
+-- Cash pickup confirmado (250,000+ locations en ~190-195 países).
+UPDATE providers SET trust_score = 4.2, review_count = 27500, cash_pickup_available = true, countries_covered = 190 WHERE slug = 'small-world';
+
+-- ⚠️⚠️ Zing (slug: 'zing') — NO CARGAR. Múltiples reviews recientes de
+-- Trustpilot afirman literalmente "Zing is now closed", con quejas de
+-- fondos retenidos durante el cierre. Esto sugiere que HSBC discontinuó el
+-- servicio. Esto es más urgente que un simple dato de trust_score: antes de
+-- cargar nada, confirmar en zing.me o directo con HSBC si el servicio sigue
+-- activo. Si está cerrado, la acción correcta es sacar a Zing del
+-- comparador (poner el provider como inactivo), no solo dejarlo sin datos.
+-- UPDATE providers SET trust_score = 3.7, review_count = 586 WHERE slug = 'zing';
+
+-- ⚠️⚠️ Azimo (slug: 'azimo') — NO CARGAR. Según Wikipedia, Azimo fue
+-- adquirida por Papaya Global en 2022 y figura como "Defunct: August 1,
+-- 2023". Papaya Global (la empresa matriz) pivotó a un producto B2B de
+-- payroll/EOR para empresas — sus reviews de Trustpilot (58 reviews) son de
+-- ESE producto, no de remesas P2P. El propio dominio azimo.com todavía
+-- tiene un Trustpilot activo (4 estrellas, ~58,000 reviews históricas), así
+-- que no está 100% claro si el servicio de consumidor sigue operando bajo
+-- otro dueño o si esas reviews son legado. Confirmar en azimo.com antes de
+-- cargar o mantener este proveedor activo en el comparador.
+-- UPDATE providers SET trust_score = 4.0, review_count = 58397 WHERE slug = 'azimo';
