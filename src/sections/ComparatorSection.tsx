@@ -54,6 +54,7 @@ import { Button } from "@/components/ui/button";
 import {
   sortByScore,
   deriveBadges,
+  pickFeaturedAmongTies,
   type ScoreProfileKey,
   type BadgeKey,
 } from "@/lib/scoring.functions";
@@ -66,9 +67,10 @@ const WHITE_FIELD =
   "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
-/** Chips shown to the user, in display order. Deliberately a curated subset
- *  of every profile the engine supports (most_transparent/best_large_transfers/
- *  best_deal exist and can be surfaced later — see scoring.functions.ts). */
+/** Base chips always shown, in display order. "best_deal" is appended
+ *  separately (see the results block) only when at least one provider in
+ *  the current result set actually has a disclosed exclusive offer — never
+ *  advertise a chip for a deal that doesn't exist right now. */
 const SORT_CHIPS: SortKey[] = [
   "overall",
   "lowest_cost",
@@ -76,6 +78,8 @@ const SORT_CHIPS: SortKey[] = [
   "most_trusted",
   "best_business",
   "best_cash_pickup",
+  "most_transparent",
+  "best_large_transfers",
 ];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
@@ -91,6 +95,12 @@ function sortLabelKey(p: SortKey): string {
       return "comparator.sort.bestBusiness";
     case "best_cash_pickup":
       return "comparator.sort.cashPickup";
+    case "most_transparent":
+      return "comparator.sort.mostTransparent";
+    case "best_large_transfers":
+      return "comparator.sort.largeTransfers";
+    case "best_deal":
+      return "comparator.sort.bestDeal";
     default:
       return "comparator.sort.overall";
   }
@@ -263,7 +273,7 @@ export function ComparatorSection({
     if (rows.length === 0) return null;
     const sorted = sortByScore(rows, key);
     const top = sorted[0];
-    const tplKey =
+    const dedicatedTplKey =
       key === "lowest_cost"
         ? "comparator.copilot.proactive.fee"
         : key === "fastest"
@@ -274,8 +284,18 @@ export function ComparatorSection({
               ? "comparator.copilot.proactive.business"
               : key === "best_cash_pickup"
                 ? "comparator.copilot.proactive.cashPickup"
-                : "comparator.copilot.proactive.rate";
-    const content = t(tplKey).replace("{provider}", top.name);
+                : key === "overall"
+                  ? "comparator.copilot.proactive.rate"
+                  : null;
+    // Profiles without a dedicated, fact-accurate template (most_transparent,
+    // best_large_transfers, best_deal, and any future one) fall back to the
+    // generic "{provider} stands out on {criterion}" copy instead of the old
+    // hardcoded "best rate" text, which would misstate why this pick won.
+    const content = dedicatedTplKey
+      ? t(dedicatedTplKey).replace("{provider}", top.name)
+      : t("comparator.copilot.proactive.generic")
+          .replace("{provider}", top.name)
+          .replace("{criterion}", t(sortLabelKey(key)));
     return {
       role: "assistant",
       content,
@@ -1145,7 +1165,13 @@ export function ComparatorSection({
               <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {t("comparator.sortBy")}
               </span>
-              {SORT_CHIPS.map((key) => (
+              {/* "best_deal" is only offered as a chip when a provider in this
+                  result set actually has a disclosed exclusive offer — never
+                  advertise a deal that doesn't exist right now. */}
+              {(result.rows.some((r) => r.has_exclusive_deal)
+                ? [...SORT_CHIPS, "best_deal" as SortKey]
+                : SORT_CHIPS
+              ).map((key) => (
                 <button
                   key={key}
                   type="button"
@@ -1527,6 +1553,16 @@ function ResultsBlock({
 
   const organic = useMemo(() => sortByScore(result.rows, sortBy), [result.rows, sortBy]);
   const badgesBySlug = useMemo(() => deriveBadges(result.rows), [result.rows]);
+  // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
+  // in scoring.functions.ts) picks one value for this page view and doesn't
+  // flicker between renders, but still varies across visits/sessions — that's
+  // what actually spreads the "featured" slot across genuinely-tied providers
+  // instead of always favoring whichever one happens to sort first.
+  const tieBreakSeed = useMemo(() => Math.random() * 1000, []);
+  const featuredSlug = useMemo(
+    () => pickFeaturedAmongTies(organic, sortBy, tieBreakSeed)?.slug ?? organic[0]?.slug,
+    [organic, sortBy, tieBreakSeed],
+  );
 
   // Crisp HH:mm:ss for the trust line.
   const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
@@ -1555,13 +1591,13 @@ function ResultsBlock({
           <div className="min-w-0 text-right">{tSpeed}</div>
           <div />
         </div>
-        {organic.map((row, i) => (
+        {organic.map((row) => (
           <ProviderRow
             key={row.slug}
             row={row}
             quote={result.quote}
             base={result.base}
-            isBest={i === 0}
+            isBest={row.slug === featuredSlug}
             sortBy={sortBy}
             badges={badgesBySlug.get(row.slug) ?? []}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
@@ -1594,9 +1630,9 @@ function ResultsBlock({
   );
 }
 
-/** Only a subset of the engine's badges have UI copy wired up so far
- *  (most_transparent/large_transfers/exclusive_deal exist in the engine but
- *  aren't shown yet — see scoring.functions.ts). Returns null to skip. */
+/** exclusive_deal is intentionally still excluded here — it needs its own
+ *  disclosure-labeled treatment (not a plain pill), see best_deal profile
+ *  notes in scoring.functions.ts. Wire it in a follow-up pass. */
 function badgeLabelKey(b: BadgeKey): string | null {
   switch (b) {
     case "lowest_fee":
@@ -1609,6 +1645,10 @@ function badgeLabelKey(b: BadgeKey): string | null {
       return "comparator.sort.bestBusiness";
     case "cash_pickup":
       return "comparator.sort.cashPickup";
+    case "most_transparent":
+      return "comparator.sort.mostTransparent";
+    case "large_transfers":
+      return "comparator.sort.largeTransfers";
     default:
       return null;
   }
