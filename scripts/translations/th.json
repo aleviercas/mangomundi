@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "รับเงินสด",
   "comparator.copilot.proactive.trust": "สังเกตว่า **{provider}** มีคะแนนความน่าเชื่อถือสูงสุดสำหรับเส้นทางนี้ ดำเนินการต่อไหม?",
   "comparator.copilot.proactive.business": "**{provider}** เหมาะที่สุดสำหรับการโอนเงินธุรกิจในเส้นทางนี้ ดำเนินการต่อไหม?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** รองรับการรับเงินสดสำหรับเส้นทางนี้ ดำเนินการต่อไหม?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** รองรับการรับเงินสดสำหรับเส้นทางนี้ ดำเนินการต่อไหม?",
+  "comparator.sort.mostTransparent": "โปร่งใสที่สุด",
+  "comparator.sort.largeTransfers": "โอนเงินจำนวนมาก",
+  "comparator.sort.bestDeal": "ข้อเสนอพิเศษ",
+  "comparator.copilot.proactive.generic": "**{provider}** โดดเด่นด้าน **{criterion}** สำหรับเส้นทางนี้ ดำเนินการต่อไหม?"
 }
