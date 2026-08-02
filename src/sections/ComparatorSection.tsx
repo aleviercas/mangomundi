@@ -1735,13 +1735,21 @@ function ProviderRow({
                 {t(sortLabelKey(sortBy))}
               </span>
             )}
-            {badges.includes("exclusive_deal") && (
+            {/* Skip re-rendering a badge whose text is identical to the ribbon
+                above it (e.g. sortBy="best_deal" + this row is the featured
+                pick → ribbon already says "Exclusive offer", don't say it twice). */}
+            {badges.includes("exclusive_deal") && !(isBest && sortBy === "best_deal") && (
               <span className="inline-flex items-center gap-0.5 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
                 ✨ {t("comparator.sort.bestDeal")}
               </span>
             )}
             {badges
-              .filter((b) => b !== "exclusive_deal" && badgeLabelKey(b) != null)
+              .filter(
+                (b) =>
+                  b !== "exclusive_deal" &&
+                  badgeLabelKey(b) != null &&
+                  !(isBest && badgeLabelKey(b) === sortLabelKey(sortBy)),
+              )
               .slice(0, 3)
               .map((b) => (
                 <span
