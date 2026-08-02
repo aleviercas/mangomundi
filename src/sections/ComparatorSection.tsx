@@ -1603,14 +1603,14 @@ function ResultsBlock({
           className={
             embedded
               ? "hidden"
-              : "hidden grid-cols-[minmax(160px,1.9fr)_minmax(95px,1fr)_minmax(105px,1.1fr)_minmax(110px,1.2fr)_minmax(130px,1.2fr)_minmax(75px,0.85fr)_56px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
+              : "hidden grid-cols-[minmax(160px,1.7fr)_minmax(140px,1.3fr)_minmax(95px,1fr)_minmax(105px,1.1fr)_minmax(110px,1.2fr)_minmax(75px,0.85fr)_56px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
           }
         >
           <div className="min-w-0">{tProvider}</div>
+          <div className="min-w-0">{tFeatures}</div>
           <div className="min-w-0 text-right">{tAmountSent}</div>
           <div className="min-w-0 text-right">{tTotalFee}</div>
           <div className="min-w-0 text-right">{tRecipient}</div>
-          <div className="min-w-0">{tFeatures}</div>
           <div className="min-w-0 text-right">{tSpeed}</div>
           <div />
         </div>
@@ -1757,7 +1757,7 @@ function ProviderRow({
       className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 ${
         embedded
           ? ""
-          : "lg:grid-cols-[minmax(160px,1.9fr)_minmax(95px,1fr)_minmax(105px,1.1fr)_minmax(110px,1.2fr)_minmax(130px,1.2fr)_minmax(75px,0.85fr)_56px] lg:items-center lg:gap-4"
+          : "lg:grid-cols-[minmax(160px,1.7fr)_minmax(140px,1.3fr)_minmax(95px,1fr)_minmax(105px,1.1fr)_minmax(110px,1.2fr)_minmax(75px,0.85fr)_56px] lg:items-center lg:gap-4"
       } ${isBest ? "bg-primary/5" : ""}`}
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -1771,20 +1771,54 @@ function ProviderRow({
               </span>
             )}
           </div>
-          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px] text-muted-foreground">
-            {row.regulator && (
-              <span className="inline-flex items-center gap-0.5">
-                <Shield className="h-2.5 w-2.5" /> {row.regulator}
-              </span>
-            )}
-            {row.review_count > 0 && row.trust_score != null && (
-              <span className="inline-flex items-center gap-0.5">
-                <Star className="h-2.5 w-2.5 fill-current" /> {row.trust_score.toFixed(1)} (
-                {row.review_count.toLocaleString()})
-              </span>
-            )}
-          </div>
         </div>
+      </div>
+      {/* Features column — icon + short text (never icon-only: several of
+          these aren't self-explanatory, and there's no hover/tooltip on
+          mobile, so text is load-bearing, not decoration). Skips any badge
+          whose text already matches the ribbon above (see filter below) to
+          avoid saying the same thing twice on the same card. Regulator and
+          trust-score/review-count also live here now — they're features of
+          the provider just like the derived badges, not name metadata. */}
+      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+        <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
+          {t("comparator.table.features")}
+        </span>
+        {row.regulator && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <Shield className="h-2.5 w-2.5" /> {row.regulator}
+          </span>
+        )}
+        {row.review_count > 0 && row.trust_score != null && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+            <Star className="h-2.5 w-2.5 fill-current" /> {row.trust_score.toFixed(1)} (
+            {row.review_count.toLocaleString()} {t("comparator.table.reviews")})
+          </span>
+        )}
+        {badges.includes("exclusive_deal") && !(isBest && sortBy === "best_deal") && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+            <Sparkle className="h-2.5 w-2.5" /> {t("comparator.sort.bestDeal")}
+          </span>
+        )}
+        {badges
+          .filter(
+            (b) =>
+              b !== "exclusive_deal" &&
+              badgeLabelKey(b) != null &&
+              !(isBest && badgeLabelKey(b) === sortLabelKey(sortBy)),
+          )
+          .slice(0, 3)
+          .map((b) => {
+            const Icon = badgeIcon(b);
+            return (
+              <span
+                key={b}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+              >
+                {Icon && <Icon className="h-2.5 w-2.5" />} {t(badgeLabelKey(b)!)}
+              </span>
+            );
+          })}
       </div>
       <div
         className={`min-w-0 text-sm tabular-nums text-foreground ${embedded ? "" : "lg:text-right"}`}
@@ -1818,40 +1852,6 @@ function ProviderRow({
         <div className="text-[10px] tabular-nums text-muted-foreground">
           {t("fx.updated")} {updatedTime}
         </div>
-      </div>
-      {/* Features column — icon + short text (never icon-only: several of
-          these aren't self-explanatory, and there's no hover/tooltip on
-          mobile, so text is load-bearing, not decoration). Skips any badge
-          whose text already matches the ribbon above (see filter below) to
-          avoid saying the same thing twice on the same card. */}
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
-        <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
-          {t("comparator.table.features")}
-        </span>
-        {badges.includes("exclusive_deal") && !(isBest && sortBy === "best_deal") && (
-          <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
-            <Sparkle className="h-2.5 w-2.5" /> {t("comparator.sort.bestDeal")}
-          </span>
-        )}
-        {badges
-          .filter(
-            (b) =>
-              b !== "exclusive_deal" &&
-              badgeLabelKey(b) != null &&
-              !(isBest && badgeLabelKey(b) === sortLabelKey(sortBy)),
-          )
-          .slice(0, 3)
-          .map((b) => {
-            const Icon = badgeIcon(b);
-            return (
-              <span
-                key={b}
-                className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-              >
-                {Icon && <Icon className="h-2.5 w-2.5" />} {t(badgeLabelKey(b)!)}
-              </span>
-            );
-          })}
       </div>
       <div className={`min-w-0 text-sm text-muted-foreground ${embedded ? "" : "lg:text-right"}`}>
         <div className="inline-flex items-center gap-1">
