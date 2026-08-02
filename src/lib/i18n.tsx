@@ -2699,6 +2699,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.cta.compareRates": "Search",
     "comparator.table.amountSent": "Amount Sent",
     "comparator.table.bestRate": "Best Rate",
+    "comparator.table.features": "Features",
     "about.title": "Financial intelligence for every currency decision",
     "about.metric4.label": "Global providers evaluated in real time",
     "about.coverage.eyebrow": "Market Coverage",
