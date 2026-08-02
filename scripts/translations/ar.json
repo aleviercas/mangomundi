@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "استلام نقدي",
   "comparator.copilot.proactive.trust": "لاحظت أن **{provider}** لديه أعلى تقييم ثقة لهذا المسار. هل تريد المتابعة؟",
   "comparator.copilot.proactive.business": "**{provider}** هو الأنسب لتحويلات الأعمال في هذا المسار. هل نتابع؟",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** يوفر استلام نقدي لهذا المسار. هل نتابع؟"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** يوفر استلام نقدي لهذا المسار. هل نتابع؟",
+  "comparator.sort.mostTransparent": "الأكثر شفافية",
+  "comparator.sort.largeTransfers": "التحويلات الكبيرة",
+  "comparator.sort.bestDeal": "عرض حصري",
+  "comparator.copilot.proactive.generic": "**{provider}** يتميز في **{criterion}** لهذا المسار. هل نتابع؟"
 }
