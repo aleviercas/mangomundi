@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "সবচেয়ে স্বচ্ছ",
   "comparator.sort.largeTransfers": "বড় স্থানান্তর",
   "comparator.sort.bestDeal": "একচেটিয়া অফার",
-  "comparator.copilot.proactive.generic": "এই করিডরের জন্য **{provider}** **{criterion}**-এ এগিয়ে আছে। এগিয়ে যাই?"
+  "comparator.copilot.proactive.generic": "এই করিডরের জন্য **{provider}** **{criterion}**-এ এগিয়ে আছে। এগিয়ে যাই?",
+  "comparator.table.features": "বৈশিষ্ট্য"
 }
