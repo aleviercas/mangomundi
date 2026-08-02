@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "투명성 최고",
   "comparator.sort.largeTransfers": "고액 송금",
   "comparator.sort.bestDeal": "독점 혜택",
-  "comparator.copilot.proactive.generic": "이 구간에서 **{provider}**는 **{criterion}** 부문이 뛰어납니다. 진행할까요?"
+  "comparator.copilot.proactive.generic": "이 구간에서 **{provider}**는 **{criterion}** 부문이 뛰어납니다. 진행할까요?",
+  "comparator.table.features": "특징"
 }
