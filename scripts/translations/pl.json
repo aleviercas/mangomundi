@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "Najbardziej przejrzysty",
   "comparator.sort.largeTransfers": "Duże przelewy",
   "comparator.sort.bestDeal": "Oferta ekskluzywna",
-  "comparator.copilot.proactive.generic": "**{provider}** wyróżnia się pod względem **{criterion}** na tej trasie. Kontynuować?"
+  "comparator.copilot.proactive.generic": "**{provider}** wyróżnia się pod względem **{criterion}** na tej trasie. Kontynuować?",
+  "comparator.table.features": "Cechy"
 }
