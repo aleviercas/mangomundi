@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "现金提取",
   "comparator.copilot.proactive.trust": "我注意到 **{provider}** 在这条路线上的信任评分最高。要继续吗?",
   "comparator.copilot.proactive.business": "**{provider}** 最适合这条路线上的企业汇款。要继续吗?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** 在这条路线上支持现金提取。要继续吗?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** 在这条路线上支持现金提取。要继续吗?",
+  "comparator.sort.mostTransparent": "最透明",
+  "comparator.sort.largeTransfers": "大额转账",
+  "comparator.sort.bestDeal": "专属优惠",
+  "comparator.copilot.proactive.generic": "在这条路线上，**{provider}** 在**{criterion}**方面表现突出。要继续吗?"
 }
