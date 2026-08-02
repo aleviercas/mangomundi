@@ -639,5 +639,9 @@
   "comparator.sort.cashPickup": "Retiro en efectivo",
   "comparator.copilot.proactive.trust": "Detecté que **{provider}** tiene la mejor calificación de confianza para este corredor. ¿Avanzamos?",
   "comparator.copilot.proactive.business": "**{provider}** es la mejor opción para transferencias de empresas en este corredor. ¿Avanzamos?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** ofrece retiro en efectivo para este corredor. ¿Avanzamos?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** ofrece retiro en efectivo para este corredor. ¿Avanzamos?",
+  "comparator.sort.mostTransparent": "Más transparente",
+  "comparator.sort.largeTransfers": "Transferencias grandes",
+  "comparator.sort.bestDeal": "Oferta exclusiva",
+  "comparator.copilot.proactive.generic": "**{provider}** se destaca en **{criterion}** para este corredor. ¿Avanzamos?"
 }
