@@ -80,7 +80,6 @@ UPDATE providers SET trust_score = 3.6, review_count = 325, business_focus_score
 UPDATE providers SET trust_score = 4.4, review_count = 25500, cash_pickup_available = true WHERE slug = 'sendwave'; -- cash pickup: probable, no 100% confirmado
 UPDATE providers SET trust_score = 4.5, review_count = 12000 WHERE slug = 'lemfi';
 UPDATE providers SET trust_score = 4.2, review_count = 1046 WHERE slug = 'nala';
-UPDATE providers SET trust_score = 4.7, review_count = 36000 WHERE slug = 'taptap-send'; -- ya estaba, se repite con cash_pickup aún sin confirmar
 
 -- Skrill: RESUELTO. Usa el rating de transfers.skrill.com (producto de money
 -- transfer real), no el de skrill.com (wallet principal, 2.2 "Poor").
@@ -113,3 +112,4 @@ UPDATE providers SET active = false, trust_score = 3.7, review_count = 586 WHERE
 -- trust_score real de Trustpilot tal cual está publicado — mangomundi
 -- muestra lo que dice Trustpilot, no una decisión editorial nuestra.
 UPDATE providers SET trust_score = 4.0, review_count = 58397 WHERE slug = 'azimo';
+
