@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "Ritiro in contanti",
   "comparator.copilot.proactive.trust": "Ho notato che **{provider}** ha il rating di fiducia più alto per questo corridoio. Procediamo?",
   "comparator.copilot.proactive.business": "**{provider}** è il più adatto per i trasferimenti aziendali su questo corridoio. Procediamo?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** offre il ritiro in contanti per questo corridoio. Procediamo?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** offre il ritiro in contanti per questo corridoio. Procediamo?",
+  "comparator.sort.mostTransparent": "Più trasparente",
+  "comparator.sort.largeTransfers": "Trasferimenti grandi",
+  "comparator.sort.bestDeal": "Offerta esclusiva",
+  "comparator.copilot.proactive.generic": "**{provider}** si distingue per **{criterion}** su questo corridoio. Procediamo?"
 }
