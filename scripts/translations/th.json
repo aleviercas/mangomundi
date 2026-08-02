@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "โอนเงินจำนวนมาก",
   "comparator.sort.bestDeal": "ข้อเสนอพิเศษ",
   "comparator.copilot.proactive.generic": "**{provider}** โดดเด่นด้าน **{criterion}** สำหรับเส้นทางนี้ ดำเนินการต่อไหม?",
-  "comparator.table.features": "คุณสมบัติ"
+  "comparator.table.features": "คุณสมบัติ",
+  "comparator.table.reviews": "รีวิว"
 }
