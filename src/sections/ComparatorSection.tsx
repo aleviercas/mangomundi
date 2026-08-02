@@ -1645,9 +1645,9 @@ function ResultsBlock({
   );
 }
 
-/** exclusive_deal is intentionally still excluded here — it needs its own
- *  disclosure-labeled treatment (not a plain pill), see best_deal profile
- *  notes in scoring.functions.ts. Wire it in a follow-up pass. */
+/** exclusive_deal maps to its own key but gets distinct disclosure styling
+ *  below (amber, not the neutral gray merit pills) — it's a promotional
+ *  signal, not a ranking merit, and must never blend in as if it were one. */
 function badgeLabelKey(b: BadgeKey): string | null {
   switch (b) {
     case "lowest_fee":
@@ -1664,6 +1664,8 @@ function badgeLabelKey(b: BadgeKey): string | null {
       return "comparator.sort.mostTransparent";
     case "large_transfers":
       return "comparator.sort.largeTransfers";
+    case "exclusive_deal":
+      return "comparator.sort.bestDeal";
     default:
       return null;
   }
@@ -1733,8 +1735,13 @@ function ProviderRow({
                 {t(sortLabelKey(sortBy))}
               </span>
             )}
+            {badges.includes("exclusive_deal") && (
+              <span className="inline-flex items-center gap-0.5 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+                ✨ {t("comparator.sort.bestDeal")}
+              </span>
+            )}
             {badges
-              .filter((b) => badgeLabelKey(b) != null)
+              .filter((b) => b !== "exclusive_deal" && badgeLabelKey(b) != null)
               .slice(0, 3)
               .map((b) => (
                 <span
