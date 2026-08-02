@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "Am transparentesten",
   "comparator.sort.largeTransfers": "Große Überweisungen",
   "comparator.sort.bestDeal": "Exklusives Angebot",
-  "comparator.copilot.proactive.generic": "**{provider}** sticht bei **{criterion}** für diesen Korridor hervor. Fortfahren?"
+  "comparator.copilot.proactive.generic": "**{provider}** sticht bei **{criterion}** für diesen Korridor hervor. Fortfahren?",
+  "comparator.table.features": "Merkmale"
 }
