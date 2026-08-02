@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "Выдача наличными",
   "comparator.copilot.proactive.trust": "Я заметил, что у **{provider}** самый высокий рейтинг доверия для этого коридора. Продолжим?",
   "comparator.copilot.proactive.business": "**{provider}** лучше всего подходит для бизнес-переводов по этому коридору. Продолжим?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** предлагает выдачу наличными для этого коридора. Продолжим?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** предлагает выдачу наличными для этого коридора. Продолжим?",
+  "comparator.sort.mostTransparent": "Самый прозрачный",
+  "comparator.sort.largeTransfers": "Крупные переводы",
+  "comparator.sort.bestDeal": "Эксклюзивное предложение",
+  "comparator.copilot.proactive.generic": "**{provider}** выделяется по критерию **{criterion}** для этого коридора. Продолжим?"
 }
