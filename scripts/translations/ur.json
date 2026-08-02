@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "سب سے شفاف",
   "comparator.sort.largeTransfers": "بڑی ترسیلات",
   "comparator.sort.bestDeal": "خصوصی پیشکش",
-  "comparator.copilot.proactive.generic": "اس کوریڈور کے لیے **{provider}** **{criterion}** میں نمایاں ہے۔ آگے بڑھیں؟"
+  "comparator.copilot.proactive.generic": "اس کوریڈور کے لیے **{provider}** **{criterion}** میں نمایاں ہے۔ آگے بڑھیں؟",
+  "comparator.table.features": "خصوصیات"
 }
