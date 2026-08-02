@@ -89,33 +89,27 @@ UPDATE providers SET trust_score = 4.7, review_count = 36000 WHERE slug = 'tapta
 -- programa de afiliados.
 UPDATE providers SET trust_score = 4.35, review_count = 13500 WHERE slug = 'skrill';
 
--- ⚠️ Atlantic Money: NO cargar sin que Alejandro confirme el tier tras leer
--- la alerta en scoring-data-findings.md (rating cayó de 4.1 a 2.3-2.7 reciente).
--- Si decidís cargarlo, sembrá trust_score_previous con el valor viejo (4.1)
--- para que el sistema de tendencia lo detecte automáticamente en el futuro:
--- UPDATE providers SET trust_score = 2.5, trust_score_previous = 4.1, review_count = 175 WHERE slug = 'atlantic-money';
+-- Atlantic Money: mangomundi muestra lo que dice Trustpilot, no una
+-- decisión editorial nuestra sobre si "merece" bajar de tier. Se carga el
+-- rating actual real (2.5, caído desde 4.1) y se siembra trust_score_previous
+-- para que getTrustTrend()/flagDecliningProviders() lo detecten como
+-- "declining" automáticamente de acá en más (ver scoring.functions.ts).
+UPDATE providers SET trust_score = 2.5, trust_score_previous = 4.1, review_count = 175 WHERE slug = 'atlantic-money';
 
 -- Small World Financial Services (slug: small-world) — investigado en esta
 -- tanda, activo y con buen dato. Trustpilot 4.2-4.3 "Great", ~27,500 reviews.
 -- Cash pickup confirmado (250,000+ locations en ~190-195 países).
 UPDATE providers SET trust_score = 4.2, review_count = 27500, cash_pickup_available = true, countries_covered = 190 WHERE slug = 'small-world';
 
--- ⚠️⚠️ Zing (slug: 'zing') — NO CARGAR. Múltiples reviews recientes de
--- Trustpilot afirman literalmente "Zing is now closed", con quejas de
--- fondos retenidos durante el cierre. Esto sugiere que HSBC discontinuó el
--- servicio. Esto es más urgente que un simple dato de trust_score: antes de
--- cargar nada, confirmar en zing.me o directo con HSBC si el servicio sigue
--- activo. Si está cerrado, la acción correcta es sacar a Zing del
--- comparador (poner el provider como inactivo), no solo dejarlo sin datos.
--- UPDATE providers SET trust_score = 3.7, review_count = 586 WHERE slug = 'zing';
+-- Zing (slug: 'zing') — CONFIRMADO CERRADO por Alejandro. Se marca inactivo
+-- (mismo mecanismo que ya usa la query real: fx.functions.ts filtra
+-- `.eq("active", true)`, así que esto lo saca del comparador sin tocar
+-- código). Se deja el trust_score igual, por completitud histórica —
+-- inactive=false hace que no importe para el ranking.
+UPDATE providers SET active = false, trust_score = 3.7, review_count = 586 WHERE slug = 'zing';
 
--- ⚠️⚠️ Azimo (slug: 'azimo') — NO CARGAR. Según Wikipedia, Azimo fue
--- adquirida por Papaya Global en 2022 y figura como "Defunct: August 1,
--- 2023". Papaya Global (la empresa matriz) pivotó a un producto B2B de
--- payroll/EOR para empresas — sus reviews de Trustpilot (58 reviews) son de
--- ESE producto, no de remesas P2P. El propio dominio azimo.com todavía
--- tiene un Trustpilot activo (4 estrellas, ~58,000 reviews históricas), así
--- que no está 100% claro si el servicio de consumidor sigue operando bajo
--- otro dueño o si esas reviews son legado. Confirmar en azimo.com antes de
--- cargar o mantener este proveedor activo en el comparador.
--- UPDATE providers SET trust_score = 4.0, review_count = 58397 WHERE slug = 'azimo';
+-- Azimo (slug: 'azimo') — Confirmado por Alejandro: ahora es parte de
+-- Papaya Global. Se mantiene ACTIVO (no se decidió sacarlo) y se carga el
+-- trust_score real de Trustpilot tal cual está publicado — mangomundi
+-- muestra lo que dice Trustpilot, no una decisión editorial nuestra.
+UPDATE providers SET trust_score = 4.0, review_count = 58397 WHERE slug = 'azimo';
