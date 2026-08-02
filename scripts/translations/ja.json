@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "現金受け取り",
   "comparator.copilot.proactive.trust": "この送金経路では **{provider}** の信頼度評価が最も高いようです。進めますか?",
   "comparator.copilot.proactive.business": "この経路のビジネス送金には **{provider}** が最適です。進めますか?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** はこの経路で現金受け取りに対応しています。進めますか?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** はこの経路で現金受け取りに対応しています。進めますか?",
+  "comparator.sort.mostTransparent": "最も透明性が高い",
+  "comparator.sort.largeTransfers": "高額送金",
+  "comparator.sort.bestDeal": "限定オファー",
+  "comparator.copilot.proactive.generic": "この経路では **{provider}** が **{criterion}** で優れています。進めますか?"
 }
