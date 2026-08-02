@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "Gros transferts",
   "comparator.sort.bestDeal": "Offre exclusive",
   "comparator.copilot.proactive.generic": "**{provider}** se distingue sur **{criterion}** pour ce corridor. On continue ?",
-  "comparator.table.features": "Caractéristiques"
+  "comparator.table.features": "Caractéristiques",
+  "comparator.table.reviews": "avis"
 }
