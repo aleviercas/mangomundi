@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "নগদ উত্তোলন",
   "comparator.copilot.proactive.trust": "লক্ষ্য করেছি **{provider}** এই করিডরের জন্য সবচেয়ে বেশি বিশ্বস্ততা রেটিং পেয়েছে। এগিয়ে যেতে চান?",
   "comparator.copilot.proactive.business": "এই করিডরে ব্যবসায়িক লেনদেনের জন্য **{provider}** সবচেয়ে উপযুক্ত। এগিয়ে যাই?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** এই করিডরের জন্য নগদ উত্তোলনের সুবিধা দেয়। এগিয়ে যাই?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** এই করিডরের জন্য নগদ উত্তোলনের সুবিধা দেয়। এগিয়ে যাই?",
+  "comparator.sort.mostTransparent": "সবচেয়ে স্বচ্ছ",
+  "comparator.sort.largeTransfers": "বড় স্থানান্তর",
+  "comparator.sort.bestDeal": "একচেটিয়া অফার",
+  "comparator.copilot.proactive.generic": "এই করিডরের জন্য **{provider}** **{criterion}**-এ এগিয়ে আছে। এগিয়ে যাই?"
 }
