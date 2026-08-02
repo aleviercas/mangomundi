@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "Große Überweisungen",
   "comparator.sort.bestDeal": "Exklusives Angebot",
   "comparator.copilot.proactive.generic": "**{provider}** sticht bei **{criterion}** für diesen Korridor hervor. Fortfahren?",
-  "comparator.table.features": "Merkmale"
+  "comparator.table.features": "Merkmale",
+  "comparator.table.reviews": "Bewertungen"
 }
