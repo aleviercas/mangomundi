@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "현금 수령",
   "comparator.copilot.proactive.trust": "이 송금 구간에서는 **{provider}**의 신뢰도 평가가 가장 높습니다. 진행할까요?",
   "comparator.copilot.proactive.business": "이 구간의 기업 송금에는 **{provider}**가 가장 적합합니다. 진행할까요?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}**는 이 구간에서 현금 수령이 가능합니다. 진행할까요?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}**는 이 구간에서 현금 수령이 가능합니다. 진행할까요?",
+  "comparator.sort.mostTransparent": "투명성 최고",
+  "comparator.sort.largeTransfers": "고액 송금",
+  "comparator.sort.bestDeal": "독점 혜택",
+  "comparator.copilot.proactive.generic": "이 구간에서 **{provider}**는 **{criterion}** 부문이 뛰어납니다. 진행할까요?"
 }
