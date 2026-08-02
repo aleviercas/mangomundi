@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "Büyük transferler",
   "comparator.sort.bestDeal": "Özel teklif",
   "comparator.copilot.proactive.generic": "**{provider}**, bu koridorda **{criterion}** açısından öne çıkıyor. Devam edelim mi?",
-  "comparator.table.features": "Özellikler"
+  "comparator.table.features": "Özellikler",
+  "comparator.table.reviews": "değerlendirme"
 }
