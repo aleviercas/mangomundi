@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "Retirada em dinheiro",
   "comparator.copilot.proactive.trust": "Percebi que **{provider}** tem a melhor avaliação de confiança para essa rota. Vamos continuar?",
   "comparator.copilot.proactive.business": "**{provider}** é o mais indicado para transferências empresariais nessa rota. Vamos continuar?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** oferece retirada em dinheiro para essa rota. Vamos continuar?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** oferece retirada em dinheiro para essa rota. Vamos continuar?",
+  "comparator.sort.mostTransparent": "Mais transparente",
+  "comparator.sort.largeTransfers": "Transferências grandes",
+  "comparator.sort.bestDeal": "Oferta exclusiva",
+  "comparator.copilot.proactive.generic": "**{provider}** se destaca em **{criterion}** para essa rota. Vamos continuar?"
 }
