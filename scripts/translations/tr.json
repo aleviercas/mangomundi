@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "Nakit teslim",
   "comparator.copilot.proactive.trust": "**{provider}**'in bu koridor için en yüksek güven puanına sahip olduğunu fark ettim. Devam edelim mi?",
   "comparator.copilot.proactive.business": "Bu koridorda iş transferleri için en uygun seçenek **{provider}**. Devam edelim mi?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** bu koridor için nakit teslim sunuyor. Devam edelim mi?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** bu koridor için nakit teslim sunuyor. Devam edelim mi?",
+  "comparator.sort.mostTransparent": "En şeffaf",
+  "comparator.sort.largeTransfers": "Büyük transferler",
+  "comparator.sort.bestDeal": "Özel teklif",
+  "comparator.copilot.proactive.generic": "**{provider}**, bu koridorda **{criterion}** açısından öne çıkıyor. Devam edelim mi?"
 }
