@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "نقد وصولی",
   "comparator.copilot.proactive.trust": "میں نے دیکھا کہ **{provider}** کے پاس اس کوریڈور کے لیے سب سے زیادہ اعتماد کی درجہ بندی ہے۔ آگے بڑھیں؟",
   "comparator.copilot.proactive.business": "اس کوریڈور پر کاروباری ترسیلات کے لیے **{provider}** سب سے موزوں ہے۔ آگے بڑھیں؟",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** اس کوریڈور کے لیے نقد وصولی کی سہولت فراہم کرتا ہے۔ آگے بڑھیں؟"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** اس کوریڈور کے لیے نقد وصولی کی سہولت فراہم کرتا ہے۔ آگے بڑھیں؟",
+  "comparator.sort.mostTransparent": "سب سے شفاف",
+  "comparator.sort.largeTransfers": "بڑی ترسیلات",
+  "comparator.sort.bestDeal": "خصوصی پیشکش",
+  "comparator.copilot.proactive.generic": "اس کوریڈور کے لیے **{provider}** **{criterion}** میں نمایاں ہے۔ آگے بڑھیں؟"
 }
