@@ -647,5 +647,6 @@
   "comparator.sort.mostTransparent": "En şeffaf",
   "comparator.sort.largeTransfers": "Büyük transferler",
   "comparator.sort.bestDeal": "Özel teklif",
-  "comparator.copilot.proactive.generic": "**{provider}**, bu koridorda **{criterion}** açısından öne çıkıyor. Devam edelim mi?"
+  "comparator.copilot.proactive.generic": "**{provider}**, bu koridorda **{criterion}** açısından öne çıkıyor. Devam edelim mi?",
+  "comparator.table.features": "Özellikler"
 }
