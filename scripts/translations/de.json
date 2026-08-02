@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "Barauszahlung",
   "comparator.copilot.proactive.trust": "Mir ist aufgefallen, dass **{provider}** die höchste Vertrauensbewertung für diesen Korridor hat. Möchtest du fortfahren?",
   "comparator.copilot.proactive.business": "**{provider}** eignet sich am besten für Geschäftsüberweisungen auf diesem Korridor. Fortfahren?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** bietet Barauszahlung für diesen Korridor. Fortfahren?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** bietet Barauszahlung für diesen Korridor. Fortfahren?",
+  "comparator.sort.mostTransparent": "Am transparentesten",
+  "comparator.sort.largeTransfers": "Große Überweisungen",
+  "comparator.sort.bestDeal": "Exklusives Angebot",
+  "comparator.copilot.proactive.generic": "**{provider}** sticht bei **{criterion}** für diesen Korridor hervor. Fortfahren?"
 }
