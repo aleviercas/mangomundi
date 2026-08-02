@@ -643,5 +643,9 @@
   "comparator.sort.cashPickup": "Nhận tiền mặt",
   "comparator.copilot.proactive.trust": "Tôi nhận thấy **{provider}** có đánh giá tin cậy cao nhất cho hành lang này. Tiếp tục nhé?",
   "comparator.copilot.proactive.business": "**{provider}** phù hợp nhất cho chuyển tiền doanh nghiệp trên hành lang này. Tiếp tục nhé?",
-  "comparator.copilot.proactive.cashPickup": "**{provider}** hỗ trợ nhận tiền mặt cho hành lang này. Tiếp tục nhé?"
+  "comparator.copilot.proactive.cashPickup": "**{provider}** hỗ trợ nhận tiền mặt cho hành lang này. Tiếp tục nhé?",
+  "comparator.sort.mostTransparent": "Minh bạch nhất",
+  "comparator.sort.largeTransfers": "Chuyển khoản lớn",
+  "comparator.sort.bestDeal": "Ưu đãi độc quyền",
+  "comparator.copilot.proactive.generic": "**{provider}** nổi bật về **{criterion}** cho hành lang này. Tiếp tục nhé?"
 }
