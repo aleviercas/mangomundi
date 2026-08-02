@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "Transfer besar",
   "comparator.sort.bestDeal": "Penawaran eksklusif",
   "comparator.copilot.proactive.generic": "**{provider}** unggul dalam **{criterion}** untuk koridor ini. Lanjutkan?",
-  "comparator.table.features": "Fitur"
+  "comparator.table.features": "Fitur",
+  "comparator.table.reviews": "ulasan"
 }
