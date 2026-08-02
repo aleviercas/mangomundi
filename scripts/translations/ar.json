@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "التحويلات الكبيرة",
   "comparator.sort.bestDeal": "عرض حصري",
   "comparator.copilot.proactive.generic": "**{provider}** يتميز في **{criterion}** لهذا المسار. هل نتابع؟",
-  "comparator.table.features": "الميزات"
+  "comparator.table.features": "الميزات",
+  "comparator.table.reviews": "تقييم"
 }
