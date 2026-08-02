@@ -2559,6 +2559,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "**{provider}** is the best fit for business transfers on this corridor. Want to proceed?",
     "comparator.copilot.proactive.cashPickup":
       "**{provider}** offers cash pickup for this corridor. Want to proceed?",
+    "comparator.copilot.proactive.generic":
+      "**{provider}** stands out on **{criterion}** for this corridor. Want to proceed?",
     "comparator.copilot.filterReact":
       "I see you filtered by **{filter}** — here are the best brokers for that selection:",
     "comparator.copilot.filter.received": "Best rate",
@@ -2630,6 +2632,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.mostTrusted": "Most trusted",
     "comparator.sort.bestBusiness": "Best for business",
     "comparator.sort.cashPickup": "Cash pickup",
+    "comparator.sort.mostTransparent": "Most transparent",
+    "comparator.sort.largeTransfers": "Large transfers",
+    "comparator.sort.bestDeal": "Exclusive offer",
     "comparator.reference": "Reference",
     "comparator.cached": "Cached",
     "comparator.cachedNote": "Rates are last known/cached, not live.",
