@@ -648,5 +648,6 @@
   "comparator.sort.largeTransfers": "大额转账",
   "comparator.sort.bestDeal": "专属优惠",
   "comparator.copilot.proactive.generic": "在这条路线上，**{provider}** 在**{criterion}**方面表现突出。要继续吗?",
-  "comparator.table.features": "特点"
+  "comparator.table.features": "特点",
+  "comparator.table.reviews": "条评价"
 }
