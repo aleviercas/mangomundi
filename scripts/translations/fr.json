@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "Offre exclusive",
   "comparator.copilot.proactive.generic": "**{provider}** se distingue sur **{criterion}** pour ce corridor. On continue ?",
   "comparator.table.features": "Caractéristiques",
-  "comparator.table.reviews": "avis"
+  "comparator.table.reviews": "avis",
+  "comparator.filterBy": "Nécessite",
+  "comparator.emptyFiltered": "Aucun prestataire ne correspond à votre sélection sous \"Nécessite\". Essayez de retirer un filtre."
 }
