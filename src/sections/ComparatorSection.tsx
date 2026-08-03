@@ -7,6 +7,7 @@ import {
   ArrowLeftRight,
   Banknote,
   Briefcase,
+  Check,
   Clock,
   Coins,
   Eye,
@@ -71,6 +72,7 @@ const WHITE_FIELD =
   "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
+type FeatureFilterKey = "cash_pickup_available" | "supports_large_tickets" | "has_exclusive_deal";
 /** Base chips always shown, in display order. "best_deal" is appended
  *  separately (see the results block) only when at least one provider in
  *  the current result set actually has a disclosed exclusive offer — never
@@ -175,6 +177,20 @@ export function ComparatorSection({
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
   const [sortBy, setSortBy] = useState<SortKey>("overall");
+  /** Opt-in requirement filters — distinct from sortBy. Sorting never hides
+   *  a provider (that's the whole point of the multi-criteria engine); these
+   *  DO hide non-matching providers, but only because the person explicitly
+   *  said they need that capability (e.g. "I need cash pickup") — that's the
+   *  person narrowing to their real requirement, not us hiding someone for
+   *  editorial/monetization reasons. */
+  const [activeFilters, setActiveFilters] = useState<Set<FeatureFilterKey>>(new Set());
+  const toggleFilter = (key: FeatureFilterKey) =>
+    setActiveFilters((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -1191,10 +1207,49 @@ export function ComparatorSection({
                 </button>
               ))}
             </div>
+            {/* Requirement filters — visually distinct (checkbox-style, not
+                solid pills) from the sort chips above, so it reads as "narrow
+                to my requirement" rather than another ranking criterion.
+                Opt-in and off by default: nobody is hidden until the person
+                actively says they need this. */}
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                {t("comparator.filterBy")}
+              </span>
+              {(
+                [
+                  ["cash_pickup_available", "comparator.sort.cashPickup"],
+                  ["supports_large_tickets", "comparator.sort.largeTransfers"],
+                  ["has_exclusive_deal", "comparator.sort.bestDeal"],
+                ] as const
+              ).map(([key, labelKey]) => (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => toggleFilter(key)}
+                  aria-pressed={activeFilters.has(key)}
+                  className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    activeFilters.has(key)
+                      ? "border-foreground bg-foreground/5 text-foreground"
+                      : "border-input bg-card text-muted-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  <span
+                    className={`flex h-3.5 w-3.5 items-center justify-center rounded-sm border ${
+                      activeFilters.has(key) ? "border-foreground bg-foreground" : "border-input"
+                    }`}
+                  >
+                    {activeFilters.has(key) && <Check className="h-2.5 w-2.5 text-background" />}
+                  </span>
+                  {t(labelKey)}
+                </button>
+              ))}
+            </div>
             <ResultsBlock
               result={result}
               amount={amount}
               sortBy={sortBy}
+              activeFilters={activeFilters}
               handleAffiliateClick={openPreferredRate}
               tDisclaimer={t("fx.disclaimer")}
               tTrademarks={t("fx.trademarks")}
@@ -1516,6 +1571,7 @@ function ResultsBlock({
   result,
   amount,
   sortBy,
+  activeFilters,
   handleAffiliateClick,
   tDisclaimer,
   tTrademarks,
@@ -1534,6 +1590,7 @@ function ResultsBlock({
   result: ComparisonResult;
   amount: number;
   sortBy: SortKey;
+  activeFilters: Set<FeatureFilterKey>;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
@@ -1558,8 +1615,21 @@ function ResultsBlock({
 }) {
   const { t } = useI18n();
 
-  const organic = useMemo(() => sortByScore(result.rows, sortBy), [result.rows, sortBy]);
-  const badgesBySlug = useMemo(() => deriveBadges(result.rows), [result.rows]);
+  // Opt-in requirement filters narrow the pool BEFORE ranking/badges are
+  // computed, so a "cheapest" badge always reflects the cheapest among what
+  // the person can actually see right now, not a hidden full market.
+  const filteredRows = useMemo(
+    () =>
+      result.rows.filter(
+        (r) =>
+          (!activeFilters.has("cash_pickup_available") || r.cash_pickup_available) &&
+          (!activeFilters.has("supports_large_tickets") || r.supports_large_tickets) &&
+          (!activeFilters.has("has_exclusive_deal") || r.has_exclusive_deal),
+      ),
+    [result.rows, activeFilters],
+  );
+  const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
+  const badgesBySlug = useMemo(() => deriveBadges(filteredRows), [filteredRows]);
   // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
   // in scoring.functions.ts) picks one value for this page view and doesn't
   // flicker between renders, but still varies across visits/sessions — that's
@@ -1631,7 +1701,7 @@ function ResultsBlock({
         ))}
         {organic.length === 0 && (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            {t("comparator.empty")}
+            {activeFilters.size > 0 ? t("comparator.emptyFiltered") : t("comparator.empty")}
           </div>
         )}
       </div>
@@ -1733,6 +1803,7 @@ function ProviderRow({
   embedded?: boolean;
 }) {
   const { t } = useI18n();
+  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const tooltipPreferred = t("comparator.tooltip.proceed");
   const deliveryLabel =
     row.delivery_minutes != null
@@ -1775,50 +1846,76 @@ function ProviderRow({
       </div>
       {/* Features column — icon + short text (never icon-only: several of
           these aren't self-explanatory, and there's no hover/tooltip on
-          mobile, so text is load-bearing, not decoration). Skips any badge
-          whose text already matches the ribbon above (see filter below) to
-          avoid saying the same thing twice on the same card. Regulator and
-          trust-score/review-count also live here now — they're features of
-          the provider just like the derived badges, not name metadata. */}
-      <div className="flex min-w-0 flex-wrap items-center gap-1.5">
+          mobile, so text is load-bearing, not decoration). Fixed to a single
+          line (FEATURES_VISIBLE_COUNT chips max) so every row is the same
+          height regardless of how many features a provider has — the rest
+          are never hidden permanently, just behind a "+N" toggle the user
+          can expand, same principle as never hiding a cheaper provider. */}
+      <div className="min-w-0">
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {t("comparator.table.features")}
         </span>
-        {row.regulator && (
-          <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-            <Shield className="h-2.5 w-2.5" /> {row.regulator}
-          </span>
-        )}
-        {row.review_count > 0 && row.trust_score != null && (
-          <span className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-            <Star className="h-2.5 w-2.5 fill-current" /> {row.trust_score.toFixed(1)} (
-            {row.review_count.toLocaleString()} {t("comparator.table.reviews")})
-          </span>
-        )}
-        {badges.includes("exclusive_deal") && !(isBest && sortBy === "best_deal") && (
-          <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
-            <Sparkle className="h-2.5 w-2.5" /> {t("comparator.sort.bestDeal")}
-          </span>
-        )}
-        {badges
-          .filter(
-            (b) =>
-              b !== "exclusive_deal" &&
-              badgeLabelKey(b) != null &&
-              !(isBest && badgeLabelKey(b) === sortLabelKey(sortBy)),
-          )
-          .slice(0, 3)
-          .map((b) => {
-            const Icon = badgeIcon(b);
+        <div className="flex flex-wrap items-center gap-1.5">
+          {(() => {
+            type Chip = { key: string; icon: typeof Shield | null; text: string; amber?: boolean };
+            const chips: Chip[] = [];
+            if (row.regulator) {
+              chips.push({ key: "regulator", icon: Shield, text: row.regulator });
+            }
+            if (row.review_count > 0 && row.trust_score != null) {
+              chips.push({
+                key: "trust",
+                icon: Star,
+                text: `${row.trust_score.toFixed(1)} (${row.review_count.toLocaleString()} ${t("comparator.table.reviews")})`,
+              });
+            }
+            if (badges.includes("exclusive_deal") && !(isBest && sortBy === "best_deal")) {
+              chips.push({
+                key: "exclusive_deal",
+                icon: Sparkle,
+                text: t("comparator.sort.bestDeal"),
+                amber: true,
+              });
+            }
+            for (const b of badges) {
+              if (b === "exclusive_deal") continue;
+              const labelKey = badgeLabelKey(b);
+              if (!labelKey) continue;
+              if (isBest && labelKey === sortLabelKey(sortBy)) continue;
+              chips.push({ key: b, icon: badgeIcon(b), text: t(labelKey) });
+            }
+
+            const VISIBLE = 2;
+            const visible = showAllFeatures ? chips : chips.slice(0, VISIBLE);
+            const hiddenCount = chips.length - visible.length;
+
             return (
-              <span
-                key={b}
-                className="inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-              >
-                {Icon && <Icon className="h-2.5 w-2.5" />} {t(badgeLabelKey(b)!)}
-              </span>
+              <>
+                {visible.map((c) => (
+                  <span
+                    key={c.key}
+                    className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-medium ${
+                      c.amber
+                        ? "border-amber-300 bg-amber-100 font-bold text-amber-800"
+                        : "border-border bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {c.icon && <c.icon className="h-2.5 w-2.5 shrink-0" />} {c.text}
+                  </span>
+                ))}
+                {hiddenCount > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowAllFeatures(true)}
+                    className="inline-flex items-center rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-semibold text-muted-foreground hover:border-foreground/30"
+                  >
+                    +{hiddenCount}
+                  </button>
+                )}
+              </>
             );
-          })}
+          })()}
+        </div>
       </div>
       <div
         className={`min-w-0 text-sm tabular-nums text-foreground ${embedded ? "" : "lg:text-right"}`}
