@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "عرض حصري",
   "comparator.copilot.proactive.generic": "**{provider}** يتميز في **{criterion}** لهذا المسار. هل نتابع؟",
   "comparator.table.features": "الميزات",
-  "comparator.table.reviews": "تقييم"
+  "comparator.table.reviews": "تقييم",
+  "comparator.filterBy": "يتطلب",
+  "comparator.emptyFiltered": "لا يوجد مزودون يطابقون ما اخترته في \"يتطلب\". حاول إزالة أحد الفلاتر."
 }
