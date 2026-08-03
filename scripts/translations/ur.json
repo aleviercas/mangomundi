@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "خصوصی پیشکش",
   "comparator.copilot.proactive.generic": "اس کوریڈور کے لیے **{provider}** **{criterion}** میں نمایاں ہے۔ آگے بڑھیں؟",
   "comparator.table.features": "خصوصیات",
-  "comparator.table.reviews": "جائزے"
+  "comparator.table.reviews": "جائزے",
+  "comparator.filterBy": "درکار ہے",
+  "comparator.emptyFiltered": "\"درکار ہے\" کے تحت آپ کے انتخاب سے کوئی فراہم کنندہ میل نہیں کھاتا۔ ایک فلٹر ہٹا کر دیکھیں۔"
 }
