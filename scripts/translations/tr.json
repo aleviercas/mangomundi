@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "Özel teklif",
   "comparator.copilot.proactive.generic": "**{provider}**, bu koridorda **{criterion}** açısından öne çıkıyor. Devam edelim mi?",
   "comparator.table.features": "Özellikler",
-  "comparator.table.reviews": "değerlendirme"
+  "comparator.table.reviews": "değerlendirme",
+  "comparator.filterBy": "Gerekli",
+  "comparator.emptyFiltered": "\"Gerekli\" altında seçtiklerinize uyan sağlayıcı yok. Bir filtreyi kaldırmayı deneyin."
 }
