@@ -2625,6 +2625,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.advancedOptions": "Advanced options",
     "comparator.results": "Your results",
     "comparator.sortBy": "Sort by",
+    "comparator.filterBy": "Require",
     "comparator.sort.received": "Best rate",
     "comparator.sort.fee": "Cheapest fees",
     "comparator.sort.speed": "Fastest",
@@ -2639,6 +2640,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.cached": "Cached",
     "comparator.cachedNote": "Rates are last known/cached, not live.",
     "comparator.empty": "No providers available for this corridor yet.",
+    "comparator.emptyFiltered": "No providers match what you selected under \"Require\". Try removing a filter.",
     "comparator.b2b.title": "Sending over {amount} {cur}? Talk to our business desk.",
     "comparator.b2b.body":
       "For high-volume transfers, dedicated providers offer custom rates, treasury tooling and an account manager. →",
