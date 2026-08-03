@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "Exklusives Angebot",
   "comparator.copilot.proactive.generic": "**{provider}** sticht bei **{criterion}** für diesen Korridor hervor. Fortfahren?",
   "comparator.table.features": "Merkmale",
-  "comparator.table.reviews": "Bewertungen"
+  "comparator.table.reviews": "Bewertungen",
+  "comparator.filterBy": "Erfordert",
+  "comparator.emptyFiltered": "Kein Anbieter erfüllt deine Auswahl unter \"Erfordert\". Versuch, einen Filter zu entfernen."
 }
