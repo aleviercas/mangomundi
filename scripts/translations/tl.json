@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "Eksklusibong alok",
   "comparator.copilot.proactive.generic": "Natatangi ang **{provider}** sa **{criterion}** para sa corridor na ito. Magpatuloy?",
   "comparator.table.features": "Mga tampok",
-  "comparator.table.reviews": "review"
+  "comparator.table.reviews": "review",
+  "comparator.filterBy": "Kailangan",
+  "comparator.emptyFiltered": "Walang provider na tumutugma sa napili mo sa ilalim ng \"Kailangan\". Subukang alisin ang isang filter."
 }
