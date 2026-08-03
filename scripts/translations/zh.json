@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "专属优惠",
   "comparator.copilot.proactive.generic": "在这条路线上，**{provider}** 在**{criterion}**方面表现突出。要继续吗?",
   "comparator.table.features": "特点",
-  "comparator.table.reviews": "条评价"
+  "comparator.table.reviews": "条评价",
+  "comparator.filterBy": "需要",
+  "comparator.emptyFiltered": "没有符合您在\"需要\"中所选条件的服务商。试试去掉一个筛选条件。"
 }
