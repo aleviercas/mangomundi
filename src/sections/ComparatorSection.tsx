@@ -73,22 +73,31 @@ const WHITE_FIELD =
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
 type FeatureFilterKey = "cash_pickup_available" | "supports_large_tickets" | "has_exclusive_deal";
-/** Base chips always shown, in display order. "best_deal" is appended
- *  separately (see the results block) only when at least one provider in
- *  the current result set actually has a disclosed exclusive offer — never
- *  advertise a chip for a deal that doesn't exist right now. */
+/** Sort chips: spectrum criteria only ("who's better on X"). Binary
+ *  capabilities (cash pickup, large transfers, exclusive/sponsored offer)
+ *  live exclusively in the "Requiere" filter toggles below, not here too —
+ *  showing "Cash pickup" in both places was confusing (same word, two
+ *  different behaviors: one reorders, one hides). best_cash_pickup,
+ *  best_large_transfers and best_deal still exist as engine profiles (used
+ *  by the AI copilot / future use), just not exposed as chips here. */
 const SORT_CHIPS: SortKey[] = [
   "overall",
   "lowest_cost",
   "fastest",
   "most_trusted",
   "best_business",
-  "best_cash_pickup",
   "most_transparent",
-  "best_large_transfers",
 ];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
+/** 294000 -> "294K" — keeps the trust chip compact so it doesn't blow out
+ *  the fixed-height Features cell on providers with huge review counts. */
+function compactNumber(n: number): string {
+  return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(
+    n,
+  );
+}
+
 function sortLabelKey(p: SortKey): string {
   switch (p) {
     case "lowest_cost":
@@ -191,6 +200,12 @@ export function ComparatorSection({
       else next.add(key);
       return next;
     });
+  // Single legend panel (not per-row tooltips) explaining what each Features
+  // icon/chip means — icon+text alone still isn't foolproof for a first-time
+  // visitor on a decision involving real money, and repeating a tooltip on
+  // every row adds clutter without adding clarity. One explanation, shown
+  // once, toggled on demand.
+  const [showLegend, setShowLegend] = useState(false);
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -1185,13 +1200,7 @@ export function ComparatorSection({
               <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {t("comparator.sortBy")}
               </span>
-              {/* "best_deal" is only offered as a chip when a provider in this
-                  result set actually has a disclosed exclusive offer — never
-                  advertise a deal that doesn't exist right now. */}
-              {(result.rows.some((r) => r.has_exclusive_deal)
-                ? [...SORT_CHIPS, "best_deal" as SortKey]
-                : SORT_CHIPS
-              ).map((key) => (
+              {SORT_CHIPS.map((key) => (
                 <button
                   key={key}
                   type="button"
@@ -1220,7 +1229,7 @@ export function ComparatorSection({
                 [
                   ["cash_pickup_available", "comparator.sort.cashPickup"],
                   ["supports_large_tickets", "comparator.sort.largeTransfers"],
-                  ["has_exclusive_deal", "comparator.sort.bestDeal"],
+                  ["has_exclusive_deal", "comparator.badge.sponsored"],
                 ] as const
               ).map(([key, labelKey]) => (
                 <button
@@ -1244,7 +1253,37 @@ export function ComparatorSection({
                   {t(labelKey)}
                 </button>
               ))}
+              <button
+                type="button"
+                onClick={() => setShowLegend((v) => !v)}
+                aria-expanded={showLegend}
+                aria-label={t("comparator.legend.toggle")}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
+              >
+                <Info className="h-3.5 w-3.5" />
+              </button>
             </div>
+            {showLegend && (
+              <div className="mb-4 grid grid-cols-1 gap-x-6 gap-y-2 rounded-lg border border-border bg-muted/50 p-3 text-xs text-muted-foreground sm:grid-cols-2">
+                {(
+                  [
+                    [Coins, "comparator.legend.fee"],
+                    [Zap, "comparator.legend.speed"],
+                    [Shield, "comparator.legend.trust"],
+                    [Briefcase, "comparator.legend.business"],
+                    [Banknote, "comparator.legend.cashPickup"],
+                    [Eye, "comparator.legend.transparency"],
+                    [ArrowLeftRight, "comparator.legend.largeTransfers"],
+                    [Sparkle, "comparator.legend.sponsored"],
+                  ] as const
+                ).map(([Icon, key]) => (
+                  <div key={key} className="flex items-start gap-2">
+                    <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+                    <span>{t(key)}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             <ResultsBlock
               result={result}
               amount={amount}
@@ -1803,7 +1842,6 @@ function ProviderRow({
   embedded?: boolean;
 }) {
   const { t } = useI18n();
-  const [showAllFeatures, setShowAllFeatures] = useState(false);
   const tooltipPreferred = t("comparator.tooltip.proceed");
   const deliveryLabel =
     row.delivery_minutes != null
@@ -1841,23 +1879,33 @@ function ProviderRow({
                 {t(sortLabelKey(sortBy))}
               </span>
             )}
+            {/* Disclosed sponsorship signal — always next to the name (not
+                buried in Features), so it's the first thing anyone sees, and
+                always says exactly what it is: a paid/negotiated placement,
+                never disguised as a merit ranking. */}
+            {row.has_exclusive_deal && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+                <Sparkle className="h-2.5 w-2.5" /> {t("comparator.badge.sponsored")}
+              </span>
+            )}
           </div>
         </div>
       </div>
       {/* Features column — icon + short text (never icon-only: several of
           these aren't self-explanatory, and there's no hover/tooltip on
-          mobile, so text is load-bearing, not decoration). Fixed to a single
-          line (FEATURES_VISIBLE_COUNT chips max) so every row is the same
-          height regardless of how many features a provider has — the rest
-          are never hidden permanently, just behind a "+N" toggle the user
-          can expand, same principle as never hiding a cheaper provider. */}
+          mobile, so text is load-bearing, not decoration). Fixed min-height
+          (not a click-to-expand) so every row is visually the same height by
+          default, on both desktop and the stacked mobile layout — nothing is
+          ever hidden behind an interaction, unlike the old "+N" approach.
+          exclusive_deal lives next to the provider name now (see above), not
+          here, since it's a disclosed sponsorship signal, not a feature. */}
       <div className="min-w-0">
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {t("comparator.table.features")}
         </span>
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex min-h-[48px] flex-wrap content-start items-start gap-1.5 lg:min-h-[46px]">
           {(() => {
-            type Chip = { key: string; icon: typeof Shield | null; text: string; amber?: boolean };
+            type Chip = { key: string; icon: typeof Shield | null; text: string };
             const chips: Chip[] = [];
             if (row.regulator) {
               chips.push({ key: "regulator", icon: Shield, text: row.regulator });
@@ -1866,15 +1914,7 @@ function ProviderRow({
               chips.push({
                 key: "trust",
                 icon: Star,
-                text: `${row.trust_score.toFixed(1)} (${row.review_count.toLocaleString()} ${t("comparator.table.reviews")})`,
-              });
-            }
-            if (badges.includes("exclusive_deal") && !(isBest && sortBy === "best_deal")) {
-              chips.push({
-                key: "exclusive_deal",
-                icon: Sparkle,
-                text: t("comparator.sort.bestDeal"),
-                amber: true,
+                text: `${row.trust_score.toFixed(1)} (${compactNumber(row.review_count)} ${t("comparator.table.reviews")})`,
               });
             }
             for (const b of badges) {
@@ -1884,36 +1924,14 @@ function ProviderRow({
               if (isBest && labelKey === sortLabelKey(sortBy)) continue;
               chips.push({ key: b, icon: badgeIcon(b), text: t(labelKey) });
             }
-
-            const VISIBLE = 2;
-            const visible = showAllFeatures ? chips : chips.slice(0, VISIBLE);
-            const hiddenCount = chips.length - visible.length;
-
-            return (
-              <>
-                {visible.map((c) => (
-                  <span
-                    key={c.key}
-                    className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-medium ${
-                      c.amber
-                        ? "border-amber-300 bg-amber-100 font-bold text-amber-800"
-                        : "border-border bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {c.icon && <c.icon className="h-2.5 w-2.5 shrink-0" />} {c.text}
-                  </span>
-                ))}
-                {hiddenCount > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => setShowAllFeatures(true)}
-                    className="inline-flex items-center rounded-full border border-border bg-card px-2 py-0.5 text-[10px] font-semibold text-muted-foreground hover:border-foreground/30"
-                  >
-                    +{hiddenCount}
-                  </button>
-                )}
-              </>
-            );
+            return chips.map((c) => (
+              <span
+                key={c.key}
+                className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+              >
+                {c.icon && <c.icon className="h-2.5 w-2.5 shrink-0" />} {c.text}
+              </span>
+            ));
           })()}
         </div>
       </div>
