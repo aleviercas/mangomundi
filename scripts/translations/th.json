@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "ข้อเสนอพิเศษ",
   "comparator.copilot.proactive.generic": "**{provider}** โดดเด่นด้าน **{criterion}** สำหรับเส้นทางนี้ ดำเนินการต่อไหม?",
   "comparator.table.features": "คุณสมบัติ",
-  "comparator.table.reviews": "รีวิว"
+  "comparator.table.reviews": "รีวิว",
+  "comparator.filterBy": "ต้องการ",
+  "comparator.emptyFiltered": "ไม่มีผู้ให้บริการที่ตรงกับที่คุณเลือกไว้ใน \"ต้องการ\" ลองลบตัวกรองออกดู"
 }
