@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "Ưu đãi độc quyền",
   "comparator.copilot.proactive.generic": "**{provider}** nổi bật về **{criterion}** cho hành lang này. Tiếp tục nhé?",
   "comparator.table.features": "Tính năng",
-  "comparator.table.reviews": "đánh giá"
+  "comparator.table.reviews": "đánh giá",
+  "comparator.filterBy": "Yêu cầu",
+  "comparator.emptyFiltered": "Không có nhà cung cấp phù hợp với lựa chọn của bạn trong \"Yêu cầu\". Hãy thử bỏ một bộ lọc."
 }
