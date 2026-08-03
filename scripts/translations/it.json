@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "Offerta esclusiva",
   "comparator.copilot.proactive.generic": "**{provider}** si distingue per **{criterion}** su questo corridoio. Procediamo?",
   "comparator.table.features": "Caratteristiche",
-  "comparator.table.reviews": "recensioni"
+  "comparator.table.reviews": "recensioni",
+  "comparator.filterBy": "Richiede",
+  "comparator.emptyFiltered": "Nessun fornitore corrisponde alla selezione in \"Richiede\". Provaa rimuovere un filtro."
 }
