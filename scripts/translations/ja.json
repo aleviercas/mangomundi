@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "限定オファー",
   "comparator.copilot.proactive.generic": "この経路では **{provider}** が **{criterion}** で優れています。進めますか?",
   "comparator.table.features": "特徴",
-  "comparator.table.reviews": "件のレビュー"
+  "comparator.table.reviews": "件のレビュー",
+  "comparator.filterBy": "必須条件",
+  "comparator.emptyFiltered": "「必須条件」で選択した内容に一致するプロバイダーがありません。フィルターを外してみてください。"
 }
