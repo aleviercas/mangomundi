@@ -118,6 +118,7 @@ export interface ComparisonRow {
   business_focus_score: number | null;
   countries_covered: number | null;
   mobile_app_rating: number | null;
+  supports_large_tickets: boolean | null;
   has_exclusive_deal: boolean | null;
 }
 
@@ -522,6 +523,7 @@ export const compareProviders = createServerFn({ method: "POST" })
           business_focus_score: p.business_focus_score != null ? Number(p.business_focus_score) : null,
           countries_covered: p.countries_covered != null ? Number(p.countries_covered) : null,
           mobile_app_rating: p.mobile_app_rating != null ? Number(p.mobile_app_rating) : null,
+          supports_large_tickets: p.supports_large_tickets ?? null,
           has_exclusive_deal: p.has_exclusive_deal ?? null,
         };
       });
