@@ -649,5 +649,7 @@
   "comparator.sort.bestDeal": "विशेष ऑफर",
   "comparator.copilot.proactive.generic": "इस कॉरिडोर के लिए **{provider}** **{criterion}** में सबसे आगे है। आगे बढ़ें?",
   "comparator.table.features": "विशेषताएं",
-  "comparator.table.reviews": "समीक्षाएं"
+  "comparator.table.reviews": "समीक्षाएं",
+  "comparator.filterBy": "आवश्यक",
+  "comparator.emptyFiltered": "\"आवश्यक\" के अंतर्गत आपके चयन से कोई प्रदाता मेल नहीं खाता। कोई फ़िल्टर हटाकर देखें।"
 }
