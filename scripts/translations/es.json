@@ -645,5 +645,7 @@
   "comparator.sort.bestDeal": "Oferta exclusiva",
   "comparator.copilot.proactive.generic": "**{provider}** se destaca en **{criterion}** para este corredor. ¿Avanzamos?",
   "comparator.table.features": "Características",
-  "comparator.table.reviews": "reseñas"
+  "comparator.table.reviews": "reseñas",
+  "comparator.filterBy": "Requiere",
+  "comparator.emptyFiltered": "Ningún proveedor cumple lo que seleccionaste en \"Requiere\". Probá sacar algún filtro."
 }
