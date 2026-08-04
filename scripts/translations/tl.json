@@ -651,5 +651,15 @@
   "comparator.table.features": "Mga tampok",
   "comparator.table.reviews": "review",
   "comparator.filterBy": "Kailangan",
-  "comparator.emptyFiltered": "Walang provider na tumutugma sa napili mo sa ilalim ng \"Kailangan\". Subukang alisin ang isang filter."
+  "comparator.emptyFiltered": "Walang provider na tumutugma sa napili mo sa ilalim ng \"Kailangan\". Subukang alisin ang isang filter.",
+  "comparator.badge.sponsored": "Sponsored na alok",
+  "comparator.legend.toggle": "Ano ang ibig sabihin ng mga icon na ito?",
+  "comparator.legend.fee": "Pinakamababang bayad: ang provider na ito ang may pinakamababang singil para sa halagang ito.",
+  "comparator.legend.speed": "Pinakamabilis: karaniwang mas mabilis dumating ang pera sa provider na ito kumpara sa iba.",
+  "comparator.legend.trust": "Pinaka-mapagkakatiwalaan: pinakamataas na rating ng customer (Trustpilot) sa mga ipinakitang opsyon.",
+  "comparator.legend.business": "Pinakamainam para sa negosyo: ginawa para sa mga company transfer (multi-currency accounts, expense tools), hindi lang personal na padala.",
+  "comparator.legend.cashPickup": "Pagkuha ng cash: makukuha ng tatanggap ang pera nang cash sa isang lokasyon, hindi lang sa bank deposit.",
+  "comparator.legend.transparency": "Pinaka-transparent: mas malinaw ang provider na ito kumpara sa iba tungkol sa mga bayad at exchange rate margin nito.",
+  "comparator.legend.largeTransfers": "Malalaking transfer: angkop ang provider na ito para sa pagpapadala ng malalaking halaga (madalas may nakatalagang account manager).",
+  "comparator.legend.sponsored": "Sponsored na alok: may bayad na partnership ang mangomundi sa provider na ito — laging isinisiwalat, hindi nakakaapekto sa ranking."
 }
