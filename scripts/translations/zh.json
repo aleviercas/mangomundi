@@ -651,5 +651,15 @@
   "comparator.table.features": "特点",
   "comparator.table.reviews": "条评价",
   "comparator.filterBy": "需要",
-  "comparator.emptyFiltered": "没有符合您在\"需要\"中所选条件的服务商。试试去掉一个筛选条件。"
+  "comparator.emptyFiltered": "没有符合您在\"需要\"中所选条件的服务商。试试去掉一个筛选条件。",
+  "comparator.badge.sponsored": "赞助优惠",
+  "comparator.legend.toggle": "这些图标是什么意思？",
+  "comparator.legend.fee": "最低费用：在显示的选项中，该服务商对此金额收取的费用最低。",
+  "comparator.legend.speed": "最快：使用该服务商，款项通常比其他服务商更快到账。",
+  "comparator.legend.trust": "最值得信赖：在显示的选项中客户评分（Trustpilot）最高。",
+  "comparator.legend.business": "最适合企业：专为企业转账设计（多币种账户、费用管理工具），不仅仅是个人汇款。",
+  "comparator.legend.cashPickup": "现金提取：收款人可以在实体网点领取现金，而不仅仅是银行存款。",
+  "comparator.legend.transparency": "最透明：该服务商在费用和汇率差价方面比其他服务商更清楚地说明。",
+  "comparator.legend.largeTransfers": "大额转账：该服务商适合发送大额款项（通常配有专属客户经理）。",
+  "comparator.legend.sponsored": "赞助优惠：mangomundi与该服务商有付费/协商合作关系 — 始终公开披露，绝不影响排名。"
 }
