@@ -651,5 +651,15 @@
   "comparator.table.features": "Caractéristiques",
   "comparator.table.reviews": "avis",
   "comparator.filterBy": "Nécessite",
-  "comparator.emptyFiltered": "Aucun prestataire ne correspond à votre sélection sous \"Nécessite\". Essayez de retirer un filtre."
+  "comparator.emptyFiltered": "Aucun prestataire ne correspond à votre sélection sous \"Nécessite\". Essayez de retirer un filtre.",
+  "comparator.badge.sponsored": "Offre sponsorisée",
+  "comparator.legend.toggle": "Que signifient ces icônes ?",
+  "comparator.legend.fee": "Frais les plus bas : ce prestataire facture le moins cher pour ce montant, parmi les options affichées.",
+  "comparator.legend.speed": "Le plus rapide : l'argent arrive généralement plus vite avec ce prestataire qu'avec les autres.",
+  "comparator.legend.trust": "Le plus fiable : la meilleure note client (Trustpilot) parmi les options affichées.",
+  "comparator.legend.business": "Idéal entreprise : conçu pour les transferts d'entreprise (comptes multidevises, gestion des dépenses), pas seulement les envois personnels.",
+  "comparator.legend.cashPickup": "Retrait en espèces : le destinataire peut retirer l'argent en espèces dans un point physique, pas seulement sur un compte bancaire.",
+  "comparator.legend.transparency": "Le plus transparent : ce prestataire est plus clair que les autres sur ses frais et sa marge de change.",
+  "comparator.legend.largeTransfers": "Gros transferts : ce prestataire convient bien à l'envoi de montants importants (souvent avec un gestionnaire de compte dédié).",
+  "comparator.legend.sponsored": "Offre sponsorisée : mangomundi a un partenariat commercial avec ce prestataire — toujours divulgué, n'affecte jamais le classement."
 }
