@@ -651,5 +651,15 @@
   "comparator.table.features": "Tính năng",
   "comparator.table.reviews": "đánh giá",
   "comparator.filterBy": "Yêu cầu",
-  "comparator.emptyFiltered": "Không có nhà cung cấp phù hợp với lựa chọn của bạn trong \"Yêu cầu\". Hãy thử bỏ một bộ lọc."
+  "comparator.emptyFiltered": "Không có nhà cung cấp phù hợp với lựa chọn của bạn trong \"Yêu cầu\". Hãy thử bỏ một bộ lọc.",
+  "comparator.badge.sponsored": "Ưu đãi được tài trợ",
+  "comparator.legend.toggle": "Các biểu tượng này nghĩa là gì?",
+  "comparator.legend.fee": "Phí thấp nhất: nhà cung cấp này tính phí thấp nhất cho số tiền này trong các lựa chọn hiển thị.",
+  "comparator.legend.speed": "Nhanh nhất: tiền thường đến nhanh hơn với nhà cung cấp này so với các nhà cung cấp khác.",
+  "comparator.legend.trust": "Đáng tin cậy nhất: đánh giá khách hàng cao nhất (Trustpilot) trong các lựa chọn hiển thị.",
+  "comparator.legend.business": "Tốt nhất cho doanh nghiệp: được thiết kế cho chuyển khoản doanh nghiệp (tài khoản đa tiền tệ, công cụ quản lý chi phí), không chỉ chuyển tiền cá nhân.",
+  "comparator.legend.cashPickup": "Nhận tiền mặt: người nhận có thể nhận tiền mặt tại một địa điểm thực tế, không chỉ qua tài khoản ngân hàng.",
+  "comparator.legend.transparency": "Minh bạch nhất: nhà cung cấp này rõ ràng hơn các nhà cung cấp khác về cách tính phí và biên độ tỷ giá.",
+  "comparator.legend.largeTransfers": "Chuyển khoản lớn: nhà cung cấp này phù hợp để gửi số tiền lớn (thường có người quản lý tài khoản riêng).",
+  "comparator.legend.sponsored": "Ưu đãi được tài trợ: mangomundi có quan hệ đối tác trả phí với nhà cung cấp này — luôn được công khai, không bao giờ ảnh hưởng đến xếp hạng."
 }
