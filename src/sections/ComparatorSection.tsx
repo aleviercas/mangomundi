@@ -1842,7 +1842,6 @@ function ProviderRow({
   embedded?: boolean;
 }) {
   const { t } = useI18n();
-  const tooltipPreferred = t("comparator.tooltip.proceed");
   const deliveryLabel =
     row.delivery_minutes != null
       ? row.delivery_minutes < 60
@@ -1978,7 +1977,6 @@ function ProviderRow({
           <button
             onClick={onClick}
             aria-label={`${tCta} — ${row.name}`}
-            title={`${tCta} — ${row.name}`}
             className={`btn-cta inline-flex h-10 w-full items-center justify-center rounded-md px-3 text-xs font-semibold leading-tight ${
               embedded ? "" : "lg:h-9 lg:w-10 lg:px-0"
             }`}
