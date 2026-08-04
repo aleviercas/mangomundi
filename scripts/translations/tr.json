@@ -651,5 +651,15 @@
   "comparator.table.features": "Özellikler",
   "comparator.table.reviews": "değerlendirme",
   "comparator.filterBy": "Gerekli",
-  "comparator.emptyFiltered": "\"Gerekli\" altında seçtiklerinize uyan sağlayıcı yok. Bir filtreyi kaldırmayı deneyin."
+  "comparator.emptyFiltered": "\"Gerekli\" altında seçtiklerinize uyan sağlayıcı yok. Bir filtreyi kaldırmayı deneyin.",
+  "comparator.badge.sponsored": "Sponsorlu teklif",
+  "comparator.legend.toggle": "Bu simgeler ne anlama geliyor?",
+  "comparator.legend.fee": "En düşük ücret: bu sağlayıcı bu tutar için gösterilen seçenekler arasında en az ücreti alıyor.",
+  "comparator.legend.speed": "En hızlı: para genellikle bu sağlayıcıda diğerlerinden daha hızlı ulaşır.",
+  "comparator.legend.trust": "En güvenilir: gösterilen seçenekler arasında en yüksek müşteri puanı (Trustpilot).",
+  "comparator.legend.business": "İşletmeler için en iyi: sadece kişisel transferler için değil, şirket transferleri için tasarlanmış (çoklu para birimi hesapları, gider araçları).",
+  "comparator.legend.cashPickup": "Nakit teslim: alıcı, sadece banka hesabına değil, fiziksel bir noktadan nakit olarak da parayı alabilir.",
+  "comparator.legend.transparency": "En şeffaf: bu sağlayıcı ücretleri ve döviz kuru marjı konusunda diğerlerinden daha açık.",
+  "comparator.legend.largeTransfers": "Büyük transferler: bu sağlayıcı büyük miktarlar göndermek için uygundur (genellikle özel bir hesap yöneticisiyle).",
+  "comparator.legend.sponsored": "Sponsorlu teklif: mangomundi'nin bu sağlayıcıyla ücretli/anlaşmalı bir ortaklığı var — her zaman açıklanır, sıralamayı asla etkilemez."
 }
