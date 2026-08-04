@@ -651,5 +651,15 @@
   "comparator.table.features": "Fitur",
   "comparator.table.reviews": "ulasan",
   "comparator.filterBy": "Membutuhkan",
-  "comparator.emptyFiltered": "Tidak ada penyedia yang cocok dengan pilihan Anda di \"Membutuhkan\". Coba hapus salah satu filter."
+  "comparator.emptyFiltered": "Tidak ada penyedia yang cocok dengan pilihan Anda di \"Membutuhkan\". Coba hapus salah satu filter.",
+  "comparator.badge.sponsored": "Penawaran bersponsor",
+  "comparator.legend.toggle": "Apa arti ikon-ikon ini?",
+  "comparator.legend.fee": "Biaya terendah: penyedia ini mengenakan biaya paling rendah untuk jumlah ini di antara opsi yang ditampilkan.",
+  "comparator.legend.speed": "Tercepat: uang biasanya sampai lebih cepat dengan penyedia ini dibanding yang lain.",
+  "comparator.legend.trust": "Paling terpercaya: rating pelanggan tertinggi (Trustpilot) di antara opsi yang ditampilkan.",
+  "comparator.legend.business": "Terbaik untuk bisnis: dirancang untuk transfer perusahaan (akun multi-mata uang, alat pengeluaran), bukan hanya kiriman uang pribadi.",
+  "comparator.legend.cashPickup": "Pengambilan tunai: penerima bisa mengambil uang tunai di lokasi fisik, tidak hanya setoran bank.",
+  "comparator.legend.transparency": "Paling transparan: penyedia ini lebih jelas dibanding yang lain soal biaya dan margin nilai tukarnya.",
+  "comparator.legend.largeTransfers": "Transfer besar: penyedia ini cocok untuk mengirim jumlah besar (sering dengan manajer akun khusus).",
+  "comparator.legend.sponsored": "Penawaran bersponsor: mangomundi memiliki kemitraan berbayar dengan penyedia ini — selalu diungkapkan, tidak pernah memengaruhi peringkat."
 }
