@@ -651,5 +651,15 @@
   "comparator.table.features": "الميزات",
   "comparator.table.reviews": "تقييم",
   "comparator.filterBy": "يتطلب",
-  "comparator.emptyFiltered": "لا يوجد مزودون يطابقون ما اخترته في \"يتطلب\". حاول إزالة أحد الفلاتر."
+  "comparator.emptyFiltered": "لا يوجد مزودون يطابقون ما اخترته في \"يتطلب\". حاول إزالة أحد الفلاتر.",
+  "comparator.badge.sponsored": "عرض برعاية",
+  "comparator.legend.toggle": "ماذا تعني هذه الرموز؟",
+  "comparator.legend.fee": "أقل عمولة: يفرض هذا المزود أقل رسوم لهذا المبلغ مقارنة بالخيارات الأخرى.",
+  "comparator.legend.speed": "الأسرع: عادة تصل الأموال أسرع مع هذا المزود مقارنة بالآخرين.",
+  "comparator.legend.trust": "الأكثر ثقة: أعلى تقييم من العملاء (Trustpilot) بين الخيارات المعروضة.",
+  "comparator.legend.business": "الأفضل للأعمال: مصمم لتحويلات الشركات (حسابات متعددة العملات)، ليس فقط التحويلات الشخصية.",
+  "comparator.legend.cashPickup": "استلام نقدي: يمكن للمستلم استلام المبلغ نقداً من موقع فعلي، ليس فقط إيداعاً بنكياً.",
+  "comparator.legend.transparency": "الأكثر شفافية: هذا المزود أوضح من غيره بشأن رسومه وهامش سعر الصرف.",
+  "comparator.legend.largeTransfers": "تحويلات كبيرة: مناسب لإرسال مبالغ كبيرة (غالباً عبر مدير حساب مخصص).",
+  "comparator.legend.sponsored": "عرض برعاية: لدى mangomundi شراكة مدفوعة مع هذا المزود — معلنة دائماً ولا تؤثر على الترتيب."
 }
