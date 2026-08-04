@@ -647,5 +647,15 @@
   "comparator.table.features": "Características",
   "comparator.table.reviews": "reseñas",
   "comparator.filterBy": "Requiere",
-  "comparator.emptyFiltered": "Ningún proveedor cumple lo que seleccionaste en \"Requiere\". Probá sacar algún filtro."
+  "comparator.emptyFiltered": "Ningún proveedor cumple lo que seleccionaste en \"Requiere\". Probá sacar algún filtro.",
+  "comparator.badge.sponsored": "Oferta patrocinada",
+  "comparator.legend.toggle": "¿Qué significan estos íconos?",
+  "comparator.legend.fee": "Fee más bajo: este proveedor cobra menos que los demás para este monto.",
+  "comparator.legend.speed": "Más rápido: el dinero suele llegar antes con este proveedor que con los demás.",
+  "comparator.legend.trust": "Más confiable: la calificación de clientes más alta (Trustpilot) entre las opciones mostradas.",
+  "comparator.legend.business": "Mejor para empresas: pensado para transferencias de compañías (cuentas multi-moneda, gestión de gastos), no solo remesas personales.",
+  "comparator.legend.cashPickup": "Retiro en efectivo: quien recibe puede retirar el dinero en efectivo en un local físico, no solo por depósito bancario.",
+  "comparator.legend.transparency": "Más transparente: este proveedor es más claro que los demás sobre cómo funcionan sus fees y el margen del tipo de cambio.",
+  "comparator.legend.largeTransfers": "Transferencias grandes: este proveedor es apto para enviar montos grandes (a menudo con un gestor de cuenta asignado).",
+  "comparator.legend.sponsored": "Oferta patrocinada: mangomundi tiene un acuerdo comercial con este proveedor — siempre revelado, nunca afecta el ranking."
 }
