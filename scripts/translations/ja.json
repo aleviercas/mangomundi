@@ -651,5 +651,15 @@
   "comparator.table.features": "特徴",
   "comparator.table.reviews": "件のレビュー",
   "comparator.filterBy": "必須条件",
-  "comparator.emptyFiltered": "「必須条件」で選択した内容に一致するプロバイダーがありません。フィルターを外してみてください。"
+  "comparator.emptyFiltered": "「必須条件」で選択した内容に一致するプロバイダーがありません。フィルターを外してみてください。",
+  "comparator.badge.sponsored": "スポンサー特典",
+  "comparator.legend.toggle": "これらのアイコンの意味は？",
+  "comparator.legend.fee": "最安手数料：表示されている中で、この金額に対して最も手数料が安いプロバイダーです。",
+  "comparator.legend.speed": "最速：他のプロバイダーより通常早くお金が届きます。",
+  "comparator.legend.trust": "最も信頼できる：表示されている中で最も高い顧客評価（Trustpilot）です。",
+  "comparator.legend.business": "法人向け：個人送金だけでなく、企業向け送金（多通貨口座、経費管理）に対応しています。",
+  "comparator.legend.cashPickup": "現金受け取り：受取人は銀行預金だけでなく、実店舗で現金を受け取れます。",
+  "comparator.legend.transparency": "最も透明性が高い：手数料や為替マージンの仕組みが他社より明確です。",
+  "comparator.legend.largeTransfers": "高額送金：多額の送金に適しています（専任の担当者がつくことが多いです）。",
+  "comparator.legend.sponsored": "スポンサー特典：mangomundiはこのプロバイダーと有償の提携をしています — 常に開示され、ランキングには影響しません。"
 }
