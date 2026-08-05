@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "Aucun prestataire ne correspond à votre sélection sous \"Nécessite\". Essayez de retirer un filtre.",
   "comparator.badge.sponsored": "Offre sponsorisée",
   "comparator.legend.toggle": "Que signifient ces icônes ?",
+  "comparator.legend.score": "Score (0-10) : une combinaison pondérée du critère de tri actuel, relative aux prestataires affichés pour cet itinéraire — pas une notation universelle ou absolue.",
   "comparator.legend.fee": "Frais les plus bas : ce prestataire facture le moins cher pour ce montant, parmi les options affichées.",
   "comparator.legend.speed": "Le plus rapide : l'argent arrive généralement plus vite avec ce prestataire qu'avec les autres.",
   "comparator.legend.trust": "Le plus fiable : la meilleure note client (Trustpilot) parmi les options affichées.",

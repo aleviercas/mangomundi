@@ -13,6 +13,7 @@ import {
   Coins,
   CreditCard,
   Eye,
+  Gauge,
   Handshake,
   Loader2,
   Percent,
@@ -72,6 +73,7 @@ import {
   sortByScore,
   deriveBadges,
   pickFeaturedAmongTies,
+  computeCompositeScores,
   type ScoreProfileKey,
   type BadgeKey,
 } from "@/lib/scoring.functions";
@@ -1401,6 +1403,7 @@ export function ComparatorSection({
                 <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
                   {(
                     [
+                      [Gauge, "comparator.legend.score"],
                       [Coins, "comparator.legend.fee"],
                       [Percent, "comparator.legend.bestExchangeRate"],
                       [Zap, "comparator.legend.speed"],
@@ -1809,6 +1812,15 @@ function ResultsBlock({
   );
   const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
   const badgesBySlug = useMemo(() => deriveBadges(filteredRows), [filteredRows]);
+  // Composite score (0-10, Monito-style circle) — same weighted formula
+  // already driving the sort/badges, just made visible per-row instead of
+  // only crowning a single winner. Relative to the current corridor's
+  // result set (min-max normalized), not an absolute universal rating —
+  // see the legend modal for that caveat.
+  const scoresBySlug = useMemo(
+    () => computeCompositeScores(filteredRows, sortBy),
+    [filteredRows, sortBy],
+  );
   // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
   // in scoring.functions.ts) picks one value for this page view and doesn't
   // flicker between renders, but still varies across visits/sessions — that's
@@ -1906,6 +1918,7 @@ function ResultsBlock({
             isBest={row.slug === featuredSlug}
             sortBy={sortBy}
             badges={badgesBySlug.get(row.slug) ?? []}
+            score={scoresBySlug.get(row.slug) ?? null}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             tSpeed={tSpeed}
@@ -2009,6 +2022,7 @@ function ProviderRow({
   isBest,
   sortBy,
   badges,
+  score,
   onClick,
   tCta,
   tSpeed,
@@ -2024,6 +2038,12 @@ function ProviderRow({
   isBest: boolean;
   sortBy: SortKey;
   badges: BadgeKey[];
+  /** Composite score (0-1) for the active sort profile, same formula that
+   *  drives ranking/badges — shown as a 0-10 circle, Monito-style, but
+   *  relative to the current corridor's result set, not an absolute rating
+   *  (see the legend modal). null if this row wasn't part of the scored
+   *  set (shouldn't normally happen). */
+  score: number | null;
   onClick: () => void;
   tCta: string;
   tSpeed: string;
@@ -2066,6 +2086,11 @@ function ProviderRow({
       } ${isBest ? "bg-primary/5" : ""}`}
     >
       <div className="flex min-w-0 items-center gap-3">
+        {score != null && (
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-foreground/20 text-xs font-bold tabular-nums text-foreground">
+            {(score * 10).toFixed(1)}
+          </span>
+        )}
         <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} slug={row.slug} size={44} />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-1.5">

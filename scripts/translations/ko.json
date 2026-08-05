@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "\"필수 조건\"에서 선택한 항목과 일치하는 제공업체가 없습니다. 필터를 하나 제거해보세요.",
   "comparator.badge.sponsored": "스폰서 혜택",
   "comparator.legend.toggle": "이 아이콘들은 무엇을 의미하나요?",
+  "comparator.legend.score": "점수(0-10): 현재 정렬 기준의 가중 조합으로, 이 경로에 표시된 제공업체를 기준으로 한 상대값입니다 — 보편적이거나 절대적인 평가가 아닙니다.",
   "comparator.legend.fee": "최저 수수료: 표시된 옵션 중 이 금액에 대해 가장 낮은 수수료를 부과합니다.",
   "comparator.legend.speed": "가장 빠름: 이 제공업체는 다른 곳보다 보통 더 빨리 송금이 도착합니다.",
   "comparator.legend.trust": "신뢰도 최고: 표시된 옵션 중 가장 높은 고객 평가(Trustpilot)입니다.",

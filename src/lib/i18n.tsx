@@ -2649,6 +2649,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.badge.sponsored": "Sponsored offer",
     "comparator.table.exchangeRate": "Exchange rate",
     "comparator.legend.toggle": "What do these icons mean?",
+    "comparator.legend.score": "Score (0-10): a weighted composite of the current sort criteria, relative to the providers shown for this route — not a universal or absolute rating.",
     "comparator.legend.fee": "Lowest fee: this provider charges the least for this amount, among the options shown.",
     "comparator.legend.bestExchangeRate": "Best exchange rate: this provider's rate is closest to the real mid-market rate — independent of its flat fee, since a \"$0 fee\" can still hide a bad rate.",
     "comparator.legend.speed": "Fastest: money typically arrives sooner with this provider than the others shown.",
