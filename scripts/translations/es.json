@@ -569,7 +569,7 @@
   "home.blog.readMore": "Leer más",
   "comparator.sortBy": "Ordenar por",
   "comparator.sort.received": "Mejor tasa",
-  "comparator.sort.fee": "Menores fees",
+  "comparator.sort.fee": "Fee más bajo",
   "comparator.sort.speed": "Más rápido",
   "comparator.reference": "Referencia",
   "comparator.cached": "Cacheado",
@@ -633,7 +633,7 @@
   "wizard.send": "mangomundi no mueve el dinero: te muestra la mejor opción y te lleva directo a ese proveedor para completar la transferencia en su sitio. Compará, elegí una fila y hacé clic para terminar. No necesitás cuenta con nosotros.",
   "wizard.exampleNote": "Acá tenés un ejemplo en vivo — comparando una ruta popular. Cambiá el monto o los países arriba para comparar la tuya.",
   "wizard.moreQuestions": "Más preguntas",
-  "comparator.sort.overall": "General",
+  "comparator.sort.overall": "Recomendado",
   "comparator.sort.mostTrusted": "Más confiable",
   "comparator.sort.bestBusiness": "Mejor para empresas",
   "comparator.sort.cashPickup": "Retiro en efectivo",
@@ -657,5 +657,10 @@
   "comparator.legend.cashPickup": "Retiro en efectivo: quien recibe puede retirar el dinero en efectivo en un local físico, no solo por depósito bancario.",
   "comparator.legend.transparency": "Más transparente: este proveedor es más claro que los demás sobre cómo funcionan sus fees y el margen del tipo de cambio.",
   "comparator.legend.largeTransfers": "Transferencias grandes: este proveedor es apto para enviar montos grandes (a menudo con un gestor de cuenta asignado).",
-  "comparator.legend.sponsored": "Oferta patrocinada: mangomundi tiene un acuerdo comercial con este proveedor — siempre revelado, nunca afecta el ranking."
+  "comparator.legend.sponsored": "Oferta patrocinada: mangomundi tiene un acuerdo comercial con este proveedor — siempre revelado, nunca afecta el ranking.",
+  "comparator.sort.recipientGetsMost": "Recibís más",
+  "comparator.sort.bestExchangeRate": "Mejor tipo de cambio",
+  "comparator.sort.more": "Más criterios",
+  "comparator.table.exchangeRate": "Tipo de cambio",
+  "comparator.legend.bestExchangeRate": "Mejor tipo de cambio: la tasa de este proveedor es la más cercana al mid-market real — independiente de su fee fijo, porque un fee de $0 puede esconder igual un mal tipo de cambio."
 }
