@@ -656,7 +656,7 @@
   "comparator.delivery.bestDeal": "Mejor oferta",
   "comparator.emptyFiltered": "Ningún proveedor cumple lo que seleccionaste en \"Requiere\". Probá sacar algún filtro.",
   "comparator.badge.sponsored": "Oferta patrocinada",
-  "comparator.rankingExplainer": "Los resultados se ordenan por **Puntaje**, un valor de 0 a 10 que combina fee, tipo de cambio, velocidad y confianza. **Patrocinado** marca un acuerdo comercial declarado — nunca cambia el orden real.",
+  "comparator.rankingExplainer": "El listado se ordena por **Puntaje**, un valor de 0 a 10 que combina tarifa, tipo de cambio, velocidad y confianza. **Patrocinado** marca acuerdos comerciales — nunca cambia el orden real.",
   "comparator.legend.toggle": "¿Qué significan estos íconos?",
   "comparator.score.label": "Puntaje",
   "comparator.legend.score": "Puntaje (0-10): una combinación ponderada del criterio de orden actual, relativa a los proveedores mostrados para esta ruta — no es una calificación universal ni absoluta.",

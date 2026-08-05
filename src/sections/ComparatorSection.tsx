@@ -2070,32 +2070,35 @@ function ProviderRow({
 
   return (
     <div
-      className={`relative flex flex-wrap items-start gap-x-5 gap-y-3 border-b border-border px-5 pb-[18px] last:border-b-0 ${
-        row.has_exclusive_deal ? "pt-[34px]" : "pt-[18px]"
-      } ${isBest ? "bg-primary/5" : ""}`}
+      className={`relative flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-border px-6 py-5 last:border-b-0 ${isBest ? "bg-primary/5" : ""}`}
     >
       {/* Sponsored disclosure — a corner tab, not inline with the name, so
-          it never crowds the Score pill or the name/logo. Always says
-          exactly what it is: a disclosed commercial placement, never a
-          merit ranking (see the caption under the sort/filter rows above). */}
+          it never crowds the Score pill or the name/logo. Deliberately does
+          NOT add extra top padding to this row the way the original design
+          reference specified (30px vs 18px) — every row uses the exact same
+          uniform padding regardless of sponsorship, so the tab overlaps
+          slightly into the row's own top padding instead of growing it.
+          Always says exactly what it is: a disclosed commercial placement,
+          never a merit ranking (see the caption under the sort/filter rows
+          above). */}
       {row.has_exclusive_deal && (
         <span className="absolute left-0 top-0 inline-flex items-center gap-1 rounded-br-md rounded-tl-2xl border border-l-0 border-t-0 border-amber-300 bg-amber-100 px-3 py-1 text-[10px] font-bold text-amber-800">
           <Sparkle className="h-2.5 w-2.5" /> {t("comparator.badge.sponsored")}
         </span>
       )}
 
-      {/* Provider identity — logo/name/score, fixed width so it lines up
-          down the list like a real column would, without needing an actual
-          shared CSS grid track across independent row elements. */}
-      <div className="flex w-[190px] min-w-0 flex-none flex-col gap-1.5">
-        {/* Score sits above the logo/name line, not beside it — a badge
-            inline with the logo was eating into the column's already-tight
-            width and crowding out longer provider names. */}
-        <div className="flex h-5 items-center">
+      {/* Provider identity — a centered vertical stack (score, logo, name,
+          regulator), fixed width so it lines up down the list like a real
+          column would, without needing an actual shared CSS grid track
+          across independent row elements. */}
+      <div className="flex w-[208px] flex-none flex-col items-center gap-1 text-center">
+        {/* Score pinned to a fixed-height slot so every row's stack starts
+            at the same Y regardless of whether this row has a score. */}
+        <div className="flex h-5 items-center justify-center">
           {score != null && (
             <span
               className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                isBest ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                isBest ? "bg-[#ff6b5b] text-white" : "bg-muted text-muted-foreground"
               }`}
             >
               <Star className="h-2.5 w-2.5 fill-current" /> {t("comparator.score.label")}{" "}
@@ -2103,44 +2106,46 @@ function ProviderRow({
             </span>
           )}
         </div>
-        <div className="flex min-w-0 items-center gap-2.5">
-          <BrandLogo
-            name={row.name}
-            url={row.website_url ?? row.affiliate_url}
-            slug={row.slug}
-            size={40}
-          />
-          {/* min-w-0 + truncate: the isBest ribbon used to sit inline next
-              to the name and could wrap it onto a second line, making just
-              that row taller than its neighbors. Truncating instead keeps
-              every row's identity block exactly the same height; the full
-              name is still the actual text node (truncation is CSS-only),
-              so it stays available to screen readers and copy/paste
-              without a native title tooltip. */}
-          <div className="min-w-0">
-            <div className="truncate text-sm font-semibold text-foreground">{row.name}</div>
-            {isBest && (
-              <div className="truncate text-[10px] font-bold uppercase text-primary">
-                {t(sortLabelKey(sortBy))}
-              </div>
-            )}
+        <BrandLogo
+          name={row.name}
+          url={row.website_url ?? row.affiliate_url}
+          slug={row.slug}
+          size={44}
+        />
+        <div className="max-w-full truncate text-sm font-semibold text-foreground">{row.name}</div>
+        {isBest && (
+          <div className="max-w-full truncate text-[10px] font-bold uppercase text-[#ff6b5b]">
+            {t(sortLabelKey(sortBy))}
           </div>
+        )}
+        {/* Fixed-height slot again: rows without a regulator on file don't
+            collapse shorter than rows that have one. */}
+        <div className="flex h-[14px] items-center gap-1 text-[10px] text-muted-foreground">
+          {row.regulator && (
+            <>
+              <Shield className="h-2.5 w-2.5 shrink-0" /> {row.regulator}
+            </>
+          )}
         </div>
       </div>
 
-      {/* Stats mini-strip (speed / rate / fee), each self-labeled since
-          there's no shared header row anymore, then the highlight chips
-          below it. min-w-0 + flex-[1_1_Npx] (never a fixed px min-width) is
-          what lets this reflow based on the row's own rendered width
-          instead of the viewport — see the note above the header row in
-          ResultsBlock. */}
-      <div className="flex min-w-[260px] flex-[1_1_360px] flex-col gap-2.5">
-        <div className="flex flex-wrap gap-x-5 gap-y-1.5">
+      {/* Stats block: a shaded mini-strip (speed / rate / fee, each
+          self-labeled since there's no shared header row anymore) then the
+          feature-highlight chips below it. Sized to its own content (no
+          flex-grow) — the row's `justify-between` is what pins Receive+CTA
+          to the far right, not this section stretching to meet it; giving
+          both a competing flex-grow (as the original design reference
+          specified) looks fine on a narrow mockup canvas but opens a large
+          dead gap on the actual page's much wider container. min-w-0 lets
+          it shrink/wrap based on the row's own rendered width instead of
+          the viewport — see the note above the header row in ResultsBlock. */}
+      <div className="flex min-w-[280px] flex-col gap-3">
+        <div className="flex flex-wrap justify-evenly gap-x-5 gap-y-2 rounded-md bg-muted/50 px-3 py-2 text-center">
           <div className="min-w-0">
             <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               {tSpeed}
             </div>
-            <div className="mt-0.5 inline-flex items-center gap-1 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-sm font-semibold text-foreground">
               <Clock className="h-3 w-3" /> {deliveryLabel}
             </div>
           </div>
@@ -2148,7 +2153,7 @@ function ProviderRow({
             <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               {tExchangeRate}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-sm font-semibold text-foreground">
               {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}{" "}
               <span className={ratePctClass}>({ratePctLabel})</span>
             </div>
@@ -2157,7 +2162,7 @@ function ProviderRow({
             <div className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t("fx.totalFee")}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-sm font-semibold text-foreground">
               {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
             </div>
             {/* Fee/rate split is the whole point of a neutral comparator (a
@@ -2177,19 +2182,19 @@ function ProviderRow({
         {/* Height-equalized across every row via chipsRef (see the
             measurement effect in ResultsBlock) — never scrolling, never
             clipping a chip, and never letting a row with more badges than
-            its neighbors grow taller than them. */}
-        <div ref={chipsRef} className="flex flex-wrap content-start items-start gap-1.5">
-          {row.regulator && (
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-              <Shield className="h-2.5 w-2.5 shrink-0" /> {row.regulator}
-            </span>
-          )}
+            its neighbors grow taller than them. Regulator lives in the
+            identity column above now, not here — trust score always comes
+            first when present, then only the badges that actually apply. */}
+        <div ref={chipsRef} className="flex min-h-[26px] flex-wrap content-start items-start gap-2">
           {highlightChips.map((c) => (
             <span
               key={c.key}
-              className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+              className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-muted py-0.5 pl-0.5 pr-2.5 text-[10px] font-medium text-foreground"
             >
-              {c.icon && <c.icon className="h-2.5 w-2.5 shrink-0" />} {c.text}
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white">
+                {c.icon && <c.icon className="h-2.5 w-2.5" />}
+              </span>
+              {c.text}
             </span>
           ))}
         </div>
@@ -2197,13 +2202,13 @@ function ProviderRow({
 
       {/* Receive + CTA — kept at the row's end (scan pattern: the number
           that actually matters is the last thing seen before the button). */}
-      <div className="flex flex-[1_1_180px] items-center justify-end gap-3">
+      <div className="flex items-center gap-3">
         <div className="text-right">
           {/* whitespace-nowrap: this is the hero number — wrapping it onto
               two lines for large corridor amounts (COP, IDR...) would look
               broken regardless of row-height concerns, and would make this
               row taller than its neighbors besides. */}
-          <div className="whitespace-nowrap text-lg font-bold tabular-nums text-foreground">
+          <div className="whitespace-nowrap text-[22px] font-bold tabular-nums text-foreground">
             {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
             <span className="text-xs font-normal text-muted-foreground">{quote}</span>
           </div>
@@ -2213,7 +2218,7 @@ function ProviderRow({
           <button
             onClick={onClick}
             aria-label={`${tCta} — ${row.name}`}
-            className="btn-cta inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md"
+            className="btn-cta inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md"
           >
             <ArrowRight className="h-4 w-4 shrink-0" />
           </button>
