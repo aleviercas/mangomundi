@@ -637,7 +637,7 @@
   "home.how.aiAside": "打开 mangomundi 智能助手，拆解费用、试试其他路线或复核最佳选项——无需账户。",
   "home.blog.viewAll": "查看所有文章",
   "home.contact.subtitle": "适合寻求专属汇率、定制集成或与我们团队直接联系的资金团队和外汇合作伙伴。",
-  "comparator.sort.overall": "综合",
+  "comparator.sort.overall": "推荐",
   "comparator.sort.mostTrusted": "最值得信赖",
   "comparator.sort.bestBusiness": "最适合企业",
   "comparator.sort.cashPickup": "现金提取",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "现金提取：收款人可以在实体网点领取现金，而不仅仅是银行存款。",
   "comparator.legend.transparency": "最透明：该服务商在费用和汇率差价方面比其他服务商更清楚地说明。",
   "comparator.legend.largeTransfers": "大额转账：该服务商适合发送大额款项（通常配有专属客户经理）。",
-  "comparator.legend.sponsored": "赞助优惠：mangomundi与该服务商有付费/协商合作关系 — 始终公开披露，绝不影响排名。"
+  "comparator.legend.sponsored": "赞助优惠：mangomundi与该服务商有付费/协商合作关系 — 始终公开披露，绝不影响排名。",
+  "comparator.sort.recipientGetsMost": "收款人收到最多",
+  "comparator.sort.bestExchangeRate": "最佳汇率",
+  "comparator.sort.more": "更多标准",
+  "comparator.table.exchangeRate": "汇率",
+  "comparator.legend.bestExchangeRate": "最佳汇率：该服务商的汇率最接近真实的中间市场汇率，与其固定费用无关，因为零费用仍可能隐藏着糟糕的汇率。"
 }
