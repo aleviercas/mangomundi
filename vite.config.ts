@@ -65,6 +65,17 @@ export default defineConfig(async ({ command, mode }): Promise<UserConfig> => {
           esbuild: { keepNames: true },
         }
       : {}),
+    // TanStack Start already code-splits per route (blog, legal, embed…
+    // each land well under the default 500kB warning on their own); the one
+    // chunk that trips it is the home route itself — ComparatorSection.tsx
+    // (2000+ lines: the live comparator table, the floating AI copilot,
+    // ReactMarkdown) plus the i18n dictionary loaded at the root for every
+    // route. Raised with headroom above its current ~2.5MB so the build log
+    // stops warning about that known, accepted chunk, while still catching
+    // a real regression if it grows further. Shrinking it for real would
+    // mean lazy-loading the AI chat panel/ReactMarkdown and splitting the
+    // i18n dictionary per-locale — a separate, bigger refactor.
+    build: { chunkSizeWarningLimit: 3000 },
     // Match dev and build CSS pipelines (Lightning CSS in both).
     css: { transformer: "lightningcss" },
     resolve: {

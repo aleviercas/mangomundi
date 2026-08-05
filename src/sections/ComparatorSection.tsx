@@ -1,6 +1,6 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
@@ -1727,6 +1727,40 @@ function ResultsBlock({
     second: "2-digit",
   });
 
+  // Every row's Features cell must be exactly as tall as the tallest one —
+  // never scrolling, never clipping a chip. Since each provider renders as
+  // its own independent block (not a shared table row), CSS alone can't
+  // equalize N siblings' heights without either capping content or hiding
+  // overflow, so this measures each cell's natural (unwrapped-by-a-fixed-
+  // height) content height in JS and applies the max to all of them —
+  // shorter rows simply grow to match, exactly like a real table would.
+  const featuresRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+  const [featuresHeight, setFeaturesHeight] = useState<number | undefined>(undefined);
+
+  useLayoutEffect(() => {
+    let raf = 0;
+    const measure = () => {
+      featuresRefs.current.forEach((el) => {
+        el.style.height = "auto";
+      });
+      let max = 0;
+      featuresRefs.current.forEach((el) => {
+        max = Math.max(max, el.scrollHeight);
+      });
+      setFeaturesHeight(max || undefined);
+    };
+    const onResize = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+    };
+  }, [displayRows]);
+
   return (
     <div className="min-w-0">
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
@@ -1763,6 +1797,11 @@ function ResultsBlock({
             tExchangeRate={tExchangeRate}
             updatedTime={updatedTime}
             embedded={embedded}
+            featuresHeight={featuresHeight}
+            featuresRef={(el) => {
+              if (el) featuresRefs.current.set(row.slug, el);
+              else featuresRefs.current.delete(row.slug);
+            }}
           />
         ))}
         {organic.length === 0 && (
@@ -1859,6 +1898,8 @@ function ProviderRow({
   tExchangeRate,
   updatedTime,
   embedded = false,
+  featuresHeight,
+  featuresRef,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -1875,6 +1916,10 @@ function ProviderRow({
   /** See ResultsBlock — forces the stacked mobile row instead of the
    *  `lg:` desktop grid, which would overflow and clip the CTA button. */
   embedded?: boolean;
+  /** Shared max height (px) computed across every row's Features cell by
+   *  ResultsBlock, so all rows line up instead of scrolling or clipping. */
+  featuresHeight?: number;
+  featuresRef: (el: HTMLDivElement | null) => void;
 }) {
   const { t } = useI18n();
   const deliveryLabel =
@@ -1891,7 +1936,7 @@ function ProviderRow({
           : `${Math.round(row.speed_hours / 24)}d`;
 
   const ratePct = row.rate_vs_market_pct;
-  const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}% vs mid-market`;
+  const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}%`;
   const ratePctClass =
     ratePct >= -0.25 ? "text-emerald-600" : ratePct >= -1 ? "text-amber-600" : "text-destructive";
 
@@ -1927,19 +1972,22 @@ function ProviderRow({
       </div>
       {/* Features column — icon + short text (never icon-only: several of
           these aren't self-explanatory, and there's no hover/tooltip on
-          mobile, so text is load-bearing, not decoration). Single line, fixed
-          height, horizontally scrollable — providers with more chips than
-          others never grow taller than the rest (that's what made row
-          heights inconsistent before), and nothing is hidden behind a
-          click-to-expand: everything is still reachable, just scrolls
-          sideways instead of wrapping. exclusive_deal lives next to the
-          provider name now (see above), not here, since it's a disclosed
-          sponsorship signal, not a feature. */}
+          mobile, so text is load-bearing, not decoration). Chips wrap
+          normally (nothing is ever hidden or scrolled) and every row is
+          stretched via `featuresHeight` (measured in ResultsBlock across all
+          rows) to match whichever provider has the most chips, so rows with
+          fewer chips grow to line up instead of looking shorter.
+          exclusive_deal lives next to the provider name now (see above), not
+          here, since it's a disclosed sponsorship signal, not a feature. */}
       <div className="min-w-0">
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {t("comparator.table.features")}
         </span>
-        <div className="no-scrollbar flex h-6 flex-nowrap items-center gap-1.5 overflow-x-auto">
+        <div
+          ref={featuresRef}
+          className="flex flex-wrap content-start items-start gap-1.5"
+          style={featuresHeight != null ? { height: featuresHeight } : undefined}
+        >
           {(() => {
             type Chip = { key: string; icon: typeof Shield | null; text: string };
             const chips: Chip[] = [];
@@ -1977,14 +2025,14 @@ function ProviderRow({
           <Clock className="h-3 w-3" /> {deliveryLabel}
         </span>
       </div>
-      <div className={`min-w-0 text-sm ${embedded ? "" : "lg:text-right"}`}>
+      <div className={`min-w-0 text-sm tabular-nums ${embedded ? "" : "lg:text-right"}`}>
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {tExchangeRate} ·{" "}
         </span>
-        <div className="tabular-nums text-foreground">
-          1 {base} = {row.rate.toLocaleString(undefined, { maximumFractionDigits: 6 })} {quote}
-        </div>
-        <div className={`text-[10px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
+        <span className="text-foreground">
+          {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
+        </span>{" "}
+        <span className={ratePctClass}>({ratePctLabel})</span>
       </div>
       <div
         className={`min-w-0 text-sm tabular-nums text-muted-foreground ${embedded ? "" : "lg:text-right"}`}
