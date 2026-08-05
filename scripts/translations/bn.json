@@ -637,7 +637,7 @@
   "home.how.aiAside": "ফি ভাঙতে, অন্য রুট চেষ্টা করতে বা সেরা বিকল্প যাচাই করতে mangomundi এজেন্ট খুলুন — অ্যাকাউন্ট ছাড়াই।",
   "home.blog.viewAll": "সব পোস্ট দেখুন",
   "home.contact.subtitle": "যেসব ট্রেজারি টিম এবং এফএক্স পার্টনার নির্দিষ্ট রেট, কাস্টম ইন্টিগ্রেশন, অথবা আমাদের টিমের সাথে সরাসরি যোগাযোগ খুঁজছেন, তাদের জন্য।",
-  "comparator.sort.overall": "সামগ্রিক",
+  "comparator.sort.overall": "পরামর্শকৃত",
   "comparator.sort.mostTrusted": "সবচেয়ে বিশ্বস্ত",
   "comparator.sort.bestBusiness": "ব্যবসার জন্য সেরা",
   "comparator.sort.cashPickup": "নগদ উত্তোলন",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "ক্যাশ পিকআপ: প্রাপক শুধু ব্যাংক জমা নয়, সরাসরি একটি অবস্থান থেকে নগদ সংগ্রহ করতে পারেন।",
   "comparator.legend.transparency": "সবচেয়ে স্বচ্ছ: এই প্রদানকারী ফি এবং বিনিময় হার সম্পর্কে অন্যদের চেয়ে বেশি স্পষ্ট।",
   "comparator.legend.largeTransfers": "বড় স্থানান্তর: বড় পরিমান পাঠানোর জন্য উপযুক্ত (বেশিরভাগ একজন একাউন্ট ম্যানেজারসহ)।",
-  "comparator.legend.sponsored": "স্পনসর্ড অফার: mangomundiর এই প্রদানকারীর সাথে একটি অর্থপ্রদত্ত অংশীদারিত্ব আছে — সর্বদা উল্লেখিত, মান নির্ণয়কে প্রভাবিত করে না।"
+  "comparator.legend.sponsored": "স্পনসর্ড অফার: mangomundiর এই প্রদানকারীর সাথে একটি অর্থপ্রদত্ত অংশীদারিত্ব আছে — সর্বদা উল্লেখিত, মান নির্ণয়কে প্রভাবিত করে না।",
+  "comparator.sort.recipientGetsMost": "প্রাপক সবচেয়ে বেশি পায়",
+  "comparator.sort.bestExchangeRate": "সর্বসেরা বিনিময় হার",
+  "comparator.sort.more": "আরও মানদন্ড",
+  "comparator.table.exchangeRate": "বিনিময় হার",
+  "comparator.legend.bestExchangeRate": "সর্বসেরা বিনিময় হার: এই প্রদানকারীর হার প্রকৃত মিড-মার্কেট হারের কাছাকাছি — একক ফি থেকে স্বতন্ত্র, কারণ 'বিনামুল্যে ফি' তবু খারাপ হার আডাल করতে পারে।"
 }
