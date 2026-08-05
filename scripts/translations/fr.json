@@ -637,7 +637,7 @@
   "home.how.aiAside": "Ouvrez l'agent mangomundi pour détailler les frais, tester une autre route ou vérifier la meilleure option — sans compte.",
   "home.blog.viewAll": "Voir tous les articles",
   "home.contact.subtitle": "Pour les équipes de trésorerie et les partenaires FX à la recherche de taux dédiés, d'intégrations personnalisées ou d'une ligne directe avec notre équipe.",
-  "comparator.sort.overall": "Global",
+  "comparator.sort.overall": "Recommandé",
   "comparator.sort.mostTrusted": "Le plus fiable",
   "comparator.sort.bestBusiness": "Idéal entreprise",
   "comparator.sort.cashPickup": "Retrait en espèces",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "Retrait en espèces : le destinataire peut retirer l'argent en espèces dans un point physique, pas seulement sur un compte bancaire.",
   "comparator.legend.transparency": "Le plus transparent : ce prestataire est plus clair que les autres sur ses frais et sa marge de change.",
   "comparator.legend.largeTransfers": "Gros transferts : ce prestataire convient bien à l'envoi de montants importants (souvent avec un gestionnaire de compte dédié).",
-  "comparator.legend.sponsored": "Offre sponsorisée : mangomundi a un partenariat commercial avec ce prestataire — toujours divulgué, n'affecte jamais le classement."
+  "comparator.legend.sponsored": "Offre sponsorisée : mangomundi a un partenariat commercial avec ce prestataire — toujours divulgué, n'affecte jamais le classement.",
+  "comparator.sort.recipientGetsMost": "Le destinataire reçoit le plus",
+  "comparator.sort.bestExchangeRate": "Meilleur taux de change",
+  "comparator.sort.more": "Plus de critères",
+  "comparator.table.exchangeRate": "Taux de change",
+  "comparator.legend.bestExchangeRate": "Meilleur taux de change : le taux de ce prestataire est le plus proche du vrai taux du marché — indépendamment de ses frais fixes, car des frais à 0 peuvent quand même cacher un mauvais taux."
 }
