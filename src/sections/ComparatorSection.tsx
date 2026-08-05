@@ -8,17 +8,35 @@ import {
   Banknote,
   Briefcase,
   Check,
+  ChevronDown,
   Clock,
   Coins,
   Eye,
   Loader2,
+  Percent,
   Send,
   Shield,
+  SlidersHorizontal,
   Star,
   Sparkle,
   Zap,
   Info,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   compareProviders,
@@ -75,19 +93,20 @@ type SortKey = ScoreProfileKey;
 type FeatureFilterKey = "cash_pickup_available" | "supports_large_tickets" | "has_exclusive_deal";
 /** Sort chips: spectrum criteria only ("who's better on X"). Binary
  *  capabilities (cash pickup, large transfers, exclusive/sponsored offer)
- *  live exclusively in the "Requiere" filter toggles below, not here too —
- *  showing "Cash pickup" in both places was confusing (same word, two
- *  different behaviors: one reorders, one hides). best_cash_pickup,
- *  best_large_transfers and best_deal still exist as engine profiles (used
- *  by the AI copilot / future use), just not exposed as chips here. */
-const SORT_CHIPS: SortKey[] = [
-  "overall",
-  "lowest_cost",
-  "fastest",
-  "most_trusted",
-  "best_business",
-  "most_transparent",
-];
+ *  live exclusively in the "Filtros" panel below, not here too — showing
+ *  "Cash pickup" in both places was confusing (same word, two different
+ *  behaviors: one reorders, one hides).
+ *
+ *  Primary row (Kayak/Google Flights pattern: 4-5 prominent tabs). The
+ *  three money-related ones are DELIBERATELY separate, not blended: a
+ *  provider can advertise "$0 fee" while hiding a bad exchange rate margin
+ *  (or vice versa) — splitting them is the whole point of a neutral
+ *  comparator, matching Wise's own "we show the real cost" positioning. */
+const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", "best_exchange_rate", "fastest"];
+/** Secondary criteria — real, useful, but not everyone needs them on every
+ *  visit. Tucked into a "More criteria" dropdown instead of crowding the
+ *  primary row, same pattern as Skyscanner's "Sort by" overflow menu. */
+const SECONDARY_SORT_CHIPS: SortKey[] = ["most_trusted", "best_business", "most_transparent"];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
 /** 294000 -> "294K" — keeps the trust chip compact so it doesn't blow out
@@ -100,8 +119,12 @@ function compactNumber(n: number): string {
 
 function sortLabelKey(p: SortKey): string {
   switch (p) {
+    case "recipient_gets_most":
+      return "comparator.sort.recipientGetsMost";
     case "lowest_cost":
       return "comparator.sort.fee";
+    case "best_exchange_rate":
+      return "comparator.sort.bestExchangeRate";
     case "fastest":
       return "comparator.sort.speed";
     case "most_trusted":
@@ -1196,94 +1219,160 @@ export function ComparatorSection({
                 {t("comparator.results")}
               </h3>
             </div>
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {t("comparator.sortBy")}
-              </span>
-              {SORT_CHIPS.map((key) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setSortBy(key)}
-                  aria-pressed={sortBy === key}
-                  className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                    sortBy === key
-                      ? "border-transparent bg-[#ff6b5b] text-white"
-                      : "border-input bg-card text-foreground hover:border-foreground/30"
-                  }`}
-                >
-                  {t(sortLabelKey(key))}
-                </button>
-              ))}
-            </div>
-            {/* Requirement filters — visually distinct (checkbox-style, not
-                solid pills) from the sort chips above, so it reads as "narrow
-                to my requirement" rather than another ranking criterion.
-                Opt-in and off by default: nobody is hidden until the person
-                actively says they need this. */}
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {t("comparator.filterBy")}
-              </span>
-              {(
-                [
-                  ["cash_pickup_available", "comparator.sort.cashPickup"],
-                  ["supports_large_tickets", "comparator.sort.largeTransfers"],
-                  ["has_exclusive_deal", "comparator.badge.sponsored"],
-                ] as const
-              ).map(([key, labelKey]) => (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => toggleFilter(key)}
-                  aria-pressed={activeFilters.has(key)}
-                  className={`inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                    activeFilters.has(key)
-                      ? "border-foreground bg-foreground/5 text-foreground"
-                      : "border-input bg-card text-muted-foreground hover:border-foreground/30"
-                  }`}
-                >
-                  <span
-                    className={`flex h-3.5 w-3.5 items-center justify-center rounded-sm border ${
-                      activeFilters.has(key) ? "border-foreground bg-foreground" : "border-input"
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t("comparator.sortBy")}
+                </span>
+                {SORT_CHIPS.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSortBy(key)}
+                    aria-pressed={sortBy === key}
+                    className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                      sortBy === key
+                        ? "border-transparent bg-[#ff6b5b] text-white"
+                        : "border-input bg-card text-foreground hover:border-foreground/30"
                     }`}
                   >
-                    {activeFilters.has(key) && <Check className="h-2.5 w-2.5 text-background" />}
-                  </span>
-                  {t(labelKey)}
-                </button>
-              ))}
-              <button
-                type="button"
-                onClick={() => setShowLegend((v) => !v)}
-                aria-expanded={showLegend}
-                aria-label={t("comparator.legend.toggle")}
-                className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
-              >
-                <Info className="h-3.5 w-3.5" />
-              </button>
-            </div>
-            {showLegend && (
-              <div className="mb-4 grid grid-cols-1 gap-x-6 gap-y-2 rounded-lg border border-border bg-muted/50 p-3 text-xs text-muted-foreground sm:grid-cols-2">
-                {(
-                  [
-                    [Coins, "comparator.legend.fee"],
-                    [Zap, "comparator.legend.speed"],
-                    [Shield, "comparator.legend.trust"],
-                    [Briefcase, "comparator.legend.business"],
-                    [Banknote, "comparator.legend.cashPickup"],
-                    [Eye, "comparator.legend.transparency"],
-                    [ArrowLeftRight, "comparator.legend.largeTransfers"],
-                    [Sparkle, "comparator.legend.sponsored"],
-                  ] as const
-                ).map(([Icon, key]) => (
-                  <div key={key} className="flex items-start gap-2">
-                    <Icon className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-                    <span>{t(key)}</span>
-                  </div>
+                    {t(sortLabelKey(key))}
+                  </button>
                 ))}
+                {/* Secondary criteria — same single-select behavior as the
+                    chips above, just tucked away so they don't crowd the
+                    primary row (Skyscanner-style "Sort by" overflow). */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      aria-pressed={SECONDARY_SORT_CHIPS.includes(sortBy)}
+                      className={`inline-flex h-8 items-center gap-1 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        SECONDARY_SORT_CHIPS.includes(sortBy)
+                          ? "border-transparent bg-[#ff6b5b] text-white"
+                          : "border-input bg-card text-foreground hover:border-foreground/30"
+                      }`}
+                    >
+                      {SECONDARY_SORT_CHIPS.includes(sortBy)
+                        ? t(sortLabelKey(sortBy))
+                        : t("comparator.sort.more")}
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuRadioGroup
+                      value={sortBy}
+                      onValueChange={(v) => setSortBy(v as SortKey)}
+                    >
+                      {SECONDARY_SORT_CHIPS.map((key) => (
+                        <DropdownMenuRadioItem key={key} value={key}>
+                          {t(sortLabelKey(key))}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
-            )}
+
+              <div className="flex items-center gap-2">
+                {/* Single "Filtros" entry point — Google Flights/Kayak
+                    pattern. All opt-in requirement toggles live together
+                    here, grouped, instead of sprawling as always-visible
+                    chips that fight the sort row for attention. Off by
+                    default: nobody is hidden until the person actively
+                    says they need it. */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-card px-3 text-xs font-medium text-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                    >
+                      <SlidersHorizontal className="h-3.5 w-3.5" />
+                      {t("comparator.filterBy")}
+                      {activeFilters.size > 0 && (
+                        <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff6b5b] px-1 text-[10px] font-bold text-white">
+                          {activeFilters.size}
+                        </span>
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent align="end" className="w-64 p-3">
+                    <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t("comparator.filterBy")}
+                    </p>
+                    <div className="flex flex-col gap-1">
+                      {(
+                        [
+                          ["cash_pickup_available", "comparator.sort.cashPickup"],
+                          ["supports_large_tickets", "comparator.sort.largeTransfers"],
+                          ["has_exclusive_deal", "comparator.badge.sponsored"],
+                        ] as const
+                      ).map(([key, labelKey]) => (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => toggleFilter(key)}
+                          aria-pressed={activeFilters.has(key)}
+                          className="flex items-center gap-2 rounded-md px-2 py-2 text-left text-sm hover:bg-muted"
+                        >
+                          <span
+                            className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border ${
+                              activeFilters.has(key) ? "border-foreground bg-foreground" : "border-input"
+                            }`}
+                          >
+                            {activeFilters.has(key) && (
+                              <Check className="h-3 w-3 text-background" />
+                            )}
+                          </span>
+                          {t(labelKey)}
+                        </button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                {/* Legend opens in a modal — never pushes the results table
+                    down, unlike an inline expand. Same content available on
+                    both desktop (click) and mobile (tap), no hover needed. */}
+                <button
+                  type="button"
+                  onClick={() => setShowLegend(true)}
+                  aria-label={t("comparator.legend.toggle")}
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+            <Dialog open={showLegend} onOpenChange={setShowLegend}>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>{t("comparator.legend.toggle")}</DialogTitle>
+                  <DialogDescription className="sr-only">
+                    {t("comparator.legend.toggle")}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
+                  {(
+                    [
+                      [Coins, "comparator.legend.fee"],
+                      [Percent, "comparator.legend.bestExchangeRate"],
+                      [Zap, "comparator.legend.speed"],
+                      [Shield, "comparator.legend.trust"],
+                      [Briefcase, "comparator.legend.business"],
+                      [Banknote, "comparator.legend.cashPickup"],
+                      [Eye, "comparator.legend.transparency"],
+                      [ArrowLeftRight, "comparator.legend.largeTransfers"],
+                      [Sparkle, "comparator.legend.sponsored"],
+                    ] as const
+                  ).map(([Icon, key]) => (
+                    <div key={key} className="flex items-start gap-2">
+                      <Icon className="mt-0.5 h-4 w-4 shrink-0" />
+                      <span>{t(key)}</span>
+                    </div>
+                  ))}
+                </div>
+              </DialogContent>
+            </Dialog>
             <ResultsBlock
               result={result}
               amount={amount}
@@ -1295,10 +1384,10 @@ export function ComparatorSection({
               tRatesSource={t("fx.ratesSource")}
               tAt={t("fx.at")}
               tRecipient={t("fx.recipient")}
-              tAmountSent={t("comparator.table.amountSent")}
               tFeatures={t("comparator.table.features")}
               tTotalFee={t("fx.totalFee")}
               tSpeed={t("fx.speed")}
+              tExchangeRate={t("comparator.table.exchangeRate")}
               tCta={t("retail.cta")}
               tProvider={t("cmp.provider")}
               tNeutrality={t("comparator.disclaimer.neutrality")}
@@ -1617,10 +1706,10 @@ function ResultsBlock({
   tRatesSource,
   tAt,
   tRecipient,
-  tAmountSent,
   tFeatures,
   tTotalFee,
   tSpeed,
+  tExchangeRate,
   tCta,
   tProvider,
   tNeutrality,
@@ -1636,10 +1725,10 @@ function ResultsBlock({
   tRatesSource: string;
   tAt: string;
   tRecipient: string;
-  tAmountSent: string;
   tFeatures: string;
   tTotalFee: string;
   tSpeed: string;
+  tExchangeRate: string;
   tCta: string;
   tProvider: string;
   tNeutrality: string;
@@ -1712,15 +1801,15 @@ function ResultsBlock({
           className={
             embedded
               ? "hidden"
-              : "hidden grid-cols-[minmax(160px,1.7fr)_minmax(140px,1.3fr)_minmax(95px,1fr)_minmax(105px,1.1fr)_minmax(110px,1.2fr)_minmax(75px,0.85fr)_56px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
+              : "hidden grid-cols-[minmax(150px,1.6fr)_minmax(130px,1.2fr)_minmax(70px,0.7fr)_minmax(85px,0.85fr)_minmax(100px,0.95fr)_minmax(110px,1.15fr)_56px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
           }
         >
           <div className="min-w-0">{tProvider}</div>
           <div className="min-w-0">{tFeatures}</div>
-          <div className="min-w-0 text-right">{tAmountSent}</div>
+          <div className="min-w-0 text-right">{tSpeed}</div>
+          <div className="min-w-0 text-right">{tExchangeRate}</div>
           <div className="min-w-0 text-right">{tTotalFee}</div>
           <div className="min-w-0 text-right">{tRecipient}</div>
-          <div className="min-w-0 text-right">{tSpeed}</div>
           <div />
         </div>
         {displayRows.map((row) => (
@@ -1734,6 +1823,8 @@ function ResultsBlock({
             badges={badgesBySlug.get(row.slug) ?? []}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
+            tSpeed={tSpeed}
+            tExchangeRate={tExchangeRate}
             updatedTime={updatedTime}
             embedded={embedded}
           />
@@ -1769,6 +1860,8 @@ function badgeLabelKey(b: BadgeKey): string | null {
   switch (b) {
     case "lowest_fee":
       return "comparator.sort.fee";
+    case "best_exchange_rate":
+      return "comparator.sort.bestExchangeRate";
     case "fastest_delivery":
       return "comparator.sort.speed";
     case "most_trusted":
@@ -1796,6 +1889,8 @@ function badgeIcon(b: BadgeKey) {
   switch (b) {
     case "lowest_fee":
       return Coins;
+    case "best_exchange_rate":
+      return Percent;
     case "fastest_delivery":
       return Zap;
     case "most_trusted":
@@ -1824,6 +1919,8 @@ function ProviderRow({
   badges,
   onClick,
   tCta,
+  tSpeed,
+  tExchangeRate,
   updatedTime,
   embedded = false,
 }: {
@@ -1835,6 +1932,8 @@ function ProviderRow({
   badges: BadgeKey[];
   onClick: () => void;
   tCta: string;
+  tSpeed: string;
+  tExchangeRate: string;
   /** Real HH:mm:ss the quote's rate snapshot was cached — shown per row. */
   updatedTime: string;
   /** See ResultsBlock — forces the stacked mobile row instead of the
@@ -1865,7 +1964,7 @@ function ProviderRow({
       className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 ${
         embedded
           ? ""
-          : "lg:grid-cols-[minmax(160px,1.7fr)_minmax(140px,1.3fr)_minmax(95px,1fr)_minmax(105px,1.1fr)_minmax(110px,1.2fr)_minmax(75px,0.85fr)_56px] lg:items-center lg:gap-4"
+          : "lg:grid-cols-[minmax(150px,1.6fr)_minmax(130px,1.2fr)_minmax(70px,0.7fr)_minmax(85px,0.85fr)_minmax(100px,0.95fr)_minmax(110px,1.15fr)_56px] lg:items-center lg:gap-4"
       } ${isBest ? "bg-primary/5" : ""}`}
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -1934,15 +2033,19 @@ function ProviderRow({
           })()}
         </div>
       </div>
-      <div
-        className={`min-w-0 text-sm tabular-nums text-foreground ${embedded ? "" : "lg:text-right"}`}
-      >
-        <span
-          className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}
-        >
-          {t("comparator.table.amountSent")} ·{" "}
+      <div className={`min-w-0 text-sm text-muted-foreground ${embedded ? "" : "lg:text-right"}`}>
+        <span className={`text-[10px] uppercase ${embedded ? "" : "lg:hidden"}`}>{tSpeed} · </span>
+        <span className="inline-flex items-center gap-1">
+          <Clock className="h-3 w-3" /> {deliveryLabel}
         </span>
-        {row.amount_sent.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
+      </div>
+      <div
+        className={`min-w-0 text-sm tabular-nums ${ratePctClass} ${embedded ? "" : "lg:text-right"}`}
+      >
+        <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
+          {tExchangeRate} ·{" "}
+        </span>
+        {ratePctLabel}
       </div>
       <div
         className={`min-w-0 text-sm tabular-nums text-muted-foreground ${embedded ? "" : "lg:text-right"}`}
@@ -1962,14 +2065,8 @@ function ProviderRow({
           {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
           <span className="text-xs font-normal text-muted-foreground">{quote}</span>
         </div>
-        <div className={`text-[11px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
         <div className="text-[10px] tabular-nums text-muted-foreground">
           {t("fx.updated")} {updatedTime}
-        </div>
-      </div>
-      <div className={`min-w-0 text-sm text-muted-foreground ${embedded ? "" : "lg:text-right"}`}>
-        <div className="inline-flex items-center gap-1">
-          <Clock className="h-3 w-3" /> {deliveryLabel}
         </div>
       </div>
       <div className={embedded ? "" : "lg:text-right"}>
