@@ -24,6 +24,7 @@ const rows: ScorableRow[] = [
   {
     slug: "cheapest",
     received: 1000,
+    rate_vs_market_pct: -0.5,
     fee_total: 1,
     speed_hours: 48,
     trust_score: 3.5,
@@ -37,6 +38,7 @@ const rows: ScorableRow[] = [
   {
     slug: "fastest",
     received: 990,
+    rate_vs_market_pct: -0.3,
     fee_total: 5,
     speed_hours: 1,
     trust_score: 4.0,
@@ -50,6 +52,7 @@ const rows: ScorableRow[] = [
   {
     slug: "most_trusted",
     received: 985,
+    rate_vs_market_pct: -0.1,
     fee_total: 6,
     speed_hours: 24,
     trust_score: 4.8,
@@ -63,6 +66,7 @@ const rows: ScorableRow[] = [
   {
     slug: "most_transparent",
     received: 980,
+    rate_vs_market_pct: 0.05,
     fee_total: 7,
     speed_hours: 30,
     trust_score: 4.1,
@@ -76,6 +80,7 @@ const rows: ScorableRow[] = [
   {
     slug: "deal_provider",
     received: 970,
+    rate_vs_market_pct: -0.8,
     fee_total: 8,
     speed_hours: 36,
     trust_score: 3.9,
@@ -89,8 +94,19 @@ const rows: ScorableRow[] = [
 ];
 
 describe("computeCompositeScores / sortByScore", () => {
-  it("lowest_cost profile ranks the cheapest provider first", () => {
+  it("recipient_gets_most profile ranks the highest received amount first", () => {
+    expect(sortByScore(rows, "recipient_gets_most")[0].slug).toBe("cheapest");
+  });
+
+  it("lowest_cost profile ranks the lowest fee_total first (not the highest received)", () => {
     expect(sortByScore(rows, "lowest_cost")[0].slug).toBe("cheapest");
+  });
+
+  it("best_exchange_rate profile ranks the closest-to-mid-market rate first, independent of fee", () => {
+    // most_transparent has the best rate_vs_market_pct (0.05) but is NOT the
+    // cheapest by fee_total — proves fee and exchange rate are genuinely
+    // separate dimensions now, not the same thing wearing two labels.
+    expect(sortByScore(rows, "best_exchange_rate")[0].slug).toBe("most_transparent");
   });
 
   it("fastest profile ranks the fastest provider first", () => {
@@ -120,9 +136,16 @@ describe("computeCompositeScores / sortByScore", () => {
 
   it("different profiles can surface different #1 providers for the same data", () => {
     const winners = new Set(
-      (["lowest_cost", "fastest", "most_trusted", "most_transparent", "best_deal"] as const).map(
-        (p) => sortByScore(rows, p)[0].slug,
-      ),
+      (
+        [
+          "lowest_cost",
+          "best_exchange_rate",
+          "fastest",
+          "most_trusted",
+          "most_transparent",
+          "best_deal",
+        ] as const
+      ).map((p) => sortByScore(rows, p)[0].slug),
     );
     expect(winners.size).toBeGreaterThan(1);
   });
@@ -147,6 +170,7 @@ describe("auditProviderChances", () => {
         fee_total: 10,
         speed_hours: 30,
         trust_score: 4.0,
+        rate_vs_market_pct: -0.9,
         transparency_score: 6,
         supports_large_tickets: false,
         business_focus_score: 5,
@@ -176,6 +200,12 @@ describe("deriveBadges", () => {
   it("awards fastest_delivery to the fastest provider", () => {
     const badges = deriveBadges(rows);
     expect(badges.get("fastest")).toContain("fastest_delivery");
+  });
+
+  it("awards best_exchange_rate to whoever is closest to mid-market, independent of who's cheapest", () => {
+    const badges = deriveBadges(rows);
+    expect(badges.get("most_transparent")).toContain("best_exchange_rate");
+    expect(badges.get("cheapest")).not.toContain("best_exchange_rate");
   });
 
   it("awards most_trusted to the highest trust_score", () => {
