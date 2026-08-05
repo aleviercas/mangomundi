@@ -567,7 +567,7 @@
   "home.blog.readMore": "Leggi di più",
   "comparator.sortBy": "Ordina per",
   "comparator.sort.received": "Miglior tasso",
-  "comparator.sort.fee": "Commissioni più basse",
+  "comparator.sort.fee": "Costo più basso",
   "comparator.sort.speed": "Più veloce",
   "comparator.reference": "Riferimento",
   "comparator.cached": "In cache",
@@ -637,7 +637,7 @@
   "home.how.aiAside": "Apri l'agente mangomundi per scomporre le commissioni, provare un'altra rotta o verificare l'opzione migliore — senza account.",
   "home.blog.viewAll": "Vedi tutti gli articoli",
   "home.contact.subtitle": "Per team di tesoreria e partner FX alla ricerca di tassi dedicati, integrazioni su misura o un contatto diretto con il nostro team.",
-  "comparator.sort.overall": "Generale",
+  "comparator.sort.overall": "Consigliato",
   "comparator.sort.mostTrusted": "Più affidabile",
   "comparator.sort.bestBusiness": "Migliore per aziende",
   "comparator.sort.cashPickup": "Ritiro in contanti",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "Ritiro in contanti: il destinatario può ritirare il denaro in contanti in un punto fisico, non solo tramite deposito bancario.",
   "comparator.legend.transparency": "Più trasparente: questo fornitore è più chiaro degli altri su come funzionano le sue commissioni e il margine del cambio.",
   "comparator.legend.largeTransfers": "Trasferimenti grandi: questo fornitore è adatto per inviare importi elevati (spesso con un account manager dedicato).",
-  "comparator.legend.sponsored": "Offerta sponsorizzata: mangomundi ha una partnership commerciale con questo fornitore — sempre dichiarata, non influisce mai sulla classifica."
+  "comparator.legend.sponsored": "Offerta sponsorizzata: mangomundi ha una partnership commerciale con questo fornitore — sempre dichiarata, non influisce mai sulla classifica.",
+  "comparator.sort.recipientGetsMost": "Il destinatario riceve di più",
+  "comparator.sort.bestExchangeRate": "Miglior tasso di cambio",
+  "comparator.sort.more": "Altri criteri",
+  "comparator.table.exchangeRate": "Tasso di cambio",
+  "comparator.legend.bestExchangeRate": "Miglior tasso di cambio: il tasso di questo fornitore è il più vicino al vero tasso di mercato — indipendentemente dalla commissione fissa, perché una commissione a 0 può comunque nascondere un tasso sfavorevole."
 }
