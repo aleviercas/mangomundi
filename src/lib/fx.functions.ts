@@ -78,6 +78,13 @@ export interface Provider {
   mobile_app_rating?: number | null;
   /** Disclosed exclusive mangomundi offer — must render with an explicit label. */
   has_exclusive_deal?: boolean | null;
+  /** Real per-provider research — see
+   *  docs/multi-criteria-ranking/delivery-methods-findings.md. */
+  card_payout_available?: boolean | null;
+  /** Defaulted true for active non-bank providers, not individually
+   *  researched — see delivery-methods-findings.md. */
+  bank_transfer_available?: boolean | null;
+  provider_type?: string | null;
 }
 
 export interface ComparisonRow {
@@ -120,6 +127,9 @@ export interface ComparisonRow {
   mobile_app_rating: number | null;
   supports_large_tickets: boolean | null;
   has_exclusive_deal: boolean | null;
+  card_payout_available: boolean | null;
+  bank_transfer_available: boolean | null;
+  provider_type: string | null;
 }
 
 export interface ComparisonResult {
@@ -525,6 +535,9 @@ export const compareProviders = createServerFn({ method: "POST" })
           mobile_app_rating: p.mobile_app_rating != null ? Number(p.mobile_app_rating) : null,
           supports_large_tickets: p.supports_large_tickets ?? null,
           has_exclusive_deal: p.has_exclusive_deal ?? null,
+          card_payout_available: p.card_payout_available ?? null,
+          bank_transfer_available: p.bank_transfer_available ?? null,
+          provider_type: p.provider_type ?? null,
         };
       });
       rows.sort((a, b) => b.received - a.received);
