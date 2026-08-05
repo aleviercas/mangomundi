@@ -106,6 +106,17 @@ const DELIVERY_METHOD_PREDICATES: Record<
   card_payout: (r) => r.card_payout_available === true,
   broker: (r) => r.provider_type === "broker",
 };
+// NOTE: the exact grid-cols-[...] utility below is duplicated verbatim in
+// both the header row and every ProviderRow (search
+// "minmax(205px,1.8fr)" to find both) — Tailwind's JIT scanner needs the
+// complete literal class string present in the source to generate its CSS,
+// so this can't be factored into a shared JS constant/template interpolation
+// without silently breaking the layout. Keep both in sync by hand. Provider/
+// Exchange rate/Recibís got more breathing room than the original pass gave
+// them — long provider names ("Currencies Direct", "Ria Money Transfer") and
+// the exchange-rate cell's "1.2345 USD (+0.12%)" format were both getting
+// clipped/overlapping at the old minimums.
+
 const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labelKey: string }> = [
   { key: "bank_transfer", icon: Building2, labelKey: "comparator.delivery.bankTransfer" },
   { key: "cash_pickup", icon: Banknote, labelKey: "comparator.delivery.cashPickup" },
@@ -1914,7 +1925,7 @@ function ResultsBlock({
           className={
             embedded
               ? "hidden"
-              : "hidden grid-cols-[minmax(150px,1.6fr)_minmax(130px,1.2fr)_minmax(70px,0.7fr)_minmax(85px,0.85fr)_minmax(100px,0.95fr)_minmax(110px,1.15fr)_56px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
+              : "hidden grid-cols-[minmax(205px,1.8fr)_minmax(132px,1.1fr)_minmax(62px,0.5fr)_minmax(118px,1fr)_minmax(108px,0.9fr)_minmax(128px,1.15fr)_56px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
           }
         >
           <div className="min-w-0">{tProvider}</div>
@@ -2097,26 +2108,43 @@ function ProviderRow({
       className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 ${
         embedded
           ? ""
-          : "lg:grid-cols-[minmax(150px,1.6fr)_minmax(130px,1.2fr)_minmax(70px,0.7fr)_minmax(85px,0.85fr)_minmax(100px,0.95fr)_minmax(110px,1.15fr)_56px] lg:items-center lg:gap-4"
+          : "lg:grid-cols-[minmax(205px,1.8fr)_minmax(132px,1.1fr)_minmax(62px,0.5fr)_minmax(118px,1fr)_minmax(108px,0.9fr)_minmax(128px,1.15fr)_56px] lg:items-center lg:gap-4"
       } ${isBest ? "bg-primary/5" : ""}`}
     >
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="min-w-0">
+        {/* Score sits above the logo/name line, not beside it — a badge
+            inline with the logo was eating into the column's already-tight
+            width and crowding out longer provider names. Plain text, no
+            circle/border: it only needs to read as a small label+number,
+            not compete visually with the logo. */}
         {score != null && (
-          <div className="flex shrink-0 flex-col items-center gap-0.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-foreground/20 text-xs font-bold tabular-nums text-foreground">
-              {(score * 10).toFixed(1)}
-            </span>
-            <span className="text-[8px] font-semibold uppercase leading-none tracking-wide text-muted-foreground">
+          <div className="mb-1 flex items-baseline gap-1">
+            <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
               {t("comparator.score.label")}
+            </span>
+            <span className="text-xs font-bold tabular-nums text-foreground">
+              {(score * 10).toFixed(1)}
             </span>
           </div>
         )}
-        <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} slug={row.slug} size={44} />
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex min-w-0 items-center gap-3">
+          <BrandLogo
+            name={row.name}
+            url={row.website_url ?? row.affiliate_url}
+            slug={row.slug}
+            size={44}
+          />
+          {/* flex-nowrap (not wrap): the isBest/sponsored badges are rare
+              (one featured row, occasional exclusive deal) — letting them
+              wrap the name onto a second line made just those rows taller
+              than every other row. Truncating the name instead keeps every
+              row exactly one line; the full name is still the actual text
+              node (truncation is CSS-only), so it stays available to
+              screen readers and copy/paste without a native title tooltip. */}
+          <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-hidden">
             <span className="truncate font-semibold text-foreground">{row.name}</span>
             {isBest && (
-              <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
+              <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
                 {t(sortLabelKey(sortBy))}
               </span>
             )}
@@ -2125,7 +2153,7 @@ function ProviderRow({
                 always says exactly what it is: a paid/negotiated placement,
                 never disguised as a merit ranking. */}
             {row.has_exclusive_deal && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
+              <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
                 <Sparkle className="h-2.5 w-2.5" /> {t("comparator.badge.sponsored")}
               </span>
             )}
@@ -2188,10 +2216,17 @@ function ProviderRow({
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {tExchangeRate} ·{" "}
         </span>
-        <span className="text-foreground">
-          {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
-        </span>{" "}
-        <span className={ratePctClass}>({ratePctLabel})</span>
+        {/* min-h reserves room for a wrap: "1,234.5678 IDR (-1.23%)" is
+            longer than "0.85 EUR (+0.02%)" — some corridors will wrap to a
+            second line at this column's width and others won't, so every
+            row reserves the same 2-line space rather than only the ones
+            that happen to wrap growing taller than their neighbors. */}
+        <div className="leading-snug lg:min-h-[38px]">
+          <span className="text-foreground">
+            {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
+          </span>{" "}
+          <span className={ratePctClass}>({ratePctLabel})</span>
+        </div>
       </div>
       <div
         className={`min-w-0 text-sm tabular-nums text-muted-foreground ${embedded ? "" : "lg:text-right"}`}
@@ -2200,18 +2235,24 @@ function ProviderRow({
           {t("fx.totalFee")} ·{" "}
         </span>
         {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
-        {/* Reserves a line of height even when a provider has no fee/spread
-            breakdown to show (0% + 0 fixed + 0% spread) — an empty div here
-            would collapse to 0px while providers WITH a breakdown render a
-            real line, unevenly taxing row height depending on content. */}
-        <div className="min-h-[14px] text-[10px]">
+        {/* Reserves up to 2 lines of height regardless of content: a
+            provider with no fee/spread breakdown (0% + 0 fixed + 0%
+            spread) would otherwise collapse this div to 0px, and a
+            provider whose breakdown has all three parts wraps to a second
+            line at this column's width — either way, every row reserves
+            the same space instead of taxing row height unevenly. */}
+        <div className="min-h-[14px] text-[10px] leading-snug lg:min-h-[26px]">
           {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
           {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
           {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
         </div>
       </div>
       <div className={`min-w-0 ${embedded ? "" : "lg:text-right"}`}>
-        <div className="text-lg font-bold tabular-nums text-foreground">
+        {/* whitespace-nowrap: this is the hero number, wrapping it onto two
+            lines for large corridor amounts (COP, IDR...) would look broken
+            regardless of row-height concerns, and would make this row taller
+            than its neighbors besides. */}
+        <div className="whitespace-nowrap text-lg font-bold tabular-nums text-foreground">
           {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
           <span className="text-xs font-normal text-muted-foreground">{quote}</span>
         </div>

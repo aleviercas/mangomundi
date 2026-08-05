@@ -657,7 +657,7 @@
   "comparator.emptyFiltered": "Ningún proveedor cumple lo que seleccionaste en \"Requiere\". Probá sacar algún filtro.",
   "comparator.badge.sponsored": "Oferta patrocinada",
   "comparator.legend.toggle": "¿Qué significan estos íconos?",
-  "comparator.score.label": "puntaje mangomundi",
+  "comparator.score.label": "Puntaje",
   "comparator.legend.score": "Puntaje (0-10): una combinación ponderada del criterio de orden actual, relativa a los proveedores mostrados para esta ruta — no es una calificación universal ni absoluta.",
   "comparator.legend.fee": "Fee más bajo: este proveedor cobra menos que los demás para este monto.",
   "comparator.legend.speed": "Más rápido: el dinero suele llegar antes con este proveedor que con los demás.",

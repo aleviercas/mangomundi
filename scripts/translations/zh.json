@@ -661,7 +661,7 @@
   "comparator.emptyFiltered": "没有符合您在\"需要\"中所选条件的服务商。试试去掉一个筛选条件。",
   "comparator.badge.sponsored": "赞助优惠",
   "comparator.legend.toggle": "这些图标是什么意思？",
-  "comparator.score.label": "mangomundi 评分",
+  "comparator.score.label": "评分",
   "comparator.legend.score": "评分 (0-10)：当前排序标准的加权综合结果，相对于此路线所显示的服务商而言——并非通用或绝对评级。",
   "comparator.legend.fee": "最低费用：在显示的选项中，该服务商对此金额收取的费用最低。",
   "comparator.legend.speed": "最快：使用该服务商，款项通常比其他服务商更快到账。",

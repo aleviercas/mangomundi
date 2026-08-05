@@ -661,7 +661,7 @@
   "comparator.emptyFiltered": "Tidak ada penyedia yang cocok dengan pilihan Anda di \"Membutuhkan\". Coba hapus salah satu filter.",
   "comparator.badge.sponsored": "Penawaran bersponsor",
   "comparator.legend.toggle": "Apa arti ikon-ikon ini?",
-  "comparator.score.label": "skor mangomundi",
+  "comparator.score.label": "Skor",
   "comparator.legend.score": "Skor (0-10): gabungan berbobot dari kriteria pengurutan saat ini, relatif terhadap penyedia yang ditampilkan untuk rute ini — bukan penilaian universal atau mutlak.",
   "comparator.legend.fee": "Biaya terendah: penyedia ini mengenakan biaya paling rendah untuk jumlah ini di antara opsi yang ditampilkan.",
   "comparator.legend.speed": "Tercepat: uang biasanya sampai lebih cepat dengan penyedia ini dibanding yang lain.",
