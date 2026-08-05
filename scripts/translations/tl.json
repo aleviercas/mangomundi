@@ -660,6 +660,7 @@
   "comparator.delivery.bestDeal": "Pinakamagandang deal",
   "comparator.emptyFiltered": "Walang provider na tumutugma sa napili mo sa ilalim ng \"Kailangan\". Subukang alisin ang isang filter.",
   "comparator.badge.sponsored": "Sponsored na alok",
+  "comparator.rankingExplainer": "Ang mga resulta ay inaayos ayon sa **Score**, isang value na 0-10 na pinagsama ang fee, exchange rate, bilis, at tiwala. Ang **Sponsored na alok** ay nagpapahiwatig ng inihayag na kasunduang komersyal — hindi nito binabago ang totoong ranking.",
   "comparator.legend.toggle": "Ano ang ibig sabihin ng mga icon na ito?",
   "comparator.score.label": "Score",
   "comparator.legend.score": "Score (0-10): isang pinagsamang timbang batay sa kasalukuyang criteria ng pag-sort, kaugnay sa mga provider na ipinapakita para sa rutang ito — hindi ito isang unibersal o ganap na rating.",

@@ -660,6 +660,7 @@
   "comparator.delivery.bestDeal": "Offerta migliore",
   "comparator.emptyFiltered": "Nessun fornitore corrisponde alla selezione in \"Richiede\". Provaa rimuovere un filtro.",
   "comparator.badge.sponsored": "Offerta sponsorizzata",
+  "comparator.rankingExplainer": "I risultati sono ordinati per **Punteggio**, un valore da 0 a 10 che combina commissione, tasso di cambio, velocità e affidabilità. **Offerta sponsorizzata** indica un accordo commerciale dichiarato — non modifica mai la classifica reale.",
   "comparator.legend.toggle": "Cosa significano queste icone?",
   "comparator.score.label": "Punteggio",
   "comparator.legend.score": "Punteggio (0-10): una combinazione ponderata del criterio di ordinamento attuale, relativa ai fornitori mostrati per questa tratta — non è una valutazione universale o assoluta.",

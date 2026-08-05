@@ -2647,6 +2647,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.largeTransfers": "Large transfers",
     "comparator.sort.bestDeal": "Exclusive offer",
     "comparator.badge.sponsored": "Sponsored offer",
+    "comparator.rankingExplainer":
+      "Results are ranked by **Score**, a 0-10 value combining fee, exchange rate, speed and trust. **Sponsored** marks a disclosed commercial deal — it never changes the ranking.",
     "comparator.table.exchangeRate": "Exchange rate",
     "comparator.legend.toggle": "What do these icons mean?",
     "comparator.score.label": "Score",

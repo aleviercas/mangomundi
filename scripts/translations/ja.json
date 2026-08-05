@@ -660,6 +660,7 @@
   "comparator.delivery.bestDeal": "ベストディール",
   "comparator.emptyFiltered": "「必須条件」で選択した内容に一致するプロバイダーがありません。フィルターを外してみてください。",
   "comparator.badge.sponsored": "スポンサー特典",
+  "comparator.rankingExplainer": "結果は**スコア**(手数料・為替レート・速度・信頼性を組み合わせた0〜10の値)で順位付けされています。**スポンサー特典**は開示された商業契約を示すもので、実際の順位を変えることはありません。",
   "comparator.legend.toggle": "これらのアイコンの意味は？",
   "comparator.score.label": "スコア",
   "comparator.legend.score": "スコア(0〜10):現在の並び替え基準を加重合成したもので、このルートで表示されているプロバイダーに対する相対値です — 普遍的または絶対的な評価ではありません。",

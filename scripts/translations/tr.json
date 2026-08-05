@@ -660,6 +660,7 @@
   "comparator.delivery.bestDeal": "En iyi teklif",
   "comparator.emptyFiltered": "\"Gerekli\" altında seçtiklerinize uyan sağlayıcı yok. Bir filtreyi kaldırmayı deneyin.",
   "comparator.badge.sponsored": "Sponsorlu teklif",
+  "comparator.rankingExplainer": "Sonuçlar, ücret, döviz kuru, hız ve güveni birleştiren 0-10 arası bir değer olan **Puan**'a göre sıralanır. **Sponsorlu teklif** açıklanan bir ticari anlaşmayı gösterir — gerçek sıralamayı asla değiştirmez.",
   "comparator.legend.toggle": "Bu simgeler ne anlama geliyor?",
   "comparator.score.label": "Puan",
   "comparator.legend.score": "Puan (0-10): mevcut sıralama kriterinin ağırlıklı bir bileşimi, bu güzergah için gösterilen sağlayıcılara göre — evrensel veya mutlak bir derecelendirme değildir.",

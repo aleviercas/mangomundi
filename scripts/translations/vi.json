@@ -660,6 +660,7 @@
   "comparator.delivery.bestDeal": "Ưu đãi tốt nhất",
   "comparator.emptyFiltered": "Không có nhà cung cấp phù hợp với lựa chọn của bạn trong \"Yêu cầu\". Hãy thử bỏ một bộ lọc.",
   "comparator.badge.sponsored": "Ưu đãi được tài trợ",
+  "comparator.rankingExplainer": "Kết quả được xếp hạng theo **Điểm số**, một giá trị từ 0-10 kết hợp phí, tỷ giá, tốc độ và độ tin cậy. **Ưu đãi được tài trợ** đánh dấu một thỏa thuận thương mại đã công bố — không bao giờ thay đổi thứ hạng thực tế.",
   "comparator.legend.toggle": "Các biểu tượng này nghĩa là gì?",
   "comparator.score.label": "Điểm số",
   "comparator.legend.score": "Điểm số (0-10): tổng hợp có trọng số của tiêu chí sắp xếp hiện tại, tương đối so với các nhà cung cấp được hiển thị cho tuyến này — không phải là xếp hạng phổ quát hay tuyệt đối.",

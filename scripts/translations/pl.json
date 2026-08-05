@@ -660,6 +660,7 @@
   "comparator.delivery.bestDeal": "Najlepsza oferta",
   "comparator.emptyFiltered": "Żaden dostawca nie spełnia wyboru w \"Wymaga\". Spróbuj usunąć jeden filtr.",
   "comparator.badge.sponsored": "Oferta sponsorowana",
+  "comparator.rankingExplainer": "Wyniki są sortowane według **Wyniku** — wartości od 0 do 10 łączącej opłatę, kurs wymiany, szybkość i zaufanie. **Oferta sponsorowana** oznacza jawnie ujawnioną umowę komercyjną — nigdy nie zmienia rzeczywistego rankingu.",
   "comparator.legend.toggle": "Co oznaczają te ikony?",
   "comparator.score.label": "Wynik",
   "comparator.legend.score": "Wynik (0-10): ważona kombinacja bieżącego kryterium sortowania, względem dostawców pokazanych dla tej trasy — nie jest to ocena uniwersalna ani bezwzględna.",

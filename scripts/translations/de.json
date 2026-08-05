@@ -660,6 +660,7 @@
   "comparator.delivery.bestDeal": "Bestes Angebot",
   "comparator.emptyFiltered": "Kein Anbieter erfüllt deine Auswahl unter \"Erfordert\". Versuch, einen Filter zu entfernen.",
   "comparator.badge.sponsored": "Gesponsertes Angebot",
+  "comparator.rankingExplainer": "Die Ergebnisse werden nach **Score** sortiert, einem Wert von 0-10, der Gebühr, Wechselkurs, Geschwindigkeit und Vertrauen kombiniert. **Gesponsertes Angebot** kennzeichnet eine offengelegte kommerzielle Vereinbarung — sie ändert nie das echte Ranking.",
   "comparator.legend.toggle": "Was bedeuten diese Symbole?",
   "comparator.score.label": "Score",
   "comparator.legend.score": "Score (0-10): eine gewichtete Kombination des aktuellen Sortierkriteriums, relativ zu den für diese Route angezeigten Anbietern — keine universelle oder absolute Bewertung.",
