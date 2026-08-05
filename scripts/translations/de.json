@@ -567,7 +567,7 @@
   "home.blog.readMore": "Weiterlesen",
   "comparator.sortBy": "Sortieren nach",
   "comparator.sort.received": "Bester Kurs",
-  "comparator.sort.fee": "Niedrigste Gebühren",
+  "comparator.sort.fee": "Niedrigste Gebühr",
   "comparator.sort.speed": "Am schnellsten",
   "comparator.reference": "Referenz",
   "comparator.cached": "Zwischengespeichert",
@@ -637,7 +637,7 @@
   "home.how.aiAside": "Öffnen Sie den mangomundi-Agenten, um Gebühren aufzuschlüsseln, eine andere Route zu testen oder die beste Option zu prüfen — ohne Konto.",
   "home.blog.viewAll": "Alle Beiträge ansehen",
   "home.contact.subtitle": "Für Treasury-Teams und FX-Partner, die individuelle Konditionen, maßgeschneiderte Integrationen oder eine direkte Verbindung zu unserem Team suchen.",
-  "comparator.sort.overall": "Gesamt",
+  "comparator.sort.overall": "Empfohlen",
   "comparator.sort.mostTrusted": "Am vertrauenswürdigsten",
   "comparator.sort.bestBusiness": "Am besten für Unternehmen",
   "comparator.sort.cashPickup": "Barauszahlung",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "Barauszahlung: Der Empfänger kann das Geld bar an einem physischen Standort abholen, nicht nur per Bankeinzahlung.",
   "comparator.legend.transparency": "Am transparentesten: Dieser Anbieter erklärt klarer als andere, wie seine Gebühren und die Wechselkursspanne funktionieren.",
   "comparator.legend.largeTransfers": "Große Überweisungen: Dieser Anbieter eignet sich gut für hohe Beträge (oft mit persönlichem Kundenbetreuer).",
-  "comparator.legend.sponsored": "Gesponsertes Angebot: mangomundi hat eine bezahlte/verhandelte Partnerschaft mit diesem Anbieter — immer offengelegt, beeinflusst nie das Ranking."
+  "comparator.legend.sponsored": "Gesponsertes Angebot: mangomundi hat eine bezahlte/verhandelte Partnerschaft mit diesem Anbieter — immer offengelegt, beeinflusst nie das Ranking.",
+  "comparator.sort.recipientGetsMost": "Empfänger erhält am meisten",
+  "comparator.sort.bestExchangeRate": "Bester Wechselkurs",
+  "comparator.sort.more": "Weitere Kriterien",
+  "comparator.table.exchangeRate": "Wechselkurs",
+  "comparator.legend.bestExchangeRate": "Bester Wechselkurs: Der Kurs dieses Anbieters liegt am nächsten am echten Interbankenkurs — unabhängig von der Pauschalgebühr, denn 0-Euro-Gebühr kann trotzdem einen schlechten Kurs verstecken."
 }
