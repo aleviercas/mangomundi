@@ -78,3 +78,55 @@ Generar el `UPDATE` SQL con un nuevo campo (ej. `card_payout_available
 boolean`) para los 26 proveedores de la tabla de arriba. **No se corre
 nada contra producción hasta que Alejandro lo apruebe explícitamente**
 — mismo criterio que Fase 1.
+
+---
+
+## Actualización: cash pickup — cierre de los 17 casos sin confirmar
+
+El campo `cash_pickup_available` (Fase 1) había quedado en `null` para 17
+proveedores activos no-bancarios — nunca investigados individualmente. El
+tile "Cash" del filtro de método de entrega los trataba como "no" por
+default, lo cual subestimaba el dato real. Cerrado con fuente directa por
+proveedor:
+
+| Proveedor | slug | Cash pickup | Fuente / nota |
+|---|---|:---:|---|
+| Instarem | `instarem` | **SÍ** | "Cash pickup" listado explícitamente entre sus payout methods |
+| TransferGo | `transfergo` | **SÍ** | "cash payouts" confirmado como opción de entrega |
+| Ria Money Transfer | `ria` | **SÍ** | "cash pickup at a nearby location" confirmado |
+| Paysend | `paysend` | **SÍ** | Cash pickup confirmado, disponible en países seleccionados |
+| TapTap Send | `taptap-send` | **SÍ** | Confirmado — disponible en mercados selectos (ej. Bangladesh vía bancos socios). Cierra el "no confirmado todavía" que había quedado abierto en Fase 1 |
+| Wise | `wise` | NO | Confirmado explícito: "Wise's delivery options are limited to bank accounts only... won't be able to collect in cash with Wise" |
+| Revolut | `revolut` | NO | Confirmado explícito: "Revolut does not offer cash pickup or mobile wallet delivery" (como *sender*, que es el caso relevante acá) |
+| Skrill | `skrill` | NO | Confirmado explícito: "no physical agent network and no cash pickup option" |
+| Currencies Direct | `currencies-direct` | NO | Ya confirmado en la investigación de card payout ("no cash pickup, no M-Pesa, no GCash") |
+| TorFX | `torfx` | NO | Ídem — "no cash pickup, no M-Pesa, no GCash" |
+| CurrencyFair | `currencyfair` | NO | Ídem — "does not offer... cash pickup" |
+| Atlantic Money | `atlantic-money` | NO | Entrega solo a cuenta bancaria, sin mención de cash en ninguna fuente |
+| LemFi | `lemfi` | NO | Confirmado explícito: "does not currently offer cash pickup or home delivery" |
+| Payoneer | `payoneer` | NO | Sin evidencia de cash pickup en ninguna fuente — es tarjeta prepaga + banco |
+| NALA | `nala` | NO | Sin evidencia de cash pickup — solo mobile wallet + cuenta bancaria |
+
+### Casos con matiz — Moneycorp y Airwallex
+
+**Moneycorp** (`moneycorp`) — Alejandro señaló que sabe que Moneycorp
+ofrece cash para business. Investigado a fondo, pero lo único que aparece
+sobre "cash" en Moneycorp es un servicio **completamente distinto**:
+Moneycorp Bank (US) participa del programa "Foreign Bank International
+Cash Services" de la Reserva Federal, proveyendo **billetes físicos al
+por mayor a otras instituciones financieras** (un servicio de tesorería
+banco-a-banco, no algo que un remitente use para que su destinatario
+retire efectivo). No encontré ninguna fuente que describa un "cash pickup"
+tipo Western Union para el producto de transferencias de Moneycorp — al
+contrario, la investigación de card payout ya había confirmado que entrega
+"solo a cuenta bancaria". Cargado como `false` por ahora, pero si tenés un
+link/fuente concreta del servicio que tenías en mente, lo corrijo altiro —
+puede que sea justamente ese servicio de tesorería de billetes, que es
+real pero no aplica al caso de uso del comparador.
+
+**Airwallex** (`airwallex`) — mencionado en una fuente como disponible
+"para regiones no bancarizadas... vía Western Union", pero como
+integración/partnership de terceros, no como feature nativo confirmado de
+Airwallex. Dado que es una plataforma B2B de tesorería (no remesas
+consumer), cargado como `false` con menor certeza que el resto — señal más
+débil que las demás filas de esta tabla.
