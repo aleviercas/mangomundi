@@ -567,7 +567,7 @@
   "home.blog.readMore": "Devamını oku",
   "comparator.sortBy": "Sırala",
   "comparator.sort.received": "En iyi kur",
-  "comparator.sort.fee": "En düşük ücretler",
+  "comparator.sort.fee": "En düşük ücret",
   "comparator.sort.speed": "En hızlı",
   "comparator.reference": "Referans",
   "comparator.cached": "Önbellek",
@@ -637,7 +637,7 @@
   "home.how.aiAside": "Ücretleri ayrıştırmak, başka bir rota denemek veya en iyi seçeneği doğrulamak için mangomundi ajanını aç — hesap gerekmez.",
   "home.blog.viewAll": "Tüm yazıları görüntüle",
   "home.contact.subtitle": "Özel oranlar, özel entegrasyonlar veya ekibimizle doğrudan iletişim arayan hazine ekipleri ve FX ortakları için.",
-  "comparator.sort.overall": "Genel",
+  "comparator.sort.overall": "Önerilen",
   "comparator.sort.mostTrusted": "En güvenilir",
   "comparator.sort.bestBusiness": "İşletmeler için en iyi",
   "comparator.sort.cashPickup": "Nakit teslim",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "Nakit teslim: alıcı, sadece banka hesabına değil, fiziksel bir noktadan nakit olarak da parayı alabilir.",
   "comparator.legend.transparency": "En şeffaf: bu sağlayıcı ücretleri ve döviz kuru marjı konusunda diğerlerinden daha açık.",
   "comparator.legend.largeTransfers": "Büyük transferler: bu sağlayıcı büyük miktarlar göndermek için uygundur (genellikle özel bir hesap yöneticisiyle).",
-  "comparator.legend.sponsored": "Sponsorlu teklif: mangomundi'nin bu sağlayıcıyla ücretli/anlaşmalı bir ortaklığı var — her zaman açıklanır, sıralamayı asla etkilemez."
+  "comparator.legend.sponsored": "Sponsorlu teklif: mangomundi'nin bu sağlayıcıyla ücretli/anlaşmalı bir ortaklığı var — her zaman açıklanır, sıralamayı asla etkilemez.",
+  "comparator.sort.recipientGetsMost": "Alıcı en çok kazanır",
+  "comparator.sort.bestExchangeRate": "En iyi döviz kuru",
+  "comparator.sort.more": "Diğer kriterler",
+  "comparator.table.exchangeRate": "Döviz kuru",
+  "comparator.legend.bestExchangeRate": "En iyi döviz kuru: bu sağlayıcının kuru gerçek piyasa kuruna en yakın olanı — sabit ücretinden bağımsız olarak, çünkü 0 ücret hâlâ kötü bir kuru gizleyebilir."
 }
