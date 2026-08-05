@@ -8,7 +8,6 @@ import {
   Banknote,
   Briefcase,
   Check,
-  ChevronDown,
   Clock,
   Coins,
   Eye,
@@ -22,14 +21,6 @@ import {
   Zap,
   Info,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Dialog,
   DialogContent,
@@ -1219,12 +1210,16 @@ export function ComparatorSection({
                 {t("comparator.results")}
               </h3>
             </div>
-            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <div className="mb-4 flex flex-col gap-2.5">
+              {/* All sort criteria shown as plain chips, primary and
+                  secondary alike — no dropdown to open. Wraps to a second
+                  line on narrow screens instead of hiding options behind a
+                  click. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
                 </span>
-                {SORT_CHIPS.map((key) => (
+                {[...SORT_CHIPS, ...SECONDARY_SORT_CHIPS].map((key) => (
                   <button
                     key={key}
                     type="button"
@@ -1239,97 +1234,38 @@ export function ComparatorSection({
                     {t(sortLabelKey(key))}
                   </button>
                 ))}
-                {/* Secondary criteria — same single-select behavior as the
-                    chips above, just tucked away so they don't crowd the
-                    primary row (Skyscanner-style "Sort by" overflow). */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      aria-pressed={SECONDARY_SORT_CHIPS.includes(sortBy)}
-                      className={`inline-flex h-8 items-center gap-1 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                        SECONDARY_SORT_CHIPS.includes(sortBy)
-                          ? "border-transparent bg-[#ff6b5b] text-white"
-                          : "border-input bg-card text-foreground hover:border-foreground/30"
-                      }`}
-                    >
-                      {SECONDARY_SORT_CHIPS.includes(sortBy)
-                        ? t(sortLabelKey(sortBy))
-                        : t("comparator.sort.more")}
-                      <ChevronDown className="h-3 w-3" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuRadioGroup
-                      value={sortBy}
-                      onValueChange={(v) => setSortBy(v as SortKey)}
-                    >
-                      {SECONDARY_SORT_CHIPS.map((key) => (
-                        <DropdownMenuRadioItem key={key} value={key}>
-                          {t(sortLabelKey(key))}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* Single "Filtros" entry point — Google Flights/Kayak
-                    pattern. All opt-in requirement toggles live together
-                    here, grouped, instead of sprawling as always-visible
-                    chips that fight the sort row for attention. Off by
-                    default: nobody is hidden until the person actively
-                    says they need it. */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      className="inline-flex h-8 items-center gap-1.5 rounded-md border border-input bg-card px-3 text-xs font-medium text-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
-                    >
-                      <SlidersHorizontal className="h-3.5 w-3.5" />
-                      {t("comparator.filterBy")}
-                      {activeFilters.size > 0 && (
-                        <span className="flex h-4 min-w-4 items-center justify-center rounded-full bg-[#ff6b5b] px-1 text-[10px] font-bold text-white">
-                          {activeFilters.size}
-                        </span>
-                      )}
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent align="end" className="w-64 p-3">
-                    <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                      {t("comparator.filterBy")}
-                    </p>
-                    <div className="flex flex-col gap-1">
-                      {(
-                        [
-                          ["cash_pickup_available", "comparator.sort.cashPickup"],
-                          ["supports_large_tickets", "comparator.sort.largeTransfers"],
-                          ["has_exclusive_deal", "comparator.badge.sponsored"],
-                        ] as const
-                      ).map(([key, labelKey]) => (
-                        <button
-                          key={key}
-                          type="button"
-                          onClick={() => toggleFilter(key)}
-                          aria-pressed={activeFilters.has(key)}
-                          className="flex items-center gap-2 rounded-md px-2 py-2 text-left text-sm hover:bg-muted"
-                        >
-                          <span
-                            className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border ${
-                              activeFilters.has(key) ? "border-foreground bg-foreground" : "border-input"
-                            }`}
-                          >
-                            {activeFilters.has(key) && (
-                              <Check className="h-3 w-3 text-background" />
-                            )}
-                          </span>
-                          {t(labelKey)}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
+              {/* Requirement toggles — same always-visible chip treatment as
+                  sort, just a distinct outline (checkmark = active) so the
+                  two rows read as "reorder" vs "narrow down" without needing
+                  a popover to see what's available. */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="mr-1 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
+                </span>
+                {(
+                  [
+                    ["cash_pickup_available", "comparator.sort.cashPickup"],
+                    ["supports_large_tickets", "comparator.sort.largeTransfers"],
+                    ["has_exclusive_deal", "comparator.badge.sponsored"],
+                  ] as const
+                ).map(([key, labelKey]) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => toggleFilter(key)}
+                    aria-pressed={activeFilters.has(key)}
+                    className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                      activeFilters.has(key)
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-input bg-card text-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {activeFilters.has(key) && <Check className="h-3 w-3" />}
+                    {t(labelKey)}
+                  </button>
+                ))}
                 {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
                     both desktop (click) and mobile (tap), no hover needed. */}
@@ -1991,17 +1927,19 @@ function ProviderRow({
       </div>
       {/* Features column — icon + short text (never icon-only: several of
           these aren't self-explanatory, and there's no hover/tooltip on
-          mobile, so text is load-bearing, not decoration). Fixed min-height
-          (not a click-to-expand) so every row is visually the same height by
-          default, on both desktop and the stacked mobile layout — nothing is
-          ever hidden behind an interaction, unlike the old "+N" approach.
-          exclusive_deal lives next to the provider name now (see above), not
-          here, since it's a disclosed sponsorship signal, not a feature. */}
+          mobile, so text is load-bearing, not decoration). Single line, fixed
+          height, horizontally scrollable — providers with more chips than
+          others never grow taller than the rest (that's what made row
+          heights inconsistent before), and nothing is hidden behind a
+          click-to-expand: everything is still reachable, just scrolls
+          sideways instead of wrapping. exclusive_deal lives next to the
+          provider name now (see above), not here, since it's a disclosed
+          sponsorship signal, not a feature. */}
       <div className="min-w-0">
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {t("comparator.table.features")}
         </span>
-        <div className="flex min-h-[48px] flex-wrap content-start items-start gap-1.5 lg:min-h-[46px]">
+        <div className="no-scrollbar flex h-6 flex-nowrap items-center gap-1.5 overflow-x-auto">
           {(() => {
             type Chip = { key: string; icon: typeof Shield | null; text: string };
             const chips: Chip[] = [];
@@ -2039,13 +1977,14 @@ function ProviderRow({
           <Clock className="h-3 w-3" /> {deliveryLabel}
         </span>
       </div>
-      <div
-        className={`min-w-0 text-sm tabular-nums ${ratePctClass} ${embedded ? "" : "lg:text-right"}`}
-      >
+      <div className={`min-w-0 text-sm ${embedded ? "" : "lg:text-right"}`}>
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {tExchangeRate} ·{" "}
         </span>
-        {ratePctLabel}
+        <div className="tabular-nums text-foreground">
+          1 {base} = {row.rate.toLocaleString(undefined, { maximumFractionDigits: 6 })} {quote}
+        </div>
+        <div className={`text-[10px] tabular-nums ${ratePctClass}`}>{ratePctLabel}</div>
       </div>
       <div
         className={`min-w-0 text-sm tabular-nums text-muted-foreground ${embedded ? "" : "lg:text-right"}`}
