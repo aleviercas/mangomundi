@@ -567,7 +567,7 @@
   "home.blog.readMore": "और पढ़ें",
   "comparator.sortBy": "इसके अनुसार क्रमबद्ध करें",
   "comparator.sort.received": "सर्वोत्तम दर",
-  "comparator.sort.fee": "सबसे कम शुल्क",
+  "comparator.sort.fee": "सबसे कम फीस",
   "comparator.sort.speed": "सबसे तेज़",
   "comparator.reference": "संदर्भ",
   "comparator.cached": "कैश",
@@ -637,7 +637,7 @@
   "home.how.aiAside": "शुल्क का विवरण, दूसरा रूट आज़माने या सबसे अच्छा विकल्प जाँचने के लिए mangomundi एजेंट खोलें — बिना खाता।",
   "home.blog.viewAll": "सभी पोस्ट देखें",
   "home.contact.subtitle": "उन ट्रेजरी टीमों और एफएक्स पार्टनर्स के लिए जो विशेष दरें, कस्टम इंटीग्रेशन, या हमारी टीम से सीधा संपर्क चाहते हैं।",
-  "comparator.sort.overall": "समग्र",
+  "comparator.sort.overall": "अनुशंसित",
   "comparator.sort.mostTrusted": "सबसे भरोसेमंद",
   "comparator.sort.bestBusiness": "व्यवसाय के लिए सर्वश्रेष्ठ",
   "comparator.sort.cashPickup": "नकद निकासी",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "नकद निकासी: प्राप्तकर्ता किसी भौतिक स्थान पर नकद में पैसा ले सकता है, सिर्फ बैंक जमा नहीं।",
   "comparator.legend.transparency": "सबसे पारदर्शी: यह प्रदाता अपनी फीस और एक्सचेंज रेट मार्जिन के बारे में दूसरों से ज़्यादा स्पष्ट है।",
   "comparator.legend.largeTransfers": "बड़े ट्रांसफर: यह प्रदाता बड़ी रकम भेजने के लिए उपयुक्त है (अक्सर एक समर्पित अकाउंट मैनेजर के साथ)।",
-  "comparator.legend.sponsored": "प्रायोजित ऑफर: mangomundi का इस प्रदाता के साथ एक भुगतान/सहमति साझेदारी है — हमेशा प्रकट, कभी रैंकिंग को प्रभावित नहीं करता।"
+  "comparator.legend.sponsored": "प्रायोजित ऑफर: mangomundi का इस प्रदाता के साथ एक भुगतान/सहमति साझेदारी है — हमेशा प्रकट, कभी रैंकिंग को प्रभावित नहीं करता।",
+  "comparator.sort.recipientGetsMost": "प्राप्तकर्ता को सबसे ज़्यादा मिलता है",
+  "comparator.sort.bestExchangeRate": "सर्वश्रेष्ठ एक्सचेंज रेट",
+  "comparator.sort.more": "और मानदंड",
+  "comparator.table.exchangeRate": "एक्सचेंज रेट",
+  "comparator.legend.bestExchangeRate": "सर्वश्रेष्ठ एक्सचेंज रेट: इस प्रदाता की दर वास्तविक मिड-मार्केट रेट के सबसे करीब है — इसकी फ्लैट फीस से अलग, क्योंकि $0 फीस भी खराब दर छुपा सकती है।"
 }
