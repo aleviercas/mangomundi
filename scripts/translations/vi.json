@@ -637,7 +637,7 @@
   "home.how.aiAside": "Mở trợ lý mangomundi để bóc tách phí, thử tuyến khác hoặc kiểm tra lại lựa chọn tốt nhất — không cần tài khoản.",
   "home.blog.viewAll": "Xem tất cả bài viết",
   "home.contact.subtitle": "Dành cho các đội ngũ tài chính doanh nghiệp và đối tác FX đang tìm kiếm tỷ giá riêng, tích hợp tùy chỉnh, hoặc đường dây liên hệ trực tiếp với đội ngũ của chúng tôi.",
-  "comparator.sort.overall": "Tổng quan",
+  "comparator.sort.overall": "Đề xuất",
   "comparator.sort.mostTrusted": "Đáng tin cậy nhất",
   "comparator.sort.bestBusiness": "Tốt nhất cho doanh nghiệp",
   "comparator.sort.cashPickup": "Nhận tiền mặt",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "Nhận tiền mặt: người nhận có thể nhận tiền mặt tại một địa điểm thực tế, không chỉ qua tài khoản ngân hàng.",
   "comparator.legend.transparency": "Minh bạch nhất: nhà cung cấp này rõ ràng hơn các nhà cung cấp khác về cách tính phí và biên độ tỷ giá.",
   "comparator.legend.largeTransfers": "Chuyển khoản lớn: nhà cung cấp này phù hợp để gửi số tiền lớn (thường có người quản lý tài khoản riêng).",
-  "comparator.legend.sponsored": "Ưu đãi được tài trợ: mangomundi có quan hệ đối tác trả phí với nhà cung cấp này — luôn được công khai, không bao giờ ảnh hưởng đến xếp hạng."
+  "comparator.legend.sponsored": "Ưu đãi được tài trợ: mangomundi có quan hệ đối tác trả phí với nhà cung cấp này — luôn được công khai, không bao giờ ảnh hưởng đến xếp hạng.",
+  "comparator.sort.recipientGetsMost": "Người nhận được nhiều nhất",
+  "comparator.sort.bestExchangeRate": "Tỷ giá tốt nhất",
+  "comparator.sort.more": "Tiêu chí khác",
+  "comparator.table.exchangeRate": "Tỷ giá",
+  "comparator.legend.bestExchangeRate": "Tỷ giá tốt nhất: tỷ giá của nhà cung cấp này gần nhất với tỷ giá thị trường thực — độc lập với phí cố định, vì phí $0 vẫn có thể che giấu một tỷ giá tệ."
 }
