@@ -1236,10 +1236,11 @@ export function ComparatorSection({
                 ))}
               </div>
 
-              {/* Requirement toggles — same always-visible chip treatment as
-                  sort, just a distinct outline (checkmark = active) so the
-                  two rows read as "reorder" vs "narrow down" without needing
-                  a popover to see what's available. */}
+              {/* Requirement toggles — deliberately NOT a rounded-full pill
+                  like the sort chips above, and always shows an empty
+                  checkbox outline (filled + checkmark only once active), so
+                  these read as checkable requirements to opt into, not as
+                  another "pick one" sort option. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
@@ -1256,13 +1257,21 @@ export function ComparatorSection({
                     type="button"
                     onClick={() => toggleFilter(key)}
                     aria-pressed={activeFilters.has(key)}
-                    className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    className={`inline-flex h-8 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                       activeFilters.has(key)
                         ? "border-foreground bg-foreground text-background"
                         : "border-input bg-card text-foreground hover:border-foreground/30"
                     }`}
                   >
-                    {activeFilters.has(key) && <Check className="h-3 w-3" />}
+                    <span
+                      className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                        activeFilters.has(key)
+                          ? "border-background bg-background"
+                          : "border-muted-foreground/60"
+                      }`}
+                    >
+                      {activeFilters.has(key) && <Check className="h-2.5 w-2.5 text-foreground" />}
+                    </span>
                     {t(labelKey)}
                   </button>
                 ))}
