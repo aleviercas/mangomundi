@@ -567,7 +567,7 @@
   "home.blog.readMore": "اقرأ المزيد",
   "comparator.sortBy": "ترتيب حسب",
   "comparator.sort.received": "أفضل سعر",
-  "comparator.sort.fee": "أقل الرسوم",
+  "comparator.sort.fee": "أقل رسوم",
   "comparator.sort.speed": "الأسرع",
   "comparator.reference": "مرجعي",
   "comparator.cached": "مخزّن مؤقتاً",
@@ -637,7 +637,7 @@
   "home.how.aiAside": "افتح وكيل mangomundi لتفصيل الرسوم أو تجربة مسار آخر أو التحقق من الخيار الأفضل — دون حساب.",
   "home.blog.viewAll": "عرض جميع المقالات",
   "home.contact.subtitle": "لفرق الخزينة وشركاء الصرف الأجنبي الباحثين عن أسعار مخصصة أو عمليات تكامل مخصصة أو تواصل مباشر مع فريقنا.",
-  "comparator.sort.overall": "عام",
+  "comparator.sort.overall": "موصى به",
   "comparator.sort.mostTrusted": "الأكثر ثقة",
   "comparator.sort.bestBusiness": "الأفضل للأعمال",
   "comparator.sort.cashPickup": "استلام نقدي",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "استلام نقدي: يمكن للمستلم استلام المبلغ نقداً من موقع فعلي، ليس فقط إيداعاً بنكياً.",
   "comparator.legend.transparency": "الأكثر شفافية: هذا المزود أوضح من غيره بشأن رسومه وهامش سعر الصرف.",
   "comparator.legend.largeTransfers": "تحويلات كبيرة: مناسب لإرسال مبالغ كبيرة (غالباً عبر مدير حساب مخصص).",
-  "comparator.legend.sponsored": "عرض برعاية: لدى mangomundi شراكة مدفوعة مع هذا المزود — معلنة دائماً ولا تؤثر على الترتيب."
+  "comparator.legend.sponsored": "عرض برعاية: لدى mangomundi شراكة مدفوعة مع هذا المزود — معلنة دائماً ولا تؤثر على الترتيب.",
+  "comparator.sort.recipientGetsMost": "المستلم يحصل على الأكثر",
+  "comparator.sort.bestExchangeRate": "أفضل سعر صرف",
+  "comparator.sort.more": "معايير أكثر",
+  "comparator.table.exchangeRate": "سعر الصرف",
+  "comparator.legend.bestExchangeRate": "أفضل سعر صرف: سعر هذا المزود هو الأقرب للسعر الحقيقي في السوق — مستقل عن رسومه الثابتة، لأن «رسوم 0» قد تخفي سعر صرف سيئًا."
 }
