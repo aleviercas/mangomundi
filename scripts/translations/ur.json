@@ -637,7 +637,7 @@
   "home.how.aiAside": "فیس کی تفصیل، دوسرا روٹ آزمانے یا بہترین آپشن جانچنے کے لیے mangomundi ایجنٹ کھولیں — بغیر اکاؤنٹ۔",
   "home.blog.viewAll": "تمام پوسٹس دیکھیں",
   "home.contact.subtitle": "ٹریژری ٹیموں اور ایف ایکس پارٹنرز کے لیے جو مخصوص ریٹس، حسب ضرورت انٹیگریشنز، یا ہماری ٹیم سے براہ راست رابطہ چاہتے ہیں۔",
-  "comparator.sort.overall": "مجموعی",
+  "comparator.sort.overall": "تجویز کردہ",
   "comparator.sort.mostTrusted": "سب سے قابل اعتماد",
   "comparator.sort.bestBusiness": "کاروبار کے لیے بہترین",
   "comparator.sort.cashPickup": "نقد وصولی",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "نقد وصولی: وصول کنندہ صرف بینک میں جمع کروانے کے بجائے کسی فزیکل مقام سے نقد رقم وصول کر سکتا ہے۔",
   "comparator.legend.transparency": "سب سے شفاف: یہ فراہم کنندہ اپنی فیسوں اور ایکسچینج ریٹ مارجن کے بارے میں دوسروں کی نسبت زیادہ واضح ہے۔",
   "comparator.legend.largeTransfers": "بڑی ترسیلات: یہ فراہم کنندہ بڑی رقوم بھیجنے کے لیے موزوں ہے (اکثر مخصوص اکاؤنٹ منیجر کے ساتھ)۔",
-  "comparator.legend.sponsored": "سپانسر شدہ پیشکش: mangomundi کی اس فراہم کنندہ کے ساتھ ادا شدہ شراکت داری ہے — ہمیشہ ظاہر کی جاتی ہے، رینکنگ کو متاثر نہیں کرتی۔"
+  "comparator.legend.sponsored": "سپانسر شدہ پیشکش: mangomundi کی اس فراہم کنندہ کے ساتھ ادا شدہ شراکت داری ہے — ہمیشہ ظاہر کی جاتی ہے، رینکنگ کو متاثر نہیں کرتی۔",
+  "comparator.sort.recipientGetsMost": "وصول کنندہ کو سب سے زیادہ ملتا ہے",
+  "comparator.sort.bestExchangeRate": "بہترین ایکسچینج ریٹ",
+  "comparator.sort.more": "مزید معیار",
+  "comparator.table.exchangeRate": "ایکسچینج ریٹ",
+  "comparator.legend.bestExchangeRate": "بہترین ایکسچینج ریٹ: اس فراہم کنندہ کی شرح حقیقی مڈ مارکیٹ ریٹ کے قریب ترین ہے — اس کی مقررہ فیس سے الگ، کیونکہ 0 ڈالر فیس پھر بھی خراب ریٹ چھپا سکتی ہے۔"
 }
