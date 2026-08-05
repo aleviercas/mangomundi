@@ -567,7 +567,7 @@
   "home.blog.readMore": "Magbasa pa",
   "comparator.sortBy": "Ayusin ayon sa",
   "comparator.sort.received": "Pinakamagandang rate",
-  "comparator.sort.fee": "Pinakamababang bayarin",
+  "comparator.sort.fee": "Pinakamababang bayad",
   "comparator.sort.speed": "Pinakamabilis",
   "comparator.reference": "Sanggunian",
   "comparator.cached": "Naka-cache",
@@ -637,7 +637,7 @@
   "home.how.aiAside": "Buksan ang mangomundi agent para hatiin ang bayarin, sumubok ng ibang ruta, o i-double-check ang pinakamagandang opsyon — walang account.",
   "home.blog.viewAll": "Tingnan lahat ng post",
   "home.contact.subtitle": "Para sa mga treasury team at FX partner na naghahanap ng dedikadong rate, custom na integrasyon, o direktang linya sa aming team.",
-  "comparator.sort.overall": "Pangkalahatan",
+  "comparator.sort.overall": "Inirerekomenda",
   "comparator.sort.mostTrusted": "Pinaka-mapagkakatiwalaan",
   "comparator.sort.bestBusiness": "Pinakamainam para sa negosyo",
   "comparator.sort.cashPickup": "Pagkuha ng cash",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "Pagkuha ng cash: makukuha ng tatanggap ang pera nang cash sa isang lokasyon, hindi lang sa bank deposit.",
   "comparator.legend.transparency": "Pinaka-transparent: mas malinaw ang provider na ito kumpara sa iba tungkol sa mga bayad at exchange rate margin nito.",
   "comparator.legend.largeTransfers": "Malalaking transfer: angkop ang provider na ito para sa pagpapadala ng malalaking halaga (madalas may nakatalagang account manager).",
-  "comparator.legend.sponsored": "Sponsored na alok: may bayad na partnership ang mangomundi sa provider na ito — laging isinisiwalat, hindi nakakaapekto sa ranking."
+  "comparator.legend.sponsored": "Sponsored na alok: may bayad na partnership ang mangomundi sa provider na ito — laging isinisiwalat, hindi nakakaapekto sa ranking.",
+  "comparator.sort.recipientGetsMost": "Pinakamalaki ang natatanggap ng tatanggap",
+  "comparator.sort.bestExchangeRate": "Pinakamahusay na exchange rate",
+  "comparator.sort.more": "Iba pang pamantayan",
+  "comparator.table.exchangeRate": "Exchange rate",
+  "comparator.legend.bestExchangeRate": "Pinakamahusay na exchange rate: ang rate ng provider na ito ang pinakamalapit sa tunay na mid-market rate — hiwalay sa fixed fee nito, dahil ang $0 fee ay maaari pa ring magtago ng masamang rate."
 }
