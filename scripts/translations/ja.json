@@ -637,7 +637,7 @@
   "home.how.aiAside": "mangomundiエージェントを開いて手数料の内訳、別ルートの試算、最適解の確認を — アカウント不要。",
   "home.blog.viewAll": "すべての記事を見る",
   "home.contact.subtitle": "専用レート、カスタム統合、または当社チームとの直接窓口をお探しの財務チームおよびFXパートナーの方へ。",
-  "comparator.sort.overall": "総合",
+  "comparator.sort.overall": "おすすめ",
   "comparator.sort.mostTrusted": "最も信頼できる",
   "comparator.sort.bestBusiness": "法人向け",
   "comparator.sort.cashPickup": "現金受け取り",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "現金受け取り：受取人は銀行預金だけでなく、実店舗で現金を受け取れます。",
   "comparator.legend.transparency": "最も透明性が高い：手数料や為替マージンの仕組みが他社より明確です。",
   "comparator.legend.largeTransfers": "高額送金：多額の送金に適しています（専任の担当者がつくことが多いです）。",
-  "comparator.legend.sponsored": "スポンサー特典：mangomundiはこのプロバイダーと有償の提携をしています — 常に開示され、ランキングには影響しません。"
+  "comparator.legend.sponsored": "スポンサー特典：mangomundiはこのプロバイダーと有償の提携をしています — 常に開示され、ランキングには影響しません。",
+  "comparator.sort.recipientGetsMost": "受取額が最大",
+  "comparator.sort.bestExchangeRate": "最良の為替レート",
+  "comparator.sort.more": "その他の基準",
+  "comparator.table.exchangeRate": "為替レート",
+  "comparator.legend.bestExchangeRate": "最良の為替レート：このプロバイダーのレートは実際の仲値に最も近いです — 手数料とは無関係です。手数料0円でも為替レートが悪いことがあります。"
 }
