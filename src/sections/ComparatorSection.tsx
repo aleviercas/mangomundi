@@ -7,10 +7,13 @@ import {
   ArrowLeftRight,
   Banknote,
   Briefcase,
+  Building2,
   Check,
   Clock,
   Coins,
+  CreditCard,
   Eye,
+  Handshake,
   Loader2,
   Percent,
   Send,
@@ -82,6 +85,31 @@ const WHITE_FIELD =
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
 type FeatureFilterKey = "cash_pickup_available" | "supports_large_tickets" | "has_exclusive_deal";
+/** Monito-style "how does the recipient get paid" filter — single-select
+ *  (unlike the opt-in requirement chips below, these are mutually exclusive
+ *  delivery channels, not stackable requirements), null = no filter. */
+type DeliveryMethod = "bank_transfer" | "cash_pickup" | "card_payout" | "broker";
+/** Card payout and bank transfer are real per-provider research (see
+ *  docs/multi-criteria-ranking/delivery-methods-findings.md) — bank
+ *  transfer is defaulted true for active non-bank providers rather than
+ *  researched individually, since it's near-universal. Cash pickup and
+ *  broker reuse existing fields (`cash_pickup_available`, `provider_type`)
+ *  from earlier research passes. */
+const DELIVERY_METHOD_PREDICATES: Record<
+  DeliveryMethod,
+  (r: ComparisonResult["rows"][number]) => boolean
+> = {
+  bank_transfer: (r) => r.bank_transfer_available === true,
+  cash_pickup: (r) => r.cash_pickup_available === true,
+  card_payout: (r) => r.card_payout_available === true,
+  broker: (r) => r.provider_type === "broker",
+};
+const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labelKey: string }> = [
+  { key: "bank_transfer", icon: Building2, labelKey: "comparator.delivery.bankTransfer" },
+  { key: "cash_pickup", icon: Banknote, labelKey: "comparator.delivery.cashPickup" },
+  { key: "card_payout", icon: CreditCard, labelKey: "comparator.delivery.cardPayout" },
+  { key: "broker", icon: Handshake, labelKey: "comparator.delivery.broker" },
+];
 /** Sort chips: spectrum criteria only ("who's better on X"). Binary
  *  capabilities (cash pickup, large transfers, exclusive/sponsored offer)
  *  live exclusively in the "Filtros" panel below, not here too — showing
@@ -214,6 +242,38 @@ export function ComparatorSection({
       else next.add(key);
       return next;
     });
+  // Delivery-method tiles (Bank account / Cash / Card / Broker) — separate
+  // from activeFilters above: single-select, click the active one again to
+  // clear it back to "all methods".
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | null>(null);
+  const toggleDeliveryMethod = (method: DeliveryMethod) =>
+    setDeliveryMethod((prev) => (prev === method ? null : method));
+  // Best amount received under each delivery method, computed over the
+  // whole (unfiltered) result set — this is what each tile previews, same
+  // as Monito's "5,020 PLN" under each tab. null when no provider in the
+  // current corridor supports that method at all.
+  const deliveryPreview = useMemo(() => {
+    const preview = {} as Record<DeliveryMethod, number | null>;
+    for (const { key } of DELIVERY_METHODS) {
+      const matching = result?.rows.filter(DELIVERY_METHOD_PREDICATES[key]) ?? [];
+      preview[key] = matching.length > 0 ? Math.max(...matching.map((r) => r.received)) : null;
+    }
+    return preview;
+  }, [result]);
+  // Highest-preview tile gets the "Best deal" tag — data-driven, not
+  // editorial (mirrors how badges/featured are decided elsewhere).
+  const bestDeliveryMethod = useMemo(() => {
+    let best: DeliveryMethod | null = null;
+    let bestVal = -Infinity;
+    for (const { key } of DELIVERY_METHODS) {
+      const v = deliveryPreview[key];
+      if (v != null && v > bestVal) {
+        bestVal = v;
+        best = key;
+      }
+    }
+    return best;
+  }, [deliveryPreview]);
   // Single legend panel (not per-row tooltips) explaining what each Features
   // icon/chip means — icon+text alone still isn't foolproof for a first-time
   // visitor on a decision involving real money, and repeating a tooltip on
@@ -1210,6 +1270,48 @@ export function ComparatorSection({
                 {t("comparator.results")}
               </h3>
             </div>
+            {/* Delivery-method tiles (Monito-style): single-select "how does
+                the recipient get paid" view switch, each previewing its own
+                best amount — distinct from the "Filtros" checkboxes below,
+                which stack opt-in requirements instead of switching views.
+                Real per-provider data (see
+                docs/multi-criteria-ranking/delivery-methods-findings.md),
+                never a decorative guess — a tile with no matching provider
+                just shows "—" instead of being hidden, so the option is
+                still visibly there, not silently disappearing. */}
+            <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+              {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
+                const preview = deliveryPreview[key];
+                const isActive = deliveryMethod === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => toggleDeliveryMethod(key)}
+                    aria-pressed={isActive}
+                    disabled={preview == null}
+                    className={`relative flex flex-col items-center gap-1 rounded-xl border-2 px-3 py-2.5 text-center transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 disabled:cursor-not-allowed disabled:opacity-40 ${
+                      isActive
+                        ? "border-[#ff6b5b] bg-[#ff6b5b]/5"
+                        : "border-border bg-card hover:border-foreground/30"
+                    }`}
+                  >
+                    {bestDeliveryMethod === key && (
+                      <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-700">
+                        {t("comparator.delivery.bestDeal")}
+                      </span>
+                    )}
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-xs font-semibold text-foreground">{t(labelKey)}</span>
+                    <span className="text-sm font-bold tabular-nums text-foreground">
+                      {preview != null
+                        ? `${preview.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${result.quote}`
+                        : "—"}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
             <div className="mb-4 flex flex-col gap-2.5">
               {/* All sort criteria shown as plain chips, primary and
                   secondary alike — no dropdown to open. Wraps to a second
@@ -1323,6 +1425,7 @@ export function ComparatorSection({
               amount={amount}
               sortBy={sortBy}
               activeFilters={activeFilters}
+              deliveryMethod={deliveryMethod}
               handleAffiliateClick={openPreferredRate}
               tDisclaimer={t("fx.disclaimer")}
               tTrademarks={t("fx.trademarks")}
@@ -1645,6 +1748,7 @@ function ResultsBlock({
   amount,
   sortBy,
   activeFilters,
+  deliveryMethod,
   handleAffiliateClick,
   tDisclaimer,
   tTrademarks,
@@ -1664,6 +1768,7 @@ function ResultsBlock({
   amount: number;
   sortBy: SortKey;
   activeFilters: Set<FeatureFilterKey>;
+  deliveryMethod: DeliveryMethod | null;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
@@ -1697,9 +1802,10 @@ function ResultsBlock({
         (r) =>
           (!activeFilters.has("cash_pickup_available") || r.cash_pickup_available) &&
           (!activeFilters.has("supports_large_tickets") || r.supports_large_tickets) &&
-          (!activeFilters.has("has_exclusive_deal") || r.has_exclusive_deal),
+          (!activeFilters.has("has_exclusive_deal") || r.has_exclusive_deal) &&
+          (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)),
       ),
-    [result.rows, activeFilters],
+    [result.rows, activeFilters, deliveryMethod],
   );
   const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
   const badgesBySlug = useMemo(() => deriveBadges(filteredRows), [filteredRows]);
@@ -1815,7 +1921,9 @@ function ResultsBlock({
         ))}
         {organic.length === 0 && (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            {activeFilters.size > 0 ? t("comparator.emptyFiltered") : t("comparator.empty")}
+            {activeFilters.size > 0 || deliveryMethod != null
+              ? t("comparator.emptyFiltered")
+              : t("comparator.empty")}
           </div>
         )}
       </div>
