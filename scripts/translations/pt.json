@@ -567,7 +567,7 @@
   "home.blog.readMore": "Leia mais",
   "comparator.sortBy": "Ordenar por",
   "comparator.sort.received": "Melhor taxa",
-  "comparator.sort.fee": "Menores tarifas",
+  "comparator.sort.fee": "Tarifa mais baixa",
   "comparator.sort.speed": "Mais rápido",
   "comparator.reference": "Referência",
   "comparator.cached": "Em cache",
@@ -637,7 +637,7 @@
   "home.how.aiAside": "Abra o agente da mangomundi para detalhar tarifas, testar outra rota ou conferir a melhor opção — sem criar conta.",
   "home.blog.viewAll": "Ver todas as notas",
   "home.contact.subtitle": "Para equipas de tesouraria e parceiros de câmbio à procura de taxas dedicadas, integrações personalizadas ou uma linha direta com a nossa equipa.",
-  "comparator.sort.overall": "Geral",
+  "comparator.sort.overall": "Recomendado",
   "comparator.sort.mostTrusted": "Mais confiável",
   "comparator.sort.bestBusiness": "Melhor para empresas",
   "comparator.sort.cashPickup": "Retirada em dinheiro",
@@ -661,5 +661,10 @@
   "comparator.legend.cashPickup": "Retirada em dinheiro: quem recebe pode retirar o dinheiro em espécie em um local físico, não só por depósito bancário.",
   "comparator.legend.transparency": "Mais transparente: este provedor é mais claro que os outros sobre como funcionam suas tarifas e a margem cambial.",
   "comparator.legend.largeTransfers": "Transferências grandes: este provedor é adequado para enviar valores altos (geralmente com um gerente de conta dedicado).",
-  "comparator.legend.sponsored": "Oferta patrocinada: mangomundi tem uma parceria comercial com este provedor — sempre revelada, nunca afeta o ranking."
+  "comparator.legend.sponsored": "Oferta patrocinada: mangomundi tem uma parceria comercial com este provedor — sempre revelada, nunca afeta o ranking.",
+  "comparator.sort.recipientGetsMost": "Destinatário recebe mais",
+  "comparator.sort.bestExchangeRate": "Melhor taxa de câmbio",
+  "comparator.sort.more": "Mais critérios",
+  "comparator.table.exchangeRate": "Taxa de câmbio",
+  "comparator.legend.bestExchangeRate": "Melhor taxa de câmbio: a taxa deste provedor é a mais próxima da taxa real de mercado — independente da tarifa fixa, já que uma tarifa de $0 ainda pode esconder uma taxa ruim."
 }
