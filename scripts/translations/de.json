@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "Kein Anbieter erfüllt deine Auswahl unter \"Erfordert\". Versuch, einen Filter zu entfernen.",
   "comparator.badge.sponsored": "Gesponsertes Angebot",
   "comparator.legend.toggle": "Was bedeuten diese Symbole?",
+  "comparator.score.label": "mangomundi-Score",
   "comparator.legend.score": "Score (0-10): eine gewichtete Kombination des aktuellen Sortierkriteriums, relativ zu den für diese Route angezeigten Anbietern — keine universelle oder absolute Bewertung.",
   "comparator.legend.fee": "Niedrigste Gebühr: Dieser Anbieter berechnet für diesen Betrag am wenigsten unter den gezeigten Optionen.",
   "comparator.legend.speed": "Am schnellsten: Das Geld kommt bei diesem Anbieter in der Regel schneller an als bei den anderen gezeigten.",

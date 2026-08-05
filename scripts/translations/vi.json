@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "Không có nhà cung cấp phù hợp với lựa chọn của bạn trong \"Yêu cầu\". Hãy thử bỏ một bộ lọc.",
   "comparator.badge.sponsored": "Ưu đãi được tài trợ",
   "comparator.legend.toggle": "Các biểu tượng này nghĩa là gì?",
+  "comparator.score.label": "điểm mangomundi",
   "comparator.legend.score": "Điểm số (0-10): tổng hợp có trọng số của tiêu chí sắp xếp hiện tại, tương đối so với các nhà cung cấp được hiển thị cho tuyến này — không phải là xếp hạng phổ quát hay tuyệt đối.",
   "comparator.legend.fee": "Phí thấp nhất: nhà cung cấp này tính phí thấp nhất cho số tiền này trong các lựa chọn hiển thị.",
   "comparator.legend.speed": "Nhanh nhất: tiền thường đến nhanh hơn với nhà cung cấp này so với các nhà cung cấp khác.",

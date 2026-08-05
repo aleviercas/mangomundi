@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "Żaden dostawca nie spełnia wyboru w \"Wymaga\". Spróbuj usunąć jeden filtr.",
   "comparator.badge.sponsored": "Oferta sponsorowana",
   "comparator.legend.toggle": "Co oznaczają te ikony?",
+  "comparator.score.label": "wynik mangomundi",
   "comparator.legend.score": "Wynik (0-10): ważona kombinacja bieżącego kryterium sortowania, względem dostawców pokazanych dla tej trasy — nie jest to ocena uniwersalna ani bezwzględna.",
   "comparator.legend.fee": "Najniższa opłata: ten dostawca pobiera najmniej za tę kwotę spośród pokazanych opcji.",
   "comparator.legend.speed": "Najszybszy: pieniądze zwykle docierają szybciej u tego dostawcy niż u innych.",

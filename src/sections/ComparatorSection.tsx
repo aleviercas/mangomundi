@@ -1280,8 +1280,14 @@ export function ComparatorSection({
                 docs/multi-criteria-ranking/delivery-methods-findings.md),
                 never a decorative guess — a tile with no matching provider
                 just shows "—" instead of being hidden, so the option is
-                still visibly there, not silently disappearing. */}
-            <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                still visibly there, not silently disappearing. Always
+                clickable, even with "—": e.g. Broker only ever matches
+                business-segment providers, so on a retail-sized comparison
+                it previews empty — selecting it anyway should surface the
+                real "no providers match" empty state below, same as the
+                Filtros checkboxes already do, not be greyed out as if it
+                were broken. */}
+            <div className="mb-4 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
               {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
                 const preview = deliveryPreview[key];
                 const isActive = deliveryMethod === key;
@@ -1291,21 +1297,20 @@ export function ComparatorSection({
                     type="button"
                     onClick={() => toggleDeliveryMethod(key)}
                     aria-pressed={isActive}
-                    disabled={preview == null}
-                    className={`relative flex flex-col items-center gap-1 rounded-xl border-2 px-3 py-2.5 text-center transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 disabled:cursor-not-allowed disabled:opacity-40 ${
+                    className={`relative flex flex-col items-center gap-0.5 rounded-lg border px-2 py-1.5 text-center transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                       isActive
                         ? "border-[#ff6b5b] bg-[#ff6b5b]/5"
                         : "border-border bg-card hover:border-foreground/30"
                     }`}
                   >
                     {bestDeliveryMethod === key && (
-                      <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-emerald-700">
+                      <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[8px] font-bold uppercase leading-none tracking-wide text-emerald-700">
                         {t("comparator.delivery.bestDeal")}
                       </span>
                     )}
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-xs font-semibold text-foreground">{t(labelKey)}</span>
-                    <span className="text-sm font-bold tabular-nums text-foreground">
+                    <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+                    <span className="text-[11px] font-semibold text-foreground">{t(labelKey)}</span>
+                    <span className="text-xs font-bold tabular-nums text-foreground">
                       {preview != null
                         ? `${preview.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${result.quote}`
                         : "—"}
@@ -1858,29 +1863,40 @@ function ResultsBlock({
   // never scrolling, never clipping a chip. Since each provider renders as
   // its own independent block (not a shared table row), CSS alone can't
   // equalize N siblings' heights without either capping content or hiding
-  // overflow, so this measures each cell's natural (unwrapped-by-a-fixed-
-  // height) content height in JS and applies the max to all of them —
-  // shorter rows simply grow to match, exactly like a real table would.
+  // overflow, so this measures each cell's natural content height in JS and
+  // applies the max to all of them directly via the DOM (NOT via React
+  // state + a style prop): when a re-measure lands on the same max as
+  // before, setState would be a no-op and React would never re-apply the
+  // style, leaving whatever the measurement step's temporary `height:auto`
+  // last wrote in the DOM — that was the actual bug behind rows visibly
+  // drifting back to their natural (uneven) height after any resort/filter
+  // that didn't happen to change the tallest row. Writing the final height
+  // imperatively every time sidesteps that entirely.
   const featuresRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-  const [featuresHeight, setFeaturesHeight] = useState<number | undefined>(undefined);
 
   useLayoutEffect(() => {
     let raf = 0;
     const measure = () => {
-      featuresRefs.current.forEach((el) => {
+      const els = Array.from(featuresRefs.current.values());
+      if (els.length === 0) return;
+      els.forEach((el) => {
         el.style.height = "auto";
       });
-      let max = 0;
-      featuresRefs.current.forEach((el) => {
-        max = Math.max(max, el.scrollHeight);
+      const max = Math.max(...els.map((el) => el.scrollHeight));
+      els.forEach((el) => {
+        el.style.height = `${max}px`;
       });
-      setFeaturesHeight(max || undefined);
     };
     const onResize = () => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(measure);
     };
     measure();
+    // Web fonts (Manrope/Sora) can finish loading/swapping after this first
+    // pass, changing chip text widths and thus wrap points — remeasure once
+    // they're ready so a late font swap can't silently invalidate the
+    // heights we just locked in.
+    document.fonts?.ready?.then(measure).catch(() => {});
     window.addEventListener("resize", onResize);
     return () => {
       cancelAnimationFrame(raf);
@@ -1925,7 +1941,6 @@ function ResultsBlock({
             tExchangeRate={tExchangeRate}
             updatedTime={updatedTime}
             embedded={embedded}
-            featuresHeight={featuresHeight}
             featuresRef={(el) => {
               if (el) featuresRefs.current.set(row.slug, el);
               else featuresRefs.current.delete(row.slug);
@@ -2029,7 +2044,6 @@ function ProviderRow({
   tExchangeRate,
   updatedTime,
   embedded = false,
-  featuresHeight,
   featuresRef,
 }: {
   row: ComparisonResult["rows"][number];
@@ -2053,9 +2067,10 @@ function ProviderRow({
   /** See ResultsBlock — forces the stacked mobile row instead of the
    *  `lg:` desktop grid, which would overflow and clip the CTA button. */
   embedded?: boolean;
-  /** Shared max height (px) computed across every row's Features cell by
-   *  ResultsBlock, so all rows line up instead of scrolling or clipping. */
-  featuresHeight?: number;
+  /** ResultsBlock uses this ref to measure this row's Features cell and
+   *  imperatively set its (and every other row's) height to the shared max
+   *  — see the comment above the measurement effect for why that's done
+   *  directly via the DOM rather than through a React-state style prop. */
   featuresRef: (el: HTMLDivElement | null) => void;
 }) {
   const { t } = useI18n();
@@ -2087,9 +2102,14 @@ function ProviderRow({
     >
       <div className="flex min-w-0 items-center gap-3">
         {score != null && (
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-foreground/20 text-xs font-bold tabular-nums text-foreground">
-            {(score * 10).toFixed(1)}
-          </span>
+          <div className="flex shrink-0 flex-col items-center gap-0.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-foreground/20 text-xs font-bold tabular-nums text-foreground">
+              {(score * 10).toFixed(1)}
+            </span>
+            <span className="text-[8px] font-semibold uppercase leading-none tracking-wide text-muted-foreground">
+              {t("comparator.score.label")}
+            </span>
+          </div>
         )}
         <BrandLogo name={row.name} url={row.website_url ?? row.affiliate_url} slug={row.slug} size={44} />
         <div className="min-w-0">
@@ -2115,21 +2135,18 @@ function ProviderRow({
       {/* Features column — icon + short text (never icon-only: several of
           these aren't self-explanatory, and there's no hover/tooltip on
           mobile, so text is load-bearing, not decoration). Chips wrap
-          normally (nothing is ever hidden or scrolled) and every row is
-          stretched via `featuresHeight` (measured in ResultsBlock across all
-          rows) to match whichever provider has the most chips, so rows with
-          fewer chips grow to line up instead of looking shorter.
-          exclusive_deal lives next to the provider name now (see above), not
-          here, since it's a disclosed sponsorship signal, not a feature. */}
+          normally (nothing is ever hidden or scrolled); ResultsBlock's
+          measurement effect sets this element's height directly via the DOM
+          (via `featuresRef`, not a style prop) to match whichever provider
+          has the most chips, so rows with fewer chips grow to line up
+          instead of looking shorter. exclusive_deal lives next to the
+          provider name now (see above), not here, since it's a disclosed
+          sponsorship signal, not a feature. */}
       <div className="min-w-0">
         <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
           {t("comparator.table.features")}
         </span>
-        <div
-          ref={featuresRef}
-          className="flex flex-wrap content-start items-start gap-1.5"
-          style={featuresHeight != null ? { height: featuresHeight } : undefined}
-        >
+        <div ref={featuresRef} className="flex flex-wrap content-start items-start gap-1.5">
           {(() => {
             type Chip = { key: string; icon: typeof Shield | null; text: string };
             const chips: Chip[] = [];
@@ -2183,7 +2200,11 @@ function ProviderRow({
           {t("fx.totalFee")} ·{" "}
         </span>
         {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
-        <div className="text-[10px]">
+        {/* Reserves a line of height even when a provider has no fee/spread
+            breakdown to show (0% + 0 fixed + 0% spread) — an empty div here
+            would collapse to 0px while providers WITH a breakdown render a
+            real line, unevenly taxing row height depending on content. */}
+        <div className="min-h-[14px] text-[10px]">
           {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
           {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
           {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}

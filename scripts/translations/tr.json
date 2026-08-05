@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "\"Gerekli\" altında seçtiklerinize uyan sağlayıcı yok. Bir filtreyi kaldırmayı deneyin.",
   "comparator.badge.sponsored": "Sponsorlu teklif",
   "comparator.legend.toggle": "Bu simgeler ne anlama geliyor?",
+  "comparator.score.label": "mangomundi puanı",
   "comparator.legend.score": "Puan (0-10): mevcut sıralama kriterinin ağırlıklı bir bileşimi, bu güzergah için gösterilen sağlayıcılara göre — evrensel veya mutlak bir derecelendirme değildir.",
   "comparator.legend.fee": "En düşük ücret: bu sağlayıcı bu tutar için gösterilen seçenekler arasında en az ücreti alıyor.",
   "comparator.legend.speed": "En hızlı: para genellikle bu sağlayıcıda diğerlerinden daha hızlı ulaşır.",

@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "Walang provider na tumutugma sa napili mo sa ilalim ng \"Kailangan\". Subukang alisin ang isang filter.",
   "comparator.badge.sponsored": "Sponsored na alok",
   "comparator.legend.toggle": "Ano ang ibig sabihin ng mga icon na ito?",
+  "comparator.score.label": "iskor ng mangomundi",
   "comparator.legend.score": "Score (0-10): isang pinagsamang timbang batay sa kasalukuyang criteria ng pag-sort, kaugnay sa mga provider na ipinapakita para sa rutang ito — hindi ito isang unibersal o ganap na rating.",
   "comparator.legend.fee": "Pinakamababang bayad: ang provider na ito ang may pinakamababang singil para sa halagang ito.",
   "comparator.legend.speed": "Pinakamabilis: karaniwang mas mabilis dumating ang pera sa provider na ito kumpara sa iba.",

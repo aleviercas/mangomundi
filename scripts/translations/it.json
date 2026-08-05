@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "Nessun fornitore corrisponde alla selezione in \"Richiede\". Provaa rimuovere un filtro.",
   "comparator.badge.sponsored": "Offerta sponsorizzata",
   "comparator.legend.toggle": "Cosa significano queste icone?",
+  "comparator.score.label": "punteggio mangomundi",
   "comparator.legend.score": "Punteggio (0-10): una combinazione ponderata del criterio di ordinamento attuale, relativa ai fornitori mostrati per questa tratta — non è una valutazione universale o assoluta.",
   "comparator.legend.fee": "Costo più basso: questo fornitore addebita meno degli altri per questo importo.",
   "comparator.legend.speed": "Il più veloce: il denaro arriva solitamente prima con questo fornitore rispetto agli altri.",

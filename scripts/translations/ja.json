@@ -661,6 +661,7 @@
   "comparator.emptyFiltered": "「必須条件」で選択した内容に一致するプロバイダーがありません。フィルターを外してみてください。",
   "comparator.badge.sponsored": "スポンサー特典",
   "comparator.legend.toggle": "これらのアイコンの意味は？",
+  "comparator.score.label": "mangomundiスコア",
   "comparator.legend.score": "スコア(0〜10):現在の並び替え基準を加重合成したもので、このルートで表示されているプロバイダーに対する相対値です — 普遍的または絶対的な評価ではありません。",
   "comparator.legend.fee": "最安手数料：表示されている中で、この金額に対して最も手数料が安いプロバイダーです。",
   "comparator.legend.speed": "最速：他のプロバイダーより通常早くお金が届きます。",
