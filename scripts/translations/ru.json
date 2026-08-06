@@ -637,7 +637,7 @@
   "home.how.aiAside": "Откройте агента mangomundi, чтобы разобрать комиссии, попробовать другой маршрут или перепроверить лучший вариант — без аккаунта.",
   "home.blog.viewAll": "Смотреть все статьи",
   "home.contact.subtitle": "Для казначейских команд и FX-партнёров, которым нужны индивидуальные курсы, специальные интеграции или прямая связь с нашей командой.",
-  "comparator.sort.overall": "Рекомендуемый",
+  "comparator.sort.overall": "Оценка",
   "comparator.sort.mostTrusted": "Самый надёжный",
   "comparator.sort.bestBusiness": "Лучший для бизнеса",
   "comparator.sort.cashPickup": "Выдача наличными",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "Лучший курс обмена",
   "comparator.sort.more": "Другие критерии",
   "comparator.table.exchangeRate": "Курс обмена",
-  "comparator.legend.bestExchangeRate": "Лучший курс обмена: курс этого провайдера ближе всего к реальному межбанковскому курсу — независимо от фиксированной комиссии, ведь комиссия $0 всё равно может скрывать плохой курс."
+  "comparator.legend.bestExchangeRate": "Лучший курс обмена: курс этого провайдера ближе всего к реальному межбанковскому курсу — независимо от фиксированной комиссии, ведь комиссия $0 всё равно может скрывать плохой курс.",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

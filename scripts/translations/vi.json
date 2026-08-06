@@ -637,7 +637,7 @@
   "home.how.aiAside": "Mở trợ lý mangomundi để bóc tách phí, thử tuyến khác hoặc kiểm tra lại lựa chọn tốt nhất — không cần tài khoản.",
   "home.blog.viewAll": "Xem tất cả bài viết",
   "home.contact.subtitle": "Dành cho các đội ngũ tài chính doanh nghiệp và đối tác FX đang tìm kiếm tỷ giá riêng, tích hợp tùy chỉnh, hoặc đường dây liên hệ trực tiếp với đội ngũ của chúng tôi.",
-  "comparator.sort.overall": "Đề xuất",
+  "comparator.sort.overall": "Điểm số",
   "comparator.sort.mostTrusted": "Đáng tin cậy nhất",
   "comparator.sort.bestBusiness": "Tốt nhất cho doanh nghiệp",
   "comparator.sort.cashPickup": "Nhận tiền mặt",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "Tỷ giá tốt nhất",
   "comparator.sort.more": "Tiêu chí khác",
   "comparator.table.exchangeRate": "Tỷ giá",
-  "comparator.legend.bestExchangeRate": "Tỷ giá tốt nhất: tỷ giá của nhà cung cấp này gần nhất với tỷ giá thị trường thực — độc lập với phí cố định, vì phí $0 vẫn có thể che giấu một tỷ giá tệ."
+  "comparator.legend.bestExchangeRate": "Tỷ giá tốt nhất: tỷ giá của nhà cung cấp này gần nhất với tỷ giá thị trường thực — độc lập với phí cố định, vì phí $0 vẫn có thể che giấu một tỷ giá tệ.",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

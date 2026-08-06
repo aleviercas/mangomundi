@@ -637,7 +637,7 @@
   "home.how.aiAside": "فیس کی تفصیل، دوسرا روٹ آزمانے یا بہترین آپشن جانچنے کے لیے mangomundi ایجنٹ کھولیں — بغیر اکاؤنٹ۔",
   "home.blog.viewAll": "تمام پوسٹس دیکھیں",
   "home.contact.subtitle": "ٹریژری ٹیموں اور ایف ایکس پارٹنرز کے لیے جو مخصوص ریٹس، حسب ضرورت انٹیگریشنز، یا ہماری ٹیم سے براہ راست رابطہ چاہتے ہیں۔",
-  "comparator.sort.overall": "تجویز کردہ",
+  "comparator.sort.overall": "اسکور",
   "comparator.sort.mostTrusted": "سب سے قابل اعتماد",
   "comparator.sort.bestBusiness": "کاروبار کے لیے بہترین",
   "comparator.sort.cashPickup": "نقد وصولی",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "بہترین ایکسچینج ریٹ",
   "comparator.sort.more": "مزید معیار",
   "comparator.table.exchangeRate": "ایکسچینج ریٹ",
-  "comparator.legend.bestExchangeRate": "بہترین ایکسچینج ریٹ: اس فراہم کنندہ کی شرح حقیقی مڈ مارکیٹ ریٹ کے قریب ترین ہے — اس کی مقررہ فیس سے الگ، کیونکہ 0 ڈالر فیس پھر بھی خراب ریٹ چھپا سکتی ہے۔"
+  "comparator.legend.bestExchangeRate": "بہترین ایکسچینج ریٹ: اس فراہم کنندہ کی شرح حقیقی مڈ مارکیٹ ریٹ کے قریب ترین ہے — اس کی مقررہ فیس سے الگ، کیونکہ 0 ڈالر فیس پھر بھی خراب ریٹ چھپا سکتی ہے۔",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

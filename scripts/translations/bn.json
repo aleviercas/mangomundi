@@ -637,7 +637,7 @@
   "home.how.aiAside": "ফি ভাঙতে, অন্য রুট চেষ্টা করতে বা সেরা বিকল্প যাচাই করতে mangomundi এজেন্ট খুলুন — অ্যাকাউন্ট ছাড়াই।",
   "home.blog.viewAll": "সব পোস্ট দেখুন",
   "home.contact.subtitle": "যেসব ট্রেজারি টিম এবং এফএক্স পার্টনার নির্দিষ্ট রেট, কাস্টম ইন্টিগ্রেশন, অথবা আমাদের টিমের সাথে সরাসরি যোগাযোগ খুঁজছেন, তাদের জন্য।",
-  "comparator.sort.overall": "পরামর্শকৃত",
+  "comparator.sort.overall": "স্কোর",
   "comparator.sort.mostTrusted": "সবচেয়ে বিশ্বস্ত",
   "comparator.sort.bestBusiness": "ব্যবসার জন্য সেরা",
   "comparator.sort.cashPickup": "নগদ উত্তোলন",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "সর্বসেরা বিনিময় হার",
   "comparator.sort.more": "আরও মানদন্ড",
   "comparator.table.exchangeRate": "বিনিময় হার",
-  "comparator.legend.bestExchangeRate": "সর্বসেরা বিনিময় হার: এই প্রদানকারীর হার প্রকৃত মিড-মার্কেট হারের কাছাকাছি — একক ফি থেকে স্বতন্ত্র, কারণ 'বিনামুল্যে ফি' তবু খারাপ হার আডাल করতে পারে।"
+  "comparator.legend.bestExchangeRate": "সর্বসেরা বিনিময় হার: এই প্রদানকারীর হার প্রকৃত মিড-মার্কেট হারের কাছাকাছি — একক ফি থেকে স্বতন্ত্র, কারণ 'বিনামুল্যে ফি' তবু খারাপ হার আডাल করতে পারে।",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

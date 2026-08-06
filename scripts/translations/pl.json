@@ -637,7 +637,7 @@
   "home.how.aiAside": "Otwórz agenta mangomundi, aby rozbić opłaty, wypróbować inną trasę lub sprawdzić najlepszą opcję — bez konta.",
   "home.blog.viewAll": "Zobacz wszystkie wpisy",
   "home.contact.subtitle": "Dla zespołów treasury i partnerów FX szukających dedykowanych kursów, indywidualnych integracji lub bezpośredniego kontaktu z naszym zespołem.",
-  "comparator.sort.overall": "Polecane",
+  "comparator.sort.overall": "Wynik",
   "comparator.sort.mostTrusted": "Najbardziej zaufany",
   "comparator.sort.bestBusiness": "Najlepszy dla firm",
   "comparator.sort.cashPickup": "Odbiór gotówki",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "Najlepszy kurs wymiany",
   "comparator.sort.more": "Więcej kryteriów",
   "comparator.table.exchangeRate": "Kurs wymiany",
-  "comparator.legend.bestExchangeRate": "Najlepszy kurs wymiany: kurs tego dostawcy jest najbliższy realnemu kursowi rynkowemu — niezależnie od opłaty stałej, bo opłata 0 może i tak skrywać zły kurs."
+  "comparator.legend.bestExchangeRate": "Najlepszy kurs wymiany: kurs tego dostawcy jest najbliższy realnemu kursowi rynkowemu — niezależnie od opłaty stałej, bo opłata 0 może i tak skrywać zły kurs.",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

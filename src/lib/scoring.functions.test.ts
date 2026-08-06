@@ -9,6 +9,7 @@ import {
   getTrustTrend,
   flagDecliningProviders,
   type ScorableRow,
+  type BadgeKey,
 } from "./scoring.functions";
 
 describe("SCORE_PROFILES", () => {
@@ -213,10 +214,15 @@ describe("deriveBadges", () => {
     expect(badges.get("most_trusted")).toContain("most_trusted");
   });
 
-  it("awards cash_pickup only to providers that actually support it", () => {
+  it("never awards a cash_pickup badge — moved to DELIVERY_METHOD_PREDICATES in ComparatorSection.tsx", () => {
+    // Even with cash_pickup_available: true present (would have won the old
+    // badge), deriveBadges must never produce a "cash_pickup" entry anymore
+    // — it's no longer a valid BadgeKey at all. Kept as its own test so a
+    // future re-add of this string to BadgeKey doesn't silently reintroduce
+    // the duplicate-source-of-truth bug this removal fixed.
     const badges = deriveBadges(rows);
-    expect(badges.get("most_trusted")).toContain("cash_pickup");
-    expect(badges.get("cheapest")).not.toContain("cash_pickup");
+    const allBadges = Array.from(badges.values()).flat();
+    expect(allBadges).not.toContain("cash_pickup" as unknown as BadgeKey);
   });
 
   it("awards most_transparent to the highest transparency_score", () => {
@@ -237,12 +243,15 @@ describe("deriveBadges", () => {
     expect(badges.get("most_trusted")).not.toContain("exclusive_deal");
   });
 
-  it("does not award best_business when no row has business_focus_score", () => {
-    const noBusinessData = rows.map((r) => ({ ...r, business_focus_score: null }));
-    const badges = deriveBadges(noBusinessData);
-    for (const list of badges.values()) {
-      expect(list).not.toContain("best_business");
-    }
+  it("never awards a best_business badge — removed in favor of the Personal/Empresa segment toggle", () => {
+    // Even with business_focus_score data present (would have won the old
+    // badge outright pre-removal), deriveBadges must never produce one
+    // anymore. Checked by absence from the full flattened badge list, since
+    // "best_business" is no longer a valid BadgeKey at all — there's no
+    // per-badge check left to write.
+    const badges = deriveBadges(rows);
+    const allBadges = Array.from(badges.values()).flat();
+    expect(allBadges).not.toContain("best_business" as unknown as BadgeKey);
   });
 });
 

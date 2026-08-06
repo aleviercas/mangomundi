@@ -637,7 +637,7 @@
   "home.how.aiAside": "Buksan ang mangomundi agent para hatiin ang bayarin, sumubok ng ibang ruta, o i-double-check ang pinakamagandang opsyon — walang account.",
   "home.blog.viewAll": "Tingnan lahat ng post",
   "home.contact.subtitle": "Para sa mga treasury team at FX partner na naghahanap ng dedikadong rate, custom na integrasyon, o direktang linya sa aming team.",
-  "comparator.sort.overall": "Inirerekomenda",
+  "comparator.sort.overall": "Score",
   "comparator.sort.mostTrusted": "Pinaka-mapagkakatiwalaan",
   "comparator.sort.bestBusiness": "Pinakamainam para sa negosyo",
   "comparator.sort.cashPickup": "Pagkuha ng cash",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "Pinakamahusay na exchange rate",
   "comparator.sort.more": "Iba pang pamantayan",
   "comparator.table.exchangeRate": "Exchange rate",
-  "comparator.legend.bestExchangeRate": "Pinakamahusay na exchange rate: ang rate ng provider na ito ang pinakamalapit sa tunay na mid-market rate — hiwalay sa fixed fee nito, dahil ang $0 fee ay maaari pa ring magtago ng masamang rate."
+  "comparator.legend.bestExchangeRate": "Pinakamahusay na exchange rate: ang rate ng provider na ito ang pinakamalapit sa tunay na mid-market rate — hiwalay sa fixed fee nito, dahil ang $0 fee ay maaari pa ring magtago ng masamang rate.",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

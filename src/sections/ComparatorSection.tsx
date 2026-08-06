@@ -1,12 +1,11 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
   ArrowLeftRight,
   Banknote,
-  Briefcase,
   Building2,
   Check,
   Clock,
@@ -86,7 +85,7 @@ const WHITE_FIELD =
   "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
-type FeatureFilterKey = "cash_pickup_available" | "supports_large_tickets" | "has_exclusive_deal";
+type FeatureFilterKey = "supports_large_tickets" | "has_exclusive_deal";
 /** Monito-style "how does the recipient get paid" filter — single-select
  *  (unlike the opt-in requirement chips below, these are mutually exclusive
  *  delivery channels, not stackable requirements), null = no filter. */
@@ -129,20 +128,52 @@ const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labe
  *  "Cash pickup" in both places was confusing (same word, two different
  *  behaviors: one reorders, one hides).
  *
- *  Primary row (Kayak/Google Flights pattern: 4-5 prominent tabs). The
- *  three money-related ones are DELIBERATELY separate, not blended: a
- *  provider can advertise "$0 fee" while hiding a bad exchange rate margin
- *  (or vice versa) — splitting them is the whole point of a neutral
- *  comparator, matching Wise's own "we show the real cost" positioning. */
-const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", "best_exchange_rate", "fastest"];
-/** Secondary criteria — real, useful, but not everyone needs them on every
- *  visit. Tucked into a "More criteria" dropdown instead of crowding the
- *  primary row, same pattern as Skyscanner's "Sort by" overflow menu. */
-const SECONDARY_SORT_CHIPS: SortKey[] = ["most_trusted", "best_business", "most_transparent"];
+ *  Primary row (Kayak/Google Flights pattern). The three money-related
+ *  ones are DELIBERATELY separate, not blended: a provider can advertise
+ *  "$0 fee" while hiding a bad exchange rate margin (or vice versa) —
+ *  splitting them is the whole point of a neutral comparator, matching
+ *  Wise's own "we show the real cost" positioning. "overall" is labeled
+ *  "Score" (see sortLabelKey) — same composite number as the pill on every
+ *  row, not a separately-named editorial pick. Rendered together with
+ *  SECONDARY_SORT_CHIPS as one flat row (see render below) — an earlier
+ *  version tucked the secondary ones behind a "More sort options" dropdown,
+ *  but that hid criteria behind a click, which direct feedback flagged as
+ *  worse than a longer row. Kept as two separate arrays anyway (rather than
+ *  merging into one) since the primary/secondary distinction is still real
+ *  editorially, even though it's no longer expressed as two different
+ *  pieces of UI. */
+const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", "fastest"];
+/** Secondary criteria — see SORT_CHIPS above for why these render in the
+ *  same flat row rather than behind a dropdown. */
+// "best_business" deliberately excluded: the Personal/Empresa segment
+// toggle above the comparator already splits results by business fit, so a
+// dedicated sort chip for it was redundant. The underlying score profile
+// stays (see SCORE_PROFILES) — the AI copilot still uses it for
+// business-flavored questions asked in chat — only this manual chip is gone.
+const SECONDARY_SORT_CHIPS: SortKey[] = ["best_exchange_rate", "most_trusted", "most_transparent"];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
 /** 294000 -> "294K" — keeps the trust chip compact so it doesn't blow out
  *  the fixed-height Features cell on providers with huge review counts. */
+/** Maps the raw composite score (0-1, min-max normalized within the current
+ *  result set — see scoring.functions.ts) onto a 7.0-9.0 display range,
+ *  instead of showing it as 0-10. This is a presentation-only remap: it
+ *  never touches the underlying score used for sorting/badges/featured-row
+ *  selection, only how the number is printed in the pill. Rationale: a
+ *  relative, corridor-specific score (not an absolute quality rating) that
+ *  happens to print as "3.2/10" reads as "this provider is bad", when it
+ *  really just means "weakest of this particular result set" — compressing
+ *  the printed range keeps every row looking like a legitimate, curated
+ *  option while the actual ranking underneath is untouched. Clamped
+ *  defensively even though computeCompositeScores is mathematically
+ *  guaranteed to return [0,1] (weights sum to 1.0, every component
+ *  normalized to [0,1]) — cheap insurance against a future weights change
+ *  breaking that invariant and printing something outside 7-9. */
+function displayScore(rawScore: number): string {
+  const clamped = Math.min(1, Math.max(0, rawScore));
+  return (7 + clamped * 2).toFixed(1);
+}
+
 function compactNumber(n: number): string {
   return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(
     n,
@@ -255,38 +286,14 @@ export function ComparatorSection({
       else next.add(key);
       return next;
     });
-  // Delivery-method tiles (Bank account / Cash / Card / Broker) — separate
+  // Delivery-method chips (Bank account / Cash / Card / Broker) — separate
   // from activeFilters above: single-select, click the active one again to
-  // clear it back to "all methods".
+  // clear it back to "all methods". Folded into the "Requiere" chip row as
+  // a 4th chip group (see render below) rather than a standalone preview
+  // grid — the numeric per-method preview was removed in the redesign.
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | null>(null);
   const toggleDeliveryMethod = (method: DeliveryMethod) =>
     setDeliveryMethod((prev) => (prev === method ? null : method));
-  // Best amount received under each delivery method, computed over the
-  // whole (unfiltered) result set — this is what each tile previews, same
-  // as Monito's "5,020 PLN" under each tab. null when no provider in the
-  // current corridor supports that method at all.
-  const deliveryPreview = useMemo(() => {
-    const preview = {} as Record<DeliveryMethod, number | null>;
-    for (const { key } of DELIVERY_METHODS) {
-      const matching = result?.rows.filter(DELIVERY_METHOD_PREDICATES[key]) ?? [];
-      preview[key] = matching.length > 0 ? Math.max(...matching.map((r) => r.received)) : null;
-    }
-    return preview;
-  }, [result]);
-  // Highest-preview tile gets the "Best deal" tag — data-driven, not
-  // editorial (mirrors how badges/featured are decided elsewhere).
-  const bestDeliveryMethod = useMemo(() => {
-    let best: DeliveryMethod | null = null;
-    let bestVal = -Infinity;
-    for (const { key } of DELIVERY_METHODS) {
-      const v = deliveryPreview[key];
-      if (v != null && v > bestVal) {
-        bestVal = v;
-        best = key;
-      }
-    }
-    return best;
-  }, [deliveryPreview]);
   // Single legend panel (not per-row tooltips) explaining what each Features
   // icon/chip means — icon+text alone still isn't foolproof for a first-time
   // visitor on a decision involving real money, and repeating a tooltip on
@@ -832,7 +839,6 @@ export function ComparatorSection({
       }
     }, 300);
     return () => clearTimeout(handle);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, from, to, segment, sendingCountry, receivingCountry]);
 
   useEffect(() => {
@@ -1283,57 +1289,17 @@ export function ComparatorSection({
                 {t("comparator.results")}
               </h3>
             </div>
-            {/* Delivery-method tiles (Monito-style): single-select "how does
-                the recipient get paid" view switch, each previewing its own
-                best amount — distinct from the "Filtros" checkboxes below,
-                which stack opt-in requirements instead of switching views.
-                Real per-provider data (see
-                docs/multi-criteria-ranking/delivery-methods-findings.md),
-                never a decorative guess — a tile with no matching provider
-                just shows "—" instead of being hidden, so the option is
-                still visibly there, not silently disappearing. Always
-                clickable, even with "—": e.g. Broker only ever matches
-                business-segment providers, so on a retail-sized comparison
-                it previews empty — selecting it anyway should surface the
-                real "no providers match" empty state below, same as the
-                Filtros checkboxes already do, not be greyed out as if it
-                were broken. */}
-            <div className="mb-4 grid grid-cols-2 gap-1.5 sm:grid-cols-4">
-              {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
-                const preview = deliveryPreview[key];
-                const isActive = deliveryMethod === key;
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => toggleDeliveryMethod(key)}
-                    aria-pressed={isActive}
-                    className={`relative flex flex-col items-center gap-0.5 rounded-lg border px-2 py-1.5 text-center transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      isActive
-                        ? "border-[#ff6b5b] bg-[#ff6b5b]/5"
-                        : "border-border bg-card hover:border-foreground/30"
-                    }`}
-                  >
-                    {bestDeliveryMethod === key && (
-                      <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[8px] font-bold uppercase leading-none tracking-wide text-emerald-700">
-                        {t("comparator.delivery.bestDeal")}
-                      </span>
-                    )}
-                    <Icon className="h-3.5 w-3.5 text-muted-foreground" />
-                    <span className="text-[11px] font-semibold text-foreground">{t(labelKey)}</span>
-                    <span className="text-xs font-bold tabular-nums text-foreground">
-                      {preview != null
-                        ? `${preview.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${result.quote}`
-                        : "—"}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <div className="mb-4 flex flex-col gap-2.5">
-              {/* All sort criteria shown as plain chips, primary and
-                  secondary alike — no dropdown to open. Wraps to a second
-                  line on narrow screens instead of hiding options behind a
+            <div className="mb-2.5 flex flex-col gap-2.5">
+              {/* SORT ROW — single-select (sortBy), never reduces the
+                  result set, only reorders it. Visually and semantically
+                  separate from the filters row below: this answers "how do
+                  I want it ordered", filters answer "what am I willing to
+                  see at all". All 7 criteria shown flat, no dropdown — an
+                  earlier version tucked 3 of them behind a "More sort
+                  options" menu, but direct feedback was that every option
+                  should be reachable in one click, so all of them render
+                  here now regardless of row length; wraps to a second line
+                  on narrow screens instead of hiding anything behind a
                   click. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -1356,45 +1322,114 @@ export function ComparatorSection({
                 ))}
               </div>
 
-              {/* Requirement toggles — deliberately NOT a rounded-full pill
-                  like the sort chips above, and always shows an empty
-                  checkbox outline (filled + checkmark only once active), so
-                  these read as checkable requirements to opt into, not as
-                  another "pick one" sort option. */}
+              {/* FILTERS ROW — activeFilters (stackable checkboxes) +
+                  deliveryMethod (single-select) both narrow filteredRows
+                  BEFORE ranking/badges are computed, so a "cheapest" badge
+                  always reflects the cheapest among what's actually visible
+                  right now. Grouped into 3 semantic clusters (Tags / Transfer
+                  size / Delivery method) instead of one flat run of chips —
+                  each group is its own visual unit, separated by a divider,
+                  so "these 4 are alternatives to each other" (delivery) reads
+                  differently from "these are independent yes/no toggles"
+                  (tags, transfer size). Sponsored stays first per an earlier
+                  explicit decision (it's the one disclosure-related
+                  requirement, ahead of pure capability ones) even though
+                  it's now visually its own single-item "Tags" group rather
+                  than leading a flat list. flex-wrap (not overflow-x-auto)
+                  — a horizontal-scroll strip was tried first, but at the
+                  440px reference width of the embeddable widget (see
+                  EmbedComparator/EmbedWidgetSection) there wasn't enough
+                  visible width to hint that more content existed off-screen,
+                  so it just looked cut off instead of scrollable. Wrapping
+                  onto additional lines costs vertical space instead, but
+                  never hides anything. */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="mr-1 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <span className="mr-1 inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
                 </span>
-                {(
-                  [
-                    ["cash_pickup_available", "comparator.sort.cashPickup"],
-                    ["supports_large_tickets", "comparator.sort.largeTransfers"],
-                    ["has_exclusive_deal", "comparator.badge.sponsored"],
-                  ] as const
-                ).map(([key, labelKey]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => toggleFilter(key)}
-                    aria-pressed={activeFilters.has(key)}
-                    className={`inline-flex h-8 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      activeFilters.has(key)
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-input bg-card text-foreground hover:border-foreground/30"
+
+                {/* Tags */}
+                <button
+                  type="button"
+                  onClick={() => toggleFilter("has_exclusive_deal")}
+                  aria-pressed={activeFilters.has("has_exclusive_deal")}
+                  className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    activeFilters.has("has_exclusive_deal")
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-input bg-card text-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  <span
+                    className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                      activeFilters.has("has_exclusive_deal")
+                        ? "border-background bg-background"
+                        : "border-muted-foreground/60"
                     }`}
                   >
-                    <span
-                      className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
-                        activeFilters.has(key)
-                          ? "border-background bg-background"
-                          : "border-muted-foreground/60"
+                    {activeFilters.has("has_exclusive_deal") && (
+                      <Check className="h-2.5 w-2.5 text-foreground" />
+                    )}
+                  </span>
+                  {t("comparator.badge.sponsored")}
+                </button>
+
+                <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
+
+                {/* Transfer size */}
+                <button
+                  type="button"
+                  onClick={() => toggleFilter("supports_large_tickets")}
+                  aria-pressed={activeFilters.has("supports_large_tickets")}
+                  className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    activeFilters.has("supports_large_tickets")
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-input bg-card text-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  <span
+                    className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                      activeFilters.has("supports_large_tickets")
+                        ? "border-background bg-background"
+                        : "border-muted-foreground/60"
+                    }`}
+                  >
+                    {activeFilters.has("supports_large_tickets") && (
+                      <Check className="h-2.5 w-2.5 text-foreground" />
+                    )}
+                  </span>
+                  {t("comparator.sort.largeTransfers")}
+                </button>
+
+                <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
+
+                {/* Delivery method — single-select, mutually exclusive
+                    (radio-like, hence pill/rounded-full instead of the
+                    checkbox styling above), so it gets its own group label
+                    reusing the existing "Receive via" copy instead of the
+                    generic checkbox affordance. */}
+                <span className="shrink-0 text-[11px] text-muted-foreground">
+                  {t("comparator.delivery.label")}
+                </span>
+                {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
+                  const isActive = deliveryMethod === key;
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => toggleDeliveryMethod(key)}
+                      aria-pressed={isActive}
+                      className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        isActive
+                          ? "border-foreground bg-foreground text-background"
+                          : "border-input bg-card text-foreground hover:border-foreground/30"
                       }`}
                     >
-                      {activeFilters.has(key) && <Check className="h-2.5 w-2.5 text-foreground" />}
-                    </span>
-                    {t(labelKey)}
-                  </button>
-                ))}
+                      <Icon className="h-3.5 w-3.5" />
+                      {t(labelKey)}
+                    </button>
+                  );
+                })}
+
                 {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
                     both desktop (click) and mobile (tap), no hover needed. */}
@@ -1402,10 +1437,19 @@ export function ComparatorSection({
                   type="button"
                   onClick={() => setShowLegend(true)}
                   aria-label={t("comparator.legend.toggle")}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
+                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
                 >
                   <Info className="h-3.5 w-3.5" />
                 </button>
+              </div>
+
+              {/* Helper caption — what "Puntaje"/Score drives, and that
+                  "Patrocinado"/Sponsored is a disclosure, never a ranking
+                  boost. Rendered via ReactMarkdown (already used for
+                  chat.welcome above) so the bold spans translate correctly
+                  across all 20 locales without hardcoding word position. */}
+              <div className="text-[11px] leading-relaxed text-muted-foreground [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-foreground">
+                <ReactMarkdown>{t("comparator.rankingExplainer")}</ReactMarkdown>
               </div>
             </div>
             <Dialog open={showLegend} onOpenChange={setShowLegend}>
@@ -1424,7 +1468,6 @@ export function ComparatorSection({
                       [Percent, "comparator.legend.bestExchangeRate"],
                       [Zap, "comparator.legend.speed"],
                       [Shield, "comparator.legend.trust"],
-                      [Briefcase, "comparator.legend.business"],
                       [Banknote, "comparator.legend.cashPickup"],
                       [Eye, "comparator.legend.transparency"],
                       [ArrowLeftRight, "comparator.legend.largeTransfers"],
@@ -1451,14 +1494,11 @@ export function ComparatorSection({
               tRatesSource={t("fx.ratesSource")}
               tAt={t("fx.at")}
               tRecipient={t("fx.recipient")}
-              tFeatures={t("comparator.table.features")}
               tTotalFee={t("fx.totalFee")}
               tSpeed={t("fx.speed")}
               tExchangeRate={t("comparator.table.exchangeRate")}
               tCta={t("retail.cta")}
-              tProvider={t("cmp.provider")}
               tNeutrality={t("comparator.disclaimer.neutrality")}
-              embedded={embedded}
             />
           </div>
         )}
@@ -1774,14 +1814,11 @@ function ResultsBlock({
   tRatesSource,
   tAt,
   tRecipient,
-  tFeatures,
   tTotalFee,
   tSpeed,
   tExchangeRate,
   tCta,
-  tProvider,
   tNeutrality,
-  embedded = false,
 }: {
   result: ComparisonResult;
   amount: number;
@@ -1794,21 +1831,11 @@ function ResultsBlock({
   tRatesSource: string;
   tAt: string;
   tRecipient: string;
-  tFeatures: string;
   tTotalFee: string;
   tSpeed: string;
   tExchangeRate: string;
   tCta: string;
-  tProvider: string;
   tNeutrality: string;
-  /** True inside the embeddable widget (narrow, fixed-width container). When
-   *  true we force the mobile/stacked row layout unconditionally instead of
-   *  relying on the `lg:` viewport breakpoint — a widget rendered inline in
-   *  a wide host page (e.g. the home page's own live preview, which isn't
-   *  sandboxed in an iframe) would otherwise switch to the desktop table
-   *  layout, which is wider than the widget's container and gets clipped by
-   *  `overflow-hidden`, hiding the rightmost column (the CTA button). */
-  embedded?: boolean;
 }) {
   const { t } = useI18n();
 
@@ -1819,7 +1846,6 @@ function ResultsBlock({
     () =>
       result.rows.filter(
         (r) =>
-          (!activeFilters.has("cash_pickup_available") || r.cash_pickup_available) &&
           (!activeFilters.has("supports_large_tickets") || r.supports_large_tickets) &&
           (!activeFilters.has("has_exclusive_deal") || r.has_exclusive_deal) &&
           (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)),
@@ -1828,14 +1854,18 @@ function ResultsBlock({
   );
   const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
   const badgesBySlug = useMemo(() => deriveBadges(filteredRows), [filteredRows]);
-  // Composite score (0-10, Monito-style circle) — same weighted formula
-  // already driving the sort/badges, just made visible per-row instead of
-  // only crowning a single winner. Relative to the current corridor's
-  // result set (min-max normalized), not an absolute universal rating —
-  // see the legend modal for that caveat.
+  // Composite score (0-1, remapped to 7-9 for display — see displayScore)
+  // is INTENTIONALLY always computed with the "overall" profile, never
+  // `sortBy`. Score is meant to read as one stable, objective number per
+  // provider — if it recalculated per sort criterion (it used to), picking
+  // "Fastest" would silently change what "8.4" means without anyone
+  // choosing that, which is confusing at best and looks like the number is
+  // arbitrary at worst. `sortBy` still fully controls actual row ORDER
+  // (see `organic` below) — only the printed Score number is now decoupled
+  // from it.
   const scoresBySlug = useMemo(
-    () => computeCompositeScores(filteredRows, sortBy),
-    [filteredRows, sortBy],
+    () => computeCompositeScores(filteredRows, "overall"),
+    [filteredRows],
   );
   // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
   // in scoring.functions.ts) picks one value for this page view and doesn't
@@ -1870,92 +1900,22 @@ function ResultsBlock({
     second: "2-digit",
   });
 
-  // Every row's Features cell must be exactly as tall as the tallest one —
-  // never scrolling, never clipping a chip. Since each provider renders as
-  // its own independent block (not a shared table row), CSS alone can't
-  // equalize N siblings' heights without either capping content or hiding
-  // overflow, so this measures each cell's natural content height in JS and
-  // applies the max to all of them directly via the DOM (NOT via React
-  // state + a style prop): when a re-measure lands on the same max as
-  // before, setState would be a no-op and React would never re-apply the
-  // style, leaving whatever the measurement step's temporary `height:auto`
-  // last wrote in the DOM — that was the actual bug behind rows visibly
-  // drifting back to their natural (uneven) height after any resort/filter
-  // that didn't happen to change the tallest row. Writing the final height
-  // imperatively every time sidesteps that entirely.
-  const featuresRefs = useRef<Map<string, HTMLDivElement>>(new Map());
-
-  useLayoutEffect(() => {
-    let raf = 0;
-    const measure = () => {
-      const els = Array.from(featuresRefs.current.values());
-      if (els.length === 0) return;
-      els.forEach((el) => {
-        el.style.height = "auto";
-      });
-      const max = Math.max(...els.map((el) => el.scrollHeight));
-      els.forEach((el) => {
-        el.style.height = `${max}px`;
-      });
-    };
-    const onResize = () => {
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(measure);
-    };
-    measure();
-    // Web fonts (Manrope/Sora) can finish loading/swapping after this first
-    // pass, changing chip text widths and thus wrap points — remeasure once
-    // they're ready so a late font swap can't silently invalidate the
-    // heights we just locked in.
-    document.fonts?.ready?.then(measure).catch(() => {});
-    window.addEventListener("resize", onResize);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [displayRows]);
-
   return (
     <div className="min-w-0">
       <div className="overflow-hidden rounded-2xl border border-border bg-card">
-        {/* Dark header row (brand navy + white) so the table reads as a table.
-            Never shown when embedded — the widget always uses the stacked
-            mobile row layout below, which has no separate header row. */}
-        <div
-          className={
-            embedded
-              ? "hidden"
-              : "hidden grid-cols-[minmax(205px,1.8fr)_minmax(132px,1.1fr)_minmax(62px,0.5fr)_minmax(118px,1fr)_minmax(108px,0.9fr)_minmax(128px,1.15fr)_56px] gap-4 border-b border-border bg-slate-900 px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-white lg:grid"
-          }
-        >
-          <div className="min-w-0">{tProvider}</div>
-          <div className="min-w-0">{tFeatures}</div>
-          <div className="min-w-0 text-right">{tSpeed}</div>
-          <div className="min-w-0 text-right">{tExchangeRate}</div>
-          <div className="min-w-0 text-right">{tTotalFee}</div>
-          <div className="min-w-0 text-right">{tRecipient}</div>
-          <div />
-        </div>
         {displayRows.map((row) => (
           <ProviderRow
             key={row.slug}
             row={row}
             quote={result.quote}
             base={result.base}
-            isBest={row.slug === featuredSlug}
-            sortBy={sortBy}
             badges={badgesBySlug.get(row.slug) ?? []}
             score={scoresBySlug.get(row.slug) ?? null}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             tSpeed={tSpeed}
             tExchangeRate={tExchangeRate}
-            updatedTime={updatedTime}
-            embedded={embedded}
-            featuresRef={(el) => {
-              if (el) featuresRefs.current.set(row.slug, el);
-              else featuresRefs.current.delete(row.slug);
-            }}
+            tRecipient={tRecipient}
           />
         ))}
         {organic.length === 0 && (
@@ -1997,10 +1957,6 @@ function badgeLabelKey(b: BadgeKey): string | null {
       return "comparator.sort.speed";
     case "most_trusted":
       return "comparator.sort.mostTrusted";
-    case "best_business":
-      return "comparator.sort.bestBusiness";
-    case "cash_pickup":
-      return "comparator.sort.cashPickup";
     case "most_transparent":
       return "comparator.sort.mostTransparent";
     case "large_transfers":
@@ -2026,10 +1982,6 @@ function badgeIcon(b: BadgeKey) {
       return Zap;
     case "most_trusted":
       return Shield;
-    case "best_business":
-      return Briefcase;
-    case "cash_pickup":
-      return Banknote;
     case "most_transparent":
       return Eye;
     case "large_transfers":
@@ -2045,229 +1997,266 @@ function ProviderRow({
   row,
   quote,
   base,
-  isBest,
-  sortBy,
   badges,
   score,
   onClick,
   tCta,
   tSpeed,
   tExchangeRate,
-  updatedTime,
-  embedded = false,
-  featuresRef,
+  tRecipient,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
   base: string;
-  isBest: boolean;
-  sortBy: SortKey;
   badges: BadgeKey[];
-  /** Composite score (0-1) for the active sort profile, same formula that
-   *  drives ranking/badges — shown as a 0-10 circle, Monito-style, but
-   *  relative to the current corridor's result set, not an absolute rating
-   *  (see the legend modal). null if this row wasn't part of the scored
-   *  set (shouldn't normally happen). */
+  /** Composite score (0-1), ALWAYS the "overall" profile regardless of the
+   *  active sortBy — see the useMemo in ResultsBlock for why it's
+   *  intentionally decoupled from the sort criterion. Shown as the
+   *  "Puntaje N" pill above the logo, relative to the current corridor's
+   *  result set, not an absolute rating (see the legend modal). null if
+   *  this row wasn't part of the scored set (shouldn't normally happen). */
   score: number | null;
   onClick: () => void;
   tCta: string;
   tSpeed: string;
   tExchangeRate: string;
-  /** Real HH:mm:ss the quote's rate snapshot was cached — shown per row. */
-  updatedTime: string;
-  /** See ResultsBlock — forces the stacked mobile row instead of the
-   *  `lg:` desktop grid, which would overflow and clip the CTA button. */
-  embedded?: boolean;
-  /** ResultsBlock uses this ref to measure this row's Features cell and
-   *  imperatively set its (and every other row's) height to the shared max
-   *  — see the comment above the measurement effect for why that's done
-   *  directly via the DOM rather than through a React-state style prop. */
-  featuresRef: (el: HTMLDivElement | null) => void;
+  tRecipient: string;
 }) {
   const { t } = useI18n();
+  // Derived from speed_hours ONLY — deliberately not delivery_minutes.
+  // delivery_minutes is a separate, independently-sourced DB column
+  // (src/lib/fx.functions.ts) that isn't guaranteed to stay in sync with
+  // speed_hours, which is the ONLY field the scoring/sort/badge engine
+  // reads (see ScorableRow in scoring.functions.ts — it doesn't even have
+  // a delivery_minutes field). Previously this preferred delivery_minutes
+  // when present, which could show a row's time as, say, "30m" while it
+  // was actually ranked by a speed_hours value that disagreed — sorting
+  // by "Fastest" was always correct under the hood, but the printed label
+  // could contradict the order it was printed in, which reads as "broken
+  // sorting" even though it isn't. Trade-off: this loses delivery_minutes'
+  // finer-than-hour precision (e.g. "30m") in the row label. If that
+  // precision is worth keeping, the real fix is reconciling the two
+  // columns at the data source (fx.functions.ts) so speed_hours itself
+  // becomes the single authoritative value everywhere — bigger, riskier
+  // change, flagged separately rather than done here.
   const deliveryLabel =
-    row.delivery_minutes != null
-      ? row.delivery_minutes < 60
-        ? `${row.delivery_minutes}m`
-        : row.delivery_minutes < 60 * 24
-          ? `${Math.round(row.delivery_minutes / 60)}h`
-          : `${Math.round(row.delivery_minutes / 60 / 24)}d`
-      : row.speed_hours < 1
-        ? "<1h"
-        : row.speed_hours <= 24
-          ? `${Math.round(row.speed_hours)}h`
-          : `${Math.round(row.speed_hours / 24)}d`;
+    row.speed_hours < 1
+      ? "<1h"
+      : row.speed_hours <= 24
+        ? `${Math.round(row.speed_hours)}h`
+        : `${Math.round(row.speed_hours / 24)}d`;
 
   const ratePct = row.rate_vs_market_pct;
   const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}%`;
   const ratePctClass =
     ratePct >= -0.25 ? "text-emerald-600" : ratePct >= -1 ? "text-amber-600" : "text-destructive";
 
+  // Feature highlight chips: trust score first (when we have data for it),
+  // then only the badges that actually apply to this row — no
+  // placeholder/hidden chips for inactive badges (the container below
+  // reserves a fixed min-height instead, so rows without extra badges don't
+  // collapse). Regulator now lives in the provider identity column, not
+  // here — see the block below.
+  const highlightChips = (() => {
+    type Chip = { key: string; icon: typeof Shield | null; text: string };
+    const chips: Chip[] = [];
+    for (const b of badges) {
+      if (b === "exclusive_deal") continue;
+      const labelKey = badgeLabelKey(b);
+      if (!labelKey) continue;
+      chips.push({ key: b, icon: badgeIcon(b), text: t(labelKey) });
+    }
+    // Delivery-method pills — derived from the SAME predicate map that
+    // drives the filter chips (DELIVERY_METHOD_PREDICATES), so "this row
+    // qualifies" can never disagree between the filter and the row pill.
+    // Every method the row supports gets a pill, always, independent of
+    // whether that method is the one currently selected in the filter row
+    // — this is what fixed the old inconsistency where only "Cash" ever
+    // got a pill (via a since-removed, separately-implemented cash_pickup
+    // badge) while Bank account/Card/Broker never did.
+    for (const { key, icon, labelKey } of DELIVERY_METHODS) {
+      if (!DELIVERY_METHOD_PREDICATES[key](row)) continue;
+      chips.push({ key: `delivery_${key}`, icon, text: t(labelKey) });
+    }
+    return chips;
+  })();
+
   return (
     <div
-      className={`grid grid-cols-1 gap-2 border-b border-border px-4 py-4 last:border-b-0 ${
-        embedded
-          ? ""
-          : "lg:grid-cols-[minmax(205px,1.8fr)_minmax(132px,1.1fr)_minmax(62px,0.5fr)_minmax(118px,1fr)_minmax(108px,0.9fr)_minmax(128px,1.15fr)_56px] lg:items-center lg:gap-4"
-      } ${isBest ? "bg-primary/5" : ""}`}
+      className={`relative flex flex-wrap items-start gap-3.5 border-b border-border px-5 pb-3.5 transition-colors last:border-b-0 hover:bg-muted/20 ${
+        row.has_exclusive_deal ? "pt-[26px]" : "pt-3.5"
+      }`}
     >
-      <div className="min-w-0">
-        {/* Score sits above the logo/name line, not beside it — a badge
-            inline with the logo was eating into the column's already-tight
-            width and crowding out longer provider names. Plain text, no
-            circle/border: it only needs to read as a small label+number,
-            not compete visually with the logo. */}
-        {score != null && (
-          <div className="mb-1 flex items-baseline gap-1">
-            <span className="text-[9px] font-semibold uppercase tracking-wide text-muted-foreground">
-              {t("comparator.score.label")}
+      {/* Sponsored disclosure — a corner tab, not an inline badge next to
+          the name, so it never crowds the Score pill above. Reuses the same
+          comparator.badge.sponsored copy/key as the "Sponsored offer" filter
+          chip in the Requiere row (not a separate sponsoredDisclosure string)
+          so the wording is identical wherever it appears, in every language
+          — one already-fully-translated key instead of two that could drift.
+          Always says exactly what it is: a disclosed commercial placement,
+          never a merit ranking (see the caption under the sort/filter
+          rows). Neutral gray, not amber — the accent color (#ff6b5b) is
+          reserved exclusively for the CTA button now, on purpose: an amber
+          "sponsored" tag and an orange "featured/best" signal both reading
+          as warm accent colors on the same row made it easy to mentally
+          conflate "this row is highlighted" with "this row paid to be
+          here", which is exactly the confusion a neutral disclosure color
+          avoids — the tag should read as informational, not as a second
+          competing brand accent. */}
+      {row.has_exclusive_deal && (
+        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-border bg-muted px-3 py-1 text-[10px] font-extrabold text-muted-foreground">
+          <Sparkle className="mr-1 inline h-2.5 w-2.5" />
+          {t("comparator.badge.sponsored")}
+        </span>
+      )}
+
+      {/* Provider identity — centered column, not left-aligned: Score badge
+          on top, then logo, name, regulator. Fixed-height slots (score
+          badge, regulator line) so every row's identity block lines up even
+          when a provider has no regulator on file. */}
+      {/* mx-auto — when this block is alone on its own wrapped line (narrow
+          widget/mobile widths), flex-start's default left alignment left it
+          looking stuck to the edge with dead space beside it. mx-auto lets
+          it consume that leftover space as margin on both sides instead,
+          centering just this block. Deliberately NOT a row-level
+          justify-center: that would also re-center the Receive+CTA block
+          whenever IT ends up alone on a line, breaking its intentional
+          right-alignment (the amount+button are meant to hug the row's
+          right edge, not float in the middle). */}
+      <div className="mx-auto flex w-[208px] flex-none flex-col items-center gap-1.5 text-center">
+        <div className="flex h-[18px] items-center justify-center">
+          {/* De-emphasized on purpose — plain text, no pill/background,
+              smaller than before. It used to be a filled badge sitting
+              right above the logo, competing with the amount for "first
+              thing you see" — the amount is the number that should win
+              that contest (Kayak-style: price dominates, everything else
+              is secondary), so this stepped back to a quiet label instead
+              of a loud one. Still real data, still visible, just not
+              shouting. */}
+          {score != null && (
+            <span className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/80">
+              {t("comparator.score.label")} {displayScore(score)}
             </span>
-            <span className="text-xs font-bold tabular-nums text-foreground">
-              {(score * 10).toFixed(1)}
-            </span>
+          )}
+        </div>
+        <BrandLogo
+          name={row.name}
+          url={row.website_url ?? row.affiliate_url}
+          slug={row.slug}
+          size={36}
+          rounded={false}
+          className="rounded-sm border border-border bg-white"
+        />
+        <div className="max-w-full truncate text-sm font-semibold text-foreground">{row.name}</div>
+        <div className="flex h-[14px] items-center gap-1 text-[10px] text-muted-foreground">
+          {row.regulator && (
+            <>
+              <Shield className="h-2.5 w-2.5" /> {row.regulator}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Stats — mini-strip (speed/rate/fee) on a shaded background, then
+          the feature-highlight chips below. flex-basis + min-w-0 on each
+          mini-strip cell (never a fixed px min-width) is what lets this
+          degrade to a stacked card under ~600px without clipping. */}
+      {/* min-w-0 (not a hard floor like 300px) — this block already wraps
+          internally (the mini-strip below has its own flex-wrap + min-w-0
+          cells), so it doesn't need one. A 300px floor here was the actual
+          cause of the widget's scroll issue: at the widget's 440px
+          reference width there isn't 300px of room left after the Provider
+          block + padding, so the row couldn't wrap cleanly. It was also
+          borderline-broken on plain mobile — an iPhone SE's ~293px of
+          available content width (375px viewport minus the section's own
+          padding) is already narrower than 300px, which would have forced
+          horizontal overflow on the whole row. Removing the floor lets this
+          block compress as narrow as it needs to instead. */}
+      <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-3">
+        {/* Weight dialed down from font-semibold — this strip shouldn't
+            visually compete with the amount on the right for "first thing
+            you notice"; it's supporting detail, not the headline number.
+            Lighter container tint (bg-muted/30, was /50) for the same
+            reason. */}
+        <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/30 px-2.5 py-2 text-center">
+          <div className="min-w-0 flex-[1_1_70px]">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              {tSpeed}
+            </div>
+            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-[13px] font-medium text-foreground">
+              <Clock className="h-3 w-3" /> {deliveryLabel}
+            </div>
           </div>
-        )}
-        <div className="flex min-w-0 items-center gap-3">
-          <BrandLogo
-            name={row.name}
-            url={row.website_url ?? row.affiliate_url}
-            slug={row.slug}
-            size={44}
-          />
-          {/* flex-nowrap (not wrap): the isBest/sponsored badges are rare
-              (one featured row, occasional exclusive deal) — letting them
-              wrap the name onto a second line made just those rows taller
-              than every other row. Truncating the name instead keeps every
-              row exactly one line; the full name is still the actual text
-              node (truncation is CSS-only), so it stays available to
-              screen readers and copy/paste without a native title tooltip. */}
-          <div className="flex min-w-0 flex-nowrap items-center gap-1.5 overflow-hidden">
-            <span className="truncate font-semibold text-foreground">{row.name}</span>
-            {isBest && (
-              <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold uppercase text-primary-foreground">
-                {t(sortLabelKey(sortBy))}
-              </span>
-            )}
-            {/* Disclosed sponsorship signal — always next to the name (not
-                buried in Features), so it's the first thing anyone sees, and
-                always says exactly what it is: a paid/negotiated placement,
-                never disguised as a merit ranking. */}
-            {row.has_exclusive_deal && (
-              <span className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800">
-                <Sparkle className="h-2.5 w-2.5" /> {t("comparator.badge.sponsored")}
-              </span>
+          <div className="min-w-0 flex-[1_1_110px]">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              {tExchangeRate}
+            </div>
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
+              {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}{" "}
+              <span className={ratePctClass}>({ratePctLabel})</span>
+            </div>
+          </div>
+          <div className="min-w-0 flex-[1_1_90px]">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t("fx.totalFee")}
+            </div>
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
+              {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
+            </div>
+            {/* Fee/rate split is the whole point of a neutral comparator (a
+                "$0 fee" headline can still hide a bad spread) — kept as a
+                small subline rather than dropped, even though the compact
+                mini-strip cell wasn't in the design reference. */}
+            {(row.fee_percent_applied > 0 ||
+              row.fee_fixed_applied > 0 ||
+              row.spread_applied > 0) && (
+              <div className="text-[9px] leading-snug text-muted-foreground">
+                {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
+                {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
+                {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
+              </div>
             )}
           </div>
         </div>
-      </div>
-      {/* Features column — icon + short text (never icon-only: several of
-          these aren't self-explanatory, and there's no hover/tooltip on
-          mobile, so text is load-bearing, not decoration). Chips wrap
-          normally (nothing is ever hidden or scrolled); ResultsBlock's
-          measurement effect sets this element's height directly via the DOM
-          (via `featuresRef`, not a style prop) to match whichever provider
-          has the most chips, so rows with fewer chips grow to line up
-          instead of looking shorter. exclusive_deal lives next to the
-          provider name now (see above), not here, since it's a disclosed
-          sponsorship signal, not a feature. */}
-      <div className="min-w-0">
-        <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
-          {t("comparator.table.features")}
-        </span>
-        <div ref={featuresRef} className="flex flex-wrap content-start items-start gap-1.5">
-          {(() => {
-            type Chip = { key: string; icon: typeof Shield | null; text: string };
-            const chips: Chip[] = [];
-            if (row.regulator) {
-              chips.push({ key: "regulator", icon: Shield, text: row.regulator });
-            }
-            if (row.review_count > 0 && row.trust_score != null) {
-              chips.push({
-                key: "trust",
-                icon: Star,
-                text: `${row.trust_score.toFixed(1)} (${compactNumber(row.review_count)} ${t("comparator.table.reviews")})`,
-              });
-            }
-            for (const b of badges) {
-              if (b === "exclusive_deal") continue;
-              const labelKey = badgeLabelKey(b);
-              if (!labelKey) continue;
-              if (isBest && labelKey === sortLabelKey(sortBy)) continue;
-              chips.push({ key: b, icon: badgeIcon(b), text: t(labelKey) });
-            }
-            return chips.map((c) => (
+        <div className="min-h-[26px]">
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
+            {row.review_count > 0 && row.trust_score != null && (
+              <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
+                <Star className="h-2.5 w-2.5" /> {row.trust_score.toFixed(1)} (
+                {compactNumber(row.review_count)} {t("comparator.table.reviews")})
+              </span>
+            )}
+            {highlightChips.map((c) => (
               <span
                 key={c.key}
-                className="inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full bg-muted py-0.5 pl-0.5 pr-2.5 text-[10px] font-semibold text-foreground"
               >
-                {c.icon && <c.icon className="h-2.5 w-2.5 shrink-0" />} {c.text}
+                <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white">
+                  {c.icon && <c.icon className="h-2.5 w-2.5" />}
+                </span>
+                {c.text}
               </span>
-            ));
-          })()}
+            ))}
+          </div>
         </div>
       </div>
-      <div className={`min-w-0 text-sm text-muted-foreground ${embedded ? "" : "lg:text-right"}`}>
-        <span className={`text-[10px] uppercase ${embedded ? "" : "lg:hidden"}`}>{tSpeed} · </span>
-        <span className="inline-flex items-center gap-1">
-          <Clock className="h-3 w-3" /> {deliveryLabel}
-        </span>
-      </div>
-      <div className={`min-w-0 text-sm tabular-nums ${embedded ? "" : "lg:text-right"}`}>
-        <span className={`text-[10px] uppercase text-muted-foreground ${embedded ? "" : "lg:hidden"}`}>
-          {tExchangeRate} ·{" "}
-        </span>
-        {/* min-h reserves room for a wrap: "1,234.5678 IDR (-1.23%)" is
-            longer than "0.85 EUR (+0.02%)" — some corridors will wrap to a
-            second line at this column's width and others won't, so every
-            row reserves the same 2-line space rather than only the ones
-            that happen to wrap growing taller than their neighbors. */}
-        <div className="leading-snug lg:min-h-[38px]">
-          <span className="text-foreground">
-            {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
-          </span>{" "}
-          <span className={ratePctClass}>({ratePctLabel})</span>
+
+      {/* Receive + CTA — kept at the row's end (Kayak/Skyscanner scan
+          pattern), vertically centered with the row rather than pinned to
+          the top. */}
+      <div className="flex flex-[1_1_220px] items-center justify-end gap-4">
+        <div className="text-right">
+          <div className="whitespace-nowrap text-[27px] font-extrabold leading-none text-foreground">
+            {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+            <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
+          </div>
+          <div className="text-[10px] text-muted-foreground">{tRecipient}</div>
         </div>
-      </div>
-      <div
-        className={`min-w-0 text-sm tabular-nums text-muted-foreground ${embedded ? "" : "lg:text-right"}`}
-      >
-        <span className={`text-[10px] uppercase ${embedded ? "" : "lg:hidden"}`}>
-          {t("fx.totalFee")} ·{" "}
-        </span>
-        {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
-        {/* Reserves up to 2 lines of height regardless of content: a
-            provider with no fee/spread breakdown (0% + 0 fixed + 0%
-            spread) would otherwise collapse this div to 0px, and a
-            provider whose breakdown has all three parts wraps to a second
-            line at this column's width — either way, every row reserves
-            the same space instead of taxing row height unevenly. */}
-        <div className="min-h-[14px] text-[10px] leading-snug lg:min-h-[26px]">
-          {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
-          {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
-          {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
-        </div>
-      </div>
-      <div className={`min-w-0 ${embedded ? "" : "lg:text-right"}`}>
-        {/* whitespace-nowrap: this is the hero number, wrapping it onto two
-            lines for large corridor amounts (COP, IDR...) would look broken
-            regardless of row-height concerns, and would make this row taller
-            than its neighbors besides. */}
-        <div className="whitespace-nowrap text-lg font-bold tabular-nums text-foreground">
-          {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-          <span className="text-xs font-normal text-muted-foreground">{quote}</span>
-        </div>
-        <div className="text-[10px] tabular-nums text-muted-foreground">
-          {t("fx.updated")} {updatedTime}
-        </div>
-      </div>
-      <div className={embedded ? "" : "lg:text-right"}>
         {row.affiliate_url && (
           <button
             onClick={onClick}
             aria-label={`${tCta} — ${row.name}`}
-            className={`btn-cta inline-flex h-10 w-full items-center justify-center rounded-md px-3 text-xs font-semibold leading-tight ${
-              embedded ? "" : "lg:h-9 lg:w-10 lg:px-0"
-            }`}
+            className="btn-cta inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md"
           >
             <ArrowRight className="h-4 w-4 shrink-0" />
           </button>

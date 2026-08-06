@@ -637,7 +637,7 @@
   "home.how.aiAside": "Abra o agente da mangomundi para detalhar tarifas, testar outra rota ou conferir a melhor opção — sem criar conta.",
   "home.blog.viewAll": "Ver todas as notas",
   "home.contact.subtitle": "Para equipas de tesouraria e parceiros de câmbio à procura de taxas dedicadas, integrações personalizadas ou uma linha direta com a nossa equipa.",
-  "comparator.sort.overall": "Recomendado",
+  "comparator.sort.overall": "Pontuação",
   "comparator.sort.mostTrusted": "Mais confiável",
   "comparator.sort.bestBusiness": "Melhor para empresas",
   "comparator.sort.cashPickup": "Retirada em dinheiro",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "Melhor taxa de câmbio",
   "comparator.sort.more": "Mais critérios",
   "comparator.table.exchangeRate": "Taxa de câmbio",
-  "comparator.legend.bestExchangeRate": "Melhor taxa de câmbio: a taxa deste provedor é a mais próxima da taxa real de mercado — independente da tarifa fixa, já que uma tarifa de $0 ainda pode esconder uma taxa ruim."
+  "comparator.legend.bestExchangeRate": "Melhor taxa de câmbio: a taxa deste provedor é a mais próxima da taxa real de mercado — independente da tarifa fixa, já que uma tarifa de $0 ainda pode esconder uma taxa ruim.",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

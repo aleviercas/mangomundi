@@ -637,7 +637,7 @@
   "home.how.aiAside": "افتح وكيل mangomundi لتفصيل الرسوم أو تجربة مسار آخر أو التحقق من الخيار الأفضل — دون حساب.",
   "home.blog.viewAll": "عرض جميع المقالات",
   "home.contact.subtitle": "لفرق الخزينة وشركاء الصرف الأجنبي الباحثين عن أسعار مخصصة أو عمليات تكامل مخصصة أو تواصل مباشر مع فريقنا.",
-  "comparator.sort.overall": "موصى به",
+  "comparator.sort.overall": "التقييم",
   "comparator.sort.mostTrusted": "الأكثر ثقة",
   "comparator.sort.bestBusiness": "الأفضل للأعمال",
   "comparator.sort.cashPickup": "استلام نقدي",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "أفضل سعر صرف",
   "comparator.sort.more": "معايير أكثر",
   "comparator.table.exchangeRate": "سعر الصرف",
-  "comparator.legend.bestExchangeRate": "أفضل سعر صرف: سعر هذا المزود هو الأقرب للسعر الحقيقي في السوق — مستقل عن رسومه الثابتة، لأن «رسوم 0» قد تخفي سعر صرف سيئًا."
+  "comparator.legend.bestExchangeRate": "أفضل سعر صرف: سعر هذا المزود هو الأقرب للسعر الحقيقي في السوق — مستقل عن رسومه الثابتة، لأن «رسوم 0» قد تخفي سعر صرف سيئًا.",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

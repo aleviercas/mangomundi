@@ -637,7 +637,7 @@
   "home.how.aiAside": "เปิดผู้ช่วย mangomundi เพื่อแยกค่าธรรมเนียม ลองเส้นทางอื่น หรือตรวจสอบตัวเลือกที่ดีที่สุด — ไม่ต้องมีบัญชี",
   "home.blog.viewAll": "ดูบทความทั้งหมด",
   "home.contact.subtitle": "สำหรับทีมการเงินและพันธมิตรด้านอัตราแลกเปลี่ยนที่ต้องการอัตราเฉพาะ การเชื่อมต่อระบบแบบกำหนดเอง หรือช่องทางติดต่อโดยตรงกับทีมของเรา",
-  "comparator.sort.overall": "แนะนำ",
+  "comparator.sort.overall": "คะแนน",
   "comparator.sort.mostTrusted": "น่าเชื่อถือที่สุด",
   "comparator.sort.bestBusiness": "ดีที่สุดสำหรับธุรกิจ",
   "comparator.sort.cashPickup": "รับเงินสด",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "อัตราแลกเปลี่ยนดีที่สุด",
   "comparator.sort.more": "เกณฑ์อื่นๆ",
   "comparator.table.exchangeRate": "อัตราแลกเปลี่ยน",
-  "comparator.legend.bestExchangeRate": "อัตราแลกเปลี่ยนดีที่สุด: อัตราของผู้ให้บริการรายนี้ใกล้เคียงกับอัตราตลาดกลางที่แท้จริงมากที่สุด — ไม่เกี่ยวกับค่าธรรมเนียมคงที่ เพราะค่าธรรมเนียม 0 ก็ยังอาจซ่อนอัตราที่ไม่ดีได้"
+  "comparator.legend.bestExchangeRate": "อัตราแลกเปลี่ยนดีที่สุด: อัตราของผู้ให้บริการรายนี้ใกล้เคียงกับอัตราตลาดกลางที่แท้จริงมากที่สุด — ไม่เกี่ยวกับค่าธรรมเนียมคงที่ เพราะค่าธรรมเนียม 0 ก็ยังอาจซ่อนอัตราที่ไม่ดีได้",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

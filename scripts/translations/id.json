@@ -637,7 +637,7 @@
   "home.how.aiAside": "Buka agen mangomundi untuk merinci biaya, mencoba rute lain, atau memeriksa opsi terbaik — tanpa akun.",
   "home.blog.viewAll": "Lihat semua artikel",
   "home.contact.subtitle": "Untuk tim treasury dan mitra FX yang mencari kurs khusus, integrasi kustom, atau jalur langsung ke tim kami.",
-  "comparator.sort.overall": "Direkomendasikan",
+  "comparator.sort.overall": "Skor",
   "comparator.sort.mostTrusted": "Paling terpercaya",
   "comparator.sort.bestBusiness": "Terbaik untuk bisnis",
   "comparator.sort.cashPickup": "Pengambilan tunai",
@@ -675,5 +675,6 @@
   "comparator.sort.bestExchangeRate": "Kurs terbaik",
   "comparator.sort.more": "Kriteria lainnya",
   "comparator.table.exchangeRate": "Kurs tukar",
-  "comparator.legend.bestExchangeRate": "Kurs terbaik: kurs penyedia ini paling dekat dengan kurs pasar riil — terlepas dari biaya tetapnya, karena biaya $0 tetap bisa menyembunyikan kurs yang buruk."
+  "comparator.legend.bestExchangeRate": "Kurs terbaik: kurs penyedia ini paling dekat dengan kurs pasar riil — terlepas dari biaya tetapnya, karena biaya $0 tetap bisa menyembunyikan kurs yang buruk.",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }
