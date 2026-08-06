@@ -184,7 +184,6 @@ export type BadgeKey =
   | "best_exchange_rate"
   | "fastest_delivery"
   | "most_trusted"
-  | "cash_pickup"
   | "wide_coverage"
   | "most_transparent"
   | "large_transfers"
@@ -194,8 +193,11 @@ export type BadgeKey =
  * Derives per-provider badges by finding the category winner(s) in the
  * current result set. Never invents a winner when there's no data for that
  * category (e.g. no row has trust_score → nobody gets "most_trusted").
- * `cash_pickup`, `large_transfers`, and `exclusive_deal` are capability/offer
- * flags, not a "best of" — every provider that has them gets the badge.
+ * `large_transfers` and `exclusive_deal` are capability/offer flags, not a
+ * "best of" — every provider that has them gets the badge. Delivery-method
+ * capability (cash pickup, bank transfer, card, broker) is deliberately
+ * NOT handled here — see ComparatorSection.tsx's DELIVERY_METHOD_PREDICATES,
+ * which is the single source of truth for that, shared with the filter chips.
  */
 export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, BadgeKey[]> {
   const badges = new Map<string, BadgeKey[]>();
@@ -234,7 +236,17 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
   // still routes business-flavored questions to that scoring profile, this
   // only removes the visible pill.
 
-  rows.filter((r) => r.cash_pickup_available === true).forEach((r) => add(r.slug, "cash_pickup"));
+  // No "cash_pickup" badge here anymore — it was a near-duplicate of the
+  // exact same cash_pickup_available check the "Cash" delivery-method chip
+  // already runs (DELIVERY_METHOD_PREDICATES in ComparatorSection.tsx),
+  // just re-implemented a second time. That duplication is exactly what
+  // caused the inconsistency where "Cash" got a row pill but "Bank
+  // account"/"Broker"/"Card" never did (nobody had duplicated THEIR checks
+  // here too). Fixed at the root instead: ComparatorSection.tsx now derives
+  // all 4 delivery-method row pills from the one predicate map that also
+  // drives the filter chips, so there's a single source of truth instead of
+  // deriveBadges partially overlapping it.
+
   rows.filter((r) => r.supports_large_tickets === true).forEach((r) => add(r.slug, "large_transfers"));
   rows.filter((r) => r.has_exclusive_deal === true).forEach((r) => add(r.slug, "exclusive_deal"));
 

@@ -8,7 +8,6 @@ import {
   Banknote,
   Building2,
   Check,
-  ChevronDown,
   Clock,
   Coins,
   CreditCard,
@@ -33,13 +32,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -136,19 +128,23 @@ const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labe
  *  "Cash pickup" in both places was confusing (same word, two different
  *  behaviors: one reorders, one hides).
  *
- *  Primary row (Kayak/Google Flights pattern: 4 prominent tabs). The
- *  three money-related ones are DELIBERATELY separate, not blended: a
- *  provider can advertise "$0 fee" while hiding a bad exchange rate margin
- *  (or vice versa) — splitting them is the whole point of a neutral
- *  comparator, matching Wise's own "we show the real cost" positioning.
- *  "overall" is labeled "Score" (see sortLabelKey) — same composite number
- *  as the pill on every row, not a separately-named editorial pick. */
+ *  Primary row (Kayak/Google Flights pattern). The three money-related
+ *  ones are DELIBERATELY separate, not blended: a provider can advertise
+ *  "$0 fee" while hiding a bad exchange rate margin (or vice versa) —
+ *  splitting them is the whole point of a neutral comparator, matching
+ *  Wise's own "we show the real cost" positioning. "overall" is labeled
+ *  "Score" (see sortLabelKey) — same composite number as the pill on every
+ *  row, not a separately-named editorial pick. Rendered together with
+ *  SECONDARY_SORT_CHIPS as one flat row (see render below) — an earlier
+ *  version tucked the secondary ones behind a "More sort options" dropdown,
+ *  but that hid criteria behind a click, which direct feedback flagged as
+ *  worse than a longer row. Kept as two separate arrays anyway (rather than
+ *  merging into one) since the primary/secondary distinction is still real
+ *  editorially, even though it's no longer expressed as two different
+ *  pieces of UI. */
 const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", "fastest"];
-/** Secondary criteria — real, useful, but not everyone needs them on every
- *  visit. Tucked into the "More sort options" dropdown instead of crowding
- *  the primary row, same pattern as Skyscanner's "Sort by" overflow menu.
- *  Still just one sortBy state — the dropdown is a second entry point into
- *  it, not a separate mechanism. */
+/** Secondary criteria — see SORT_CHIPS above for why these render in the
+ *  same flat row rather than behind a dropdown. */
 // "best_business" deliberately excluded: the Personal/Empresa segment
 // toggle above the comparator already splits results by business fit, so a
 // dedicated sort chip for it was redundant. The underlying score profile
@@ -843,7 +839,6 @@ export function ComparatorSection({
       }
     }, 300);
     return () => clearTimeout(handle);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, from, to, segment, sendingCountry, receivingCountry]);
 
   useEffect(() => {
@@ -1299,16 +1294,18 @@ export function ComparatorSection({
                   result set, only reorders it. Visually and semantically
                   separate from the filters row below: this answers "how do
                   I want it ordered", filters answer "what am I willing to
-                  see at all". 4 primary chips always visible (Kayak/Google
-                  Flights pattern) + a dropdown for the 3 secondary
-                  criteria — same underlying sortBy state either way, the
-                  dropdown is just a second entry point so the row doesn't
-                  grow to 7 chips. */}
+                  see at all". All 7 criteria shown flat, no dropdown — an
+                  earlier version tucked 3 of them behind a "More sort
+                  options" menu, but direct feedback was that every option
+                  should be reachable in one click, so all of them render
+                  here now regardless of row length; wraps to a second line
+                  on narrow screens instead of hiding anything behind a
+                  click. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
                 </span>
-                {SORT_CHIPS.map((key) => (
+                {[...SORT_CHIPS, ...SECONDARY_SORT_CHIPS].map((key) => (
                   <button
                     key={key}
                     type="button"
@@ -1323,37 +1320,6 @@ export function ComparatorSection({
                     {t(sortLabelKey(key))}
                   </button>
                 ))}
-                {/* Dropdown trigger stays visibly "active" (dark fill) when
-                    the current sortBy is one of the 3 tucked-away criteria,
-                    so switching to a secondary criterion doesn't look like
-                    it silently reset to nothing selected. */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      type="button"
-                      className={`inline-flex h-8 items-center gap-1 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                        SECONDARY_SORT_CHIPS.includes(sortBy)
-                          ? "border-transparent bg-[#ff6b5b] text-white"
-                          : "border-input bg-card text-foreground hover:border-foreground/30"
-                      }`}
-                    >
-                      {SECONDARY_SORT_CHIPS.includes(sortBy) ? t(sortLabelKey(sortBy)) : t("comparator.sort.more")}
-                      <ChevronDown className="h-3 w-3" />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="start">
-                    <DropdownMenuRadioGroup
-                      value={sortBy}
-                      onValueChange={(v) => setSortBy(v as SortKey)}
-                    >
-                      {SECONDARY_SORT_CHIPS.map((key) => (
-                        <DropdownMenuRadioItem key={key} value={key}>
-                          {t(sortLabelKey(key))}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
               </div>
 
               {/* FILTERS ROW — activeFilters (stackable checkboxes) +
@@ -1883,14 +1849,18 @@ function ResultsBlock({
   );
   const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
   const badgesBySlug = useMemo(() => deriveBadges(filteredRows), [filteredRows]);
-  // Composite score (0-10, Monito-style circle) — same weighted formula
-  // already driving the sort/badges, just made visible per-row instead of
-  // only crowning a single winner. Relative to the current corridor's
-  // result set (min-max normalized), not an absolute universal rating —
-  // see the legend modal for that caveat.
+  // Composite score (0-1, remapped to 7-9 for display — see displayScore)
+  // is INTENTIONALLY always computed with the "overall" profile, never
+  // `sortBy`. Score is meant to read as one stable, objective number per
+  // provider — if it recalculated per sort criterion (it used to), picking
+  // "Fastest" would silently change what "8.4" means without anyone
+  // choosing that, which is confusing at best and looks like the number is
+  // arbitrary at worst. `sortBy` still fully controls actual row ORDER
+  // (see `organic` below) — only the printed Score number is now decoupled
+  // from it.
   const scoresBySlug = useMemo(
-    () => computeCompositeScores(filteredRows, sortBy),
-    [filteredRows, sortBy],
+    () => computeCompositeScores(filteredRows, "overall"),
+    [filteredRows],
   );
   // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
   // in scoring.functions.ts) picks one value for this page view and doesn't
@@ -1934,8 +1904,6 @@ function ResultsBlock({
             row={row}
             quote={result.quote}
             base={result.base}
-            isBest={row.slug === featuredSlug}
-            sortBy={sortBy}
             badges={badgesBySlug.get(row.slug) ?? []}
             score={scoresBySlug.get(row.slug) ?? null}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
@@ -1984,8 +1952,6 @@ function badgeLabelKey(b: BadgeKey): string | null {
       return "comparator.sort.speed";
     case "most_trusted":
       return "comparator.sort.mostTrusted";
-    case "cash_pickup":
-      return "comparator.sort.cashPickup";
     case "most_transparent":
       return "comparator.sort.mostTransparent";
     case "large_transfers":
@@ -2011,8 +1977,6 @@ function badgeIcon(b: BadgeKey) {
       return Zap;
     case "most_trusted":
       return Shield;
-    case "cash_pickup":
-      return Banknote;
     case "most_transparent":
       return Eye;
     case "large_transfers":
@@ -2028,8 +1992,6 @@ function ProviderRow({
   row,
   quote,
   base,
-  isBest,
-  sortBy,
   badges,
   score,
   onClick,
@@ -2041,14 +2003,13 @@ function ProviderRow({
   row: ComparisonResult["rows"][number];
   quote: string;
   base: string;
-  isBest: boolean;
-  sortBy: SortKey;
   badges: BadgeKey[];
-  /** Composite score (0-1) for the active sort profile, same formula that
-   *  drives ranking/badges — shown as the "★ Puntaje N" pill above the
-   *  logo, relative to the current corridor's result set, not an absolute
-   *  rating (see the legend modal). null if this row wasn't part of the
-   *  scored set (shouldn't normally happen). */
+  /** Composite score (0-1), ALWAYS the "overall" profile regardless of the
+   *  active sortBy — see the useMemo in ResultsBlock for why it's
+   *  intentionally decoupled from the sort criterion. Shown as the
+   *  "Puntaje N" pill above the logo, relative to the current corridor's
+   *  result set, not an absolute rating (see the legend modal). null if
+   *  this row wasn't part of the scored set (shouldn't normally happen). */
   score: number | null;
   onClick: () => void;
   tCta: string;
@@ -2057,18 +2018,28 @@ function ProviderRow({
   tRecipient: string;
 }) {
   const { t } = useI18n();
+  // Derived from speed_hours ONLY — deliberately not delivery_minutes.
+  // delivery_minutes is a separate, independently-sourced DB column
+  // (src/lib/fx.functions.ts) that isn't guaranteed to stay in sync with
+  // speed_hours, which is the ONLY field the scoring/sort/badge engine
+  // reads (see ScorableRow in scoring.functions.ts — it doesn't even have
+  // a delivery_minutes field). Previously this preferred delivery_minutes
+  // when present, which could show a row's time as, say, "30m" while it
+  // was actually ranked by a speed_hours value that disagreed — sorting
+  // by "Fastest" was always correct under the hood, but the printed label
+  // could contradict the order it was printed in, which reads as "broken
+  // sorting" even though it isn't. Trade-off: this loses delivery_minutes'
+  // finer-than-hour precision (e.g. "30m") in the row label. If that
+  // precision is worth keeping, the real fix is reconciling the two
+  // columns at the data source (fx.functions.ts) so speed_hours itself
+  // becomes the single authoritative value everywhere — bigger, riskier
+  // change, flagged separately rather than done here.
   const deliveryLabel =
-    row.delivery_minutes != null
-      ? row.delivery_minutes < 60
-        ? `${row.delivery_minutes}m`
-        : row.delivery_minutes < 60 * 24
-          ? `${Math.round(row.delivery_minutes / 60)}h`
-          : `${Math.round(row.delivery_minutes / 60 / 24)}d`
-      : row.speed_hours < 1
-        ? "<1h"
-        : row.speed_hours <= 24
-          ? `${Math.round(row.speed_hours)}h`
-          : `${Math.round(row.speed_hours / 24)}d`;
+    row.speed_hours < 1
+      ? "<1h"
+      : row.speed_hours <= 24
+        ? `${Math.round(row.speed_hours)}h`
+        : `${Math.round(row.speed_hours / 24)}d`;
 
   const ratePct = row.rate_vs_market_pct;
   const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}%`;
@@ -2088,8 +2059,19 @@ function ProviderRow({
       if (b === "exclusive_deal") continue;
       const labelKey = badgeLabelKey(b);
       if (!labelKey) continue;
-      if (isBest && labelKey === sortLabelKey(sortBy)) continue;
       chips.push({ key: b, icon: badgeIcon(b), text: t(labelKey) });
+    }
+    // Delivery-method pills — derived from the SAME predicate map that
+    // drives the filter chips (DELIVERY_METHOD_PREDICATES), so "this row
+    // qualifies" can never disagree between the filter and the row pill.
+    // Every method the row supports gets a pill, always, independent of
+    // whether that method is the one currently selected in the filter row
+    // — this is what fixed the old inconsistency where only "Cash" ever
+    // got a pill (via a since-removed, separately-implemented cash_pickup
+    // badge) while Bank account/Card/Broker never did.
+    for (const { key, icon, labelKey } of DELIVERY_METHODS) {
+      if (!DELIVERY_METHOD_PREDICATES[key](row)) continue;
+      chips.push({ key: `delivery_${key}`, icon, text: t(labelKey) });
     }
     return chips;
   })();
@@ -2098,7 +2080,7 @@ function ProviderRow({
     <div
       className={`relative flex flex-wrap items-start gap-[18px] border-b border-border px-5 pb-[18px] last:border-b-0 ${
         row.has_exclusive_deal ? "pt-[30px]" : "pt-[18px]"
-      } ${isBest ? "bg-accent/5" : ""}`}
+      }`}
     >
       {/* Sponsored disclosure — a corner tab, not an inline badge next to
           the name, so it never crowds the Score pill above. Reuses the same
@@ -2123,11 +2105,7 @@ function ProviderRow({
       <div className="flex w-[208px] flex-none flex-col items-center gap-1.5 text-center">
         <div className="flex h-[26px] items-center justify-center">
           {score != null && (
-            <span
-              className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-extrabold ${
-                isBest ? "bg-accent text-white" : "bg-muted text-muted-foreground"
-              }`}
-            >
+            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-muted px-2.5 py-1 text-[10px] font-extrabold text-muted-foreground">
               {/* No icon here on purpose — the star is reserved for the
                   trust-score chip below (real review data), so it never
                   reads as a rating average. Text-only: "{label} {number}". */}
