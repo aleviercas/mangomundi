@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "Meilleur taux de change",
   "comparator.sort.more": "Plus de critères",
   "comparator.table.exchangeRate": "Taux de change",
-  "comparator.legend.bestExchangeRate": "Meilleur taux de change : le taux de ce prestataire est le plus proche du vrai taux du marché — indépendamment de ses frais fixes, car des frais à 0 peuvent quand même cacher un mauvais taux."
+  "comparator.legend.bestExchangeRate": "Meilleur taux de change : le taux de ce prestataire est le plus proche du vrai taux du marché — indépendamment de ses frais fixes, car des frais à 0 peuvent quand même cacher un mauvais taux.",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }
