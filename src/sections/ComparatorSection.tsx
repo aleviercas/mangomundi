@@ -2107,7 +2107,16 @@ function ProviderRow({
           on top, then logo, name, regulator. Fixed-height slots (score
           badge, regulator line) so every row's identity block lines up even
           when a provider has no regulator on file. */}
-      <div className="flex w-[208px] flex-none flex-col items-center gap-1.5 text-center">
+      {/* mx-auto — when this block is alone on its own wrapped line (narrow
+          widget/mobile widths), flex-start's default left alignment left it
+          looking stuck to the edge with dead space beside it. mx-auto lets
+          it consume that leftover space as margin on both sides instead,
+          centering just this block. Deliberately NOT a row-level
+          justify-center: that would also re-center the Receive+CTA block
+          whenever IT ends up alone on a line, breaking its intentional
+          right-alignment (the amount+button are meant to hug the row's
+          right edge, not float in the middle). */}
+      <div className="mx-auto flex w-[208px] flex-none flex-col items-center gap-1.5 text-center">
         <div className="flex h-[26px] items-center justify-center">
           {score != null && (
             <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-muted px-2.5 py-1 text-[10px] font-extrabold text-muted-foreground">
