@@ -676,6 +676,5 @@
   "comparator.sort.more": "Diğer kriterler",
   "comparator.table.exchangeRate": "Döviz kuru",
   "comparator.legend.bestExchangeRate": "En iyi döviz kuru: bu sağlayıcının kuru gerçek piyasa kuruna en yakın olanı — sabit ücretinden bağımsız olarak, çünkü 0 ücret hâlâ kötü bir kuru gizleyebilir.",
-  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
   "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

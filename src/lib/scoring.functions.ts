@@ -184,7 +184,6 @@ export type BadgeKey =
   | "best_exchange_rate"
   | "fastest_delivery"
   | "most_trusted"
-  | "best_business"
   | "cash_pickup"
   | "wide_coverage"
   | "most_transparent"
@@ -225,13 +224,15 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
     add(trusted.slug, "most_trusted");
   }
 
-  const businessCandidates = rows.filter((r) => r.business_focus_score != null);
-  if (businessCandidates.length > 0) {
-    const business = [...businessCandidates].sort(
-      (a, b) => b.business_focus_score! - a.business_focus_score!,
-    )[0];
-    add(business.slug, "best_business");
-  }
+  // No "best_business" badge anymore — removed deliberately, not an
+  // oversight. It used to crown a single row using business_focus_score,
+  // but the Personal/Empresa segment toggle above the comparator already
+  // splits results by business fit at the query level, so a per-row badge
+  // on top of that was redundant (and confusing: it only ever fired for
+  // one row, based on a field most people have no context for). The
+  // ScoreProfileKey "best_business" itself is untouched — the AI copilot
+  // still routes business-flavored questions to that scoring profile, this
+  // only removes the visible pill.
 
   rows.filter((r) => r.cash_pickup_available === true).forEach((r) => add(r.slug, "cash_pickup"));
   rows.filter((r) => r.supports_large_tickets === true).forEach((r) => add(r.slug, "large_transfers"));

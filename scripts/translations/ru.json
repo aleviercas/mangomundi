@@ -676,6 +676,5 @@
   "comparator.sort.more": "Другие критерии",
   "comparator.table.exchangeRate": "Курс обмена",
   "comparator.legend.bestExchangeRate": "Лучший курс обмена: курс этого провайдера ближе всего к реальному межбанковскому курсу — независимо от фиксированной комиссии, ведь комиссия $0 всё равно может скрывать плохой курс.",
-  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
   "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

@@ -676,6 +676,5 @@
   "comparator.sort.more": "আরও মানদন্ড",
   "comparator.table.exchangeRate": "বিনিময় হার",
   "comparator.legend.bestExchangeRate": "সর্বসেরা বিনিময় হার: এই প্রদানকারীর হার প্রকৃত মিড-মার্কেট হারের কাছাকাছি — একক ফি থেকে স্বতন্ত্র, কারণ 'বিনামুল্যে ফি' তবু খারাপ হার আডাल করতে পারে।",
-  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
   "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

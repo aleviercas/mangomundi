@@ -676,6 +676,5 @@
   "comparator.sort.more": "その他の基準",
   "comparator.table.exchangeRate": "為替レート",
   "comparator.legend.bestExchangeRate": "最良の為替レート：このプロバイダーのレートは実際の仲値に最も近いです — 手数料とは無関係です。手数料0円でも為替レートが悪いことがあります。",
-  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
   "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

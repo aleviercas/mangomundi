@@ -6,7 +6,6 @@ import {
   ArrowRight,
   ArrowLeftRight,
   Banknote,
-  Briefcase,
   Building2,
   Check,
   Clock,
@@ -86,7 +85,7 @@ const WHITE_FIELD =
   "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
-type FeatureFilterKey = "cash_pickup_available" | "supports_large_tickets" | "has_exclusive_deal";
+type FeatureFilterKey = "supports_large_tickets" | "has_exclusive_deal";
 /** Monito-style "how does the recipient get paid" filter — single-select
  *  (unlike the opt-in requirement chips below, these are mutually exclusive
  *  delivery channels, not stackable requirements), null = no filter. */
@@ -138,11 +137,35 @@ const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", 
 /** Secondary criteria — real, useful, but not everyone needs them on every
  *  visit. Tucked into a "More criteria" dropdown instead of crowding the
  *  primary row, same pattern as Skyscanner's "Sort by" overflow menu. */
-const SECONDARY_SORT_CHIPS: SortKey[] = ["most_trusted", "best_business", "most_transparent"];
+// "best_business" deliberately excluded: the Personal/Empresa segment
+// toggle above the comparator already splits results by business fit, so a
+// dedicated sort chip for it was redundant. The underlying score profile
+// stays (see SCORE_PROFILES) — the AI copilot still uses it for
+// business-flavored questions asked in chat — only this manual chip is gone.
+const SECONDARY_SORT_CHIPS: SortKey[] = ["most_trusted", "most_transparent"];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
 /** 294000 -> "294K" — keeps the trust chip compact so it doesn't blow out
  *  the fixed-height Features cell on providers with huge review counts. */
+/** Maps the raw composite score (0-1, min-max normalized within the current
+ *  result set — see scoring.functions.ts) onto a 7.0-9.0 display range,
+ *  instead of showing it as 0-10. This is a presentation-only remap: it
+ *  never touches the underlying score used for sorting/badges/featured-row
+ *  selection, only how the number is printed in the pill. Rationale: a
+ *  relative, corridor-specific score (not an absolute quality rating) that
+ *  happens to print as "3.2/10" reads as "this provider is bad", when it
+ *  really just means "weakest of this particular result set" — compressing
+ *  the printed range keeps every row looking like a legitimate, curated
+ *  option while the actual ranking underneath is untouched. Clamped
+ *  defensively even though computeCompositeScores is mathematically
+ *  guaranteed to return [0,1] (weights sum to 1.0, every component
+ *  normalized to [0,1]) — cheap insurance against a future weights change
+ *  breaking that invariant and printing something outside 7-9. */
+function displayScore(rawScore: number): string {
+  const clamped = Math.min(1, Math.max(0, rawScore));
+  return (7 + clamped * 2).toFixed(1);
+}
+
 function compactNumber(n: number): string {
   return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(
     n,
@@ -1299,11 +1322,18 @@ export function ComparatorSection({
                 <span className="mr-1 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
                 </span>
+                {/* Sponsored offer first, deliberately — it's the one
+                    disclosure-related requirement, ahead of the pure
+                    capability ones. "Cash pickup" was removed from here: it
+                    duplicated the cash delivery-method chip below (both read
+                    the same cash_pickup_available field) — the delivery
+                    chips already cover it as a single-select "how does the
+                    recipient get paid" choice, so keeping it as a second,
+                    separate checkbox here was redundant. */}
                 {(
                   [
-                    ["cash_pickup_available", "comparator.sort.cashPickup"],
-                    ["supports_large_tickets", "comparator.sort.largeTransfers"],
                     ["has_exclusive_deal", "comparator.badge.sponsored"],
+                    ["supports_large_tickets", "comparator.sort.largeTransfers"],
                   ] as const
                 ).map(([key, labelKey]) => (
                   <button
@@ -1387,7 +1417,6 @@ export function ComparatorSection({
                       [Percent, "comparator.legend.bestExchangeRate"],
                       [Zap, "comparator.legend.speed"],
                       [Shield, "comparator.legend.trust"],
-                      [Briefcase, "comparator.legend.business"],
                       [Banknote, "comparator.legend.cashPickup"],
                       [Eye, "comparator.legend.transparency"],
                       [ArrowLeftRight, "comparator.legend.largeTransfers"],
@@ -1766,7 +1795,6 @@ function ResultsBlock({
     () =>
       result.rows.filter(
         (r) =>
-          (!activeFilters.has("cash_pickup_available") || r.cash_pickup_available) &&
           (!activeFilters.has("supports_large_tickets") || r.supports_large_tickets) &&
           (!activeFilters.has("has_exclusive_deal") || r.has_exclusive_deal) &&
           (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)),
@@ -1876,8 +1904,6 @@ function badgeLabelKey(b: BadgeKey): string | null {
       return "comparator.sort.speed";
     case "most_trusted":
       return "comparator.sort.mostTrusted";
-    case "best_business":
-      return "comparator.sort.bestBusiness";
     case "cash_pickup":
       return "comparator.sort.cashPickup";
     case "most_transparent":
@@ -1905,8 +1931,6 @@ function badgeIcon(b: BadgeKey) {
       return Zap;
     case "most_trusted":
       return Shield;
-    case "best_business":
-      return Briefcase;
     case "cash_pickup":
       return Banknote;
     case "most_transparent":
@@ -1997,13 +2021,18 @@ function ProviderRow({
       } ${isBest ? "bg-accent/5" : ""}`}
     >
       {/* Sponsored disclosure — a corner tab, not an inline badge next to
-          the name, so it never crowds the Score pill above. Always says
-          exactly what it is: a disclosed commercial placement, never a
-          merit ranking (see the caption under the sort/filter rows). */}
+          the name, so it never crowds the Score pill above. Reuses the same
+          comparator.badge.sponsored copy/key as the "Sponsored offer" filter
+          chip in the Requiere row (not a separate sponsoredDisclosure string)
+          so the wording is identical wherever it appears, in every language
+          — one already-fully-translated key instead of two that could drift.
+          Always says exactly what it is: a disclosed commercial placement,
+          never a merit ranking (see the caption under the sort/filter
+          rows). */}
       {row.has_exclusive_deal && (
         <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-amber-300 bg-amber-100 px-3 py-1 text-[10px] font-extrabold text-amber-800">
           <Sparkle className="mr-1 inline h-2.5 w-2.5" />
-          {t("comparator.badge.sponsoredDisclosure")}
+          {t("comparator.badge.sponsored")}
         </span>
       )}
 
@@ -2019,8 +2048,10 @@ function ProviderRow({
                 isBest ? "bg-accent text-white" : "bg-muted text-muted-foreground"
               }`}
             >
-              <Star className="h-2.5 w-2.5 fill-current" /> {t("comparator.score.label")}{" "}
-              {(score * 10).toFixed(1)}
+              {/* No icon here on purpose — the star is reserved for the
+                  trust-score chip below (real review data), so it never
+                  reads as a rating average. Text-only: "{label} {number}". */}
+              {t("comparator.score.label")} {displayScore(score)}
             </span>
           )}
         </div>

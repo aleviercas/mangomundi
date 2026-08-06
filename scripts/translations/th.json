@@ -676,6 +676,5 @@
   "comparator.sort.more": "เกณฑ์อื่นๆ",
   "comparator.table.exchangeRate": "อัตราแลกเปลี่ยน",
   "comparator.legend.bestExchangeRate": "อัตราแลกเปลี่ยนดีที่สุด: อัตราของผู้ให้บริการรายนี้ใกล้เคียงกับอัตราตลาดกลางที่แท้จริงมากที่สุด — ไม่เกี่ยวกับค่าธรรมเนียมคงที่ เพราะค่าธรรมเนียม 0 ก็ยังอาจซ่อนอัตราที่ไม่ดีได้",
-  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
   "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

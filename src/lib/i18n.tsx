@@ -2647,7 +2647,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.largeTransfers": "Large transfers",
     "comparator.sort.bestDeal": "Exclusive offer",
     "comparator.badge.sponsored": "Sponsored offer",
-    "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
     "comparator.rankingExplainer":
       "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
     "comparator.table.exchangeRate": "Exchange rate",
@@ -2818,7 +2817,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.received": "Mejor tasa",
     "comparator.sort.fee": "Menores fees",
     "comparator.sort.speed": "Más rápido",
-    "comparator.badge.sponsoredDisclosure": "Tarifa exclusiva patrocinada",
     "comparator.rankingExplainer":
       "El listado se ordena por **Puntaje**, un valor de 0 a 10 que combina tarifa, tipo de cambio, velocidad y confianza. **Patrocinado** marca acuerdos comerciales — nunca cambia el orden real.",
     "comparator.reference": "Referencia",
