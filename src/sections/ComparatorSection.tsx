@@ -8,6 +8,7 @@ import {
   Banknote,
   Building2,
   Check,
+  ChevronDown,
   Clock,
   Coins,
   CreditCard,
@@ -32,6 +33,13 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -128,21 +136,25 @@ const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labe
  *  "Cash pickup" in both places was confusing (same word, two different
  *  behaviors: one reorders, one hides).
  *
- *  Primary row (Kayak/Google Flights pattern: 4-5 prominent tabs). The
+ *  Primary row (Kayak/Google Flights pattern: 4 prominent tabs). The
  *  three money-related ones are DELIBERATELY separate, not blended: a
  *  provider can advertise "$0 fee" while hiding a bad exchange rate margin
  *  (or vice versa) — splitting them is the whole point of a neutral
- *  comparator, matching Wise's own "we show the real cost" positioning. */
-const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", "best_exchange_rate", "fastest"];
+ *  comparator, matching Wise's own "we show the real cost" positioning.
+ *  "overall" is labeled "Score" (see sortLabelKey) — same composite number
+ *  as the pill on every row, not a separately-named editorial pick. */
+const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", "fastest"];
 /** Secondary criteria — real, useful, but not everyone needs them on every
- *  visit. Tucked into a "More criteria" dropdown instead of crowding the
- *  primary row, same pattern as Skyscanner's "Sort by" overflow menu. */
+ *  visit. Tucked into the "More sort options" dropdown instead of crowding
+ *  the primary row, same pattern as Skyscanner's "Sort by" overflow menu.
+ *  Still just one sortBy state — the dropdown is a second entry point into
+ *  it, not a separate mechanism. */
 // "best_business" deliberately excluded: the Personal/Empresa segment
 // toggle above the comparator already splits results by business fit, so a
 // dedicated sort chip for it was redundant. The underlying score profile
 // stays (see SCORE_PROFILES) — the AI copilot still uses it for
 // business-flavored questions asked in chat — only this manual chip is gone.
-const SECONDARY_SORT_CHIPS: SortKey[] = ["most_trusted", "most_transparent"];
+const SECONDARY_SORT_CHIPS: SortKey[] = ["best_exchange_rate", "most_trusted", "most_transparent"];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
 /** 294000 -> "294K" — keeps the trust chip compact so it doesn't blow out
@@ -1282,16 +1294,21 @@ export function ComparatorSection({
                 {t("comparator.results")}
               </h3>
             </div>
-            <div className="mb-2.5 flex flex-col gap-2.5">
-              {/* All sort criteria shown as plain chips, primary and
-                  secondary alike — no dropdown to open. Wraps to a second
-                  line on narrow screens instead of hiding options behind a
-                  click. */}
+            <div className="mb-2.5 flex flex-col gap-3">
+              {/* SORT ROW — single-select (sortBy), never reduces the
+                  result set, only reorders it. Visually and semantically
+                  separate from the filters row below: this answers "how do
+                  I want it ordered", filters answer "what am I willing to
+                  see at all". 4 primary chips always visible (Kayak/Google
+                  Flights pattern) + a dropdown for the 3 secondary
+                  criteria — same underlying sortBy state either way, the
+                  dropdown is just a second entry point so the row doesn't
+                  grow to 7 chips. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
                 </span>
-                {[...SORT_CHIPS, ...SECONDARY_SORT_CHIPS].map((key) => (
+                {SORT_CHIPS.map((key) => (
                   <button
                     key={key}
                     type="button"
@@ -1306,60 +1323,122 @@ export function ComparatorSection({
                     {t(sortLabelKey(key))}
                   </button>
                 ))}
-              </div>
-
-              {/* Requirement toggles — deliberately NOT a rounded-full pill
-                  like the sort chips above, and always shows an empty
-                  checkbox outline (filled + checkmark only once active), so
-                  these read as checkable requirements to opt into, not as
-                  another "pick one" sort option. The delivery-method chips
-                  (Bank account / Cash / Card / Broker) are folded in here as
-                  a 4th, single-select group behind a divider — same "how
-                  does the recipient get paid" switch the old standalone tile
-                  grid provided, just relocated; no numeric per-method
-                  preview anymore. */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="mr-1 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
-                </span>
-                {/* Sponsored offer first, deliberately — it's the one
-                    disclosure-related requirement, ahead of the pure
-                    capability ones. "Cash pickup" was removed from here: it
-                    duplicated the cash delivery-method chip below (both read
-                    the same cash_pickup_available field) — the delivery
-                    chips already cover it as a single-select "how does the
-                    recipient get paid" choice, so keeping it as a second,
-                    separate checkbox here was redundant. */}
-                {(
-                  [
-                    ["has_exclusive_deal", "comparator.badge.sponsored"],
-                    ["supports_large_tickets", "comparator.sort.largeTransfers"],
-                  ] as const
-                ).map(([key, labelKey]) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => toggleFilter(key)}
-                    aria-pressed={activeFilters.has(key)}
-                    className={`inline-flex h-8 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      activeFilters.has(key)
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-input bg-card text-foreground hover:border-foreground/30"
-                    }`}
-                  >
-                    <span
-                      className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
-                        activeFilters.has(key)
-                          ? "border-background bg-background"
-                          : "border-muted-foreground/60"
+                {/* Dropdown trigger stays visibly "active" (dark fill) when
+                    the current sortBy is one of the 3 tucked-away criteria,
+                    so switching to a secondary criterion doesn't look like
+                    it silently reset to nothing selected. */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      className={`inline-flex h-8 items-center gap-1 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        SECONDARY_SORT_CHIPS.includes(sortBy)
+                          ? "border-transparent bg-[#ff6b5b] text-white"
+                          : "border-input bg-card text-foreground hover:border-foreground/30"
                       }`}
                     >
-                      {activeFilters.has(key) && <Check className="h-2.5 w-2.5 text-foreground" />}
-                    </span>
-                    {t(labelKey)}
-                  </button>
-                ))}
-                <span aria-hidden className="mx-1 h-5 w-px bg-border" />
+                      {SECONDARY_SORT_CHIPS.includes(sortBy) ? t(sortLabelKey(sortBy)) : t("comparator.sort.more")}
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuRadioGroup
+                      value={sortBy}
+                      onValueChange={(v) => setSortBy(v as SortKey)}
+                    >
+                      {SECONDARY_SORT_CHIPS.map((key) => (
+                        <DropdownMenuRadioItem key={key} value={key}>
+                          {t(sortLabelKey(key))}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
+              {/* FILTERS ROW — activeFilters (stackable checkboxes) +
+                  deliveryMethod (single-select) both narrow filteredRows
+                  BEFORE ranking/badges are computed, so a "cheapest" badge
+                  always reflects the cheapest among what's actually visible
+                  right now. Grouped into 3 semantic clusters (Tags / Transfer
+                  size / Delivery method) instead of one flat run of chips —
+                  each group is its own visual unit, separated by a divider,
+                  so "these 4 are alternatives to each other" (delivery) reads
+                  differently from "these are independent yes/no toggles"
+                  (tags, transfer size). Sponsored stays first per an earlier
+                  explicit decision (it's the one disclosure-related
+                  requirement, ahead of pure capability ones) even though
+                  it's now visually its own single-item "Tags" group rather
+                  than leading a flat list. overflow-x-auto + scrollbar-hide
+                  so this degrades to a horizontal-scroll strip on narrow
+                  screens instead of wrapping into a tall stack. */}
+              <div className="no-scrollbar -mx-5 flex items-center gap-2 overflow-x-auto px-5 pb-1">
+                <span className="mr-1 inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
+                </span>
+
+                {/* Tags */}
+                <button
+                  type="button"
+                  onClick={() => toggleFilter("has_exclusive_deal")}
+                  aria-pressed={activeFilters.has("has_exclusive_deal")}
+                  className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    activeFilters.has("has_exclusive_deal")
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-input bg-card text-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  <span
+                    className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                      activeFilters.has("has_exclusive_deal")
+                        ? "border-background bg-background"
+                        : "border-muted-foreground/60"
+                    }`}
+                  >
+                    {activeFilters.has("has_exclusive_deal") && (
+                      <Check className="h-2.5 w-2.5 text-foreground" />
+                    )}
+                  </span>
+                  {t("comparator.badge.sponsored")}
+                </button>
+
+                <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
+
+                {/* Transfer size */}
+                <button
+                  type="button"
+                  onClick={() => toggleFilter("supports_large_tickets")}
+                  aria-pressed={activeFilters.has("supports_large_tickets")}
+                  className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    activeFilters.has("supports_large_tickets")
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-input bg-card text-foreground hover:border-foreground/30"
+                  }`}
+                >
+                  <span
+                    className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                      activeFilters.has("supports_large_tickets")
+                        ? "border-background bg-background"
+                        : "border-muted-foreground/60"
+                    }`}
+                  >
+                    {activeFilters.has("supports_large_tickets") && (
+                      <Check className="h-2.5 w-2.5 text-foreground" />
+                    )}
+                  </span>
+                  {t("comparator.sort.largeTransfers")}
+                </button>
+
+                <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
+
+                {/* Delivery method — single-select, mutually exclusive
+                    (radio-like, hence pill/rounded-full instead of the
+                    checkbox styling above), so it gets its own group label
+                    reusing the existing "Receive via" copy instead of the
+                    generic checkbox affordance. */}
+                <span className="shrink-0 text-[11px] text-muted-foreground">
+                  {t("comparator.delivery.label")}
+                </span>
                 {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
                   const isActive = deliveryMethod === key;
                   return (
@@ -1368,7 +1447,7 @@ export function ComparatorSection({
                       type="button"
                       onClick={() => toggleDeliveryMethod(key)}
                       aria-pressed={isActive}
-                      className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                      className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                         isActive
                           ? "border-foreground bg-foreground text-background"
                           : "border-input bg-card text-foreground hover:border-foreground/30"
@@ -1379,6 +1458,7 @@ export function ComparatorSection({
                     </button>
                   );
                 })}
+
                 {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
                     both desktop (click) and mobile (tap), no hover needed. */}
@@ -1386,7 +1466,7 @@ export function ComparatorSection({
                   type="button"
                   onClick={() => setShowLegend(true)}
                   aria-label={t("comparator.legend.toggle")}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
+                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
                 >
                   <Info className="h-3.5 w-3.5" />
                 </button>

@@ -633,7 +633,7 @@
   "wizard.send": "mangomundi no mueve el dinero: te muestra la mejor opción y te lleva directo a ese proveedor para completar la transferencia en su sitio. Compará, elegí una fila y hacé clic para terminar. No necesitás cuenta con nosotros.",
   "wizard.exampleNote": "Acá tenés un ejemplo en vivo — comparando una ruta popular. Cambiá el monto o los países arriba para comparar la tuya.",
   "wizard.moreQuestions": "Más preguntas",
-  "comparator.sort.overall": "Recomendado",
+  "comparator.sort.overall": "Puntaje",
   "comparator.sort.mostTrusted": "Más confiable",
   "comparator.sort.bestBusiness": "Mejor para empresas",
   "comparator.sort.cashPickup": "Retiro en efectivo",

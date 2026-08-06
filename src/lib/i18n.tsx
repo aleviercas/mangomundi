@@ -2636,7 +2636,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.received": "Best rate",
     "comparator.sort.fee": "Lowest fee",
     "comparator.sort.speed": "Fastest",
-    "comparator.sort.overall": "Recommended",
+    "comparator.sort.overall": "Score",
     "comparator.sort.recipientGetsMost": "Recipient gets most",
     "comparator.sort.bestExchangeRate": "Best exchange rate",
     "comparator.sort.more": "More criteria",
