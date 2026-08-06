@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "Najlepszy kurs wymiany",
   "comparator.sort.more": "Więcej kryteriów",
   "comparator.table.exchangeRate": "Kurs wymiany",
-  "comparator.legend.bestExchangeRate": "Najlepszy kurs wymiany: kurs tego dostawcy jest najbliższy realnemu kursowi rynkowemu — niezależnie od opłaty stałej, bo opłata 0 może i tak skrywać zły kurs."
+  "comparator.legend.bestExchangeRate": "Najlepszy kurs wymiany: kurs tego dostawcy jest najbliższy realnemu kursowi rynkowemu — niezależnie od opłaty stałej, bo opłata 0 może i tak skrywać zły kurs.",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }
