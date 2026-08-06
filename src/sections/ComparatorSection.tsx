@@ -1289,7 +1289,7 @@ export function ComparatorSection({
                 {t("comparator.results")}
               </h3>
             </div>
-            <div className="mb-2.5 flex flex-col gap-3">
+            <div className="mb-2.5 flex flex-col gap-2.5">
               {/* SORT ROW — single-select (sortBy), never reduces the
                   result set, only reorders it. Visually and semantically
                   separate from the filters row below: this answers "how do
@@ -2083,8 +2083,8 @@ function ProviderRow({
 
   return (
     <div
-      className={`relative flex flex-wrap items-start gap-[18px] border-b border-border px-5 pb-[18px] last:border-b-0 ${
-        row.has_exclusive_deal ? "pt-[30px]" : "pt-[18px]"
+      className={`relative flex flex-wrap items-start gap-3.5 border-b border-border px-5 pb-3.5 transition-colors last:border-b-0 hover:bg-muted/20 ${
+        row.has_exclusive_deal ? "pt-[26px]" : "pt-3.5"
       }`}
     >
       {/* Sponsored disclosure — a corner tab, not an inline badge next to
@@ -2095,9 +2095,16 @@ function ProviderRow({
           — one already-fully-translated key instead of two that could drift.
           Always says exactly what it is: a disclosed commercial placement,
           never a merit ranking (see the caption under the sort/filter
-          rows). */}
+          rows). Neutral gray, not amber — the accent color (#ff6b5b) is
+          reserved exclusively for the CTA button now, on purpose: an amber
+          "sponsored" tag and an orange "featured/best" signal both reading
+          as warm accent colors on the same row made it easy to mentally
+          conflate "this row is highlighted" with "this row paid to be
+          here", which is exactly the confusion a neutral disclosure color
+          avoids — the tag should read as informational, not as a second
+          competing brand accent. */}
       {row.has_exclusive_deal && (
-        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-amber-300 bg-amber-100 px-3 py-1 text-[10px] font-extrabold text-amber-800">
+        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-border bg-muted px-3 py-1 text-[10px] font-extrabold text-muted-foreground">
           <Sparkle className="mr-1 inline h-2.5 w-2.5" />
           {t("comparator.badge.sponsored")}
         </span>
@@ -2117,12 +2124,17 @@ function ProviderRow({
           right-alignment (the amount+button are meant to hug the row's
           right edge, not float in the middle). */}
       <div className="mx-auto flex w-[208px] flex-none flex-col items-center gap-1.5 text-center">
-        <div className="flex h-[26px] items-center justify-center">
+        <div className="flex h-[18px] items-center justify-center">
+          {/* De-emphasized on purpose — plain text, no pill/background,
+              smaller than before. It used to be a filled badge sitting
+              right above the logo, competing with the amount for "first
+              thing you see" — the amount is the number that should win
+              that contest (Kayak-style: price dominates, everything else
+              is secondary), so this stepped back to a quiet label instead
+              of a loud one. Still real data, still visible, just not
+              shouting. */}
           {score != null && (
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-muted px-2.5 py-1 text-[10px] font-extrabold text-muted-foreground">
-              {/* No icon here on purpose — the star is reserved for the
-                  trust-score chip below (real review data), so it never
-                  reads as a rating average. Text-only: "{label} {number}". */}
+            <span className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/80">
               {t("comparator.score.label")} {displayScore(score)}
             </span>
           )}
@@ -2131,7 +2143,7 @@ function ProviderRow({
           name={row.name}
           url={row.website_url ?? row.affiliate_url}
           slug={row.slug}
-          size={44}
+          size={36}
           rounded={false}
           className="rounded-sm border border-border bg-white"
         />
@@ -2161,12 +2173,17 @@ function ProviderRow({
           horizontal overflow on the whole row. Removing the floor lets this
           block compress as narrow as it needs to instead. */}
       <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-3">
-        <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/50 px-2.5 py-2 text-center">
+        {/* Weight dialed down from font-semibold — this strip shouldn't
+            visually compete with the amount on the right for "first thing
+            you notice"; it's supporting detail, not the headline number.
+            Lighter container tint (bg-muted/30, was /50) for the same
+            reason. */}
+        <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/30 px-2.5 py-2 text-center">
           <div className="min-w-0 flex-[1_1_70px]">
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {tSpeed}
             </div>
-            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-[13px] font-medium text-foreground">
               <Clock className="h-3 w-3" /> {deliveryLabel}
             </div>
           </div>
@@ -2174,7 +2191,7 @@ function ProviderRow({
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {tExchangeRate}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
               {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}{" "}
               <span className={ratePctClass}>({ratePctLabel})</span>
             </div>
@@ -2183,7 +2200,7 @@ function ProviderRow({
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t("fx.totalFee")}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
               {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
             </div>
             {/* Fee/rate split is the whole point of a neutral comparator (a
@@ -2229,7 +2246,7 @@ function ProviderRow({
           the top. */}
       <div className="flex flex-[1_1_220px] items-center justify-end gap-4">
         <div className="text-right">
-          <div className="whitespace-nowrap text-[22px] font-extrabold text-foreground">
+          <div className="whitespace-nowrap text-[27px] font-extrabold leading-none text-foreground">
             {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
             <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
           </div>
