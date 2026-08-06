@@ -35,20 +35,25 @@ export function EmbedWidgetSection() {
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
           {/* Copy + install instructions */}
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
               {t("home.widget.eyebrow")}
             </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
               {t("home.widget.title")}
             </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-600">
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
               {t("home.widget.body")}
             </p>
-            <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-[#ff6b5b]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#ff6b5b]">
+            <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent">
               {t("home.widget.badge")}
             </span>
 
-            {/* Install snippet */}
+            {/* Install snippet — deliberately dark/"terminal" styled
+                (bg-slate-900, white/slate-200/300/400 text on it), NOT part
+                of the light-mode token migration: this is an intentional
+                code-editor aesthetic, a different surface entirely from the
+                rest of the page, same reasoning as StatsSection's dark
+                card. */}
             <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
               <div className="flex items-center justify-between gap-2 border-b border-white/10 px-4 py-2.5">
                 <div className="flex items-center gap-1">
@@ -91,12 +96,14 @@ export function EmbedWidgetSection() {
                 <code>{snippet}</code>
               </pre>
             </div>
-            <p className="mt-3 text-xs leading-relaxed text-slate-500">{t("home.widget.hint")}</p>
+            <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+              {t("home.widget.hint")}
+            </p>
           </div>
 
           {/* Live preview — the real widget, exactly what gets embedded. */}
           <div className="lg:pt-2">
-            <div className="mx-auto w-full max-w-[440px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
+            <div className="mx-auto w-full max-w-[440px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
               <div className="h-[600px]">
                 <EmbedComparator initialCurrency="USD" />
               </div>

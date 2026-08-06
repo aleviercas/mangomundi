@@ -15,13 +15,13 @@ export function BusinessSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
               {t("nav.business")}
             </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
               {t("home.contact.title")}
             </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-slate-500">
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
               {t("home.contact.subtitle")}
             </p>
             {/* Moved here from the comparator's "sending a large amount?"
@@ -49,10 +49,10 @@ export function BusinessSection() {
           {cards.map((c) => (
             <div
               key={c.title}
-              className="rounded-[2rem] bg-white p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)]"
+              className="rounded-[2rem] bg-card p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)]"
             >
-              <h3 className="font-heading text-xl font-extrabold text-slate-900">{c.title}</h3>
-              <p className="mt-4 text-sm leading-relaxed text-slate-500">{c.body}</p>
+              <h3 className="font-heading text-xl font-extrabold text-foreground">{c.title}</h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
             </div>
           ))}
         </div>

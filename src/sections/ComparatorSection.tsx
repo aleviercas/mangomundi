@@ -1289,7 +1289,7 @@ export function ComparatorSection({
                 {t("comparator.results")}
               </h3>
             </div>
-            <div className="mb-2.5 flex flex-col gap-2.5">
+            <div className="mb-2.5 flex flex-col gap-3">
               {/* SORT ROW — single-select (sortBy), never reduces the
                   result set, only reorders it. Visually and semantically
                   separate from the filters row below: this answers "how do
@@ -1326,109 +1326,108 @@ export function ComparatorSection({
                   deliveryMethod (single-select) both narrow filteredRows
                   BEFORE ranking/badges are computed, so a "cheapest" badge
                   always reflects the cheapest among what's actually visible
-                  right now. Grouped into 3 semantic clusters (Tags / Transfer
-                  size / Delivery method) instead of one flat run of chips —
-                  each group is its own visual unit, separated by a divider,
-                  so "these 4 are alternatives to each other" (delivery) reads
-                  differently from "these are independent yes/no toggles"
-                  (tags, transfer size). Sponsored stays first per an earlier
-                  explicit decision (it's the one disclosure-related
-                  requirement, ahead of pure capability ones) even though
-                  it's now visually its own single-item "Tags" group rather
-                  than leading a flat list. flex-wrap (not overflow-x-auto)
-                  — a horizontal-scroll strip was tried first, but at the
-                  440px reference width of the embeddable widget (see
+                  right now. Grouped into 2 visually marked clusters (subtle
+                  border + tinted background, not just a 1px divider line)
+                  — split by INTERACTION TYPE rather than loose semantic
+                  category: opt-in requirements (checkbox-style, stackable)
+                  in one cluster, delivery method (radio-style, mutually
+                  exclusive) in the other. This reads more clearly than 3
+                  same-looking dividers, since the two clusters actually
+                  behave differently (checkboxes stack, delivery method
+                  doesn't). flex-wrap (not overflow-x-auto) — a
+                  horizontal-scroll strip was tried first, but at the 440px
+                  reference width of the embeddable widget (see
                   EmbedComparator/EmbedWidgetSection) there wasn't enough
-                  visible width to hint that more content existed off-screen,
-                  so it just looked cut off instead of scrollable. Wrapping
-                  onto additional lines costs vertical space instead, but
-                  never hides anything. */}
+                  visible width to hint that more content existed
+                  off-screen, so it just looked cut off instead of
+                  scrollable. Wrapping onto additional lines costs vertical
+                  space instead, but never hides anything. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
                 </span>
 
-                {/* Tags */}
-                <button
-                  type="button"
-                  onClick={() => toggleFilter("has_exclusive_deal")}
-                  aria-pressed={activeFilters.has("has_exclusive_deal")}
-                  className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                    activeFilters.has("has_exclusive_deal")
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-input bg-card text-foreground hover:border-foreground/30"
-                  }`}
-                >
-                  <span
-                    className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                {/* Cluster 1 — opt-in requirements (checkbox-style,
+                    stackable). Sponsored first per an earlier explicit
+                    decision (it's the one disclosure-related requirement,
+                    ahead of the pure capability one). */}
+                <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                  <button
+                    type="button"
+                    onClick={() => toggleFilter("has_exclusive_deal")}
+                    aria-pressed={activeFilters.has("has_exclusive_deal")}
+                    className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                       activeFilters.has("has_exclusive_deal")
-                        ? "border-background bg-background"
-                        : "border-muted-foreground/60"
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-input bg-card text-foreground hover:border-foreground/30"
                     }`}
                   >
-                    {activeFilters.has("has_exclusive_deal") && (
-                      <Check className="h-2.5 w-2.5 text-foreground" />
-                    )}
-                  </span>
-                  {t("comparator.badge.sponsored")}
-                </button>
-
-                <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
-
-                {/* Transfer size */}
-                <button
-                  type="button"
-                  onClick={() => toggleFilter("supports_large_tickets")}
-                  aria-pressed={activeFilters.has("supports_large_tickets")}
-                  className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                    activeFilters.has("supports_large_tickets")
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-input bg-card text-foreground hover:border-foreground/30"
-                  }`}
-                >
-                  <span
-                    className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
-                      activeFilters.has("supports_large_tickets")
-                        ? "border-background bg-background"
-                        : "border-muted-foreground/60"
-                    }`}
-                  >
-                    {activeFilters.has("supports_large_tickets") && (
-                      <Check className="h-2.5 w-2.5 text-foreground" />
-                    )}
-                  </span>
-                  {t("comparator.sort.largeTransfers")}
-                </button>
-
-                <span aria-hidden className="h-5 w-px shrink-0 bg-border" />
-
-                {/* Delivery method — single-select, mutually exclusive
-                    (radio-like, hence pill/rounded-full instead of the
-                    checkbox styling above), so it gets its own group label
-                    reusing the existing "Receive via" copy instead of the
-                    generic checkbox affordance. */}
-                <span className="shrink-0 text-[11px] text-muted-foreground">
-                  {t("comparator.delivery.label")}
-                </span>
-                {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
-                  const isActive = deliveryMethod === key;
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => toggleDeliveryMethod(key)}
-                      aria-pressed={isActive}
-                      className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                        isActive
-                          ? "border-foreground bg-foreground text-background"
-                          : "border-input bg-card text-foreground hover:border-foreground/30"
+                    <span
+                      className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                        activeFilters.has("has_exclusive_deal")
+                          ? "border-background bg-background"
+                          : "border-muted-foreground/60"
                       }`}
                     >
-                      <Icon className="h-3.5 w-3.5" />
-                      {t(labelKey)}
-                    </button>
-                  );
-                })}
+                      {activeFilters.has("has_exclusive_deal") && (
+                        <Check className="h-2.5 w-2.5 text-foreground" />
+                      )}
+                    </span>
+                    {t("comparator.badge.sponsored")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => toggleFilter("supports_large_tickets")}
+                    aria-pressed={activeFilters.has("supports_large_tickets")}
+                    className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                      activeFilters.has("supports_large_tickets")
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-input bg-card text-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    <span
+                      className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
+                        activeFilters.has("supports_large_tickets")
+                          ? "border-background bg-background"
+                          : "border-muted-foreground/60"
+                      }`}
+                    >
+                      {activeFilters.has("supports_large_tickets") && (
+                        <Check className="h-2.5 w-2.5 text-foreground" />
+                      )}
+                    </span>
+                    {t("comparator.sort.largeTransfers")}
+                  </button>
+                </div>
+
+                {/* Cluster 2 — delivery method (single-select, mutually
+                    exclusive; pill/rounded-full instead of the checkbox
+                    styling above, since it isn't one). */}
+                <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                  <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
+                    {t("comparator.delivery.label")}
+                  </span>
+                  {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
+                    const isActive = deliveryMethod === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => toggleDeliveryMethod(key)}
+                        aria-pressed={isActive}
+                        className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                          isActive
+                            ? "border-foreground bg-foreground text-background"
+                            : "border-input bg-card text-foreground hover:border-foreground/30"
+                        }`}
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        {t(labelKey)}
+                      </button>
+                    );
+                  })}
+                </div>
 
                 {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
@@ -2083,8 +2082,8 @@ function ProviderRow({
 
   return (
     <div
-      className={`relative flex flex-wrap items-start gap-3.5 border-b border-border px-5 pb-3.5 transition-colors last:border-b-0 hover:bg-muted/20 ${
-        row.has_exclusive_deal ? "pt-[26px]" : "pt-3.5"
+      className={`relative flex flex-wrap items-start gap-[18px] border-b border-border px-5 pb-[18px] last:border-b-0 ${
+        row.has_exclusive_deal ? "pt-[30px]" : "pt-[18px]"
       }`}
     >
       {/* Sponsored disclosure — a corner tab, not an inline badge next to
@@ -2095,16 +2094,9 @@ function ProviderRow({
           — one already-fully-translated key instead of two that could drift.
           Always says exactly what it is: a disclosed commercial placement,
           never a merit ranking (see the caption under the sort/filter
-          rows). Neutral gray, not amber — the accent color (#ff6b5b) is
-          reserved exclusively for the CTA button now, on purpose: an amber
-          "sponsored" tag and an orange "featured/best" signal both reading
-          as warm accent colors on the same row made it easy to mentally
-          conflate "this row is highlighted" with "this row paid to be
-          here", which is exactly the confusion a neutral disclosure color
-          avoids — the tag should read as informational, not as a second
-          competing brand accent. */}
+          rows). */}
       {row.has_exclusive_deal && (
-        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-border bg-muted px-3 py-1 text-[10px] font-extrabold text-muted-foreground">
+        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-amber-300 bg-amber-100 px-3 py-1 text-[10px] font-extrabold text-amber-800">
           <Sparkle className="mr-1 inline h-2.5 w-2.5" />
           {t("comparator.badge.sponsored")}
         </span>
@@ -2124,17 +2116,12 @@ function ProviderRow({
           right-alignment (the amount+button are meant to hug the row's
           right edge, not float in the middle). */}
       <div className="mx-auto flex w-[208px] flex-none flex-col items-center gap-1.5 text-center">
-        <div className="flex h-[18px] items-center justify-center">
-          {/* De-emphasized on purpose — plain text, no pill/background,
-              smaller than before. It used to be a filled badge sitting
-              right above the logo, competing with the amount for "first
-              thing you see" — the amount is the number that should win
-              that contest (Kayak-style: price dominates, everything else
-              is secondary), so this stepped back to a quiet label instead
-              of a loud one. Still real data, still visible, just not
-              shouting. */}
+        <div className="flex h-[26px] items-center justify-center">
           {score != null && (
-            <span className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/80">
+            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-muted px-2.5 py-1 text-[10px] font-extrabold text-muted-foreground">
+              {/* No icon here on purpose — the star is reserved for the
+                  trust-score chip below (real review data), so it never
+                  reads as a rating average. Text-only: "{label} {number}". */}
               {t("comparator.score.label")} {displayScore(score)}
             </span>
           )}
@@ -2143,7 +2130,7 @@ function ProviderRow({
           name={row.name}
           url={row.website_url ?? row.affiliate_url}
           slug={row.slug}
-          size={36}
+          size={44}
           rounded={false}
           className="rounded-sm border border-border bg-white"
         />
@@ -2173,17 +2160,12 @@ function ProviderRow({
           horizontal overflow on the whole row. Removing the floor lets this
           block compress as narrow as it needs to instead. */}
       <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-3">
-        {/* Weight dialed down from font-semibold — this strip shouldn't
-            visually compete with the amount on the right for "first thing
-            you notice"; it's supporting detail, not the headline number.
-            Lighter container tint (bg-muted/30, was /50) for the same
-            reason. */}
-        <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/30 px-2.5 py-2 text-center">
+        <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/50 px-2.5 py-2 text-center">
           <div className="min-w-0 flex-[1_1_70px]">
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {tSpeed}
             </div>
-            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-[13px] font-medium text-foreground">
+            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-[13px] font-semibold text-foreground">
               <Clock className="h-3 w-3" /> {deliveryLabel}
             </div>
           </div>
@@ -2191,7 +2173,7 @@ function ProviderRow({
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {tExchangeRate}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
               {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}{" "}
               <span className={ratePctClass}>({ratePctLabel})</span>
             </div>
@@ -2200,7 +2182,7 @@ function ProviderRow({
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t("fx.totalFee")}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
               {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
             </div>
             {/* Fee/rate split is the whole point of a neutral comparator (a
@@ -2246,7 +2228,7 @@ function ProviderRow({
           the top. */}
       <div className="flex flex-[1_1_220px] items-center justify-end gap-4">
         <div className="text-right">
-          <div className="whitespace-nowrap text-[27px] font-extrabold leading-none text-foreground">
+          <div className="whitespace-nowrap text-[22px] font-extrabold text-foreground">
             {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
             <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
           </div>

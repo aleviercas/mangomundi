@@ -86,7 +86,7 @@ export function EmbedComparator({
         href="https://mangomundi.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex shrink-0 items-center justify-center gap-1.5 border-t border-slate-200 bg-white py-2.5 text-[11px] font-medium text-slate-400 transition-colors hover:text-slate-700"
+        className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         powered by <Wordmark className="text-sm" />
       </a>

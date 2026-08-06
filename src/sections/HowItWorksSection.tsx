@@ -12,11 +12,13 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">{t("home.how.eyebrow")}</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-5xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
+              {t("home.how.eyebrow")}
+            </p>
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
               {t("home.how.title")}
             </h2>
-            <p className="mt-6 max-w-3xl text-base leading-relaxed text-slate-500 sm:text-lg">
+            <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               {t("search.guide")}
             </p>
           </div>
@@ -33,17 +35,19 @@ export function HowItWorksSection() {
           {steps.map((s) => (
             <div
               key={s.n}
-              className="rounded-[2rem] bg-white p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)] transition-shadow hover:shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_50px_-18px_rgba(15,23,42,0.18)]"
+              className="rounded-[2rem] bg-card p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)] transition-shadow hover:shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_50px_-18px_rgba(15,23,42,0.18)]"
             >
-              <div className="font-heading text-sm font-bold text-[#ff6b5b]">{s.n}</div>
-              <h3 className="mt-4 font-heading text-xl font-extrabold text-slate-900">{s.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-slate-500">{s.desc}</p>
+              <div className="font-heading text-sm font-bold text-accent">{s.n}</div>
+              <h3 className="mt-4 font-heading text-xl font-extrabold text-foreground">
+                {s.title}
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
             </div>
           ))}
         </div>
         {/* The AI agent is optional and not part of the core 3-step flow, so it
             gets a lighter mention instead of its own numbered card. */}
-        <p className="mt-8 text-center text-sm text-slate-500">{t("home.how.aiAside")}</p>
+        <p className="mt-8 text-center text-sm text-muted-foreground">{t("home.how.aiAside")}</p>
       </div>
     </section>
   );

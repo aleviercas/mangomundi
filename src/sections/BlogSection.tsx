@@ -19,10 +19,10 @@ export function BlogSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
               {t("home.blog.eyebrow")}
             </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-slate-900 sm:text-4xl">
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl">
               {t("home.blog.title")}
             </h2>
           </div>
@@ -32,8 +32,8 @@ export function BlogSection() {
           // Quiet placeholder — the section heading already carries the
           // "coming soon" message, so this stays light (no repeated title, no
           // heavy dark card competing with the Widget section above it).
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-6 py-10 text-center sm:py-12">
-            <p className="mx-auto max-w-md text-sm leading-relaxed text-slate-500">
+          <div className="rounded-2xl border border-dashed border-border bg-muted/60 px-6 py-10 text-center sm:py-12">
+            <p className="mx-auto max-w-md text-sm leading-relaxed text-muted-foreground">
               {t("home.blog.body")}
             </p>
           </div>
@@ -45,7 +45,7 @@ export function BlogSection() {
                   key={post.slug}
                   to="/blog/$slug"
                   params={{ slug: post.slug }}
-                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
+                  className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg"
                 >
                   {post.cover_url && (
                     <img
@@ -56,15 +56,15 @@ export function BlogSection() {
                     />
                   )}
                   <div className="flex flex-1 flex-col p-6">
-                    <h3 className="font-heading text-lg font-bold text-slate-900 group-hover:text-[#ff6b5b]">
+                    <h3 className="font-heading text-lg font-bold text-foreground group-hover:text-accent">
                       {post.title}
                     </h3>
                     {post.excerpt && (
-                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-slate-600">
+                      <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
                         {post.excerpt}
                       </p>
                     )}
-                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#ff6b5b]">
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent">
                       {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
                     </span>
                   </div>
@@ -72,11 +72,18 @@ export function BlogSection() {
               ))}
             </div>
             {/* Separate from each card's own "Read more" — this one goes to
-                the full listing, not a specific post. */}
+                the full listing, not a specific post. Deliberately kept as
+                a secondary/outline treatment, NOT .btn-cta: it's a real
+                secondary action (browse everything) sharing the page with
+                each card's own primary "Read more", so making it look like
+                a second primary CTA would muddy which action matters more.
+                Tokenized (border-border/text-foreground/hover:accent)
+                instead of raw slate so it's still part of the same design
+                system, just intentionally the quieter button. */}
             <div className="mt-10 text-center">
               <Link
                 to="/blog"
-                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-900 transition-colors hover:border-[#ff6b5b] hover:text-[#ff6b5b]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-accent hover:text-accent"
               >
                 {t("home.blog.viewAll")} <ArrowRight className="h-4 w-4" />
               </Link>
