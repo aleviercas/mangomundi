@@ -1335,10 +1335,15 @@ export function ComparatorSection({
                   explicit decision (it's the one disclosure-related
                   requirement, ahead of pure capability ones) even though
                   it's now visually its own single-item "Tags" group rather
-                  than leading a flat list. overflow-x-auto + scrollbar-hide
-                  so this degrades to a horizontal-scroll strip on narrow
-                  screens instead of wrapping into a tall stack. */}
-              <div className="no-scrollbar -mx-5 flex items-center gap-2 overflow-x-auto px-5 pb-1">
+                  than leading a flat list. flex-wrap (not overflow-x-auto)
+                  — a horizontal-scroll strip was tried first, but at the
+                  440px reference width of the embeddable widget (see
+                  EmbedComparator/EmbedWidgetSection) there wasn't enough
+                  visible width to hint that more content existed off-screen,
+                  so it just looked cut off instead of scrollable. Wrapping
+                  onto additional lines costs vertical space instead, but
+                  never hides anything. */}
+              <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
                 </span>
@@ -2135,7 +2140,18 @@ function ProviderRow({
           the feature-highlight chips below. flex-basis + min-w-0 on each
           mini-strip cell (never a fixed px min-width) is what lets this
           degrade to a stacked card under ~600px without clipping. */}
-      <div className="flex min-w-[300px] flex-[1_1_380px] flex-col gap-3">
+      {/* min-w-0 (not a hard floor like 300px) — this block already wraps
+          internally (the mini-strip below has its own flex-wrap + min-w-0
+          cells), so it doesn't need one. A 300px floor here was the actual
+          cause of the widget's scroll issue: at the widget's 440px
+          reference width there isn't 300px of room left after the Provider
+          block + padding, so the row couldn't wrap cleanly. It was also
+          borderline-broken on plain mobile — an iPhone SE's ~293px of
+          available content width (375px viewport minus the section's own
+          padding) is already narrower than 300px, which would have forced
+          horizontal overflow on the whole row. Removing the floor lets this
+          block compress as narrow as it needs to instead. */}
+      <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-3">
         <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/50 px-2.5 py-2 text-center">
           <div className="min-w-0 flex-[1_1_70px]">
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
