@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "最佳汇率",
   "comparator.sort.more": "更多标准",
   "comparator.table.exchangeRate": "汇率",
-  "comparator.legend.bestExchangeRate": "最佳汇率：该服务商的汇率最接近真实的中间市场汇率，与其固定费用无关，因为零费用仍可能隐藏着糟糕的汇率。"
+  "comparator.legend.bestExchangeRate": "最佳汇率：该服务商的汇率最接近真实的中间市场汇率，与其固定费用无关，因为零费用仍可能隐藏着糟糕的汇率。",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

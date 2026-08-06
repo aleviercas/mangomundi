@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "بہترین ایکسچینج ریٹ",
   "comparator.sort.more": "مزید معیار",
   "comparator.table.exchangeRate": "ایکسچینج ریٹ",
-  "comparator.legend.bestExchangeRate": "بہترین ایکسچینج ریٹ: اس فراہم کنندہ کی شرح حقیقی مڈ مارکیٹ ریٹ کے قریب ترین ہے — اس کی مقررہ فیس سے الگ، کیونکہ 0 ڈالر فیس پھر بھی خراب ریٹ چھپا سکتی ہے۔"
+  "comparator.legend.bestExchangeRate": "بہترین ایکسچینج ریٹ: اس فراہم کنندہ کی شرح حقیقی مڈ مارکیٹ ریٹ کے قریب ترین ہے — اس کی مقررہ فیس سے الگ، کیونکہ 0 ڈالر فیس پھر بھی خراب ریٹ چھپا سکتی ہے۔",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

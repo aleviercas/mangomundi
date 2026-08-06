@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "Kurs terbaik",
   "comparator.sort.more": "Kriteria lainnya",
   "comparator.table.exchangeRate": "Kurs tukar",
-  "comparator.legend.bestExchangeRate": "Kurs terbaik: kurs penyedia ini paling dekat dengan kurs pasar riil — terlepas dari biaya tetapnya, karena biaya $0 tetap bisa menyembunyikan kurs yang buruk."
+  "comparator.legend.bestExchangeRate": "Kurs terbaik: kurs penyedia ini paling dekat dengan kurs pasar riil — terlepas dari biaya tetapnya, karena biaya $0 tetap bisa menyembunyikan kurs yang buruk.",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

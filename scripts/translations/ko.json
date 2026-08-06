@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "최고 환율",
   "comparator.sort.more": "기타 기준",
   "comparator.table.exchangeRate": "환율",
-  "comparator.legend.bestExchangeRate": "최고 환율: 이 제공업체의 환율이 실제 중간 시장 환율에 가장 가깝습니다 — 고정 수수료와는 별개입니다. 수수료 0원이어도 환율이 나쁠 수 있습니다."
+  "comparator.legend.bestExchangeRate": "최고 환율: 이 제공업체의 환율이 실제 중간 시장 환율에 가장 가깝습니다 — 고정 수수료와는 별개입니다. 수수료 0원이어도 환율이 나쁠 수 있습니다.",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

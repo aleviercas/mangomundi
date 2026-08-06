@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "सर्वश्रेष्ठ एक्सचेंज रेट",
   "comparator.sort.more": "और मानदंड",
   "comparator.table.exchangeRate": "एक्सचेंज रेट",
-  "comparator.legend.bestExchangeRate": "सर्वश्रेष्ठ एक्सचेंज रेट: इस प्रदाता की दर वास्तविक मिड-मार्केट रेट के सबसे करीब है — इसकी फ्लैट फीस से अलग, क्योंकि $0 फीस भी खराब दर छुपा सकती है।"
+  "comparator.legend.bestExchangeRate": "सर्वश्रेष्ठ एक्सचेंज रेट: इस प्रदाता की दर वास्तविक मिड-मार्केट रेट के सबसे करीब है — इसकी फ्लैट फीस से अलग, क्योंकि $0 फीस भी खराब दर छुपा सकती है।",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }

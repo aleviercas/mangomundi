@@ -675,5 +675,7 @@
   "comparator.sort.bestExchangeRate": "Miglior tasso di cambio",
   "comparator.sort.more": "Altri criteri",
   "comparator.table.exchangeRate": "Tasso di cambio",
-  "comparator.legend.bestExchangeRate": "Miglior tasso di cambio: il tasso di questo fornitore è il più vicino al vero tasso di mercato — indipendentemente dalla commissione fissa, perché una commissione a 0 può comunque nascondere un tasso sfavorevole."
+  "comparator.legend.bestExchangeRate": "Miglior tasso di cambio: il tasso di questo fornitore è il più vicino al vero tasso di mercato — indipendentemente dalla commissione fissa, perché una commissione a 0 può comunque nascondere un tasso sfavorevole.",
+  "comparator.badge.sponsoredDisclosure": "Sponsored exclusive rate",
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
 }
