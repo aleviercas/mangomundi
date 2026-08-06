@@ -671,5 +671,13 @@
   "comparator.sort.bestExchangeRate": "Mejor tipo de cambio",
   "comparator.sort.more": "Más criterios",
   "comparator.table.exchangeRate": "Tipo de cambio",
-  "comparator.legend.bestExchangeRate": "Mejor tipo de cambio: la tasa de este proveedor es la más cercana al mid-market real — independiente de su fee fijo, porque un fee de $0 puede esconder igual un mal tipo de cambio."
+  "comparator.legend.bestExchangeRate": "Mejor tipo de cambio: la tasa de este proveedor es la más cercana al mid-market real — independiente de su fee fijo, porque un fee de $0 puede esconder igual un mal tipo de cambio.",
+  "blog.share.copyLink": "Copiar enlace",
+  "blog.share.label": "Compartir",
+  "comparator.badge.sponsoredDisclosure": "Tarifa exclusiva patrocinada",
+  "comparator.copilot.business.countryError": "Selecciona el país de origen y destino arriba antes de continuar.",
+  "comparator.rankingExplainer": "El listado se ordena por **Puntaje**, un valor de 0 a 10 que combina tarifa, tipo de cambio, velocidad y confianza. **Patrocinado** marca acuerdos comerciales — nunca cambia el orden real.",
+  "home.blog.viewAll": "Ver todas las notas",
+  "home.contact.subtitle": "Para equipos de tesorería y partners de FX que buscan tasas dedicadas, integraciones a medida, o una línea directa con nuestro equipo.",
+  "home.how.aiAside": "¿No estás seguro cuál conviene? Preguntale al agente de IA de mangomundi, gratis y sin necesidad de cuenta, para desglosar comisiones o confirmar la mejor opción."
 }
