@@ -1298,51 +1298,53 @@ export function ComparatorSection({
             </div>
             <div className="mb-2.5 flex flex-col gap-3">
               {/* SORT ROW — single-select (sortBy), never reduces the
-                  result set, only reorders it. Two visual tiers, not two
-                  mechanisms: primary chips (bigger) are the 3 criteria that
-                  already have an obvious visual counterpart on every row
-                  (Score pill, received amount, speed); secondary chips
-                  (smaller, second line) cover the rest. Still just one
-                  sortBy state either way — the size difference is purely
-                  editorial emphasis, not a functional split. */}
-              <div className="flex flex-col gap-1.5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    {t("comparator.sortBy")}
-                  </span>
-                  {SORT_CHIPS.map((key) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setSortBy(key)}
-                      aria-pressed={sortBy === key}
-                      className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                        sortBy === key
-                          ? "border-transparent bg-[#ff6b5b] text-white"
-                          : "border-input bg-card text-foreground hover:border-foreground/30"
-                      }`}
-                    >
-                      {t(sortLabelKey(key))}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  {SECONDARY_SORT_CHIPS.map((key) => (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setSortBy(key)}
-                      aria-pressed={sortBy === key}
-                      className={`h-6 rounded-full border px-2.5 text-[11px] font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                        sortBy === key
-                          ? "border-transparent bg-[#ff6b5b] text-white"
-                          : "border-input bg-card text-muted-foreground hover:border-foreground/30"
-                      }`}
-                    >
-                      {t(sortLabelKey(key))}
-                    </button>
-                  ))}
-                </div>
+                  result set, only reorders it. One row, two visual tiers,
+                  not two mechanisms: primary chips (bigger) are the 3
+                  criteria that already have an obvious visual counterpart
+                  on every row (Score pill, received amount, speed);
+                  secondary chips (smaller, after the divider) cover the
+                  rest. Still just one sortBy state either way — the size
+                  difference is purely editorial emphasis, not a functional
+                  split. Combined onto one line (an earlier version put
+                  secondary on its own line below) — splitting them left a
+                  lot of dead width on wide screens, since neither line on
+                  its own needed the full row; one continuous flex-wrap row
+                  uses that space naturally instead. */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {t("comparator.sortBy")}
+                </span>
+                {SORT_CHIPS.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSortBy(key)}
+                    aria-pressed={sortBy === key}
+                    className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                      sortBy === key
+                        ? "border-transparent bg-[#ff6b5b] text-white"
+                        : "border-input bg-card text-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {t(sortLabelKey(key))}
+                  </button>
+                ))}
+                <span aria-hidden className="mx-0.5 h-4 w-px shrink-0 bg-border" />
+                {SECONDARY_SORT_CHIPS.map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setSortBy(key)}
+                    aria-pressed={sortBy === key}
+                    className={`h-6 rounded-full border px-2.5 text-[11px] font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                      sortBy === key
+                        ? "border-transparent bg-[#ff6b5b] text-white"
+                        : "border-input bg-card text-muted-foreground hover:border-foreground/30"
+                    }`}
+                  >
+                    {t(sortLabelKey(key))}
+                  </button>
+                ))}
               </div>
 
               {/* FILTERS ROW — activeFilters (stackable checkboxes) +
