@@ -1302,14 +1302,14 @@ export function ComparatorSection({
                   not two mechanisms: primary chips (bigger) are the 3
                   criteria that already have an obvious visual counterpart
                   on every row (Score pill, received amount, speed);
-                  secondary chips (smaller, after the divider) cover the
-                  rest. Still just one sortBy state either way — the size
-                  difference is purely editorial emphasis, not a functional
-                  split. Combined onto one line (an earlier version put
-                  secondary on its own line below) — splitting them left a
-                  lot of dead width on wide screens, since neither line on
-                  its own needed the full row; one continuous flex-wrap row
-                  uses that space naturally instead. */}
+                  secondary chips (smaller) cover the rest. Still just one
+                  sortBy state either way — the size difference is purely
+                  editorial emphasis, not a functional split. No divider
+                  between them (an earlier version had one) — a vertical
+                  bar can end up alone at the end of a wrapped line on
+                  narrow widths, which reads as a stray/broken element; the
+                  size+weight contrast alone already separates the two
+                  tiers without needing a literal mark. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
@@ -1329,7 +1329,6 @@ export function ComparatorSection({
                     {t(sortLabelKey(key))}
                   </button>
                 ))}
-                <span aria-hidden className="mx-0.5 h-4 w-px shrink-0 bg-border" />
                 {SECONDARY_SORT_CHIPS.map((key) => (
                   <button
                     key={key}
@@ -1372,7 +1371,7 @@ export function ComparatorSection({
                     a capability requirement, hence its own cluster with
                     "Show only" as the label (matches what it literally
                     does). */}
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
                   <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
                     {t("comparator.filter.showOnly")}
                   </span>
@@ -1406,7 +1405,7 @@ export function ComparatorSection({
                     capability filter, not a visibility filter — a
                     different kind of question ("can this provider do
                     this?" vs "only show me these"). */}
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
                   <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
                     {t("comparator.filter.size")}
                   </span>
@@ -1439,7 +1438,7 @@ export function ComparatorSection({
                     exclusive; pill/rounded-full instead of the checkbox
                     styling above, since it isn't one). Already a clear,
                     well-defined category — unchanged. */}
-                <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
                   <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
                     {t("comparator.delivery.label")}
                   </span>
@@ -2120,8 +2119,8 @@ function ProviderRow({
 
   return (
     <div
-      className={`relative flex flex-wrap items-start gap-[18px] border-b border-border px-5 pb-[18px] last:border-b-0 ${
-        row.has_exclusive_deal ? "pt-[30px]" : "pt-[18px]"
+      className={`relative flex flex-wrap items-start gap-3.5 border-b border-border px-5 pb-3.5 transition-colors last:border-b-0 hover:bg-muted/20 ${
+        row.has_exclusive_deal ? "pt-[34px]" : "pt-3.5"
       }`}
     >
       {/* Sponsored disclosure — a corner tab, not an inline badge next to
@@ -2168,7 +2167,7 @@ function ProviderRow({
           name={row.name}
           url={row.website_url ?? row.affiliate_url}
           slug={row.slug}
-          size={44}
+          size={36}
           rounded={false}
           className="rounded-sm border border-border bg-white"
         />
@@ -2198,12 +2197,12 @@ function ProviderRow({
           horizontal overflow on the whole row. Removing the floor lets this
           block compress as narrow as it needs to instead. */}
       <div className="flex min-w-0 flex-[1_1_380px] flex-col gap-3">
-        <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/50 px-2.5 py-2 text-center">
+        <div className="flex flex-wrap justify-evenly gap-x-4 gap-y-2 rounded-sm bg-muted/30 px-2.5 py-2 text-center">
           <div className="min-w-0 flex-[1_1_70px]">
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {tSpeed}
             </div>
-            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 inline-flex items-center justify-center gap-1 whitespace-nowrap text-[13px] font-medium text-foreground">
               <Clock className="h-3 w-3" /> {deliveryLabel}
             </div>
           </div>
@@ -2211,7 +2210,7 @@ function ProviderRow({
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {tExchangeRate}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
               {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}{" "}
               <span className={ratePctClass}>({ratePctLabel})</span>
             </div>
@@ -2220,7 +2219,7 @@ function ProviderRow({
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t("fx.totalFee")}
             </div>
-            <div className="mt-0.5 whitespace-nowrap text-[13px] font-semibold text-foreground">
+            <div className="mt-0.5 whitespace-nowrap text-[13px] font-medium text-foreground">
               {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
             </div>
             {/* Fee/rate split is the whole point of a neutral comparator (a
