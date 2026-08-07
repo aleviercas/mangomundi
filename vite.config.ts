@@ -75,7 +75,22 @@ export default defineConfig(async ({ command, mode }): Promise<UserConfig> => {
     // a real regression if it grows further. Shrinking it for real would
     // mean lazy-loading the AI chat panel/ReactMarkdown and splitting the
     // i18n dictionary per-locale — a separate, bigger refactor.
-    build: { chunkSizeWarningLimit: 3000 },
+    build: {
+      chunkSizeWarningLimit: 3000,
+      // flag-icons ships ~250 country flags, most under Vite's default 4KB
+      // inline threshold — base64-inlining them all into the CSS is what
+      // ballooned styles.css to ~550kB (measured on a real Vercel build),
+      // which is render-blocking on every page since it's one global
+      // @import. Excluding just this package's assets from inlining lets
+      // the browser fetch each flag as its own small, cacheable file,
+      // on-demand, exactly when a `fi-xx` class actually needs to paint —
+      // native lazy-loading, not custom async code, and no risk of ever
+      // going stale as currencies.ts/countries.ts change (unlike a curated
+      // CSS subset would be). Every other asset in the app keeps Vite's
+      // normal default behavior (`undefined` here falls back to it) — this
+      // targets flag-icons specifically, nothing else.
+      assetsInlineLimit: (filePath) => (filePath.includes("flag-icons") ? false : undefined),
+    },
     // Match dev and build CSS pipelines (Lightning CSS in both).
     css: { transformer: "lightningcss" },
     resolve: {

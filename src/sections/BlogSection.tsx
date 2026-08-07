@@ -7,7 +7,7 @@ import { useI18n } from "@/lib/i18n";
 export function BlogSection() {
   const { t, lang } = useI18n();
   const locale = toBlogLocale(lang);
-  const { data: posts } = useQuery({
+  const { data: posts, isLoading } = useQuery({
     queryKey: ["blog", "list", locale],
     queryFn: () => listBlogPosts({ data: { locale } }),
     staleTime: 5 * 60_000,
@@ -28,7 +28,37 @@ export function BlogSection() {
           </div>
         </div>
 
-        {latest.length === 0 ? (
+        {isLoading ? (
+          // Skeleton, not the empty-state placeholder — this section's data
+          // is fetched client-side only (no server loader/prefetch, see
+          // route index.tsx), so on every first visit this renders for
+          // real, however briefly. Sized to match the real 3-card grid as
+          // closely as possible (same h-40 image block, same title/excerpt
+          // line count) specifically so swapping skeleton → real content
+          // doesn't change this section's height and push the Stats/CTA/
+          // Contact sections below it down — that swap, when it rendered
+          // the much-shorter "coming soon" placeholder instead while
+          // loading, was a real, measured contributor to Desktop's CLS
+          // (Vercel Speed Insights: 0.51, "Needs Improvement" — Mobile
+          // was already 0, most likely because taller single-column mobile
+          // layouts push this section below the viewport before the query
+          // resolves, while desktop's shorter multi-column layout doesn't).
+          <div aria-hidden className="grid animate-pulse gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="overflow-hidden rounded-2xl border border-border bg-card">
+                <div className="h-40 w-full bg-muted" />
+                <div className="flex flex-col gap-3 p-6">
+                  <div className="h-5 w-4/5 rounded bg-muted" />
+                  <div className="h-5 w-2/5 rounded bg-muted" />
+                  <div className="mt-1 h-3.5 w-full rounded bg-muted" />
+                  <div className="h-3.5 w-full rounded bg-muted" />
+                  <div className="h-3.5 w-2/3 rounded bg-muted" />
+                  <div className="mt-1 h-4 w-24 rounded bg-muted" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : latest.length === 0 ? (
           // Quiet placeholder — the section heading already carries the
           // "coming soon" message, so this stays light (no repeated title, no
           // heavy dark card competing with the Widget section above it).
