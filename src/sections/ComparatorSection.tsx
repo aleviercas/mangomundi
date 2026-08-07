@@ -1048,7 +1048,15 @@ export function ComparatorSection({
         <div className="min-w-0">
           {/* Decision card — dark, matching the brand widget (white inputs). */}
           <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
-            {/* Card header: brand + segment toggle */}
+            {/* Card header: brand + segment toggle. Tried moving this into
+                the post-results filter row (Personal/Empresa alongside
+                Size/Show only/Receive via) — reverted: unlike those
+                filters, which just narrow already-fetched rows client-side,
+                switching segment changes the SERVER query itself (a
+                different fetch, not a subset) and, going to Empresa, hands
+                the chat to the business-lead wizard. That decision needs to
+                happen BEFORE the search runs, not as a post-results filter
+                — so it stays here. */}
             <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-1.5 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
@@ -1363,7 +1371,14 @@ export function ComparatorSection({
                   visible width to hint that more content existed
                   off-screen, so it just looked cut off instead of
                   scrollable. Wrapping onto additional lines costs vertical
-                  space instead, but never hides anything. */}
+                  space instead, but never hides anything.
+
+                  Client type (Personal/Empresa) deliberately does NOT live
+                  here — tried it, reverted (see the header toggle's own
+                  comment for why): switching it re-runs the server query
+                  and can hand the chat to the business-lead wizard, which
+                  is a bigger effect than a same-request client-side filter,
+                  and needs to happen before the search runs anyway. */}
               <div className="flex flex-wrap items-center gap-2">
                 {/* Show only — first, per an earlier explicit decision:
                     it's the one disclosure-related requirement, ahead of

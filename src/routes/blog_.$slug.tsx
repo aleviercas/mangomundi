@@ -252,9 +252,19 @@ function SponsoredProvidersSection({ audience }: { audience: string }) {
             onClick={() => track("provider_click", { provider_slug: p.slug, source: "blog" })}
             className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 transition-colors hover:border-accent/50"
           >
-            <BrandLogo name={p.name} url={p.website_url} slug={p.slug} size={32} />
+            <BrandLogo
+              name={p.name}
+              url={p.website_url ?? p.affiliate_url}
+              slug={p.slug}
+              size={32}
+            />
             <span className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
-              {t("blog.sponsored.sendWith")} {p.name}
+              {t("blog.sponsored.sendWith")} {p.name}{" "}
+              {audience === "business"
+                ? t("blog.sponsored.forBusiness")
+                : audience === "retail"
+                  ? t("blog.sponsored.forIndividuals")
+                  : null}
             </span>
             <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
           </a>
@@ -305,13 +315,20 @@ function BlogPostPage() {
         </Link>
 
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground mb-4">
-          <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
-            {post.audience === "business"
-              ? t("blog.audience.business")
-              : post.audience === "retail"
-                ? t("blog.audience.retail")
-                : t("blog.audience.both")}
-          </span>
+          {/* Two separate badges for "both", not one combined "Both" label
+              — each shows on its own, same visual weight as when a post is
+              single-audience, so "this applies to both" reads as two real
+              marks rather than a third, different category. */}
+          {(post.audience === "business" || post.audience === "both") && (
+            <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
+              {t("blog.audience.business")}
+            </span>
+          )}
+          {(post.audience === "retail" || post.audience === "both") && (
+            <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
+              {t("blog.audience.retail")}
+            </span>
+          )}
           {post.published_at && (
             <span>
               {new Date(post.published_at).toLocaleDateString(undefined, {

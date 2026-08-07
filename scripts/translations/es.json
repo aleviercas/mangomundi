@@ -683,5 +683,7 @@
   "comparator.filter.showOnly": "Mostrar solo",
   "blog.sponsored.heading": "Enviá dinero con nuestros socios",
   "blog.sponsored.disclosure": "Patrocinado — mangomundi puede recibir una comisión sin costo adicional para vos.",
-  "blog.sponsored.sendWith": "Enviar dinero con"
+  "blog.sponsored.sendWith": "Enviar dinero con",
+  "blog.sponsored.forBusiness": "para tu negocio",
+  "blog.sponsored.forIndividuals": "para personas"
 }
