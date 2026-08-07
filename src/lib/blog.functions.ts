@@ -105,3 +105,51 @@ export const getBlogPost = createServerFn({ method: "GET" })
     }
     return fallback as BlogPost | null;
   });
+
+export interface SponsoredProvider {
+  slug: string;
+  name: string;
+  website_url: string | null;
+  affiliate_url: string;
+}
+
+/** Powers the "Send money with X" block at the end of every blog post (see
+ *  blog_.$slug.tsx). Deliberately the SAME has_exclusive_deal flag that
+ *  drives the "Sponsored offer" corner tab in the comparator — one place to
+ *  update when a sponsorship starts or ends, and the two surfaces (blog,
+ *  comparator) can never drift out of sync with each other.
+ *
+ *  Filtered by providers.audience against the post's own audience
+ *  ("business" | "retail") — NOT by providers.segment, which is a
+ *  different field driving the comparator's Personal/Empresa toggle.
+ *  A provider can legitimately want "both" for segment (show as a
+ *  comparable option in either view) while still being "business"-only
+ *  for audience (don't feature it in retail-focused blog content) — e.g.
+ *  Airwallex is a B2B cross-border payments platform, comparable for
+ *  business users but not a fit to promote on a personal-transfer guide.
+ *  Posts with no matching sponsored provider just render nothing (see
+ *  SponsoredProvidersSection's early return) — this list is expected to be
+ *  empty for some (audience, locale) combinations. */
+export const listSponsoredProviders = createServerFn({ method: "GET" })
+  .inputValidator((d: { audience?: string } | undefined) =>
+    z
+      .object({ audience: z.enum(["business", "retail", "both"]).default("both") })
+      .parse({ audience: d?.audience }),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const matchingAudiences =
+      data.audience === "both" ? ["business", "retail", "both"] : [data.audience, "both"];
+    const { data: rows, error } = await supabaseAdmin
+      .from("providers")
+      .select("slug, name, website_url, affiliate_url")
+      .eq("has_exclusive_deal", true)
+      .eq("active", true)
+      .in("audience", matchingAudiences)
+      .order("name", { ascending: true });
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+    return (rows ?? []) as SponsoredProvider[];
+  });

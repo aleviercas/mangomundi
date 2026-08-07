@@ -678,5 +678,8 @@
   "comparator.legend.bestExchangeRate": "सर्वश्रेष्ठ एक्सचेंज रेट: इस प्रदाता की दर वास्तविक मिड-मार्केट रेट के सबसे करीब है — इसकी फ्लैट फीस से अलग, क्योंकि $0 फीस भी खराब दर छुपा सकती है।",
   "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
   "comparator.filter.size": "Size",
-  "comparator.filter.showOnly": "Show only"
+  "comparator.filter.showOnly": "Show only",
+  "blog.sponsored.heading": "Send money with our partners",
+  "blog.sponsored.disclosure": "Sponsored — mangomundi may earn a commission at no extra cost to you.",
+  "blog.sponsored.sendWith": "Send money with"
 }

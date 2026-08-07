@@ -151,6 +151,39 @@ export type Database = {
           },
         ]
       }
+      clicks_tracking: {
+        Row: {
+          amount: number
+          commission_earned: number
+          created_at: string
+          id: string
+          provider: string
+          source_currency: string
+          status: string
+          target_currency: string
+        }
+        Insert: {
+          amount: number
+          commission_earned?: number
+          created_at?: string
+          id?: string
+          provider: string
+          source_currency: string
+          status?: string
+          target_currency: string
+        }
+        Update: {
+          amount?: number
+          commission_earned?: number
+          created_at?: string
+          id?: string
+          provider?: string
+          source_currency?: string
+          status?: string
+          target_currency?: string
+        }
+        Relationships: []
+      }
       enterprise_leads: {
         Row: {
           amount: number | null
@@ -295,51 +328,32 @@ export type Database = {
         }
         Relationships: []
       }
-      rate_cache: {
-        Row: {
-          base: string
-          fetched_at: string | null
-          id: string
-          rates: Json
-          source: string | null
-          updated_at: string
-        }
-        Insert: {
-          base: string
-          fetched_at?: string | null
-          id: string
-          rates: Json
-          source?: string | null
-          updated_at?: string
-        }
-        Update: {
-          base?: string
-          fetched_at?: string | null
-          id?: string
-          rates?: Json
-          source?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
       providers: {
         Row: {
           active: boolean
           affiliate_url: string
           audience: string
+          bank_transfer_available: boolean | null
+          business_focus_score: number | null
+          card_payout_available: boolean | null
+          cash_pickup_available: boolean | null
+          countries_covered: number | null
           created_at: string
           delivery_minutes: number | null
           featured: boolean
           fee_fixed: number
           fee_percent: number
           fee_tiers: Json | null
+          has_exclusive_deal: boolean | null
           id: string
           logo_emoji: string | null
           max_amount: number | null
           min_amount: number | null
+          mobile_app_rating: number | null
           name: string
           notes: string | null
           promo_text: string | null
+          provider_type: string | null
           rates_last_updated: string | null
           regulator: string | null
           review_count: number | null
@@ -353,6 +367,8 @@ export type Database = {
           supports_large_tickets: boolean
           transparency_score: number | null
           trust_score: number | null
+          trust_score_checked_at: string | null
+          trust_score_previous: number | null
           updated_at: string
           vertical: Database["public"]["Enums"]["provider_vertical"]
           website_url: string | null
@@ -361,19 +377,27 @@ export type Database = {
           active?: boolean
           affiliate_url: string
           audience?: string
+          bank_transfer_available?: boolean | null
+          business_focus_score?: number | null
+          card_payout_available?: boolean | null
+          cash_pickup_available?: boolean | null
+          countries_covered?: number | null
           created_at?: string
           delivery_minutes?: number | null
           featured?: boolean
           fee_fixed?: number
           fee_percent?: number
           fee_tiers?: Json | null
+          has_exclusive_deal?: boolean | null
           id?: string
           logo_emoji?: string | null
           max_amount?: number | null
           min_amount?: number | null
+          mobile_app_rating?: number | null
           name: string
           notes?: string | null
           promo_text?: string | null
+          provider_type?: string | null
           rates_last_updated?: string | null
           regulator?: string | null
           review_count?: number | null
@@ -387,6 +411,8 @@ export type Database = {
           supports_large_tickets?: boolean
           transparency_score?: number | null
           trust_score?: number | null
+          trust_score_checked_at?: string | null
+          trust_score_previous?: number | null
           updated_at?: string
           vertical?: Database["public"]["Enums"]["provider_vertical"]
           website_url?: string | null
@@ -395,19 +421,27 @@ export type Database = {
           active?: boolean
           affiliate_url?: string
           audience?: string
+          bank_transfer_available?: boolean | null
+          business_focus_score?: number | null
+          card_payout_available?: boolean | null
+          cash_pickup_available?: boolean | null
+          countries_covered?: number | null
           created_at?: string
           delivery_minutes?: number | null
           featured?: boolean
           fee_fixed?: number
           fee_percent?: number
           fee_tiers?: Json | null
+          has_exclusive_deal?: boolean | null
           id?: string
           logo_emoji?: string | null
           max_amount?: number | null
           min_amount?: number | null
+          mobile_app_rating?: number | null
           name?: string
           notes?: string | null
           promo_text?: string | null
+          provider_type?: string | null
           rates_last_updated?: string | null
           regulator?: string | null
           review_count?: number | null
@@ -421,9 +455,62 @@ export type Database = {
           supports_large_tickets?: boolean
           transparency_score?: number | null
           trust_score?: number | null
+          trust_score_checked_at?: string | null
+          trust_score_previous?: number | null
           updated_at?: string
           vertical?: Database["public"]["Enums"]["provider_vertical"]
           website_url?: string | null
+        }
+        Relationships: []
+      }
+      rate_alerts: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          source_currency: string
+          target_currency: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          source_currency: string
+          target_currency: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          source_currency?: string
+          target_currency?: string
+        }
+        Relationships: []
+      }
+      rate_cache: {
+        Row: {
+          base: string
+          fetched_at: string
+          id: string
+          rates: Json
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          base?: string
+          fetched_at?: string
+          id: string
+          rates?: Json
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          base?: string
+          fetched_at?: string
+          id?: string
+          rates?: Json
+          source?: string
+          updated_at?: string
         }
         Relationships: []
       }

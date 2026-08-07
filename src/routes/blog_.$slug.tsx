@@ -4,10 +4,12 @@ import { useQuery, queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
-import { getBlogPost, toBlogLocale } from "@/lib/blog.functions";
+import { ArrowRight, ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
+import { getBlogPost, listSponsoredProviders, toBlogLocale } from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
+import { useAnalytics } from "@/hooks/use-analytics";
+import { BrandLogo } from "@/components/BrandLogo";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
@@ -16,6 +18,16 @@ const postQuery = (slug: string, locale: string) =>
   queryOptions({
     queryKey: ["blog", "post", slug, locale],
     queryFn: () => getBlogPost({ data: { slug, locale } }),
+  });
+
+// Query key includes audience — each post's own audience ("business" |
+// "retail") picks a different filtered list (see listSponsoredProviders),
+// so this can't be one shared cache entry across every post like before.
+const sponsoredQuery = (audience: string) =>
+  queryOptions({
+    queryKey: ["blog", "sponsored-providers", audience],
+    queryFn: () => listSponsoredProviders({ data: { audience } }),
+    staleTime: 5 * 60_000,
   });
 
 const truncate = (s: string, max = 160) =>
@@ -106,10 +118,7 @@ export const Route = createFileRoute("/blog_/$slug")({
       // one is missing, so advertising all 20 hreflang alternates is safe:
       // each URL always resolves to real content (native or EN fallback),
       // never a blank page.
-      links: [
-        { rel: "canonical", href: url },
-        ...hreflangLinks(`/blog/${params.slug}`),
-      ],
+      links: [{ rel: "canonical", href: url }, ...hreflangLinks(`/blog/${params.slug}`)],
       scripts,
     };
   },
@@ -123,7 +132,9 @@ function PostNotFound() {
   return (
     <div className="bg-background min-h-[60vh] flex items-center justify-center">
       <div className="text-center px-4">
-        <h1 className="font-heading text-3xl font-bold text-foreground">{t("errors.post.title")}</h1>
+        <h1 className="font-heading text-3xl font-bold text-foreground">
+          {t("errors.post.title")}
+        </h1>
         <p className="mt-2 text-muted-foreground">{t("errors.post.body")}</p>
         <Link
           to="/blog"
@@ -213,6 +224,51 @@ function ShareRow({ url, title }: { url: string; title: string }) {
   );
 }
 
+function SponsoredProvidersSection({ audience }: { audience: string }) {
+  const { t } = useI18n();
+  const { track } = useAnalytics();
+  const { data: providers } = useQuery(sponsoredQuery(audience));
+
+  // Same has_exclusive_deal source as the comparator's "Sponsored offer"
+  // corner tab (see listSponsoredProviders) — if that list is ever empty
+  // (no active sponsorships), this section quietly doesn't render rather
+  // than showing an empty box.
+  if (!providers || providers.length === 0) return null;
+
+  return (
+    <div className="mt-10 rounded-2xl border border-border bg-card p-6">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="font-heading text-lg font-bold text-foreground">
+          {t("blog.sponsored.heading")}
+        </h2>
+      </div>
+      <div className="mt-4 flex flex-col gap-2.5">
+        {providers.map((p) => (
+          <a
+            key={p.slug}
+            href={p.affiliate_url}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            onClick={() => track("provider_click", { provider_slug: p.slug, source: "blog" })}
+            className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 transition-colors hover:border-accent/50"
+          >
+            <BrandLogo name={p.name} url={p.website_url} slug={p.slug} size={32} />
+            <span className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
+              {t("blog.sponsored.sendWith")} {p.name}
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </a>
+        ))}
+      </div>
+      {/* Disclosure — same "sponsored is disclosed, not disguised" ethos as
+          the comparator's ranking-explainer text in the legend modal. */}
+      <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+        {t("blog.sponsored.disclosure")}
+      </p>
+    </div>
+  );
+}
+
 function BlogPostPage() {
   const { slug } = Route.useParams();
   const { lang, t } = useI18n();
@@ -250,7 +306,11 @@ function BlogPostPage() {
 
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground mb-4">
           <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
-            {post.audience === "business" ? t("blog.audience.business") : post.audience === "retail" ? t("blog.audience.retail") : t("blog.audience.both")}
+            {post.audience === "business"
+              ? t("blog.audience.business")
+              : post.audience === "retail"
+                ? t("blog.audience.retail")
+                : t("blog.audience.both")}
           </span>
           {post.published_at && (
             <span>
@@ -281,9 +341,7 @@ function BlogPostPage() {
         )}
 
         <div className="prose prose-invert mt-10 max-w-none prose-headings:font-heading prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-a:text-primary prose-strong:text-foreground prose-li:text-muted-foreground prose-code:text-primary prose-h2:text-2xl prose-h3:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:mt-8 prose-h3:mb-3">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {post.content_md ?? ""}
-          </ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content_md ?? ""}</ReactMarkdown>
         </div>
 
         <div className="mt-16 rounded-2xl border border-border bg-card p-6 text-center">
@@ -295,6 +353,8 @@ function BlogPostPage() {
             {t("blog.cta.button")}
           </Link>
         </div>
+
+        <SponsoredProvidersSection audience={post.audience} />
       </div>
     </article>
   );

@@ -678,5 +678,8 @@
   "comparator.legend.bestExchangeRate": "Bester Wechselkurs: Der Kurs dieses Anbieters liegt am nächsten am echten Interbankenkurs — unabhängig von der Pauschalgebühr, denn 0-Euro-Gebühr kann trotzdem einen schlechten Kurs verstecken.",
   "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
   "comparator.filter.size": "Size",
-  "comparator.filter.showOnly": "Show only"
+  "comparator.filter.showOnly": "Show only",
+  "blog.sponsored.heading": "Send money with our partners",
+  "blog.sponsored.disclosure": "Sponsored — mangomundi may earn a commission at no extra cost to you.",
+  "blog.sponsored.sendWith": "Send money with"
 }
