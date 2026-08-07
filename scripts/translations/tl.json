@@ -676,5 +676,7 @@
   "comparator.sort.more": "Iba pang pamantayan",
   "comparator.table.exchangeRate": "Exchange rate",
   "comparator.legend.bestExchangeRate": "Pinakamahusay na exchange rate: ang rate ng provider na ito ang pinakamalapit sa tunay na mid-market rate — hiwalay sa fixed fee nito, dahil ang $0 fee ay maaari pa ring magtago ng masamang rate.",
-  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
+  "comparator.filter.size": "Size",
+  "comparator.filter.showOnly": "Show only"
 }

@@ -676,5 +676,7 @@
   "comparator.sort.more": "Mais critérios",
   "comparator.table.exchangeRate": "Taxa de câmbio",
   "comparator.legend.bestExchangeRate": "Melhor taxa de câmbio: a taxa deste provedor é a mais próxima da taxa real de mercado — independente da tarifa fixa, já que uma tarifa de $0 ainda pode esconder uma taxa ruim.",
-  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
+  "comparator.filter.size": "Size",
+  "comparator.filter.showOnly": "Show only"
 }

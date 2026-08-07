@@ -676,5 +676,7 @@
   "comparator.sort.more": "Tiêu chí khác",
   "comparator.table.exchangeRate": "Tỷ giá",
   "comparator.legend.bestExchangeRate": "Tỷ giá tốt nhất: tỷ giá của nhà cung cấp này gần nhất với tỷ giá thị trường thực — độc lập với phí cố định, vì phí $0 vẫn có thể che giấu một tỷ giá tệ.",
-  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking."
+  "comparator.rankingExplainer": "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
+  "comparator.filter.size": "Size",
+  "comparator.filter.showOnly": "Show only"
 }

@@ -18,7 +18,6 @@ import {
   Percent,
   Send,
   Shield,
-  SlidersHorizontal,
   Star,
   Sparkle,
   Zap,
@@ -128,29 +127,37 @@ const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labe
  *  "Cash pickup" in both places was confusing (same word, two different
  *  behaviors: one reorders, one hides).
  *
- *  Primary row (Kayak/Google Flights pattern). The three money-related
- *  ones are DELIBERATELY separate, not blended: a provider can advertise
- *  "$0 fee" while hiding a bad exchange rate margin (or vice versa) —
- *  splitting them is the whole point of a neutral comparator, matching
- *  Wise's own "we show the real cost" positioning. "overall" is labeled
- *  "Score" (see sortLabelKey) — same composite number as the pill on every
- *  row, not a separately-named editorial pick. Rendered together with
- *  SECONDARY_SORT_CHIPS as one flat row (see render below) — an earlier
- *  version tucked the secondary ones behind a "More sort options" dropdown,
- *  but that hid criteria behind a click, which direct feedback flagged as
- *  worse than a longer row. Kept as two separate arrays anyway (rather than
- *  merging into one) since the primary/secondary distinction is still real
- *  editorially, even though it's no longer expressed as two different
- *  pieces of UI. */
-const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "lowest_cost", "fastest"];
-/** Secondary criteria — see SORT_CHIPS above for why these render in the
- *  same flat row rather than behind a dropdown. */
+ *  Primary row (bigger chips, Kayak/Google Flights pattern) — exactly the 3
+ *  criteria that already have a direct, obvious visual counterpart on every
+ *  row (Score pill, the big received amount, the speed cell), so picking one
+ *  of these visually "points at" something the person is already looking
+ *  at. "overall" is labeled "Score" (see sortLabelKey) — same composite
+ *  number as the pill on every row, not a separately-named editorial pick.
+ *  Fee is deliberately NOT here despite also having a per-row number (the
+ *  mini-strip) — this grouping is about which 3 criteria matter most, not a
+ *  mechanical "is it visible anywhere" rule; fee lives in the secondary row
+ *  below instead. */
+const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "fastest"];
+/** Secondary row — real, useful criteria, just visually smaller/quieter
+ *  than the primary 3 above (separate sub-row, not a separate mechanism —
+ *  still the same single sortBy state, just two visual tiers instead of one
+ *  flat row). The three money-related ones (fee, exchange rate here; amount
+ *  received in the primary row) are DELIBERATELY kept as separate sort
+ *  options rather than blended into one "value" metric: a provider can
+ *  advertise "$0 fee" while hiding a bad exchange rate margin (or vice
+ *  versa) — splitting them is the whole point of a neutral comparator,
+ *  matching Wise's own "we show the real cost" positioning. */
 // "best_business" deliberately excluded: the Personal/Empresa segment
 // toggle above the comparator already splits results by business fit, so a
 // dedicated sort chip for it was redundant. The underlying score profile
 // stays (see SCORE_PROFILES) — the AI copilot still uses it for
 // business-flavored questions asked in chat — only this manual chip is gone.
-const SECONDARY_SORT_CHIPS: SortKey[] = ["best_exchange_rate", "most_trusted", "most_transparent"];
+const SECONDARY_SORT_CHIPS: SortKey[] = [
+  "lowest_cost",
+  "best_exchange_rate",
+  "most_trusted",
+  "most_transparent",
+];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
 /** 294000 -> "294K" — keeps the trust chip compact so it doesn't blow out
@@ -1291,50 +1298,64 @@ export function ComparatorSection({
             </div>
             <div className="mb-2.5 flex flex-col gap-3">
               {/* SORT ROW — single-select (sortBy), never reduces the
-                  result set, only reorders it. Visually and semantically
-                  separate from the filters row below: this answers "how do
-                  I want it ordered", filters answer "what am I willing to
-                  see at all". All 7 criteria shown flat, no dropdown — an
-                  earlier version tucked 3 of them behind a "More sort
-                  options" menu, but direct feedback was that every option
-                  should be reachable in one click, so all of them render
-                  here now regardless of row length; wraps to a second line
-                  on narrow screens instead of hiding anything behind a
-                  click. */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  {t("comparator.sortBy")}
-                </span>
-                {[...SORT_CHIPS, ...SECONDARY_SORT_CHIPS].map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setSortBy(key)}
-                    aria-pressed={sortBy === key}
-                    className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      sortBy === key
-                        ? "border-transparent bg-[#ff6b5b] text-white"
-                        : "border-input bg-card text-foreground hover:border-foreground/30"
-                    }`}
-                  >
-                    {t(sortLabelKey(key))}
-                  </button>
-                ))}
+                  result set, only reorders it. Two visual tiers, not two
+                  mechanisms: primary chips (bigger) are the 3 criteria that
+                  already have an obvious visual counterpart on every row
+                  (Score pill, received amount, speed); secondary chips
+                  (smaller, second line) cover the rest. Still just one
+                  sortBy state either way — the size difference is purely
+                  editorial emphasis, not a functional split. */}
+              <div className="flex flex-col gap-1.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    {t("comparator.sortBy")}
+                  </span>
+                  {SORT_CHIPS.map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSortBy(key)}
+                      aria-pressed={sortBy === key}
+                      className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        sortBy === key
+                          ? "border-transparent bg-[#ff6b5b] text-white"
+                          : "border-input bg-card text-foreground hover:border-foreground/30"
+                      }`}
+                    >
+                      {t(sortLabelKey(key))}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  {SECONDARY_SORT_CHIPS.map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSortBy(key)}
+                      aria-pressed={sortBy === key}
+                      className={`h-6 rounded-full border px-2.5 text-[11px] font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        sortBy === key
+                          ? "border-transparent bg-[#ff6b5b] text-white"
+                          : "border-input bg-card text-muted-foreground hover:border-foreground/30"
+                      }`}
+                    >
+                      {t(sortLabelKey(key))}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* FILTERS ROW — activeFilters (stackable checkboxes) +
                   deliveryMethod (single-select) both narrow filteredRows
                   BEFORE ranking/badges are computed, so a "cheapest" badge
                   always reflects the cheapest among what's actually visible
-                  right now. Grouped into 2 visually marked clusters (subtle
-                  border + tinted background, not just a 1px divider line)
-                  — split by INTERACTION TYPE rather than loose semantic
-                  category: opt-in requirements (checkbox-style, stackable)
-                  in one cluster, delivery method (radio-style, mutually
-                  exclusive) in the other. This reads more clearly than 3
-                  same-looking dividers, since the two clusters actually
-                  behave differently (checkboxes stack, delivery method
-                  doesn't). flex-wrap (not overflow-x-auto) — a
+                  right now. Each cluster gets its OWN specific label now
+                  ("Size" / "Show only" / "Receive via") instead of one
+                  umbrella "Requiere" prefix — matches how Kayak/Skyscanner
+                  name each filter group by what it actually does, rather
+                  than grouping unlike things under a generic label. Kept as
+                  bordered/tinted clusters (not just divider lines) so each
+                  reads as its own unit. flex-wrap (not overflow-x-auto) — a
                   horizontal-scroll strip was tried first, but at the 440px
                   reference width of the embeddable widget (see
                   EmbedComparator/EmbedWidgetSection) there wasn't enough
@@ -1343,15 +1364,16 @@ export function ComparatorSection({
                   scrollable. Wrapping onto additional lines costs vertical
                   space instead, but never hides anything. */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="mr-1 inline-flex shrink-0 items-center gap-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  <SlidersHorizontal className="h-3 w-3" /> {t("comparator.filterBy")}
-                </span>
-
-                {/* Cluster 1 — opt-in requirements (checkbox-style,
-                    stackable). Sponsored first per an earlier explicit
-                    decision (it's the one disclosure-related requirement,
-                    ahead of the pure capability one). */}
-                <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                {/* Show only — first, per an earlier explicit decision:
+                    it's the one disclosure-related requirement, ahead of
+                    the pure capability one below. A visibility toggle, not
+                    a capability requirement, hence its own cluster with
+                    "Show only" as the label (matches what it literally
+                    does). */}
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                  <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
+                    {t("comparator.filter.showOnly")}
+                  </span>
                   <button
                     type="button"
                     onClick={() => toggleFilter("has_exclusive_deal")}
@@ -1375,7 +1397,17 @@ export function ComparatorSection({
                     </span>
                     {t("comparator.badge.sponsored")}
                   </button>
+                </div>
 
+                {/* Size — single opt-in requirement (checkbox-style). Its
+                    own cluster (not folded into "Show only") since it's a
+                    capability filter, not a visibility filter — a
+                    different kind of question ("can this provider do
+                    this?" vs "only show me these"). */}
+                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
+                  <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
+                    {t("comparator.filter.size")}
+                  </span>
                   <button
                     type="button"
                     onClick={() => toggleFilter("supports_large_tickets")}
@@ -1401,9 +1433,10 @@ export function ComparatorSection({
                   </button>
                 </div>
 
-                {/* Cluster 2 — delivery method (single-select, mutually
+                {/* Receive via — delivery method (single-select, mutually
                     exclusive; pill/rounded-full instead of the checkbox
-                    styling above, since it isn't one). */}
+                    styling above, since it isn't one). Already a clear,
+                    well-defined category — unchanged. */}
                 <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1.5">
                   <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
                     {t("comparator.delivery.label")}
@@ -1431,7 +1464,11 @@ export function ComparatorSection({
 
                 {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
-                    both desktop (click) and mobile (tap), no hover needed. */}
+                    both desktop (click) and mobile (tap), no hover needed.
+                    Now also where the "what does Score/Sponsored mean"
+                    explainer text lives (see DialogContent below) — moved
+                    out of this row to give the filter clusters more room to
+                    breathe, on request. */}
                 <button
                   type="button"
                   onClick={() => setShowLegend(true)}
@@ -1440,15 +1477,6 @@ export function ComparatorSection({
                 >
                   <Info className="h-3.5 w-3.5" />
                 </button>
-              </div>
-
-              {/* Helper caption — what "Puntaje"/Score drives, and that
-                  "Patrocinado"/Sponsored is a disclosure, never a ranking
-                  boost. Rendered via ReactMarkdown (already used for
-                  chat.welcome above) so the bold spans translate correctly
-                  across all 20 locales without hardcoding word position. */}
-              <div className="text-[11px] leading-relaxed text-muted-foreground [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-foreground">
-                <ReactMarkdown>{t("comparator.rankingExplainer")}</ReactMarkdown>
               </div>
             </div>
             <Dialog open={showLegend} onOpenChange={setShowLegend}>
@@ -1459,6 +1487,14 @@ export function ComparatorSection({
                     {t("comparator.legend.toggle")}
                   </DialogDescription>
                 </DialogHeader>
+                {/* Moved here from the filter row, on request — same
+                    ReactMarkdown treatment (bold spans translate correctly
+                    across all 20 locales without hardcoding word
+                    position), just relocated so it doesn't compete for
+                    space with the sort/filter chips. */}
+                <div className="border-b border-border pb-3 text-sm leading-relaxed text-muted-foreground [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-foreground">
+                  <ReactMarkdown>{t("comparator.rankingExplainer")}</ReactMarkdown>
+                </div>
                 <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
                   {(
                     [
@@ -2206,6 +2242,22 @@ function ProviderRow({
               <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
                 <Star className="h-2.5 w-2.5" /> {row.trust_score.toFixed(1)} (
                 {compactNumber(row.review_count)} {t("comparator.table.reviews")})
+              </span>
+            )}
+            {/* Transparency, same icon+number visual language as the trust
+                chip above (no separate text label needed — the icon
+                carries the meaning, same convention). Added specifically
+                because "Most transparent" was the one sort criterion with
+                no visible per-row number to justify why a row ranked where
+                it did under that sort — every other criterion already had
+                one (fee/rate/speed in the mini-strip, trust here). Reuses
+                the Eye icon already used for this concept in the legend
+                modal. Raw 0-10 editorial score, not normalized/relative
+                like the Score pill — see transparency_score in
+                scoring.functions.ts. */}
+            {row.transparency_score != null && (
+              <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
+                <Eye className="h-2.5 w-2.5" /> {row.transparency_score.toFixed(1)}
               </span>
             )}
             {highlightChips.map((c) => (
