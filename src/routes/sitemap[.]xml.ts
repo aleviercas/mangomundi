@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { SITE_URL, HREFLANG_LANGS } from "@/config/site";
+import { SITE_URL, HREFLANG_LANGS, hreflangLinks } from "@/config/site";
 
 const BASE_URL = SITE_URL;
 
@@ -13,16 +13,21 @@ interface SitemapEntry {
   langs?: readonly string[];
 }
 
-// xhtml:link alternates — language is a ?lang= param; x-default is the clean
-// URL (geo-detected). Same policy as the hreflangLinks() route helper.
+// Reuses the route-level hreflangLinks() helper (config/site.ts) instead of
+// keeping a second, parallel implementation — this file used to build its
+// own alternates independently, hardcoding `?lang=${lang}` for every locale
+// including "en". That directly contradicted each page's own <head> tags
+// once those were fixed to point "en" at the clean URL (see selfCanonical's
+// comment on why: en is the fallback language, so ?lang=en duplicates the
+// clean URL's content for most requests — exactly what Search Console
+// flagged as "Duplicate, Google chose different canonical than user"). A
+// sitemap that disagreed with the pages it lists is its own source of
+// confusion for Google, on top of the original bug — one shared function
+// means the two can't drift apart again.
 function alternates(path: string, langs: readonly string[] = HREFLANG_LANGS): string {
-  const base = `${BASE_URL}${path}`;
-  const lines = langs.map(
-    (lang) =>
-      `    <xhtml:link rel="alternate" hreflang="${lang}" href="${base}?lang=${lang}"/>`,
-  );
-  lines.push(`    <xhtml:link rel="alternate" hreflang="x-default" href="${base}"/>`);
-  return lines.join("\n");
+  return hreflangLinks(path, langs)
+    .map((l) => `    <xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${l.href}"/>`)
+    .join("\n");
 }
 
 export const Route = createFileRoute("/sitemap.xml")({
