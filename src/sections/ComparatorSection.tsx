@@ -2148,7 +2148,7 @@ function ProviderRow({
           never a merit ranking (see the caption under the sort/filter
           rows). */}
       {row.has_exclusive_deal && (
-        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-amber-300 bg-amber-100 px-3 py-1 text-[10px] font-extrabold text-amber-800">
+        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-border bg-muted px-3 py-1 text-[10px] font-extrabold text-muted-foreground">
           <Sparkle className="mr-1 inline h-2.5 w-2.5" />
           {t("comparator.badge.sponsored")}
         </span>
@@ -2301,6 +2301,27 @@ function ProviderRow({
           the top. */}
       <div className="flex flex-[1_1_220px] items-center justify-end gap-4">
         <div className="text-right">
+          {/* Exclusive-rate nudge — moved here (right above the amount)
+              after checking a real full-row render: sitting in the
+              highlight-chips area (with trust/delivery-method chips) put it
+              nowhere near the price, which was the whole point of choosing
+              an in-row placement over the legend modal. This is the actual
+              decision moment. Deliberately phrased as an invitation to
+              check, not a claim that a better rate exists here — the deal
+              behind has_exclusive_deal varies by partner, so only the
+              "sponsored" disclosure itself (the corner tag) is guaranteed
+              true for every one of these rows; this can't assert a benefit
+              without risking being wrong for partners where it doesn't
+              apply. Separate from the corner tag on purpose: the tag is the
+              honest disclosure ("this is a paid placement"), this is the
+              separate, deliberately-uncertain nudge ("might be worth a
+              look") — conflating them into one label would make the
+              disclosure itself sound like a sales pitch. */}
+          {row.has_exclusive_deal && (
+            <div className="mb-0.5 inline-flex w-full items-center justify-end gap-1 whitespace-nowrap text-[10px] font-semibold text-accent">
+              <Sparkle className="h-2.5 w-2.5" /> {t("comparator.exclusiveRateNudge")}
+            </div>
+          )}
           <div className="whitespace-nowrap text-[27px] font-extrabold leading-none text-foreground">
             {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
             <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
