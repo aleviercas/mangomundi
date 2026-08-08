@@ -4,12 +4,10 @@ import { useQuery, queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ArrowRight, ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
-import { getBlogPost, listSponsoredProviders, toBlogLocale } from "@/lib/blog.functions";
+import { ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
+import { getBlogPost, toBlogLocale } from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
-import { useAnalytics } from "@/hooks/use-analytics";
-import { BrandLogo } from "@/components/BrandLogo";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
@@ -18,16 +16,6 @@ const postQuery = (slug: string, locale: string) =>
   queryOptions({
     queryKey: ["blog", "post", slug, locale],
     queryFn: () => getBlogPost({ data: { slug, locale } }),
-  });
-
-// Query key includes audience — each post's own audience ("business" |
-// "retail") picks a different filtered list (see listSponsoredProviders),
-// so this can't be one shared cache entry across every post like before.
-const sponsoredQuery = (audience: string) =>
-  queryOptions({
-    queryKey: ["blog", "sponsored-providers", audience],
-    queryFn: () => listSponsoredProviders({ data: { audience } }),
-    staleTime: 5 * 60_000,
   });
 
 const truncate = (s: string, max = 160) =>
@@ -224,61 +212,6 @@ function ShareRow({ url, title }: { url: string; title: string }) {
   );
 }
 
-function SponsoredProvidersSection({ audience }: { audience: string }) {
-  const { t } = useI18n();
-  const { track } = useAnalytics();
-  const { data: providers } = useQuery(sponsoredQuery(audience));
-
-  // Same has_exclusive_deal source as the comparator's "Sponsored offer"
-  // corner tab (see listSponsoredProviders) — if that list is ever empty
-  // (no active sponsorships), this section quietly doesn't render rather
-  // than showing an empty box.
-  if (!providers || providers.length === 0) return null;
-
-  return (
-    <div className="mt-10 rounded-2xl border border-border bg-card p-6">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="font-heading text-lg font-bold text-foreground">
-          {t("blog.sponsored.heading")}
-        </h2>
-      </div>
-      <div className="mt-4 flex flex-col gap-2.5">
-        {providers.map((p) => (
-          <a
-            key={p.slug}
-            href={p.affiliate_url}
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-            onClick={() => track("provider_click", { provider_slug: p.slug, source: "blog" })}
-            className="flex items-center gap-3 rounded-xl border border-border bg-background px-4 py-3 transition-colors hover:border-accent/50"
-          >
-            <BrandLogo
-              name={p.name}
-              url={p.website_url ?? p.affiliate_url}
-              slug={p.slug}
-              size={32}
-            />
-            <span className="min-w-0 flex-1 truncate text-sm font-semibold text-foreground">
-              {t("blog.sponsored.sendWith")} {p.name}{" "}
-              {audience === "business"
-                ? t("blog.sponsored.forBusiness")
-                : audience === "retail"
-                  ? t("blog.sponsored.forIndividuals")
-                  : null}
-            </span>
-            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-          </a>
-        ))}
-      </div>
-      {/* Disclosure — same "sponsored is disclosed, not disguised" ethos as
-          the comparator's ranking-explainer text in the legend modal. */}
-      <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
-        {t("blog.sponsored.disclosure")}
-      </p>
-    </div>
-  );
-}
-
 function BlogPostPage() {
   const { slug } = Route.useParams();
   const { lang, t } = useI18n();
@@ -315,20 +248,13 @@ function BlogPostPage() {
         </Link>
 
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground mb-4">
-          {/* Two separate badges for "both", not one combined "Both" label
-              — each shows on its own, same visual weight as when a post is
-              single-audience, so "this applies to both" reads as two real
-              marks rather than a third, different category. */}
-          {(post.audience === "business" || post.audience === "both") && (
-            <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
-              {t("blog.audience.business")}
-            </span>
-          )}
-          {(post.audience === "retail" || post.audience === "both") && (
-            <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
-              {t("blog.audience.retail")}
-            </span>
-          )}
+          <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
+            {post.audience === "business"
+              ? t("blog.audience.business")
+              : post.audience === "retail"
+                ? t("blog.audience.retail")
+                : t("blog.audience.both")}
+          </span>
           {post.published_at && (
             <span>
               {new Date(post.published_at).toLocaleDateString(undefined, {
@@ -357,7 +283,18 @@ function BlogPostPage() {
           />
         )}
 
-        <div className="prose prose-invert mt-10 max-w-none prose-headings:font-heading prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-a:text-primary prose-strong:text-foreground prose-li:text-muted-foreground prose-code:text-primary prose-h2:text-2xl prose-h3:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:mt-8 prose-h3:mb-3">
+        {/* prose-invert removed on purpose — that variant is Tailwind
+            Typography's DARK-background styling, but this site is light
+            throughout. It wasn't visibly broken everywhere: headings,
+            paragraphs, links, strong, and list items already had explicit
+            prose-X overrides here, so those rendered fine — but blockquotes,
+            table cells, code blocks, and hr didn't have an override, so
+            they fell through to prose-invert's dark-mode colors (light
+            gray/white), which read as barely-visible on this white
+            background. Added explicit overrides for those too, instead of
+            just dropping prose-invert and hoping the (still light-mode,
+            but not this site's exact tokens) default prose looks right. */}
+        <div className="prose mt-10 max-w-none prose-headings:font-heading prose-headings:text-foreground prose-p:text-muted-foreground prose-p:leading-relaxed prose-a:text-primary prose-strong:text-foreground prose-li:text-muted-foreground prose-code:text-primary prose-h2:text-2xl prose-h3:text-xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:mt-8 prose-h3:mb-3 prose-blockquote:border-l-accent prose-blockquote:text-foreground prose-th:text-foreground prose-td:text-muted-foreground prose-hr:border-border prose-pre:bg-muted prose-code:bg-muted">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.content_md ?? ""}</ReactMarkdown>
         </div>
 
@@ -370,8 +307,6 @@ function BlogPostPage() {
             {t("blog.cta.button")}
           </Link>
         </div>
-
-        <SponsoredProvidersSection audience={post.audience} />
       </div>
     </article>
   );
