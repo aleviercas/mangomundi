@@ -2323,12 +2323,22 @@ function ProviderRow({
             </div>
           )}
           <div className="whitespace-nowrap text-[27px] font-extrabold leading-none text-foreground">
-            {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+            {row.received.toLocaleString(undefined, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{" "}
             <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
           </div>
           <div className="text-[10px] text-muted-foreground">{tRecipient}</div>
         </div>
-        {row.affiliate_url && (
+        {/* Always reserve this 44px slot, whether or not there's a real
+            button in it — a provider with no affiliate link loaded yet
+            (see the 26 cleared to affiliate_url: "" so their row reads as
+            purely informational, not clickable) would otherwise collapse
+            this slot, shifting its amount further right than every other
+            row's and breaking the column alignment down the whole list.
+            aria-hidden since it's not interactive — nothing to announce. */}
+        {row.affiliate_url ? (
           <button
             onClick={onClick}
             aria-label={`${tCta} — ${row.name}`}
@@ -2336,6 +2346,8 @@ function ProviderRow({
           >
             <ArrowRight className="h-4 w-4 shrink-0" />
           </button>
+        ) : (
+          <div className="h-11 w-11 shrink-0" aria-hidden />
         )}
       </div>
     </div>
