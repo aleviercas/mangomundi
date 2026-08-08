@@ -28,7 +28,12 @@ export const Route = createFileRoute("/")({
   head: ({ match }) => {
     const canonical = selfCanonical("/", match.search.lang);
     return {
-      meta: [{ property: "og:url", content: canonical }],
+      meta: [
+        { property: "og:url", content: canonical },
+        // FlexOffers site-ownership verification (Option 1: meta tag) —
+        // home page only, per their own instructions, not site-wide.
+        { name: "fo-verify", content: "63daa6c1-d68c-4c7a-ae08-7ff9a05df2b3" },
+      ],
       links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/")],
       scripts: [
         {
