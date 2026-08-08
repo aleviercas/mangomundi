@@ -2168,12 +2168,17 @@ function ProviderRow({
           right-alignment (the amount+button are meant to hug the row's
           right edge, not float in the middle). */}
       <div className="mx-auto flex w-[208px] flex-none flex-col items-center gap-1.5 text-center">
-        <div className="flex h-[26px] items-center justify-center">
+        <div className="flex h-[18px] items-center justify-center">
           {score != null && (
-            <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-muted px-2.5 py-1 text-[10px] font-extrabold text-muted-foreground">
-              {/* No icon here on purpose — the star is reserved for the
-                  trust-score chip below (real review data), so it never
-                  reads as a rating average. Text-only: "{label} {number}". */}
+            <span className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/80">
+              {/* De-emphasized on purpose — plain text, no pill/background.
+                  It used to be a filled badge sitting right above the logo,
+                  competing with the amount for "first thing you see" — the
+                  amount is the number that should win that contest
+                  (Kayak-style: price dominates, everything else is
+                  secondary), so this stepped back to a quiet label instead
+                  of a loud one. Still real data, still visible, just not
+                  shouting. */}
               {t("comparator.score.label")} {displayScore(score)}
             </span>
           )}
@@ -2296,7 +2301,7 @@ function ProviderRow({
           the top. */}
       <div className="flex flex-[1_1_220px] items-center justify-end gap-4">
         <div className="text-right">
-          <div className="whitespace-nowrap text-[22px] font-extrabold text-foreground">
+          <div className="whitespace-nowrap text-[27px] font-extrabold leading-none text-foreground">
             {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
             <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
           </div>
