@@ -23,8 +23,26 @@ export const GTM_CONTAINER_ID = "GTM-KQKZ9FDC";
 // kept as a literal here to avoid importing the (heavy) i18n module into
 // route head() evaluation.
 export const HREFLANG_LANGS = [
-  "en", "es", "pt", "ru", "tr", "bn", "ur", "zh", "pl", "hi",
-  "tl", "vi", "ar", "de", "fr", "it", "ja", "ko", "id", "th",
+  "en",
+  "es",
+  "pt",
+  "ru",
+  "tr",
+  "bn",
+  "ur",
+  "zh",
+  "pl",
+  "hi",
+  "tl",
+  "vi",
+  "ar",
+  "de",
+  "fr",
+  "it",
+  "ja",
+  "ko",
+  "id",
+  "th",
 ] as const;
 
 /**
@@ -33,14 +51,38 @@ export const HREFLANG_LANGS = [
  * x-default entry). Every hreflang alternate must be canonical to itself —
  * pointing all of them at one shared URL is what made technicalseo.com's
  * checker flag every ?lang= alternate as "not indexable".
+ *
+ * "en" is the one exception: it self-canonicalizes to the CLEAN url, same
+ * as x-default, never to ?lang=en. English is this site's fallback language
+ * (see getInitialLang in geo.functions.ts) — for any visitor whose geo/
+ * Accept-Language doesn't match a supported locale, the clean URL already
+ * renders in English. That means ?lang=en and the clean URL render
+ * identical content for a large share of requests, which is exactly what
+ * Search Console flagged as "Duplicate, Google chose different canonical
+ * than user": Google was already picking the clean URL over ?lang=en on
+ * its own, for every one of these pages, across a real GSC validation
+ * batch — this makes our own canonical tag agree with what Google was
+ * already concluding, instead of asserting a duplicate URL as canonical
+ * and having Google override it.
  */
 export function selfCanonical(path: string, explicitLang?: string | null): string {
-  return explicitLang ? `${SITE_URL}${path}?lang=${explicitLang}` : `${SITE_URL}${path}`;
+  if (!explicitLang || explicitLang === "en") return `${SITE_URL}${path}`;
+  return `${SITE_URL}${path}?lang=${explicitLang}`;
 }
 
 /**
  * rel=alternate hreflang link descriptors for a route path (e.g. "/pricing").
  * Pass a subset of langs for content that only exists in some locales (blog).
+ *
+ * "en"'s href is the CLEAN url, same as x-default (not ?lang=en) — see
+ * selfCanonical's comment for why: English is the fallback language, so
+ * ?lang=en duplicates the clean URL's content for most requests. Emitting
+ * hreflang="en" pointing at a URL that's a content-duplicate of
+ * hreflang="x-default" was the other half of the "Duplicate, Google chose
+ * different canonical than user" pattern — Google saw two alternate tags
+ * asserting two different "correct" URLs for the same English content and
+ * picked one itself; this removes the contradiction instead of leaving
+ * Google to resolve it.
  */
 export function hreflangLinks(
   path: string,
@@ -55,7 +97,7 @@ export function hreflangLinks(
     ...langs.map((lang) => ({
       rel: "alternate",
       hreflang: lang,
-      href: `${base}${sep}lang=${lang}`,
+      href: lang === "en" ? base : `${base}${sep}lang=${lang}`,
     })),
     { rel: "alternate", hreflang: "x-default", href: base },
   ];
