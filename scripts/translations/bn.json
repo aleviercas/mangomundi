@@ -598,7 +598,6 @@
   "corridor.missing.request": "এই রুট অনুরোধ করুন",
   "corridor.missing.requested": "✓ রুট অনুরোধ করা হয়েছে",
   "agent.minimize": "AI এজেন্ট ছোট করুন",
-  "agent.unread": "{n}টি অপঠিত বার্তা",
   "comparator.advancedOptions": "উন্নত বিকল্প",
   "home.hero.tagline": "টাকা পাঠানোর সেরা উপায় খুঁজুন। রিয়েল টাইমে হার, ফি, ট্রান্সফারের গতি এবং প্রদানকারীদের তুলনা করুন। নিরপেক্ষ এআই দ্বারা চালিত।",
   "home.contact.simple.title": "যোগাযোগ করুন।",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

@@ -348,7 +348,11 @@ export function ComparatorSection({
   // navigation via localStorage so remounts don't reset or flicker.
   const AGENT_STORAGE_KEY = "mm.agent.v1";
   const [aiCollapsed, setAiCollapsed] = useState(true);
-  const [unreadCount, setUnreadCount] = useState(0);
+  // Was a per-message unread COUNT; nothing auto-populates `chat` anymore
+  // (see compareMut's onSuccess), so there's no message count left to keep.
+  // A plain boolean — "a result landed while the panel was collapsed" — is
+  // what's left to signal.
+  const [hasNewResult, setHasNewResult] = useState(false);
 
   // MasterRateMap / MissingCorridorsLog (client mirror). Hydrated from the
   // server on mount and re-synced after each comparison so the AI Wizard
@@ -367,9 +371,9 @@ export function ComparatorSection({
     try {
       const raw = window.localStorage.getItem(AGENT_STORAGE_KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; unread?: number };
+        const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; hasNewResult?: boolean };
         if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
-        if (typeof parsed.unread === "number") setUnreadCount(parsed.unread);
+        if (typeof parsed.hasNewResult === "boolean") setHasNewResult(parsed.hasNewResult);
       }
     } catch {
       /* ignore */
@@ -508,34 +512,26 @@ export function ComparatorSection({
       setAiText(buildReasoning());
       setAiLoading(false);
       setMissingCorridor(null);
-      const intro = proactiveMessage(data, "overall");
-      const initial: ChatMsg[] = [];
-      // Results summary as first assistant bubble (per spec: results inside chat)
-      const best = [...data.rows].sort((a, b) => b.received - a.received)[0];
-      if (best) {
-        const referenceTag = data.is_reference ? " _(reference)_" : "";
-        const summary =
-          `Sending **${amount.toLocaleString()} ${usedFrom}** to **${usedTo}** — ` +
-          `best route delivers **${best.received.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${data.quote}** ` +
-          `via **${best.name}**.${referenceTag}`;
-        initial.push({ role: "assistant", content: summary });
-      }
+      // Lazy chat, on purpose — nothing gets built or pushed into `chat`
+      // here anymore. Whatever the panel should open with (the business
+      // wizard's first question, the B2B upsell note, or the generic
+      // welcome + quick-actions grid) is decided at render time from
+      // (segment, businessStage, result), the first time the user actually
+      // expands the panel — see the `chat.length === 0` branch below. A
+      // fresh result still needs a clean slate, so any leftover messages
+      // from a previous corridor get cleared here.
+      setChat([]);
       if (segment === "business") {
         setBusinessStage("volume");
         setBusinessData({});
-        initial.push({ role: "assistant", content: t("comparator.copilot.business.intro") });
-      } else if (intro) initial.push(intro);
-      // B2B upsell: retail user moving large notional → nudge to corporate desk.
-      if (segment === "retail" && amount >= B2B_UPSELL_MIN_AMOUNT) {
-        initial.push({
-          role: "assistant",
-          content: t("comparator.copilot.b2bUpsell"),
-        });
       }
-      setChat(initial);
-      // Do NOT auto-expand. The agent stays minimized until the user clicks
-      // it; we surface activity via the unread badge instead.
-      if (aiCollapsed) setUnreadCount((n) => n + initial.length);
+      // Was an unread-count badge tied to how many messages got
+      // auto-generated on load; now that nothing gets auto-generated,
+      // there's nothing to count. Swapped for a plain boolean — "a new
+      // result is waiting" — so the collapsed toggle still visibly invites
+      // the user in without implying unread chat content that doesn't
+      // exist yet.
+      if (aiCollapsed) setHasNewResult(true);
 
       track("comparator_query", {
         amount,
@@ -746,6 +742,14 @@ export function ComparatorSection({
               received: r.received,
               fee_total: r.fee_total,
               speed_hours: r.speed_hours,
+              // Same exact condition the row UI uses to show/hide the CTA
+              // button (`{row.affiliate_url ? <button> : ...}`) — not a
+              // separate "is this sponsored" flag, so it can never drift
+              // from what the button actually does. Providers gain/lose a
+              // real link over time (see providers.affiliate_url in
+              // Supabase), so this is recomputed fresh on every request
+              // rather than a hardcoded list.
+              clickable: Boolean(r.affiliate_url),
             })),
             history: newHistory.map((m) => ({ role: m.role, content: m.content })),
           },
@@ -857,20 +861,20 @@ export function ComparatorSection({
   // right below the form, and jumping the page felt disorienting rather
   // than helpful.
 
-  // Persist chat + unread to survive remounts/navigation without flicker.
+  // Persist chat + hasNewResult to survive remounts/navigation without flicker.
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
-      window.localStorage.setItem(AGENT_STORAGE_KEY, JSON.stringify({ chat, unread: unreadCount }));
+      window.localStorage.setItem(AGENT_STORAGE_KEY, JSON.stringify({ chat, hasNewResult }));
     } catch {
       /* ignore quota */
     }
-  }, [chat, unreadCount]);
+  }, [chat, hasNewResult]);
 
-  // Toggle handler: clears unread when the agent is opened.
+  // Toggle handler: clears the "new result" flag when the agent is opened.
   const handleAgentToggle = (nextCollapsed: boolean) => {
     setAiCollapsed(nextCollapsed);
-    if (!nextCollapsed) setUnreadCount(0);
+    if (!nextCollapsed) setHasNewResult(false);
   };
 
   const openPreferredRate = (slug: string, url: string, name?: string) => {
@@ -904,7 +908,20 @@ export function ComparatorSection({
     if (!trimmed || chatMut.isPending) return;
     setChatInput("");
     if (segment === "business" && businessStage !== "done") {
-      setChat((current) => [...current, { role: "user", content: trimmed }]);
+      // The wizard's opening question is render-only until now (see the
+      // `chat.length === 0` branch) — never written into `chat` while the
+      // panel sits unopened. The FIRST reply is what proves the user
+      // actually engaged, so that's the moment it gets backfilled as a
+      // real message, ahead of their own — otherwise their reply would be
+      // the first thing in the transcript with no visible question above it.
+      setChat((current) =>
+        current.length === 0
+          ? [
+              { role: "assistant", content: t("comparator.copilot.business.intro") },
+              { role: "user", content: trimmed },
+            ]
+          : [...current, { role: "user", content: trimmed }],
+      );
       if (businessStage === "volume") {
         const volumeMatch = trimmed.replace(/,/g, "").match(/\d+(?:\.\d+)?/);
         const monthlyVolume = volumeMatch ? Number(volumeMatch[0]) : 0;
@@ -1244,7 +1261,8 @@ export function ComparatorSection({
           <FloatingAgent
             collapsed={aiCollapsed}
             onToggle={handleAgentToggle}
-            unreadCount={unreadCount}
+            hasNewResult={hasNewResult}
+            amount={amount}
             lang={lang}
             t={t}
             aiLoading={aiLoading}
@@ -1575,7 +1593,8 @@ function FieldLight({ label, children }: { label: string; children: React.ReactN
 interface FloatingAgentProps {
   collapsed: boolean;
   onToggle: (next: boolean) => void;
-  unreadCount: number;
+  hasNewResult: boolean;
+  amount: number;
   lang: string;
   t: (k: string) => string;
   aiLoading: boolean;
@@ -1602,7 +1621,8 @@ function FloatingAgent(p: FloatingAgentProps) {
   const {
     collapsed,
     onToggle,
-    unreadCount,
+    hasNewResult,
+    amount,
     lang,
     t,
     aiLoading,
@@ -1653,13 +1673,11 @@ function FloatingAgent(p: FloatingAgentProps) {
           className="btn-cta group relative flex h-14 w-14 items-center justify-center rounded-full shadow-2xl ring-1 ring-foreground/10 transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           <Sparkle className="h-6 w-6" aria-hidden />
-          {unreadCount > 0 && (
+          {hasNewResult && (
             <span
-              aria-label={t("agent.unread").replace("{n}", String(unreadCount))}
-              className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-500 px-1 text-[10px] font-bold text-white"
-            >
-              {unreadCount}
-            </span>
+              aria-label={t("agent.newResult")}
+              className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-background"
+            />
           )}
         </button>
       ) : (
@@ -1705,15 +1723,38 @@ function FloatingAgent(p: FloatingAgentProps) {
               </div>
             )}
 
+            {/* Lazy entry point — nothing here was pre-built in onSuccess
+                anymore (see that handler's own comment). What shows first
+                is decided right here, from state that's already available,
+                the first time the user actually opens the panel:
+                - Business, wizard not finished yet → the wizard's first
+                  question, same copy as before, just rendered directly
+                  instead of pushed into `chat` ahead of time.
+                - Retail, large amount → the B2B-desk nudge, same idea.
+                - Otherwise → the generic welcome + quick-actions grid
+                  (already existed, this branch is unchanged). */}
             {chat.length === 0 && !aiLoading && (
               <>
-                <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
-                  <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
-                </div>
-                <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  {t("wizard.quickActions")}
-                </div>
-                <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+                {segment === "business" && businessStage !== "done" && result ? (
+                  <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                    <ReactMarkdown>{t("comparator.copilot.business.intro")}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <>
+                    {segment === "retail" && result && amount >= B2B_UPSELL_MIN_AMOUNT && (
+                      <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                        <ReactMarkdown>{t("comparator.copilot.b2bUpsell")}</ReactMarkdown>
+                      </div>
+                    )}
+                    <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                      <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
+                    </div>
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      {t("wizard.quickActions")}
+                    </div>
+                    <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+                  </>
+                )}
               </>
             )}
 

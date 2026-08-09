@@ -598,7 +598,6 @@
   "corridor.missing.request": "Запросить этот маршрут",
   "corridor.missing.requested": "✓ Маршрут запрошен",
   "agent.minimize": "Свернуть ИИ-агента",
-  "agent.unread": "{n} непрочитанных сообщений",
   "comparator.advancedOptions": "Расширенные параметры",
   "home.hero.tagline": "Найдите лучший способ отправить деньги. Сравнивайте тарифы, комиссии, скорость перевода и провайдеров в режиме реального времени. На основе нейтрального ИИ.",
   "home.contact.simple.title": "Свяжитесь с нами",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

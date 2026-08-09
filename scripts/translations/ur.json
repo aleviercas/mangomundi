@@ -598,7 +598,6 @@
   "corridor.missing.request": "اس روٹ کی درخواست کریں",
   "corridor.missing.requested": "✓ روٹ کی درخواست ہو گئی",
   "agent.minimize": "AI ایجنٹ چھوٹا کریں",
-  "agent.unread": "{n} غیر پڑھے پیغامات",
   "comparator.advancedOptions": "جدید اختیارات",
   "home.hero.tagline": "پیسے بھیجنے کا بہترین طریقہ تلاش کریں۔ شرحوں، فیس، ٹرانسفر کی رفتار اور فراہم کنندگان کا حقیقی وقت میں موازنہ کریں۔ غیر جانبدار AI سے تقویت یافتہ۔",
   "home.contact.simple.title": "رابطہ کریں۔",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

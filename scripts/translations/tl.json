@@ -598,7 +598,6 @@
   "corridor.missing.request": "Hilingin ang rutang ito",
   "corridor.missing.requested": "✓ Nahiling na ang ruta",
   "agent.minimize": "I-minimize ang AI Agent",
-  "agent.unread": "{n} hindi pa nababasang mensahe",
   "comparator.advancedOptions": "Mga advanced na opsyon",
   "home.hero.tagline": "Hanapin ang pinakamahusay na paraan para magpadala ng pera. Ihambing ang mga rate, bayarin, bilis ng paglilipat, at mga provider nang real-time. Pinapatakbo ng neutral na AI.",
   "home.contact.simple.title": "Makipag-ugnayan",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

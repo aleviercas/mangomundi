@@ -598,7 +598,6 @@
   "corridor.missing.request": "Minta rute ini",
   "corridor.missing.requested": "✓ Rute diminta",
   "agent.minimize": "Perkecil Agen AI",
-  "agent.unread": "{n} pesan belum dibaca",
   "comparator.advancedOptions": "Opsi lanjutan",
   "home.hero.tagline": "Temukan cara terbaik untuk mengirim uang. Bandingkan kurs, biaya, kecepatan transfer, dan penyedia secara real-time. Didukung oleh AI netral.",
   "home.contact.simple.title": "Hubungi kami",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

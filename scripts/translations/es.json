@@ -600,7 +600,6 @@
   "corridor.missing.request": "Solicitar esta ruta",
   "corridor.missing.requested": "✓ Ruta solicitada",
   "agent.minimize": "Minimizar Agente IA",
-  "agent.unread": "{n} mensajes sin leer",
   "comparator.advancedOptions": "Opciones avanzadas",
   "home.hero.tagline": "Encontrá la mejor forma de enviar dinero. Compará tasas, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
   "home.contact.simple.title": "Contáctanos",
@@ -686,5 +685,6 @@
   "blog.sponsored.sendWith": "Enviar dinero con",
   "blog.sponsored.forBusiness": "para tu negocio",
   "blog.sponsored.forIndividuals": "para personas",
-  "comparator.exclusiveRateNudge": "Consultá tarifa exclusiva"
+  "comparator.exclusiveRateNudge": "Consultá tarifa exclusiva",
+  "agent.newResult": "Nuevo resultado disponible — tocá para verlo"
 }

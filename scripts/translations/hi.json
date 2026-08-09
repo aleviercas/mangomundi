@@ -598,7 +598,6 @@
   "corridor.missing.request": "इस रूट का अनुरोध करें",
   "corridor.missing.requested": "✓ रूट का अनुरोध किया गया",
   "agent.minimize": "AI एजेंट छोटा करें",
-  "agent.unread": "{n} अपठित संदेश",
   "comparator.advancedOptions": "उन्नत विकल्प",
   "home.hero.tagline": "पैसे भेजने का सबसे अच्छा तरीका खोजें। दरों, शुल्क, ट्रांसफर की गति और प्रदाताओं की रीयल-टाइम तुलना करें। निष्पक्ष एआई द्वारा संचालित।",
   "home.contact.simple.title": "संपर्क करें।",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

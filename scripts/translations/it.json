@@ -598,7 +598,6 @@
   "corridor.missing.request": "Richiedi questa rotta",
   "corridor.missing.requested": "✓ Rotta richiesta",
   "agent.minimize": "Riduci Agente IA",
-  "agent.unread": "{n} messaggi non letti",
   "comparator.advancedOptions": "Opzioni avanzate",
   "home.hero.tagline": "Trova il modo migliore per inviare denaro. Confronta tassi, commissioni, velocità di trasferimento e fornitori in tempo reale. Basato su un'IA neutrale.",
   "home.contact.simple.title": "Contattaci",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

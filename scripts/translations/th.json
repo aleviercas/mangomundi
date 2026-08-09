@@ -598,7 +598,6 @@
   "corridor.missing.request": "ขอเพิ่มเส้นทางนี้",
   "corridor.missing.requested": "✓ ส่งคำขอแล้ว",
   "agent.minimize": "ย่อ AI Agent",
-  "agent.unread": "ข้อความที่ยังไม่ได้อ่าน {n} รายการ",
   "comparator.advancedOptions": "ตัวเลือกขั้นสูง",
   "home.hero.tagline": "ค้นหาวิธีที่ดีที่สุดในการส่งเงิน เปรียบเทียบอัตรา ค่าธรรมเนียม ความเร็วในการโอน และผู้ให้บริการแบบเรียลไทม์ ขับเคลื่อนโดย AI ที่เป็นกลาง",
   "home.contact.simple.title": "ติดต่อเรา",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }

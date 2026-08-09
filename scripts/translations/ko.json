@@ -598,7 +598,6 @@
   "corridor.missing.request": "이 경로 요청하기",
   "corridor.missing.requested": "✓ 경로 요청됨",
   "agent.minimize": "AI 에이전트 최소화",
-  "agent.unread": "읽지 않은 메시지 {n}개",
   "comparator.advancedOptions": "고급 옵션",
   "home.hero.tagline": "송금의 최적의 방법을 찾아보세요. 요율, 수수료, 송금 속도, 제공업체를 실시간으로 비교하세요. 중립적인 AI가 지원합니다.",
   "home.contact.simple.title": "문의하기",
@@ -684,5 +683,6 @@
   "blog.sponsored.sendWith": "Send money with",
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
-  "comparator.exclusiveRateNudge": "Check for exclusive rate"
+  "comparator.exclusiveRateNudge": "Check for exclusive rate",
+  "agent.newResult": "New result available — tap to view"
 }
