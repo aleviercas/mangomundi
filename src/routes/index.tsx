@@ -1,4 +1,5 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
@@ -11,6 +12,7 @@ import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
+import { listBlogPosts, toBlogLocale } from "@/lib/blog.functions";
 
 // Only used to read ?lang= for the self-referencing canonical below (see
 // selfCanonical). Reading it via validateSearch — rather than reaching into
@@ -20,8 +22,30 @@ import { defaultCounterCurrency } from "@/lib/countries";
 // during route matching, before any loader runs).
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
+// Same queryKey shape BlogSection.tsx's own useQuery already uses
+// (["blog", "list", locale]) — prefetching it here under the identical key
+// means BlogSection's hook just reads this already-populated cache entry
+// instead of firing its own client-only fetch, with zero changes needed in
+// that component. Before this, the "latest posts" preview on the home page
+// only ever existed in the client-rendered DOM: a crawler reading the
+// server-sent HTML (or anything that doesn't wait for/execute the
+// post-hydration fetch) saw no <a href="/blog/..."> links there at all —
+// the home page gave no crawlable path into the blog, even though the full
+// /blog listing and every individual post already had a proper loader (see
+// blog.tsx and blog_.$slug.tsx) and were fine on their own.
+const homeBlogListQuery = (locale: string) =>
+  queryOptions({
+    queryKey: ["blog", "list", locale],
+    queryFn: () => listBlogPosts({ data: { locale } }),
+  });
+
 export const Route = createFileRoute("/")({
   validateSearch: (search) => searchSchema.parse(search),
+  loader: async ({ context }) => {
+    const { getInitialLang } = await import("@/lib/geo.functions");
+    const detected = await getInitialLang().catch(() => "en" as const);
+    await context.queryClient.ensureQueryData(homeBlogListQuery(toBlogLocale(detected)));
+  },
   // Title/description/OG come from the root head, which is per-language
   // (SEO_META). The home just adds its own canonical, og:url, hreflang and
   // JSON-LD so it doesn't re-pin an English-only title over the localized one.
