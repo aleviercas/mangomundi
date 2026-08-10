@@ -239,9 +239,11 @@ describe("deriveBadges", () => {
     expect(allBadges).not.toContain("cash_pickup" as unknown as BadgeKey);
   });
 
-  it("awards most_transparent to the highest transparency_score", () => {
+  it("never awards a most_transparent badge — removed on purpose, the eye-icon transparency chip on every row (not just one winner) replaced it, and having both said the same thing twice on the winning row", () => {
     const badges = deriveBadges(rows);
-    expect(badges.get("most_transparent")).toContain("most_transparent");
+    for (const [, keys] of badges) {
+      expect(keys).not.toContain("most_transparent");
+    }
   });
 
   it("awards large_transfers only to providers with supports_large_tickets", () => {
@@ -266,6 +268,64 @@ describe("deriveBadges", () => {
     const badges = deriveBadges(rows);
     const allBadges = Array.from(badges.values()).flat();
     expect(allBadges).not.toContain("best_business" as unknown as BadgeKey);
+  });
+});
+
+describe("sortByScore — strict ordering guarantee", () => {
+  it("a real difference on the chosen field ALWAYS wins, no matter how much better the loser is on everything else", () => {
+    const rows: ScorableRow[] = [
+      // Genuinely the most transparent, but weak on every other input.
+      {
+        slug: "transparent_but_weak",
+        received: 500,
+        fee_total: 50,
+        speed_hours: 48,
+        trust_score: 1.0,
+        transparency_score: 9.9,
+      },
+      // Slightly less transparent, but dramatically better everywhere
+      // else — under the old weighted-blend approach (even at 70%), a
+      // combination this lopsided could still flip the order. It must not
+      // anymore: this is the exact shape of the real bug report (a lower
+      // value on the chosen field outranking a higher one because it made
+      // up the gap elsewhere).
+      {
+        slug: "less_transparent_but_great",
+        received: 5000,
+        fee_total: 0,
+        speed_hours: 1,
+        trust_score: 5.0,
+        transparency_score: 9.8,
+      },
+    ];
+    const sorted = sortByScore(rows, "most_transparent");
+    expect(sorted[0].slug).toBe("transparent_but_weak");
+  });
+
+  it("ties on the chosen field (identical value) fall back to the overall score, not an arbitrary/input order", () => {
+    const rows: ScorableRow[] = [
+      { slug: "tied_weak", received: 900, fee_total: 10, speed_hours: 1, trust_score: 3.0 },
+      { slug: "tied_strong", received: 1000, fee_total: 0, speed_hours: 1, trust_score: 5.0 },
+    ];
+    const sorted = sortByScore(rows, "fastest");
+    // Both are 1h — a genuine tie on the chosen field — so the better
+    // overall provider should be the one placed first.
+    expect(sorted[0].slug).toBe("tied_strong");
+  });
+
+  it("rows missing the chosen field's data always sort last, regardless of direction", () => {
+    const rows: ScorableRow[] = [
+      { slug: "has_trust", received: 500, fee_total: 5, speed_hours: 5, trust_score: 3.0 },
+      { slug: "no_trust_data", received: 5000, fee_total: 0, speed_hours: 1, trust_score: null },
+    ];
+    const sorted = sortByScore(rows, "most_trusted");
+    expect(sorted[0].slug).toBe("has_trust");
+    expect(sorted[1].slug).toBe("no_trust_data");
+  });
+
+  it('"overall" is unaffected — still the deliberate blend, not a strict field', () => {
+    const sorted = sortByScore(rows, "overall");
+    expect(sorted.length).toBe(rows.length);
   });
 });
 

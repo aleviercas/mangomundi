@@ -116,82 +116,96 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
     largeTransfers: 0.02,
     exclusiveDeal: 0.01,
   },
+  // fastest / most_trusted / most_transparent / best_business /
+  // best_cash_pickup / best_large_transfers were all originally weighted
+  // 30-55% on their namesake dimension — visibly less dominant than
+  // recipient_gets_most / lowest_cost / best_exchange_rate, which already
+  // used 70%. That inconsistency is what let a real, reported case break:
+  // sorting by "Most transparent" put TransferGo (8.0 transparency) above
+  // TorFX/Atlantic Money/Currencies Direct/CurrencyFair/Instarem (8.5–9.5)
+  // — technically correct given the OLD 50% weight (TransferGo's strong
+  // fee/speed/trust made up the gap), but not what a user clicking "Most
+  // transparent" reasonably expects to see. Brought every one of these up
+  // to the same 70% standard the other three already had, redistributing
+  // the remaining 30% across the rest in the same relative proportions
+  // they already used — a named, single-criterion sort should behave
+  // consistently no matter which criterion was picked.
   fastest: {
-    rate: 0.1,
-    fee: 0.05,
-    exchangeRate: 0.03,
-    speed: 0.55,
-    trust: 0.13,
+    rate: 0.07,
+    fee: 0.03,
+    exchangeRate: 0.02,
+    speed: 0.7,
+    trust: 0.08,
     business: 0.0,
-    cashPickup: 0.04,
-    coverage: 0.04,
-    transparency: 0.06,
+    cashPickup: 0.03,
+    coverage: 0.03,
+    transparency: 0.04,
     largeTransfers: 0.0,
     exclusiveDeal: 0.0,
   },
   most_trusted: {
-    rate: 0.08,
-    fee: 0.05,
-    exchangeRate: 0.05,
-    speed: 0.08,
-    trust: 0.55,
-    business: 0.04,
-    cashPickup: 0.04,
-    coverage: 0.04,
-    transparency: 0.05,
-    largeTransfers: 0.02,
+    rate: 0.06,
+    fee: 0.03,
+    exchangeRate: 0.03,
+    speed: 0.05,
+    trust: 0.7,
+    business: 0.03,
+    cashPickup: 0.03,
+    coverage: 0.03,
+    transparency: 0.03,
+    largeTransfers: 0.01,
     exclusiveDeal: 0.0,
   },
   best_business: {
-    rate: 0.12,
-    fee: 0.08,
-    exchangeRate: 0.05,
-    speed: 0.12,
-    trust: 0.15,
-    business: 0.3,
+    rate: 0.05,
+    fee: 0.03,
+    exchangeRate: 0.02,
+    speed: 0.05,
+    trust: 0.06,
+    business: 0.7,
     cashPickup: 0.0,
-    coverage: 0.08,
-    transparency: 0.06,
-    largeTransfers: 0.04,
-    exclusiveDeal: 0.0,
-  },
-  best_cash_pickup: {
-    rate: 0.12,
-    fee: 0.08,
-    exchangeRate: 0.05,
-    speed: 0.12,
-    trust: 0.12,
-    business: 0.0,
-    cashPickup: 0.4,
     coverage: 0.04,
-    transparency: 0.05,
+    transparency: 0.03,
     largeTransfers: 0.02,
     exclusiveDeal: 0.0,
   },
-  most_transparent: {
-    rate: 0.08,
-    fee: 0.06,
-    exchangeRate: 0.06,
-    speed: 0.08,
-    trust: 0.1,
+  best_cash_pickup: {
+    rate: 0.06,
+    fee: 0.04,
+    exchangeRate: 0.03,
+    speed: 0.06,
+    trust: 0.06,
     business: 0.0,
-    cashPickup: 0.05,
-    coverage: 0.03,
-    transparency: 0.5,
-    largeTransfers: 0.04,
+    cashPickup: 0.7,
+    coverage: 0.02,
+    transparency: 0.02,
+    largeTransfers: 0.01,
+    exclusiveDeal: 0.0,
+  },
+  most_transparent: {
+    rate: 0.05,
+    fee: 0.04,
+    exchangeRate: 0.04,
+    speed: 0.05,
+    trust: 0.05,
+    business: 0.0,
+    cashPickup: 0.03,
+    coverage: 0.02,
+    transparency: 0.7,
+    largeTransfers: 0.02,
     exclusiveDeal: 0.0,
   },
   best_large_transfers: {
-    rate: 0.1,
-    fee: 0.05,
-    exchangeRate: 0.05,
-    speed: 0.08,
-    trust: 0.15,
-    business: 0.1,
+    rate: 0.05,
+    fee: 0.02,
+    exchangeRate: 0.02,
+    speed: 0.04,
+    trust: 0.07,
+    business: 0.05,
     cashPickup: 0.0,
-    coverage: 0.05,
-    transparency: 0.07,
-    largeTransfers: 0.35,
+    coverage: 0.02,
+    transparency: 0.03,
+    largeTransfers: 0.7,
     exclusiveDeal: 0.0,
   },
   // "best_deal" is deliberately narrow: mostly weighted on the disclosed
@@ -330,9 +344,69 @@ export function computeCompositeScores<T extends ScorableRow>(
 }
 
 /** Sorts a copy of `rows` by composite score (descending) for a given profile. */
+/**
+ * Strict-field comparator for every named, single-criterion profile —
+ * "overall" is the one deliberate exception (see sortByScore below), since
+ * it exists specifically to be a blend. Every other profile now sorts
+ * purely by its own real field, in the direction that's actually better;
+ * rows missing that field always sort last, regardless of direction,
+ * rather than being guessed at via a neutral 0.5.
+ *
+ * This replaced a weighted-blend approach for these profiles too (speed
+ * dominant at 70%, etc.) after a real, reported case: even at 70% weight,
+ * it was still mathematically possible for a worse-on-the-named-criterion
+ * row to outrank a better one by making it up elsewhere — technically
+ * "correct" given the formula, but not what choosing "Fastest" or "Most
+ * transparent" means to someone who clicked that specific button instead
+ * of "Score". A named sort is an explicit, single-variable choice; blending
+ * anything else back in quietly overrides it.
+ */
+const STRICT_SORT_FIELD: Partial<
+  Record<
+    ScoreProfileKey,
+    { get: (r: ScorableRow) => number | boolean | null | undefined; higherIsBetter: boolean }
+  >
+> = {
+  recipient_gets_most: { get: (r) => r.received, higherIsBetter: true },
+  lowest_cost: { get: (r) => r.fee_total, higherIsBetter: false },
+  best_exchange_rate: { get: (r) => r.rate_vs_market_pct, higherIsBetter: true },
+  fastest: { get: (r) => r.speed_hours, higherIsBetter: false },
+  most_trusted: { get: (r) => r.trust_score, higherIsBetter: true },
+  best_business: { get: (r) => r.business_focus_score, higherIsBetter: true },
+  best_cash_pickup: { get: (r) => r.cash_pickup_available, higherIsBetter: true },
+  most_transparent: { get: (r) => r.transparency_score, higherIsBetter: true },
+  best_large_transfers: { get: (r) => r.supports_large_tickets, higherIsBetter: true },
+  best_deal: { get: (r) => r.has_exclusive_deal, higherIsBetter: true },
+};
+
+function toComparable(v: number | boolean | null | undefined): number | null {
+  if (v == null) return null;
+  if (typeof v === "boolean") return v ? 1 : 0;
+  return v;
+}
+
 export function sortByScore<T extends ScorableRow>(rows: T[], profile: ScoreProfileKey): T[] {
-  const scores = computeCompositeScores(rows, profile);
-  return [...rows].sort((a, b) => (scores.get(b.slug) ?? 0) - (scores.get(a.slug) ?? 0));
+  const strict = STRICT_SORT_FIELD[profile];
+  // "overall" (no strict field defined for it) stays a pure blend — that's
+  // its actual job, the one place mixing signals together is the point.
+  if (!strict) {
+    const scores = computeCompositeScores(rows, profile);
+    return [...rows].sort((a, b) => (scores.get(b.slug) ?? 0) - (scores.get(a.slug) ?? 0));
+  }
+  // Tie-break with the "overall" blend, but ONLY for a genuine tie on the
+  // strict field itself (identical value, e.g. several rows all at 1h) —
+  // never to override an actual difference in the chosen criterion.
+  const overallScores = computeCompositeScores(rows, "overall");
+  return [...rows].sort((a, b) => {
+    const av = toComparable(strict.get(a));
+    const bv = toComparable(strict.get(b));
+    if (av == null && bv == null)
+      return (overallScores.get(b.slug) ?? 0) - (overallScores.get(a.slug) ?? 0);
+    if (av == null) return 1; // missing data always sorts last, either direction
+    if (bv == null) return -1;
+    if (av !== bv) return strict.higherIsBetter ? bv - av : av - bv;
+    return (overallScores.get(b.slug) ?? 0) - (overallScores.get(a.slug) ?? 0);
+  });
 }
 
 export type BadgeKey =
@@ -416,13 +490,14 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
     add(coverage.slug, "wide_coverage");
   }
 
-  const transparencyCandidates = rows.filter((r) => r.transparency_score != null);
-  if (transparencyCandidates.length > 0) {
-    const transparent = [...transparencyCandidates].sort(
-      (a, b) => b.transparency_score! - a.transparency_score!,
-    )[0];
-    add(transparent.slug, "most_transparent");
-  }
+  // No "most_transparent" badge here anymore, on purpose — it only ever
+  // crowned the single row with the highest transparency_score, but the
+  // row UI now shows that same number on EVERY row with data (the eye-icon
+  // chip next to trust), which is strictly more useful: it lets someone
+  // compare transparency across the whole list, not just spot who "won".
+  // Keeping both was actively confusing on the winning row specifically —
+  // it showed a "Most transparent" text badge AND a separate eye-icon
+  // number chip saying the same thing twice, right next to each other.
 
   return badges;
 }
