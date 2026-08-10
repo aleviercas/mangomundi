@@ -56,29 +56,161 @@ export interface ScoreWeights {
 // Weights per profile must sum to 1.0 — enforced by the test in
 // scoring.functions.test.ts, not just by convention here.
 export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
-  overall: { rate: 0.15, fee: 0.12, exchangeRate: 0.1, speed: 0.15, trust: 0.18, business: 0.04, cashPickup: 0.06, coverage: 0.06, transparency: 0.08, largeTransfers: 0.04, exclusiveDeal: 0.02 },
+  overall: {
+    rate: 0.15,
+    fee: 0.12,
+    exchangeRate: 0.1,
+    speed: 0.15,
+    trust: 0.18,
+    business: 0.04,
+    cashPickup: 0.06,
+    coverage: 0.06,
+    transparency: 0.08,
+    largeTransfers: 0.04,
+    exclusiveDeal: 0.02,
+  },
   // "Recipient gets the most": the bottom-line net amount, fee+rate already
   // combined. This used to be the ONLY sort option (pre multi-criteria) —
   // now it's one explicit choice among several, not the default.
-  recipient_gets_most: { rate: 0.7, fee: 0.05, exchangeRate: 0.05, speed: 0.05, trust: 0.05, business: 0.0, cashPickup: 0.02, coverage: 0.02, transparency: 0.03, largeTransfers: 0.02, exclusiveDeal: 0.01 },
+  recipient_gets_most: {
+    rate: 0.7,
+    fee: 0.05,
+    exchangeRate: 0.05,
+    speed: 0.05,
+    trust: 0.05,
+    business: 0.0,
+    cashPickup: 0.02,
+    coverage: 0.02,
+    transparency: 0.03,
+    largeTransfers: 0.02,
+    exclusiveDeal: 0.01,
+  },
   // "Lowest fee": the EXPLICIT commission only, independent of exchange
   // rate — so a provider can't hide a bad rate behind a "$0 fee" headline.
-  lowest_cost: { rate: 0.05, fee: 0.7, exchangeRate: 0.05, speed: 0.05, trust: 0.05, business: 0.0, cashPickup: 0.02, coverage: 0.02, transparency: 0.03, largeTransfers: 0.02, exclusiveDeal: 0.01 },
+  lowest_cost: {
+    rate: 0.05,
+    fee: 0.7,
+    exchangeRate: 0.05,
+    speed: 0.05,
+    trust: 0.05,
+    business: 0.0,
+    cashPickup: 0.02,
+    coverage: 0.02,
+    transparency: 0.03,
+    largeTransfers: 0.02,
+    exclusiveDeal: 0.01,
+  },
   // "Best exchange rate": closest to real mid-market, independent of the
   // flat fee — the other half of the "where's my money actually going"
   // question that lowest_cost alone can't answer.
-  best_exchange_rate: { rate: 0.05, fee: 0.05, exchangeRate: 0.7, speed: 0.05, trust: 0.05, business: 0.0, cashPickup: 0.02, coverage: 0.02, transparency: 0.03, largeTransfers: 0.02, exclusiveDeal: 0.01 },
-  fastest: { rate: 0.1, fee: 0.05, exchangeRate: 0.03, speed: 0.55, trust: 0.13, business: 0.0, cashPickup: 0.04, coverage: 0.04, transparency: 0.06, largeTransfers: 0.0, exclusiveDeal: 0.0 },
-  most_trusted: { rate: 0.08, fee: 0.05, exchangeRate: 0.05, speed: 0.08, trust: 0.55, business: 0.04, cashPickup: 0.04, coverage: 0.04, transparency: 0.05, largeTransfers: 0.02, exclusiveDeal: 0.0 },
-  best_business: { rate: 0.12, fee: 0.08, exchangeRate: 0.05, speed: 0.12, trust: 0.15, business: 0.3, cashPickup: 0.0, coverage: 0.08, transparency: 0.06, largeTransfers: 0.04, exclusiveDeal: 0.0 },
-  best_cash_pickup: { rate: 0.12, fee: 0.08, exchangeRate: 0.05, speed: 0.12, trust: 0.12, business: 0.0, cashPickup: 0.4, coverage: 0.04, transparency: 0.05, largeTransfers: 0.02, exclusiveDeal: 0.0 },
-  most_transparent: { rate: 0.08, fee: 0.06, exchangeRate: 0.06, speed: 0.08, trust: 0.1, business: 0.0, cashPickup: 0.05, coverage: 0.03, transparency: 0.5, largeTransfers: 0.04, exclusiveDeal: 0.0 },
-  best_large_transfers: { rate: 0.1, fee: 0.05, exchangeRate: 0.05, speed: 0.08, trust: 0.15, business: 0.1, cashPickup: 0.0, coverage: 0.05, transparency: 0.07, largeTransfers: 0.35, exclusiveDeal: 0.0 },
+  best_exchange_rate: {
+    rate: 0.05,
+    fee: 0.05,
+    exchangeRate: 0.7,
+    speed: 0.05,
+    trust: 0.05,
+    business: 0.0,
+    cashPickup: 0.02,
+    coverage: 0.02,
+    transparency: 0.03,
+    largeTransfers: 0.02,
+    exclusiveDeal: 0.01,
+  },
+  fastest: {
+    rate: 0.1,
+    fee: 0.05,
+    exchangeRate: 0.03,
+    speed: 0.55,
+    trust: 0.13,
+    business: 0.0,
+    cashPickup: 0.04,
+    coverage: 0.04,
+    transparency: 0.06,
+    largeTransfers: 0.0,
+    exclusiveDeal: 0.0,
+  },
+  most_trusted: {
+    rate: 0.08,
+    fee: 0.05,
+    exchangeRate: 0.05,
+    speed: 0.08,
+    trust: 0.55,
+    business: 0.04,
+    cashPickup: 0.04,
+    coverage: 0.04,
+    transparency: 0.05,
+    largeTransfers: 0.02,
+    exclusiveDeal: 0.0,
+  },
+  best_business: {
+    rate: 0.12,
+    fee: 0.08,
+    exchangeRate: 0.05,
+    speed: 0.12,
+    trust: 0.15,
+    business: 0.3,
+    cashPickup: 0.0,
+    coverage: 0.08,
+    transparency: 0.06,
+    largeTransfers: 0.04,
+    exclusiveDeal: 0.0,
+  },
+  best_cash_pickup: {
+    rate: 0.12,
+    fee: 0.08,
+    exchangeRate: 0.05,
+    speed: 0.12,
+    trust: 0.12,
+    business: 0.0,
+    cashPickup: 0.4,
+    coverage: 0.04,
+    transparency: 0.05,
+    largeTransfers: 0.02,
+    exclusiveDeal: 0.0,
+  },
+  most_transparent: {
+    rate: 0.08,
+    fee: 0.06,
+    exchangeRate: 0.06,
+    speed: 0.08,
+    trust: 0.1,
+    business: 0.0,
+    cashPickup: 0.05,
+    coverage: 0.03,
+    transparency: 0.5,
+    largeTransfers: 0.04,
+    exclusiveDeal: 0.0,
+  },
+  best_large_transfers: {
+    rate: 0.1,
+    fee: 0.05,
+    exchangeRate: 0.05,
+    speed: 0.08,
+    trust: 0.15,
+    business: 0.1,
+    cashPickup: 0.0,
+    coverage: 0.05,
+    transparency: 0.07,
+    largeTransfers: 0.35,
+    exclusiveDeal: 0.0,
+  },
   // "best_deal" is deliberately narrow: mostly weighted on the disclosed
   // exclusive-offer flag itself, not a claim of overall quality. Kept as
   // its own profile so a promo NEVER quietly inflates "overall" or other
   // scores — same disclosure principle already used for sponsored_rank.
-  best_deal: { rate: 0.1, fee: 0.05, exchangeRate: 0.05, speed: 0.05, trust: 0.08, business: 0.0, cashPickup: 0.0, coverage: 0.0, transparency: 0.02, largeTransfers: 0.0, exclusiveDeal: 0.65 },
+  best_deal: {
+    rate: 0.1,
+    fee: 0.05,
+    exchangeRate: 0.05,
+    speed: 0.05,
+    trust: 0.08,
+    business: 0.0,
+    cashPickup: 0.0,
+    coverage: 0.0,
+    transparency: 0.02,
+    largeTransfers: 0.0,
+    exclusiveDeal: 0.65,
+  },
 };
 
 export const SCORE_PROFILE_KEYS = Object.keys(SCORE_PROFILES) as ScoreProfileKey[];
@@ -140,14 +272,38 @@ export function computeCompositeScores<T extends ScorableRow>(
   profile: ScoreProfileKey,
 ): Map<string, number> {
   const weights = SCORE_PROFILES[profile];
-  const scoreRate = buildNormalizer(rows.map((r) => r.received), true);
-  const scoreFee = buildNormalizer(rows.map((r) => r.fee_total), false);
-  const scoreExchangeRate = buildNormalizer(rows.map((r) => r.rate_vs_market_pct), true);
-  const scoreSpeed = buildNormalizer(rows.map((r) => r.speed_hours), false);
-  const scoreTrust = buildNormalizer(rows.map((r) => r.trust_score), true);
-  const scoreBusiness = buildNormalizer(rows.map((r) => r.business_focus_score), true);
-  const scoreCoverage = buildNormalizer(rows.map((r) => r.countries_covered), true);
-  const scoreTransparency = buildNormalizer(rows.map((r) => r.transparency_score), true);
+  const scoreRate = buildNormalizer(
+    rows.map((r) => r.received),
+    true,
+  );
+  const scoreFee = buildNormalizer(
+    rows.map((r) => r.fee_total),
+    false,
+  );
+  const scoreExchangeRate = buildNormalizer(
+    rows.map((r) => r.rate_vs_market_pct),
+    true,
+  );
+  const scoreSpeed = buildNormalizer(
+    rows.map((r) => r.speed_hours),
+    false,
+  );
+  const scoreTrust = buildNormalizer(
+    rows.map((r) => r.trust_score),
+    true,
+  );
+  const scoreBusiness = buildNormalizer(
+    rows.map((r) => r.business_focus_score),
+    true,
+  );
+  const scoreCoverage = buildNormalizer(
+    rows.map((r) => r.countries_covered),
+    true,
+  );
+  const scoreTransparency = buildNormalizer(
+    rows.map((r) => r.transparency_score),
+    true,
+  );
 
   const result = new Map<string, number>();
   for (const r of rows) {
@@ -247,7 +403,9 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
   // drives the filter chips, so there's a single source of truth instead of
   // deriveBadges partially overlapping it.
 
-  rows.filter((r) => r.supports_large_tickets === true).forEach((r) => add(r.slug, "large_transfers"));
+  rows
+    .filter((r) => r.supports_large_tickets === true)
+    .forEach((r) => add(r.slug, "large_transfers"));
   rows.filter((r) => r.has_exclusive_deal === true).forEach((r) => add(r.slug, "exclusive_deal"));
 
   const coverageCandidates = rows.filter((r) => r.countries_covered != null);
@@ -283,12 +441,17 @@ export function explainTopPick(row: ScorableRow, profile: ScoreProfileKey): stri
   if (weights.exchangeRate >= 0.3 && row.rate_vs_market_pct != null)
     reasons.push("closest to the real mid-market exchange rate");
   if (weights.speed >= 0.3) reasons.push(`delivery in ~${row.speed_hours}h`);
-  if (weights.trust >= 0.3 && row.trust_score != null) reasons.push(`trust score ${row.trust_score}`);
-  if (weights.business >= 0.3 && row.business_focus_score != null) reasons.push("strong business/corporate fit");
+  if (weights.trust >= 0.3 && row.trust_score != null)
+    reasons.push(`trust score ${row.trust_score}`);
+  if (weights.business >= 0.3 && row.business_focus_score != null)
+    reasons.push("strong business/corporate fit");
   if (weights.cashPickup >= 0.3 && row.cash_pickup_available) reasons.push("cash pickup available");
-  if (weights.transparency >= 0.3 && row.transparency_score != null) reasons.push("high fee transparency");
-  if (weights.largeTransfers >= 0.3 && row.supports_large_tickets) reasons.push("supports large transfers");
-  if (weights.exclusiveDeal >= 0.3 && row.has_exclusive_deal) reasons.push("exclusive mangomundi offer");
+  if (weights.transparency >= 0.3 && row.transparency_score != null)
+    reasons.push("high fee transparency");
+  if (weights.largeTransfers >= 0.3 && row.supports_large_tickets)
+    reasons.push("supports large transfers");
+  if (weights.exclusiveDeal >= 0.3 && row.has_exclusive_deal)
+    reasons.push("exclusive mangomundi offer");
   return reasons;
 }
 
@@ -319,14 +482,38 @@ export function auditProviderChances<T extends ScorableRow>(
   rows.forEach((r) => counts.set(r.slug, 0));
   if (rows.length === 0) return new Map();
 
-  const scoreRate = buildNormalizer(rows.map((r) => r.received), true);
-  const scoreFee = buildNormalizer(rows.map((r) => r.fee_total), false);
-  const scoreExchangeRate = buildNormalizer(rows.map((r) => r.rate_vs_market_pct), true);
-  const scoreSpeed = buildNormalizer(rows.map((r) => r.speed_hours), false);
-  const scoreTrust = buildNormalizer(rows.map((r) => r.trust_score), true);
-  const scoreBusiness = buildNormalizer(rows.map((r) => r.business_focus_score), true);
-  const scoreCoverage = buildNormalizer(rows.map((r) => r.countries_covered), true);
-  const scoreTransparency = buildNormalizer(rows.map((r) => r.transparency_score), true);
+  const scoreRate = buildNormalizer(
+    rows.map((r) => r.received),
+    true,
+  );
+  const scoreFee = buildNormalizer(
+    rows.map((r) => r.fee_total),
+    false,
+  );
+  const scoreExchangeRate = buildNormalizer(
+    rows.map((r) => r.rate_vs_market_pct),
+    true,
+  );
+  const scoreSpeed = buildNormalizer(
+    rows.map((r) => r.speed_hours),
+    false,
+  );
+  const scoreTrust = buildNormalizer(
+    rows.map((r) => r.trust_score),
+    true,
+  );
+  const scoreBusiness = buildNormalizer(
+    rows.map((r) => r.business_focus_score),
+    true,
+  );
+  const scoreCoverage = buildNormalizer(
+    rows.map((r) => r.countries_covered),
+    true,
+  );
+  const scoreTransparency = buildNormalizer(
+    rows.map((r) => r.transparency_score),
+    true,
+  );
 
   for (let i = 0; i < iterations; i++) {
     // Dirichlet-ish: 11 random non-negative draws, normalized to sum to 1.
@@ -425,6 +612,23 @@ export function auditProviderChances<T extends ScorableRow>(
  * chosen profile; this only re-picks among the top cluster if they're
  * within noise of each other on `received`.
  */
+/**
+ * Picks which of the near-tied top providers gets the "featured" (first)
+ * slot, so the same one doesn't always win just by being first on tiny,
+ * insignificant differences — rotated per-session via `seed` instead.
+ *
+ * Near-tie is judged on the SAME composite score `sortedRows` was actually
+ * sorted by for this `profile` — not on `received`. That was the bug: an
+ * earlier version compared `received` regardless of which profile was
+ * active, so under "Fastest" (speed-dominated weights) a provider whose
+ * *dollar amount* happened to be close to the real #1's could get
+ * featured ahead of it even with a visibly worse speed — the tie-check
+ * and the sort it was supposed to respect were using two different
+ * metrics. A real report: sorting by Score surfaced a provider that
+ * didn't have the highest score, and sorting by Fastest surfaced one
+ * whose delivery time (4h) was slower than others shown (1h) — both are
+ * this same mismatch, just triggered by different profiles.
+ */
 export function pickFeaturedAmongTies<T extends ScorableRow>(
   sortedRows: T[],
   profile: ScoreProfileKey,
@@ -432,12 +636,14 @@ export function pickFeaturedAmongTies<T extends ScorableRow>(
   thresholdPct = 0.005,
 ): T | null {
   if (sortedRows.length === 0) return null;
-  const top = sortedRows[0];
+  const scores = computeCompositeScores(sortedRows, profile);
+  const topScore = scores.get(sortedRows[0].slug) ?? 0;
   const tied = sortedRows.filter((r) => {
-    if (top.received === 0) return r.slug === top.slug;
-    return Math.abs(top.received - r.received) / Math.abs(top.received) <= thresholdPct;
+    const s = scores.get(r.slug) ?? 0;
+    if (topScore === 0) return s === 0;
+    return Math.abs(topScore - s) / Math.abs(topScore) <= thresholdPct;
   });
-  if (tied.length <= 1) return top;
+  if (tied.length <= 1) return sortedRows[0];
 
   // Simple deterministic hash of the seed → stable index into `tied`.
   const index = Math.abs(Math.sin(seed) * 10000) % tied.length;

@@ -153,8 +153,22 @@ describe("computeCompositeScores / sortByScore", () => {
 
   it("a missing data point normalizes as neutral, not as a penalty", () => {
     const withMissing: ScorableRow[] = [
-      { slug: "a", received: 100, fee_total: 1, speed_hours: 10, trust_score: null, countries_covered: 5 },
-      { slug: "b", received: 100, fee_total: 1, speed_hours: 10, trust_score: 4.5, countries_covered: 5 },
+      {
+        slug: "a",
+        received: 100,
+        fee_total: 1,
+        speed_hours: 10,
+        trust_score: null,
+        countries_covered: 5,
+      },
+      {
+        slug: "b",
+        received: 100,
+        fee_total: 1,
+        speed_hours: 10,
+        trust_score: 4.5,
+        countries_covered: 5,
+      },
     ];
     const scores = computeCompositeScores(withMissing, "overall");
     expect(Math.abs(scores.get("a")! - scores.get("b")!)).toBeLessThan(0.2);
@@ -263,10 +277,16 @@ describe("pickFeaturedAmongTies", () => {
   });
 
   it("rotates the featured pick among genuinely tied providers across different seeds", () => {
+    // Identical on every scored dimension except slug — this is what an
+    // actual near-tie in composite-score terms looks like. Varying even one
+    // input slightly (as an earlier version of this fixture did) lets
+    // min-max normalization stretch that tiny gap to a large relative
+    // score difference within a small comparison set, which the (correct)
+    // score-based tie check then rightly refuses to call a tie.
     const nearTies: ScorableRow[] = [
       { slug: "tie_a", received: 1000, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
-      { slug: "tie_b", received: 1000.5, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
-      { slug: "tie_c", received: 999.8, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
+      { slug: "tie_b", received: 1000, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
+      { slug: "tie_c", received: 1000, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
     ];
     const sorted = sortByScore(nearTies, "overall");
     const picks = new Set(
@@ -280,6 +300,32 @@ describe("pickFeaturedAmongTies", () => {
     for (let seed = 0; seed < 10; seed++) {
       const featured = pickFeaturedAmongTies(sorted, "overall", seed);
       expect(sorted.map((r) => r.slug)).toContain(featured?.slug);
+    }
+  });
+
+  it("regression: never features a provider whose `received` is close but whose actual profile score isn't — this was the real bug (sorting by Fastest surfaced a 4h provider over ones shown at 1h)", () => {
+    const rows2: ScorableRow[] = [
+      // Genuinely fastest, and the real #1 once sorted by "fastest".
+      { slug: "quick", received: 1000, fee_total: 5, speed_hours: 1, trust_score: 4.5 },
+      // Similar `received` to "quick", but much slower — under the old
+      // received-based tie check this got featured anyway; it must not
+      // anymore, since its "fastest"-profile score is well below quick's.
+      {
+        slug: "slow_but_similar_amount",
+        received: 1000.5,
+        fee_total: 5,
+        speed_hours: 4,
+        trust_score: 4.5,
+      },
+      // A real, deliberate near-tie WITH quick on speed itself — this one
+      // legitimately should be eligible to be featured.
+      { slug: "also_quick", received: 950, fee_total: 5, speed_hours: 1, trust_score: 4.4 },
+    ];
+    const sorted = sortByScore(rows2, "fastest");
+    expect(sorted[0].slug).toBe("quick");
+    for (let seed = 0; seed < 20; seed++) {
+      const featured = pickFeaturedAmongTies(sorted, "fastest", seed);
+      expect(featured?.slug).not.toBe("slow_but_similar_amount");
     }
   });
 });
@@ -303,10 +349,38 @@ describe("getTrustTrend / flagDecliningProviders", () => {
 
   it("flagDecliningProviders sorts the biggest drop first and ignores stable/rising providers", () => {
     const snapshot: ScorableRow[] = [
-      { slug: "atlantic-money", received: 0, fee_total: 0, speed_hours: 0, trust_score: 2.5, trust_score_previous: 4.1 },
-      { slug: "wise", received: 0, fee_total: 0, speed_hours: 0, trust_score: 4.3, trust_score_previous: 4.3 },
-      { slug: "small_dip", received: 0, fee_total: 0, speed_hours: 0, trust_score: 4.0, trust_score_previous: 4.5 },
-      { slug: "improving_provider", received: 0, fee_total: 0, speed_hours: 0, trust_score: 4.5, trust_score_previous: 3.8 },
+      {
+        slug: "atlantic-money",
+        received: 0,
+        fee_total: 0,
+        speed_hours: 0,
+        trust_score: 2.5,
+        trust_score_previous: 4.1,
+      },
+      {
+        slug: "wise",
+        received: 0,
+        fee_total: 0,
+        speed_hours: 0,
+        trust_score: 4.3,
+        trust_score_previous: 4.3,
+      },
+      {
+        slug: "small_dip",
+        received: 0,
+        fee_total: 0,
+        speed_hours: 0,
+        trust_score: 4.0,
+        trust_score_previous: 4.5,
+      },
+      {
+        slug: "improving_provider",
+        received: 0,
+        fee_total: 0,
+        speed_hours: 0,
+        trust_score: 4.5,
+        trust_score_previous: 3.8,
+      },
     ];
     const flagged = flagDecliningProviders(snapshot);
     expect(flagged.map((f) => f.slug)).toEqual(["atlantic-money", "small_dip"]);
