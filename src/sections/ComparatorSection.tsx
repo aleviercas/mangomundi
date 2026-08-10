@@ -74,6 +74,7 @@ import {
   deriveBadges,
   pickFeaturedAmongTies,
   computeCompositeScores,
+  displayScore,
   type ScoreProfileKey,
   type BadgeKey,
 } from "@/lib/scoring.functions";
@@ -178,11 +179,6 @@ const SECONDARY_SORT_CHIPS: SortKey[] = [
  *  guaranteed to return [0,1] (weights sum to 1.0, every component
  *  normalized to [0,1]) — cheap insurance against a future weights change
  *  breaking that invariant and printing something outside 7-9. */
-function displayScore(rawScore: number): string {
-  const clamped = Math.min(1, Math.max(0, rawScore));
-  return (7 + clamped * 2).toFixed(1);
-}
-
 function compactNumber(n: number): string {
   return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(
     n,

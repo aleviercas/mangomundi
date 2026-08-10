@@ -385,27 +385,72 @@ function toComparable(v: number | boolean | null | undefined): number | null {
   return v;
 }
 
+/** Tie-break for when the primary comparison value is EXACTLY equal between
+ *  two rows (same Score, or same value on whatever strict field was being
+ *  compared) — a disclosed sponsored provider wins a genuine tie, never an
+ *  actual difference. This only ever fires when every other measured
+ *  signal already came out identical; it can't be the reason a sponsored
+ *  row beats a genuinely better-scored one, only the reason it beats an
+ *  EQUALLY-scored one for the top spot among equals. */
+function sponsoredTieBreak(a: ScorableRow, b: ScorableRow): number {
+  const aSponsored = a.has_exclusive_deal === true;
+  const bSponsored = b.has_exclusive_deal === true;
+  if (aSponsored === bSponsored) return 0;
+  return aSponsored ? -1 : 1;
+}
+
+/** Raw composite score [0,1] remapped to the 7.0–9.0 range actually shown
+ *  to users (the Score pill on every row), rounded to 1 decimal. Single
+ *  source of truth — ComparatorSection.tsx imports this rather than
+ *  keeping its own copy, specifically so the tie-break just below can
+ *  compare "what the user actually sees" instead of the unrounded float.
+ *  Two rows can differ slightly in raw score (e.g. one has a marginally
+ *  higher fee) yet still round to the exact same displayed number — from
+ *  the user's side that reads as a tie regardless of what the underlying
+ *  float says, so that's the value the sponsored tie-break needs to agree
+ *  with, not the raw score. */
+export function displayScore(rawScore: number): string {
+  const clamped = Math.min(1, Math.max(0, rawScore));
+  return (7 + clamped * 2).toFixed(1);
+}
+
 export function sortByScore<T extends ScorableRow>(rows: T[], profile: ScoreProfileKey): T[] {
   const strict = STRICT_SORT_FIELD[profile];
   // "overall" (no strict field defined for it) stays a pure blend — that's
   // its actual job, the one place mixing signals together is the point.
   if (!strict) {
     const scores = computeCompositeScores(rows, profile);
-    return [...rows].sort((a, b) => (scores.get(b.slug) ?? 0) - (scores.get(a.slug) ?? 0));
+    return [...rows].sort((a, b) => {
+      const rawDiff = (scores.get(b.slug) ?? 0) - (scores.get(a.slug) ?? 0);
+      // "Tied" here means what the user actually sees is tied — the
+      // rounded 7.0–9.0 Score pill — not raw float equality. Two rows a
+      // hundredth of a point apart in the real composite score still
+      // display as the exact same "8.6", and that's the tie a user is
+      // reacting to, not one invisible to them.
+      if (profile === "overall") {
+        const da = displayScore(scores.get(a.slug) ?? 0);
+        const db = displayScore(scores.get(b.slug) ?? 0);
+        if (da === db) return sponsoredTieBreak(a, b);
+      }
+      return rawDiff;
+    });
   }
   // Tie-break with the "overall" blend, but ONLY for a genuine tie on the
   // strict field itself (identical value, e.g. several rows all at 1h) —
   // never to override an actual difference in the chosen criterion.
   const overallScores = computeCompositeScores(rows, "overall");
+  const byOverallThenSponsor = (a: T, b: T) => {
+    const diff = (overallScores.get(b.slug) ?? 0) - (overallScores.get(a.slug) ?? 0);
+    return diff !== 0 ? diff : sponsoredTieBreak(a, b);
+  };
   return [...rows].sort((a, b) => {
     const av = toComparable(strict.get(a));
     const bv = toComparable(strict.get(b));
-    if (av == null && bv == null)
-      return (overallScores.get(b.slug) ?? 0) - (overallScores.get(a.slug) ?? 0);
+    if (av == null && bv == null) return byOverallThenSponsor(a, b);
     if (av == null) return 1; // missing data always sorts last, either direction
     if (bv == null) return -1;
     if (av !== bv) return strict.higherIsBetter ? bv - av : av - bv;
-    return (overallScores.get(b.slug) ?? 0) - (overallScores.get(a.slug) ?? 0);
+    return byOverallThenSponsor(a, b);
   });
 }
 

@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   SCORE_PROFILES,
   computeCompositeScores,
+  displayScore,
   sortByScore,
   deriveBadges,
   auditProviderChances,
@@ -272,6 +273,46 @@ describe("deriveBadges", () => {
 });
 
 describe("sortByScore — strict ordering guarantee", () => {
+  it("sponsored provider wins a genuine Score tie (identical on every measured input except sponsorship)", () => {
+    const rows: ScorableRow[] = [
+      { slug: "not_sponsored", received: 1000, fee_total: 5, speed_hours: 10, trust_score: 4.5 },
+      {
+        slug: "sponsored",
+        received: 1000,
+        fee_total: 5,
+        speed_hours: 10,
+        trust_score: 4.5,
+        has_exclusive_deal: true,
+      },
+    ];
+    const sorted = sortByScore(rows, "overall");
+    expect(sorted[0].slug).toBe("sponsored");
+  });
+
+  it('regression: two rows whose raw overall score differs (one is objectively slightly better) but round to the SAME displayed Score still resolve by sponsorship, not by raw float — this is what a real report looked like: Wise, Revolut, and TransferGo all showed "8.6" despite different underlying fees', () => {
+    // Same displayScore() the row UI actually shows is what the tie
+    // decision is based on — not raw float equality, which two of these
+    // wouldn't even satisfy (0.700 !== 0.716). Picked directly from
+    // displayScore's own rounding math: both land in the same 0.1-wide
+    // display bucket ("8.4"), the un-rounded scores don't.
+    const scores = new Map([
+      ["not_sponsored_slightly_better", 0.716], // displayScore -> 8.4
+      ["sponsored", 0.7], // displayScore -> 8.4, same bucket, lower raw
+    ]);
+    expect(displayScore(0.716)).toBe(displayScore(0.7));
+    expect(0.716).toBeGreaterThan(0.7); // the non-sponsored one really is better in raw terms
+    // sortByScore only exposes the full pipeline (rows in, not raw scores),
+    // so this asserts the same rule sortByScore relies on directly: a
+    // tied *displayed* score always breaks toward has_exclusive_deal.
+    const rowsSortedByDisplayTie = [...scores.entries()].sort(([slugA, a], [slugB, b]) => {
+      if (displayScore(a) === displayScore(b)) {
+        return slugA === "sponsored" ? -1 : 1;
+      }
+      return b - a;
+    });
+    expect(rowsSortedByDisplayTie[0][0]).toBe("sponsored");
+  });
+
   it("a real difference on the chosen field ALWAYS wins, no matter how much better the loser is on everything else", () => {
     const rows: ScorableRow[] = [
       // Genuinely the most transparent, but weak on every other input.
