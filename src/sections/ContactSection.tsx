@@ -1,5 +1,6 @@
 import { Mail } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { TrustBox } from "@/components/TrustBox";
 
 /** Simple contact section: one email, no forms. Business/partnership content
  *  lives in BusinessSection. */
@@ -30,6 +31,15 @@ export function ContactSection() {
           >
             <Mail className="h-4 w-4" /> hello@mangomundi.com
           </a>
+        </div>
+        {/* Placed here (light background) rather than the dark Footer —
+            Trustpilot's widget renders its own styling into this div via
+            the bootstrap script (see __root.tsx), which is designed for a
+            light surface. A narrow max-width keeps it from stretching
+            edge-to-edge on wide screens the way the rest of this
+            (text-centered, narrow) section doesn't either. */}
+        <div className="mx-auto mt-10 max-w-md">
+          <TrustBox />
         </div>
       </div>
     </section>

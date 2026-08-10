@@ -198,6 +198,19 @@ function GoogleTagManagerNoScript() {
   );
 }
 
+// Trustpilot TrustBox bootstrap — same rationale as GoogleAnalytics/
+// GoogleTagManager above: plain JSX inside RootShell, not routeOptions.
+// head()'s `scripts` field, to avoid TanStack Router's known script
+// duplication/drop bug on hydration (issues #7104 / #6569). Loaded once,
+// site-wide, since any page could render a <TrustBox /> widget (see
+// components/TrustBox.tsx) and the bootstrap script is what makes those
+// divs actually render — without it they'd just show the plain fallback
+// link. Production-only, matching the other third-party scripts here.
+function TrustpilotBootstrap() {
+  if (!import.meta.env.PROD) return null;
+  return <script async src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" />;
+}
+
 function RootShell({ children }: { children: React.ReactNode }) {
   // Render the geo-detected language on the SSR document itself so crawlers
   // and assistive tech see the right lang before hydration (the I18nProvider
@@ -210,6 +223,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <GoogleTagManager />
         <HeadContent />
         <GoogleAnalytics />
+        <TrustpilotBootstrap />
       </head>
       <body>
         <GoogleTagManagerNoScript />
