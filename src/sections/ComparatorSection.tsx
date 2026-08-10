@@ -6,6 +6,7 @@ import {
   ArrowRight,
   ArrowLeftRight,
   Banknote,
+  Briefcase,
   Building2,
   Check,
   Clock,
@@ -23,6 +24,7 @@ import {
   Zap,
   Info,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -211,6 +213,40 @@ function sortLabelKey(p: SortKey): string {
       return "comparator.sort.bestDeal";
     default:
       return "comparator.sort.overall";
+  }
+}
+
+/** Same icon the matching per-row chip/legend entry already uses, so a sort
+ *  chip visually points at the exact thing to look for in each row to
+ *  verify the ordering — e.g. "Most transparent" and the eye icon on the
+ *  transparency chip are now the same glyph, not just the same word. Before
+ *  this, there was no visual link between a sort criterion and where its
+ *  value actually shows up on a row, which made a correct re-sort easy to
+ *  read as "didn't do anything" — nothing to visually confirm against. */
+function sortIcon(p: SortKey): LucideIcon {
+  switch (p) {
+    case "recipient_gets_most":
+      return Banknote;
+    case "lowest_cost":
+      return Coins;
+    case "best_exchange_rate":
+      return Percent;
+    case "fastest":
+      return Clock;
+    case "most_trusted":
+      return Star;
+    case "best_business":
+      return Briefcase;
+    case "best_cash_pickup":
+      return Banknote;
+    case "most_transparent":
+      return Eye;
+    case "best_large_transfers":
+      return ArrowLeftRight;
+    case "best_deal":
+      return Sparkle;
+    default:
+      return Gauge;
   }
 }
 type ChatAction =
@@ -1340,36 +1376,44 @@ export function ComparatorSection({
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
                 </span>
-                {SORT_CHIPS.map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setSortBy(key)}
-                    aria-pressed={sortBy === key}
-                    className={`h-8 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      sortBy === key
-                        ? "border-transparent bg-[#ff6b5b] text-white"
-                        : "border-input bg-card text-foreground hover:border-foreground/30"
-                    }`}
-                  >
-                    {t(sortLabelKey(key))}
-                  </button>
-                ))}
-                {SECONDARY_SORT_CHIPS.map((key) => (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setSortBy(key)}
-                    aria-pressed={sortBy === key}
-                    className={`h-6 rounded-full border px-2.5 text-[11px] font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      sortBy === key
-                        ? "border-transparent bg-[#ff6b5b] text-white"
-                        : "border-input bg-card text-muted-foreground hover:border-foreground/30"
-                    }`}
-                  >
-                    {t(sortLabelKey(key))}
-                  </button>
-                ))}
+                {SORT_CHIPS.map((key) => {
+                  const Icon = sortIcon(key);
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSortBy(key)}
+                      aria-pressed={sortBy === key}
+                      className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        sortBy === key
+                          ? "border-transparent bg-[#ff6b5b] text-white"
+                          : "border-input bg-card text-foreground hover:border-foreground/30"
+                      }`}
+                    >
+                      <Icon className="h-3.5 w-3.5" />
+                      {t(sortLabelKey(key))}
+                    </button>
+                  );
+                })}
+                {SECONDARY_SORT_CHIPS.map((key) => {
+                  const Icon = sortIcon(key);
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setSortBy(key)}
+                      aria-pressed={sortBy === key}
+                      className={`inline-flex h-6 items-center gap-1 rounded-full border px-2.5 text-[11px] font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        sortBy === key
+                          ? "border-transparent bg-[#ff6b5b] text-white"
+                          : "border-input bg-card text-muted-foreground hover:border-foreground/30"
+                      }`}
+                    >
+                      <Icon className="h-3 w-3" />
+                      {t(sortLabelKey(key))}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* FILTERS ROW — activeFilters (stackable checkboxes) +
