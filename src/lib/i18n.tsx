@@ -2660,6 +2660,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.bestDeal": "Exclusive offer",
     "comparator.badge.sponsored": "Sponsored offer",
     "comparator.exclusiveRateNudge": "Check for exclusive rate",
+    "comparator.filter.exclusiveOnly": "Exclusive rates",
     "comparator.rankingExplainer":
       "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
     "comparator.table.exchangeRate": "Exchange rate",
@@ -2842,6 +2843,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.fee": "Comisiones",
     "comparator.sort.speed": "Velocidad",
     "comparator.exclusiveRateNudge": "Consultá tarifa exclusiva",
+    "comparator.filter.exclusiveOnly": "Tarifas exclusivas",
     "comparator.filter.size": "Tamaño",
     "comparator.filter.showOnly": "Mostrar solo",
     "comparator.rankingExplainer":

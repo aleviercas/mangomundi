@@ -681,5 +681,6 @@
   "blog.sponsored.forBusiness": "for your business",
   "blog.sponsored.forIndividuals": "for individuals",
   "comparator.exclusiveRateNudge": "Check for exclusive rate",
-  "agent.newResult": "New result available — tap to view"
+  "agent.newResult": "New result available — tap to view",
+  "comparator.filter.exclusiveOnly": "Exclusive rates"
 }

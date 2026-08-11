@@ -685,5 +685,6 @@
   "blog.sponsored.forBusiness": "para tu negocio",
   "blog.sponsored.forIndividuals": "para personas",
   "comparator.exclusiveRateNudge": "Consultá tarifa exclusiva",
-  "agent.newResult": "Nuevo resultado disponible — tocá para verlo"
+  "agent.newResult": "Nuevo resultado disponible — tocá para verlo",
+  "comparator.filter.exclusiveOnly": "Tarifas exclusivas"
 }

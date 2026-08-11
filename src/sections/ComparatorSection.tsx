@@ -340,6 +340,15 @@ export function ComparatorSection({
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | null>(null);
   const toggleDeliveryMethod = (method: DeliveryMethod) =>
     setDeliveryMethod((prev) => (prev === method ? null : method));
+  // Exclusive-rates filter — an explicit, user-initiated narrowing, not a
+  // change to the default ranking. Neutrality lives in what happens when
+  // this is OFF (default): every provider shown, ordered purely by the
+  // chosen sort criterion, sponsored or not. Turning this ON is the
+  // person choosing to look at a labeled subset — same category as
+  // filtering by delivery method — not mangomundi silently favoring
+  // partners. Within the filtered set, sort still applies exactly as
+  // normal; this never reorders anything on its own.
+  const [showOnlyExclusive, setShowOnlyExclusive] = useState(false);
   // Single legend panel (not per-row tooltips) explaining what each Features
   // icon/chip means — icon+text alone still isn't foolproof for a first-time
   // visitor on a decision involving real money, and repeating a tooltip on
@@ -1438,6 +1447,28 @@ export function ComparatorSection({
                   })}
                 </div>
 
+                {/* Exclusive-rates filter — an explicit opt-in the person
+                    turns on themselves, not a default. Accent-colored like
+                    the "Check for exclusive rate" nudge pill on each row —
+                    same visual language for the same underlying disclosed
+                    thing, so the two read as connected. Neutral by design:
+                    OFF (default) shows everyone, ordered purely by the
+                    chosen sort; ON only narrows to a labeled subset,
+                    still ordered by that same sort — never a re-ranking. */}
+                <button
+                  type="button"
+                  onClick={() => setShowOnlyExclusive((prev) => !prev)}
+                  aria-pressed={showOnlyExclusive}
+                  className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                    showOnlyExclusive
+                      ? "border-transparent bg-accent text-accent-foreground"
+                      : "border-accent/40 bg-accent/10 text-accent hover:border-accent/70"
+                  }`}
+                >
+                  <Sparkle className="h-3.5 w-3.5" />
+                  {t("comparator.filter.exclusiveOnly")}
+                </button>
+
                 {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
                     both desktop (click) and mobile (tap), no hover needed. */}
@@ -1492,6 +1523,7 @@ export function ComparatorSection({
               amount={amount}
               sortBy={sortBy}
               deliveryMethod={deliveryMethod}
+              showOnlyExclusive={showOnlyExclusive}
               handleAffiliateClick={openPreferredRate}
               tDisclaimer={t("fx.disclaimer")}
               tTrademarks={t("fx.trademarks")}
@@ -1834,6 +1866,7 @@ function ResultsBlock({
   amount,
   sortBy,
   deliveryMethod,
+  showOnlyExclusive,
   handleAffiliateClick,
   tDisclaimer,
   tTrademarks,
@@ -1850,6 +1883,7 @@ function ResultsBlock({
   amount: number;
   sortBy: SortKey;
   deliveryMethod: DeliveryMethod | null;
+  showOnlyExclusive: boolean;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
@@ -1870,9 +1904,11 @@ function ResultsBlock({
   const filteredRows = useMemo(
     () =>
       result.rows.filter(
-        (r) => deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r),
+        (r) =>
+          (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)) &&
+          (!showOnlyExclusive || r.has_exclusive_deal === true),
       ),
-    [result.rows, deliveryMethod],
+    [result.rows, deliveryMethod, showOnlyExclusive],
   );
   const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
   // Composite score (0-1, remapped to 7-9 for display — see displayScore)
