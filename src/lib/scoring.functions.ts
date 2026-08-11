@@ -414,22 +414,32 @@ export function sortByScore<T extends ScorableRow>(rows: T[], profile: ScoreProf
       return rawDiff;
     });
   }
-  // Tie-break with the "overall" blend, but ONLY for a genuine tie on the
-  // strict field itself (identical value, e.g. several rows all at 1h) —
-  // never to override an actual difference in the chosen criterion.
+  // Tie-break on the strict field, but ONLY for a genuine tie on the field
+  // itself (identical value, e.g. several rows all at 1h, or several rows
+  // all at $0 fee) — never to override an actual difference in the chosen
+  // criterion. Sponsored status wins the tie FIRST, ahead of the "overall"
+  // blend — on request: a fee/speed/rate tie should surface sponsored
+  // providers before non-sponsored ones, with "overall" only deciding
+  // between two rows that are ALSO tied on sponsorship (both sponsored, or
+  // neither). This is a different priority than "overall" itself uses —
+  // for "overall" the displayed Score IS the field being sorted by, so a
+  // tie there goes straight to sponsored with no intermediate step (see
+  // the `if (profile === "overall")` branch above); here, sponsorship sits
+  // BETWEEN the chosen field and the overall-score fallback.
   const overallScores = computeCompositeScores(rows, "overall");
-  const byOverallThenSponsor = (a: T, b: T) => {
-    const diff = (overallScores.get(b.slug) ?? 0) - (overallScores.get(a.slug) ?? 0);
-    return diff !== 0 ? diff : sponsoredTieBreak(a, b);
+  const bySponsorThenOverall = (a: T, b: T) => {
+    const sponsorDiff = sponsoredTieBreak(a, b);
+    if (sponsorDiff !== 0) return sponsorDiff;
+    return (overallScores.get(b.slug) ?? 0) - (overallScores.get(a.slug) ?? 0);
   };
   return [...rows].sort((a, b) => {
     const av = toComparable(strict.get(a));
     const bv = toComparable(strict.get(b));
-    if (av == null && bv == null) return byOverallThenSponsor(a, b);
+    if (av == null && bv == null) return bySponsorThenOverall(a, b);
     if (av == null) return 1; // missing data always sorts last, either direction
     if (bv == null) return -1;
     if (av !== bv) return strict.higherIsBetter ? bv - av : av - bv;
-    return byOverallThenSponsor(a, b);
+    return bySponsorThenOverall(a, b);
   });
 }
 

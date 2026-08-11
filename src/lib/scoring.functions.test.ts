@@ -276,6 +276,61 @@ describe("sortByScore — strict ordering guarantee", () => {
     expect(sorted[0].slug).toBe("tied_strong");
   });
 
+  it("regression: on a field tie, sponsored wins BEFORE the overall-score fallback — even against a non-sponsored row with a clearly better overall score. Real report: filtering by Fees, several rows tie at $0; the sponsored one among them should lead, not just whichever happens to have the best Score", () => {
+    const rows: ScorableRow[] = [
+      // Same fee (tied), but a much better overall profile otherwise —
+      // under the OLD priority (overall score before sponsorship), this
+      // one would have won the tie. It must not: sponsorship comes first.
+      {
+        slug: "not_sponsored_better_overall",
+        received: 5000,
+        fee_total: 0,
+        speed_hours: 1,
+        trust_score: 5.0,
+      },
+      {
+        slug: "sponsored_weaker_overall",
+        received: 500,
+        fee_total: 0,
+        speed_hours: 24,
+        trust_score: 2.0,
+        has_exclusive_deal: true,
+      },
+    ];
+    const sorted = sortByScore(rows, "lowest_cost");
+    expect(sorted[0].slug).toBe("sponsored_weaker_overall");
+  });
+
+  it("same priority (field tie → sponsored → overall) holds for every strict-sort profile, not just one", () => {
+    const makeRows = (): ScorableRow[] => [
+      {
+        slug: "plain",
+        received: 1000,
+        fee_total: 5,
+        speed_hours: 1,
+        trust_score: 4.0,
+        rate_vs_market_pct: -0.5,
+      },
+      {
+        slug: "sponsored",
+        received: 1000,
+        fee_total: 5,
+        speed_hours: 1,
+        trust_score: 4.0,
+        rate_vs_market_pct: -0.5,
+        has_exclusive_deal: true,
+      },
+    ];
+    for (const profile of [
+      "lowest_cost",
+      "best_exchange_rate",
+      "fastest",
+      "most_trusted",
+    ] as const) {
+      expect(sortByScore(makeRows(), profile)[0].slug, `profile "${profile}"`).toBe("sponsored");
+    }
+  });
+
   it("rows missing the chosen field's data always sort last, regardless of direction", () => {
     const rows: ScorableRow[] = [
       { slug: "has_trust", received: 500, fee_total: 5, speed_hours: 5, trust_score: 3.0 },
