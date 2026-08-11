@@ -2678,6 +2678,10 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
       "Trust: sorts by Trustpilot rating and review count, shown on every row as a star and a number.",
     "comparator.legend.cashPickup":
       "Cash pickup: the recipient can collect the money in cash at a physical location, not only a bank deposit.",
+    "comparator.legend.bankTransfer": "Bank: paid straight into the recipient's bank account.",
+    "comparator.legend.cardPayout": "Card: paid directly onto the recipient's debit or prepaid card.",
+    "comparator.legend.broker":
+      "Broker: routed through a local broker or agent network — common for large or business transfers.",
     "comparator.legend.sponsored":
       "Sponsored: mangomundi has a paid/negotiated partnership with this provider, always disclosed with this tag. It only ever decides a genuine tie between equally-ranked options — never overrides a real difference. The Exclusive rates filter lets you browse these partners on their own.",
     "comparator.reference": "Reference",

@@ -1506,7 +1506,19 @@ export function ComparatorSection({
                       [Percent, "comparator.legend.bestExchangeRate"],
                       [Clock, "comparator.legend.speed"],
                       [Star, "comparator.legend.trust"],
+                      // The 4 delivery methods, each with its OWN real
+                      // icon (matching DELIVERY_METHODS above) instead of
+                      // just explaining "Cash pickup" alone — that used to
+                      // leave Bank/Card/Broker unexplained, an inconsistency
+                      // once all 4 became equal chips in the same cluster.
+                      [Building2, "comparator.legend.bankTransfer"],
                       [Banknote, "comparator.legend.cashPickup"],
+                      [CreditCard, "comparator.legend.cardPayout"],
+                      [Handshake, "comparator.legend.broker"],
+                      // No separate "Exclusive rates" row here — same
+                      // Sparkle icon as Sponsored right below would read as
+                      // a duplicate entry; the Sponsored text already
+                      // covers the filter in its last sentence instead.
                       [Sparkle, "comparator.legend.sponsored"],
                     ] as const
                   ).map(([Icon, key]) => (
