@@ -1504,8 +1504,8 @@ export function ComparatorSection({
                       [Gauge, "comparator.legend.score"],
                       [Coins, "comparator.legend.fee"],
                       [Percent, "comparator.legend.bestExchangeRate"],
-                      [Zap, "comparator.legend.speed"],
-                      [Shield, "comparator.legend.trust"],
+                      [Clock, "comparator.legend.speed"],
+                      [Star, "comparator.legend.trust"],
                       [Banknote, "comparator.legend.cashPickup"],
                       [Sparkle, "comparator.legend.sponsored"],
                     ] as const

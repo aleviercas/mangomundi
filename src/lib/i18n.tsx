@@ -2662,30 +2662,24 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.exclusiveRateNudge": "Check for exclusive rate",
     "comparator.filter.exclusiveOnly": "Exclusive rates",
     "comparator.rankingExplainer":
-      "Results are ranked by **Score**, a 0–10 value combining fee, exchange rate, speed, and trust. **Sponsored** marks commercial deals — it never changes the real ranking.",
+      "Results are ranked by whichever **Sort** you pick. **Smart** blends fee, exchange rate, speed and trust into one score; the rest (Speed, Fees, Rate, Trust, Receive) sort strictly by that one thing. **Sponsored** offers only ever win a genuine tie between otherwise-equal options — never a real difference.",
     "comparator.table.exchangeRate": "Exchange rate",
     "comparator.legend.toggle": "What do these icons mean?",
     "comparator.score.label": "Score",
     "comparator.legend.score":
-      "Score (0-10): a weighted composite of the current sort criteria, relative to the providers shown for this route — not a universal or absolute rating.",
+      "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
     "comparator.legend.fee":
-      "Lowest fee: this provider charges the least for this amount, among the options shown.",
+      "Fees: sorts by the lowest total fee for this amount, among the options shown.",
     "comparator.legend.bestExchangeRate":
-      'Best exchange rate: this provider\'s rate is closest to the real mid-market rate — independent of its flat fee, since a "$0 fee" can still hide a bad rate.',
+      'Rate: sorts by whichever rate is closest to the real mid-market rate — independent of the flat fee, since a "$0 fee" can still hide a bad rate.',
     "comparator.legend.speed":
-      "Fastest: money typically arrives sooner with this provider than the others shown.",
+      "Speed: sorts by who typically delivers fastest — the hours shown on every row.",
     "comparator.legend.trust":
-      "Most trusted: highest customer rating (Trustpilot) among the options shown.",
-    "comparator.legend.business":
-      "Best for business: built for company transfers (multi-currency accounts, expense tools), not just personal remittances.",
+      "Trust: sorts by Trustpilot rating and review count, shown on every row as a star and a number.",
     "comparator.legend.cashPickup":
       "Cash pickup: the recipient can collect the money in cash at a physical location, not only a bank deposit.",
-    "comparator.legend.transparency":
-      "Most transparent: this provider is clearer than the others about how its fees and exchange rate margin work.",
-    "comparator.legend.largeTransfers":
-      "Large transfers: this provider is well suited for sending large amounts (often via a dedicated account manager).",
     "comparator.legend.sponsored":
-      "Sponsored offer: mangomundi has a paid/negotiated partnership with this provider — always disclosed, never affects the ranking.",
+      "Sponsored: mangomundi has a paid/negotiated partnership with this provider, always disclosed with this tag. It only ever decides a genuine tie between equally-ranked options — never overrides a real difference. The Exclusive rates filter lets you browse these partners on their own.",
     "comparator.reference": "Reference",
     "comparator.cached": "Cached",
     "comparator.cachedNote": "Rates are last known/cached, not live.",
@@ -2847,7 +2841,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.filter.size": "Tamaño",
     "comparator.filter.showOnly": "Mostrar solo",
     "comparator.rankingExplainer":
-      "El listado se ordena por **Puntaje**, un valor de 0 a 10 que combina tarifa, tipo de cambio, velocidad y confianza. **Patrocinado** marca acuerdos comerciales — nunca cambia el orden real.",
+      "El listado se ordena según el criterio de **Ordenar** que elijas. **Ideal** combina comisión, tipo de cambio, velocidad y confianza en un solo puntaje; el resto (Velocidad, Comisiones, Tasa, Confianza, Recibís) ordena estrictamente por ese único criterio. Las ofertas **patrocinadas** solo ganan un empate real entre opciones equivalentes — nunca una diferencia real.",
     "comparator.reference": "Referencia",
     "comparator.cached": "Cacheado",
     "comparator.cachedNote": "Tasas últimas conocidas/cacheadas, no en vivo.",
