@@ -8,11 +8,9 @@ import {
   Banknote,
   Briefcase,
   Building2,
-  Check,
   Clock,
   Coins,
   CreditCard,
-  Eye,
   Gauge,
   Handshake,
   Loader2,
@@ -87,7 +85,6 @@ const WHITE_FIELD =
   "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
-type FeatureFilterKey = "supports_large_tickets" | "has_exclusive_deal";
 /** Monito-style "how does the recipient get paid" filter — single-select
  *  (unlike the opt-in requirement chips below, these are mutually exclusive
  *  delivery channels, not stackable requirements), null = no filter. */
@@ -140,29 +137,49 @@ const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labe
  *  mini-strip) — this grouping is about which 3 criteria matter most, not a
  *  mechanical "is it visible anywhere" rule; fee lives in the secondary row
  *  below instead. */
-const SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "fastest"];
-/** Secondary row — real, useful criteria, just visually smaller/quieter
- *  than the primary 3 above (separate sub-row, not a separate mechanism —
- *  still the same single sortBy state, just two visual tiers instead of one
- *  flat row). The three money-related ones (fee, exchange rate here; amount
- *  received in the primary row) are DELIBERATELY kept as separate sort
- *  options rather than blended into one "value" metric: a provider can
- *  advertise "$0 fee" while hiding a bad exchange rate margin (or vice
- *  versa) — splitting them is the whole point of a neutral comparator,
- *  matching Wise's own "we show the real cost" positioning. */
+// All 6 sort chips at one flat visual tier now — no primary/secondary
+// split. That distinction existed to keep the row from feeling crowded,
+// but on request it's gone: every option reads as equally legitimate,
+// which matches how they actually behave (each is a real, independently
+// useful way to rank, not a "main 2 vs. supplementary 4" hierarchy).
+//
+// Order: Score, Fastest, Most trusted, Recipient gets the most, Lowest
+// fee, Best exchange rate — as specified, not alphabetical or grouped by
+// theme. The three money-related ones (recipient_gets_most, lowest_cost,
+// best_exchange_rate) are DELIBERATELY kept as separate sort options
+// rather than blended into one "value" metric: a provider can advertise
+// "$0 fee" while hiding a bad exchange rate margin (or vice versa) —
+// splitting them is the whole point of a neutral comparator, and
+// recipient_gets_most (fee + rate already combined into one number) is
+// what lets someone skip straight to the bottom line if they don't care
+// about the breakdown.
+//
+// most_transparent was removed entirely (used to be here) — not a UI
+// decision, a data-integrity one: unlike trust_score (has a documented,
+// cited source per provider — see
+// docs/multi-criteria-ranking/scoring-data-findings.md), no equivalent
+// research trail exists for transparency_score. Rather than keep a sort
+// option — and a per-row chip, and a weighted contribution to every OTHER
+// profile including "Score" itself — built on a number nobody can
+// currently trace back to a source, it's fully removed: the sort chip,
+// the STRICT_SORT_FIELD entry, the SCORE_PROFILES weight in every profile
+// (redistributed), and the per-row display chip. If a real, sourced
+// methodology gets established later, it can come back.
+const SORT_CHIPS: SortKey[] = [
+  "overall",
+  "fastest",
+  "most_trusted",
+  "recipient_gets_most",
+  "lowest_cost",
+  "best_exchange_rate",
+];
+/** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
+ *  concept lines up 1:1, so we don't duplicate translated strings. */
 // "best_business" deliberately excluded: the Personal/Empresa segment
 // toggle above the comparator already splits results by business fit, so a
 // dedicated sort chip for it was redundant. The underlying score profile
 // stays (see SCORE_PROFILES) — the AI copilot still uses it for
 // business-flavored questions asked in chat — only this manual chip is gone.
-const SECONDARY_SORT_CHIPS: SortKey[] = [
-  "lowest_cost",
-  "best_exchange_rate",
-  "most_trusted",
-  "most_transparent",
-];
-/** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
- *  concept lines up 1:1, so we don't duplicate translated strings. */
 /** 294000 -> "294K" — keeps the trust chip compact so it doesn't blow out
  *  the fixed-height Features cell on providers with huge review counts. */
 /** Maps the raw composite score (0-1, min-max normalized within the current
@@ -201,8 +218,6 @@ function sortLabelKey(p: SortKey): string {
       return "comparator.sort.bestBusiness";
     case "best_cash_pickup":
       return "comparator.sort.cashPickup";
-    case "most_transparent":
-      return "comparator.sort.mostTransparent";
     case "best_large_transfers":
       return "comparator.sort.largeTransfers";
     case "best_deal":
@@ -235,8 +250,6 @@ function sortIcon(p: SortKey): LucideIcon {
       return Briefcase;
     case "best_cash_pickup":
       return Banknote;
-    case "most_transparent":
-      return Eye;
     case "best_large_transfers":
       return ArrowLeftRight;
     case "best_deal":
@@ -317,14 +330,10 @@ export function ComparatorSection({
    *  said they need that capability (e.g. "I need cash pickup") — that's the
    *  person narrowing to their real requirement, not us hiding someone for
    *  editorial/monetization reasons. */
-  const [activeFilters, setActiveFilters] = useState<Set<FeatureFilterKey>>(new Set());
-  const toggleFilter = (key: FeatureFilterKey) =>
-    setActiveFilters((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
+  // activeFilters (Sponsored-only / Large-transfers checkboxes) removed —
+  // both filter clusters got dropped from the UI (see FILTERS ROW below),
+  // so this whole mechanism was left with nothing that could ever populate
+  // it. Delivery-method filtering (right below) is unrelated and unaffected.
   // Delivery-method chips (Bank account / Cash / Card / Broker) — separate
   // from activeFilters above: single-select, click the active one again to
   // clear it back to "all methods". Folded into the "Requiere" chip row as
@@ -1356,18 +1365,14 @@ export function ComparatorSection({
             </div>
             <div className="mb-2.5 flex flex-col gap-3">
               {/* SORT ROW — single-select (sortBy), never reduces the
-                  result set, only reorders it. One row, two visual tiers,
-                  not two mechanisms: primary chips (bigger) are the 3
-                  criteria that already have an obvious visual counterpart
-                  on every row (Score pill, received amount, speed);
-                  secondary chips (smaller) cover the rest. Still just one
-                  sortBy state either way — the size difference is purely
-                  editorial emphasis, not a functional split. No divider
-                  between them (an earlier version had one) — a vertical
-                  bar can end up alone at the end of a wrapped line on
-                  narrow widths, which reads as a stray/broken element; the
-                  size+weight contrast alone already separates the two
-                  tiers without needing a literal mark. */}
+                  result set, only reorders it. One flat visual tier now —
+                  all 6 chips the same size/weight, no primary/secondary
+                  split (an earlier version had one; removed on request:
+                  every option here is an equally legitimate way to rank,
+                  not a "main 3 vs. supplementary rest" hierarchy). flex-wrap
+                  (not overflow-x-auto) so it degrades to multiple lines on
+                  narrow widths instead of hiding options off-screen — see
+                  the widget-width note below. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
@@ -1387,25 +1392,6 @@ export function ComparatorSection({
                       }`}
                     >
                       <Icon className="h-3.5 w-3.5" />
-                      {t(sortLabelKey(key))}
-                    </button>
-                  );
-                })}
-                {SECONDARY_SORT_CHIPS.map((key) => {
-                  const Icon = sortIcon(key);
-                  return (
-                    <button
-                      key={key}
-                      type="button"
-                      onClick={() => setSortBy(key)}
-                      aria-pressed={sortBy === key}
-                      className={`inline-flex h-6 items-center gap-1 rounded-full border px-2.5 text-[11px] font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                        sortBy === key
-                          ? "border-transparent bg-[#ff6b5b] text-white"
-                          : "border-input bg-card text-muted-foreground hover:border-foreground/30"
-                      }`}
-                    >
-                      <Icon className="h-3 w-3" />
                       {t(sortLabelKey(key))}
                     </button>
                   );
@@ -1438,75 +1424,13 @@ export function ComparatorSection({
                   is a bigger effect than a same-request client-side filter,
                   and needs to happen before the search runs anyway. */}
               <div className="flex flex-wrap items-center gap-2">
-                {/* Show only — first, per an earlier explicit decision:
-                    it's the one disclosure-related requirement, ahead of
-                    the pure capability one below. A visibility toggle, not
-                    a capability requirement, hence its own cluster with
-                    "Show only" as the label (matches what it literally
-                    does). */}
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
-                  <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
-                    {t("comparator.filter.showOnly")}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => toggleFilter("has_exclusive_deal")}
-                    aria-pressed={activeFilters.has("has_exclusive_deal")}
-                    className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      activeFilters.has("has_exclusive_deal")
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-input bg-card text-foreground hover:border-foreground/30"
-                    }`}
-                  >
-                    <span
-                      className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
-                        activeFilters.has("has_exclusive_deal")
-                          ? "border-background bg-background"
-                          : "border-muted-foreground/60"
-                      }`}
-                    >
-                      {activeFilters.has("has_exclusive_deal") && (
-                        <Check className="h-2.5 w-2.5 text-foreground" />
-                      )}
-                    </span>
-                    {t("comparator.badge.sponsored")}
-                  </button>
-                </div>
-
-                {/* Size — single opt-in requirement (checkbox-style). Its
-                    own cluster (not folded into "Show only") since it's a
-                    capability filter, not a visibility filter — a
-                    different kind of question ("can this provider do
-                    this?" vs "only show me these"). */}
-                <div className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
-                  <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
-                    {t("comparator.filter.size")}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => toggleFilter("supports_large_tickets")}
-                    aria-pressed={activeFilters.has("supports_large_tickets")}
-                    className={`inline-flex h-8 shrink-0 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      activeFilters.has("supports_large_tickets")
-                        ? "border-foreground bg-foreground text-background"
-                        : "border-input bg-card text-foreground hover:border-foreground/30"
-                    }`}
-                  >
-                    <span
-                      className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-sm border ${
-                        activeFilters.has("supports_large_tickets")
-                          ? "border-background bg-background"
-                          : "border-muted-foreground/60"
-                      }`}
-                    >
-                      {activeFilters.has("supports_large_tickets") && (
-                        <Check className="h-2.5 w-2.5 text-foreground" />
-                      )}
-                    </span>
-                    {t("comparator.sort.largeTransfers")}
-                  </button>
-                </div>
-
+                {/* "Show only: Sponsored offer" and "Size: Large transfers"
+                    filter clusters removed on purpose (see this whole
+                    change's rationale) — sponsored disclosure still shows
+                    via the corner tag and the exclusive-rate nudge pill on
+                    each row, just no longer as a filterable checkbox; large
+                    transfers wasn't judged useful enough to keep its own
+                    cluster. Only "Receive via" remains. */}
                 {/* Receive via — delivery method (single-select, mutually
                     exclusive; pill/rounded-full instead of the checkbox
                     styling above, since it isn't one). Already a clear,
@@ -1578,8 +1502,6 @@ export function ComparatorSection({
                       [Zap, "comparator.legend.speed"],
                       [Shield, "comparator.legend.trust"],
                       [Banknote, "comparator.legend.cashPickup"],
-                      [Eye, "comparator.legend.transparency"],
-                      [ArrowLeftRight, "comparator.legend.largeTransfers"],
                       [Sparkle, "comparator.legend.sponsored"],
                     ] as const
                   ).map(([Icon, key]) => (
@@ -1595,7 +1517,6 @@ export function ComparatorSection({
               result={result}
               amount={amount}
               sortBy={sortBy}
-              activeFilters={activeFilters}
               deliveryMethod={deliveryMethod}
               handleAffiliateClick={openPreferredRate}
               tDisclaimer={t("fx.disclaimer")}
@@ -1938,7 +1859,6 @@ function ResultsBlock({
   result,
   amount,
   sortBy,
-  activeFilters,
   deliveryMethod,
   handleAffiliateClick,
   tDisclaimer,
@@ -1955,7 +1875,6 @@ function ResultsBlock({
   result: ComparisonResult;
   amount: number;
   sortBy: SortKey;
-  activeFilters: Set<FeatureFilterKey>;
   deliveryMethod: DeliveryMethod | null;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
@@ -1977,12 +1896,9 @@ function ResultsBlock({
   const filteredRows = useMemo(
     () =>
       result.rows.filter(
-        (r) =>
-          (!activeFilters.has("supports_large_tickets") || r.supports_large_tickets) &&
-          (!activeFilters.has("has_exclusive_deal") || r.has_exclusive_deal) &&
-          (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)),
+        (r) => deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r),
       ),
-    [result.rows, activeFilters, deliveryMethod],
+    [result.rows, deliveryMethod],
   );
   const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
   const badgesBySlug = useMemo(() => deriveBadges(filteredRows), [filteredRows]);
@@ -2052,9 +1968,7 @@ function ResultsBlock({
         ))}
         {organic.length === 0 && (
           <div className="px-4 py-8 text-center text-sm text-muted-foreground">
-            {activeFilters.size > 0 || deliveryMethod != null
-              ? t("comparator.emptyFiltered")
-              : t("comparator.empty")}
+            {deliveryMethod != null ? t("comparator.emptyFiltered") : t("comparator.empty")}
           </div>
         )}
       </div>
@@ -2085,14 +1999,8 @@ function badgeLabelKey(b: BadgeKey): string | null {
       return "comparator.sort.fee";
     case "best_exchange_rate":
       return "comparator.sort.bestExchangeRate";
-    case "fastest_delivery":
-      return "comparator.sort.speed";
     case "most_trusted":
       return "comparator.sort.mostTrusted";
-    case "most_transparent":
-      return "comparator.sort.mostTransparent";
-    case "large_transfers":
-      return "comparator.sort.largeTransfers";
     case "exclusive_deal":
       return "comparator.sort.bestDeal";
     default:
@@ -2110,14 +2018,8 @@ function badgeIcon(b: BadgeKey) {
       return Coins;
     case "best_exchange_rate":
       return Percent;
-    case "fastest_delivery":
-      return Zap;
     case "most_trusted":
       return Shield;
-    case "most_transparent":
-      return Eye;
-    case "large_transfers":
-      return ArrowLeftRight;
     case "exclusive_deal":
       return Sparkle;
     default:
@@ -2346,22 +2248,13 @@ function ProviderRow({
                 {compactNumber(row.review_count)} {t("comparator.table.reviews")})
               </span>
             )}
-            {/* Transparency, same icon+number visual language as the trust
-                chip above (no separate text label needed — the icon
-                carries the meaning, same convention). Added specifically
-                because "Most transparent" was the one sort criterion with
-                no visible per-row number to justify why a row ranked where
-                it did under that sort — every other criterion already had
-                one (fee/rate/speed in the mini-strip, trust here). Reuses
-                the Eye icon already used for this concept in the legend
-                modal. Raw 0-10 editorial score, not normalized/relative
-                like the Score pill — see transparency_score in
-                scoring.functions.ts. */}
-            {row.transparency_score != null && (
-              <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
-                <Eye className="h-2.5 w-2.5" /> {row.transparency_score.toFixed(1)}
-              </span>
-            )}
+            {/* Transparency chip removed — transparency_score no longer
+                feeds the scoring engine at all (see the removal notes
+                above SCORE_PROFILES in scoring.functions.ts: no documented
+                source for these numbers exists anywhere in the repo,
+                unlike trust_score). Displaying the raw number here without
+                it driving any ranking would have been actively misleading
+                — implying a criterion the site no longer actually uses. */}
             {highlightChips.map((c) => (
               <span
                 key={c.key}

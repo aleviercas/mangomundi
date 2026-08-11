@@ -66,7 +66,7 @@ const rows: ScorableRow[] = [
     has_exclusive_deal: false,
   },
   {
-    slug: "most_transparent",
+    slug: "best_rate",
     received: 980,
     rate_vs_market_pct: 0.05,
     fee_total: 7,
@@ -105,10 +105,10 @@ describe("computeCompositeScores / sortByScore", () => {
   });
 
   it("best_exchange_rate profile ranks the closest-to-mid-market rate first, independent of fee", () => {
-    // most_transparent has the best rate_vs_market_pct (0.05) but is NOT the
+    // best_rate has the best rate_vs_market_pct (0.05) but is NOT the
     // cheapest by fee_total — proves fee and exchange rate are genuinely
     // separate dimensions now, not the same thing wearing two labels.
-    expect(sortByScore(rows, "best_exchange_rate")[0].slug).toBe("most_transparent");
+    expect(sortByScore(rows, "best_exchange_rate")[0].slug).toBe("best_rate");
   });
 
   it("fastest profile ranks the fastest provider first", () => {
@@ -119,12 +119,8 @@ describe("computeCompositeScores / sortByScore", () => {
     expect(sortByScore(rows, "most_trusted")[0].slug).toBe("most_trusted");
   });
 
-  it("most_transparent profile ranks the highest transparency_score first", () => {
-    expect(sortByScore(rows, "most_transparent")[0].slug).toBe("most_transparent");
-  });
-
   it("best_large_transfers profile favors the provider that supports large tickets", () => {
-    expect(sortByScore(rows, "best_large_transfers")[0].slug).toBe("most_transparent");
+    expect(sortByScore(rows, "best_large_transfers")[0].slug).toBe("best_rate");
   });
 
   it("best_deal profile ranks the provider with has_exclusive_deal first", () => {
@@ -138,16 +134,9 @@ describe("computeCompositeScores / sortByScore", () => {
 
   it("different profiles can surface different #1 providers for the same data", () => {
     const winners = new Set(
-      (
-        [
-          "lowest_cost",
-          "best_exchange_rate",
-          "fastest",
-          "most_trusted",
-          "most_transparent",
-          "best_deal",
-        ] as const
-      ).map((p) => sortByScore(rows, p)[0].slug),
+      (["lowest_cost", "best_exchange_rate", "fastest", "most_trusted", "best_deal"] as const).map(
+        (p) => sortByScore(rows, p)[0].slug,
+      ),
     );
     expect(winners.size).toBeGreaterThan(1);
   });
@@ -213,14 +202,16 @@ describe("deriveBadges", () => {
     expect(badges.get("cheapest")).toContain("lowest_fee");
   });
 
-  it("awards fastest_delivery to the fastest provider", () => {
+  it("never awards a fastest_delivery badge — removed on purpose, speed is already a real number in every row's mini-strip (not just the winner's), so a text badge for the single fastest row said the same thing twice", () => {
     const badges = deriveBadges(rows);
-    expect(badges.get("fastest")).toContain("fastest_delivery");
+    for (const [, keys] of badges) {
+      expect(keys).not.toContain("fastest_delivery" as unknown as BadgeKey);
+    }
   });
 
   it("awards best_exchange_rate to whoever is closest to mid-market, independent of who's cheapest", () => {
     const badges = deriveBadges(rows);
-    expect(badges.get("most_transparent")).toContain("best_exchange_rate");
+    expect(badges.get("best_rate")).toContain("best_exchange_rate");
     expect(badges.get("cheapest")).not.toContain("best_exchange_rate");
   });
 
@@ -247,10 +238,11 @@ describe("deriveBadges", () => {
     }
   });
 
-  it("awards large_transfers only to providers with supports_large_tickets", () => {
+  it("never awards a large_transfers badge — removed alongside the Size filter it used to accompany", () => {
     const badges = deriveBadges(rows);
-    expect(badges.get("most_transparent")).toContain("large_transfers");
-    expect(badges.get("cheapest")).not.toContain("large_transfers");
+    for (const [, keys] of badges) {
+      expect(keys).not.toContain("large_transfers" as unknown as BadgeKey);
+    }
   });
 
   it("awards exclusive_deal only to providers with has_exclusive_deal, never elsewhere", () => {
@@ -315,32 +307,32 @@ describe("sortByScore — strict ordering guarantee", () => {
 
   it("a real difference on the chosen field ALWAYS wins, no matter how much better the loser is on everything else", () => {
     const rows: ScorableRow[] = [
-      // Genuinely the most transparent, but weak on every other input.
+      // Genuinely the most trusted, but weak on every other input.
       {
-        slug: "transparent_but_weak",
+        slug: "trusted_but_weak",
         received: 500,
         fee_total: 50,
         speed_hours: 48,
-        trust_score: 1.0,
-        transparency_score: 9.9,
+        trust_score: 4.9,
       },
-      // Slightly less transparent, but dramatically better everywhere
-      // else — under the old weighted-blend approach (even at 70%), a
-      // combination this lopsided could still flip the order. It must not
-      // anymore: this is the exact shape of the real bug report (a lower
-      // value on the chosen field outranking a higher one because it made
-      // up the gap elsewhere).
+      // Slightly less trusted, but dramatically better everywhere else —
+      // under a weighted-blend approach (even at 70%), a combination this
+      // lopsided could still flip the order. It must not: this is the
+      // exact shape of a real bug report this fixed (a lower value on the
+      // chosen field outranking a higher one because it made up the gap
+      // elsewhere) — originally caught on "Most transparent", reproduced
+      // here on "Most trusted" since that's the property being verified,
+      // not anything specific to transparency itself.
       {
-        slug: "less_transparent_but_great",
+        slug: "less_trusted_but_great",
         received: 5000,
         fee_total: 0,
         speed_hours: 1,
-        trust_score: 5.0,
-        transparency_score: 9.8,
+        trust_score: 4.8,
       },
     ];
-    const sorted = sortByScore(rows, "most_transparent");
-    expect(sorted[0].slug).toBe("transparent_but_weak");
+    const sorted = sortByScore(rows, "most_trusted");
+    expect(sorted[0].slug).toBe("trusted_but_weak");
   });
 
   it("ties on the chosen field (identical value) fall back to the overall score, not an arbitrary/input order", () => {

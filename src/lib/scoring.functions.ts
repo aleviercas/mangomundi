@@ -28,7 +28,6 @@ export type ScoreProfileKey =
   | "most_trusted"
   | "best_business"
   | "best_cash_pickup"
-  | "most_transparent"
   | "best_large_transfers"
   | "best_deal";
 
@@ -48,7 +47,6 @@ export interface ScoreWeights {
   business: number;
   cashPickup: number;
   coverage: number;
-  transparency: number;
   largeTransfers: number;
   exclusiveDeal: number;
 }
@@ -57,15 +55,14 @@ export interface ScoreWeights {
 // scoring.functions.test.ts, not just by convention here.
 export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
   overall: {
-    rate: 0.15,
-    fee: 0.12,
-    exchangeRate: 0.1,
-    speed: 0.15,
-    trust: 0.18,
+    rate: 0.16,
+    fee: 0.13,
+    exchangeRate: 0.11,
+    speed: 0.16,
+    trust: 0.2,
     business: 0.04,
-    cashPickup: 0.06,
-    coverage: 0.06,
-    transparency: 0.08,
+    cashPickup: 0.07,
+    coverage: 0.07,
     largeTransfers: 0.04,
     exclusiveDeal: 0.02,
   },
@@ -73,7 +70,7 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
   // combined. This used to be the ONLY sort option (pre multi-criteria) —
   // now it's one explicit choice among several, not the default.
   recipient_gets_most: {
-    rate: 0.7,
+    rate: 0.73,
     fee: 0.05,
     exchangeRate: 0.05,
     speed: 0.05,
@@ -81,7 +78,6 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
     business: 0.0,
     cashPickup: 0.02,
     coverage: 0.02,
-    transparency: 0.03,
     largeTransfers: 0.02,
     exclusiveDeal: 0.01,
   },
@@ -89,14 +85,13 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
   // rate — so a provider can't hide a bad rate behind a "$0 fee" headline.
   lowest_cost: {
     rate: 0.05,
-    fee: 0.7,
+    fee: 0.73,
     exchangeRate: 0.05,
     speed: 0.05,
     trust: 0.05,
     business: 0.0,
     cashPickup: 0.02,
     coverage: 0.02,
-    transparency: 0.03,
     largeTransfers: 0.02,
     exclusiveDeal: 0.01,
   },
@@ -106,40 +101,48 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
   best_exchange_rate: {
     rate: 0.05,
     fee: 0.05,
-    exchangeRate: 0.7,
+    exchangeRate: 0.73,
     speed: 0.05,
     trust: 0.05,
     business: 0.0,
     cashPickup: 0.02,
     coverage: 0.02,
-    transparency: 0.03,
     largeTransfers: 0.02,
     exclusiveDeal: 0.01,
   },
-  // fastest / most_trusted / most_transparent / best_business /
-  // best_cash_pickup / best_large_transfers were all originally weighted
-  // 30-55% on their namesake dimension — visibly less dominant than
-  // recipient_gets_most / lowest_cost / best_exchange_rate, which already
-  // used 70%. That inconsistency is what let a real, reported case break:
-  // sorting by "Most transparent" put TransferGo (8.0 transparency) above
-  // TorFX/Atlantic Money/Currencies Direct/CurrencyFair/Instarem (8.5–9.5)
-  // — technically correct given the OLD 50% weight (TransferGo's strong
-  // fee/speed/trust made up the gap), but not what a user clicking "Most
-  // transparent" reasonably expects to see. Brought every one of these up
-  // to the same 70% standard the other three already had, redistributing
-  // the remaining 30% across the rest in the same relative proportions
-  // they already used — a named, single-criterion sort should behave
-  // consistently no matter which criterion was picked.
+  // fastest / most_trusted / best_business / best_cash_pickup /
+  // best_large_transfers were all originally weighted 30-55% on their
+  // namesake dimension — visibly less dominant than recipient_gets_most /
+  // lowest_cost / best_exchange_rate, which already used 70%. That
+  // inconsistency is what let a real, reported case break: sorting by
+  // "Most transparent" put TransferGo (8.0 transparency) above TorFX/
+  // Atlantic Money/Currencies Direct/CurrencyFair/Instarem (8.5–9.5) —
+  // technically correct given the OLD 50% weight (TransferGo's strong
+  // fee/speed/trust made up the gap), but not what a user clicking a named
+  // sort reasonably expects to see. Brought every one of these up to the
+  // same 70% standard the other three already had, redistributing the
+  // remaining 30% across the rest in the same relative proportions they
+  // already used.
+  //
+  // most_transparent has since been removed entirely (it's what surfaced
+  // the inconsistency above in the first place) — not a UI decision, a
+  // data-integrity one: unlike trust_score (has a documented, cited source
+  // per provider — see docs/multi-criteria-ranking/scoring-data-findings.md),
+  // no equivalent research trail exists for transparency_score anywhere in
+  // this repo. Rather than leave it quietly contributing to every other
+  // profile's blend (including "overall" itself) on a number nobody can
+  // currently trace back to a source, its weight was removed from every
+  // profile below and proportionally redistributed among the rest — the
+  // numbers here reflect that redistribution, not a fresh editorial pass.
   fastest: {
     rate: 0.07,
     fee: 0.03,
     exchangeRate: 0.02,
-    speed: 0.7,
+    speed: 0.74,
     trust: 0.08,
     business: 0.0,
     cashPickup: 0.03,
     coverage: 0.03,
-    transparency: 0.04,
     largeTransfers: 0.0,
     exclusiveDeal: 0.0,
   },
@@ -148,11 +151,10 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
     fee: 0.03,
     exchangeRate: 0.03,
     speed: 0.05,
-    trust: 0.7,
+    trust: 0.73,
     business: 0.03,
     cashPickup: 0.03,
     coverage: 0.03,
-    transparency: 0.03,
     largeTransfers: 0.01,
     exclusiveDeal: 0.0,
   },
@@ -162,10 +164,9 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
     exchangeRate: 0.02,
     speed: 0.05,
     trust: 0.06,
-    business: 0.7,
+    business: 0.73,
     cashPickup: 0.0,
     coverage: 0.04,
-    transparency: 0.03,
     largeTransfers: 0.02,
     exclusiveDeal: 0.0,
   },
@@ -176,23 +177,9 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
     speed: 0.06,
     trust: 0.06,
     business: 0.0,
-    cashPickup: 0.7,
+    cashPickup: 0.72,
     coverage: 0.02,
-    transparency: 0.02,
     largeTransfers: 0.01,
-    exclusiveDeal: 0.0,
-  },
-  most_transparent: {
-    rate: 0.05,
-    fee: 0.04,
-    exchangeRate: 0.04,
-    speed: 0.05,
-    trust: 0.05,
-    business: 0.0,
-    cashPickup: 0.03,
-    coverage: 0.02,
-    transparency: 0.7,
-    largeTransfers: 0.02,
     exclusiveDeal: 0.0,
   },
   best_large_transfers: {
@@ -204,8 +191,7 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
     business: 0.05,
     cashPickup: 0.0,
     coverage: 0.02,
-    transparency: 0.03,
-    largeTransfers: 0.7,
+    largeTransfers: 0.73,
     exclusiveDeal: 0.0,
   },
   // "best_deal" is deliberately narrow: mostly weighted on the disclosed
@@ -221,9 +207,8 @@ export const SCORE_PROFILES: Record<ScoreProfileKey, ScoreWeights> = {
     business: 0.0,
     cashPickup: 0.0,
     coverage: 0.0,
-    transparency: 0.02,
     largeTransfers: 0.0,
-    exclusiveDeal: 0.65,
+    exclusiveDeal: 0.67,
   },
 };
 
@@ -314,10 +299,6 @@ export function computeCompositeScores<T extends ScorableRow>(
     rows.map((r) => r.countries_covered),
     true,
   );
-  const scoreTransparency = buildNormalizer(
-    rows.map((r) => r.transparency_score),
-    true,
-  );
 
   const result = new Map<string, number>();
   for (const r of rows) {
@@ -335,7 +316,6 @@ export function computeCompositeScores<T extends ScorableRow>(
       weights.business * scoreBusiness(r.business_focus_score) +
       weights.cashPickup * cashScore +
       weights.coverage * scoreCoverage(r.countries_covered) +
-      weights.transparency * scoreTransparency(r.transparency_score) +
       weights.largeTransfers * largeTicketScore +
       weights.exclusiveDeal * exclusiveDealScore;
     result.set(r.slug, total);
@@ -374,7 +354,6 @@ const STRICT_SORT_FIELD: Partial<
   most_trusted: { get: (r) => r.trust_score, higherIsBetter: true },
   best_business: { get: (r) => r.business_focus_score, higherIsBetter: true },
   best_cash_pickup: { get: (r) => r.cash_pickup_available, higherIsBetter: true },
-  most_transparent: { get: (r) => r.transparency_score, higherIsBetter: true },
   best_large_transfers: { get: (r) => r.supports_large_tickets, higherIsBetter: true },
   best_deal: { get: (r) => r.has_exclusive_deal, higherIsBetter: true },
 };
@@ -455,24 +434,17 @@ export function sortByScore<T extends ScorableRow>(rows: T[], profile: ScoreProf
 }
 
 export type BadgeKey =
-  | "lowest_fee"
-  | "best_exchange_rate"
-  | "fastest_delivery"
-  | "most_trusted"
-  | "wide_coverage"
-  | "most_transparent"
-  | "large_transfers"
-  | "exclusive_deal";
+  "lowest_fee" | "best_exchange_rate" | "most_trusted" | "wide_coverage" | "exclusive_deal";
 
 /**
  * Derives per-provider badges by finding the category winner(s) in the
  * current result set. Never invents a winner when there's no data for that
  * category (e.g. no row has trust_score → nobody gets "most_trusted").
- * `large_transfers` and `exclusive_deal` are capability/offer flags, not a
- * "best of" — every provider that has them gets the badge. Delivery-method
- * capability (cash pickup, bank transfer, card, broker) is deliberately
- * NOT handled here — see ComparatorSection.tsx's DELIVERY_METHOD_PREDICATES,
- * which is the single source of truth for that, shared with the filter chips.
+ * `exclusive_deal` is a disclosure flag, not a "best of" — every provider
+ * that has it gets the badge. Delivery-method capability (cash pickup,
+ * bank transfer, card, broker) is deliberately NOT handled here — see
+ * ComparatorSection.tsx's DELIVERY_METHOD_PREDICATES, which is the single
+ * source of truth for that, shared with the filter chips.
  */
 export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, BadgeKey[]> {
   const badges = new Map<string, BadgeKey[]>();
@@ -492,8 +464,12 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
     add(bestRate.slug, "best_exchange_rate");
   }
 
-  const fastest = [...rows].sort((a, b) => a.speed_hours - b.speed_hours)[0];
-  add(fastest.slug, "fastest_delivery");
+  // No "fastest_delivery" badge anymore — removed deliberately. Speed is
+  // already shown as a real number (not just for the winner) in every
+  // row's mini-strip, so a text badge repeating "this one's fastest" for a
+  // single row said the same thing twice — same category of redundancy
+  // already fixed once for most_transparent (see that removal's own notes
+  // above SCORE_PROFILES).
 
   const trustedCandidates = rows.filter((r) => r.trust_score != null);
   if (trustedCandidates.length > 0) {
@@ -522,9 +498,10 @@ export function deriveBadges<T extends ScorableRow>(rows: T[]): Map<string, Badg
   // drives the filter chips, so there's a single source of truth instead of
   // deriveBadges partially overlapping it.
 
-  rows
-    .filter((r) => r.supports_large_tickets === true)
-    .forEach((r) => add(r.slug, "large_transfers"));
+  // No "large_transfers" badge anymore either — removed alongside the
+  // "Size: Large transfers" filter it used to accompany; wasn't judged
+  // useful enough on its own to keep as a standalone pill once that
+  // filter cluster was gone.
   rows.filter((r) => r.has_exclusive_deal === true).forEach((r) => add(r.slug, "exclusive_deal"));
 
   const coverageCandidates = rows.filter((r) => r.countries_covered != null);
@@ -566,8 +543,6 @@ export function explainTopPick(row: ScorableRow, profile: ScoreProfileKey): stri
   if (weights.business >= 0.3 && row.business_focus_score != null)
     reasons.push("strong business/corporate fit");
   if (weights.cashPickup >= 0.3 && row.cash_pickup_available) reasons.push("cash pickup available");
-  if (weights.transparency >= 0.3 && row.transparency_score != null)
-    reasons.push("high fee transparency");
   if (weights.largeTransfers >= 0.3 && row.supports_large_tickets)
     reasons.push("supports large transfers");
   if (weights.exclusiveDeal >= 0.3 && row.has_exclusive_deal)
@@ -630,17 +605,13 @@ export function auditProviderChances<T extends ScorableRow>(
     rows.map((r) => r.countries_covered),
     true,
   );
-  const scoreTransparency = buildNormalizer(
-    rows.map((r) => r.transparency_score),
-    true,
-  );
 
   for (let i = 0; i < iterations; i++) {
-    // Dirichlet-ish: 11 random non-negative draws, normalized to sum to 1.
+    // Dirichlet-ish: 10 random non-negative draws, normalized to sum to 1.
     // exclusiveDeal is included so a provider with a disclosed deal isn't
     // artificially excluded from the audit, but note it only ever helps
     // providers that actually have has_exclusive_deal === true.
-    const raw = Array.from({ length: 11 }, () => -Math.log(Math.random()));
+    const raw = Array.from({ length: 10 }, () => -Math.log(Math.random()));
     const sum = raw.reduce((a, b) => a + b, 0);
     const [
       rate,
@@ -651,7 +622,6 @@ export function auditProviderChances<T extends ScorableRow>(
       business,
       cashPickup,
       coverage,
-      transparency,
       largeTransfers,
       exclusiveDeal,
     ] = raw.map((v) => v / sum);
@@ -664,7 +634,6 @@ export function auditProviderChances<T extends ScorableRow>(
       business,
       cashPickup,
       coverage,
-      transparency,
       largeTransfers,
       exclusiveDeal,
     };
@@ -686,7 +655,6 @@ export function auditProviderChances<T extends ScorableRow>(
         weights.business * scoreBusiness(r.business_focus_score) +
         weights.cashPickup * cashScore +
         weights.coverage * scoreCoverage(r.countries_covered) +
-        weights.transparency * scoreTransparency(r.transparency_score) +
         weights.largeTransfers * largeTicketScore +
         weights.exclusiveDeal * exclusiveDealScore;
       if (total > bestScore) {
