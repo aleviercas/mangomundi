@@ -69,12 +69,10 @@ import {
 import { Button } from "@/components/ui/button";
 import {
   sortByScore,
-  deriveBadges,
   pickFeaturedAmongTies,
   computeCompositeScores,
   displayScore,
   type ScoreProfileKey,
-  type BadgeKey,
 } from "@/lib/scoring.functions";
 
 type Segment = "retail" | "business";
@@ -1364,15 +1362,29 @@ export function ComparatorSection({
               </h3>
             </div>
             <div className="mb-2.5 flex flex-col gap-3">
-              {/* SORT ROW — single-select (sortBy), never reduces the
-                  result set, only reorders it. One flat visual tier now —
-                  all 6 chips the same size/weight, no primary/secondary
-                  split (an earlier version had one; removed on request:
-                  every option here is an equally legitimate way to rank,
-                  not a "main 3 vs. supplementary rest" hierarchy). flex-wrap
-                  (not overflow-x-auto) so it degrades to multiple lines on
-                  narrow widths instead of hiding options off-screen — see
-                  the widget-width note below. */}
+              {/* Sort chips + delivery-method cluster + legend button, all
+                  in ONE flex-wrap row now (on request) — they used to be
+                  two separate rows. Still two visually distinct sections
+                  within it: the sort chips are plain pill buttons, the
+                  delivery methods sit inside their own bordered/tinted
+                  cluster (bg-muted/40 + border), so the grouping stays
+                  legible even after everything wraps onto multiple lines at
+                  narrow widths. No literal divider line between the two
+                  sections — a vertical bar can end up alone at the end of
+                  a wrapped line on narrow widths (widget/mobile), which
+                  reads as a stray/broken element; the cluster's own
+                  border+background already separates it without needing
+                  one. No "Receive via" label either (removed on request —
+                  the bank/cash/card/broker icons plus this being the last
+                  cluster after the sort chips already read as "how do you
+                  want to receive it" without spelling it out). flex-wrap
+                  (not overflow-x-auto) — a horizontal-scroll strip was
+                  tried first, but at the 440px reference width of the
+                  embeddable widget (see EmbedComparator/EmbedWidgetSection)
+                  there wasn't enough visible width to hint that more
+                  content existed off-screen, so it just looked cut off
+                  instead of scrollable; wrapping costs vertical space
+                  instead, but never hides anything. */}
               <div className="flex flex-wrap items-center gap-2">
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
@@ -1396,49 +1408,15 @@ export function ComparatorSection({
                     </button>
                   );
                 })}
-              </div>
 
-              {/* FILTERS ROW — activeFilters (stackable checkboxes) +
-                  deliveryMethod (single-select) both narrow filteredRows
-                  BEFORE ranking/badges are computed, so a "cheapest" badge
-                  always reflects the cheapest among what's actually visible
-                  right now. Each cluster gets its OWN specific label now
-                  ("Size" / "Show only" / "Receive via") instead of one
-                  umbrella "Requiere" prefix — matches how Kayak/Skyscanner
-                  name each filter group by what it actually does, rather
-                  than grouping unlike things under a generic label. Kept as
-                  bordered/tinted clusters (not just divider lines) so each
-                  reads as its own unit. flex-wrap (not overflow-x-auto) — a
-                  horizontal-scroll strip was tried first, but at the 440px
-                  reference width of the embeddable widget (see
-                  EmbedComparator/EmbedWidgetSection) there wasn't enough
-                  visible width to hint that more content existed
-                  off-screen, so it just looked cut off instead of
-                  scrollable. Wrapping onto additional lines costs vertical
-                  space instead, but never hides anything.
-
-                  Client type (Personal/Empresa) deliberately does NOT live
-                  here — tried it, reverted (see the header toggle's own
-                  comment for why): switching it re-runs the server query
-                  and can hand the chat to the business-lead wizard, which
-                  is a bigger effect than a same-request client-side filter,
-                  and needs to happen before the search runs anyway. */}
-              <div className="flex flex-wrap items-center gap-2">
-                {/* "Show only: Sponsored offer" and "Size: Large transfers"
-                    filter clusters removed on purpose (see this whole
-                    change's rationale) — sponsored disclosure still shows
-                    via the corner tag and the exclusive-rate nudge pill on
-                    each row, just no longer as a filterable checkbox; large
-                    transfers wasn't judged useful enough to keep its own
-                    cluster. Only "Receive via" remains. */}
-                {/* Receive via — delivery method (single-select, mutually
-                    exclusive; pill/rounded-full instead of the checkbox
-                    styling above, since it isn't one). Already a clear,
-                    well-defined category — unchanged. */}
+                {/* Delivery method — single-select, mutually exclusive,
+                    click the active one again to clear back to "all
+                    methods". Its own bordered cluster (not plain pill
+                    buttons like the sort chips above) is what visually
+                    marks this as a different KIND of control — a filter
+                    that narrows the result set, not a reorder — without
+                    needing a text label to say so. */}
                 <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
-                  <span className="shrink-0 pl-1 text-[11px] text-muted-foreground">
-                    {t("comparator.delivery.label")}
-                  </span>
                   {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
                     const isActive = deliveryMethod === key;
                     return (
@@ -1462,11 +1440,7 @@ export function ComparatorSection({
 
                 {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
-                    both desktop (click) and mobile (tap), no hover needed.
-                    Now also where the "what does Score/Sponsored mean"
-                    explainer text lives (see DialogContent below) — moved
-                    out of this row to give the filter clusters more room to
-                    breathe, on request. */}
+                    both desktop (click) and mobile (tap), no hover needed. */}
                 <button
                   type="button"
                   onClick={() => setShowLegend(true)}
@@ -1901,7 +1875,6 @@ function ResultsBlock({
     [result.rows, deliveryMethod],
   );
   const organic = useMemo(() => sortByScore(filteredRows, sortBy), [filteredRows, sortBy]);
-  const badgesBySlug = useMemo(() => deriveBadges(filteredRows), [filteredRows]);
   // Composite score (0-1, remapped to 7-9 for display — see displayScore)
   // is INTENTIONALLY always computed with the "overall" profile, never
   // `sortBy`. Score is meant to read as one stable, objective number per
@@ -1957,7 +1930,6 @@ function ResultsBlock({
             row={row}
             quote={result.quote}
             base={result.base}
-            badges={badgesBySlug.get(row.slug) ?? []}
             score={scoresBySlug.get(row.slug) ?? null}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
@@ -1990,48 +1962,10 @@ function ResultsBlock({
   );
 }
 
-/** exclusive_deal maps to its own key but gets distinct disclosure styling
- *  below (amber, not the neutral gray merit pills) — it's a promotional
- *  signal, not a ranking merit, and must never blend in as if it were one. */
-function badgeLabelKey(b: BadgeKey): string | null {
-  switch (b) {
-    case "lowest_fee":
-      return "comparator.sort.fee";
-    case "best_exchange_rate":
-      return "comparator.sort.bestExchangeRate";
-    case "most_trusted":
-      return "comparator.sort.mostTrusted";
-    case "exclusive_deal":
-      return "comparator.sort.bestDeal";
-    default:
-      return null;
-  }
-}
-
-/** Icon shown alongside the badge's text in the Features column — icon
- *  alone is never enough (no hover/tooltip on mobile, and several of these
- *  aren't self-explanatory), so this always pairs with badgeLabelKey's text,
- *  never replaces it. */
-function badgeIcon(b: BadgeKey) {
-  switch (b) {
-    case "lowest_fee":
-      return Coins;
-    case "best_exchange_rate":
-      return Percent;
-    case "most_trusted":
-      return Shield;
-    case "exclusive_deal":
-      return Sparkle;
-    default:
-      return null;
-  }
-}
-
 function ProviderRow({
   row,
   quote,
   base,
-  badges,
   score,
   onClick,
   tCta,
@@ -2042,7 +1976,6 @@ function ProviderRow({
   row: ComparisonResult["rows"][number];
   quote: string;
   base: string;
-  badges: BadgeKey[];
   /** Composite score (0-1), ALWAYS the "overall" profile regardless of the
    *  active sortBy — see the useMemo in ResultsBlock for why it's
    *  intentionally decoupled from the sort criterion. Shown as the
@@ -2085,29 +2018,22 @@ function ProviderRow({
   const ratePctClass =
     ratePct >= -0.25 ? "text-emerald-600" : ratePct >= -1 ? "text-amber-600" : "text-destructive";
 
-  // Feature highlight chips: trust score first (when we have data for it),
-  // then only the badges that actually apply to this row — no
-  // placeholder/hidden chips for inactive badges (the container below
-  // reserves a fixed min-height instead, so rows without extra badges don't
-  // collapse). Regulator now lives in the provider identity column, not
-  // here — see the block below.
+  // Feature highlight chips: only the delivery-method pills remain now (on
+  // request) — the merit badges (lowest fee / best exchange rate / most
+  // trusted / wide coverage / exclusive deal) that used to live here were
+  // removed entirely: each one duplicated something already visible
+  // elsewhere on the row (fee/rate in the mini-strip, trust in the star
+  // chip above) or a sort chip already named the same thing, same category
+  // of redundancy already fixed once for "most transparent"/"fastest" —
+  // just applied consistently to the rest now instead of case-by-case.
   const highlightChips = (() => {
     type Chip = { key: string; icon: typeof Shield | null; text: string };
     const chips: Chip[] = [];
-    for (const b of badges) {
-      if (b === "exclusive_deal") continue;
-      const labelKey = badgeLabelKey(b);
-      if (!labelKey) continue;
-      chips.push({ key: b, icon: badgeIcon(b), text: t(labelKey) });
-    }
     // Delivery-method pills — derived from the SAME predicate map that
     // drives the filter chips (DELIVERY_METHOD_PREDICATES), so "this row
     // qualifies" can never disagree between the filter and the row pill.
     // Every method the row supports gets a pill, always, independent of
-    // whether that method is the one currently selected in the filter row
-    // — this is what fixed the old inconsistency where only "Cash" ever
-    // got a pill (via a since-removed, separately-implemented cash_pickup
-    // badge) while Bank account/Card/Broker never did.
+    // whether that method is the one currently selected in the filter row.
     for (const { key, icon, labelKey } of DELIVERY_METHODS) {
       if (!DELIVERY_METHOD_PREDICATES[key](row)) continue;
       chips.push({ key: `delivery_${key}`, icon, text: t(labelKey) });

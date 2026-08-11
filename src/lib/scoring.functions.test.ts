@@ -4,13 +4,11 @@ import {
   computeCompositeScores,
   displayScore,
   sortByScore,
-  deriveBadges,
   auditProviderChances,
   pickFeaturedAmongTies,
   getTrustTrend,
   flagDecliningProviders,
   type ScorableRow,
-  type BadgeKey,
 } from "./scoring.functions";
 
 describe("SCORE_PROFILES", () => {
@@ -193,74 +191,6 @@ describe("auditProviderChances", () => {
     for (const r of rows) {
       expect(audit.get(r.slug)?.wins ?? 0).toBeGreaterThan(0);
     }
-  });
-});
-
-describe("deriveBadges", () => {
-  it("awards lowest_fee to the cheapest provider", () => {
-    const badges = deriveBadges(rows);
-    expect(badges.get("cheapest")).toContain("lowest_fee");
-  });
-
-  it("never awards a fastest_delivery badge — removed on purpose, speed is already a real number in every row's mini-strip (not just the winner's), so a text badge for the single fastest row said the same thing twice", () => {
-    const badges = deriveBadges(rows);
-    for (const [, keys] of badges) {
-      expect(keys).not.toContain("fastest_delivery" as unknown as BadgeKey);
-    }
-  });
-
-  it("awards best_exchange_rate to whoever is closest to mid-market, independent of who's cheapest", () => {
-    const badges = deriveBadges(rows);
-    expect(badges.get("best_rate")).toContain("best_exchange_rate");
-    expect(badges.get("cheapest")).not.toContain("best_exchange_rate");
-  });
-
-  it("awards most_trusted to the highest trust_score", () => {
-    const badges = deriveBadges(rows);
-    expect(badges.get("most_trusted")).toContain("most_trusted");
-  });
-
-  it("never awards a cash_pickup badge — moved to DELIVERY_METHOD_PREDICATES in ComparatorSection.tsx", () => {
-    // Even with cash_pickup_available: true present (would have won the old
-    // badge), deriveBadges must never produce a "cash_pickup" entry anymore
-    // — it's no longer a valid BadgeKey at all. Kept as its own test so a
-    // future re-add of this string to BadgeKey doesn't silently reintroduce
-    // the duplicate-source-of-truth bug this removal fixed.
-    const badges = deriveBadges(rows);
-    const allBadges = Array.from(badges.values()).flat();
-    expect(allBadges).not.toContain("cash_pickup" as unknown as BadgeKey);
-  });
-
-  it("never awards a most_transparent badge — removed on purpose, the eye-icon transparency chip on every row (not just one winner) replaced it, and having both said the same thing twice on the winning row", () => {
-    const badges = deriveBadges(rows);
-    for (const [, keys] of badges) {
-      expect(keys).not.toContain("most_transparent");
-    }
-  });
-
-  it("never awards a large_transfers badge — removed alongside the Size filter it used to accompany", () => {
-    const badges = deriveBadges(rows);
-    for (const [, keys] of badges) {
-      expect(keys).not.toContain("large_transfers" as unknown as BadgeKey);
-    }
-  });
-
-  it("awards exclusive_deal only to providers with has_exclusive_deal, never elsewhere", () => {
-    const badges = deriveBadges(rows);
-    expect(badges.get("deal_provider")).toContain("exclusive_deal");
-    expect(badges.get("cheapest")).not.toContain("exclusive_deal");
-    expect(badges.get("most_trusted")).not.toContain("exclusive_deal");
-  });
-
-  it("never awards a best_business badge — removed in favor of the Personal/Empresa segment toggle", () => {
-    // Even with business_focus_score data present (would have won the old
-    // badge outright pre-removal), deriveBadges must never produce one
-    // anymore. Checked by absence from the full flattened badge list, since
-    // "best_business" is no longer a valid BadgeKey at all — there's no
-    // per-badge check left to write.
-    const badges = deriveBadges(rows);
-    const allBadges = Array.from(badges.values()).flat();
-    expect(allBadges).not.toContain("best_business" as unknown as BadgeKey);
   });
 });
 
