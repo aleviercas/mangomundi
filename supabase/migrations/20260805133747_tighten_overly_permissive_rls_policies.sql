@@ -1,0 +1,17 @@
+-- Reconciliation placeholder — this migration was already applied directly
+-- against production (see: RLS policy tightening across one or more
+-- tables). The original SQL wasn't captured as a file in this repo at the
+-- time it ran, so it can't be reproduced verbatim here.
+--
+-- This file exists ONLY so `supabase/migrations/` locally matches what
+-- Supabase's own migration history already reports for the remote project
+-- (see `supabase migration list`) — without it, CI's "Supabase Preview"
+-- check fails with "Remote migration versions not found in local
+-- migrations directory" when trying to build a preview branch, since it
+-- can't find a local file for a version the remote already has recorded.
+--
+-- Deliberately left empty (a no-op) rather than guessing at the original
+-- RLS policy definitions — getting security policies wrong by reconstructing
+-- them from memory is worse than leaving this undocumented. If the exact
+-- policies ever need auditing, check the live project directly (Supabase
+-- dashboard → Authentication → Policies, or `SELECT * FROM pg_policies`).

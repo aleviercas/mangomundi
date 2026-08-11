@@ -1,0 +1,5 @@
+-- Reconciliation placeholder — already applied directly against production
+-- (a follow-up data backfill for cash_pickup_available on any rows the
+-- earlier backfill missed). See the note in
+-- 20260805133747_tighten_overly_permissive_rls_policies.sql for why this
+-- file is a deliberate no-op rather than a reconstruction.

@@ -1,0 +1,8 @@
+-- Reconciliation placeholder — already applied directly against production
+-- (adds delivery-method-related columns on providers, e.g.
+-- bank_transfer_available / card_payout_available / cash_pickup_available
+-- — confirmed present in the live schema via a types.ts regeneration
+-- earlier, but the exact original ALTER TABLE statements weren't captured
+-- as a file at the time). See the note in
+-- 20260805133747_tighten_overly_permissive_rls_policies.sql for why this
+-- file is a deliberate no-op rather than a reconstruction.
