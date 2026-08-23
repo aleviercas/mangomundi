@@ -80,7 +80,7 @@ preview sin afectar producción hasta activarlo explícitamente.
 
 **Tabla `corridor_notes`:** documenta corredores donde a propósito **no** se
 cargó cobertura (sanciones vigentes, o corredores dominados por especialistas
-tipo hawala que no están en el catálogo). Ver sección 6.
+tipo hawala que no están en el catálogo). Ver sección 4.
 
 ## 4. Estado de los datos (última auditoría: sprint ago 2026)
 
@@ -104,7 +104,47 @@ tipo hawala que no están en el catálogo). Ver sección 6.
   fuera del catálogo — hace falta sumar un proveedor nuevo, no solo cargar
   tarifas).
 
-## 5. UI del comparador — rediseño country-first (sprint ago 2026)
+## 5. Criterio de inclusión para corredores/proveedores nuevos
+
+"Agregar cada banco/proveedor local del mundo" es un pozo sin fondo — hay
+miles de bancos y ninguna sesión puede cubrirlos todos. Después de 3 rondas
+de investigación de bancos locales (15 candidatos, 1 calificó — ver sección
+8), esto es el patrón que separó al que sirvió del resto, convertido en
+regla explícita para decidir sin tener que redescubrirlo cada vez.
+
+**Un candidato nuevo (banco local, MTO chico, lo que sea) se agrega al
+catálogo SOLO si pasa los 4 filtros:**
+
+1. **Marca propia distinguible** — tiene un nombre de producto de remesas
+   distinto del nombre genérico del banco (ej. "UBL Tezraftaar", "BDO
+   Remit", "Money2India", "Chaabi Cash"). Si la única opción es "transferir
+   por SWIFT a una cuenta de Banco X", no pasa este filtro — eso ya es
+   indistinguible de cualquier transferencia bancaria genérica.
+2. **Opera su propio envío** — tiene oficinas, agentes o una app propia en
+   el país de **origen** (no solo recibe depósitos que otro proveedor ya
+   enruta). Si el banco es solo un "payout partner" de un MTO que ya está en
+   el catálogo (ej. GCB Bank/Ria, BRAC Bank/TapTap Send), ese corredor
+   **ya está cubierto** por ese MTO — no hace falta un proveedor nuevo.
+3. **Fee Y margen de cambio, ambos con fuente citable** — World Bank RPW,
+   PDF/página oficial del proveedor, o un comparador independiente
+   (Monito, Wise, etc.) con fecha reciente. **Los dos, no uno solo** — un
+   fee sin margen (o viceversa) no alcanza; cargarlo así sería inventar la
+   mitad del dato más importante (ver sección 2, "nunca inventar datos").
+4. **No redundante** — el corredor/proveedor no está ya cubierto de forma
+   equivalente por algo existente en el catálogo.
+
+**Para corredores** (no proveedores) el criterio es más simple: entran si
+aparecen en el catálogo maestro original (`docs/handoff/catalogo_mundial_final.csv`,
+219 corredores) o entre los de mayor volumen mundial según World Bank
+(top ~50-100 por flujo anual) — no hace falta cubrir cada par de países
+posible, la mayoría no tiene volumen de remesas real.
+
+**Cuándo vale la pena una ronda nueva de investigación:** cuando aparece
+una pista concreta de que un banco tiene marca de remesas propia (no una
+búsqueda genérica "¿tiene este país un banco con remesas?" corredor por
+corredor — eso es lo que dio 1/15 en las 3 rondas ya hechas).
+
+## 6. UI del comparador — rediseño country-first (sprint ago 2026)
 
 El picker principal pasó de **currency-first** a **country-first**: el
 usuario elige país de origen/destino (`CountryCombobox`), la moneda se deriva
@@ -126,7 +166,7 @@ brokers de cobertura amplia sirven ese caso. La guardia de "mismo país =
 inválido" (`sameCorridorBlocked`) respeta este caso: mismo país + moneda
 distinta ya no cuenta como corredor inválido.
 
-## 6. Sprints / prioridades (estado a la fecha)
+## 7. Sprints / prioridades (estado a la fecha)
 
 Orden de prioridad acordado con Alejandro:
 
@@ -150,7 +190,7 @@ Orden de prioridad acordado con Alejandro:
 4. **Afiliados** — prioridad más baja, investigación intermitente. Ver
    sección 7.
 
-## 7. Afiliados — estado conocido
+## 8. Afiliados — estado conocido
 
 **Activos hoy** (con `affiliate_url` real, `sponsored=true`): Wise, Airwallex,
 Currencies Direct, TorFX, MoneyGram, Instarem.
@@ -291,7 +331,7 @@ bancos que SÍ se sabe que tienen brazo de remesas con marca — como Chaabi
 Cash/Banque Populaire para Marruecos, ya cargado — en vez de ir país por
 país a ciegas) en lugar de seguir con la misma búsqueda genérica.
 
-## 8. Dónde está cada cosa
+## 9. Dónde está cada cosa
 
 | Qué | Dónde |
 |---|---|
@@ -308,7 +348,7 @@ país a ciegas) en lugar de seguir con la misma búsqueda genérica.
 | Motor de scoring multi-criterio | `src/lib/scoring.functions.ts` |
 | Sección del comparador (UI) | `src/sections/ComparatorSection.tsx` |
 
-## 9. Cómo continuar
+## 10. Cómo continuar
 
 Si es una sesión nueva de Claude sin memoria de esta conversación: leer este
 archivo primero, después `ale.md` para el estado de UI/SEO, después el
