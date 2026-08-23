@@ -85,6 +85,10 @@ export interface Provider {
    *  researched — see delivery-methods-findings.md. */
   bank_transfer_available?: boolean | null;
   provider_type?: string | null;
+  /** true = corridor-specific MTO (only shows when fx_rates has a row for
+   *  the exact route); false/null = multi-currency platform, falls back to
+   *  fee_tiers/flat fields as today. See ENABLE_CORRIDOR_FILTERING below. */
+  is_corridor_specific?: boolean | null;
 }
 
 export interface ComparisonRow {
@@ -130,6 +134,11 @@ export interface ComparisonRow {
   card_payout_available: boolean | null;
   bank_transfer_available: boolean | null;
   provider_type: string | null;
+  /** True when this row's fee/spread came from a real fx_rates entry for
+   *  this exact corridor, rather than the provider's flat/tiered fields. */
+  has_corridor_data: boolean;
+  corridor_data_source: string | null;
+  corridor_data_collected_at: string | null;
 }
 
 export interface ComparisonResult {
@@ -400,6 +409,10 @@ async function fetchRates(): Promise<RatesSnapshot> {
 
 
 // Pick fee tier matching the amount. Falls back to provider top-level fees.
+// Precedence when ENABLE_CORRIDOR_FILTERING is on: an exact fx_rates row for
+// this (provider, corridor, amount) always wins over this function — see
+// corridorRates in compareProviders below. resolveTier is the fallback for
+// providers with no corridor-specific data (Tipo B / broad-coverage platforms).
 function resolveTier(
   p: Provider,
   amount: number,
@@ -442,6 +455,19 @@ const compareSchema = z.object({
   receivingCountry: z.string().min(2).max(64).optional(),
 });
 
+// Feature flag for the corridor-specific rates rollout (fx_rates table).
+// Off by default — set ENABLE_CORRIDOR_FILTERING=true in the environment to
+// activate. See mangomundi-arquitectura-corredor-proveedores.md section 9.
+const ENABLE_CORRIDOR_FILTERING = process.env.ENABLE_CORRIDOR_FILTERING === "true";
+
+interface CorridorRate {
+  fee: number;
+  spread: number;
+  speed_hours: number | null;
+  data_source: string | null;
+  data_collected_at: string | null;
+}
+
 export const compareProviders = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => compareSchema.parse(input))
   .handler(async ({ data }) => {
@@ -450,7 +476,51 @@ export const compareProviders = createServerFn({ method: "POST" })
       .select("*")
       .eq("active", true)
       .in("segment", [data.segment, "both"]);
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+
+    // Corridor-specific rates (fx_rates) — real per-route data where it
+    // exists. Precedence rule: an exact match here always wins over the
+    // provider's fee_tiers/flat fields (resolveTier). A corridor-specific
+    // provider (is_corridor_specific) with no match here is excluded below
+    // — it doesn't operate this route, so showing its generic flat fee
+    // would misrepresent it. Broad-coverage providers (Wise, brokers, banks)
+    // are unaffected and keep using resolveTier as they always have.
+    const corridorRates = new Map<string, CorridorRate>();
+    if (ENABLE_CORRIDOR_FILTERING && data.sendingCountry && data.receivingCountry) {
+      const { data: rateRows, error: rateError } = await supabaseAdmin
+        .from("fx_rates")
+        .select(
+          "provider_slug, fee, public_spread_percent, speed_hours_approx, data_source, data_collected_at, min_amount, max_amount",
+        )
+        .eq("sending_country", data.sendingCountry)
+        .eq("receiving_country", data.receivingCountry)
+        .or(`min_amount.is.null,min_amount.lte.${data.amount}`)
+        .or(`max_amount.is.null,max_amount.gte.${data.amount}`);
+      if (rateError) {
+        // Non-fatal — fall back to flat/tiered pricing for every provider,
+        // same as ENABLE_CORRIDOR_FILTERING being off.
+        console.error("[compareProviders] fx_rates lookup failed", rateError);
+      } else {
+        for (const r of rateRows ?? []) {
+          corridorRates.set(r.provider_slug, {
+            fee: Number(r.fee) || 0,
+            spread: Number(r.public_spread_percent) || 0,
+            speed_hours: r.speed_hours_approx != null ? Number(r.speed_hours_approx) : null,
+            data_source: r.data_source ?? null,
+            data_collected_at: r.data_collected_at ?? null,
+          });
+        }
+      }
+    }
+
+    const eligibleProviders = ENABLE_CORRIDOR_FILTERING
+      ? (providers as Provider[]).filter(
+          (p) => !p.is_corridor_specific || corridorRates.has(p.slug),
+        )
+      : (providers as Provider[]);
 
     // fetchRates() can throw if every upstream FX provider (Frankfurter,
     // ExchangeRate-API, fixer.io, exchangeratesapi.io, OXR) is unavailable at
@@ -485,8 +555,11 @@ export const compareProviders = createServerFn({ method: "POST" })
     // in Supabase) throwing here would otherwise escape as an unformatted
     // error. Catch it and surface the same clean message instead.
     try {
-      const rows: ComparisonRow[] = (providers as Provider[]).map((p) => {
-        const tier = resolveTier(p, data.amount);
+      const rows: ComparisonRow[] = eligibleProviders.map((p) => {
+        const corridorRate = corridorRates.get(p.slug);
+        const tier = corridorRate
+          ? { fee_percent: 0, fee_fixed: corridorRate.fee, spread_percent: corridorRate.spread }
+          : resolveTier(p, data.amount);
         const rate = marketRate * (1 - tier.spread_percent / 100);
         const feeRate = tier.fee_percent / 100;
         const amountSent =
@@ -518,7 +591,7 @@ export const compareProviders = createServerFn({ method: "POST" })
           fee_fixed_applied: tier.fee_fixed,
           spread_applied: tier.spread_percent,
           received,
-          speed_hours: Number(p.speed_hours),
+          speed_hours: corridorRate?.speed_hours ?? Number(p.speed_hours),
           rate_vs_market_pct,
           sponsored: Boolean(p.sponsored),
           sponsored_rank: p.sponsored_rank ?? null,
@@ -538,6 +611,9 @@ export const compareProviders = createServerFn({ method: "POST" })
           card_payout_available: p.card_payout_available ?? null,
           bank_transfer_available: p.bank_transfer_available ?? null,
           provider_type: p.provider_type ?? null,
+          has_corridor_data: Boolean(corridorRate),
+          corridor_data_source: corridorRate?.data_source ?? null,
+          corridor_data_collected_at: corridorRate?.data_collected_at ?? null,
         };
       });
       rows.sort((a, b) => b.received - a.received);
