@@ -41,7 +41,7 @@ import { useI18n } from "@/lib/i18n";
 import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
-import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
+import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { captureBusinessLead } from "@/lib/agent.functions";
@@ -299,6 +299,26 @@ export function ComparatorSection({
   // Empty until the user picks — the basic row shows "Select country…" and the
   // Compare CTA validates (same UX the old hero widget had).
   const [receivingCountry, setReceivingCountry] = useState(initialQuery?.destination ?? "");
+  // Country is the source of truth for the main picker (matches every real
+  // remittance comparator — Remitly, WorldRemit, Western Union all lead with
+  // country, currency is a byproduct) and it MUST be, now that fx_rates
+  // (see fx.functions.ts, ENABLE_CORRIDOR_FILTERING) keys corridor-specific
+  // pricing by (sending_country, receiving_country): a currency like EUR
+  // spans 9+ sending countries in that data (ES, FR, IT, DE, IE...) with
+  // genuinely different real rates per country, so a currency-only picker
+  // would silently collapse them all into whichever one country
+  // primaryCountryForCurrency happens to pick. These two handlers are the
+  // only place `from`/`to` get set from a country change — everything else
+  // downstream (buildReasoning, tracking, the rate banner, the API call)
+  // keeps reading `from`/`to` exactly as before.
+  const handleSendingCountryChange = (code: string) => {
+    setSendingCountry(code);
+    setFrom(localCurrency(code));
+  };
+  const handleReceivingCountryChange = (code: string) => {
+    setReceivingCountry(code);
+    setTo(localCurrency(code));
+  };
   // Segment used to be a manual tab the user toggled. Now it's derived
   // automatically from the amount — same threshold already used for the
   // business-desk upsell banner (B2B_UPSELL_MIN_AMOUNT), so the whole
@@ -610,27 +630,13 @@ export function ComparatorSection({
   useEffect(() => {
     if (!initialQuery?.autoRun || didAutoRunRef.current) return;
     didAutoRunRef.current = true;
-    if (amount <= 0 || from === to) return;
+    if (amount <= 0 || !receivingCountry || sendingCountry === receivingCountry) return;
     // The URL-sync effect's 300ms timer clears result/chat unless this one-shot
     // flag is set — covers sub-300ms responses landing before the timer fires.
     skipNextSyncClearRef.current = true;
     compareMut.mutate(undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Business no longer has a visible country field, but the optional "request
-  // a manual quote" chat flow still sends sendingCountry/receivingCountry in
-  // its lead — so keep them in sync with whatever currencies are selected,
-  // silently, instead of asking the user to pick a country nobody needs for
-  // the actual rate comparison.
-  useEffect(() => {
-    if (segment !== "business") return;
-    const nextSending = primaryCountryForCurrency(from);
-    if (nextSending && nextSending !== sendingCountry) setSendingCountry(nextSending);
-    const nextReceiving = primaryCountryForCurrency(to);
-    if (nextReceiving && nextReceiving !== receivingCountry) setReceivingCountry(nextReceiving);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [segment, from, to]);
 
   const requestMissingRoute = async (from: string, to: string) => {
     MasterRateStore.logMissing(from, to);
@@ -708,7 +714,9 @@ export function ComparatorSection({
     // corridor if the form is incomplete, then run the real comparison. Guides
     // a first-time user straight to results without typing anything.
     if (action.id === "example") {
-      if (!receivingCountry) setReceivingCountry(sendingCountry === "US" ? "MX" : "US");
+      if (!receivingCountry) {
+        handleReceivingCountryChange(sendingCountry === "US" ? "MX" : "US");
+      }
       setValidationError(null);
       setChat((c) => [
         ...c,
@@ -882,7 +890,7 @@ export function ComparatorSection({
   // stale-result hygiene remains.)
   useEffect(() => {
     setValidationError(null);
-    if (amount <= 0 || from === to) {
+    if (amount <= 0 || !receivingCountry || sendingCountry === receivingCountry) {
       skipNextSyncClearRef.current = false; // don't let a stale skip leak
       return;
     }
@@ -1154,23 +1162,28 @@ export function ComparatorSection({
               the viewport: 3/4 columns when the card is full-width (no results
               yet), 2 columns once it shares the row with the metrics panel. */}
             <div className="@container space-y-2 p-2.5 sm:p-3.5">
-              {from === to && (
+              {sendingCountry === receivingCountry && receivingCountry && (
                 <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
                   {t("search.sameCountry")}
                 </div>
               )}
-              {/* One consolidated row — FROM currency → swap → TO currency → CTA.
-                  Currency-only (no country picker) for the main flow, matching
-                  how consumer FX comparators (e.g. Wise) do it: the compare
-                  engine already matches providers by currency pair, not
-                  country (see fx.functions.ts), so country isn't needed here.
-                  Business keeps a country panel below (compliance/RFQ need a
-                  real jurisdiction) — see the segment === "business" block. */}
+              {/* One consolidated row — FROM country → swap → TO country → CTA.
+                  Country-first (not currency-first), matching how every real
+                  MTO comparator does it (Remitly, WorldRemit, Western Union
+                  all lead with country; currency is a derived label, never an
+                  independent choice) — see the note by handleSendingCountryChange/
+                  handleReceivingCountryChange above for why this matters now
+                  that fx_rates keys corridor-specific pricing by country pair,
+                  not currency pair. `from`/`to` (currency) are still the state
+                  everything downstream reads — these handlers just derive them
+                  from the country pick instead of the other way around. */}
               <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
-                {/* FROM box: "You send" — amount + currency unified pill. */}
+                {/* FROM box: "You send" — amount + country unified pill
+                    (currency shown as the combobox's secondary/dropdown hint,
+                    and in the mid-market rate banner once a comparison runs). */}
                 <div className="min-w-0">
                   <FieldLight label={t("comparator.field.amount")}>
-                    {/* Unified pill: amount + currency read as one control,
+                    {/* Unified pill: amount + country read as one control,
                         split by a hairline divider instead of two boxes. */}
                     <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-transparent bg-white shadow-sm transition-colors hover:bg-slate-50 focus-within:ring-2 focus-within:ring-[#ff6b5b]/40">
                       <input
@@ -1183,9 +1196,9 @@ export function ComparatorSection({
                         aria-label={t("comparator.field.amount")}
                         className="min-w-0 flex-1 bg-transparent px-3 text-sm font-medium tabular-nums text-slate-900 placeholder:text-slate-400 focus:outline-none"
                       />
-                      <CurrencyCombobox
-                        value={from}
-                        onChange={setFrom}
+                      <CountryCombobox
+                        value={sendingCountry}
+                        onChange={handleSendingCountryChange}
                         placeholder={t("comparator.combobox.placeholder")}
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
@@ -1196,22 +1209,16 @@ export function ComparatorSection({
                   </FieldLight>
                 </div>
 
-                {/* Swap — click to flip FROM/TO (and the country panel below,
-                    if Business). Rotated 90° when the row stacks vertically. */}
+                {/* Swap — click to flip FROM/TO country (currency follows).
+                    Rotated 90° when the row stacks vertically. */}
                 <div className="flex items-center justify-center py-0.5 @2xl:flex-col @2xl:justify-end @2xl:pb-1">
                   <button
                     type="button"
                     onClick={() => {
-                      const prevFrom = from;
-                      const prevTo = to;
-                      setFrom(prevTo);
-                      setTo(prevFrom);
-                      if (segment === "business") {
-                        const prevSending = sendingCountry;
-                        const prevReceiving = receivingCountry;
-                        setSendingCountry(prevReceiving);
-                        setReceivingCountry(prevSending);
-                      }
+                      const prevSending = sendingCountry;
+                      const prevReceiving = receivingCountry;
+                      if (prevReceiving) handleSendingCountryChange(prevReceiving);
+                      handleReceivingCountryChange(prevSending);
                     }}
                     aria-label={t("comparator.swap")}
                     className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#ff6b5b] transition hover:bg-white/10 hover:text-[#ff8577] focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40"
@@ -1220,19 +1227,21 @@ export function ComparatorSection({
                   </button>
                 </div>
 
-                {/* TO box: "You receive" — currency only, highlighted while it
-                    still matches FROM (nudges picking a different currency). */}
+                {/* TO box: "You receive" — country only, highlighted while it
+                    still matches FROM (nudges picking a different country). */}
                 <div className="min-w-0">
                   <FieldLight label={t("comparator.field.youReceive")}>
-                    <CurrencyCombobox
-                      value={to}
-                      onChange={setTo}
+                    <CountryCombobox
+                      value={receivingCountry}
+                      onChange={handleReceivingCountryChange}
                       placeholder={t("comparator.combobox.placeholder")}
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.targetCurrency")}
                       triggerClassName={
-                        from === to ? `${WHITE_FIELD} ring-2 ring-[#ff6b5b]/60` : WHITE_FIELD
+                        sendingCountry === receivingCountry
+                          ? `${WHITE_FIELD} ring-2 ring-[#ff6b5b]/60`
+                          : WHITE_FIELD
                       }
                     />
                   </FieldLight>
@@ -1241,14 +1250,19 @@ export function ComparatorSection({
                 <div className="flex flex-col justify-end">
                   <Button
                     onClick={() => {
-                      if (from === to || amount <= 0) {
+                      if (!receivingCountry || sendingCountry === receivingCountry || amount <= 0) {
                         setValidationError(t("fx.validation"));
                         return;
                       }
                       setValidationError(null);
                       compareMut.mutate(undefined);
                     }}
-                    disabled={compareMut.isPending || from === to || amount <= 0}
+                    disabled={
+                      compareMut.isPending ||
+                      !receivingCountry ||
+                      sendingCountry === receivingCountry ||
+                      amount <= 0
+                    }
                     className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-[168px]"
                   >
                     {compareMut.isPending ? (
@@ -1265,16 +1279,6 @@ export function ComparatorSection({
                   </Button>
                 </div>
               </div>
-
-              {/* Business no longer shows a country panel here — confirmed the
-                  provider query (`compareProviders`) filters only by segment +
-                  currency, never by country, so requiring it before "Compare
-                  Rates" was pure friction with zero effect on the results.
-                  sendingCountry/receivingCountry are still auto-derived below
-                  (via primaryCountryForCurrency) purely so the optional
-                  "request a manual quote" chat flow still has a real country
-                  to send if the user chooses that path — it's just never
-                  shown or required as a blocking field in the main flow. */}
 
               {/* Mid-market exchange rate — shown as soon as a comparison has
                   run, right inside this same box (like Wise's compare page). */}

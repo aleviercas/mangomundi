@@ -1,15 +1,16 @@
 import { Combobox } from "@/components/ui/Combobox";
 import { FlagIcon } from "@/components/ui/FlagIcon";
-import { CURRENCIES } from "@/lib/currencies";
+import { COUNTRIES } from "@/lib/countries";
 
-const OPTIONS = CURRENCIES.map((c) => ({
+const OPTIONS = COUNTRIES.map((c) => ({
   value: c.code,
-  label: `${c.code} — ${c.name}`,
-  leading: <FlagIcon country={c.flag} />,
-  keywords: [c.code, c.name],
+  label: c.name,
+  secondary: c.currency,
+  leading: <FlagIcon country={c.code} />,
+  keywords: [c.code, c.currency],
 }));
 
-export function CurrencyCombobox({
+export function CountryCombobox({
   value,
   onChange,
   placeholder,

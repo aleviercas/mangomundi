@@ -2611,7 +2611,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.noHiddenFees": "No hidden fees",
     "search.new": "New search",
     "search.sameCountry":
-      "Same-country route: choose two different currencies to compare conversion options.",
+      "Same-country route: choose two different countries to compare conversion options.",
     "comparator.copilot.business.intro":
       "As a business, your treasury needs are unique. Please tell me your estimated monthly volume and sector (for example: `50000, software`).",
     "comparator.copilot.business.volumeError":
@@ -2811,7 +2811,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.noHiddenFees": "Sin comisiones ocultas",
     "search.new": "Nueva búsqueda",
     "search.sameCountry":
-      "Ruta dentro del mismo país: elige dos divisas distintas para comparar opciones de conversión.",
+      "Ruta dentro del mismo país: elige dos países distintos para comparar opciones de conversión.",
     "comparator.copilot.business.intro":
       "Como empresa, tus necesidades de tesorería son únicas. Indícame tu volumen mensual estimado y sector (por ejemplo: `50000, software`).",
     "comparator.copilot.business.volumeError": "Incluye el volumen mensual estimado y el sector.",
