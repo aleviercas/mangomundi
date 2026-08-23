@@ -170,10 +170,20 @@ Aspora, Al Ansari, Hubpay, ARQ Finance. Skrill tiene programa de afiliados,
 pero es específicamente para la industria del gaming/depósitos de wallet, no
 aplica a transferencias P2P.
 
-**Sin confirmar todavía:** GCC Exchange, Wall St Exchange, Al Fardan
-Exchange, e& money (telco, afiliado improbable), Payit (producto de banco,
-afiliado improbable), CashMinute, Rocket Remit (en un corredor investigado
-resultó caro — bajar prioridad, no descartar).
+**CashMinute — candidato real, verificar** (encontrado en esta pasada, ago
+2026): tienen página propia de afiliados en `cashminute.com/affiliate-with-us`
+— confirmado que existe vía búsqueda, pero el fetch directo está bloqueado
+por la política de red del sandbox (dominio no whitelisteado). Alejandro
+tiene que entrar directo a esa URL para ver estructura de comisión y
+requisitos.
+
+**Sin confirmar todavía** (re-verificado ago 2026, sin novedades): GCC
+Exchange, Wall St Exchange, Al Fardan Exchange — ninguno de los tres tiene
+programa de afiliados público encontrable por búsqueda; son casas de cambio
+físicas del Golfo, probablemente sin infraestructura de afiliados digital.
+e& money (telco, afiliado improbable), Payit (producto de banco, afiliado
+improbable), Rocket Remit (en un corredor investigado resultó caro — bajar
+prioridad, no descartar).
 
 **Pendientes de esta línea de trabajo:** emails redactados sin enviar a
 Redpin (Currencies Direct + TorFX) y a OFX; aplicación de afiliado a
@@ -182,6 +192,35 @@ de Trustpilot Data Solutions.
 
 Detalle completo, corredor por corredor, en
 `docs/handoff/tabla-maestra-proveedores-nuevos.md`.
+
+### Bancos locales por país — pista real, bloqueada por el sandbox (ago 2026)
+
+Se evaluó agregar bancos locales del país receptor como proveedores nuevos
+(ej. BDO en Filipinas, ICICI/Money2India en India, BBVA en México) para
+competir en los corredores de mayor volumen ya cargados. Primer hallazgo
+real: **BDO Remit (USA), Inc. es una subsidiaria propia de BDO, licenciada,
+con oficinas/agentes físicos en EEUU y número 1-800 propio** — no es solo un
+método de cobro de otro proveedor (a diferencia de Walmart2World, que sí
+resultó ser eso). Es un candidato genuino, del mismo tipo que Kabayan Remit
+(ya en el catálogo).
+
+**Por qué no se cargó todavía:** el sandbox de esta sesión bloquea el fetch
+directo a la mayoría de dominios externos (`bdo.com.ph`, `cashminute.com`,
+etc. — solo `WebSearch` agregado funciona, no `WebFetch` a la página/PDF
+real). La búsqueda agregada solo devolvió un dato suelto y de una sola fuente
+(fee ~USD 10 por envío) y **ningún margen de cambio confiable** ("las tasas
+varían a diario, se publican en el mostrador" — no hay un spread% publicado
+y estable como sí lo tienen los MTOs ya cargados). Cargar esto con el spread
+adivinado violaría el principio de "nunca inventar datos" del proyecto.
+
+**Siguiente paso concreto:** alguien con acceso de red normal (Alejandro, o
+una sesión de Claude sin esta restricción de sandbox) tiene que abrir
+directamente `bdo.com.ph/content/dam/bdounibank/en-ph/remittance/remittance-fees/bdo-remit-usa-remittance-fees.pdf`
+para sacar el fee schedule real por tramo de monto. Con eso, se puede cargar
+BDO Remit (USA) como proveedor Tipo A siguiendo el mismo patrón que el resto.
+Mismo enfoque aplicaría para otros bancos locales candidatos (ICICI/
+Money2India para India, BBVA/Banorte para México) — **no se investigó más
+bancos todavía**, se paró acá para no forzar datos débiles a producción.
 
 ## 8. Dónde está cada cosa
 
