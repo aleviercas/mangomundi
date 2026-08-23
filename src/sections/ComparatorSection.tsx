@@ -42,6 +42,7 @@ import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/li
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
+import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { captureBusinessLead } from "@/lib/agent.functions";
@@ -314,11 +315,23 @@ export function ComparatorSection({
   const handleSendingCountryChange = (code: string) => {
     setSendingCountry(code);
     setFrom(localCurrency(code));
+    setFromCurrencyOverride(false);
   };
   const handleReceivingCountryChange = (code: string) => {
     setReceivingCountry(code);
     setTo(localCurrency(code));
+    setToCurrencyOverride(false);
   };
+  // Escape hatch for the real minority case where currency and country
+  // genuinely diverge: a multi-currency account (Wise, Revolut, business FX)
+  // held by someone sending from — or receiving into — a country whose local
+  // currency isn't the one they want. Off by default so the common case
+  // (country implies currency) stays a single click; once on, the server
+  // (fx.functions.ts, `currencyOverridden`) drops every corridor-specific
+  // MTO from the results, since e.g. Sendwave literally cannot pay a GBP
+  // account into EUR — only the broad-coverage brokers apply here.
+  const [fromCurrencyOverride, setFromCurrencyOverride] = useState(false);
+  const [toCurrencyOverride, setToCurrencyOverride] = useState(false);
   // Segment used to be a manual tab the user toggled. Now it's derived
   // automatically from the amount — same threshold already used for the
   // business-desk upsell banner (B2B_UPSELL_MIN_AMOUNT), so the whole
@@ -1279,6 +1292,64 @@ export function ComparatorSection({
                   </Button>
                 </div>
               </div>
+
+              {/* Currency override — collapsed by default (the country pick
+                  already implies the right currency for the vast majority of
+                  transfers). Opens up two small currency pickers for the real
+                  minority case: a multi-currency account (Wise, Revolut,
+                  business FX) held by someone sending from — or receiving
+                  into — a country whose local currency isn't the one they
+                  actually want (e.g. sending from the UK but in EUR). Once
+                  open, the server drops every corridor-specific MTO from the
+                  results (see `currencyOverridden` in fx.functions.ts) —
+                  those genuinely can't serve a non-local currency, only the
+                  broad-coverage brokers can. */}
+              {!fromCurrencyOverride && !toCurrencyOverride ? (
+                <button
+                  type="button"
+                  onClick={() => setFromCurrencyOverride(true)}
+                  className="text-[11px] text-slate-400 underline decoration-dotted underline-offset-2 hover:text-slate-200"
+                >
+                  {t("comparator.field.overrideCurrencyLink")}
+                </button>
+              ) : (
+                <div className="flex flex-wrap items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2">
+                  <span className="text-[11px] text-slate-400">
+                    {t("comparator.field.overrideCurrencyOpen")}
+                  </span>
+                  <CurrencyCombobox
+                    value={from}
+                    onChange={(v) => {
+                      setFrom(v);
+                      setFromCurrencyOverride(true);
+                    }}
+                    ariaLabel={t("comparator.field.sourceCurrency")}
+                    triggerClassName="h-8 w-auto text-xs"
+                  />
+                  <ArrowRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+                  <CurrencyCombobox
+                    value={to}
+                    onChange={(v) => {
+                      setTo(v);
+                      setToCurrencyOverride(true);
+                    }}
+                    ariaLabel={t("comparator.field.targetCurrency")}
+                    triggerClassName="h-8 w-auto text-xs"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFromCurrencyOverride(false);
+                      setToCurrencyOverride(false);
+                      setFrom(localCurrency(sendingCountry));
+                      if (receivingCountry) setTo(localCurrency(receivingCountry));
+                    }}
+                    className="ml-auto text-[11px] text-slate-400 underline hover:text-slate-200"
+                  >
+                    {t("comparator.field.useLocalCurrency")}
+                  </button>
+                </div>
+              )}
 
               {/* Mid-market exchange rate — shown as soon as a comparison has
                   run, right inside this same box (like Wise's compare page). */}
