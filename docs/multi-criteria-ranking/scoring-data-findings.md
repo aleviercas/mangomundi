@@ -66,6 +66,21 @@
 | **TapTap Send** | 4.7 (confirmado, coincide con dato de Tier 1) | ~36,000 | trustpilot.com | cash pickup: **no confirmado todavía** — el producto parece enfocado en mobile money/bank, no en agentes de retiro físico como Western Union |
 | **Small World FS** | 4.2–4.3 | ~27,500 | trustpilot.com/review/smallworldfs.com (may 2026) | Rating "Great". **cash pickup: sí, confirmado** (250,000+ locations). Cobertura: ~190-195 países. Encontrado en la tabla real de Supabase, no estaba en la clasificación original de 27 |
 
+## Datos confirmados — Bancos (fuera del alcance original de Fase 1)
+
+Fase 1 cubrió explícitamente solo los 27 proveedores no-bancarios (ver
+"Pendiente de investigar" más abajo). Los 4 bancos/infraestructura que
+quedaron con `trust_score` sin cargar se completaron en el Sprint de
+corredores (ago 2026), a pedido de Alejandro de nivelar toda la
+información del catálogo:
+
+| Proveedor | trust_score | review_count (aprox.) | Fuente | Notas |
+|---|---|---|---|---|
+| HSBC | 4.4 | ~28,166 | trustpilot.com/review/www.hsbc.co.uk (ago 2026) | Rating "Excellent" en el dominio retail UK (hsbc.co.uk). Ojo: hsbc.com (marca global) tiene 2.3 "Poor" — son páginas Trustpilot distintas, se usó la del sitio retail (`website_url` del proveedor es hsbc.co.uk) |
+| Chase | 4.1 | ~15,700 | trustpilot.com/review/chase.co.uk (ago 2026) | Rating "4 estrellas". Reseñas mixtas: buena app/atención, quejas de tasas de ahorro solo para clientes nuevos |
+| Santander | 1.5 | ~9,000 | trustpilot.com (santander.co.uk, ago 2026) | Rating bajo, consistente con banco tradicional de sucursal — dato real, no se ajusta |
+| CAB Payments | N/A (ya documentado arriba en Tier 2) | — | — | Reconfirmado: infraestructura FX B2B/institucional, sin reviews de consumidor. Se agregó nota en `providers.notes` explicando por qué el trust_score queda null a propósito (el motor de score ya lo trata como neutral) |
+
 ## ⚠️ Corrección de slugs (importante)
 
 Al comparar contra la tabla real de `providers` en Supabase, 3 slugs que
