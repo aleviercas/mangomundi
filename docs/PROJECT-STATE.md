@@ -84,13 +84,13 @@ tipo hawala que no están en el catálogo). Ver sección 6.
 
 ## 4. Estado de los datos (última auditoría: sprint ago 2026)
 
-- **`providers`:** 61 filas (42 Tipo A / 19 Tipo B), todas con `trust_score`
+- **`providers`:** 62 filas (43 Tipo A / 19 Tipo B), todas con `trust_score`
   poblado salvo CAB Payments (a propósito — es infraestructura B2B sin
   reviews de consumidor, ver `docs/multi-criteria-ranking/scoring-data-findings.md`)
-  y los 2 bancos locales agregados en la última pasada (`bdo-remit`,
-  `money2india` — trust_score todavía sin investigar, no es urgente porque el
-  motor de scoring los trata como neutral mientras tanto).
-- **`fx_rates`:** 753 filas, 248 corredores distintos. 100% de las 650
+  y los 3 bancos locales agregados en las últimas dos rondas (`bdo-remit`,
+  `money2india`, `ubl-tezraftaar` — trust_score todavía sin investigar, no es
+  urgente porque el motor de scoring los trata como neutral mientras tanto).
+- **`fx_rates`:** 754 filas, 248 corredores distintos. 100% de las 650
   combinaciones (proveedor, corredor) del catálogo maestro original
   (`docs/handoff/catalogo_mundial_final.csv`, 684 filas / World Bank RPW
   Q3 2025) están cargadas. Cero proveedor Tipo A activo sin datos.
@@ -234,10 +234,38 @@ Resultado (traído de vuelta y cargado a Supabase en esta sesión):
 **Mecanismo que funcionó:** cuando este sandbox bloquea el acceso a una
 fuente, el patrón es delegar esa investigación puntual a Claude.ai o Claude
 in Chrome (sin la restricción de red), traer el resultado de vuelta a esta
-conversación, y cargarlo acá con la misma disciplina de fuente citada. Repetir
-para BBVA/Banorte (falta el margen) y para más bancos locales en otros
-corredores de alto volumen (ej. un banco filipino/indio/mexicano en otros
-países emisores, o el equivalente en Nigeria/Kenia) cuando haya tiempo.
+conversación, y cargarlo acá con la misma disciplina de fuente citada.
+
+### Ronda 2 (ago 2026) — resultado: 1 de 5 candidatos calificó
+
+- **UBL Tezraftaar Cash (UBL, Pakistán) — cargado.** Proveedor nuevo
+  (`ubl-tezraftaar`, Tipo A), corredor UAE→Pakistán únicamente: fee $0, margen
+  0.54% confirmado vía World Bank RPW (dato ago 2025). Marca propia de United
+  Bank Limited, no un MTO blanqueado. UBL UK NetRemit y HBL UK también son
+  productos propios reales, pero solo se confirmó el fee, no el margen —
+  quedan sin cargar por la misma razón de siempre.
+- **Banorte Link / BBVA México — sigue sin margen confirmado.** Hallazgo
+  nuevo importante: Banorte Link **no es 100% producto propio** — la propia
+  página de Banorte dice que "está operado por Servicio UniTeller, Inc."
+  (un MTO ya existente). Si en algún momento se consigue el margen, cargarlo
+  como variante de UniTeller, no como banco independiente.
+- **Nigeria (Access Bank/GTBank) — descartado por ahora.** Access Bank
+  AccessAfrica es marca propia pero solo para clientes existentes del banco
+  (no público general) y sin margen publicado. GTBank solo tiene tarifa
+  SWIFT genérica, no un producto de remesas con marca propia.
+- **Kenia (Equity Bank/KCB) — descartado.** Equity Direct figuraba en World
+  Bank RPW en 2016 pero ya no aparece en el corredor UK→Kenia vigente
+  (ago 2025) — probablemente discontinuado. KCB Diaspora Banking es una
+  cuenta bancaria para diáspora, no un producto de remesas con fee/margen
+  propio.
+- **Ghana (GCB/Ecobank) — descartado.** GCB Bank no tiene remesas propias —
+  su método es asociarse con Ria como payout partner (ya cubierto por Ria).
+  Ecobank Rapid Transfer es real pero solo hay datos para corredores
+  intra-África, ninguno para EEUU/UK→Ghana.
+
+Próximos candidatos para una ronda 3, si se retoma: otros corredores de UBL/HBL
+(EEUU→Pakistán en vez de UAE), o bancos en corredores todavía no intentados
+(Vietnam, Bangladesh, Marruecos).
 
 ## 8. Dónde está cada cosa
 
