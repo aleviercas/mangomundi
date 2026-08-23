@@ -1336,7 +1336,18 @@ export function ComparatorSection({
                     ariaLabel={t("comparator.field.sourceCurrency")}
                     triggerClassName="h-8 w-auto text-xs"
                   />
-                  <ArrowRight className="h-3.5 w-3.5 shrink-0 text-slate-500" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const prevFrom = from;
+                      setFrom(to);
+                      setTo(prevFrom);
+                    }}
+                    aria-label={t("comparator.swap")}
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-[#ff8577] focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40"
+                  >
+                    <ArrowLeftRight className="h-3.5 w-3.5" />
+                  </button>
                   <CurrencyCombobox
                     value={to}
                     onChange={(v) => {
