@@ -81,7 +81,7 @@ type AmountMode = "send" | "receive";
 
 /** White field styling for inputs/triggers inside the dark comparator card. */
 const WHITE_FIELD =
-  "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40";
+  "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-brand-cta/40";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
 /** Monito-style "how does the recipient get paid" filter — single-select
@@ -1154,7 +1154,7 @@ export function ComparatorSection({
                 happen BEFORE the search runs, not as a post-results filter
                 — so it stays here. */}
             <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-1.5 sm:px-5">
-              <div className="flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+              <div className="flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-cta">
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
               </div>
@@ -1208,7 +1208,7 @@ export function ComparatorSection({
                   <FieldLight label={t("comparator.field.amount")}>
                     {/* Unified pill: amount + country read as one control,
                         split by a hairline divider instead of two boxes. */}
-                    <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-transparent bg-white shadow-sm transition-colors hover:bg-slate-50 focus-within:ring-2 focus-within:ring-[#ff6b5b]/40">
+                    <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-transparent bg-white shadow-sm transition-colors hover:bg-slate-50 focus-within:ring-2 focus-within:ring-brand-cta/40">
                       <input
                         type="number"
                         inputMode="decimal"
@@ -1244,7 +1244,7 @@ export function ComparatorSection({
                       handleReceivingCountryChange(prevSending);
                     }}
                     aria-label={t("comparator.swap")}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#ff6b5b] transition hover:bg-white/10 hover:text-[#ff8577] focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-brand-cta transition hover:bg-white/10 hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                   >
                     <ArrowLeftRight className="h-4 w-4 rotate-90 @2xl:rotate-0" />
                   </button>
@@ -1263,7 +1263,7 @@ export function ComparatorSection({
                       ariaLabel={t("comparator.field.targetCurrency")}
                       triggerClassName={
                         sameCorridorBlocked
-                          ? `${WHITE_FIELD} ring-2 ring-[#ff6b5b]/60`
+                          ? `${WHITE_FIELD} ring-2 ring-brand-cta/60`
                           : WHITE_FIELD
                       }
                     />
@@ -1286,7 +1286,7 @@ export function ComparatorSection({
                       sameCorridorBlocked ||
                       amount <= 0
                     }
-                    className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-[168px]"
+                    className="btn-cta h-11 w-full rounded-md px-6 text-sm font-semibold @2xl:w-[168px]"
                   >
                     {compareMut.isPending ? (
                       <>
@@ -1344,7 +1344,7 @@ export function ComparatorSection({
                       setTo(prevFrom);
                     }}
                     aria-label={t("comparator.swap")}
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-[#ff8577] focus:outline-none focus:ring-2 focus:ring-[#ff6b5b]/40"
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                   >
                     <ArrowLeftRight className="h-3.5 w-3.5" />
                   </button>
@@ -1462,7 +1462,7 @@ export function ComparatorSection({
         {result && (
           <div className="mt-5 min-w-0 scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-brand-cta">
                 {t("comparator.results")}
               </h3>
             </div>
@@ -1504,7 +1504,7 @@ export function ComparatorSection({
                       aria-pressed={sortBy === key}
                       className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                         sortBy === key
-                          ? "border-transparent bg-[#ff6b5b] text-white"
+                          ? "border-transparent bg-brand-cta text-brand-cta-foreground"
                           : "border-input bg-card text-foreground hover:border-foreground/30"
                       }`}
                     >

@@ -12,7 +12,7 @@ export function AboutManifestoSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-cta">
               {t("home.about.eyebrow")}
             </p>
             <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">

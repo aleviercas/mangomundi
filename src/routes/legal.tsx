@@ -104,7 +104,7 @@ function LegalPage() {
             <div className="mt-8 space-y-6">
               {s.body.map((b) => (
                 <div key={b.h}>
-                  <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+                  <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-brand-cta">
                     {b.h}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-slate-700">{b.p}</p>

@@ -50,7 +50,7 @@ function BlogIndexPage() {
   return (
     <div className="min-h-screen bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+        <p className="text-xs font-bold uppercase tracking-[0.18em] text-brand-cta">
           {t("home.blog.eyebrow")}
         </p>
         <h1 className="mt-3 font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
@@ -86,7 +86,7 @@ function BlogIndexPage() {
                 />
               )}
               <div className="flex flex-1 flex-col p-6">
-                <h2 className="font-heading text-lg font-bold text-foreground group-hover:text-[#ff6b5b]">
+                <h2 className="font-heading text-lg font-bold text-foreground group-hover:text-brand-cta">
                   {post.title}
                 </h2>
                 {post.excerpt && (
@@ -94,7 +94,7 @@ function BlogIndexPage() {
                     {post.excerpt}
                   </p>
                 )}
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-[#ff6b5b]">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-cta">
                   {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
                 </span>
               </div>

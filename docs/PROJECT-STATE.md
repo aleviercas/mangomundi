@@ -170,7 +170,16 @@ distinta ya no cuenta como corredor inválido.
 
 Orden de prioridad acordado con Alejandro:
 
-1. **Diseño premium** — no arrancado todavía.
+1. **Diseño premium** — **en curso** (ago 2026). Plan de 5 pasos: (1)
+   fundamentos del sistema de diseño, (2) comparador, (3) resto del sitio,
+   (4) arquitectura SEO, (5) seguridad. Paso 1 completo: los 14 colores
+   hardcodeados (`#ff6b5b`/`#ff5a48`/`#ff8577`) migrados al token
+   `--color-brand-cta` ya existente (resultaba ser el mismo color, solo sin
+   centralizar — 3 tonos de hover ligeramente distintos por no compartir
+   fuente). Ver `docs/design-system.md` para la referencia completa de
+   tokens/utilidades. Hallazgo relevante para el paso 5: **cero headers de
+   seguridad configurados** (`vercel.json` no tiene CSP/HSTS/X-Frame-Options/
+   etc.) — pendiente.
 2. **Precisión de producto/datos** (este documento) — runbook de 7 pasos
    ejecutado completo, flag `ENABLE_CORRIDOR_FILTERING` cargado y verificable
    en preview, pendiente activarlo en producción tras verificación manual.
