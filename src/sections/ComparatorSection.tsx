@@ -332,6 +332,16 @@ export function ComparatorSection({
   // account into EUR — only the broad-coverage brokers apply here.
   const [fromCurrencyOverride, setFromCurrencyOverride] = useState(false);
   const [toCurrencyOverride, setToCurrencyOverride] = useState(false);
+  // Same country is only a dead-end when currency is left at the local
+  // default too (comparing GBP->GBP within the UK is meaningless). Once the
+  // override diverges the currency (e.g. UK->UK but GBP->EUR, a multi-
+  // currency account paying itself in a different currency), same-country is
+  // the whole point of the feature, so it must NOT trip the "same corridor"
+  // guard below.
+  const currencyOverridden =
+    from.toUpperCase() !== localCurrency(sendingCountry) ||
+    (receivingCountry !== "" && to.toUpperCase() !== localCurrency(receivingCountry));
+  const sameCorridorBlocked = sendingCountry === receivingCountry && !currencyOverridden;
   // Segment used to be a manual tab the user toggled. Now it's derived
   // automatically from the amount — same threshold already used for the
   // business-desk upsell banner (B2B_UPSELL_MIN_AMOUNT), so the whole
@@ -643,7 +653,7 @@ export function ComparatorSection({
   useEffect(() => {
     if (!initialQuery?.autoRun || didAutoRunRef.current) return;
     didAutoRunRef.current = true;
-    if (amount <= 0 || !receivingCountry || sendingCountry === receivingCountry) return;
+    if (amount <= 0 || !receivingCountry || sameCorridorBlocked) return;
     // The URL-sync effect's 300ms timer clears result/chat unless this one-shot
     // flag is set — covers sub-300ms responses landing before the timer fires.
     skipNextSyncClearRef.current = true;
@@ -903,7 +913,7 @@ export function ComparatorSection({
   // stale-result hygiene remains.)
   useEffect(() => {
     setValidationError(null);
-    if (amount <= 0 || !receivingCountry || sendingCountry === receivingCountry) {
+    if (amount <= 0 || !receivingCountry || sameCorridorBlocked) {
       skipNextSyncClearRef.current = false; // don't let a stale skip leak
       return;
     }
@@ -919,7 +929,7 @@ export function ComparatorSection({
       }
     }, 300);
     return () => clearTimeout(handle);
-  }, [amount, from, to, segment, sendingCountry, receivingCountry]);
+  }, [amount, from, to, segment, sendingCountry, receivingCountry, sameCorridorBlocked]);
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -1175,7 +1185,7 @@ export function ComparatorSection({
               the viewport: 3/4 columns when the card is full-width (no results
               yet), 2 columns once it shares the row with the metrics panel. */}
             <div className="@container space-y-2 p-2.5 sm:p-3.5">
-              {sendingCountry === receivingCountry && receivingCountry && (
+              {sameCorridorBlocked && receivingCountry && (
                 <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
                   {t("search.sameCountry")}
                 </div>
@@ -1252,7 +1262,7 @@ export function ComparatorSection({
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.targetCurrency")}
                       triggerClassName={
-                        sendingCountry === receivingCountry
+                        sameCorridorBlocked
                           ? `${WHITE_FIELD} ring-2 ring-[#ff6b5b]/60`
                           : WHITE_FIELD
                       }
@@ -1263,7 +1273,7 @@ export function ComparatorSection({
                 <div className="flex flex-col justify-end">
                   <Button
                     onClick={() => {
-                      if (!receivingCountry || sendingCountry === receivingCountry || amount <= 0) {
+                      if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
                         setValidationError(t("fx.validation"));
                         return;
                       }
@@ -1273,7 +1283,7 @@ export function ComparatorSection({
                     disabled={
                       compareMut.isPending ||
                       !receivingCountry ||
-                      sendingCountry === receivingCountry ||
+                      sameCorridorBlocked ||
                       amount <= 0
                     }
                     className="h-11 w-full rounded-md bg-[#ff6b5b] px-6 text-sm font-semibold text-white hover:bg-[#ff5a48] @2xl:w-[168px]"
