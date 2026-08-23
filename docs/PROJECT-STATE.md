@@ -263,9 +263,33 @@ conversación, y cargarlo acá con la misma disciplina de fuente citada.
   Ecobank Rapid Transfer es real pero solo hay datos para corredores
   intra-África, ninguno para EEUU/UK→Ghana.
 
-Próximos candidatos para una ronda 3, si se retoma: otros corredores de UBL/HBL
-(EEUU→Pakistán en vez de UAE), o bancos en corredores todavía no intentados
-(Vietnam, Bangladesh, Marruecos).
+### Ronda 3 (ago 2026) — resultado: 0 de 5 candidatos calificó
+
+- **UBL/HBL EEUU→Pakistán:** descartado — ninguno de los dos tiene sucursal
+  propia en EEUU (solo UK/UAE/Canadá/Europa/Arabia Saudita), y ninguno
+  figura en el World Bank RPW para ese corredor.
+- **Vietcombank Remittance (Vietnam):** el más prometedor de la ronda — es
+  real, subsidiaria 100% propia de Vietcombank con oficina en EEUU. Pero
+  **no encontrado** ningún comparador que haya medido su fee+margen —
+  descartado por falta de dato, no por ilegítimo. Candidato a re-intentar
+  si aparece una fuente nueva.
+- **BRAC Bank / Islami Bank (Bangladesh):** son puntos de pago de MTOs que
+  ya tenemos (Ria, TapTap Send, Western Union), no productos propios.
+- **Banque Misr / NBE (Egipto):** ninguno figura en World Bank RPW — solo
+  transferencia SWIFT genérica, sin marca de remesas propia.
+- **Bancolombia:** sin comisión directa pero sin margen publicado ni medido
+  por ningún comparador — es recepción de giro SWIFT estándar, no un
+  producto de remesas con marca propia.
+
+**Balance de las 3 rondas: 1 de 15 candidatos calificó** (UBL Tezraftaar
+Cash, UAE→Pakistán). El patrón es consistente y ya está claro: la gran
+mayoría de bancos locales grandes son puntos de pago de MTOs existentes o
+solo ofrecen SWIFT genérico sin marca de remesas propia ni margen publicado
+— no hay muchos "UBL Tezraftaar" más por encontrar con este método. **Antes
+de una ronda 4, vale la pena repensar el enfoque** (ej. apuntar directo a
+bancos que SÍ se sabe que tienen brazo de remesas con marca — como Chaabi
+Cash/Banque Populaire para Marruecos, ya cargado — en vez de ir país por
+país a ciegas) en lugar de seguir con la misma búsqueda genérica.
 
 ## 8. Dónde está cada cosa
 
