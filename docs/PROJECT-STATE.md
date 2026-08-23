@@ -179,10 +179,13 @@ Orden de prioridad acordado con Alejandro:
    volumen mundial verificados y cargados (ver `git log` de la rama
    `claude/mangomundi-sprint-corridor-ui` para el detalle commit por commit).
 3. **SEO / crecimiento orgánico:**
-   - Interconexión del blog ("artículos relacionados") — diseñada
-     (`docs/handoff/blog-articulos-relacionados.md`, taxonomía `topic_cluster`
-     nivel "pillar + cluster"), implementación pendiente de confirmar si ya
-     se aplicó la migración/UPDATE en Supabase.
+   - Interconexión del blog ("artículos relacionados") — **implementada**
+     (sprint ago 2026): columna `blog_posts.topic_cluster` (8 clusters, los
+     23 temas × 20 idiomas clasificados, 0 nulls), server fn
+     `listRelatedBlogPosts` (mismo audience+cluster primero, completa con
+     mismo audience si el cluster es chico) y `RelatedArticlesSection` en
+     `blog_.$slug.tsx`, después de `SponsoredProvidersSection`. Diseño
+     completo en `docs/handoff/blog-articulos-relacionados.md`.
    - Traducción del blog a 20 idiomas — en progreso, ver `ale.md` sección 9
      para el estado exacto (última cifra conocida: 29/400 filas).
    - Investigar por qué algunos posts no indexan en Google Search Console —

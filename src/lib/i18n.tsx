@@ -2150,6 +2150,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "blog.audience.business": "Business",
     "blog.audience.retail": "Retail",
     "blog.audience.both": "Both",
+    "blog.related.heading": "Related articles",
 
     // Pricing page
     "pricing.eyebrow": "Free for retail. Paid for businesses that need automation.",
@@ -2338,6 +2339,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "blog.audience.business": "Empresas",
     "blog.audience.retail": "Retail",
     "blog.audience.both": "Ambos",
+    "blog.related.heading": "Artículos relacionados",
 
     "pricing.eyebrow": "Gratis para retail. De pago para empresas que necesitan automatización.",
     "pricing.title.a": "Cómo ganamos",

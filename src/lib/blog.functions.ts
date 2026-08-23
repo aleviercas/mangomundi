@@ -15,6 +15,13 @@ export interface BlogListItem {
 
 export interface BlogPost extends BlogListItem {
   content_md: string | null;
+  topic_cluster: string | null;
+}
+
+export interface RelatedBlogPost {
+  slug: string;
+  title: string;
+  excerpt: string | null;
 }
 
 // Blog locale now covers the same 20 languages as the rest of the site
@@ -75,7 +82,7 @@ export const getBlogPost = createServerFn({ method: "GET" })
     const base = supabaseAdmin
       .from("blog_posts")
       .select(
-        "slug, title, excerpt, cover_url, audience, vertical, published_at, locale, content_md",
+        "slug, title, excerpt, cover_url, audience, vertical, published_at, locale, content_md, topic_cluster",
       )
       .eq("slug", data.slug)
       .eq("published", true);
@@ -93,7 +100,7 @@ export const getBlogPost = createServerFn({ method: "GET" })
     const { data: fallback, error: e2 } = await supabaseAdmin
       .from("blog_posts")
       .select(
-        "slug, title, excerpt, cover_url, audience, vertical, published_at, locale, content_md",
+        "slug, title, excerpt, cover_url, audience, vertical, published_at, locale, content_md, topic_cluster",
       )
       .eq("slug", data.slug)
       .eq("published", true)
@@ -152,4 +159,66 @@ export const listSponsoredProviders = createServerFn({ method: "GET" })
       throw new Error("An unexpected error occurred. Please try again.");
     }
     return (rows ?? []) as SponsoredProvider[];
+  });
+
+/** Powers the "Related articles" block at the end of every post — pillar +
+ *  cluster content, the standard SEO pattern for interlinking a blog without
+ *  hand-curating links per article (see docs/handoff/blog-articulos-relacionados.md
+ *  for the full design rationale). Same audience + same topic_cluster first
+ *  (most relevant), topped up with same-audience posts from other clusters
+ *  when a small cluster doesn't have 4 members on its own — always returns
+ *  up to 4, never fewer than the site actually has for that audience/locale. */
+export const listRelatedBlogPosts = createServerFn({ method: "GET" })
+  .inputValidator(
+    (d: { slug: string; locale?: string; audience: string; topicCluster: string | null }) =>
+      z
+        .object({
+          slug: z.string().min(1).max(200),
+          locale: LocaleSchema,
+          audience: z.string(),
+          topicCluster: z.string().nullable(),
+        })
+        .parse({ ...d, locale: d.locale ?? "en" }),
+  )
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const LIMIT = 4;
+
+    let sameCluster: RelatedBlogPost[] = [];
+    if (data.topicCluster) {
+      const { data: rows, error } = await supabaseAdmin
+        .from("blog_posts")
+        .select("slug, title, excerpt")
+        .eq("published", true)
+        .eq("locale", data.locale)
+        .eq("audience", data.audience)
+        .eq("topic_cluster", data.topicCluster)
+        .neq("slug", data.slug)
+        .order("published_at", { ascending: false })
+        .limit(LIMIT);
+      if (error) {
+        console.error("[server-fn]", error);
+        throw new Error("An unexpected error occurred. Please try again.");
+      }
+      sameCluster = rows ?? [];
+    }
+
+    const missing = LIMIT - sameCluster.length;
+    if (missing <= 0) return sameCluster;
+
+    const excludeSlugs = [data.slug, ...sameCluster.map((p) => p.slug)];
+    const { data: filler, error: fillerError } = await supabaseAdmin
+      .from("blog_posts")
+      .select("slug, title, excerpt")
+      .eq("published", true)
+      .eq("locale", data.locale)
+      .eq("audience", data.audience)
+      .not("slug", "in", `(${excludeSlugs.join(",")})`)
+      .order("published_at", { ascending: false })
+      .limit(missing);
+    if (fillerError) {
+      console.error("[server-fn]", fillerError);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+    return [...sameCluster, ...(filler ?? [])] as RelatedBlogPost[];
   });

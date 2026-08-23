@@ -5,7 +5,12 @@ import { z } from "zod";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowRight, ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
-import { getBlogPost, listSponsoredProviders, toBlogLocale } from "@/lib/blog.functions";
+import {
+  getBlogPost,
+  listRelatedBlogPosts,
+  listSponsoredProviders,
+  toBlogLocale,
+} from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -27,6 +32,18 @@ const sponsoredQuery = (audience: string) =>
   queryOptions({
     queryKey: ["blog", "sponsored-providers", audience],
     queryFn: () => listSponsoredProviders({ data: { audience } }),
+    staleTime: 5 * 60_000,
+  });
+
+const relatedQuery = (
+  slug: string,
+  locale: string,
+  audience: string,
+  topicCluster: string | null,
+) =>
+  queryOptions({
+    queryKey: ["blog", "related", slug, locale, audience, topicCluster],
+    queryFn: () => listRelatedBlogPosts({ data: { slug, locale, audience, topicCluster } }),
     staleTime: 5 * 60_000,
   });
 
@@ -279,6 +296,46 @@ function SponsoredProvidersSection({ audience }: { audience: string }) {
   );
 }
 
+function RelatedArticlesSection({
+  slug,
+  locale,
+  audience,
+  topicCluster,
+}: {
+  slug: string;
+  locale: string;
+  audience: string;
+  topicCluster: string | null;
+}) {
+  const { t } = useI18n();
+  const { data: posts } = useQuery(relatedQuery(slug, locale, audience, topicCluster));
+
+  if (!posts || posts.length === 0) return null;
+
+  return (
+    <div className="mt-10">
+      <h2 className="font-heading text-lg font-bold text-foreground">
+        {t("blog.related.heading")}
+      </h2>
+      <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {posts.map((p) => (
+          <Link
+            key={p.slug}
+            to="/blog/$slug"
+            params={{ slug: p.slug }}
+            className="flex flex-col rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/50"
+          >
+            <span className="text-sm font-semibold text-foreground line-clamp-2">{p.title}</span>
+            {p.excerpt && (
+              <span className="mt-1.5 text-xs text-muted-foreground line-clamp-2">{p.excerpt}</span>
+            )}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function BlogPostPage() {
   const { slug } = Route.useParams();
   const { lang, t } = useI18n();
@@ -383,6 +440,12 @@ function BlogPostPage() {
         </div>
 
         <SponsoredProvidersSection audience={post.audience} />
+        <RelatedArticlesSection
+          slug={post.slug}
+          locale={post.locale}
+          audience={post.audience}
+          topicCluster={post.topic_cluster}
+        />
       </div>
     </article>
   );

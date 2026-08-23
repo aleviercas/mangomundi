@@ -57,6 +57,7 @@ export type Database = {
           published_at: string | null;
           slug: string;
           title: string;
+          topic_cluster: string | null;
           updated_at: string;
           vertical: Database["public"]["Enums"]["provider_vertical"] | null;
         };
@@ -72,6 +73,7 @@ export type Database = {
           published_at?: string | null;
           slug: string;
           title: string;
+          topic_cluster?: string | null;
           updated_at?: string;
           vertical?: Database["public"]["Enums"]["provider_vertical"] | null;
         };
@@ -87,6 +89,7 @@ export type Database = {
           published_at?: string | null;
           slug?: string;
           title?: string;
+          topic_cluster?: string | null;
           updated_at?: string;
           vertical?: Database["public"]["Enums"]["provider_vertical"] | null;
         };
