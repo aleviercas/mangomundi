@@ -1271,7 +1271,8 @@ export function ComparatorSection({
                 </div>
 
                 <div className="flex flex-col justify-end">
-                  <Button
+                  <button
+                    type="button"
                     onClick={() => {
                       if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
                         setValidationError(t("fx.validation"));
@@ -1286,7 +1287,7 @@ export function ComparatorSection({
                       sameCorridorBlocked ||
                       amount <= 0
                     }
-                    className="btn-cta h-11 w-full rounded-md px-6 text-sm font-semibold @2xl:w-[168px]"
+                    className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring @2xl:w-[168px]"
                   >
                     {compareMut.isPending ? (
                       <>
@@ -1299,7 +1300,7 @@ export function ComparatorSection({
                         <ArrowRight className="h-4 w-4 shrink-0" />
                       </>
                     )}
-                  </Button>
+                  </button>
                 </div>
               </div>
 
