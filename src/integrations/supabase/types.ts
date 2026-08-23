@@ -178,6 +178,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      corridor_notes: {
+        Row: {
+          created_at: string;
+          id: string;
+          note: string;
+          reason: string;
+          receiving_country: string;
+          sending_country: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          note: string;
+          reason: string;
+          receiving_country: string;
+          sending_country: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          note?: string;
+          reason?: string;
+          receiving_country?: string;
+          sending_country?: string;
+        };
+        Relationships: [];
+      };
       enterprise_leads: {
         Row: {
           amount: number | null;
