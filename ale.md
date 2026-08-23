@@ -95,6 +95,29 @@ como **LIVE** está deployado y verificado en producción (mangomundi.com).
   efímero `AQ.` (no una `AIza…`). Con ~US$1 en OpenRouter o una `AIza…` real, el
   backfill termina todo en ~30 min.
 
+## 10. Corredores, proveedores y trust data (sprint ago 2026)
+
+- **Comparador rediseñado country-first** (antes currency-first — una moneda
+  como EUR mapeaba a un único país hardcodeado, incompatible con datos reales
+  por corredor). Agregado un opt-in para cuentas multi-moneda (enviar/recibir
+  en una moneda distinta a la del país, ej. cuenta Wise/Revolut).
+- **`fx_rates` cargada y verificada contra el catálogo maestro original**
+  (684 filas / World Bank RPW) — 0 combinaciones (proveedor, corredor)
+  faltantes. Más una pasada adicional de ~50 corredores globales de alto
+  volumen investigados y cargados (Polonia→Ucrania, Italia→Filipinas/
+  Bangladesh, Malasia→Bangladesh, etc.), con los pocos casos que quedan sin
+  datos (sanciones, corredores dominados por hawala) documentados en la
+  tabla `corridor_notes` en vez de quedar en silencio.
+- **`trust_score` completado para el catálogo entero** — Fase 1 (documentada
+  en `docs/multi-criteria-ranking/`) cubrió los 27 proveedores no-bancarios;
+  se completaron ahora los 4 que quedaban (HSBC, Chase, Santander, CAB
+  Payments — este último a propósito sin score, es infraestructura B2B).
+- Flag `ENABLE_CORRIDOR_FILTERING` (default off) listo para activar en
+  producción tras verificación manual en preview.
+- **Ver `docs/PROJECT-STATE.md`** para el estado completo y actualizado del
+  proyecto (modelo de datos, prioridades de sprint, afiliados) — es el punto
+  de entrada para cualquier sesión de Claude nueva que trabaje en este repo.
+
 ---
 
 ## Infra / notas

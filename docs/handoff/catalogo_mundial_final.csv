@@ -1,0 +1,685 @@
+provider,type,corridor_from,corridor_to,commission_amount,commission_currency,fx_margin_percent,total_cost_percent,speed_display,speed_hours_approx,affiliate_status,data_source
+Walmart2World,Ria,US,VN,0,USD,0,0,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,VN,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,US,VN,0.9,USD,1.65,2.1,3-5 días,72,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,US,VN,5.99,USD,0,3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Pangea,MTO,US,VN,4.95,USD,0.63,3.11,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,US,VN,3.99,USD,2.31,4.31,3-5 días,72,Sin confirmar,World Bank RPW Q3 2025
+Xoom (PayPal),MTO,US,VN,8.88,USD,0,4.44,mismo día,12,Sin confirmar,World Bank RPW Q3 2025
+Walmart2World,Ria,US,NG,0,USD,-0.22,-0.22,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+WorldRemit,MTO,US,NG,0,USD,-0.49,-0.49,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,NG,0,USD,0.01,0.01,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,NG,0,USD,1.09,1.09,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,NG,1.99,USD,-0.17,0.73,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,US,NG,2.9,USD,0.76,2.26,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Sendwave,MTO,GB,NG,0,GBP,-0.12,-0.12,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Remitly,MTO,GB,NG,0,GBP,0.25,0.25,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,NG,0,GBP,0.28,0.28,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,NG,0,GBP,0.03,0.03,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Paysend,MTO,GB,NG,0,GBP,0.64,0.64,día siguiente,24,Sin confirmar,World Bank RPW Q3 2025
+CashMinute,MTO,GB,NG,0,GBP,1.01,1.01,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,GB,NG,1.99,GBP,0,1.66,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,GB,NG,0.99,GBP,2.18,3.01,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Emirates NBD,Banco,AE,IN,0,AED,0.77,0.77,3-5 días,96,No (banco),World Bank RPW Q3 2025
+DirectRemit (NBD),Banco,AE,IN,0,AED,1.11,1.11,2 días,48,No (banco),World Bank RPW Q3 2025
+Remitly,MTO,AE,IN,5,AED,0.36,1.04,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AE,IN,7.88,AED,0.52,1.59,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Lari,MTO,AE,IN,10.5,AED,0.2,1.63,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Al Ansari,MTO,AE,IN,10.5,AED,0.4,1.83,2 días,48,Confirmado NO,World Bank RPW Q3 2025
+MoneyGram,MTO,AE,IN,15.75,AED,0.34,2.48,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+GCC Exchange,MTO,AE,IN,15.75,AED,0.37,2.51,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wall St Exchange,MTO,AE,IN,17,AED,0.37,2.68,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Al Fardan Exchange,MTO,AE,IN,19.5,AED,0.56,3.21,mismo día,12,Sin confirmar,World Bank RPW Q3 2025
+Global66,MTO,ES,CO,0,EUR,0.33,0.33,mismo día,12,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,CO,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,ES,CO,0,EUR,1.41,1.41,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,ES,CO,2.9,EUR,0,1.61,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,ES,CO,1.9,EUR,1.56,2.62,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Small World,MTO,ES,CO,3.9,EUR,0.49,2.67,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,PH,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,CA,PH,0,CAD,1.63,1.63,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Kabayan Remit,MTO,CA,PH,5,CAD,0,1.85,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+WorldRemit,MTO,CA,PH,2.99,CAD,1.45,2.57,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,PH,4.99,CAD,0.98,2.83,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CA,PH,5,CAD,2.57,4.44,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,IN,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+OrbitRemit,MTO,AU,IN,4,AUD,1.06,2.44,siguiente día,24,Sin confirmar,World Bank RPW Q3 2025
+InstaReM (Nium),MTO,AU,IN,4,AUD,0.87,2.24,siguiente día,24,Sin confirmar,World Bank RPW Q3 2025
+Remitly,MTO,AU,IN,0,AUD,2.54,2.54,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,IN,0,AUD,3.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,AU,IN,5.99,AUD,1.74,3.82,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,FR,MA,1.63,EUR,0,0.91,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,FR,MA,1.99,EUR,1,2.11,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Small World,MTO,FR,MA,3.9,EUR,0,2.17,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,FR,MA,0.9,EUR,1.92,2.42,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Chaabi Cash,MTO,FR,MA,0,EUR,2.5,2.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,FR,MA,1.99,EUR,1.65,2.77,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,MX,0,USD,0,0,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,MX,0,USD,0,0,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,MX,0,USD,0,0,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,MX,1.99,USD,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,US,MX,0,USD,1.8,1.8,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,IN,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,IN,0,USD,2.5,2.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,IN,0,USD,1.45,1.45,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,IN,1.99,USD,3,3.99,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,US,IN,2.9,USD,0,1.45,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Xoom (PayPal),MTO,US,IN,4.99,USD,0.5,2.5,mismo día,12,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,PH,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,PH,0,USD,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,PH,0,USD,2,2,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,PH,3.99,USD,0.8,2.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Kabayan Remit,MTO,US,PH,4,USD,0,2,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,US,PH,1.99,USD,2.8,3.8,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,CN,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,CN,0,USD,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,CN,0,USD,1.2,1.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,CN,2.99,USD,3,4.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,IN,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,IN,0,GBP,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,IN,0,GBP,1.1,1.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,IN,0.99,GBP,2.2,3.02,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,GB,IN,1.99,GBP,0,1.66,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,IT,SN,0,EUR,0,0,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,IT,SN,1.9,EUR,1.5,2.56,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,IT,SN,2.9,EUR,0.5,2.11,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Small World,MTO,IT,SN,3.9,EUR,0,2.17,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,SA,EG,0,SAR,0.35,0.35,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SA,EG,15,SAR,1.2,3.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,SA,EG,10,SAR,0.9,2.25,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,SA,EG,12,SAR,0,1.6,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,GT,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,GT,0,USD,1,1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,GT,0,USD,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,GT,1.99,USD,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,SV,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,SV,0,USD,1.2,1.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,SV,0,USD,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,SV,1.99,USD,2.3,3.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,DO,2.5,USD,0,1.25,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,DO,0,USD,1.3,1.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,DO,0,USD,1.1,1.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,DO,1.99,USD,2.4,3.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,PE,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,PE,0,USD,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,PE,2.99,USD,0.9,2.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,PE,1.99,USD,2.6,3.6,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,EC,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,EC,0,USD,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,EC,2.99,USD,1,2.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,EC,1.99,USD,2.7,3.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,HN,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,HN,0,USD,1.4,1.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,HN,0,USD,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,HN,1.99,USD,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,NI,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,NI,0,USD,1.6,1.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,NI,0,USD,1.9,1.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,NI,1.99,USD,2.8,3.8,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,PK,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,PK,0,USD,1.9,1.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,PK,0,USD,1.4,1.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,PK,1.99,USD,3.1,4.1,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,BD,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,BD,0,USD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,BD,0,USD,1.6,1.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,BD,1.99,USD,3.3,4.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,KE,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,KE,0,USD,1.3,1.3,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,KE,0,USD,1.2,1.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,KE,1.99,USD,2.9,3.9,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,GH,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,GH,0,USD,1.5,1.5,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,GH,0,USD,1,1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,GH,1.99,USD,2.7,3.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,IN,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,CA,IN,0,CAD,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,IN,4.99,CAD,0.8,2.65,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CA,IN,5,CAD,3,4.85,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,PH,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AU,PH,0,AUD,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,AU,PH,2.99,AUD,1.5,2.53,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,PH,5,AUD,3.1,4.83,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,DO,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,ES,DO,0,EUR,1.6,1.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,ES,DO,2.9,EUR,0,1.61,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,ES,DO,1.9,EUR,1.8,2.86,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,MA,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,ES,MA,2.9,EUR,0.5,2.11,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,ES,MA,1.9,EUR,1.7,2.76,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Small World,MTO,ES,MA,3.9,EUR,0,2.17,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,FR,SN,1.63,EUR,0,0.91,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,FR,SN,1.99,EUR,1.2,2.31,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,FR,SN,0.9,EUR,1.6,2.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,IT,MA,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,IT,MA,2.9,EUR,0.6,2.21,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,IT,MA,1.9,EUR,1.9,2.96,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DE,TR,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,DE,TR,0,EUR,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DE,TR,1.9,EUR,2,3.06,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,DE,TR,0,EUR,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,EG,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,EG,1.99,USD,2.8,3.8,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,US,EG,0,USD,1.9,1.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,SA,IN,0,SAR,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,SA,IN,0,SAR,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,SA,IN,10,SAR,0.8,2.05,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SA,IN,12,SAR,1.5,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AE,PK,7,AED,0.5,1.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AE,PK,5,AED,1.6,2.28,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AE,PK,7.88,AED,0.9,1.97,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,AE,PK,10.5,AED,0.7,2.13,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,BR,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,BR,0,USD,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,BR,1.99,USD,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,US,BR,0,USD,1.7,1.7,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,CO,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,CO,0,USD,1.4,1.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,CO,0,USD,1.2,1.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,CO,1.99,USD,2.3,3.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,PK,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,PK,0,GBP,1.9,1.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,PK,0,GBP,1.2,1.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,PK,0.99,GBP,2.4,3.22,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,KE,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,KE,0,GBP,1.1,1.1,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,KE,0,GBP,0.9,0.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,KE,0.99,GBP,2.6,3.42,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,PH,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,PH,0,GBP,1.7,1.7,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,PH,0,GBP,1.4,1.4,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,PH,0.99,GBP,2.5,3.32,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AE,PH,7,AED,0.55,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AE,PH,5,AED,1.5,2.18,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,AE,PH,10.5,AED,0.65,2.08,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AE,PH,7.88,AED,1,2.07,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,PK,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,CA,PK,0,CAD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,PK,4.99,CAD,0.9,2.75,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CA,PK,5,CAD,3.2,5.05,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,JP,CN,400,JPY,0,1.4,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,JP,CN,0,JPY,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,JP,CN,500,JPY,0.8,2.35,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,JP,PH,400,JPY,0,1.4,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,JP,PH,0,JPY,2.5,2.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,JP,PH,500,JPY,3,4.05,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DE,RO,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,DE,RO,0,EUR,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DE,RO,1.9,EUR,2,3.06,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DE,PL,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DE,PL,1.9,EUR,1.8,2.86,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Small World,MTO,DE,PL,2.9,EUR,0.6,2.21,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,UA,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,UA,1.99,USD,2.6,3.6,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,US,UA,0,USD,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,IT,RO,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,IT,RO,1.9,EUR,1.8,2.86,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,IT,RO,2.9,EUR,0.5,2.11,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,BD,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,BD,0,GBP,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,BD,0,GBP,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,BD,0.99,GBP,3.1,4.92,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,BD,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,CA,BD,0,CAD,2.3,2.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,BD,4.99,CAD,1,2.85,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CA,BD,5,CAD,3.4,5.25,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,BD,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AU,BD,0,AUD,2.6,2.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,AU,BD,5.99,AUD,1.2,3.27,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,BD,5,AUD,3.5,5.17,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,TH,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,TH,0,USD,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,TH,0,USD,1.6,1.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,TH,1.99,USD,2.4,3.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,TH,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,TH,0,GBP,1.9,1.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,TH,0,GBP,1.7,1.7,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,TH,0.99,GBP,2.6,3.42,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,CN,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,CA,CN,0,CAD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,CN,4.99,CAD,1.3,3.16,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CA,CN,5,CAD,3.1,4.95,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Aspora,MTO,GB,IN,3,GBP,0,3,mismo día,12,Sin confirmar,Direct research Aug 2025 (get.aspora.com)
+Aspora,MTO,US,IN,2.99,USD,0,1.5,mismo día,12,Sin confirmar,Direct research Aug 2025 (get.aspora.com)
+Aspora,MTO,AE,IN,15,AED,0,2.04,mismo día,12,Sin confirmar,Direct research Aug 2025 (get.aspora.com)
+Hubpay,MTO,AE,PK,12,AED,0.5,2.13,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (app rate finder)
+Hubpay,MTO,AE,IN,12,AED,0.5,2.04,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (app rate finder)
+e& money,MTO,AE,IN,0,AED,1.5,1.5,<1 h,0.5,Sin confirmar,Prensa (Gulf News) Jul 2025
+e& money,MTO,AE,PK,0,AED,1.5,1.5,<1 h,0.5,Sin confirmar,Prensa (Gulf News) Jul 2025
+Payit,MTO,AE,IN,0,AED,2,2,<1 h,0.5,Sin confirmar,Calculadora propia FAB Aug 2025
+Payit,MTO,AE,PK,0,AED,2,2,<1 h,0.5,Sin confirmar,Calculadora propia FAB Aug 2025
+Chipper Cash,MTO,UG,KE,0,UGX,1.5,1.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (chipper.com)
+Chipper Cash,MTO,NG,KE,0,NGN,1.5,1.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (chipper.com)
+Chipper Cash,MTO,ZA,NG,0,ZAR,2,2,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (chipper.com)
+M-PESA (Safaricom),MTO,KE,TZ,0,KES,0,0,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (operador móvil)
+M-PESA (Safaricom),MTO,KE,UG,0,KES,0,0,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (operador móvil)
+Mukuru,MTO,ZA,ZW,25,ZAR,2.5,3.5,2 días,48,Sin confirmar,Direct research Aug 2025 (mukuru.com)
+Mukuru,MTO,ZA,MW,25,ZAR,2,3,2 días,48,Sin confirmar,Direct research Aug 2025 (mukuru.com)
+Mama Money,MTO,ZA,ZW,20,ZAR,2,3,siguiente día,24,Sin confirmar,Direct research Aug 2025 (mamamoney.co.za)
+Sendwave,MTO,US,GH,0,USD,1.5,1.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (sendwave.com)
+Sendwave,MTO,US,KE,0,USD,1.5,1.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (sendwave.com)
+Sendwave,MTO,GB,GH,0,GBP,1.5,1.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (sendwave.com)
+Strike,Crypto,US,NG,0,USD,0.2,0.2,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (strike.me)
+Strike,Crypto,US,MX,0,USD,0.2,0.2,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (strike.me)
+Strike,Crypto,US,SV,0,USD,0.2,0.2,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (strike.me)
+Bitso,Crypto,US,MX,0,USD,0.5,0.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (bitso.com)
+Bitso,Crypto,US,CO,0,USD,1,1,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (bitso.com)
+Binance Pay,Crypto,US,AR,0,USD,0.5,0.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (binance.com)
+Binance Pay,Crypto,ES,VE,0,EUR,0.8,0.8,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (binance.com)
+Global66,MTO,CL,PE,0,CLP,0.5,0.5,mismo día,12,Sin confirmar,Direct research Aug 2025 (global66.com)
+Global66,MTO,AR,CO,0,ARS,1,1,mismo día,12,Sin confirmar,Direct research Aug 2025 (global66.com)
+Global66,MTO,MX,CO,0,MXN,0.8,0.8,mismo día,12,Sin confirmar,Direct research Aug 2025 (global66.com)
+Wise,MTO,AR,ES,0,ARS,0.5,0.5,mismo día,12,Sí (activo),Direct research Aug 2025 (wise.com)
+Wise,MTO,CL,ES,0,CLP,0.5,0.5,mismo día,12,Sí (activo),Direct research Aug 2025 (wise.com)
+Western Union,MTO,AR,ES,500,ARS,3,3.5,2 días,48,Sin confirmar,Direct research Aug 2025 (westernunion.com)
+Western Union,MTO,CL,ES,2000,CLP,2.5,3,2 días,48,Sin confirmar,Direct research Aug 2025 (westernunion.com)
+Ria,MTO,AR,IT,500,ARS,2.5,3,2 días,48,Sin confirmar,Direct research Aug 2025 (riamoneytransfer.com)
+Ria,MTO,BR,PT,10,BRL,1.5,2,2 días,48,Sin confirmar,Direct research Aug 2025 (riamoneytransfer.com)
+Paysend,MTO,RU,GE,0,RUB,1,1,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (paysend.com)
+Paysend,MTO,KZ,UZ,0,KZT,1.5,1.5,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (paysend.com)
+Remitly,MTO,US,ET,0,USD,2,2,<1 h,0.5,Sí (activo),Direct research Aug 2025 (remitly.com)
+WorldRemit,MTO,US,ET,0,USD,1.8,1.8,2 días,48,Sí (activo),Direct research Aug 2025 (worldremit.com)
+Western Union,MTO,US,ET,1.99,USD,3,4,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (westernunion.com)
+HelloCash,MTO,ET,KE,0,ETB,0,0,<1 h,0.5,Sin confirmar,Direct research Aug 2025 (hello.cash)
+Wise,MTO,US,AR,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,AR,0,USD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,AR,1.99,USD,3,4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,US,AR,0,USD,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,GB,KE,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,KE,0,GBP,1.1,1.1,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,KE,0,GBP,0.9,0.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,KE,0.99,GBP,2.6,3.42,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,GH,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,CA,GH,0,CAD,1.6,1.6,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,GH,4.99,CAD,1.1,2.95,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,AU,PH,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AU,PH,0,AUD,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,AU,PH,2.99,AUD,1.5,2.53,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,PH,5,AUD,3.1,4.83,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,IL,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,IL,1.99,USD,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,US,IL,0,USD,1.7,1.7,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,GB,IL,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,IL,0.99,GBP,2.4,3.22,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,FR,SN,1.63,EUR,0,0.91,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,FR,SN,1.99,EUR,1.2,2.31,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,FR,SN,0.9,EUR,1.6,2.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DE,TR,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,DE,TR,0,EUR,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DE,TR,1.9,EUR,2,3.06,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,DE,TR,0,EUR,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,IT,PK,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,IT,PK,0,EUR,1.7,1.7,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,IT,PK,1.9,EUR,2.1,3.16,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,EC,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,ES,EC,0,EUR,1.6,1.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,ES,EC,2.9,EUR,0,1.61,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,ES,EC,1.9,EUR,1.8,2.86,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,CR,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,CR,0,USD,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,CR,0,USD,1.4,1.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,CR,1.99,USD,2.6,3.6,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,DO,2.5,USD,0,1.25,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,DO,0,USD,1.3,1.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,DO,0,USD,1.1,1.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,DO,1.99,USD,2.4,3.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,HN,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,HN,0,USD,1.4,1.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,HN,0,USD,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,HN,1.99,USD,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,JM,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,CA,JM,0,CAD,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,JM,4.99,CAD,1.3,3.16,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CA,JM,5,CAD,3,4.85,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,JM,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,JM,0,GBP,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,JM,0.99,GBP,2.4,3.22,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,BO,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,BO,0,USD,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,BO,1.99,USD,2.9,3.9,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,BO,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,ES,BO,2.9,EUR,0,1.61,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,PY,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,PY,0,USD,1.7,1.7,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,PY,1.99,USD,2.8,3.8,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,PY,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,ES,PY,2.9,EUR,0,1.61,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,TT,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,TT,0,USD,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,TT,1.99,USD,2.6,3.6,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,TT,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,TT,4.99,CAD,1.2,3.06,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,GY,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,GY,0,USD,1.6,1.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,GY,1.99,USD,2.7,3.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,GY,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,GY,4.99,CAD,1.2,3.06,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,SR,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,SR,1.99,USD,2.9,3.9,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NL,SR,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,GB,FJ,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,FJ,0.99,GBP,3,3.82,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,FJ,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,FJ,5,AUD,3.5,5.17,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NZ,FJ,3,NZD,0,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,TZ,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,TZ,0,USD,1.8,1.8,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,TZ,1.99,USD,3,4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,TZ,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,TZ,0,GBP,1.8,1.8,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,CA,TZ,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,RW,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,RW,0,USD,1.9,1.9,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,RW,1.99,USD,3.1,4.1,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,RW,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,RW,0,GBP,1.9,1.9,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,MW,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,MW,0,USD,2,2,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,GB,MW,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,MW,0,GBP,2,2,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,UG,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,UG,0,USD,1.6,1.6,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,GB,UG,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,UG,0,GBP,1.6,1.6,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,CA,UG,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,US,ZM,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,ZM,0,USD,2.1,2.1,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,GB,ZM,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,ZM,0,GBP,2.1,2.1,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,AE,EG,7,AED,0.55,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AE,EG,7.88,AED,1.2,2.27,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+MoneyGram,MTO,AE,EG,10.5,AED,0.8,2.23,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,SA,PK,0,SAR,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,SA,PK,0,SAR,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,SA,PK,10,SAR,0.9,2.15,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SA,PK,12,SAR,1.5,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,SA,BD,0,SAR,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,SA,BD,0,SAR,2.3,2.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,SA,BD,10,SAR,1,2.25,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SA,BD,12,SAR,1.8,3.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,KW,EG,0,KWD,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,KW,EG,1,KWD,1.5,2.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,KW,IN,0,KWD,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,KW,IN,0,KWD,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,KW,IN,0.5,KWD,0.8,1.6,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,QA,IN,0,QAR,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,QA,IN,0,QAR,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,QA,IN,5,QAR,0.7,1.45,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,QA,PK,0,QAR,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,QA,PK,0,QAR,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,QA,PK,5,QAR,0.8,1.55,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,OM,IN,0,OMR,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,OM,IN,0,OMR,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,OM,IN,0.5,OMR,0.8,1.55,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,BH,IN,0,BHD,0.45,0.45,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,BH,IN,0,BHD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,BH,IN,0.5,BHD,0.75,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,AE,BD,7,AED,0.55,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AE,BD,5,AED,2,2.68,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,AE,BD,10.5,AED,1,2.43,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AE,BD,7.88,AED,2.1,3.17,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,SE,PL,0,SEK,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,SE,PL,0,SEK,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SE,PL,20,SEK,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DK,PL,0,DKK,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DK,PL,15,DKK,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NO,PL,0,NOK,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,NO,PL,15,NOK,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CH,RS,0,CHF,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CH,RS,2,CHF,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CH,AL,0,CHF,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CH,AL,2,CHF,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,JP,PH,400,JPY,0,1.4,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,JP,PH,0,JPY,2.5,2.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,JP,PH,500,JPY,3,4.05,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,JP,CN,400,JPY,0,1.4,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,JP,CN,0,JPY,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,JP,CN,500,JPY,0.8,2.35,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,KR,PH,3000,KRW,0.5,1.7,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,KR,PH,0,KRW,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,KR,PH,3500,KRW,2.5,3.9,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,KR,CN,3000,KRW,0.5,1.7,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,KR,CN,0,KRW,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,KR,CN,3500,KRW,1.2,2.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,SG,IN,2.5,SGD,0.5,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,SG,IN,0,SGD,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,SG,IN,3,SGD,0.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,SG,PH,2.5,SGD,0.5,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,SG,PH,0,SGD,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SG,PH,3.5,SGD,2.6,4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,HK,PH,20,HKD,0.5,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,HK,PH,0,HKD,2.3,2.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,HK,PH,25,HKD,2.7,4.1,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,HK,IN,20,HKD,0.5,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,HK,IN,0,HKD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,HK,IN,25,HKD,0.9,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,AT,TR,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AT,TR,1.9,EUR,2,3.06,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,BE,MA,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,BE,MA,1.99,EUR,1,2.11,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,BE,MA,0.9,EUR,2,2.9,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,PT,CV,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,PT,CV,1.9,EUR,2.5,3.56,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,PT,CV,2.9,EUR,1,2.61,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,PT,AO,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,PT,AO,1.9,EUR,3,4.06,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,PT,MZ,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,PT,MZ,1.9,EUR,3.2,4.26,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,SN,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,ES,SN,2.9,EUR,1.2,2.81,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,ES,SN,1.9,EUR,1.9,2.96,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,IE,NG,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,IE,NG,0,EUR,1.3,1.3,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,IE,NG,1.9,EUR,2.2,3.26,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,IE,KE,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,IE,KE,0,EUR,1.2,1.2,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,IE,KE,1.9,EUR,2.8,3.86,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,CM,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,CM,0,GBP,1.8,1.8,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,CM,0.99,GBP,2.9,3.72,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,FR,CM,1.63,EUR,0,0.91,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,FR,CM,0,EUR,1.9,1.9,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,FR,CM,0.9,EUR,2.5,3.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,LR,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,LR,0,USD,2.5,2.5,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,LR,1.99,USD,3.5,4.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,SL,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,SL,0,USD,2.4,2.4,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,SL,1.99,USD,3.4,4.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,GM,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,US,GM,0,USD,2.2,2.2,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,GM,1.99,USD,3.2,4.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,GM,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,GM,0,GBP,2.3,2.3,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,IT,NG,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,IT,NG,0,EUR,1.5,1.5,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,IT,NG,1.9,EUR,2.8,3.86,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DE,CM,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DE,CM,1.9,EUR,2.6,3.66,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NL,GH,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,NL,GH,0,EUR,1.6,1.6,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,NL,GH,1.9,EUR,2.7,3.76,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NL,SN,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,NL,SN,1.99,EUR,1.3,2.41,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,NL,SN,0.9,EUR,1.8,2.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,JM,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,JM,0,USD,2.2,2.2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,JM,0,USD,1.4,1.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,JM,1.99,USD,2.6,3.6,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,HT,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,HT,0,USD,2.5,2.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,HT,1.99,USD,3.2,4.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,NG,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,CA,NG,0,CAD,1.5,1.5,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,NG,4.99,CAD,0.9,2.75,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,CA,NG,5,CAD,2.5,4.35,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,ZA,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,GB,ZA,0,GBP,1.7,1.7,2 días,48,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,GB,ZA,0,GBP,1.3,1.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,ZA,0.99,GBP,2.8,3.62,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,ZA,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,AU,ZA,2.99,AUD,1.8,2.83,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,ZA,5,AUD,3.2,4.89,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,BB,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,US,BB,0,USD,1.5,1.5,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,BB,1.99,USD,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CA,BB,2.74,CAD,0,1.02,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+MoneyGram,MTO,CA,BB,4.99,CAD,1.3,3.16,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,GB,BB,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,BB,0.99,GBP,2.4,3.22,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,BS,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,BS,1.99,USD,2.7,3.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,CW,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,CW,1.99,USD,2.9,3.9,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NL,CW,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Wise,MTO,PT,ST,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,PT,ST,1.9,EUR,2.5,3.56,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ES,VE,1.67,EUR,0,0.93,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,ES,VE,1.9,EUR,3.5,4.56,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,ES,VE,2.9,EUR,2,3.61,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,VE,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,VE,0,USD,3,3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,VE,1.99,USD,3.8,4.8,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,CO,ES,0,COP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,CO,ES,15000,COP,2,3.5,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,PE,ES,0,PEN,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,PE,ES,10,PEN,2.5,4,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AR,IT,0,ARS,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,AR,IT,500,ARS,2.5,3.5,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,BR,PT,0,BRL,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,BR,PT,15,BRL,2,3,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,PL,GB,0,PLN,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,PL,GB,5,PLN,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,RO,IT,0,RON,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Ria,MTO,RO,IT,10,RON,2,3,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,UA,PL,0,UAH,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,UA,PL,50,UAH,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,MY,ID,0,MYR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,MY,ID,0,MYR,1.8,1.8,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,MY,ID,5,MYR,2.2,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,SG,ID,2.5,SGD,0.5,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,SG,ID,0,SGD,1.9,1.9,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SG,ID,3.5,SGD,2.4,3.8,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,TH,KH,0,THB,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,TH,KH,50,THB,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,KR,VN,3000,KRW,0.5,1.7,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,KR,VN,0,KRW,2.4,2.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,KR,VN,3500,KRW,2.8,4.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,JP,VN,400,JPY,0,1.4,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,JP,VN,0,JPY,2.7,2.7,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,JP,VN,500,JPY,3.2,4.25,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,TW,PH,0,TWD,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,TW,PH,0,TWD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,TW,PH,20,TWD,2.6,4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,TW,VN,0,TWD,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,TW,VN,0,TWD,2.3,2.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,TW,VN,20,TWD,2.8,4.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,BN,PH,0,BND,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,BN,PH,3,BND,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,BN,MY,0,BND,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,BN,MY,3,BND,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,KH,TH,0,KHR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,KH,TH,2000,KHR,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,MM,TH,0,MMK,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,MM,TH,3000,MMK,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,LA,TH,0,LAK,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,LA,TH,20000,LAK,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,TJ,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,TJ,1.99,USD,2.8,3.8,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Ria,MTO,US,TJ,2.9,USD,0,1.45,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,RU,GE,0,RUB,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,RU,GE,150,RUB,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,RU,UZ,0,RUB,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,RU,UZ,150,RUB,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,KZ,RU,0,KZT,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,KZ,RU,500,KZT,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,KZ,UZ,0,KZT,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,KZ,UZ,500,KZT,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,UZ,RU,0,UZS,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,UZ,RU,5000,UZS,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AZ,TR,0,AZN,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AZ,TR,5,AZN,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AM,RU,0,AMD,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AM,RU,500,AMD,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GE,TR,0,GEL,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GE,TR,5,GEL,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,MD,RO,0,MDL,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,MD,RO,50,MDL,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,UA,IT,0,UAH,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,UA,IT,50,UAH,2.5,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,BY,PL,0,BYN,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,BY,PL,5,BYN,2,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,FJ,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,FJ,1.99,USD,3.2,4.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,TO,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,TO,1.99,USD,3.5,4.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,TO,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,TO,5,AUD,3.8,5.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NZ,TO,3,NZD,0,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,NZ,TO,5,NZD,3.5,5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,WS,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,WS,1.99,USD,3.3,4.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,WS,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,WS,5,AUD,3.6,5.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NZ,WS,3,NZD,0,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,NZ,WS,5,NZD,3.2,4.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,VU,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,VU,1.99,USD,3.4,4.4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,VU,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,VU,5,AUD,3.5,5.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,NZ,VU,3,NZD,0,1.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,NZ,VU,5,NZD,3,4.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,PG,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,PG,1.99,USD,3.5,4.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,PG,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,PG,5,AUD,3.6,5.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,SB,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,SB,1.99,USD,3.6,4.6,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,SB,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,SB,5,AUD,3.8,5.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ZA,ZW,0,ZAR,1,1,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Mukuru,MTO,ZA,ZW,25,ZAR,2.5,3.5,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,ZA,ZW,20,ZAR,3,4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ZA,MZ,0,ZAR,1.2,1.2,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Mukuru,MTO,ZA,MZ,25,ZAR,2.8,3.9,2 días,48,Sin confirmar,World Bank RPW Q3 2025
+Western Union,MTO,ZA,MZ,20,ZAR,3.2,4.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ZA,LS,0,ZAR,1,1,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,ZA,LS,15,ZAR,2.5,3.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ZA,SZ,0,ZAR,1,1,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,ZA,SZ,15,ZAR,2.5,3.2,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ZA,BW,0,ZAR,1.1,1.1,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,ZA,BW,20,ZAR,2.8,3.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,ZA,NA,0,ZAR,1,1,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,ZA,NA,20,ZAR,2.6,3.5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,SA,JO,0,SAR,0.55,0.55,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SA,JO,15,SAR,1.5,3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,SA,LB,0,SAR,0.6,0.6,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,SA,LB,15,SAR,1.8,3.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AE,LK,7,AED,0.65,1.6,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AE,LK,5,AED,1.8,2.48,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AE,LK,7.88,AED,1.2,2.27,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,LK,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,LK,0,USD,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,LK,1.99,USD,2.7,3.7,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,LK,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,LK,0,GBP,2,2,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,LK,0.99,GBP,2.5,3.32,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,US,NP,3.21,USD,0,1.61,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,US,NP,0,USD,2.3,2.3,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,US,NP,1.99,USD,3,4,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,NP,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,GB,NP,0,GBP,2.1,2.1,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,NP,0.99,GBP,2.9,3.72,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,AU,NP,2.45,AUD,0,0.85,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Remitly,MTO,AU,NP,0,AUD,2.4,2.4,<1 h,0.5,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,AU,NP,5,AUD,3.3,5,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,GB,MU,0,GBP,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,GB,MU,0.99,GBP,2.6,3.42,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,FR,MU,1.63,EUR,0,0.91,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,FR,MU,0.9,EUR,2.4,3.3,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DE,KE,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,DE,KE,0,EUR,1.2,1.2,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DE,KE,1.9,EUR,2.7,3.76,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
+Wise,MTO,DE,TZ,0,EUR,0.5,0.5,mismo día,12,Sí (activo),World Bank RPW Q3 2025
+WorldRemit,MTO,DE,TZ,0,EUR,1.7,1.7,2 días,48,Sí (activo),World Bank RPW Q3 2025
+Western Union,MTO,DE,TZ,1.9,EUR,2.9,3.96,<1 h,0.5,Sin confirmar,World Bank RPW Q3 2025
