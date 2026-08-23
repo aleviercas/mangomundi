@@ -84,10 +84,13 @@ tipo hawala que no están en el catálogo). Ver sección 6.
 
 ## 4. Estado de los datos (última auditoría: sprint ago 2026)
 
-- **`providers`:** 59 filas (40 Tipo A / 19 Tipo B), todas con `trust_score`
+- **`providers`:** 61 filas (42 Tipo A / 19 Tipo B), todas con `trust_score`
   poblado salvo CAB Payments (a propósito — es infraestructura B2B sin
-  reviews de consumidor, ver `docs/multi-criteria-ranking/scoring-data-findings.md`).
-- **`fx_rates`:** 745 filas, 248 corredores distintos. 100% de las 650
+  reviews de consumidor, ver `docs/multi-criteria-ranking/scoring-data-findings.md`)
+  y los 2 bancos locales agregados en la última pasada (`bdo-remit`,
+  `money2india` — trust_score todavía sin investigar, no es urgente porque el
+  motor de scoring los trata como neutral mientras tanto).
+- **`fx_rates`:** 753 filas, 248 corredores distintos. 100% de las 650
   combinaciones (proveedor, corredor) del catálogo maestro original
   (`docs/handoff/catalogo_mundial_final.csv`, 684 filas / World Bank RPW
   Q3 2025) están cargadas. Cero proveedor Tipo A activo sin datos.
@@ -193,34 +196,48 @@ de Trustpilot Data Solutions.
 Detalle completo, corredor por corredor, en
 `docs/handoff/tabla-maestra-proveedores-nuevos.md`.
 
-### Bancos locales por país — pista real, bloqueada por el sandbox (ago 2026)
+### Bancos locales por país (ago 2026)
 
-Se evaluó agregar bancos locales del país receptor como proveedores nuevos
-(ej. BDO en Filipinas, ICICI/Money2India en India, BBVA en México) para
-competir en los corredores de mayor volumen ya cargados. Primer hallazgo
-real: **BDO Remit (USA), Inc. es una subsidiaria propia de BDO, licenciada,
-con oficinas/agentes físicos en EEUU y número 1-800 propio** — no es solo un
-método de cobro de otro proveedor (a diferencia de Walmart2World, que sí
-resultó ser eso). Es un candidato genuino, del mismo tipo que Kabayan Remit
-(ya en el catálogo).
+El sandbox de esta sesión bloquea el fetch directo a la mayoría de dominios
+externos (`WebFetch` a `bdo.com.ph`, `cashminute.com`, etc. falla —
+`EGRESS_BLOCKED`), así que la investigación profunda de bancos locales se
+delegó a **Claude.ai / Claude in Chrome desde la máquina de Alejandro**, que
+no tiene esa restricción y pudo entrar directo a los PDFs/páginas reales.
+Resultado (traído de vuelta y cargado a Supabase en esta sesión):
 
-**Por qué no se cargó todavía:** el sandbox de esta sesión bloquea el fetch
-directo a la mayoría de dominios externos (`bdo.com.ph`, `cashminute.com`,
-etc. — solo `WebSearch` agregado funciona, no `WebFetch` a la página/PDF
-real). La búsqueda agregada solo devolvió un dato suelto y de una sola fuente
-(fee ~USD 10 por envío) y **ningún margen de cambio confiable** ("las tasas
-varían a diario, se publican en el mostrador" — no hay un spread% publicado
-y estable como sí lo tienen los MTOs ya cargados). Cargar esto con el spread
-adivinado violaría el principio de "nunca inventar datos" del proyecto.
+- **BDO Remit (USA), Inc. — cargado.** Proveedor nuevo (`bdo-remit`, Tipo A),
+  6 tramos reales de comisión por monto ($7/$8/$10/$15/$20/$25 según tramo,
+  PDF oficial de BDO vigente may 2026) + margen FX 0.8% (Monito, comparador
+  independiente — BDO no publica margen propio). Corredor US→PH únicamente
+  por ahora. Es una subsidiaria propia de BDO, licenciada, con oficinas
+  físicas en EEUU — no es un canal de cobro de otro proveedor (a diferencia
+  de Walmart2World, que sí resultó serlo).
+- **Money2India (ICICI Bank) — cargado, solo US→IN.** Proveedor nuevo
+  (`money2india`, Tipo A), 2 tramos ($4 fee bajo US$1,000, $0 en adelante),
+  margen 0.74% confirmado vía World Bank RPW (node 395869). **UK→IN y
+  UAE→IN quedaron sin cargar a propósito** — se confirmó el fee (£0 y AED 12
+  respectivamente) pero no un margen de cambio confiable atribuible
+  específicamente a Money2India (vs. transferencias bancarias genéricas de
+  ICICI), así que cargarlo hubiera significado adivinar el spread.
+- **Banorte Link / BBVA "Envíos de Dinero" (México) — no cargado.** Ambos
+  confirmados como productos reales (Banorte Link: app de remesas EEUU→México
+  lanzada oct/nov 2025, sin comisión hacia cuentas Banorte; BBVA: tarjeta para
+  receptores no bancarizados, $22.50 MXN/mes solo si no hay depósitos) pero
+  **ninguno publica margen de cambio**, y ese es justo el componente que más
+  varía entre proveedores — cargar fee=0/spread=0 sin confirmarlo hubiera sido
+  inventar el dato más importante. Queda pendiente hasta conseguir esa cifra.
+- **CashMinute afiliados — sigue sin resolver.** La página de afiliados
+  renderiza con JavaScript y no expuso contenido ni siquiera desde Claude.ai/
+  Chrome. Contacto público verificado: `contact@cashminute.com` — la vía que
+  queda es escribirles directo.
 
-**Siguiente paso concreto:** alguien con acceso de red normal (Alejandro, o
-una sesión de Claude sin esta restricción de sandbox) tiene que abrir
-directamente `bdo.com.ph/content/dam/bdounibank/en-ph/remittance/remittance-fees/bdo-remit-usa-remittance-fees.pdf`
-para sacar el fee schedule real por tramo de monto. Con eso, se puede cargar
-BDO Remit (USA) como proveedor Tipo A siguiendo el mismo patrón que el resto.
-Mismo enfoque aplicaría para otros bancos locales candidatos (ICICI/
-Money2India para India, BBVA/Banorte para México) — **no se investigó más
-bancos todavía**, se paró acá para no forzar datos débiles a producción.
+**Mecanismo que funcionó:** cuando este sandbox bloquea el acceso a una
+fuente, el patrón es delegar esa investigación puntual a Claude.ai o Claude
+in Chrome (sin la restricción de red), traer el resultado de vuelta a esta
+conversación, y cargarlo acá con la misma disciplina de fuente citada. Repetir
+para BBVA/Banorte (falta el margen) y para más bancos locales en otros
+corredores de alto volumen (ej. un banco filipino/indio/mexicano en otros
+países emisores, o el equivalente en Nigeria/Kenia) cuando haya tiempo.
 
 ## 8. Dónde está cada cosa
 
