@@ -255,7 +255,7 @@ function SponsoredProvidersSection({ audience }: { audience: string }) {
   return (
     <div className="mt-10 rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-heading text-lg font-bold text-foreground">
+        <h2 className="font-heading text-h3 font-bold text-foreground">
           {t("blog.sponsored.heading")}
         </h2>
       </div>
@@ -314,7 +314,7 @@ function RelatedArticlesSection({
 
   return (
     <div className="mt-10">
-      <h2 className="font-heading text-lg font-bold text-foreground">
+      <h2 className="font-heading text-h3 font-bold text-foreground">
         {t("blog.related.heading")}
       </h2>
       <div className="mt-4 flex flex-col gap-2.5">
@@ -404,7 +404,7 @@ function BlogPostPage() {
           )}
         </div>
 
-        <h1 className="font-heading text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+        <h1 className="font-heading text-4xl sm:text-h1 font-bold tracking-tight text-foreground">
           {post.title}
         </h1>
         {post.excerpt && (

@@ -172,14 +172,33 @@ Orden de prioridad acordado con Alejandro:
 
 1. **Diseño premium** — **en curso** (ago 2026). Plan de 5 pasos: (1)
    fundamentos del sistema de diseño, (2) comparador, (3) resto del sitio,
-   (4) arquitectura SEO, (5) seguridad. Paso 1 completo: los 14 colores
-   hardcodeados (`#ff6b5b`/`#ff5a48`/`#ff8577`) migrados al token
-   `--color-brand-cta` ya existente (resultaba ser el mismo color, solo sin
-   centralizar — 3 tonos de hover ligeramente distintos por no compartir
-   fuente). Ver `docs/design-system.md` para la referencia completa de
-   tokens/utilidades. Hallazgo relevante para el paso 5: **cero headers de
-   seguridad configurados** (`vercel.json` no tiene CSP/HSTS/X-Frame-Options/
-   etc.) — pendiente.
+   (4) arquitectura SEO, (5) seguridad. Paso 1 en dos rondas:
+   - Ronda 1: los 14 colores hardcodeados (`#ff6b5b`/`#ff5a48`/`#ff8577`)
+     migrados al token `--color-brand-cta` ya existente (resultaba ser el
+     mismo color, solo sin centralizar — 3 tonos de hover ligeramente
+     distintos por no compartir fuente).
+   - Ronda 2 (rediseño más profundo, a pedido explícito de Alejandro —
+     "reevaluar diseño, colores, tipografía... al estilo skyscanner"):
+     escala tipográfica formal agregada (`--text-eyebrow`/`h1`/`h2`/`h3`/`h4`
+     en `styles.css`, sintaxis `--text-*--line-height` de Tailwind v4) y
+     aplicada a los títulos de todas las secciones del home + blog + legal
+     — esto además **corrigió una inconsistencia real**: los títulos de
+     sección oscilaban sin ningún criterio entre `sm:text-4xl` y
+     `sm:text-5xl` según la sección, ya unificados en `text-h2`. Se agregaron
+     tokens semánticos `--color-success`/`--color-warning` (antes: ~15 usos
+     sueltos de `emerald-500`/`amber-600` stock de Tailwind sin relación con
+     la paleta OKLCH) y se aplicaron en `ComparatorSection` (indicador de
+     calidad de tasa, badges), `AiCopilot`, `EmbedWidgetSection`. Se
+     migraron a tokens 3 componentes que habían quedado completamente fuera
+     del sistema (paleta `slate-*`/`white` cruda): `legal.tsx`,
+     `PreferredRateModal.tsx`, `ComingSoonModal.tsx`. Ver
+     `docs/design-system.md` para la referencia completa de tokens/
+     utilidades (incluye tabla de la escala tipográfica y qué quedó
+     deliberadamente fuera: la grilla densa de resultados del comparador,
+     `RfqTerminal.tsx`, `admin.i18n-status.tsx`).
+   - Hallazgo relevante para el paso 5: **cero headers de seguridad
+     configurados** (`vercel.json` no tiene CSP/HSTS/X-Frame-Options/etc.)
+     — pendiente.
 2. **Precisión de producto/datos** (este documento) — runbook de 7 pasos
    ejecutado completo, flag `ENABLE_CORRIDOR_FILTERING` cargado y verificable
    en preview, pendiente activarlo en producción tras verificación manual.
@@ -200,7 +219,7 @@ Orden de prioridad acordado con Alejandro:
    - Investigar por qué algunos posts no indexan en Google Search Console —
      **no arrancado**.
 4. **Afiliados** — prioridad más baja, investigación intermitente. Ver
-   sección 7.
+   sección 8.
 
 ## 8. Afiliados — estado conocido
 

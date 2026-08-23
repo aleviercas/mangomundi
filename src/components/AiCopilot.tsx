@@ -135,18 +135,18 @@ export function MissingCorridorCta({
 }) {
   const { t } = useI18n();
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-50 p-4 text-sm">
-      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" aria-hidden />
+    <div className="flex items-start gap-3 rounded-xl border border-warning/40 bg-warning/10 p-4 text-sm">
+      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-warning" aria-hidden />
       <div className="min-w-0 flex-1">
-        <div className="font-semibold text-amber-900">
+        <div className="font-semibold text-warning">
           {t("corridor.missing.title").replace("{from}", from).replace("{to}", to)}
         </div>
-        <p className="mt-0.5 text-xs text-amber-900/80">{t("corridor.missing.body")}</p>
+        <p className="mt-0.5 text-xs text-warning/80">{t("corridor.missing.body")}</p>
         <button
           type="button"
           onClick={onRequest}
           disabled={acknowledged}
-          className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-amber-700 disabled:cursor-default disabled:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="mt-2 inline-flex items-center gap-1.5 rounded-md bg-warning px-3 py-1.5 text-xs font-semibold text-warning-foreground transition hover:brightness-95 disabled:cursor-default disabled:bg-success focus:outline-none focus:ring-2 focus:ring-warning"
         >
           {acknowledged ? t("corridor.missing.requested") : t("corridor.missing.request")}
         </button>

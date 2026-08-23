@@ -1154,7 +1154,7 @@ export function ComparatorSection({
                 happen BEFORE the search runs, not as a post-results filter
                 — so it stays here. */}
             <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-1.5 sm:px-5">
-              <div className="flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-brand-cta">
+              <div className="flex min-w-0 items-center gap-2 text-eyebrow font-bold uppercase text-brand-cta">
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
               </div>
@@ -1389,7 +1389,7 @@ export function ComparatorSection({
               )}
 
               {validationError && (
-                <div className="rounded-md border border-amber-500/40 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+                <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
                   {validationError}
                 </div>
               )}
@@ -1462,7 +1462,7 @@ export function ComparatorSection({
         {result && (
           <div className="mt-5 min-w-0 scroll-mt-24">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-              <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-brand-cta">
+              <h3 className="text-eyebrow font-bold uppercase text-brand-cta">
                 {t("comparator.results")}
               </h3>
             </div>
@@ -1751,7 +1751,7 @@ function FloatingAgent(p: FloatingAgentProps) {
           {hasNewResult && (
             <span
               aria-label={t("agent.newResult")}
-              className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-background"
+              className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-success ring-2 ring-background"
             />
           )}
         </button>
@@ -1773,7 +1773,7 @@ function FloatingAgent(p: FloatingAgentProps) {
             </span>
             <div className="flex shrink-0 items-center gap-2">
               <span
-                className="text-[10px] font-medium uppercase tracking-wider text-emerald-600"
+                className="text-[10px] font-medium uppercase tracking-wider text-success"
                 aria-label={`Language ${lang.toUpperCase()}`}
               >
                 ● {lang.toUpperCase()}
@@ -2160,7 +2160,7 @@ function ProviderRow({
   const ratePct = row.rate_vs_market_pct;
   const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}%`;
   const ratePctClass =
-    ratePct >= -0.25 ? "text-emerald-600" : ratePct >= -1 ? "text-amber-600" : "text-destructive";
+    ratePct >= -0.25 ? "text-success" : ratePct >= -1 ? "text-warning" : "text-destructive";
 
   // Feature highlight chips: only the delivery-method pills remain now (on
   // request) — the merit badges (lowest fee / best exchange rate / most

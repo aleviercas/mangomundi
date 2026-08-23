@@ -9,10 +9,8 @@ export function ContactSection() {
   return (
     <section id="contact" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-          {t("home.contact.eyebrow")}
-        </p>
-        <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
+        <p className="text-eyebrow font-bold uppercase text-accent">{t("home.contact.eyebrow")}</p>
+        <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
           {t("home.contact.simple.title")}
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">

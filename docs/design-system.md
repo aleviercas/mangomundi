@@ -41,11 +41,38 @@ en el nombre de la clase en vez de tener que recordar que `accent` = coral:
 - `--color-brand-cta-hover` → `hover:bg-brand-cta-hover` / `hover:text-brand-cta-hover`
 - `--color-brand-cta-foreground` → `text-brand-cta-foreground` (texto sobre fondo `brand-cta`, normalmente blanco)
 
+**Estado semántico (`--color-success`/`--color-warning`)** — agregados en la
+pasada de rediseño de ago 2026 porque el sitio ya tenía ~15 usos sueltos de
+`emerald-500`/`amber-600`/etc. (stock Tailwind, sin relación con la paleta
+OKLCH del resto del sitio) para "tasa buena"/"revisar"/"copiado"/"corredor
+sin datos". Mismo patrón que `brand-cta`: un color base + su `-foreground`
+para texto legible sobre el fill sólido.
+
+- `--color-success` / `--color-success-foreground` → `bg-success`/`text-success` (icono, texto de estado, badge sólido con `text-success-foreground` encima).
+- `--color-warning` / `--color-warning-foreground` → mismo patrón. Para una caja de aviso con fondo tenue, usar `bg-warning/10 border-warning/40 text-warning` (el tono base ya es lo bastante oscuro para leerse directo sobre fondo claro, no hace falta un tono "oscuro" aparte — mismo criterio que ya usa `text-brand-cta` sobre fondos claros).
+- **`text-destructive`** (ya existía) sigue siendo el tercer estado — error real, no "revisar".
+- Deliberadamente NO tocado: `RfqTerminal.tsx` (terminal oscura, paleta propia) y `admin.i18n-status.tsx` (herramienta interna) — mismo criterio de scope que `.terminal-*` abajo.
+
 ## Tipografía
 
 - **Sora** (`font-heading`) — todos los `h1`–`h6`, ya aplicado globalmente en `@layer base`.
 - **Manrope** (`font-sans`, default del `body`) — todo el texto de párrafo/UI.
-- Sin escala de tamaños formal todavía (los componentes usan tamaños Tailwind ad-hoc: `text-xs`/`text-sm`/`text-lg`/etc. según contexto) — **pendiente para una próxima pasada**: definir una escala nombrada (ej. `--text-eyebrow`, `--text-body`, `--text-h1`...) si se quiere más consistencia entre secciones.
+- **Escala formal** (agregada ago 2026, `@theme inline` en `styles.css`, sintaxis `--text-*`/`--text-*--line-height`/`--text-*--letter-spacing` de Tailwind v4 — genera `text-eyebrow`/`text-h1`/etc. automáticamente):
+
+  | Token | Tamaño | Uso |
+  |---|---|---|
+  | `text-eyebrow` | 12px / tracking .18em | Label uppercase sobre un título de sección (antes: `text-xs ... tracking-[0.18em]` repetido a mano en 10+ lugares) |
+  | `text-h1` | 48px (usar junto a un tamaño móvil menor, ej. `text-4xl sm:text-h1`) | Título de página standalone: portada del blog, post individual, `/legal` |
+  | `text-h2` | 44px (idem, `text-3xl sm:text-h2`) | Título de sección repetible dentro de una página (todas las secciones del home). Antes esto oscilaba sin criterio entre `sm:text-4xl` y `sm:text-5xl` según qué sección — ya unificado. |
+  | `text-h3` | 20px | Título de card/subsección (features, testimonios, related posts, sponsored). Antes mezclaba `text-lg`/`text-xl` con distinto `font-semibold`/`font-extrabold` sin regla clara. |
+  | `text-h4` | 16px | Reservado para un cuarto nivel si aparece (footer headings, etc. — todavía no migrado, son casos chicos con `text-sm font-bold` que no valía la pena tocar en esta pasada). |
+
+  Los tamaños micro/densos de la grilla de resultados del comparador
+  (`text-[10px]`/`text-[11px]`/etc. en `ComparatorSection.tsx`) **no** se
+  migraron a la escala — son afinados a mano para densidad de información en
+  una UI de datos, no forman parte de la jerarquía editorial/marketing que
+  esta escala resuelve. Igual con los tamaños dentro de `RfqTerminal.tsx` y
+  `admin.i18n-status.tsx`.
 
 ## Radios y espaciado
 
@@ -61,6 +88,7 @@ en el nombre de la clase en vez de tener que recordar que `accent` = coral:
 
 ## Pendiente (próximas pasadas del sprint de diseño)
 
-1. Escala tipográfica formal (si se decide que hace falta más consistencia que la actual).
-2. Aplicar el sistema depurado al resto de componentes que ya usan `surface-card`/`btn-cta` correctamente pero podrían pulirse más (ver plan en `docs/PROJECT-STATE.md` sección 7).
-3. Arquitectura SEO (Search Console) y seguridad (headers, CSP) — sprints 4 y 5 del plan, no forman parte de este documento.
+1. ~~Escala tipográfica formal~~ — hecho (ago 2026, ver arriba).
+2. `legal.tsx`, `PreferredRateModal.tsx` y `ComingSoonModal.tsx` estaban enteramente en paleta `slate-*`/`white` sin tocar los tokens — ya migrados en la misma pasada. Revisar si quedan más componentes fuera del inventario de este documento (no se hizo un grep exhaustivo de *todo* el árbol, solo de lo visiblemente cliente-facing).
+3. Aplicar el sistema depurado al resto de componentes que ya usan `surface-card`/`btn-cta` correctamente pero podrían pulirse más (ver plan en `docs/PROJECT-STATE.md` sección 7).
+4. Arquitectura SEO (Search Console) y seguridad (headers, CSP) — sprints 4 y 5 del plan, no forman parte de este documento.

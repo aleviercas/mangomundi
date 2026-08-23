@@ -15,10 +15,8 @@ export function BusinessSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-              {t("nav.business")}
-            </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
+            <p className="text-eyebrow font-bold uppercase text-accent">{t("nav.business")}</p>
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
               {t("home.contact.title")}
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
@@ -51,7 +49,7 @@ export function BusinessSection() {
               key={c.title}
               className="rounded-[2rem] bg-card p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)]"
             >
-              <h3 className="font-heading text-xl font-extrabold text-foreground">{c.title}</h3>
+              <h3 className="font-heading text-h3 font-extrabold text-foreground">{c.title}</h3>
               <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
             </div>
           ))}

@@ -35,10 +35,10 @@ export function EmbedWidgetSection() {
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
           {/* Copy + install instructions */}
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
+            <p className="text-eyebrow font-bold uppercase text-accent">
               {t("home.widget.eyebrow")}
             </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
               {t("home.widget.title")}
             </h2>
             <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
@@ -83,7 +83,7 @@ export function EmbedWidgetSection() {
                 >
                   {copied ? (
                     <>
-                      <Check className="h-3.5 w-3.5 text-emerald-400" /> {t("home.widget.copied")}
+                      <Check className="h-3.5 w-3.5 text-success" /> {t("home.widget.copied")}
                     </>
                   ) : (
                     <>

@@ -22,10 +22,10 @@ export function StatsSection() {
             the light/dark surface question. */}
         <div className="rounded-[2rem] bg-slate-900 p-8 text-white shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)] sm:p-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
+            <p className="text-eyebrow font-bold uppercase text-accent">
               {t("home.stats.eyebrow")}
             </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl">
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight sm:text-h2">
               {t("home.stats.title")}
             </h2>
             <p className="mt-4 max-w-3xl text-base leading-relaxed text-slate-300">
