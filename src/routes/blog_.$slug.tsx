@@ -317,18 +317,25 @@ function RelatedArticlesSection({
       <h2 className="font-heading text-lg font-bold text-foreground">
         {t("blog.related.heading")}
       </h2>
-      <div className="mt-4 grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="mt-4 flex flex-col gap-2.5">
         {posts.map((p) => (
           <Link
             key={p.slug}
             to="/blog/$slug"
             params={{ slug: p.slug }}
-            className="flex flex-col rounded-xl border border-border bg-card p-4 transition-colors hover:border-accent/50"
+            className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:border-accent/50"
           >
-            <span className="text-sm font-semibold text-foreground line-clamp-2">{p.title}</span>
-            {p.excerpt && (
-              <span className="mt-1.5 text-xs text-muted-foreground line-clamp-2">{p.excerpt}</span>
-            )}
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-semibold text-foreground">
+                {p.title}
+              </span>
+              {p.excerpt && (
+                <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                  {p.excerpt}
+                </span>
+              )}
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
           </Link>
         ))}
       </div>
