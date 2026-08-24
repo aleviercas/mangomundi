@@ -382,12 +382,43 @@ país a ciegas) en lugar de seguir con la misma búsqueda genérica.
 ## 10. Cómo continuar
 
 Si es una sesión nueva de Claude sin memoria de esta conversación: leer este
-archivo primero, después `ale.md` para el estado de UI/SEO, después el
-`docs/handoff/` que corresponda al tema puntual que se va a tocar. No hace
-falta leer los 5 documentos de handoff completos para cambios chicos — este
-índice ya resume lo esencial de cada uno.
+archivo primero, después `docs/README.md` (índice completo de toda la demás
+documentación — `ale.md`, research de datos, scoring, etc.), después el
+`docs/handoff/` o `docs/data-sources/` que corresponda al tema puntual que se
+va a tocar. No hace falta leer todo completo para cambios chicos — los
+índices ya resumen lo esencial de cada uno.
+
+Research de arquitectura de datos en curso: ver
+`docs/data-sources/2026-08-diagnostico-arquitectura-proveedores-corredores.md`
+— diagnóstico completo de por qué desaparecen proveedores en corredores sin
+datos (caso Western Union UK→Argentina), panorama de fuentes externas (World
+Bank RPW, Wise Comparison API, RemitSCOPE, FX local vía dolarapi.com/
+bluelytics para Argentina) y arquitectura propuesta (degradación con
+transparencia en vez de exclusión dura). Tiene decisiones concretas
+pendientes de aprobación de Alejandro en su sección 7 antes de tocar código/
+producción.
 
 **Actualizar este archivo** cada vez que se cierre un sprint, se cargue una
 tanda grande de datos, o se tome una decisión de arquitectura — es el
 mecanismo acordado para que el contexto sobreviva entre sesiones (reemplaza
 depender de adjuntar archivos sueltos cada vez).
+
+### Cómo se reparte el trabajo entre Claude Code y Claude chat
+
+Dos herramientas con acceso complementario, no en competencia:
+
+- **Claude Code** (esta sesión y otras en paralelo) tiene acceso al repo real,
+  Supabase y Vercel — hace el diagnóstico sobre datos reales, escribe y
+  commitea el código/los datos, y verifica el deploy. No puede acceder a la
+  mayoría de sitios externos (la política de red del sandbox bloquea el
+  research web).
+- **Claude chat / Claude in Chrome** (en la máquina de Alejandro, sin esa
+  restricción) hace el research externo puntual — tarifas de un proveedor,
+  verificación de un dato — que Claude Code no puede traer directo.
+- El loop: Claude Code identifica el hueco exacto y da un pedido de
+  investigación acotado (qué proveedores, qué dato exacto, qué formato) →
+  Alejandro lo corre en Claude chat → pega el resultado en la conversación de
+  Claude Code → Claude Code lo valida contra el criterio de la sección 5 (fee
+  Y margen con fuente citable, nunca inventado) y lo carga con commit.
+- Documentado acá para que cualquier sesión futura (de cualquiera de las dos
+  herramientas) entienda el reparto sin tener que redescubrirlo.
