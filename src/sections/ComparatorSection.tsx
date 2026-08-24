@@ -2188,7 +2188,7 @@ function ProviderRow({
 
   return (
     <div
-      className={`relative flex flex-wrap items-start gap-3.5 border-b border-border px-5 pb-3.5 transition-colors last:border-b-0 hover:bg-muted/20 ${
+      className={`group relative flex flex-wrap items-start gap-3.5 border-b border-l-2 border-l-transparent border-border px-5 pb-3.5 transition-[background-color,border-color] duration-200 ease-out last:border-b-0 hover:border-l-brand-cta hover:bg-muted/40 ${
         row.has_exclusive_deal ? "pt-[34px]" : "pt-3.5"
       }`}
     >
@@ -2243,7 +2243,7 @@ function ProviderRow({
           slug={row.slug}
           size={36}
           rounded={false}
-          className="rounded-sm border border-border bg-white"
+          className="rounded-sm border border-border bg-white transition-transform duration-200 ease-out group-hover:scale-110"
         />
         <div className="max-w-full truncate text-sm font-semibold text-foreground">{row.name}</div>
         <div className="flex h-[14px] items-center gap-1 text-[10px] text-muted-foreground">
@@ -2387,7 +2387,7 @@ function ProviderRow({
           <button
             onClick={onClick}
             aria-label={`${tCta} — ${row.name}`}
-            className="btn-cta inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md"
+            className="btn-cta inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-[0_8px_24px_-10px_color-mix(in_oklab,var(--color-brand-cta)_55%,transparent)]"
           >
             <ArrowRight className="h-4 w-4 shrink-0" />
           </button>
