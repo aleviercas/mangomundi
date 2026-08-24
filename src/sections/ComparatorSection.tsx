@@ -1457,6 +1457,33 @@ export function ComparatorSection({
           </div>
         )}
 
+        {/* First-search loading state — only while there's no prior result to
+            keep showing (a re-search with existing results just updates them
+            in place once the new data lands). Without this, clicking Compare
+            left a dead gap below the button until the request resolved; sized
+            to roughly match 3 real ProviderRow rows for the same
+            CLS-avoidance reason as BlogSection's skeleton. */}
+        {compareMut.isPending && !result && (
+          <div className="mt-5 min-w-0" aria-hidden>
+            <div className="mb-3 h-3.5 w-28 animate-pulse rounded bg-muted" />
+            <div className="overflow-hidden rounded-2xl border border-border bg-card">
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="flex animate-pulse items-center gap-3.5 border-b border-border px-5 py-4 last:border-b-0"
+                >
+                  <div className="h-9 w-9 shrink-0 rounded-sm bg-muted" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 w-24 rounded bg-muted" />
+                    <div className="h-3 w-40 rounded bg-muted" />
+                  </div>
+                  <div className="h-7 w-24 shrink-0 rounded bg-muted" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Your Results — a first-class home section. The page auto-scrolls
             to the mid-market rate banner above (inside the comparator card)
             rather than straight to this table, so the rate is seen first. */}
