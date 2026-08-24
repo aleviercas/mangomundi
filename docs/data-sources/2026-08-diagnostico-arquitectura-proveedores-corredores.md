@@ -7,13 +7,13 @@
 
 ## 1. Resumen ejecutivo
 
-El caso puntual que reportaste (Western Union UK→Argentina desaparecido) **tiene una causa exacta y verificable en el código y en los datos** — no es un bug al azar, es una consecuencia directa y previsible de cómo se integraron los datos del World Bank. Lo diagnostiqué con evidencia (sección 2).
+El caso puntual reportado (Western Union UK→Argentina desaparecido) **tiene una causa exacta y verificable en el código y en los datos** — no es un bug al azar, es una consecuencia directa y previsible de cómo se integraron los datos del World Bank. Diagnosticado con evidencia (sección 2).
 
 La causa raíz de fondo: el motor pasó de un modelo "todo proveedor cubre todo corredor con una tarifa genérica" (impreciso pero con cobertura 100%) a un modelo "un proveedor tipo Western Union/MoneyGram/Ria solo aparece si hay una fila exacta de datos para ESE corredor específico" (preciso pero con cobertura limitada a lo que ya se cargó a mano). El World Bank cubre **367 corredores fijos, elegidos por volumen** — de un universo de miles de rutas reales — y UK→Argentina no es uno de ellos. El resultado: para cualquier corredor fuera de esos 367 (o de las ~140 filas cargadas por research manual), los especialistas en remesas simplemente no aparecen, aunque sí operen esa ruta en la vida real.
 
-La buena noticia es que el equipo (vos + un agente anterior de Claude Code) ya construyó la mitad de la solución: hay un feature flag (`ENABLE_CORRIDOR_FILTERING`), un campo `is_corridor_specific` por proveedor, y hasta una tabla `corridor_notes` pensada exactamente para documentar huecos de cobertura (sanciones, proveedor faltante). Lo que falta es (a) que un corredor sin datos no signifique "proveedor invisible" sino "dato marcado como no verificado", (b) conectar `corridor_notes` a la UI/consulta real (hoy no se usa en ningún lado del código), y (c) una fuente de datos viva que no dependa de investigar corredor por corredor a mano.
+El equipo ya construyó la mitad de la solución: hay un feature flag (`ENABLE_CORRIDOR_FILTERING`), un campo `is_corridor_specific` por proveedor, y hasta una tabla `corridor_notes` pensada exactamente para documentar huecos de cobertura (sanciones, proveedor faltante). Lo que falta es (a) que un corredor sin datos no signifique "proveedor invisible" sino "dato marcado como no verificado", (b) conectar `corridor_notes` a la UI/consulta real (hoy no se usa en ningún lado del código), y (c) una fuente de datos viva que no dependa de investigar corredor por corredor a mano.
 
-También encontré algo con mucho potencial para el objetivo de "mejor comparador del mundo": **Wise publica una Comparison API** — una API pensada específicamente para comparadores como mangomundi, que devuelve tarifas y spreads de Wise Y de sus competidores, actualizada aproximadamente cada hora, para transferencias banco-a-banco. Es el tipo de fuente que podría reemplazar buena parte del trabajo manual de "Direct research Aug 2026" que hoy se hace uno por uno.
+También se encontró algo con mucho potencial para el objetivo de "mejor comparador del mundo": **Wise publica una Comparison API** — una API pensada específicamente para comparadores como mangomundi, que devuelve tarifas y spreads de Wise Y de sus competidores, actualizada aproximadamente cada hora, para transferencias banco-a-banco. Es el tipo de fuente que podría reemplazar buena parte del trabajo manual de "Direct research Aug 2026" que hoy se hace uno por uno.
 
 ---
 
@@ -31,15 +31,15 @@ También encontré algo con mucho potencial para el objetivo de "mejor comparado
    ```
    Si `is_corridor_specific` es `true` y no hay fila en `fx_rates` para ese corredor exacto, **el proveedor se excluye del resultado por completo** — no se degrada a una tarifa genérica, desaparece.
 4. De los 754 registros de `fx_rates`, **611 (81%) vienen de "World Bank RPW Q3 2025"**. El resto son investigaciones manuales puntuales ("Direct research Aug 2026...") hechas corredor por corredor.
-5. Confirmé en la fuente oficial que el World Bank Remittance Prices Worldwide (RPW) **no intenta cubrir todos los corredores posibles** — cubre exactamente **367 corredores fijos, de 48 países emisores a 105 receptores**, elegidos por volumen de remesas, no por cobertura universal. UK→Argentina no está entre los que trackea (Argentina recibe sus corredores trackeados por el Bank principalmente desde España/Italia/EE.UU., no desde UK).
+5. Confirmado en la fuente oficial que el World Bank Remittance Prices Worldwide (RPW) **no intenta cubrir todos los corredores posibles** — cubre exactamente **367 corredores fijos, de 48 países emisores a 105 receptores**, elegidos por volumen de remesas, no por cobertura universal. UK→Argentina no está entre los que trackea (Argentina recibe sus corredores trackeados por el Bank principalmente desde España/Italia/EE.UU., no desde UK).
 6. Dato de contexto: Western Union **sí opera activamente** ese corredor — tiene página propia (`westernunion.com/gb/en/send-money-to-argentina.html`). El proveedor real existe; el dato de precio en la base, no.
 7. **Confirmación adicional, directa en la fuente del Banco Mundial**: la página del propio corredor en el sitio de RPW (`remittanceprices.worldbank.org/corridor/United-Kingdom/Argentina`) devuelve una tabla vacía — "Total Average First Quarter 1970", todo en 0.00 — que es literalmente el placeholder que usa su sistema cuando no hay datos cargados para ese corredor. Es la prueba más directa posible de que el Banco Mundial nunca trackeó esta ruta.
 
-### ⚠️ Corrección sobre una cifra que se había pasado antes
+### ⚠️ Corrección sobre una cifra citada antes
 
 El dato de *"Western Union, $0 de comisión hasta USD 50.000"* que se pasó en la primera versión de este análisis **está mal y se retira**. Vino de un agregador de terceros (remitanalyst.com) que — al revisarlo de nuevo — describe esa cifra en dólares (USD), consistente con pricing de EE.UU., no con el corredor GBP→ARS real. Es exactamente el tipo de error que pasa cuando se cita una fuente secundaria en vez de la fuente primaria del proveedor — y es la razón por la que la arquitectura propuesta (sección 5) insiste en citar siempre la fuente primaria con fecha, nunca un agregador sin verificar contra el sitio real.
 
-Fuimos directo a las dos páginas oficiales de Western Union UK (`send-money-to-argentina.html` y `money-transfer-fees.html`) y **ninguna publica una tarifa fija** — WU calcula el fee y el margen de cambio de forma dinámica según monto/método, solo visible dentro de su cotizador. Lo único verificable con fuente directa y citable hoy:
+Se fue directo a las dos páginas oficiales de Western Union UK (`send-money-to-argentina.html` y `money-transfer-fees.html`) y **ninguna publica una tarifa fija** — WU calcula el fee y el margen de cambio de forma dinámica según monto/método, solo visible dentro de su cotizador. Lo único verificable con fuente directa y citable hoy:
 
 | Dato | Valor confirmado | Fuente |
 |---|---|---|
@@ -51,11 +51,11 @@ Fuimos directo a las dos páginas oficiales de Western Union UK (`send-money-to-
 | Velocidad transferencia bancaria | "0-4 business days" | ídem |
 | Fee exacto y margen de cambio | **no publicado** — solo vía cotizador interactivo por transacción | ídem |
 
-Esto en sí mismo es un dato importante para la arquitectura: **WU (y varios de los MTOs grandes) no publican una tarifa única por corredor** — la tarifa depende del monto exacto. El research manual "corredor por corredor" que se venía haciendo probablemente tiene que capturar esto por rango de monto (como ya hace `fee_tiers`/`min_amount`/`max_amount` en el esquema), no como un número fijo — y cualquier research futuro debería anotar explícitamente si el número viene del sitio del proveedor mismo o de un agregador, para poder auditar casos como este.
+Esto en sí mismo es un dato importante para la arquitectura: **WU (y varios de los MTOs grandes) no publican una tarifa única por corredor** — la tarifa depende del monto exacto. El research manual "corredor por corredor" probablemente tiene que capturar esto por rango de monto (como ya hace `fee_tiers`/`min_amount`/`max_amount` en el esquema), no como un número fijo — y cualquier research futuro debería anotar explícitamente si el número viene del sitio del proveedor mismo o de un agregador, para poder auditar casos como este.
 
 **Conclusión:** no es un bug de matching ni un error de carga — es que el sistema, tal como está diseñado hoy, **trata "no tengo el dato" como "el proveedor no existe en esta ruta"**, en vez de "no verificado todavía". Y como el World Bank cubre menos del 10% del universo real de corredores relevantes, esto le va a pasar a más rutas además de UK→Argentina — cualquier corredor que no sea top-volumen global va a perder a sus especialistas de remesas (WU, MoneyGram, Ria, Remitly, WorldRemit, Xoom, Paysend...) y solo va a mostrar a las plataformas de cobertura amplia (Wise, Revolut, brokers, bancos), que sí usan una tarifa genérica y por eso nunca desaparecen.
 
-Ya existe además una tabla `corridor_notes` con 4 casos documentados (Alemania→Rusia por sanciones, Alemania→Siria, Suecia→Somalia y Noruega→Somalia por proveedor faltante) — el patrón de "documentar el hueco en vez de dejarlo silencioso" ya está pensado, pero **no está conectado a ningún lado del código que consulté** (no aparece en `fx.functions.ts`) y no tiene una entrada para UK→Argentina todavía.
+Ya existe además una tabla `corridor_notes` con 4 casos documentados (Alemania→Rusia por sanciones, Alemania→Siria, Suecia→Somalia y Noruega→Somalia por proveedor faltante) — el patrón de "documentar el hueco en vez de dejarlo silencioso" ya está pensado, pero **no está conectado a ningún lado del código consultado** (no aparece en `fx.functions.ts`) y no tiene una entrada para UK→Argentina todavía.
 
 ---
 
@@ -90,6 +90,12 @@ Ya existe además una tabla `corridor_notes` con 4 casos documentados (Alemania�
 
 **Fuentes:** [Wise Comparison API docs](https://docs.wise.com/api-reference/comparison) · [RemitSCOPE Methodology](https://remitscope.org/wp-content/uploads/2024/11/RemitSCOPE-Methodology-Report.pdf) · [World Bank bilateral remittance matrix](https://blogs.worldbank.org/en/peoplemove/bilateral-remittance-matrix-new)
 
+### 4.0 Sobre Airwallex — sí tiene API, pero no es lo mismo que la de Wise
+
+Airwallex (ya está en `providers`, segmento business) sí tiene una API pública y bien documentada (`airwallex.com/docs`), incluyendo un endpoint de **Rates** que da "prevailing market rate" — la tarifa real que Airwallex arma mezclando precios de su panel de bancos/liquidity providers, no un mid-market genérico. Pero hay una diferencia clave con la Comparison API de Wise: **la de Airwallex es para usar la tarifa de Airwallex mismo dentro de un producto** (uso pensado para clientes ya integrados a su plataforma, no para leer precios de sus competidores) — no da información de Western Union, MoneyGram, etc. Sirve para una cosa puntual y valiosa: **tener el precio de Airwallex mismo siempre actualizado y exacto en vez de la tarifa genérica estática que tiene hoy en `providers`** — pero no resuelve el problema de cobertura de corredores de terceros como sí podría la Comparison API de Wise. Para usarla hace falta ser cliente/tener cuenta de Airwallex (no es de lectura libre sin cuenta).
+
+**Fuente:** [Airwallex Rates docs](https://www.airwallex.com/docs/transactional-fx/get-started/choose-your-fx-solution/rates) · [Airwallex API docs](https://www.airwallex.com/docs/api/introduction)
+
 ### 4.1 Importante: qué está "conectado por API" hoy realmente
 
 Frankfurter, ExchangeRate-API, Fixer.io, exchangeratesapi.io y Open Exchange Rates (las 5 en `src/lib/fx.functions.ts`) **solo dan la tasa de referencia del mercado interbancario** (el "mid-market rate" contra el que se mide todo lo demás). Ninguna de esas cinco sabe qué comisión o margen cobra Western Union, Wise, MoneyGram, etc. — eso es exactamente el dato que falta y que hoy se consigue solo a mano (research directo) o trimestralmente (World Bank). La Wise Comparison API es la única fuente de la lista de la sección 4 que sí devuelve precios de competidores, no solo la tasa de mercado — por eso es el hallazgo más importante.
@@ -98,7 +104,7 @@ Frankfurter, ExchangeRate-API, Fixer.io, exchangeratesapi.io y Open Exchange Rat
 
 El esquema de `fx_rates` **ya tiene una columna `is_local_fx boolean`** — alguien ya había anticipado este caso de uso (convertir moneda dentro de un mismo país, ej. USD↔ARS en una casa de cambio en Argentina, sin que haya ningún envío internacional de por medio). Pero hoy tiene **cero filas** — es un campo del esquema sin datos, un área completamente sin construir todavía.
 
-Esto es un dominio de datos distinto al de remesas — cada país tiene un mercado cambiario local con su propia estructura (bancos, casas de cambio, mercado paralelo, tipos de cambio múltiples), así que no hay una fuente única global como el World Bank para esto. Para Argentina específicamente (el caso que motivó esta conversación) hay fuentes abiertas y gratuitas que ya resuelven justo este problema:
+Esto es un dominio de datos distinto al de remesas — cada país tiene un mercado cambiario local con su propia estructura (bancos, casas de cambio, mercado paralelo, tipos de cambio múltiples), así que no hay una fuente única global como el World Bank para esto. Para Argentina específicamente hay fuentes abiertas y gratuitas que ya resuelven justo este problema:
 
 | Fuente | Qué da | Costo |
 |---|---|---|
@@ -169,7 +175,7 @@ Vale la pena escribirle a `comparison@wise.com` para entender si mangomundi cali
 Todo lo de arriba es diagnóstico, research y documentación — no se tocó la base de Supabase, siguiendo el mismo criterio ya establecido con el agente anterior ("no se corre nada contra producción hasta que Alejandro lo apruebe explícitamente"). Antes de escribir cualquier dato nuevo en `fx_rates`/`providers` o de activar la integración con dolarapi/bluelytics en el código, falta confirmar:
 
 - ¿Arrancar por el fix rápido de UK→Argentina y corredores UK→LatAm similares (con fuente primaria, sin la cifra incorrecta de antes)?
-- ¿Escribirle a Wise (`comparison@wise.com`) para preguntar por acceso a la Comparison API, o prefiere Alejandro hacerlo directamente (a veces estas cosas avanzan más rápido con una persona real del lado del negocio)?
+- ¿Escribirle a Wise (`comparison@wise.com`) para preguntar por acceso a la Comparison API, o prefiere Alejandro hacerlo directamente (a veces estas cosas avanzan más rápido con una persona real del lado del negocio)? Ver borrador de email en la sección 9.
 - Para el FX local (dólar blue/MEP/CCL): ¿se trata como una feature nueva del comparador (una pestaña separada de "conversión local" vs. "envío internacional") o como un dato más dentro del mismo flujo? Esto cambia bastante el diseño de la UI, no solo la carga de datos.
 - ¿Luz verde para el cambio de código de "exclusión dura" → "degradación con transparencia", o revisarlo en una rama primero?
 
@@ -178,3 +184,31 @@ Todo lo de arriba es diagnóstico, research y documentación — no se tocó la 
 ## 8. Dónde vive este documento
 
 Este archivo (`docs/data-sources/2026-08-diagnostico-arquitectura-proveedores-corredores.md`) es la fuente de verdad para este research — se actualiza in-place a medida que avanza (FX local país por país, respuesta de Wise, etc.) en vez de crear versiones sueltas, mismo criterio que ya usaban los docs de `docs/multi-criteria-ranking/`. También queda espejado en el proyecto de Claude "Mangomundi" para consulta rápida desde claude.ai.
+
+Toda la demás documentación del repo (`ale.md`, `MIGRATION.md`, y el resto) vive junta bajo `docs/` — ver [`docs/README.md`](../README.md) para el índice completo.
+
+---
+
+## 9. Borrador de email para Wise (Comparison API)
+
+No hay una herramienta de email conectada para enviarlo directamente desde acá. Dos caminos: conectar Gmail/Outlook/Resend en Cowork para que Claude lo mande, o copiarlo y mandarlo directamente — probablemente lo segundo avance más rápido tratándose de una conversación de partnership/negocio.
+
+**Para:** comparison@wise.com
+**Asunto:** Partnership inquiry — Wise Comparison API for mangomundi.com
+
+> Hi Wise Comparison team,
+>
+> I run mangomundi (https://mangomundi.com), an independent money-transfer comparison site covering international remittances and FX across dozens of providers and corridors worldwide.
+>
+> We currently source corridor-level pricing from the World Bank's Remittance Prices Worldwide dataset plus manual research, but that only covers a fixed panel of ~367 corridors and refreshes quarterly. We'd like to evaluate access to the Wise Comparison API to get live, hourly-refreshed pricing for bank-transfer corridors, alongside our existing sources.
+>
+> Could you let us know:
+> 1. Whether mangomundi would qualify as a partner for API access, and what the process/requirements are.
+> 2. Rough coverage — how many providers and corridors are included, and any regions/currencies not covered.
+> 3. Any cost, rate limits, or attribution requirements.
+>
+> Happy to share more about mangomundi's traffic and audience if useful.
+>
+> Thanks,
+> [nombre / rol]
+> mangomundi.com
