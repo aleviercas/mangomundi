@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
+import { localCurrency } from "@/lib/countries";
 import { fxProviderFactory } from "@/services/providers/ProviderFactory";
 import { MasterRateStore } from "@/services/providers/MasterRateStore";
 import { callAiWithFailover } from "@/services/providers/aiOrchestrator";
@@ -481,6 +482,25 @@ export const compareProviders = createServerFn({ method: "POST" })
       throw new Error("An unexpected error occurred. Please try again.");
     }
 
+    // A country's fx_rates rows are quoted in that country's own local
+    // currency (e.g. a GB-origin row's fee is in GBP) — a corridor-specific
+    // provider (Sendwave, WorldRemit, MoneyGram...) genuinely can't be paid
+    // into from a different currency than the sending country's own, so if
+    // the user picked a currency that isn't sendingCountry's/receivingCountry's
+    // local one (e.g. sending from the UK but choosing EUR — a real,
+    // legitimate case for multi-currency accounts like Wise/Revolut, just not
+    // something a corridor-specific MTO can serve), corridor-specific
+    // providers are excluded outright rather than shown with a currency they
+    // don't actually operate in. Broad-coverage providers (Wise, brokers,
+    // banks) are unaffected either way — they're currency-agnostic already.
+    const sendingLocalCurrency = data.sendingCountry ? localCurrency(data.sendingCountry) : null;
+    const receivingLocalCurrency = data.receivingCountry
+      ? localCurrency(data.receivingCountry)
+      : null;
+    const currencyOverridden =
+      (sendingLocalCurrency != null && data.from.toUpperCase() !== sendingLocalCurrency) ||
+      (receivingLocalCurrency != null && data.to.toUpperCase() !== receivingLocalCurrency);
+
     // Corridor-specific rates (fx_rates) — real per-route data where it
     // exists. Precedence rule: an exact match here always wins over the
     // provider's fee_tiers/flat fields (resolveTier). A corridor-specific
@@ -489,7 +509,12 @@ export const compareProviders = createServerFn({ method: "POST" })
     // would misrepresent it. Broad-coverage providers (Wise, brokers, banks)
     // are unaffected and keep using resolveTier as they always have.
     const corridorRates = new Map<string, CorridorRate>();
-    if (ENABLE_CORRIDOR_FILTERING && data.sendingCountry && data.receivingCountry) {
+    if (
+      ENABLE_CORRIDOR_FILTERING &&
+      !currencyOverridden &&
+      data.sendingCountry &&
+      data.receivingCountry
+    ) {
       const { data: rateRows, error: rateError } = await supabaseAdmin
         .from("fx_rates")
         .select(
@@ -517,8 +542,10 @@ export const compareProviders = createServerFn({ method: "POST" })
     }
 
     const eligibleProviders = ENABLE_CORRIDOR_FILTERING
-      ? (providers as Provider[]).filter(
-          (p) => !p.is_corridor_specific || corridorRates.has(p.slug),
+      ? (providers as Provider[]).filter((p) =>
+          currencyOverridden
+            ? !p.is_corridor_specific
+            : !p.is_corridor_specific || corridorRates.has(p.slug),
         )
       : (providers as Provider[]);
 

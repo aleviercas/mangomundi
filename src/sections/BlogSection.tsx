@@ -19,10 +19,8 @@ export function BlogSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-              {t("home.blog.eyebrow")}
-            </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl">
+            <p className="text-eyebrow font-bold uppercase text-accent">{t("home.blog.eyebrow")}</p>
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
               {t("home.blog.title")}
             </h2>
           </div>
@@ -86,7 +84,7 @@ export function BlogSection() {
                     />
                   )}
                   <div className="flex flex-1 flex-col p-6">
-                    <h3 className="font-heading text-lg font-bold text-foreground group-hover:text-accent">
+                    <h3 className="font-heading text-h3 font-bold text-foreground group-hover:text-accent">
                       {post.title}
                     </h3>
                     {post.excerpt && (

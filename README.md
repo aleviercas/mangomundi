@@ -2,6 +2,11 @@
 
 A web application built with [TanStack Start](https://tanstack.com/start), React, TypeScript and [Supabase](https://supabase.com/), bundled with [Vite](https://vitejs.dev/) and run with [Bun](https://bun.sh/).
 
+> **New to this repo (including a fresh Claude session)?** Read
+> [`docs/PROJECT-STATE.md`](docs/PROJECT-STATE.md) first — product context,
+> data model, sprint status and where everything else lives. `ale.md` has the
+> UI/SEO changelog.
+
 ## Prerequisites
 
 - [Bun](https://bun.sh/) (used as the package manager and runtime)

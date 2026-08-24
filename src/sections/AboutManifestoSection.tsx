@@ -12,10 +12,10 @@ export function AboutManifestoSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
+            <p className="text-eyebrow font-bold uppercase text-brand-cta">
               {t("home.about.eyebrow")}
             </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
               {t("home.about.title")}
             </h2>
             <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
@@ -35,9 +35,7 @@ export function AboutManifestoSection() {
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {pillars.map((p) => (
             <div key={p.label} className="rounded-[1.5rem] bg-muted p-7">
-              <p className="text-xs font-bold uppercase tracking-[0.18em] text-muted-foreground">
-                {p.label}
-              </p>
+              <p className="text-eyebrow font-bold uppercase text-muted-foreground">{p.label}</p>
               <p className="mt-3 text-sm leading-relaxed text-foreground">{p.body}</p>
             </div>
           ))}

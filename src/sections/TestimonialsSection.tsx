@@ -10,7 +10,7 @@ export function TestimonialsSection() {
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground mb-5">
             <Scale className="h-3 w-3 text-primary" /> {t("home.test.badge")}
           </div>
-          <h2 className="font-heading text-3xl font-bold text-foreground sm:text-4xl">
+          <h2 className="font-heading text-3xl font-bold text-foreground sm:text-h2">
             {t("home.test.title")}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
@@ -23,7 +23,7 @@ export function TestimonialsSection() {
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <Cpu className="h-5 w-5" />
             </div>
-            <h3 className="font-heading text-lg font-semibold text-foreground mb-2">
+            <h3 className="font-heading text-h3 font-semibold text-foreground mb-2">
               {t("home.test.c1.title")}
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">
@@ -34,7 +34,7 @@ export function TestimonialsSection() {
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <ShieldCheck className="h-5 w-5" />
             </div>
-            <h3 className="font-heading text-lg font-semibold text-foreground mb-2">
+            <h3 className="font-heading text-h3 font-semibold text-foreground mb-2">
               {t("home.test.c2.title")}
             </h3>
             <p className="text-sm text-muted-foreground leading-relaxed">

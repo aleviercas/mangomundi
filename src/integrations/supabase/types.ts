@@ -57,6 +57,7 @@ export type Database = {
           published_at: string | null;
           slug: string;
           title: string;
+          topic_cluster: string | null;
           updated_at: string;
           vertical: Database["public"]["Enums"]["provider_vertical"] | null;
         };
@@ -72,6 +73,7 @@ export type Database = {
           published_at?: string | null;
           slug: string;
           title: string;
+          topic_cluster?: string | null;
           updated_at?: string;
           vertical?: Database["public"]["Enums"]["provider_vertical"] | null;
         };
@@ -87,6 +89,7 @@ export type Database = {
           published_at?: string | null;
           slug?: string;
           title?: string;
+          topic_cluster?: string | null;
           updated_at?: string;
           vertical?: Database["public"]["Enums"]["provider_vertical"] | null;
         };
@@ -175,6 +178,33 @@ export type Database = {
           source_currency?: string;
           status?: string;
           target_currency?: string;
+        };
+        Relationships: [];
+      };
+      corridor_notes: {
+        Row: {
+          created_at: string;
+          id: string;
+          note: string;
+          reason: string;
+          receiving_country: string;
+          sending_country: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          note: string;
+          reason: string;
+          receiving_country: string;
+          sending_country: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          note?: string;
+          reason?: string;
+          receiving_country?: string;
+          sending_country?: string;
         };
         Relationships: [];
       };

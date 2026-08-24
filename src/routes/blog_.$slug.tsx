@@ -5,7 +5,12 @@ import { z } from "zod";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { ArrowRight, ArrowLeft, Check, Link2, Loader2 } from "lucide-react";
-import { getBlogPost, listSponsoredProviders, toBlogLocale } from "@/lib/blog.functions";
+import {
+  getBlogPost,
+  listRelatedBlogPosts,
+  listSponsoredProviders,
+  toBlogLocale,
+} from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -27,6 +32,18 @@ const sponsoredQuery = (audience: string) =>
   queryOptions({
     queryKey: ["blog", "sponsored-providers", audience],
     queryFn: () => listSponsoredProviders({ data: { audience } }),
+    staleTime: 5 * 60_000,
+  });
+
+const relatedQuery = (
+  slug: string,
+  locale: string,
+  audience: string,
+  topicCluster: string | null,
+) =>
+  queryOptions({
+    queryKey: ["blog", "related", slug, locale, audience, topicCluster],
+    queryFn: () => listRelatedBlogPosts({ data: { slug, locale, audience, topicCluster } }),
     staleTime: 5 * 60_000,
   });
 
@@ -238,7 +255,7 @@ function SponsoredProvidersSection({ audience }: { audience: string }) {
   return (
     <div className="mt-10 rounded-2xl border border-border bg-card p-6">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-heading text-lg font-bold text-foreground">
+        <h2 className="font-heading text-h3 font-bold text-foreground">
           {t("blog.sponsored.heading")}
         </h2>
       </div>
@@ -275,6 +292,53 @@ function SponsoredProvidersSection({ audience }: { audience: string }) {
       <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
         {t("blog.sponsored.disclosure")}
       </p>
+    </div>
+  );
+}
+
+function RelatedArticlesSection({
+  slug,
+  locale,
+  audience,
+  topicCluster,
+}: {
+  slug: string;
+  locale: string;
+  audience: string;
+  topicCluster: string | null;
+}) {
+  const { t } = useI18n();
+  const { data: posts } = useQuery(relatedQuery(slug, locale, audience, topicCluster));
+
+  if (!posts || posts.length === 0) return null;
+
+  return (
+    <div className="mt-10">
+      <h2 className="font-heading text-h3 font-bold text-foreground">
+        {t("blog.related.heading")}
+      </h2>
+      <div className="mt-4 flex flex-col gap-2.5">
+        {posts.map((p) => (
+          <Link
+            key={p.slug}
+            to="/blog/$slug"
+            params={{ slug: p.slug }}
+            className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:border-accent/50"
+          >
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-semibold text-foreground">
+                {p.title}
+              </span>
+              {p.excerpt && (
+                <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+                  {p.excerpt}
+                </span>
+              )}
+            </span>
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }
@@ -340,7 +404,7 @@ function BlogPostPage() {
           )}
         </div>
 
-        <h1 className="font-heading text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+        <h1 className="font-heading text-4xl sm:text-h1 font-bold tracking-tight text-foreground">
           {post.title}
         </h1>
         {post.excerpt && (
@@ -383,6 +447,12 @@ function BlogPostPage() {
         </div>
 
         <SponsoredProvidersSection audience={post.audience} />
+        <RelatedArticlesSection
+          slug={post.slug}
+          locale={post.locale}
+          audience={post.audience}
+          topicCluster={post.topic_cluster}
+        />
       </div>
     </article>
   );

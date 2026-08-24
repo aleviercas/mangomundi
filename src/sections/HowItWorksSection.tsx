@@ -12,10 +12,8 @@ export function HowItWorksSection() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
           <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-accent">
-              {t("home.how.eyebrow")}
-            </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-5xl">
+            <p className="text-eyebrow font-bold uppercase text-accent">{t("home.how.eyebrow")}</p>
+            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
               {t("home.how.title")}
             </h2>
             <p className="mt-6 max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
@@ -38,7 +36,7 @@ export function HowItWorksSection() {
               className="rounded-[2rem] bg-card p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)] transition-shadow hover:shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_50px_-18px_rgba(15,23,42,0.18)]"
             >
               <div className="font-heading text-sm font-bold text-accent">{s.n}</div>
-              <h3 className="mt-4 font-heading text-xl font-extrabold text-foreground">
+              <h3 className="mt-4 font-heading text-h3 font-extrabold text-foreground">
                 {s.title}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.desc}</p>

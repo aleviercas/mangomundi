@@ -73,17 +73,17 @@ function LegalPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-5 pt-28 pb-20 sm:px-8">
-      <h1 className="font-heading text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+      <h1 className="font-heading text-4xl font-extrabold tracking-tight text-foreground sm:text-h1">
         {t("legal.pageTitle")}
       </h1>
-      <p className="mt-4 text-base text-slate-500">{t("legal.pageSubtitle")}</p>
+      <p className="mt-4 text-base text-muted-foreground">{t("legal.pageSubtitle")}</p>
 
       <nav className="mt-8 flex flex-wrap gap-2">
         {sections.map((s) => (
           <a
             key={s.id}
             href={`#${s.id}`}
-            className="rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition-colors hover:bg-black hover:text-white"
+            className="rounded-full bg-muted px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background"
           >
             {s.title}
           </a>
@@ -92,22 +92,16 @@ function LegalPage() {
 
       <div className="mt-12 space-y-12">
         {sections.map((s) => (
-          <section
-            key={s.id}
-            id={s.id}
-            className="scroll-mt-24 rounded-[2rem] bg-white p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)] sm:p-12"
-          >
-            <h2 className="font-heading text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
+          <section key={s.id} id={s.id} className="surface-card scroll-mt-24 p-8 sm:p-12">
+            <h2 className="font-heading text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
               {s.title}
             </h2>
-            <p className="mt-3 text-sm text-slate-500">{s.intro}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{s.intro}</p>
             <div className="mt-8 space-y-6">
               {s.body.map((b) => (
                 <div key={b.h}>
-                  <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#ff6b5b]">
-                    {b.h}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-700">{b.p}</p>
+                  <h3 className="text-eyebrow font-bold uppercase text-brand-cta">{b.h}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-foreground">{b.p}</p>
                 </div>
               ))}
             </div>

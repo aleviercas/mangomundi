@@ -2150,6 +2150,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "blog.audience.business": "Business",
     "blog.audience.retail": "Retail",
     "blog.audience.both": "Both",
+    "blog.related.heading": "Related articles",
 
     // Pricing page
     "pricing.eyebrow": "Free for retail. Paid for businesses that need automation.",
@@ -2338,6 +2339,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "blog.audience.business": "Empresas",
     "blog.audience.retail": "Retail",
     "blog.audience.both": "Ambos",
+    "blog.related.heading": "Artículos relacionados",
 
     "pricing.eyebrow": "Gratis para retail. De pago para empresas que necesitan automatización.",
     "pricing.title.a": "Cómo ganamos",
@@ -2533,6 +2535,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Base and quote currencies for the operation.",
     "comparator.field.sourceCurrency": "Source Currency",
     "comparator.field.targetCurrency": "Target Currency",
+    "comparator.field.overrideCurrencyLink": "Need a different currency than the local one?",
+    "comparator.field.overrideCurrencyOpen": "Send/receive in:",
+    "comparator.field.useLocalCurrency": "Use local currency instead",
     "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Business",
     "hero.subheadline.short":
@@ -2611,7 +2616,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.noHiddenFees": "No hidden fees",
     "search.new": "New search",
     "search.sameCountry":
-      "Same-country route: choose two different currencies to compare conversion options.",
+      "Same-country route: choose two different countries to compare conversion options.",
     "comparator.copilot.business.intro":
       "As a business, your treasury needs are unique. Please tell me your estimated monthly volume and sector (for example: `50000, software`).",
     "comparator.copilot.business.volumeError":
@@ -2796,6 +2801,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
     "comparator.field.sourceCurrency": "Divisa de Origen",
     "comparator.field.targetCurrency": "Divisa de Destino",
+    "comparator.field.overrideCurrencyLink": "¿Necesitás una moneda distinta a la local?",
+    "comparator.field.overrideCurrencyOpen": "Enviar/recibir en:",
+    "comparator.field.useLocalCurrency": "Usar la moneda local",
     "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Empresas",
     "search.eyebrow": "Terminal de inteligencia financiera",
@@ -2811,7 +2819,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.noHiddenFees": "Sin comisiones ocultas",
     "search.new": "Nueva búsqueda",
     "search.sameCountry":
-      "Ruta dentro del mismo país: elige dos divisas distintas para comparar opciones de conversión.",
+      "Ruta dentro del mismo país: elige dos países distintos para comparar opciones de conversión.",
     "comparator.copilot.business.intro":
       "Como empresa, tus necesidades de tesorería son únicas. Indícame tu volumen mensual estimado y sector (por ejemplo: `50000, software`).",
     "comparator.copilot.business.volumeError": "Incluye el volumen mensual estimado y el sector.",
