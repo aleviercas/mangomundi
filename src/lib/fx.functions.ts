@@ -136,7 +136,12 @@ export interface ComparisonRow {
   bank_transfer_available: boolean | null;
   provider_type: string | null;
   /** True when this row's fee/spread came from a real fx_rates entry for
-   *  this exact corridor, rather than the provider's flat/tiered fields. */
+   *  this exact corridor, rather than the provider's flat/tiered fields.
+   *  When false for an is_corridor_specific provider, the numbers shown are
+   *  an ESTIMATE (that provider's generic fee/spread) — the UI should badge
+   *  this row as "not verified for this exact route" rather than presenting
+   *  it as confirmed pricing. See corridor_note on ComparisonResult for why
+   *  no exact data exists (documented gap) when applicable. */
   has_corridor_data: boolean;
   corridor_data_source: string | null;
   corridor_data_collected_at: string | null;
@@ -156,6 +161,15 @@ export interface ComparisonResult {
   from_reference: boolean;
   to_reference: boolean;
   rates_source: string;
+  /** Set when this exact (sendingCountry, receivingCountry) corridor has a
+   *  documented coverage gap in corridor_notes (e.g. sanctions, no provider
+   *  in our catalog operates the route). Corridor-specific providers are
+   *  hard-excluded only in this documented case — an *undocumented* gap
+   *  (no fx_rates row, no corridor_notes row) no longer hides those
+   *  providers; they show with has_corridor_data:false instead. Null when
+   *  there's no note for this corridor, filtering is off, or the request
+   *  didn't include sendingCountry/receivingCountry. */
+  corridor_note: { reason: string; note: string } | null;
 }
 
 // ---------- Rates cache (three-layer: memory → Supabase → live fetch) ----------
@@ -413,7 +427,9 @@ async function fetchRates(): Promise<RatesSnapshot> {
 // Precedence when ENABLE_CORRIDOR_FILTERING is on: an exact fx_rates row for
 // this (provider, corridor, amount) always wins over this function — see
 // corridorRates in compareProviders below. resolveTier is the fallback for
-// providers with no corridor-specific data (Tipo B / broad-coverage platforms).
+// providers with no corridor-specific data (Tipo B / broad-coverage platforms,
+// and now also corridor-specific providers with an undocumented data gap —
+// see the eligibleProviders comment in compareProviders).
 function resolveTier(
   p: Provider,
   amount: number,
@@ -458,7 +474,7 @@ const compareSchema = z.object({
 
 // Feature flag for the corridor-specific rates rollout (fx_rates table).
 // Off by default — set ENABLE_CORRIDOR_FILTERING=true in the environment to
-// activate. See mangomundi-arquitectura-corredor-proveedores.md section 9.
+// activate. See docs/data-sources/2026-08-diagnostico-arquitectura-proveedores-corredores.md.
 const ENABLE_CORRIDOR_FILTERING = process.env.ENABLE_CORRIDOR_FILTERING === "true";
 
 interface CorridorRate {
@@ -467,6 +483,11 @@ interface CorridorRate {
   speed_hours: number | null;
   data_source: string | null;
   data_collected_at: string | null;
+}
+
+interface CorridorNote {
+  reason: string;
+  note: string;
 }
 
 export const compareProviders = createServerFn({ method: "POST" })
@@ -503,27 +524,39 @@ export const compareProviders = createServerFn({ method: "POST" })
 
     // Corridor-specific rates (fx_rates) — real per-route data where it
     // exists. Precedence rule: an exact match here always wins over the
-    // provider's fee_tiers/flat fields (resolveTier). A corridor-specific
-    // provider (is_corridor_specific) with no match here is excluded below
-    // — it doesn't operate this route, so showing its generic flat fee
-    // would misrepresent it. Broad-coverage providers (Wise, brokers, banks)
-    // are unaffected and keep using resolveTier as they always have.
+    // provider's fee_tiers/flat fields (resolveTier). Broad-coverage
+    // providers (Wise, brokers, banks) are unaffected and keep using
+    // resolveTier as they always have.
     const corridorRates = new Map<string, CorridorRate>();
+    // corridor_notes — documented coverage gaps (sanctions, no provider in
+    // our catalog operates the route). See eligibleProviders below: this is
+    // what distinguishes a *real* gap (hard-exclude corridor-specific
+    // providers, same as before) from an *undocumented* one (show the
+    // provider with an estimated/unverified fee instead of hiding it).
+    let corridorNote: CorridorNote | null = null;
     if (
       ENABLE_CORRIDOR_FILTERING &&
       !currencyOverridden &&
       data.sendingCountry &&
       data.receivingCountry
     ) {
-      const { data: rateRows, error: rateError } = await supabaseAdmin
-        .from("fx_rates")
-        .select(
-          "provider_slug, fee, public_spread_percent, speed_hours_approx, data_source, data_collected_at, min_amount, max_amount",
-        )
-        .eq("sending_country", data.sendingCountry)
-        .eq("receiving_country", data.receivingCountry)
-        .or(`min_amount.is.null,min_amount.lte.${data.amount}`)
-        .or(`max_amount.is.null,max_amount.gte.${data.amount}`);
+      const [{ data: rateRows, error: rateError }, { data: noteRow, error: noteError }] = await Promise.all([
+        supabaseAdmin
+          .from("fx_rates")
+          .select(
+            "provider_slug, fee, public_spread_percent, speed_hours_approx, data_source, data_collected_at, min_amount, max_amount",
+          )
+          .eq("sending_country", data.sendingCountry)
+          .eq("receiving_country", data.receivingCountry)
+          .or(`min_amount.is.null,min_amount.lte.${data.amount}`)
+          .or(`max_amount.is.null,max_amount.gte.${data.amount}`),
+        supabaseAdmin
+          .from("corridor_notes")
+          .select("reason, note")
+          .eq("sending_country", data.sendingCountry)
+          .eq("receiving_country", data.receivingCountry)
+          .maybeSingle(),
+      ]);
       if (rateError) {
         // Non-fatal — fall back to flat/tiered pricing for every provider,
         // same as ENABLE_CORRIDOR_FILTERING being off.
@@ -539,14 +572,35 @@ export const compareProviders = createServerFn({ method: "POST" })
           });
         }
       }
+      if (noteError) {
+        // Non-fatal — same treatment as a missing note: undocumented gap.
+        console.error("[compareProviders] corridor_notes lookup failed", noteError);
+      } else if (noteRow) {
+        corridorNote = { reason: noteRow.reason, note: noteRow.note };
+      }
     }
 
     const eligibleProviders = ENABLE_CORRIDOR_FILTERING
-      ? (providers as Provider[]).filter((p) =>
-          currencyOverridden
-            ? !p.is_corridor_specific
-            : !p.is_corridor_specific || corridorRates.has(p.slug),
-        )
+      ? (providers as Provider[]).filter((p) => {
+          if (!p.is_corridor_specific) return true;
+          // A corridor-specific MTO genuinely can't be paid into/out of a
+          // currency other than the sending/receiving country's own local
+          // one — exclude outright regardless of corridor_notes.
+          if (currencyOverridden) return false;
+          if (corridorRates.has(p.slug)) return true;
+          // No exact fx_rates row for this corridor-specific provider.
+          // If the gap is DOCUMENTED (corridor_notes — e.g. sanctions, or no
+          // provider in our catalog actually operates this route), keep
+          // excluding it: showing an estimated fee would misrepresent a
+          // route nobody can use. If the gap is UNDOCUMENTED (e.g. the
+          // World Bank's fixed 367-corridor panel simply never covered this
+          // route, like UK→Argentina), no longer hide the provider — it may
+          // well operate that route in reality. Instead it flows through to
+          // resolveTier() below and renders with has_corridor_data:false,
+          // so the UI can badge it as "not verified for this exact route"
+          // rather than presenting an invisible or a falsely-confirmed row.
+          return corridorNote === null;
+        })
       : (providers as Provider[]);
 
     // fetchRates() can throw if every upstream FX provider (Frankfurter,
@@ -658,6 +712,7 @@ export const compareProviders = createServerFn({ method: "POST" })
         from_reference: fromReference,
         to_reference: toReference,
         rates_source: source,
+        corridor_note: corridorNote,
       } satisfies ComparisonResult;
     } catch (err) {
       console.error("[compareProviders] unexpected error building rows", err);
@@ -802,12 +857,19 @@ export const chatAboutRecommendation = createServerFn({ method: "POST" })
         return { text, error: true };
       }
 
-      // Sanitize untrusted text: strip control chars and our delimiter tokens to
-      // prevent prompt-injection that closes the wrapper or fakes system turns.
+      // Sanitize untrusted text: strip ASCII control characters (built via
+      // fromCharCode/codePointAt rather than a \u/\x regex escape, so no raw
+      // control byte or backslash-escape sequence has to live in this source
+      // file) and our delimiter tokens, to prevent prompt-injection that
+      // closes the wrapper or fakes system turns.
+      const isAsciiControlChar = (code: number) =>
+        (code >= 0 && code <= 8) || (code >= 11 && code <= 31) || code === 127;
+      const stripControlChars = (s: string) =>
+        Array.from(s)
+          .map((ch) => (isAsciiControlChar(ch.codePointAt(0) ?? 0) ? " " : ch))
+          .join("");
       const sanitizeUntrusted = (s: string) =>
-        s
-          .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, " ")
-          .replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "");
+        stripControlChars(s).replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "");
 
       const sanitizeName = (s: string) => sanitizeUntrusted(s).slice(0, 120);
 
