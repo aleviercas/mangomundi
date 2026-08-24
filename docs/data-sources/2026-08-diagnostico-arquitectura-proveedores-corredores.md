@@ -148,9 +148,9 @@ Cada capa ya tiene su lugar natural en el esquema actual (`data_source`, `verifi
 
 El código ya tiene `MasterRateStore.logMissing()` para cuando falta la tasa de cambio de mercado. Extender la misma idea a corredores de `fx_rates`: cuando un usuario busca una ruta y el resultado sale pobre (pocos o cero proveedores `is_corridor_specific`), loguearlo. Cruzar esa cola con los volúmenes de KNOMAD (sección 4) para priorizar qué investigar primero — no adivinando, sino por demanda real de la gente que usa mangomundi + volumen real de remesas mundiales.
 
-### 5.5 Evaluar la Wise Comparison API en serio
+### 5.5 Wise Comparison API — email ya enviado
 
-Vale la pena escribirle a `comparison@wise.com` para entender si mangomundi califica como partner. Si da acceso, resolvería de raíz el problema de "dato desactualizado/faltante" para transferencias banco-a-banco (que son la mayoría del volumen), dejando la investigación manual solo para lo que esa API no cubre: cash pickup, mobile money, especialistas regionales (hawala, M-Pesa, etc.) — que es donde ya se venía invirtiendo research manual de todos modos.
+Se le escribió a `comparison@wise.com` para entender si mangomundi califica como partner (ver sección 9). Si da acceso, resolvería de raíz el problema de "dato desactualizado/faltante" para transferencias banco-a-banco (que son la mayoría del volumen), dejando la investigación manual solo para lo que esa API no cubre: cash pickup, mobile money, especialistas regionales (hawala, M-Pesa, etc.) — que es donde ya se venía invirtiendo research manual de todos modos.
 
 ### 5.6 Motor de búsqueda/ranking — ya está bien encaminado
 
@@ -160,11 +160,11 @@ Vale la pena escribirle a `comparison@wise.com` para entender si mangomundi cali
 
 ## 6. Plan de acción priorizado
 
-1. **Hecho:** research y documentación consolidados en este archivo, corrección de la cifra incorrecta de Western Union, y publicación en `docs/` del repo para que cualquier sesión de Claude con acceso lo tenga disponible sin depender de una conversación puntual.
+1. **Hecho:** research y documentación consolidados en este archivo, corrección de la cifra incorrecta de Western Union, publicación en `docs/` del repo, y email enviado a Wise.
 2. **Inmediato, bajo riesgo:** cargar a mano el corredor UK→Argentina (y los corredores UK→LatAm más pedidos) para los proveedores corridor-specific relevantes, con el fee real por rango de monto (no un número fijo) y SIEMPRE citando la fuente primaria (el sitio del proveedor), nunca un agregador sin verificar.
 3. **Corto plazo, cambio de código acotado:** conectar `corridor_notes` a `compareProviders` para que un corredor sin datos muestre una nota explicativa en vez de una lista vacía o incompleta sin explicación.
 4. **Corto/mediano plazo:** implementar la degradación con transparencia (5.1) en vez de la exclusión dura — usa campos que ya existen (`has_corridor_data`), es más un cambio de lógica + UI que de esquema.
-5. **Mediano plazo:** escribirle a Wise sobre la Comparison API; en paralelo, armar la cola de corredores faltantes priorizada por volumen (5.4) para sistematizar el research manual en vez de hacerlo reactivo a quejas de usuarios.
+5. **En espera de respuesta de Wise:** una vez que conteste (sección 9), actualizar esta sección y 5.5 según lo que digan.
 6. **Nuevo frente, mediano plazo:** arrancar el FX local (sección 4.2) — conectar dolarapi.com/bluelytics para Argentina como piloto (son APIs públicas, sin partnership necesario), y después decidir el orden de investigación país por país para el resto del mundo.
 7. **Continuo:** seguir el patrón ya establecido en `docs/multi-criteria-ranking/` — cada dato nuevo con fuente y fecha, nunca inventado, nunca corrido contra producción sin aprobación explícita de Alejandro.
 
@@ -175,7 +175,7 @@ Vale la pena escribirle a `comparison@wise.com` para entender si mangomundi cali
 Todo lo de arriba es diagnóstico, research y documentación — no se tocó la base de Supabase, siguiendo el mismo criterio ya establecido con el agente anterior ("no se corre nada contra producción hasta que Alejandro lo apruebe explícitamente"). Antes de escribir cualquier dato nuevo en `fx_rates`/`providers` o de activar la integración con dolarapi/bluelytics en el código, falta confirmar:
 
 - ¿Arrancar por el fix rápido de UK→Argentina y corredores UK→LatAm similares (con fuente primaria, sin la cifra incorrecta de antes)?
-- ¿Escribirle a Wise (`comparison@wise.com`) para preguntar por acceso a la Comparison API, o prefiere Alejandro hacerlo directamente (a veces estas cosas avanzan más rápido con una persona real del lado del negocio)? Ver borrador de email en la sección 9.
+- ~~¿Escribirle a Wise...?~~ **Hecho** — Alejandro ya le escribió directo a `comparison@wise.com` (24 ago 2026). Queda pendiente su respuesta; cuando llegue, se anota en la sección 9 y se sigue según lo que digan.
 - Para el FX local (dólar blue/MEP/CCL): ¿se trata como una feature nueva del comparador (una pestaña separada de "conversión local" vs. "envío internacional") o como un dato más dentro del mismo flujo? Esto cambia bastante el diseño de la UI, no solo la carga de datos.
 - ¿Luz verde para el cambio de código de "exclusión dura" → "degradación con transparencia", o revisarlo en una rama primero?
 
@@ -189,9 +189,9 @@ Toda la demás documentación del repo (`ale.md`, `MIGRATION.md`, y el resto) vi
 
 ---
 
-## 9. Borrador de email para Wise (Comparison API)
+## 9. Email a Wise (Comparison API) — ✅ ya enviado
 
-No hay una herramienta de email conectada para enviarlo directamente desde acá. Dos caminos: conectar Gmail/Outlook/Resend en Cowork para que Claude lo mande, o copiarlo y mandarlo directamente — probablemente lo segundo avance más rápido tratándose de una conversación de partnership/negocio.
+Alejandro ya le escribió directo a `comparison@wise.com` (24 ago 2026). Queda en espera de respuesta — cuando llegue, actualizar la sección 5.5/6 según lo que Wise conteste (acceso sí/no, condiciones, cobertura real). El borrador que se había preparado queda abajo como referencia de qué se preguntó:
 
 **Para:** comparison@wise.com
 **Asunto:** Partnership inquiry — Wise Comparison API for mangomundi.com
