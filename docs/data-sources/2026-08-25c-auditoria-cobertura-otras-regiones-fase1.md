@@ -1,6 +1,6 @@
 # Auditoría de cobertura — Sudeste Asiático, Medio Oriente/Golfo y Europa del Este (fase 1, 25 ago 2026)
 
-**Estado: FASE 1 completa (investigación de cobertura con fuente primaria), FASE 2 (cotización en vivo) no iniciada.** Mismo método que las rondas anteriores: solo se identifican corredores reales de alto volumen no cargados, citando fuente primaria — sin cotizar precios todavía (eso requiere navegador, más costoso en tokens, y se hace en una ronda separada). Investigación detallada completa disponible en el proyecto Mangomundi: `investigacion-sudeste-asiatico-2026-08-25.md`, `investigacion-medio-oriente-golfo-2026-08-25.md`, `investigacion-europa-del-este-2026-08-25.md`.
+**Estado: FASE 1 completa (investigación de cobertura con fuente primaria), FASE 2 (cotización en vivo) no iniciada.** Mismo método que las rondas anteriores: solo se identifican corredores reales de alto volumen no cargados, citando fuente primaria — sin cotizar precios todavía (eso requiere navegador, más costoso en tokens, y se hace en una ronda separada). Investigación detallada completa disponible en el proyecto Mangomundi: `investigacion-sudeste-asiatico-2026-08-25.md`, `investigacion-medio-oriente-golfo-2026-08-25.md`, `investigacion-europa-del-este-2026-08-25.md`, `reverificacion-europa-del-este-ria-moneygram-2026-08-25.md`.
 
 ---
 
@@ -66,21 +66,25 @@ Países objetivo como receptores: Ucrania, Moldavia, Rumania, Bulgaria, Polonia,
 - MoneyGram: US→UA/MD, FR→MD/BG, GB→RO/PL, CZ→PL, US→HU, DE→CZ/RS, AT→BA.
 - Remitly: matriz completa US→{UA, MD, RO, BG, PL, HU, RS, CZ, BA}.
 - Wise: opera en moneda local directa para RO/RS/BA/PL/HU/CZ (RON/RSD/BAM/PLN/HUF/CZK).
-- Ria: US→UA/RO confirmados; US→MD como corredor especial solo tarjeta/cuenta (agrupado con Armenia/Georgia) — profundizar.
+- Ria: US→UA/RO confirmados; US→MD como corredor especial solo tarjeta/cuenta (agrupado con Armenia/Georgia) — profundizar. **Bulgaria, Serbia y Bosnia: re-verificados 25-ago (ver abajo), los tres confirmados como corredores reales y activos, no solo páginas placeholder.**
 - Paysend: matriz amplia GB/US/DE/CZ/MD→9 países.
 - Xoom: matriz completa, página propia por país para los 9 destinos.
 
 **Negativos confirmados — el hallazgo más importante de esta región:**
-- **WorldRemit NO opera ningún corredor hacia Europa del Este.** Tres fuentes propias cruzadas lo confirman: su página "send to Europe" lista solo Albania y Turquía; declara textualmente que no ofrece transferencias bancarias a países de Europa; su sección de cash pickup para Europa aparece vacía; y lista a Ucrania explícitamente como no soportada para transferencias de negocio. **Esto contradice lo que se esperaría de un corredor GB→Polonia — se recomienda verificar si hay algo de WorldRemit cargado incorrectamente hacia esta región en el catálogo antes de asumir cobertura.**
+- **WorldRemit NO opera ningún corredor hacia Europa del Este.** Tres fuentes propias cruzadas lo confirman: su página "send to Europe" lista solo Albania y Turquía; declara textualmente que no ofrece transferencias bancarias a países de Europa; su sección de cash pickup para Europa aparece vacía; y lista a Ucrania explícitamente como no soportada para transferencias de negocio. **Cross-check contra el catálogo (25-ago): se confirmó por SQL directo contra `fx_rates` que WorldRemit no tiene ninguna fila cargada hacia ningún país de Europa del Este (BG, RS, BA, PL, RO, HU, HR, SI, SK, UA, MD, AL, MK, ME) — cero filas. No hay conflicto ni dato incorrecto que corregir; el hallazgo negativo queda cerrado.**
 - Wise: Ucrania, Moldavia y Bulgaria explícitamente NO soportados en moneda local ("we're working hard... but we're not quite there yet"); solo wire transfer en USD para Moldavia (fee ~9 USD, no es un envío real en moneda local).
 - TapTap Send, Sendwave, LemFi, NALA: ninguno de los cuatro tiene un solo corredor hacia Europa del Este — los cuatro se autodescriben o listan explícitamente como especializados en África/Asia/Latinoamérica, sin presencia en la región.
 
-**Limitación de esta investigación:** WebFetch alcanzó un límite de sesión a mitad de la tarea; el resto se completó con WebSearch (menos preciso para leer contenido completo de página) — casos puntuales sin confirmar del todo: Ria Bulgaria/Serbia/Bosnia, MoneyGram Bulgaria.
+**Re-verificación de los casos puntuales que habían quedado sin confirmar (cerrada 25-ago-2026, ver `reverificacion-europa-del-este-ria-moneygram-2026-08-25.md` en el proyecto):**
+- **Ria → Bulgaria: CONFIRMADO, corredor real y activo.** riamoneytransfer.com/en-us/send-money-to-bulgaria/ — calculadora en vivo, no placeholder. Payout: cash pickup (6.000+ ubicaciones, partners EasyPay y Correos búlgaros), banco, billetera móvil (ePay.bg).
+- **Ria → Serbia: CONFIRMADO, corredor real y activo.** riamoneytransfer.com/en-us/send-money-to-serbia/ — tasa en vivo (1 USD≈100.09 RSD). Payout: cash pickup (2.900+ ubicaciones, partners TransferNova, Correos serbios, PaySpot, Raiffeisen, OTP Bank, ERSTE, AIK Banka), banco. Sin billetera móvil confirmada.
+- **Ria → Bosnia: CONFIRMADO, corredor real (detalle más limitado).** riamoneytransfer.com/en-us/send-money-to-bosnia-and-herzegovina/ — tasa en vivo (1 USD≈1.69 BAM). Payout: cash pickup (100+ ubicaciones, sin partners nombrados), banco.
+- **MoneyGram → Bulgaria: NO confirmado por fuente primaria directa — bloqueo anti-bot persistente (403 en las 4 URLs probadas, incluyendo `/corridor/bulgaria` desde dos países emisores distintos y el localizador de agentes). Evidencia indirecta fuerte** (sitio localizado `moneygram.com/bg/en` indexado con corredores propios, localizador de agentes con ciudades búlgaras reales — Sofia, Sofia-City, Dobrich/Albena —, artículo de ayuda "How to receive money from MoneyGram in Bulgaria", y páginas de corredor hacia Bulgaria desde EE.UU./Irlanda/Singapur indexadas), pero sin lectura de contenido primario confirmada. **Se recomienda verificación con navegador real (no WebFetch/WebSearch) antes de cargar cualquier precio para este corredor específico.**
 
-**Prioridad sugerida para fase 2:** Ucrania y Moldavia en los proveedores de mayor volumen (Western Union, Remitly, MoneyGram, Xoom, Paysend) por el volumen humanitario real; confirmar/descartar definitivamente la ausencia de WorldRemit en la región.
+**Prioridad sugerida para fase 2:** Ucrania y Moldavia en los proveedores de mayor volumen (Western Union, Remitly, MoneyGram, Xoom, Paysend) por el volumen humanitario real; MoneyGram→Bulgaria con navegador real para cerrar el único caso que sigue sin confirmación de fuente primaria directa.
 
 ---
 
 ## Próximo paso
 
-Estas tres investigaciones quedan listas para pasar a fase 2 (cotización en vivo con navegador) en una próxima sesión, priorizando por volumen real: Golfo→Sur de Asia/Filipinas (el mercado de remesas más grande del mundo), Ucrania/Moldavia (volumen humanitario), y los corredores del sudeste asiático con mejor evidencia (Arabia Saudita→Indonesia, Tailandia→Myanmar).
+Estas tres investigaciones quedan listas para pasar a fase 2 (cotización en vivo con navegador) en una próxima sesión, priorizando por volumen real: Golfo→Sur de Asia/Filipinas (el mercado de remesas más grande del mundo), Ucrania/Moldavia (volumen humanitario), y los corredores del sudeste asiático con mejor evidencia (Arabia Saudita→Indonesia, Tailandia→Myanmar). Ninguna de las tres regiones tiene todavía precios cargados en `fx_rates` — toda esta fase 1 es solo de cobertura, no de pricing.
