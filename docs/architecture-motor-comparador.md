@@ -1,0 +1,1 @@
+$(cat /tmp/architecture-motor-comparador.md)
