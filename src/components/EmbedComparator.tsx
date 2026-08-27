@@ -75,7 +75,7 @@ export function EmbedComparator({
 
       {showScrollHint && (
         <div className="pointer-events-none absolute inset-x-0 bottom-12 flex justify-center">
-          <span className="animate-bounce rounded-full bg-slate-900/85 p-1.5 text-white shadow-lg">
+          <span className="animate-bounce rounded-full bg-foreground/85 p-1.5 text-background shadow-lg">
             <ChevronDown className="h-4 w-4" />
           </span>
         </div>

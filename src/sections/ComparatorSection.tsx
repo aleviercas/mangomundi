@@ -8,6 +8,7 @@ import {
   Banknote,
   Briefcase,
   Building2,
+  ChevronDown,
   Clock,
   Coins,
   CreditCard,
@@ -31,6 +32,13 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   compareProviders,
   trackAffiliateClick,
@@ -79,9 +87,10 @@ import {
 type Segment = "retail" | "business";
 type AmountMode = "send" | "receive";
 
-/** White field styling for inputs/triggers inside the dark comparator card. */
+/** Field styling for inputs/triggers inside the (light) comparator card —
+ *  a recessed pill distinct from the card's own surface. */
 const WHITE_FIELD =
-  "h-11 rounded-md border border-transparent bg-white px-3 text-sm font-medium text-slate-900 shadow-sm hover:bg-slate-50 hover:border-transparent focus:outline-none focus:ring-2 focus:ring-brand-cta/40";
+  "h-11 rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground shadow-sm hover:bg-muted hover:border-border focus:outline-none focus:ring-2 focus:ring-brand-cta/40";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
 /** Monito-style "how does the recipient get paid" filter — single-select
@@ -126,52 +135,36 @@ const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labe
  *  "Cash pickup" in both places was confusing (same word, two different
  *  behaviors: one reorders, one hides).
  *
- *  Primary row (bigger chips, Kayak/Google Flights pattern) — exactly the 3
- *  criteria that already have a direct, obvious visual counterpart on every
- *  row (Score pill, the big received amount, the speed cell), so picking one
- *  of these visually "points at" something the person is already looking
- *  at. "overall" is labeled "Score" (see sortLabelKey) — same composite
- *  number as the pill on every row, not a separately-named editorial pick.
- *  Fee is deliberately NOT here despite also having a per-row number (the
- *  mini-strip) — this grouping is about which 3 criteria matter most, not a
- *  mechanical "is it visible anywhere" rule; fee lives in the secondary row
- *  below instead. */
-// All 6 sort chips at one flat visual tier now — no primary/secondary
-// split. That distinction existed to keep the row from feeling crowded,
-// but on request it's gone: every option reads as equally legitimate,
-// which matches how they actually behave (each is a real, independently
-// useful way to rank, not a "main 2 vs. supplementary 4" hierarchy).
-//
-// Order: Score, Fastest, Most trusted, Recipient gets the most, Lowest
-// fee, Best exchange rate — as specified, not alphabetical or grouped by
-// theme. The three money-related ones (recipient_gets_most, lowest_cost,
-// best_exchange_rate) are DELIBERATELY kept as separate sort options
-// rather than blended into one "value" metric: a provider can advertise
-// "$0 fee" while hiding a bad exchange rate margin (or vice versa) —
-// splitting them is the whole point of a neutral comparator, and
-// recipient_gets_most (fee + rate already combined into one number) is
-// what lets someone skip straight to the bottom line if they don't care
-// about the breakdown.
-//
-// most_transparent was removed entirely (used to be here) — not a UI
-// decision, a data-integrity one: unlike trust_score (has a documented,
-// cited source per provider — see
-// docs/multi-criteria-ranking/scoring-data-findings.md), no equivalent
-// research trail exists for transparency_score. Rather than keep a sort
-// option — and a per-row chip, and a weighted contribution to every OTHER
-// profile including "Score" itself — built on a number nobody can
-// currently trace back to a source, it's fully removed: the sort chip,
-// the STRICT_SORT_FIELD entry, the SCORE_PROFILES weight in every profile
-// (redistributed), and the per-row display chip. If a real, sourced
-// methodology gets established later, it can come back.
-const SORT_CHIPS: SortKey[] = [
-  "overall",
-  "fastest",
-  "most_trusted",
-  "recipient_gets_most",
-  "lowest_cost",
-  "best_exchange_rate",
-];
+ *  Primary row (bigger chips, Kayak/Google Flights "Best/Cheapest/Fastest"
+ *  pattern) — exactly the 3 criteria that already have a direct, obvious
+ *  visual counterpart on every row (Score pill, the big received amount,
+ *  the speed cell), so picking one of these visually "points at" something
+ *  the person is already looking at. "overall" is labeled "Score" (see
+ *  sortLabelKey) — same composite number as the pill on every row, not a
+ *  separately-named editorial pick.
+ *
+ *  The other 3 (trust, fee, exchange rate) live behind the "More criteria"
+ *  dropdown, not because they're less legitimate — the three money-related
+ *  ones (recipient_gets_most, lowest_cost, best_exchange_rate) are
+ *  DELIBERATELY kept as separate sort options rather than blended into one
+ *  "value" metric: a provider can advertise "$0 fee" while hiding a bad
+ *  exchange rate margin (or vice versa), and splitting them is the whole
+ *  point of a neutral comparator — but six equal-weight chips read as "pick
+ *  one of six", which stalls the decision rather than guiding it.
+ *
+ *  most_transparent was removed entirely (used to be here) — not a UI
+ *  decision, a data-integrity one: unlike trust_score (has a documented,
+ *  cited source per provider — see
+ *  docs/multi-criteria-ranking/scoring-data-findings.md), no equivalent
+ *  research trail exists for transparency_score. Rather than keep a sort
+ *  option — and a per-row chip, and a weighted contribution to every OTHER
+ *  profile including "Score" itself — built on a number nobody can
+ *  currently trace back to a source, it's fully removed: the sort chip,
+ *  the STRICT_SORT_FIELD entry, the SCORE_PROFILES weight in every profile
+ *  (redistributed), and the per-row display chip. If a real, sourced
+ *  methodology gets established later, it can come back. */
+const PRIMARY_SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "fastest"];
+const MORE_SORT_CHIPS: SortKey[] = ["most_trusted", "lowest_cost", "best_exchange_rate"];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
 // "best_business" deliberately excluded: the Personal/Empresa segment
@@ -286,11 +279,17 @@ export interface ComparatorQuery {
 export function ComparatorSection({
   initialQuery,
   embedded = false,
+  onHasResultChange,
 }: {
   initialQuery?: ComparatorQuery;
   /** Embed mode (iframe widget): drop the floating AI agent and the section
    *  chrome (padding/max-width) so it fits inside the host container. */
   embedded?: boolean;
+  /** Notifies the parent page when a comparison has (or no longer has) a
+   *  result, so it can collapse the marketing hero above this section —
+   *  the "search becomes a sticky bar, results take the screen" pattern.
+   *  Home-only; the embed widget has no hero to collapse. */
+  onHasResultChange?: (hasResult: boolean) => void;
 }) {
   const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
@@ -359,6 +358,9 @@ export function ComparatorSection({
   const urgency: Urgency = "standard";
   const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
+  useEffect(() => {
+    onHasResultChange?.(Boolean(result));
+  }, [result, onHasResultChange]);
   const [aiText, setAiText] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [chat, setChat] = useState<ChatMsg[]>([]);
@@ -1140,10 +1142,16 @@ export function ComparatorSection({
     >
       <div className={embedded ? "min-w-0" : "mx-auto max-w-7xl px-5 sm:px-8"}>
         {/* THE comparator box — the single entry point. Basic row always
-            visible; advanced fields fold out below inside the same card. */}
-        <div className="min-w-0">
-          {/* Decision card — dark, matching the brand widget (white inputs). */}
-          <div className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
+            visible; advanced fields fold out below inside the same card.
+            Once a comparison has run, the card sticks under the fixed
+            header (top-16 = its 64px height) so the search stays reachable
+            and editable while the results list below scrolls underneath it
+            — the Kayak/Skyscanner "search collapses to a sticky bar, results
+            take the screen" pattern, without a second page. */}
+        <div className={`min-w-0 ${result && !embedded ? "sticky top-16 z-30" : ""}`}>
+          {/* Decision card — light surface, same token language as the rest
+              of the site (no more dark-navy island). */}
+          <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.12)]">
             {/* Card header: brand + segment toggle. Tried moving this into
                 the post-results filter row (Personal/Empresa alongside
                 Size/Show only/Receive via) — reverted: unlike those
@@ -1153,7 +1161,7 @@ export function ComparatorSection({
                 the chat to the business-lead wizard. That decision needs to
                 happen BEFORE the search runs, not as a post-results filter
                 — so it stays here. */}
-            <div className="flex items-center justify-between gap-3 border-b border-white/10 px-4 py-1.5 sm:px-5">
+            <div className="flex items-center justify-between gap-3 border-b border-border px-4 py-1.5 sm:px-5">
               <div className="flex min-w-0 items-center gap-2 text-eyebrow font-bold uppercase text-brand-cta">
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
@@ -1161,7 +1169,7 @@ export function ComparatorSection({
               <div
                 role="tablist"
                 aria-label={t("search.segment")}
-                className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-white/10 p-1"
+                className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-muted p-1"
               >
                 {(["retail", "business"] as Segment[]).map((s) => (
                   <button
@@ -1171,8 +1179,8 @@ export function ComparatorSection({
                     onClick={() => setSegment(s)}
                     className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
                       segment === s
-                        ? "bg-white text-slate-900 shadow-sm"
-                        : "text-slate-300 hover:text-white"
+                        ? "bg-card text-foreground shadow-sm"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     {t(`comparator.segment.${s}`)}
@@ -1208,7 +1216,7 @@ export function ComparatorSection({
                   <FieldLight label={t("comparator.field.amount")}>
                     {/* Unified pill: amount + country read as one control,
                         split by a hairline divider instead of two boxes. */}
-                    <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-transparent bg-white shadow-sm transition-colors hover:bg-slate-50 focus-within:ring-2 focus-within:ring-brand-cta/40">
+                    <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-border bg-background shadow-sm transition-colors hover:bg-muted focus-within:ring-2 focus-within:ring-brand-cta/40">
                       <input
                         type="number"
                         inputMode="decimal"
@@ -1217,7 +1225,7 @@ export function ComparatorSection({
                         placeholder="1000"
                         onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                         aria-label={t("comparator.field.amount")}
-                        className="min-w-0 flex-1 bg-transparent px-3 text-sm font-medium tabular-nums text-slate-900 placeholder:text-slate-400 focus:outline-none"
+                        className="min-w-0 flex-1 bg-transparent px-3 text-sm font-medium tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
                       />
                       <CountryCombobox
                         value={sendingCountry}
@@ -1226,7 +1234,7 @@ export function ComparatorSection({
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.sourceCurrency")}
-                        triggerClassName="h-11 w-auto shrink-0 rounded-none border-0 border-l border-slate-200 bg-transparent px-3 shadow-none hover:bg-slate-50 focus:ring-0"
+                        triggerClassName="h-11 w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-3 shadow-none hover:bg-muted focus:ring-0"
                       />
                     </div>
                   </FieldLight>
@@ -1244,7 +1252,7 @@ export function ComparatorSection({
                       handleReceivingCountryChange(prevSending);
                     }}
                     aria-label={t("comparator.swap")}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-brand-cta transition hover:bg-white/10 hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-muted text-brand-cta transition hover:bg-muted/70 hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                   >
                     <ArrowLeftRight className="h-4 w-4 rotate-90 @2xl:rotate-0" />
                   </button>
@@ -1319,13 +1327,13 @@ export function ComparatorSection({
                 <button
                   type="button"
                   onClick={() => setFromCurrencyOverride(true)}
-                  className="text-[11px] text-slate-400 underline decoration-dotted underline-offset-2 hover:text-slate-200"
+                  className="text-[11px] text-muted-foreground underline decoration-dotted underline-offset-2 hover:text-foreground"
                 >
                   {t("comparator.field.overrideCurrencyLink")}
                 </button>
               ) : (
-                <div className="flex flex-wrap items-center gap-2 rounded-md border border-white/10 bg-white/[0.03] px-3 py-2">
-                  <span className="text-[11px] text-slate-400">
+                <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-2">
+                  <span className="text-[11px] text-muted-foreground">
                     {t("comparator.field.overrideCurrencyOpen")}
                   </span>
                   <CurrencyCombobox
@@ -1345,7 +1353,7 @@ export function ComparatorSection({
                       setTo(prevFrom);
                     }}
                     aria-label={t("comparator.swap")}
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-slate-400 transition hover:bg-white/10 hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                   >
                     <ArrowLeftRight className="h-3.5 w-3.5" />
                   </button>
@@ -1366,7 +1374,7 @@ export function ComparatorSection({
                       setFrom(localCurrency(sendingCountry));
                       if (receivingCountry) setTo(localCurrency(receivingCountry));
                     }}
-                    className="ml-auto text-[11px] text-slate-400 underline hover:text-slate-200"
+                    className="ml-auto text-[11px] text-muted-foreground underline hover:text-foreground"
                   >
                     {t("comparator.field.useLocalCurrency")}
                   </button>
@@ -1378,14 +1386,16 @@ export function ComparatorSection({
               {result && (
                 <div
                   ref={resultsRef}
-                  className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3 scroll-mt-24"
+                  className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-border bg-muted/40 px-4 py-3 scroll-mt-24"
                 >
-                  <span className="font-heading text-base font-bold text-white sm:text-lg">
+                  <span className="font-heading text-base font-bold text-foreground sm:text-lg">
                     1 {from} ={" "}
                     {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
                     {to}
                   </span>
-                  <span className="text-xs text-slate-400">{t("comparator.midMarketRate")}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {t("comparator.midMarketRate")}
+                  </span>
                 </div>
               )}
 
@@ -1522,7 +1532,7 @@ export function ComparatorSection({
                 <span className="mr-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("comparator.sortBy")}
                 </span>
-                {SORT_CHIPS.map((key) => {
+                {PRIMARY_SORT_CHIPS.map((key) => {
                   const Icon = sortIcon(key);
                   return (
                     <button
@@ -1541,6 +1551,47 @@ export function ComparatorSection({
                     </button>
                   );
                 })}
+
+                {/* The other 3 criteria (trust, fee, exchange rate) — same
+                    control, tucked behind a dropdown instead of a 4th-6th
+                    chip so the primary row stays a 3-way decision. The
+                    trigger itself reflects the active choice when one of
+                    these 3 is selected, so switching via the dropdown is
+                    still visible without reopening it. */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      type="button"
+                      aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
+                      className={`inline-flex h-8 items-center gap-1.5 rounded-full border px-3 text-xs font-medium normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        MORE_SORT_CHIPS.includes(sortBy)
+                          ? "border-transparent bg-brand-cta text-brand-cta-foreground"
+                          : "border-input bg-card text-foreground hover:border-foreground/30"
+                      }`}
+                    >
+                      {(() => {
+                        const Icon = MORE_SORT_CHIPS.includes(sortBy) ? sortIcon(sortBy) : Gauge;
+                        return <Icon className="h-3.5 w-3.5" />;
+                      })()}
+                      {MORE_SORT_CHIPS.includes(sortBy)
+                        ? t(sortLabelKey(sortBy))
+                        : t("comparator.sort.more")}
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuRadioGroup
+                      value={sortBy}
+                      onValueChange={(v) => setSortBy(v as SortKey)}
+                    >
+                      {MORE_SORT_CHIPS.map((key) => (
+                        <DropdownMenuRadioItem key={key} value={key}>
+                          {t(sortLabelKey(key))}
+                        </DropdownMenuRadioItem>
+                      ))}
+                    </DropdownMenuRadioGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 {/* Delivery method — single-select, mutually exclusive,
                     click the active one again to clear back to "all
@@ -1684,7 +1735,7 @@ export function ComparatorSection({
 function FieldLight({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block truncate text-[11px] font-semibold uppercase tracking-wider text-slate-300">
+      <span className="mb-1 block truncate text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
         {label}
       </span>
       <div className="min-w-0">{children}</div>
@@ -1763,7 +1814,13 @@ function FloatingAgent(p: FloatingAgentProps) {
   }, [collapsed, onToggle]);
 
   return (
-    <div className="fixed bottom-4 right-4 z-[60] sm:bottom-6 sm:right-6">
+    // Docked to the side edge, vertically centered — Kayak's pattern for a
+    // persistent secondary panel — instead of a bottom-right corner bubble
+    // that sits on top of content (on mobile it used to overlap the last
+    // result row's CTA). Collapsed, it's a slim edge tab rather than a
+    // floating circle, so it reads as part of the page's furniture, not an
+    // overlay competing with whatever's underneath it.
+    <div className="fixed right-0 top-1/2 z-[60] -translate-y-1/2 sm:right-0">
       {collapsed ? (
         <button
           ref={toggleBtnRef}
@@ -1773,13 +1830,19 @@ function FloatingAgent(p: FloatingAgentProps) {
           aria-expanded={false}
           aria-haspopup="dialog"
           aria-controls="ai-agent-panel"
-          className="btn-cta group relative flex h-14 w-14 items-center justify-center rounded-full shadow-2xl ring-1 ring-foreground/10 transition hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="btn-cta group relative flex flex-col items-center gap-1.5 rounded-l-xl rounded-r-none py-4 pl-3 pr-2.5 shadow-2xl ring-1 ring-foreground/10 transition hover:pr-3.5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
-          <Sparkle className="h-6 w-6" aria-hidden />
+          <Sparkle className="h-5 w-5 shrink-0" aria-hidden />
+          <span
+            className="text-[11px] font-semibold leading-none [writing-mode:vertical-rl]"
+            aria-hidden
+          >
+            {t("comparator.copilot.agent")}
+          </span>
           {hasNewResult && (
             <span
               aria-label={t("agent.newResult")}
-              className="absolute -top-1 -right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-success ring-2 ring-background"
+              className="absolute -left-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-success ring-2 ring-background"
             />
           )}
         </button>
@@ -1789,7 +1852,7 @@ function FloatingAgent(p: FloatingAgentProps) {
           role="dialog"
           aria-modal="false"
           aria-labelledby={panelLabelId}
-          className="surface-card flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden shadow-2xl ring-1 ring-foreground/10"
+          className="surface-card flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl ring-1 ring-foreground/10"
         >
           <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3">
             <span

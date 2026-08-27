@@ -1,6 +1,6 @@
 interface WordmarkProps {
   className?: string;
-  /** Override colour (default: slate-950). Pass "light" for dark backgrounds. */
+  /** Override colour (default: --foreground). Pass "light" for dark backgrounds. */
   tone?: "dark" | "light";
 }
 
