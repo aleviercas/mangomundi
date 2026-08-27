@@ -90,6 +90,17 @@ export interface Provider {
    *  the exact route); false/null = multi-currency platform, falls back to
    *  fee_tiers/flat fields as today. See ENABLE_CORRIDOR_FILTERING below. */
   is_corridor_specific?: boolean | null;
+  /** Strict whitelist for single-market brands (e.g. Money2India only
+   *  operates US-IN, not "any corridor a user asks for") — entries are
+   *  "SENDING-RECEIVING" ISO-3166 country pairs. When populated,
+   *  eligibleProviders excludes this provider for any corridor not listed
+   *  here, independent of ENABLE_CORRIDOR_FILTERING. Null/empty = no
+   *  restriction (unchanged behavior — the vast majority of providers). */
+  supported_corridors?: string[] | null;
+  /** Generic "rates last updated" fallback, shown in the UI trust badge
+   *  when no corridor-specific fx_rates row exists for this route (i.e.
+   *  has_corridor_data is false). */
+  rates_last_updated?: string | null;
 }
 
 export interface ComparisonRow {
@@ -145,6 +156,14 @@ export interface ComparisonRow {
   has_corridor_data: boolean;
   corridor_data_source: string | null;
   corridor_data_collected_at: string | null;
+  /** fx_rates.verified_status for this row's corridor data — e.g.
+   *  "sin_confirmar" when the fee/spread couldn't be independently
+   *  confirmed from a second source. Null when has_corridor_data is false
+   *  (no corridor row) or the row has no status set. */
+  corridor_verified_status: string | null;
+  /** providers.rates_last_updated — generic fallback "last updated" date
+   *  for the UI trust badge, used when has_corridor_data is false. */
+  provider_rates_last_updated: string | null;
 }
 
 export interface ComparisonResult {
@@ -483,6 +502,7 @@ interface CorridorRate {
   speed_hours: number | null;
   data_source: string | null;
   data_collected_at: string | null;
+  verified_status: string | null;
 }
 
 interface CorridorNote {
@@ -534,17 +554,20 @@ export const compareProviders = createServerFn({ method: "POST" })
     // providers, same as before) from an *undocumented* one (show the
     // provider with an estimated/unverified fee instead of hiding it).
     let corridorNote: CorridorNote | null = null;
-    if (
-      ENABLE_CORRIDOR_FILTERING &&
-      !currencyOverridden &&
-      data.sendingCountry &&
-      data.receivingCountry
-    ) {
+    // Runs whenever we have both countries and the user didn't override the
+    // currency — independent of ENABLE_CORRIDOR_FILTERING. Real per-route
+    // data always wins over generic fee_tiers when it exists, for ANY
+    // provider. This used to be gated behind the flag, which meant the flag
+    // being off (the documented production default) silently disabled every
+    // corridor row ever researched, for every provider — not just the
+    // corridor-specific ones. The flag now controls only the hard-exclusion
+    // behavior below (is_corridor_specific + corridor_notes).
+    if (!currencyOverridden && data.sendingCountry && data.receivingCountry) {
       const [{ data: rateRows, error: rateError }, { data: noteRow, error: noteError }] = await Promise.all([
         supabaseAdmin
           .from("fx_rates")
           .select(
-            "provider_slug, fee, public_spread_percent, speed_hours_approx, data_source, data_collected_at, min_amount, max_amount",
+            "provider_slug, fee, public_spread_percent, speed_hours_approx, data_source, data_collected_at, verified_status, min_amount, max_amount",
           )
           .eq("sending_country", data.sendingCountry)
           .eq("receiving_country", data.receivingCountry)
@@ -558,8 +581,7 @@ export const compareProviders = createServerFn({ method: "POST" })
           .maybeSingle(),
       ]);
       if (rateError) {
-        // Non-fatal — fall back to flat/tiered pricing for every provider,
-        // same as ENABLE_CORRIDOR_FILTERING being off.
+        // Non-fatal — fall back to flat/tiered pricing for every provider.
         console.error("[compareProviders] fx_rates lookup failed", rateError);
       } else {
         for (const r of rateRows ?? []) {
@@ -569,6 +591,7 @@ export const compareProviders = createServerFn({ method: "POST" })
             speed_hours: r.speed_hours_approx != null ? Number(r.speed_hours_approx) : null,
             data_source: r.data_source ?? null,
             data_collected_at: r.data_collected_at ?? null,
+            verified_status: r.verified_status ?? null,
           });
         }
       }
@@ -580,28 +603,45 @@ export const compareProviders = createServerFn({ method: "POST" })
       }
     }
 
-    const eligibleProviders = ENABLE_CORRIDOR_FILTERING
-      ? (providers as Provider[]).filter((p) => {
-          if (!p.is_corridor_specific) return true;
-          // A corridor-specific MTO genuinely can't be paid into/out of a
-          // currency other than the sending/receiving country's own local
-          // one — exclude outright regardless of corridor_notes.
-          if (currencyOverridden) return false;
-          if (corridorRates.has(p.slug)) return true;
-          // No exact fx_rates row for this corridor-specific provider.
-          // If the gap is DOCUMENTED (corridor_notes — e.g. sanctions, or no
-          // provider in our catalog actually operates this route), keep
-          // excluding it: showing an estimated fee would misrepresent a
-          // route nobody can use. If the gap is UNDOCUMENTED (e.g. the
-          // World Bank's fixed 367-corridor panel simply never covered this
-          // route, like UK→Argentina), no longer hide the provider — it may
-          // well operate that route in reality. Instead it flows through to
-          // resolveTier() below and renders with has_corridor_data:false,
-          // so the UI can badge it as "not verified for this exact route"
-          // rather than presenting an invisible or a falsely-confirmed row.
-          return corridorNote === null;
-        })
-      : (providers as Provider[]);
+    const eligibleProviders = (providers as Provider[]).filter((p) => {
+      // Strict whitelist for single-market brands (Money2India, BDO Remit,
+      // UBL Tezraftaar, Prex...) — independent of ENABLE_CORRIDOR_FILTERING.
+      // These are marketed under one brand but structurally only operate
+      // one (or a short list of) real corridor(s); without this they show
+      // their one real corridor's generic fee_tiers on every other route
+      // too (e.g. Money2India — a US->IN-only ICICI Bank product — showing
+      // up on GB->AR). Providers with no supported_corridors set (the vast
+      // majority — broad-coverage MTOs/brokers/banks) are unaffected.
+      if (
+        p.supported_corridors &&
+        p.supported_corridors.length > 0 &&
+        data.sendingCountry &&
+        data.receivingCountry
+      ) {
+        const corridorKey = `${data.sendingCountry}-${data.receivingCountry}`;
+        if (!p.supported_corridors.includes(corridorKey)) return false;
+      }
+
+      if (!ENABLE_CORRIDOR_FILTERING) return true;
+      if (!p.is_corridor_specific) return true;
+      // A corridor-specific MTO genuinely can't be paid into/out of a
+      // currency other than the sending/receiving country's own local
+      // one — exclude outright regardless of corridor_notes.
+      if (currencyOverridden) return false;
+      if (corridorRates.has(p.slug)) return true;
+      // No exact fx_rates row for this corridor-specific provider.
+      // If the gap is DOCUMENTED (corridor_notes — e.g. sanctions, or no
+      // provider in our catalog actually operates this route), keep
+      // excluding it: showing an estimated fee would misrepresent a
+      // route nobody can use. If the gap is UNDOCUMENTED (e.g. the
+      // World Bank's fixed 367-corridor panel simply never covered this
+      // route, like UK→Argentina), no longer hide the provider — it may
+      // well operate that route in reality. Instead it flows through to
+      // resolveTier() below and renders with has_corridor_data:false,
+      // so the UI can badge it as "not verified for this exact route"
+      // rather than presenting an invisible or a falsely-confirmed row.
+      return corridorNote === null;
+    });
 
     // fetchRates() can throw if every upstream FX provider (Frankfurter,
     // ExchangeRate-API, fixer.io, exchangeratesapi.io, OXR) is unavailable at
@@ -695,6 +735,8 @@ export const compareProviders = createServerFn({ method: "POST" })
           has_corridor_data: Boolean(corridorRate),
           corridor_data_source: corridorRate?.data_source ?? null,
           corridor_data_collected_at: corridorRate?.data_collected_at ?? null,
+          corridor_verified_status: corridorRate?.verified_status ?? null,
+          provider_rates_last_updated: p.rates_last_updated ?? null,
         };
       });
       rows.sort((a, b) => b.received - a.received);

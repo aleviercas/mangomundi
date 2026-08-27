@@ -1660,6 +1660,7 @@ export function ComparatorSection({
               sortBy={sortBy}
               deliveryMethod={deliveryMethod}
               showOnlyExclusive={showOnlyExclusive}
+              hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
               handleAffiliateClick={openPreferredRate}
               tDisclaimer={t("fx.disclaimer")}
               tTrademarks={t("fx.trademarks")}
@@ -2003,6 +2004,7 @@ function ResultsBlock({
   sortBy,
   deliveryMethod,
   showOnlyExclusive,
+  hasCorridorContext,
   handleAffiliateClick,
   tDisclaimer,
   tTrademarks,
@@ -2020,6 +2022,14 @@ function ResultsBlock({
   sortBy: SortKey;
   deliveryMethod: DeliveryMethod | null;
   showOnlyExclusive: boolean;
+  /** True when the current query has both a sending and receiving country
+   *  selected, i.e. a real corridor lookup was attempted server-side — see
+   *  fx.functions.ts. Gates the "not verified for this route" badge: without
+   *  this, every row would show has_corridor_data:false whenever no
+   *  corridor lookup ran at all (currency-only comparisons), which would
+   *  misleadingly badge rows that were never checked against a route in the
+   *  first place. */
+  hasCorridorContext: boolean;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
@@ -2103,6 +2113,7 @@ function ResultsBlock({
             quote={result.quote}
             base={result.base}
             score={scoresBySlug.get(row.slug) ?? null}
+            hasCorridorContext={hasCorridorContext}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             tSpeed={tSpeed}
@@ -2139,6 +2150,7 @@ function ProviderRow({
   quote,
   base,
   score,
+  hasCorridorContext,
   onClick,
   tCta,
   tSpeed,
@@ -2155,6 +2167,9 @@ function ProviderRow({
    *  result set, not an absolute rating (see the legend modal). null if
    *  this row wasn't part of the scored set (shouldn't normally happen). */
   score: number | null;
+  /** See the same-named prop on ResultsBlock — gates the "not verified"
+   *  badge below. */
+  hasCorridorContext: boolean;
   onClick: () => void;
   tCta: string;
   tSpeed: string;
@@ -2189,6 +2204,21 @@ function ProviderRow({
   const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}%`;
   const ratePctClass =
     ratePct >= -0.25 ? "text-success" : ratePct >= -1 ? "text-warning" : "text-destructive";
+
+  // Trust/confidence badges — surfaces whether this row's numbers are real
+  // per-route data or a generic estimate, and when they were last checked.
+  // See fx.functions.ts (has_corridor_data, corridor_verified_status,
+  // provider_rates_last_updated) for how these are computed server-side.
+  const notVerifiedForRoute = hasCorridorContext && !row.has_corridor_data;
+  const unconfirmed = row.corridor_verified_status === "sin_confirmar";
+  const lastUpdatedRaw = row.corridor_data_collected_at ?? row.provider_rates_last_updated;
+  const lastUpdatedLabel = lastUpdatedRaw
+    ? new Date(lastUpdatedRaw).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
 
   // Feature highlight chips: only the delivery-method pills remain now (on
   // request) — the merit badges (lowest fee / best exchange rate / most
@@ -2338,6 +2368,38 @@ function ProviderRow({
             )}
           </div>
         </div>
+        {/* Trust/confidence line — separate from the merit chips below on
+            purpose: this isn't ranking the provider, it's disclosing how
+            confident we are in the NUMBERS just shown above. "Not verified"
+            and "unconfirmed" both mean "treat this row's fee/rate as an
+            estimate, double-check on the provider's site" — the disclaimer
+            text below already says this generically, but a per-row flag is
+            what actually tells a person WHICH rows need that caution. */}
+        {(notVerifiedForRoute || unconfirmed || lastUpdatedLabel || row.promo_text) && (
+          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] leading-snug">
+            {notVerifiedForRoute && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 font-semibold text-warning">
+                <Info className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.notVerified")}
+              </span>
+            )}
+            {unconfirmed && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 font-semibold text-warning">
+                <Info className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.unconfirmed")}
+              </span>
+            )}
+            {lastUpdatedLabel && (
+              <span className="whitespace-nowrap text-muted-foreground">
+                {t("fx.updated")}: {lastUpdatedLabel}
+              </span>
+            )}
+            {row.promo_text && (
+              <span className="inline-flex items-center gap-1 font-medium text-accent">
+                <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
+                {row.promo_text}
+              </span>
+            )}
+          </div>
+        )}
         <div className="min-h-[26px]">
           <div className="flex flex-wrap items-center gap-x-2.5 gap-y-2">
             {row.review_count > 0 && row.trust_score != null && (
