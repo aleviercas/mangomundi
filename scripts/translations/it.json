@@ -686,5 +686,8 @@
   "comparator.filter.exclusiveOnly": "Exclusive rates",
   "comparator.legend.bankTransfer": "Bank: paid straight into the recipient's bank account.",
   "comparator.legend.cardPayout": "Card: paid directly onto the recipient's debit or prepaid card.",
-  "comparator.legend.broker": "Broker: routed through a local broker or agent network — common for large or business transfers."
+  "comparator.legend.broker": "Broker: routed through a local broker or agent network — common for large or business transfers.",
+  "comparator.badge.notVerified": "Prezzo stimato — non verificato per questa rotta esatta",
+  "comparator.badge.unconfirmed": "Non confermato",
+  "comparator.badge.promoPrefix": "Promo:"
 }
