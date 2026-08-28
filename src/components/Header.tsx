@@ -13,7 +13,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const links = HOME_NAV.map(({ hash, labelKey }) => ({ hash, label: t(labelKey) }));
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-16 bg-slate-900/90 backdrop-blur-xl">
+    <header className="fixed top-0 left-0 right-0 z-50 h-16 border-b border-border bg-card/90 backdrop-blur-xl">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-5 sm:px-8">
         <Link
           to="/"
@@ -21,7 +21,7 @@ export function Header() {
           className="flex items-center"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <Wordmark className="text-xl" tone="light" />
+          <Wordmark className="text-xl" />
         </Link>
 
         {/* Desktop nav — right-aligned (logo left). */}
@@ -31,7 +31,7 @@ export function Header() {
               key={l.hash}
               to="/"
               hash={l.hash}
-              className="text-sm font-medium text-slate-300 transition-colors hover:text-white"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               {l.label}
             </Link>
@@ -44,7 +44,7 @@ export function Header() {
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label="Menu"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-white hover:bg-white/10 md:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-muted md:hidden"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -53,7 +53,7 @@ export function Header() {
       {/* Mobile menu */}
       {open && (
         <nav
-          className="border-t border-white/10 bg-slate-900/95 px-5 py-3 backdrop-blur-xl md:hidden"
+          className="border-t border-border bg-card/95 px-5 py-3 backdrop-blur-xl md:hidden"
           aria-label="Main"
         >
           <ul className="space-y-1">
@@ -63,7 +63,7 @@ export function Header() {
                   to="/"
                   hash={l.hash}
                   onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2 text-sm font-medium text-slate-200 hover:bg-white/10"
+                  className="block rounded-md px-2 py-2 text-sm font-medium text-foreground hover:bg-muted"
                 >
                   {l.label}
                 </Link>

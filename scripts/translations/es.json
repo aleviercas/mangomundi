@@ -686,5 +686,6 @@
   "comparator.filter.exclusiveOnly": "Tarifas exclusivas",
   "comparator.legend.bankTransfer": "Banco: se deposita directo en la cuenta bancaria de quien recibe.",
   "comparator.legend.cardPayout": "Tarjeta: se acredita directo en la tarjeta de débito o prepaga de quien recibe.",
-  "comparator.legend.broker": "Broker: se gestiona a través de una red local de brokers o agentes — común en transferencias grandes o de empresas."
+  "comparator.legend.broker": "Broker: se gestiona a través de una red local de brokers o agentes — común en transferencias grandes o de empresas.",
+  "comparator.widget.viewAll": "Ver los {n} en mangomundi"
 }

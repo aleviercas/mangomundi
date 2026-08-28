@@ -37,7 +37,6 @@ function requestIp(): string {
   }
 }
 
-
 // ---------- Types ----------
 export interface FeeTier {
   max?: number;
@@ -101,6 +100,10 @@ export interface Provider {
    *  rollout that flag gates. Null/empty for broad-network Type A
    *  providers (WorldRemit, Remitly, MoneyGram, etc.): unaffected. */
   supported_corridors?: string[] | null;
+  /** Generic "rates last updated" fallback, shown in the UI trust badge
+   *  when no corridor-specific fx_rates row exists for this route (i.e.
+   *  has_corridor_data is false). */
+  rates_last_updated?: string | null;
 }
 
 export interface ComparisonRow {
@@ -156,6 +159,14 @@ export interface ComparisonRow {
   has_corridor_data: boolean;
   corridor_data_source: string | null;
   corridor_data_collected_at: string | null;
+  /** fx_rates.verified_status for this row's corridor data — e.g.
+   *  "sin_confirmar" when the fee/spread couldn't be independently
+   *  confirmed from a second source. Null when has_corridor_data is false
+   *  (no corridor row) or the row has no status set. */
+  corridor_verified_status: string | null;
+  /** providers.rates_last_updated — generic fallback "last updated" date
+   *  for the UI trust badge, used when has_corridor_data is false. */
+  provider_rates_last_updated: string | null;
 }
 
 export interface ComparisonResult {
@@ -260,7 +271,6 @@ async function writeSupabaseCache(snapshot: RatesSnapshot): Promise<void> {
 // -> fixer.io (keyed) -> exchangeratesapi.io (keyed) -> openexchangerates (keyed)
 // Keyed providers are only attempted when their env var is set.
 async function fetchLiveRates(): Promise<RatesSnapshot> {
-
   // ── Provider 1: Frankfurter v2 (ECB + partner banks, free, no key) ──
   // v2 endpoint returns an array: [{ base, quote, rate, date }, ...]
   // Covers ~170 currencies from 84 central banks.
@@ -270,8 +280,14 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
       signal: AbortSignal.timeout(7000),
     });
     if (!res.ok) throw new Error("Frankfurter HTTP " + res.status);
-    const arr = (await res.json()) as Array<{ base: string; quote: string; rate: number; date: string }>;
-    if (!Array.isArray(arr) || arr.length === 0) throw new Error("Frankfurter: empty array response");
+    const arr = (await res.json()) as Array<{
+      base: string;
+      quote: string;
+      rate: number;
+      date: string;
+    }>;
+    if (!Array.isArray(arr) || arr.length === 0)
+      throw new Error("Frankfurter: empty array response");
     const rates: Record<string, number> = { USD: 1 };
     let latestDate = "";
     for (const row of arr) {
@@ -288,7 +304,9 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
       referenceCodes: new Set<string>(),
       base: "USD",
       ts: Date.now(),
-      fetchedAt: latestDate ? new Date(latestDate + "T00:00:00Z").toISOString() : new Date().toISOString(),
+      fetchedAt: latestDate
+        ? new Date(latestDate + "T00:00:00Z").toISOString()
+        : new Date().toISOString(),
       source: "frankfurter",
     };
   } catch (err) {
@@ -302,7 +320,12 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
       signal: AbortSignal.timeout(7000),
     });
     if (!res.ok) throw new Error("ExchangeRate-API HTTP " + res.status);
-    const json2 = (await res.json()) as { result: string; base_code: string; rates: Record<string, number>; time_last_update_unix?: number };
+    const json2 = (await res.json()) as {
+      result: string;
+      base_code: string;
+      rates: Record<string, number>;
+      time_last_update_unix?: number;
+    };
     if (json2.result !== "success") throw new Error("ExchangeRate-API: non-success result");
     const count = Object.keys(json2.rates).length;
     console.log("[fx] ExchangeRate-API OK — " + count + " currencies");
@@ -311,7 +334,9 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
       referenceCodes: new Set<string>(),
       base: json2.base_code ?? "USD",
       ts: Date.now(),
-      fetchedAt: json2.time_last_update_unix ? new Date(json2.time_last_update_unix * 1000).toISOString() : new Date().toISOString(),
+      fetchedAt: json2.time_last_update_unix
+        ? new Date(json2.time_last_update_unix * 1000).toISOString()
+        : new Date().toISOString(),
       source: "exchangerate-api",
     };
   } catch (err) {
@@ -323,11 +348,19 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
   if (fixerKey) {
     try {
       console.log("[fx] trying Fixer.io");
-      const res = await fetch("https://data.fixer.io/api/latest?access_key=" + fixerKey + "&base=EUR", {
-        signal: AbortSignal.timeout(7000),
-      });
+      const res = await fetch(
+        "https://data.fixer.io/api/latest?access_key=" + fixerKey + "&base=EUR",
+        {
+          signal: AbortSignal.timeout(7000),
+        },
+      );
       if (!res.ok) throw new Error("Fixer HTTP " + res.status);
-      const json3 = (await res.json()) as { success: boolean; base: string; date: string; rates: Record<string, number> };
+      const json3 = (await res.json()) as {
+        success: boolean;
+        base: string;
+        date: string;
+        rates: Record<string, number>;
+      };
       if (!json3.success) throw new Error("Fixer: API returned success=false");
       // Normalize to USD base
       const eurToUsd = json3.rates["USD"];
@@ -343,7 +376,9 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
         referenceCodes: new Set<string>(),
         base: "USD",
         ts: Date.now(),
-        fetchedAt: json3.date ? new Date(json3.date + "T00:00:00Z").toISOString() : new Date().toISOString(),
+        fetchedAt: json3.date
+          ? new Date(json3.date + "T00:00:00Z").toISOString()
+          : new Date().toISOString(),
         source: "fixer",
       };
     } catch (err) {
@@ -356,11 +391,19 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
   if (erApiKey) {
     try {
       console.log("[fx] trying exchangeratesapi.io");
-      const res = await fetch("https://api.exchangeratesapi.io/v1/latest?access_key=" + erApiKey + "&base=EUR", {
-        signal: AbortSignal.timeout(7000),
-      });
+      const res = await fetch(
+        "https://api.exchangeratesapi.io/v1/latest?access_key=" + erApiKey + "&base=EUR",
+        {
+          signal: AbortSignal.timeout(7000),
+        },
+      );
       if (!res.ok) throw new Error("exchangeratesapi HTTP " + res.status);
-      const json4 = (await res.json()) as { success: boolean; base: string; date: string; rates: Record<string, number> };
+      const json4 = (await res.json()) as {
+        success: boolean;
+        base: string;
+        date: string;
+        rates: Record<string, number>;
+      };
       if (!json4.success) throw new Error("exchangeratesapi: success=false");
       const eurToUsd = json4.rates["USD"];
       if (!eurToUsd) throw new Error("exchangeratesapi: missing USD rate");
@@ -374,7 +417,9 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
         referenceCodes: new Set<string>(),
         base: "USD",
         ts: Date.now(),
-        fetchedAt: json4.date ? new Date(json4.date + "T00:00:00Z").toISOString() : new Date().toISOString(),
+        fetchedAt: json4.date
+          ? new Date(json4.date + "T00:00:00Z").toISOString()
+          : new Date().toISOString(),
         source: "exchangeratesapi-io",
       };
     } catch (err) {
@@ -387,11 +432,19 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
   if (oxrKey) {
     try {
       console.log("[fx] trying Open Exchange Rates");
-      const res = await fetch("https://openexchangerates.org/api/latest.json?app_id=" + oxrKey + "&base=USD", {
-        signal: AbortSignal.timeout(7000),
-      });
+      const res = await fetch(
+        "https://openexchangerates.org/api/latest.json?app_id=" + oxrKey + "&base=USD",
+        {
+          signal: AbortSignal.timeout(7000),
+        },
+      );
       if (!res.ok) throw new Error("OXR HTTP " + res.status);
-      const json5 = (await res.json()) as { disclaimer: string; base: string; timestamp: number; rates: Record<string, number> };
+      const json5 = (await res.json()) as {
+        disclaimer: string;
+        base: string;
+        timestamp: number;
+        rates: Record<string, number>;
+      };
       const count = Object.keys(json5.rates).length;
       console.log("[fx] Open Exchange Rates OK — " + count + " currencies");
       return {
@@ -399,7 +452,9 @@ async function fetchLiveRates(): Promise<RatesSnapshot> {
         referenceCodes: new Set<string>(),
         base: json5.base ?? "USD",
         ts: Date.now(),
-        fetchedAt: json5.timestamp ? new Date(json5.timestamp * 1000).toISOString() : new Date().toISOString(),
+        fetchedAt: json5.timestamp
+          ? new Date(json5.timestamp * 1000).toISOString()
+          : new Date().toISOString(),
         source: "openexchangerates",
       };
     } catch (err) {
@@ -432,7 +487,6 @@ async function fetchRates(): Promise<RatesSnapshot> {
 
   return snapshot;
 }
-
 
 // Pick fee tier matching the amount. Falls back to provider top-level fees.
 // Precedence when ENABLE_CORRIDOR_FILTERING is on: an exact fx_rates row for
@@ -498,6 +552,7 @@ interface CorridorRate {
   speed_hours: number | null;
   data_source: string | null;
   data_collected_at: string | null;
+  verified_status: string | null;
 }
 
 interface CorridorNote {
@@ -549,32 +604,35 @@ export const compareProviders = createServerFn({ method: "POST" })
     // providers, same as before) from an *undocumented* one (show the
     // provider with an estimated/unverified fee instead of hiding it).
     let corridorNote: CorridorNote | null = null;
-    if (
-      ENABLE_CORRIDOR_FILTERING &&
-      !currencyOverridden &&
-      data.sendingCountry &&
-      data.receivingCountry
-    ) {
-      const [{ data: rateRows, error: rateError }, { data: noteRow, error: noteError }] = await Promise.all([
-        supabaseAdmin
-          .from("fx_rates")
-          .select(
-            "provider_slug, fee, public_spread_percent, speed_hours_approx, data_source, data_collected_at, min_amount, max_amount",
-          )
-          .eq("sending_country", data.sendingCountry)
-          .eq("receiving_country", data.receivingCountry)
-          .or(`min_amount.is.null,min_amount.lte.${data.amount}`)
-          .or(`max_amount.is.null,max_amount.gte.${data.amount}`),
-        supabaseAdmin
-          .from("corridor_notes")
-          .select("reason, note")
-          .eq("sending_country", data.sendingCountry)
-          .eq("receiving_country", data.receivingCountry)
-          .maybeSingle(),
-      ]);
+    // Runs whenever we have both countries and the user didn't override the
+    // currency — independent of ENABLE_CORRIDOR_FILTERING. Real per-route
+    // data always wins over generic fee_tiers when it exists, for ANY
+    // provider. This used to be gated behind the flag, which meant the flag
+    // being off (the documented production default) silently disabled every
+    // corridor row ever researched, for every provider — not just the
+    // corridor-specific ones. The flag now controls only the hard-exclusion
+    // behavior below (is_corridor_specific + corridor_notes).
+    if (!currencyOverridden && data.sendingCountry && data.receivingCountry) {
+      const [{ data: rateRows, error: rateError }, { data: noteRow, error: noteError }] =
+        await Promise.all([
+          supabaseAdmin
+            .from("fx_rates")
+            .select(
+              "provider_slug, fee, public_spread_percent, speed_hours_approx, data_source, data_collected_at, verified_status, min_amount, max_amount",
+            )
+            .eq("sending_country", data.sendingCountry)
+            .eq("receiving_country", data.receivingCountry)
+            .or(`min_amount.is.null,min_amount.lte.${data.amount}`)
+            .or(`max_amount.is.null,max_amount.gte.${data.amount}`),
+          supabaseAdmin
+            .from("corridor_notes")
+            .select("reason, note")
+            .eq("sending_country", data.sendingCountry)
+            .eq("receiving_country", data.receivingCountry)
+            .maybeSingle(),
+        ]);
       if (rateError) {
-        // Non-fatal — fall back to flat/tiered pricing for every provider,
-        // same as ENABLE_CORRIDOR_FILTERING being off.
+        // Non-fatal — fall back to flat/tiered pricing for every provider.
         console.error("[compareProviders] fx_rates lookup failed", rateError);
       } else {
         for (const r of rateRows ?? []) {
@@ -584,6 +642,7 @@ export const compareProviders = createServerFn({ method: "POST" })
             speed_hours: r.speed_hours_approx != null ? Number(r.speed_hours_approx) : null,
             data_source: r.data_source ?? null,
             data_collected_at: r.data_collected_at ?? null,
+            verified_status: r.verified_status ?? null,
           });
         }
       }
@@ -632,7 +691,11 @@ export const compareProviders = createServerFn({ method: "POST" })
     // once. That's a real, if rare, outage — surface it as a clean thrown
     // Error (same contract as the other expected errors below) rather than
     // letting whatever shape fetchRates() throws escape unformatted.
-    let rates: Record<string, number>, base: string, fetchedAt: string | undefined, referenceCodes: Set<string>, source: string;
+    let rates: Record<string, number>,
+      base: string,
+      fetchedAt: string | undefined,
+      referenceCodes: Set<string>,
+      source: string;
     try {
       ({ data: rates, base, fetchedAt, referenceCodes, source } = await fetchRates());
     } catch (err) {
@@ -708,7 +771,8 @@ export const compareProviders = createServerFn({ method: "POST" })
           review_count: Number(p.review_count ?? 0),
           promo_text: p.promo_text ?? null,
           cash_pickup_available: p.cash_pickup_available ?? null,
-          business_focus_score: p.business_focus_score != null ? Number(p.business_focus_score) : null,
+          business_focus_score:
+            p.business_focus_score != null ? Number(p.business_focus_score) : null,
           countries_covered: p.countries_covered != null ? Number(p.countries_covered) : null,
           mobile_app_rating: p.mobile_app_rating != null ? Number(p.mobile_app_rating) : null,
           supports_large_tickets: p.supports_large_tickets ?? null,
@@ -719,6 +783,8 @@ export const compareProviders = createServerFn({ method: "POST" })
           has_corridor_data: Boolean(corridorRate),
           corridor_data_source: corridorRate?.data_source ?? null,
           corridor_data_collected_at: corridorRate?.data_collected_at ?? null,
+          corridor_verified_status: corridorRate?.verified_status ?? null,
+          provider_rates_last_updated: p.rates_last_updated ?? null,
         };
       });
       rows.sort((a, b) => b.received - a.received);
@@ -788,7 +854,10 @@ export const captureLead = createServerFn({ method: "POST" })
       monthly_volume: data.monthly_volume ?? null,
       message: data.message ?? null,
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
     return { ok: true };
   });
 
@@ -893,7 +962,10 @@ export const chatAboutRecommendation = createServerFn({ method: "POST" })
           .map((ch) => (isAsciiControlChar(ch.codePointAt(0) ?? 0) ? " " : ch))
           .join("");
       const sanitizeUntrusted = (s: string) =>
-        stripControlChars(s).replace(/<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi, "");
+        stripControlChars(s).replace(
+          /<\/?(system|instruction|user_context|previous_recommendation|user_message)>/gi,
+          "",
+        );
 
       const sanitizeName = (s: string) => sanitizeUntrusted(s).slice(0, 120);
 

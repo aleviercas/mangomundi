@@ -1,5 +1,6 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
+import { useState } from "react";
 import { z } from "zod";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
@@ -114,10 +115,16 @@ function Index() {
     amount: 1000,
   };
 
+  // Drives the Kayak/Skyscanner-style "search mode" swap: once a comparison
+  // has a result, the hero collapses and the comparator card (see its own
+  // `result && !embedded` check) sticks under the header — same content,
+  // just no longer competing with the results list for the first screenful.
+  const [hasResult, setHasResult] = useState(false);
+
   return (
     <>
-      <HeroSection />
-      <ComparatorSection initialQuery={geoDefaults} />
+      <HeroSection compact={hasResult} />
+      <ComparatorSection initialQuery={geoDefaults} onHasResultChange={setHasResult} />
       <HowItWorksSection />
       <AboutManifestoSection />
       <StatsSection />

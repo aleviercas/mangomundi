@@ -38,7 +38,7 @@ export function Footer() {
   ] as const;
 
   return (
-    <footer className="bg-slate-900 border-t border-white/10">
+    <footer className="border-t border-border bg-muted">
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
@@ -47,7 +47,7 @@ export function Footer() {
               className="inline-flex items-center"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <Wordmark className="text-2xl" tone="light" />
+              <Wordmark className="text-2xl" />
             </Link>
             <div className="mt-6 flex items-center gap-3">
               {socials.map((s) => (
@@ -57,7 +57,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="group inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white hover:text-slate-900"
+                  className="group inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-foreground hover:text-background"
                 >
                   <svg
                     viewBox="0 0 24 24"
@@ -73,7 +73,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-white">
+            <h3 className="font-heading text-sm font-bold text-foreground">
               {t("footer.nav.title")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -82,7 +82,7 @@ export function Footer() {
                   <Link
                     to="/"
                     hash={l.hash}
-                    className="text-sm text-slate-300 transition-colors hover:text-white"
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {l.label}
                   </Link>
@@ -92,7 +92,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading text-sm font-bold text-white">
+            <h3 className="font-heading text-sm font-bold text-foreground">
               {t("footer.legal.title")}
             </h3>
             <ul className="mt-4 space-y-3">
@@ -101,7 +101,7 @@ export function Footer() {
                   <Link
                     to={l.to}
                     hash={l.hash}
-                    className="text-sm text-slate-300 transition-colors hover:text-white"
+                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {l.label}
                   </Link>
@@ -111,8 +111,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col-reverse items-center gap-4 border-t border-white/10 pt-8 sm:flex-row sm:justify-between">
-          <p className="text-xs text-slate-400">
+        <div className="mt-14 flex flex-col-reverse items-center gap-4 border-t border-border pt-8 sm:flex-row sm:justify-between">
+          <p className="text-xs text-muted-foreground">
             &copy; {new Date().getFullYear()} Mangomundi. {t("footer.rights")}
           </p>
           <LangSwitcher direction="up" />

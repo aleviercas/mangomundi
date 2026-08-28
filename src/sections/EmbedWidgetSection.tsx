@@ -48,14 +48,8 @@ export function EmbedWidgetSection() {
               {t("home.widget.badge")}
             </span>
 
-            {/* Install snippet — deliberately dark/"terminal" styled
-                (bg-slate-900, white/slate-200/300/400 text on it), NOT part
-                of the light-mode token migration: this is an intentional
-                code-editor aesthetic, a different surface entirely from the
-                rest of the page, same reasoning as StatsSection's dark
-                card. */}
-            <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-slate-900 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.4)]">
-              <div className="flex items-center justify-between gap-2 border-b border-white/10 px-4 py-2.5">
+            <div className="surface-card mt-6 overflow-hidden">
+              <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2.5">
                 <div className="flex items-center gap-1">
                   {(["script", "iframe"] as const).map((k) => (
                     <button
@@ -63,7 +57,9 @@ export function EmbedWidgetSection() {
                       type="button"
                       onClick={() => setTab(k)}
                       className={`rounded-md px-2.5 py-1 text-xs font-semibold transition ${
-                        tab === k ? "bg-white/10 text-white" : "text-slate-400 hover:text-white"
+                        tab === k
+                          ? "bg-muted text-foreground"
+                          : "text-muted-foreground hover:text-foreground"
                       }`}
                     >
                       {k === "script" ? (
@@ -79,7 +75,7 @@ export function EmbedWidgetSection() {
                 <button
                   type="button"
                   onClick={copy}
-                  className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-slate-300 transition hover:text-white"
+                  className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
                 >
                   {copied ? (
                     <>
@@ -92,7 +88,7 @@ export function EmbedWidgetSection() {
                   )}
                 </button>
               </div>
-              <pre className="overflow-x-auto p-4 text-[12px] leading-relaxed text-slate-200">
+              <pre className="overflow-x-auto bg-muted/40 p-4 text-[12px] leading-relaxed text-foreground">
                 <code>{snippet}</code>
               </pre>
             </div>

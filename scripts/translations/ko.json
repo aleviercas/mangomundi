@@ -686,5 +686,9 @@
   "comparator.filter.exclusiveOnly": "Exclusive rates",
   "comparator.legend.bankTransfer": "Bank: paid straight into the recipient's bank account.",
   "comparator.legend.cardPayout": "Card: paid directly onto the recipient's debit or prepaid card.",
-  "comparator.legend.broker": "Broker: routed through a local broker or agent network — common for large or business transfers."
+  "comparator.legend.broker": "Broker: routed through a local broker or agent network — common for large or business transfers.",
+  "comparator.widget.viewAll": "mangomundi에서 {n}개 모두 보기",
+  "comparator.badge.notVerified": "예상 가격 — 이 경로에 대해 확인되지 않음",
+  "comparator.badge.unconfirmed": "미확인",
+  "comparator.badge.promoPrefix": "프로모:"
 }
