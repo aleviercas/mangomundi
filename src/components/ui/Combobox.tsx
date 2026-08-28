@@ -54,10 +54,7 @@ export function Combobox({
   ariaLabel,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
-  const selected = React.useMemo(
-    () => options.find((o) => o.value === value),
-    [options, value],
-  );
+  const selected = React.useMemo(() => options.find((o) => o.value === value), [options, value]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -77,14 +74,20 @@ export function Combobox({
             {selected?.leading && (
               <span className="shrink-0 text-base leading-none">{selected.leading}</span>
             )}
-            <span
-              className={cn(
-                "truncate",
-                !selected && "text-muted-foreground",
-              )}
-            >
+            <span className={cn("truncate", !selected && "text-muted-foreground")}>
               {selected ? selected.label : placeholder}
             </span>
+            {/* Currency code alongside the country name — was only visible
+                inside the open dropdown list before, never on the closed
+                trigger, so "what currency am I actually sending/receiving"
+                required opening the picker to find out. shrink-0 so it
+                never gets truncated away in favor of the (longer, more
+                variable-length) country name. */}
+            {selected?.secondary && (
+              <span className="shrink-0 text-xs font-semibold text-muted-foreground">
+                {selected.secondary}
+              </span>
+            )}
           </span>
           <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
         </button>
@@ -92,22 +95,14 @@ export function Combobox({
       <PopoverContent
         align="start"
         sideOffset={6}
-        className={cn(
-          "w-[var(--radix-popover-trigger-width)] min-w-[14rem] p-0",
-          className,
-        )}
+        className={cn("w-[var(--radix-popover-trigger-width)] min-w-[14rem] p-0", className)}
       >
         <Command
           filter={(itemValue, search) => {
             // itemValue is the raw value we passed to CommandItem
             const opt = options.find((o) => o.value === itemValue);
             if (!opt) return 0;
-            const haystack = [
-              opt.label,
-              opt.secondary ?? "",
-              opt.value,
-              ...(opt.keywords ?? []),
-            ]
+            const haystack = [opt.label, opt.secondary ?? "", opt.value, ...(opt.keywords ?? [])]
               .join(" ")
               .toLowerCase();
             return haystack.includes(search.toLowerCase()) ? 1 : 0;
@@ -136,9 +131,7 @@ export function Combobox({
                       {opt.secondary}
                     </span>
                   )}
-                  {value === opt.value && (
-                    <Check className="ml-1 h-4 w-4 shrink-0 opacity-70" />
-                  )}
+                  {value === opt.value && <Check className="ml-1 h-4 w-4 shrink-0 opacity-70" />}
                 </CommandItem>
               ))}
             </CommandGroup>

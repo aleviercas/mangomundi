@@ -464,6 +464,10 @@ export const DICTS: Record<Lang, Dict> = {
     "home.widget.copied": "Copied!",
     "home.widget.hint":
       "Paste it anywhere in your HTML. The widget is free and runs in an isolated iframe — no code conflicts, no tracking added to your site.",
+    // Compact results list inside the embeddable widget (EmbedComparator) —
+    // one winner card + compact provider lines + this link back to the
+    // full site. {n} is the total number of providers in the comparison.
+    "comparator.widget.viewAll": "See all {n} on mangomundi",
     // Footer
     "footer.tagline": "Smart currency exchange comparison, powered by AI.",
     "footer.nav.title": "Navigate",
@@ -2684,7 +2688,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.legend.cashPickup":
       "Cash pickup: the recipient can collect the money in cash at a physical location, not only a bank deposit.",
     "comparator.legend.bankTransfer": "Bank: paid straight into the recipient's bank account.",
-    "comparator.legend.cardPayout": "Card: paid directly onto the recipient's debit or prepaid card.",
+    "comparator.legend.cardPayout":
+      "Card: paid directly onto the recipient's debit or prepaid card.",
     "comparator.legend.broker":
       "Broker: routed through a local broker or agent network — common for large or business transfers.",
     "comparator.legend.sponsored":
