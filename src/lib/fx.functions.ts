@@ -90,12 +90,16 @@ export interface Provider {
    *  the exact route); false/null = multi-currency platform, falls back to
    *  fee_tiers/flat fields as today. See ENABLE_CORRIDOR_FILTERING below. */
   is_corridor_specific?: boolean | null;
-  /** Strict whitelist for single-market brands (e.g. Money2India only
-   *  operates US-IN, not "any corridor a user asks for") — entries are
-   *  "SENDING-RECEIVING" ISO-3166 country pairs. When populated,
-   *  eligibleProviders excludes this provider for any corridor not listed
-   *  here, independent of ENABLE_CORRIDOR_FILTERING. Null/empty = no
-   *  restriction (unchanged behavior — the vast majority of providers). */
+  /** Hard whitelist of "SENDING-RECEIVING" pairs this provider structurally
+   *  operates — set only for genuinely single-market providers (a bank's
+   *  diaspora remittance product, a regional fintech) that CANNOT serve any
+   *  route outside this list, as opposed to a broad-network MTO that simply
+   *  lacks loaded data for some of the many routes it plausibly does serve.
+   *  When populated, this is enforced unconditionally in eligibleProviders
+   *  below — independent of ENABLE_CORRIDOR_FILTERING — because it's a
+   *  structural fact about the provider, not part of the staged data
+   *  rollout that flag gates. Null/empty for broad-network Type A
+   *  providers (WorldRemit, Remitly, MoneyGram, etc.): unaffected. */
   supported_corridors?: string[] | null;
   /** Generic "rates last updated" fallback, shown in the UI trust badge
    *  when no corridor-specific fx_rates row exists for this route (i.e.
@@ -494,6 +498,10 @@ const compareSchema = z.object({
 // Feature flag for the corridor-specific rates rollout (fx_rates table).
 // Off by default — set ENABLE_CORRIDOR_FILTERING=true in the environment to
 // activate. See docs/data-sources/2026-08-diagnostico-arquitectura-proveedores-corredores.md.
+// NOTE: this flag no longer gates the supported_corridors hard whitelist
+// below (see eligibleProviders) — that check runs unconditionally, since
+// it's a structural fact about single-market providers, not part of the
+// staged fx_rates-for-everyone rollout this flag was built to gate.
 const ENABLE_CORRIDOR_FILTERING = process.env.ENABLE_CORRIDOR_FILTERING === "true";
 
 interface CorridorRate {
@@ -603,43 +611,35 @@ export const compareProviders = createServerFn({ method: "POST" })
       }
     }
 
+    // Eligibility has two independent layers:
+    //
+    // 1. supported_corridors hard whitelist (ALWAYS enforced, regardless of
+    //    ENABLE_CORRIDOR_FILTERING). This applies only to the handful of
+    //    genuinely single-market providers (a bank's diaspora remittance
+    //    product like Money2India/BDO Remit/UBL Tezraftaar, or a regional
+    //    fintech like Prex) that structurally cannot serve any route outside
+    //    a short explicit list. Showing them elsewhere isn't "unverified
+    //    data for a route they might serve" — it's flatly wrong, so this
+    //    check is not gated behind the staged-rollout flag. Every other
+    //    provider (supported_corridors null/empty) is untouched by this step.
+    //
+    // 2. The flag-gated logic below (unchanged): for broad-network Type A
+    //    MTOs (WorldRemit, Remitly, MoneyGram, Sendwave, etc. — these
+    //    plausibly serve hundreds of routes we simply haven't loaded fx_rates
+    //    for yet), an undocumented data gap no longer hides the provider —
+    //    it shows with has_corridor_data:false so the UI can badge it as
+    //    unverified for this exact route, rather than falsely hiding a
+    //    provider that may well operate the corridor in reality.
     const eligibleProviders = (providers as Provider[]).filter((p) => {
-      // Strict whitelist for single-market brands (Money2India, BDO Remit,
-      // UBL Tezraftaar, Prex...) — independent of ENABLE_CORRIDOR_FILTERING.
-      // These are marketed under one brand but structurally only operate
-      // one (or a short list of) real corridor(s); without this they show
-      // their one real corridor's generic fee_tiers on every other route
-      // too (e.g. Money2India — a US->IN-only ICICI Bank product — showing
-      // up on GB->AR). Providers with no supported_corridors set (the vast
-      // majority — broad-coverage MTOs/brokers/banks) are unaffected.
-      if (
-        p.supported_corridors &&
-        p.supported_corridors.length > 0 &&
-        data.sendingCountry &&
-        data.receivingCountry
-      ) {
-        const corridorKey = `${data.sendingCountry}-${data.receivingCountry}`;
-        if (!p.supported_corridors.includes(corridorKey)) return false;
+      if (p.is_corridor_specific && p.supported_corridors && p.supported_corridors.length > 0) {
+        if (currencyOverridden) return false;
+        if (!data.sendingCountry || !data.receivingCountry) return false;
+        return p.supported_corridors.includes(`${data.sendingCountry}-${data.receivingCountry}`);
       }
-
       if (!ENABLE_CORRIDOR_FILTERING) return true;
       if (!p.is_corridor_specific) return true;
-      // A corridor-specific MTO genuinely can't be paid into/out of a
-      // currency other than the sending/receiving country's own local
-      // one — exclude outright regardless of corridor_notes.
       if (currencyOverridden) return false;
       if (corridorRates.has(p.slug)) return true;
-      // No exact fx_rates row for this corridor-specific provider.
-      // If the gap is DOCUMENTED (corridor_notes — e.g. sanctions, or no
-      // provider in our catalog actually operates this route), keep
-      // excluding it: showing an estimated fee would misrepresent a
-      // route nobody can use. If the gap is UNDOCUMENTED (e.g. the
-      // World Bank's fixed 367-corridor panel simply never covered this
-      // route, like UK→Argentina), no longer hide the provider — it may
-      // well operate that route in reality. Instead it flows through to
-      // resolveTier() below and renders with has_corridor_data:false,
-      // so the UI can badge it as "not verified for this exact route"
-      // rather than presenting an invisible or a falsely-confirmed row.
       return corridorNote === null;
     });
 

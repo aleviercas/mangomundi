@@ -40,7 +40,7 @@ inventados —, monetización por afiliados donde exista.
 
 ## 3. Modelo de datos: `providers` vs `fx_rates`
 
-**El problema que se resolvió (sprint ago 2026):** `compareProviders`
+**El problema original (sprint ago 2026):** `compareProviders`
 (`src/lib/fx.functions.ts`) filtraba solo por `active` + `segment`, sin
 ningún filtro de corredor — cualquier proveedor activo aparecía en cualquier
 comparación, usando un número de comisión/margen **plano y global**
@@ -54,7 +54,8 @@ ruta.
   clásicos que solo operan corredores concretos (WorldRemit, Remitly,
   MoneyGram, Sendwave, Paysend, Ria, Xoom, TapTap Send, LemFi, NALA, Small
   World, bancos/exchanges regionales del Golfo, etc.). Regla: **sin fila en
-  `fx_rates` para ese corredor exacto → no se muestra**.
+  `fx_rates` para ese corredor exacto → no se muestra** (salvo el caso de
+  hueco indocumentado que se muestra igual con estimación — ver abajo).
 - **Tipo B — cobertura amplia (`is_corridor_specific = false`):** brokers
   multi-moneda sobre infraestructura SWIFT (Wise, OFX, Revolut, Airwallex,
   Moneycorp, CurrencyFair, TorFX, Currencies Direct, CAB Payments, HSBC,
@@ -62,74 +63,114 @@ ruta.
   cubren casi cualquier par de monedas — nunca se ocultan por falta de fila en
   `fx_rates`, siguen usando `fee_tiers`/campos planos.
 
-**Regla de precedencia** (implementada en `compareProviders`):
+**Actualización 27-ago-2026 (sesión Cowork, fase 2):** dentro de Tipo A hay
+un sub-grupo — proveedores **estructuralmente de un solo mercado** (Money2India,
+BDO Remit, UBL Tezraftaar, Prex) que no pueden operar fuera de una lista
+corta y explícita de corredores. Para esos, `providers.supported_corridors`
+(array `"ORIGEN-DESTINO"`) actúa como whitelist dura, **enforced siempre,
+independiente del flag `ENABLE_CORRIDOR_FILTERING`** — antes del 27-ago esa
+columna existía pero no se consultaba en ningún lado, por lo que Money2India
+(solo `US-IN`) aparecía filtrando en corredores de Argentina. Corregido en
+`fx.functions.ts` (commit `3b99216`). **El detalle completo de esta lógica
+— ambas capas de elegibilidad, precedencia de fee/spread, y qué queda
+abierto — está en `docs/architecture-motor-comparador.md`, el documento de
+referencia para este tema a partir de ahora** (reemplaza la necesidad de
+releer el diagnóstico original para entender el estado actual).
+
+**Regla de precedencia de fee/spread** (sin cambios):
 
 ```
 SI existe fila en fx_rates para (proveedor, corredor exacto, monto en tier)
   → usar fx_rates (fee, spread, speed) — gana siempre
 SINO SI el proveedor es Tipo B (o tiene fee_tiers propio)
   → usar fee_tiers / campos planos (comportamiento histórico)
-SINO (Tipo A sin fila de corredor)
-  → no se muestra en ese corredor
+SINO (Tipo A sin fila de corredor, hueco indocumentado)
+  → se muestra igual con fee_tiers/planos como estimación,
+    has_corridor_data:false (el UI debería badgearlo como no verificado)
+SINO (Tipo A con supported_corridors poblado, fuera de esa lista, o hueco
+      documentado en corridor_notes)
+  → no se muestra
 ```
 
 **Feature flag:** `ENABLE_CORRIDOR_FILTERING` (env var, default off/false).
-Con el flag apagado, el comportamiento es el histórico (sin filtro de
-corredor). Diseñado así a propósito para poder cargar datos y verificar en
-preview sin afectar producción hasta activarlo explícitamente.
+Con el flag apagado, el comportamiento de la capa de `fx_rates`/`corridor_notes`
+es el histórico (sin filtro de corredor) — **pero la whitelist de
+`supported_corridors` aplica de todas formas, sin importar este flag**. El
+valor real de este flag en producción sigue sin poder confirmarse desde
+Claude Code — no hay ninguna tool de Vercel en este entorno que lea/escriba
+env vars (se revisaron todas las disponibles). Acción pendiente de
+Alejandro: confirmarlo en el dashboard de Vercel.
 
 **Tabla `corridor_notes`:** documenta corredores donde a propósito **no** se
 cargó cobertura (sanciones vigentes, o corredores dominados por especialistas
-tipo hawala que no están en el catálogo). Ver sección 4.
+tipo hawala que no están en el catálogo).
 
-## 4. Estado de los datos (última auditoría: sprint ago 2026)
+## 4. Estado de los datos (última auditoría: sesión Cowork 27-ago-2026, fase 2)
 
-- **`providers`:** 62 filas (43 Tipo A / 19 Tipo B), todas con `trust_score`
-  poblado salvo CAB Payments (a propósito — es infraestructura B2B sin
-  reviews de consumidor, ver `docs/multi-criteria-ranking/scoring-data-findings.md`)
-  y los 3 bancos locales agregados en las últimas dos rondas (`bdo-remit`,
-  `money2india`, `ubl-tezraftaar` — trust_score todavía sin investigar, no es
-  urgente porque el motor de scoring los trata como neutral mientras tanto).
-- **`fx_rates`:** 754 filas, 248 corredores distintos. 100% de las 650
-  combinaciones (proveedor, corredor) del catálogo maestro original
-  (`docs/handoff/catalogo_mundial_final.csv`, 684 filas / World Bank RPW
-  Q3 2025) están cargadas. Cero proveedor Tipo A activo sin datos.
+- **`providers`:** 62 filas (43 Tipo A / 19 Tipo B). De los Tipo A, 4 tienen
+  `supported_corridors` poblado (Money2India, BDO Remit, UBL Tezraftaar,
+  Prex — ver sección 3); el resto en `null` a propósito (MTOs de red amplia).
+  Todas con `trust_score` poblado salvo CAB Payments (a propósito) y los 3
+  bancos locales de rondas anteriores (`bdo-remit`, `money2india`,
+  `ubl-tezraftaar` — no urgente, el motor de scoring los trata como neutral).
+- **`fx_rates`:** 821 filas, 248 corredores distintos. `verified_status`:
+  749 `confirmado_activo` / 72 `sin_confirmar` (sin cambios desde la fase 1
+  de esta misma sesión — la fase 2 no tocó `fx_rates`, solo código y
+  `providers` research). Detalle de la auditoría de fees sospechosos en
+  `docs/handoff/handoff-2026-08-27-audit-tarifas-cowork.md`: 16 filas de
+  LemFi y Remitly bajadas por contaminación promocional (mismo patrón que
+  Western Union GB→AR). **Pendiente, tamaño real:** de las ~378 filas
+  restantes con `fee<1`, 267 están sourced de World Bank RPW y no se
+  revisaron todavía (se asume menor riesgo por ser encuesta independiente,
+  pero ese supuesto nunca se validó con una muestra real) — ver
+  `docs/architecture-motor-comparador.md` sección 6 para el plan sugerido
+  (muestra estratificada antes de comprometerse a las 267 completas).
 - **`transparency_score`:** null en absolutamente todos los proveedores, a
-  propósito — se sacó del motor de scoring (`most_transparent` profile
-  eliminado) por no existir ninguna fuente documentada para ese número en
-  todo el repo. No es un hueco a rellenar salvo que aparezca una fuente real.
+  propósito — no existe ninguna fuente documentada para ese número en todo
+  el repo.
 - **Corredores documentados como excluidos** (`corridor_notes`): Alemania→Rusia
-  y Alemania→Siria (sanciones — los proveedores grandes no operan ahí de
-  forma confiable), Suecia/Noruega→Somalia (dominado por especialistas hawala
-  fuera del catálogo — hace falta sumar un proveedor nuevo, no solo cargar
-  tarifas).
+  y Alemania→Siria (sanciones), Suecia/Noruega→Somalia (dominado por
+  especialistas hawala fuera del catálogo). Ninguna fila de `corridor_notes`
+  toca Argentina en ningún sentido (confirmado 27-ago, fase 2).
+- **Fintechs argentinas — investigadas en la fase 2 (27-ago):** Prex ya
+  estaba cargada y correctamente configurada (única que califica de las 5
+  investigadas). Ualá, Lemon Cash, AstroPay y Global66/Belo no pasan el
+  filtro de "fee Y margen con fuente citable" — detalle completo con fuentes
+  en `docs/architecture-motor-comparador.md` sección 5.
 
 ## 5. Criterio de inclusión para corredores/proveedores nuevos
 
 "Agregar cada banco/proveedor local del mundo" es un pozo sin fondo — hay
 miles de bancos y ninguna sesión puede cubrirlos todos. Después de 3 rondas
 de investigación de bancos locales (15 candidatos, 1 calificó — ver sección
-8), esto es el patrón que separó al que sirvió del resto, convertido en
-regla explícita para decidir sin tener que redescubrirlo cada vez.
+8) y de investigar 5 fintechs argentinas (1 calificó — ver sección 4), esto
+es el patrón que separó al que sirvió del resto, convertido en regla
+explícita para decidir sin tener que redescubrirlo cada vez.
 
-**Un candidato nuevo (banco local, MTO chico, lo que sea) se agrega al
-catálogo SOLO si pasa los 4 filtros:**
+**Un candidato nuevo (banco local, MTO chico, fintech, lo que sea) se agrega
+al catálogo SOLO si pasa los 4 filtros:**
 
 1. **Marca propia distinguible** — tiene un nombre de producto de remesas
    distinto del nombre genérico del banco (ej. "UBL Tezraftaar", "BDO
-   Remit", "Money2India", "Chaabi Cash"). Si la única opción es "transferir
-   por SWIFT a una cuenta de Banco X", no pasa este filtro — eso ya es
-   indistinguible de cualquier transferencia bancaria genérica.
+   Remit", "Money2India", "Chaabi Cash", "Prex"). Si la única opción es
+   "transferir por SWIFT a una cuenta de Banco X", no pasa este filtro — eso
+   ya es indistinguible de cualquier transferencia bancaria genérica.
 2. **Opera su propio envío** — tiene oficinas, agentes o una app propia en
    el país de **origen** (no solo recibe depósitos que otro proveedor ya
-   enruta). Si el banco es solo un "payout partner" de un MTO que ya está en
-   el catálogo (ej. GCB Bank/Ria, BRAC Bank/TapTap Send), ese corredor
-   **ya está cubierto** por ese MTO — no hace falta un proveedor nuevo.
+   enruta, y no solo permite fondear la cuenta propia del usuario — eso es
+   lo que descartó a Lemon Cash y a Global66/Belo: el dinero tiene que poder
+   llegar de un tercero, no solo de una cuenta a nombre del mismo usuario).
+   Si el banco es solo un "payout partner" de un MTO que ya está en el
+   catálogo (ej. GCB Bank/Ria, BRAC Bank/TapTap Send), ese corredor **ya
+   está cubierto** por ese MTO — no hace falta un proveedor nuevo.
 3. **Fee Y margen de cambio, ambos con fuente citable** — World Bank RPW,
    PDF/página oficial del proveedor, o un comparador independiente
    (Monito, Wise, etc.) con fecha reciente. **Los dos, no uno solo** — un
    fee sin margen (o viceversa) no alcanza; cargarlo así sería inventar la
    mitad del dato más importante (ver sección 2, "nunca inventar datos").
+   Esto descartó a AstroPay (fee y spread genéricos, sin cifra) y a Ualá
+   (ni siquiera tiene el producto — no acepta transferencias internacionales
+   directas).
 4. **No redundante** — el corredor/proveedor no está ya cubierto de forma
    equivalente por algo existente en el catálogo.
 
@@ -140,9 +181,9 @@ aparecen en el catálogo maestro original (`docs/handoff/catalogo_mundial_final.
 posible, la mayoría no tiene volumen de remesas real.
 
 **Cuándo vale la pena una ronda nueva de investigación:** cuando aparece
-una pista concreta de que un banco tiene marca de remesas propia (no una
-búsqueda genérica "¿tiene este país un banco con remesas?" corredor por
-corredor — eso es lo que dio 1/15 en las 3 rondas ya hechas).
+una pista concreta de que un banco/fintech tiene marca de remesas propia (no
+una búsqueda genérica corredor por corredor — eso es lo que dio 1/15 en las
+3 rondas de bancos ya hechas, y 1/5 en la ronda de fintechs argentinas).
 
 ## 6. UI del comparador — rediseño country-first (sprint ago 2026)
 
@@ -199,13 +240,14 @@ Orden de prioridad acordado con Alejandro:
    - Hallazgo relevante para el paso 5: **cero headers de seguridad
      configurados** (`vercel.json` no tiene CSP/HSTS/X-Frame-Options/etc.)
      — pendiente.
-2. **Precisión de producto/datos** (este documento) — runbook de 7 pasos
-   ejecutado completo, flag `ENABLE_CORRIDOR_FILTERING` cargado y verificable
-   en preview, pendiente activarlo en producción tras verificación manual.
-   Investigación de corredores/proveedores faltantes: completa contra el
-   catálogo original, con una pasada adicional de ~50 corredores de alto
-   volumen mundial verificados y cargados (ver `git log` de la rama
-   `claude/mangomundi-sprint-corridor-ui` para el detalle commit por commit).
+2. **Precisión de producto/datos** (este documento) — modelo de elegibilidad
+   de proveedores por corredor **cerrado y documentado** en
+   `docs/architecture-motor-comparador.md` (27-ago-2026, fase 2) — es el
+   documento a leer antes de pasar a la siguiente etapa de diseño/arquitectura
+   que pidió Alejandro. Queda abierto: confirmar `ENABLE_CORRIDOR_FILTERING`
+   en producción, verificación en vivo con browser real de varios hallazgos,
+   y el barrido completo de fees World Bank RPW (ver sección 4 y el
+   documento de arquitectura sección 6 para la lista priorizada completa).
 3. **SEO / crecimiento orgánico:**
    - Interconexión del blog ("artículos relacionados") — **implementada**
      (sprint ago 2026): columna `blog_posts.topic_cluster` (8 clusters, los
@@ -352,20 +394,27 @@ conversación, y cargarlo acá con la misma disciplina de fuente citada.
   por ningún comparador — es recepción de giro SWIFT estándar, no un
   producto de remesas con marca propia.
 
-**Balance de las 3 rondas: 1 de 15 candidatos calificó** (UBL Tezraftaar
-Cash, UAE→Pakistán). El patrón es consistente y ya está claro: la gran
-mayoría de bancos locales grandes son puntos de pago de MTOs existentes o
-solo ofrecen SWIFT genérico sin marca de remesas propia ni margen publicado
-— no hay muchos "UBL Tezraftaar" más por encontrar con este método. **Antes
-de una ronda 4, vale la pena repensar el enfoque** (ej. apuntar directo a
-bancos que SÍ se sabe que tienen brazo de remesas con marca — como Chaabi
-Cash/Banque Populaire para Marruecos, ya cargado — en vez de ir país por
-país a ciegas) en lugar de seguir con la misma búsqueda genérica.
+**Balance de las 3 rondas de bancos: 1 de 15 candidatos calificó** (UBL
+Tezraftaar Cash, UAE→Pakistán). El patrón es consistente: la gran mayoría de
+bancos locales grandes son puntos de pago de MTOs existentes o solo ofrecen
+SWIFT genérico sin marca de remesas propia ni margen publicado.
+
+### Ronda de fintechs argentinas (27-ago-2026, sesión Cowork fase 2) — resultado: 1 de 5 calificó
+
+Investigadas a pedido explícito de Alejandro ("las fintech deberían aparecer
+y no aparecen"): Prex, Ualá, Lemon Cash, AstroPay, Global66/Belo. Solo Prex
+califica (y ya estaba cargada y activa desde antes). Detalle completo con
+fuentes en `docs/architecture-motor-comparador.md` sección 5 — resumen:
+Ualá no acepta transferencias internacionales directas (sin SWIFT), Lemon
+Cash y Global66/Belo solo permiten fondear la cuenta propia del usuario (no
+recibir de un tercero) y ninguno publica el spread, AstroPay usa lenguaje de
+marketing genérico sin cifra concreta en ninguna página oficial revisada.
 
 ## 9. Dónde está cada cosa
 
 | Qué | Dónde |
 |---|---|
+| **Arquitectura definitiva del motor de proveedores/corredores (elegibilidad + resolución de tarifa)** | `docs/architecture-motor-comparador.md` |
 | Runbook técnico original (diagnóstico, modelo de datos, plan de rollout paso a paso) | `docs/handoff/arquitectura-corredor-proveedores.md` |
 | Investigación de proveedores nuevos por corredor + estado de afiliados | `docs/handoff/tabla-maestra-proveedores-nuevos.md` |
 | Briefing de traspaso general (blog, redes, principios de trabajo) | `docs/handoff/briefing-traspaso.md` |
@@ -378,6 +427,10 @@ país a ciegas) en lugar de seguir con la misma búsqueda genérica.
 | Lógica de comparación de proveedores + flag de corredores | `src/lib/fx.functions.ts` |
 | Motor de scoring multi-criterio | `src/lib/scoring.functions.ts` |
 | Sección del comparador (UI) | `src/sections/ComparatorSection.tsx` |
+| Handoff: precisión de corredores + badges de confianza (27-ago) | `docs/handoff/handoff-2026-08-27-precision-corredores-badges.md` |
+| Brief: auditoría de tarifas, sesión Cowork (27-ago) | `docs/handoff/brief-cowork-2026-08-27-audit-tarifas.md` |
+| Handoff: resultado de la auditoría de tarifas, sesión Cowork fase 1 (27-ago) | `docs/handoff/handoff-2026-08-27-audit-tarifas-cowork.md` |
+| Handoff: fix de corredores + investigación de fintechs, sesión Cowork fase 2 (27-ago) | `docs/handoff/handoff-2026-08-27-fix-corredores-fintechs-cowork.md` |
 
 ## 10. Cómo continuar
 
@@ -388,15 +441,11 @@ documentación — `ale.md`, research de datos, scoring, etc.), después el
 va a tocar. No hace falta leer todo completo para cambios chicos — los
 índices ya resumen lo esencial de cada uno.
 
-Research de arquitectura de datos en curso: ver
-`docs/data-sources/2026-08-diagnostico-arquitectura-proveedores-corredores.md`
-— diagnóstico completo de por qué desaparecen proveedores en corredores sin
-datos (caso Western Union UK→Argentina), panorama de fuentes externas (World
-Bank RPW, Wise Comparison API, RemitSCOPE, FX local vía dolarapi.com/
-bluelytics para Argentina) y arquitectura propuesta (degradación con
-transparencia en vez de exclusión dura). Tiene decisiones concretas
-pendientes de aprobación de Alejandro en su sección 7 antes de tocar código/
-producción.
+**Modelo de proveedores/corredores:** ya no hace falta leer el diagnóstico
+histórico en `docs/data-sources/2026-08-diagnostico-arquitectura-proveedores-corredores.md`
+para entender el estado actual — `docs/architecture-motor-comparador.md` es
+el documento vivo y autosuficiente para ese tema, se actualiza cada vez que
+cambia la lógica.
 
 **Actualizar este archivo** cada vez que se cierre un sprint, se cargue una
 tanda grande de datos, o se tome una decisión de arquitectura — es el
@@ -411,10 +460,13 @@ Dos herramientas con acceso complementario, no en competencia:
   Supabase y Vercel — hace el diagnóstico sobre datos reales, escribe y
   commitea el código/los datos, y verifica el deploy. No puede acceder a la
   mayoría de sitios externos (la política de red del sandbox bloquea el
-  research web).
+  research web) — WebSearch/WebFetch sí funcionan para research puntual,
+  pero no pueden ejecutar calculadoras dinámicas con estado de sesión
+  (ej. "usuario no nuevo" en LemFi/Remitly) ni pasar bloqueos anti-bot.
 - **Claude chat / Claude in Chrome** (en la máquina de Alejandro, sin esa
   restricción) hace el research externo puntual — tarifas de un proveedor,
-  verificación de un dato — que Claude Code no puede traer directo.
+  verificación de un dato con browser real — que Claude Code no puede traer
+  directo.
 - El loop: Claude Code identifica el hueco exacto y da un pedido de
   investigación acotado (qué proveedores, qué dato exacto, qué formato) →
   Alejandro lo corre en Claude chat → pega el resultado en la conversación de
