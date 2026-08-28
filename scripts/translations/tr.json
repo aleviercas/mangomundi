@@ -687,5 +687,8 @@
   "comparator.legend.bankTransfer": "Bank: paid straight into the recipient's bank account.",
   "comparator.legend.cardPayout": "Card: paid directly onto the recipient's debit or prepaid card.",
   "comparator.legend.broker": "Broker: routed through a local broker or agent network — common for large or business transfers.",
-  "comparator.widget.viewAll": "Tümünü ({n}) mangomundi'de gör"
+  "comparator.widget.viewAll": "Tümünü ({n}) mangomundi'de gör",
+  "comparator.badge.notVerified": "Tahmini fiyat — bu güzergah için doğrulanmadı",
+  "comparator.badge.unconfirmed": "Onaylanmadı",
+  "comparator.badge.promoPrefix": "Promosyon:"
 }

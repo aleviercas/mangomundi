@@ -687,5 +687,8 @@
   "comparator.legend.bankTransfer": "Bank: paid straight into the recipient's bank account.",
   "comparator.legend.cardPayout": "Card: paid directly onto the recipient's debit or prepaid card.",
   "comparator.legend.broker": "Broker: routed through a local broker or agent network — common for large or business transfers.",
-  "comparator.widget.viewAll": "Показать все {n} на mangomundi"
+  "comparator.widget.viewAll": "Показать все {n} на mangomundi",
+  "comparator.badge.notVerified": "Ориентировочная цена — не подтверждена для этого маршрута",
+  "comparator.badge.unconfirmed": "Не подтверждено",
+  "comparator.badge.promoPrefix": "Промо:"
 }

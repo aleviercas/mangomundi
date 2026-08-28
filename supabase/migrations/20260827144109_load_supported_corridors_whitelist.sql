@@ -1,1 +1,16 @@
-LS0gTWlycm9yIGRlIGxhIG1pZ3JhY2lvbiAyMDI2MDgyNzE0NDEwOSAobG9hZF9zdXBwb3J0ZWRfY29ycmlkb3JzX3doaXRlbGlzdCksCi0tIGFwbGljYWRhIGRpcmVjdGFtZW50ZSBlbiBTdXBhYmFzZSBwb3IgbGEgc2VzaW9uIGRlIENsYXVkZSBDb2RlIGVsIDI3LWFnby0yMDI2Ci0tIHkgbnVuY2EgbWlycm9yZWFkYSBhIGdpdCAtLSByZWNvbnN0cnVpZGEgYWNhIGRlc2RlIGVsIGVzdGFkbyByZWFsIGRlIGxhCi0tIGJhc2UgKHZlcmlmaWNhZG8gY29uIFNFTEVDVCBjb250cmEgcHJvZHVjY2lvbiwgMjctYWdvLTIwMjYpIHBhcmEgcXVlIG1haW4KLS0gcXVlZGUgYWwgZGlhLiBWZXIgZG9jcy9oYW5kb2ZmL2hhbmRvZmYtMjAyNi0wOC0yNy1wcmVjaXNpb24tY29ycmVkb3Jlcy1iYWRnZXMubWQKLS0gc2VjY2lvbiAzLjIgcGFyYSBlbCBjb250ZXh0byBjb21wbGV0by4KLS0KLS0gc3VwcG9ydGVkX2NvcnJpZG9ycyBhY3R1YSBjb21vIGxpc3RhIGJsYW5jYSBlc3RyaWN0YSBwYXJhIG1hcmNhcyBkZSB1bgotLSBzb2xvIG1lcmNhZG8gKFRpcG8gQSBjb24gdW5hIHNvbGEgcmVjZWl2aW5nX2NvdW50cnkgcmVhbCBlbiBmeF9yYXRlcykuCnVwZGF0ZSBwcm92aWRlcnMgc2V0IHN1cHBvcnRlZF9jb3JyaWRvcnMgPSBhcnJheVsnVVMtSU4nXSB3aGVyZSBzbHVnID0gJ21vbmV5MmluZGlhJzsKdXBkYXRlIHByb3ZpZGVycyBzZXQgc3VwcG9ydGVkX2NvcnJpZG9ycyA9IGFycmF5WydVUy1QSCddIHdoZXJlIHNsdWcgPSAnYmRvLXJlbWl0JzsKdXBkYXRlIHByb3ZpZGVycyBzZXQgc3VwcG9ydGVkX2NvcnJpZG9ycyA9IGFycmF5WydBRS1QSyddIHdoZXJlIHNsdWcgPSAndWJsLXRlenJhZnRhYXInOwp1cGRhdGUgcHJvdmlkZXJzIHNldCBzdXBwb3J0ZWRfY29ycmlkb3JzID0gYXJyYXlbCiAgJ0FSLVVTJywnQVItREUnLCdBUi1FUycsJ0FSLUZSJywnQVItSVQnLCdBUi1QVCcsJ0FSLU1YJywnQVItQlInLCdBUi1DTycsJ0FSLUJPJywKICAnQVItUFknLCdBUi1WRScsJ0FSLVBFJywnQVItQ0wnLCdBUi1VWScKXSB3aGVyZSBzbHVnID0gJ3ByZXgnOwo=
+-- Strict whitelist for single-market brands marketed as generic remittance
+-- providers but that structurally only operate one (or a short list of)
+-- real corridor(s). Without this, eligibleProviders (see
+-- src/lib/fx.functions.ts) showed each brand's one real corridor's generic
+-- fee_tiers on every corridor a user asked for -- e.g. Money2India (a
+-- US->IN-only ICICI Bank product) appearing on GB->AR.
+-- See docs/handoff/handoff-2026-08-27-precision-corredores-badges.md
+-- section 2.1 / 3.2 for the confirmed research behind each corridor list.
+
+update providers set supported_corridors = array['US-IN'] where slug = 'money2india';
+update providers set supported_corridors = array['US-PH'] where slug = 'bdo-remit';
+update providers set supported_corridors = array['AE-PK'] where slug = 'ubl-tezraftaar';
+update providers set supported_corridors = array[
+  'AR-US','AR-DE','AR-ES','AR-FR','AR-IT','AR-PT','AR-MX','AR-BR','AR-CO','AR-BO',
+  'AR-PY','AR-VE','AR-PE','AR-CL','AR-UY'
+] where slug = 'prex';

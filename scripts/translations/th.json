@@ -687,5 +687,8 @@
   "comparator.legend.bankTransfer": "Bank: paid straight into the recipient's bank account.",
   "comparator.legend.cardPayout": "Card: paid directly onto the recipient's debit or prepaid card.",
   "comparator.legend.broker": "Broker: routed through a local broker or agent network — common for large or business transfers.",
-  "comparator.widget.viewAll": "ดูทั้งหมด {n} รายการที่ mangomundi"
+  "comparator.widget.viewAll": "ดูทั้งหมด {n} รายการที่ mangomundi",
+  "comparator.badge.notVerified": "ราคาโดยประมาณ — ยังไม่ได้ตรวจสอบสำหรับเส้นทางนี้",
+  "comparator.badge.unconfirmed": "ยังไม่ยืนยัน",
+  "comparator.badge.promoPrefix": "โปรโม:"
 }

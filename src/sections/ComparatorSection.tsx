@@ -1755,6 +1755,7 @@ export function ComparatorSection({
                 sortBy={sortBy}
                 deliveryMethod={deliveryMethod}
                 showOnlyExclusive={showOnlyExclusive}
+                hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
                 handleAffiliateClick={openPreferredRate}
                 tDisclaimer={t("fx.disclaimer")}
                 tTrademarks={t("fx.trademarks")}
@@ -2110,6 +2111,7 @@ function ResultsBlock({
   sortBy,
   deliveryMethod,
   showOnlyExclusive,
+  hasCorridorContext,
   handleAffiliateClick,
   tDisclaimer,
   tTrademarks,
@@ -2127,6 +2129,14 @@ function ResultsBlock({
   sortBy: SortKey;
   deliveryMethod: DeliveryMethod | null;
   showOnlyExclusive: boolean;
+  /** True when the current query has both a sending and receiving country
+   *  selected, i.e. a real corridor lookup was attempted server-side — see
+   *  fx.functions.ts. Gates the "not verified for this route" badge: without
+   *  this, every row would show has_corridor_data:false whenever no
+   *  corridor lookup ran at all (currency-only comparisons), which would
+   *  misleadingly badge rows that were never checked against a route in the
+   *  first place. */
+  hasCorridorContext: boolean;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
   tDisclaimer: string;
   tTrademarks: string;
@@ -2251,6 +2261,7 @@ function ResultsBlock({
             score={scoresBySlug.get(row.slug) ?? null}
             delta={row.received - bestReceived}
             featured={i === 0}
+            hasCorridorContext={hasCorridorContext}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             tRecipient={tRecipient}
@@ -2287,6 +2298,7 @@ function ProviderRow({
   score,
   delta,
   featured,
+  hasCorridorContext,
   onClick,
   tCta,
   tRecipient,
@@ -2309,6 +2321,9 @@ function ProviderRow({
    *  value" treatment, so there's a single clear lead instead of every
    *  row looking equally weighted. */
   featured: boolean;
+  /** See the same-named prop on ResultsBlock — gates the "not verified"
+   *  badge below. */
+  hasCorridorContext: boolean;
   onClick: () => void;
   tCta: string;
   tRecipient: string;
@@ -2320,6 +2335,21 @@ function ProviderRow({
   const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}%`;
   const ratePctClass =
     ratePct >= -0.25 ? "text-success" : ratePct >= -1 ? "text-warning" : "text-destructive";
+
+  // Trust/confidence badges — surfaces whether this row's numbers are real
+  // per-route data or a generic estimate, and when they were last checked.
+  // See fx.functions.ts (has_corridor_data, corridor_verified_status,
+  // provider_rates_last_updated) for how these are computed server-side.
+  const notVerifiedForRoute = hasCorridorContext && !row.has_corridor_data;
+  const unconfirmed = row.corridor_verified_status === "sin_confirmar";
+  const lastUpdatedRaw = row.corridor_data_collected_at ?? row.provider_rates_last_updated;
+  const lastUpdatedLabel = lastUpdatedRaw
+    ? new Date(lastUpdatedRaw).toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
 
   // Feature highlight chips: only the delivery-method pills remain now (on
   // request) — the merit badges (lowest fee / best exchange rate / most
@@ -2371,6 +2401,41 @@ function ProviderRow({
           {c.text}
         </span>
       ))}
+    </div>
+  );
+
+  // Trust/confidence line — separate from the merit chips above on purpose:
+  // this isn't ranking the provider, it's disclosing how confident we are
+  // in the NUMBERS shown elsewhere on the row. "Not verified" and
+  // "unconfirmed" both mean "treat this row's fee/rate as an estimate,
+  // double-check on the provider's site" — the disclaimer text below the
+  // whole list already says this generically, but this per-row flag is
+  // what actually tells a person WHICH rows need that caution. See
+  // fx.functions.ts (has_corridor_data, corridor_verified_status,
+  // provider_rates_last_updated) for how these are computed server-side.
+  const trustLine = (notVerifiedForRoute || unconfirmed || lastUpdatedLabel || row.promo_text) && (
+    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] leading-snug">
+      {notVerifiedForRoute && (
+        <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 font-semibold text-warning">
+          <Info className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.notVerified")}
+        </span>
+      )}
+      {unconfirmed && (
+        <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 font-semibold text-warning">
+          <Info className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.unconfirmed")}
+        </span>
+      )}
+      {lastUpdatedLabel && (
+        <span className="whitespace-nowrap text-muted-foreground">
+          {t("fx.updated")}: {lastUpdatedLabel}
+        </span>
+      )}
+      {row.promo_text && (
+        <span className="inline-flex items-center gap-1 font-medium text-accent">
+          <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
+          {row.promo_text}
+        </span>
+      )}
     </div>
   );
 
@@ -2503,6 +2568,9 @@ function ProviderRow({
           <div className="mt-2.5 flex justify-end">{cta}</div>
         </div>
       </div>
+      {trustLine && (
+        <div className="mt-2 hidden border-t border-border pt-2 sm:block">{trustLine}</div>
+      )}
 
       {/* Mobile — a card of its own, not a squeezed-down grid: identity +
           amount together up top (the decision-making number, not buried
@@ -2550,6 +2618,7 @@ function ProviderRow({
           </span>
         </div>
         {deliveryChips && <div className="mt-2">{deliveryChips}</div>}
+        {trustLine && <div className="mt-2">{trustLine}</div>}
         {row.has_exclusive_deal && (
           <div className="mt-2 inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-semibold text-accent">
             <Sparkle className="h-2.5 w-2.5" /> {t("comparator.exclusiveRateNudge")}
