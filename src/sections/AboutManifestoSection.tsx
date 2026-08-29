@@ -1,44 +1,60 @@
 import { useI18n } from "@/lib/i18n";
 
+/** Full-bleed dark band (design/HANDOFF.md §6): about-coins-globe.jpg behind
+ *  the manifesto copy, with market-coverage numbers folded in on the right
+ *  instead of living in their own StatsSection further down the page — one
+ *  credibility beat instead of two near-identical light sections back to
+ *  back. Copy (eyebrow/title/subtitle, stat values/labels) is unchanged from
+ *  before the merge — same i18n keys, already translated into 20 languages —
+ *  only the layout and colour scheme change. */
 export function AboutManifestoSection() {
   const { t } = useI18n();
-  const pillars = [
-    { label: t("home.about.mission.label"), body: t("home.about.mission.body") },
-    { label: t("home.about.vision.label"), body: t("home.about.vision.body") },
-    { label: t("home.about.problem.label"), body: t("home.about.problem.body") },
+  const stats = [
+    { value: "2026", label: t("home.stats.founded") },
+    { value: "150+", label: t("home.stats.countries") },
+    { value: "100+", label: t("home.stats.currencies") },
+    { value: "50+", label: t("home.stats.providers") },
   ];
   return (
-    <section id="about" className="scroll-mt-24 py-14 sm:py-20">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.5fr_0.5fr] lg:gap-12">
-          <div>
-            <p className="text-eyebrow font-bold uppercase text-brand-cta">
-              {t("home.about.eyebrow")}
-            </p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
+    <section id="about" className="scroll-mt-24 relative overflow-hidden bg-[#120E0B] py-14 sm:py-20">
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: "url(/images/about-coins-globe.jpg)",
+          backgroundPosition: "right center",
+          backgroundSize: "cover",
+          opacity: 0.55,
+        }}
+        aria-hidden
+      />
+      <div
+        className="absolute inset-0"
+        style={{
+          background: "linear-gradient(90deg, #120E0B 12%, rgba(18,14,11,.82) 46%, rgba(18,14,11,.25) 100%)",
+        }}
+        aria-hidden
+      />
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_360px]">
+          <div className="max-w-2xl">
+            <p className="text-eyebrow font-bold uppercase text-[#FF8A6B]">{t("home.about.eyebrow")}</p>
+            <h2 className="mt-3 font-heading text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-h2">
               {t("home.about.title")}
             </h2>
-            <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/70 sm:text-lg">
               {t("home.about.subtitle")}
             </p>
           </div>
-          <img
-            src="/images/about-coins-globe.jpg"
-            alt=""
-            width={1120}
-            height={610}
-            className="aspect-[16/9] w-full max-w-xs rounded-2xl object-cover shadow-[0_16px_40px_-20px_rgba(15,23,42,0.3)] lg:justify-self-end"
-            loading="lazy"
-          />
-        </div>
-
-        <div className="mt-12 grid gap-6 md:grid-cols-3">
-          {pillars.map((p) => (
-            <div key={p.label} className="rounded-[1.5rem] bg-muted p-7">
-              <p className="text-eyebrow font-bold uppercase text-muted-foreground">{p.label}</p>
-              <p className="mt-3 text-sm leading-relaxed text-foreground">{p.body}</p>
-            </div>
-          ))}
+          <div className="grid grid-cols-2 gap-3">
+            {stats.map((s) => (
+              <div key={s.label} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                <div className="font-heading text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                  {s.value}
+                </div>
+                <div className="mt-1 text-xs font-medium leading-snug text-white/60">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

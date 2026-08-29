@@ -34,12 +34,12 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
           <p className="mx-auto mt-3 max-w-5xl text-base leading-relaxed text-muted-foreground sm:mt-5">
             {t("home.hero.tagline")}
           </p>
-          {/* Trust bar — same 3 numbers as StatsSection's card further down
-              the page (value strings + home.stats.* labels, no new copy),
-              just surfaced here too: a Skyscanner/Kayak-style search page
-              shows a credibility signal right next to the search box, not
-              several scrolls away. Plain text like StatsSection itself (no
-              icons there either), so the two read as the same voice. */}
+          {/* Trust bar — same 3 numbers as the stat tiles inside the dark
+              "about" band further down the page (value strings +
+              home.stats.* labels, no new copy), just surfaced here too: a
+              Skyscanner/Kayak-style search page shows a credibility signal
+              right next to the search box, not several scrolls away. Plain
+              text, no icons, so the two read as the same voice. */}
           <div className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-x-2 gap-y-1.5 text-sm text-muted-foreground sm:mt-6">
             {[
               { value: "150+", label: t("home.stats.countries") },

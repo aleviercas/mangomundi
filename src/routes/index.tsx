@@ -6,7 +6,6 @@ import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
-import { StatsSection } from "@/sections/StatsSection";
 import { EmbedWidgetSection } from "@/sections/EmbedWidgetSection";
 import { BusinessSection } from "@/sections/BusinessSection";
 import { ContactSection } from "@/sections/ContactSection";
@@ -127,7 +126,6 @@ function Index() {
       <ComparatorSection initialQuery={geoDefaults} onHasResultChange={setHasResult} />
       <HowItWorksSection />
       <AboutManifestoSection />
-      <StatsSection />
       <EmbedWidgetSection />
       <BusinessSection />
       <ContactSection />
