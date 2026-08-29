@@ -1837,6 +1837,50 @@ export function ComparatorSection({
                 tCta={t("retail.cta")}
                 tNeutrality={t("comparator.disclaimer.neutrality")}
               />
+
+              {/* Stable business upsell (design/HANDOFF.md §3 + decision
+                  29-ago-2026): always rendered once there's a result, never
+                  popping in/out as the typed amount crosses the threshold —
+                  only its emphasis changes. B2B_UPSELL_MIN_AMOUNT (not the
+                  25,000 in the mockup, which was just that screen's example
+                  amount) governs both the emphasis AND the copy shown once
+                  crossed — the amount named there is the user's own typed
+                  amount, never a fixed figure. Retail only: a business-
+                  segment user is already talking to brokers. The always-on
+                  band in BusinessSection (home) is unrelated and unchanged. */}
+              {segment === "retail" && (
+                <div
+                  className={`mt-4 flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-colors ${
+                    amount >= B2B_UPSELL_MIN_AMOUNT
+                      ? "border-border bg-muted text-foreground"
+                      : "border-border/60 bg-transparent text-muted-foreground"
+                  }`}
+                >
+                  <span className="min-w-0 flex-1">
+                    {amount >= B2B_UPSELL_MIN_AMOUNT
+                      ? t("comparator.b2bBanner.above")
+                          .replace("{amount}", amount.toLocaleString())
+                          .replace("{cur}", from)
+                          .replace("{threshold}", B2B_UPSELL_MIN_AMOUNT.toLocaleString())
+                      : t("comparator.b2bBanner.below").replace(
+                          "{threshold}",
+                          B2B_UPSELL_MIN_AMOUNT.toLocaleString(),
+                        )}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSegment("business")}
+                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+                      amount >= B2B_UPSELL_MIN_AMOUNT
+                        ? "bg-foreground text-background hover:bg-foreground/90"
+                        : "text-brand-cta hover:text-brand-cta-hover"
+                    }`}
+                  >
+                    {t("comparator.b2bBanner.cta")}
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                  </button>
+                </div>
+              )}
             </div>
           ))}
       </div>

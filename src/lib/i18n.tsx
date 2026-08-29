@@ -2718,6 +2718,11 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.b2b.body":
       "For high-volume transfers, dedicated providers offer custom rates, treasury tooling and an account manager. →",
     "comparator.b2b.cta": "Email our business desk",
+    "comparator.b2bBanner.below":
+      "Sending more than {threshold}? Business brokers quote negotiated rates.",
+    "comparator.b2bBanner.above":
+      "Sending {amount} {cur} or more? Business brokers quote negotiated rates above {threshold} — usually 0.3–0.7% better than retail.",
+    "comparator.b2bBanner.cta": "See business quotes",
     "wizard.compare": "Compare",
     "wizard.howToCompare":
       "Read the table left to right: **rate** is how much of the destination currency you get per unit sent before fees, **fee** is the total charged by that provider, and **received** is the net amount that actually arrives. Use the column headers to sort by best amount received, lowest fee, or fastest delivery time.",

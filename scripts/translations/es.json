@@ -698,5 +698,8 @@
   "comparator.frequency.oneOff": "One-off",
   "comparator.frequency.monthly": "Monthly",
   "comparator.frequency.quarterly": "Quarterly",
-  "comparator.cta.request": "Request"
+  "comparator.cta.request": "Request",
+  "comparator.b2bBanner.below": "Sending more than {threshold}? Business brokers quote negotiated rates.",
+  "comparator.b2bBanner.above": "Sending {amount} {cur} or more? Business brokers quote negotiated rates above {threshold} — usually 0.3–0.7% better than retail.",
+  "comparator.b2bBanner.cta": "See business quotes"
 }
