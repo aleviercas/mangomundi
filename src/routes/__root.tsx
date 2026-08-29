@@ -88,12 +88,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     const seo = SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en;
     // Absolute URL — social crawlers (WhatsApp/X/LinkedIn/Facebook) reject
     // relative og:image paths, so the card would never render.
-    const ogImage = `${SITE_URL}/og-image.jpg`;
+    const ogImage = `${SITE_URL}/brand/og-card.png`;
     return {
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "theme-color", content: "#E9EDF3" },
+        { name: "theme-color", content: "#241C16" },
         { title: seo.title },
         { name: "description", content: seo.description },
         { name: "author", content: "Mangomundi" },
@@ -113,20 +113,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
       links: [
         { rel: "stylesheet", href: appCss },
-        // New mm favicon set. PNG icons are preferred by modern browsers; the
-        // .ico is the legacy fallback for /favicon.ico requests.
-        { rel: "icon", href: "/favicon.ico", sizes: "any" },
-        { rel: "icon", type: "image/png", sizes: "32x32", href: "/icon-32.png" },
-        { rel: "icon", type: "image/png", sizes: "16x16", href: "/icon-16.png" },
-        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
-        { rel: "icon", type: "image/png", sizes: "192x192", href: "/android-chrome-192x192.png" },
-        { rel: "icon", type: "image/png", sizes: "512x512", href: "/android-chrome-512x512.png" },
-        { rel: "manifest", href: "/site.webmanifest" },
+        // mangomundi brand favicon set (design/HANDOFF.md §1) — PNG icons only,
+        // no legacy .ico or android-chrome-* fallbacks.
+        { rel: "icon", type: "image/png", sizes: "32x32", href: "/brand/favicon-32.png" },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: "/brand/favicon-16.png" },
+        { rel: "apple-touch-icon", href: "/brand/apple-touch-icon.png" },
+        { rel: "manifest", href: "/brand/manifest.json" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap",
+          // Sora/Manrope: site body/heading type. Rubik ital,wght@0,700;1,700:
+          // the brand wordmark only (design/HANDOFF.md §1) — 700 upright for
+          // the straight "m"s, 700 italic for the "ango"/"undi" tails.
+          href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=swap",
         },
       ],
     };

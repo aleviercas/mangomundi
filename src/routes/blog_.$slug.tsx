@@ -99,7 +99,7 @@ export const Route = createFileRoute("/blog_/$slug")({
             name: "Mangomundi",
             logo: {
               "@type": "ImageObject",
-              url: `${SITE_URL}/og-image.jpg`,
+              url: `${SITE_URL}/brand/icon-512.png`,
             },
           },
           mainEntityOfPage: url,
