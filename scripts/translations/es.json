@@ -729,5 +729,10 @@
   "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
   "home.stats.trustpilotValue": "4.6",
   "home.stats.trustpilot": "on Trustpilot",
-  "home.contact.getQuotes": "Get business quotes"
+  "home.contact.getQuotes": "Get business quotes",
+  "todaysRoutes.title": "Today's routes, already priced",
+  "todaysRoutes.subtitle": "Routes where a partner gives us an exclusive rate — rotating on every visit. Prices are the best of all providers we compare.",
+  "todaysRoutes.exclusiveRate": "Exclusive rate",
+  "todaysRoutes.bestOf": "Best of {n} · {amount} {from}",
+  "todaysRoutes.gain": "+{amount} vs worst"
 }

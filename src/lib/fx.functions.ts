@@ -840,6 +840,86 @@ export const compareProviders = createServerFn({ method: "POST" })
     }
   });
 
+// ---------- getExclusiveCorridors ----------
+// design/AJUSTES-1.md §E — "Today's routes, already priced". No backend
+// query for "every corridor with an exclusive-deal provider" exists (and
+// this sandbox has no Supabase credentials to build/test one against real
+// data), so this deliberately reuses compareProviders — the same, already
+// real, already-tested comparison logic the whole site runs on — over a
+// short candidate list of commonly-searched pairs, instead of adding new
+// unverified query logic. TanStack Start server functions are directly
+// callable from other server code (no HTTP round trip server-side), so
+// this is a plain function call, not a new client request per candidate.
+//
+// A candidate only makes it into the result if the row that actually WINS
+// (highest received amount) is itself the has_exclusive_deal provider —
+// not just any exclusive-deal row somewhere in the list. The card's whole
+// pitch ("best of N, and it's an exclusive rate") only holds if those are
+// the same provider; otherwise the badge would be attached to a price that
+// has nothing to do with the deal.
+const EXCLUSIVE_CORRIDOR_CANDIDATES: ReadonlyArray<{ from: string; to: string }> = [
+  { from: "GBP", to: "MXN" },
+  { from: "USD", to: "PHP" },
+  { from: "EUR", to: "COP" },
+  { from: "GBP", to: "INR" },
+  { from: "USD", to: "MXN" },
+  { from: "EUR", to: "BRL" },
+  { from: "USD", to: "NGN" },
+  { from: "GBP", to: "PKR" },
+];
+const EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT = 1000;
+
+export interface ExclusiveCorridor {
+  from: string;
+  to: string;
+  amount: number;
+  bestReceived: number;
+  gain: number;
+  providerCount: number;
+  winnerName: string;
+  winnerSlug: string;
+}
+
+export const getExclusiveCorridors = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> => {
+    const settled = await Promise.all(
+      EXCLUSIVE_CORRIDOR_CANDIDATES.map(async (c): Promise<ExclusiveCorridor | null> => {
+        try {
+          const result = await compareProviders({
+            data: {
+              amount: EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
+              from: c.from,
+              to: c.to,
+              segment: "retail",
+              amountMode: "send",
+            },
+          });
+          if (result.rows.length === 0) return null;
+          const winner = result.rows.reduce((a, b) => (b.received > a.received ? b : a));
+          if (!winner.has_exclusive_deal) return null;
+          const worstReceived = Math.min(...result.rows.map((r) => r.received));
+          return {
+            from: c.from,
+            to: c.to,
+            amount: EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
+            bestReceived: winner.received,
+            gain: winner.received - worstReceived,
+            providerCount: result.rows.length,
+            winnerName: winner.name,
+            winnerSlug: winner.slug,
+          };
+        } catch (err) {
+          // One bad candidate (e.g. no fx_rates coverage for that pair)
+          // shouldn't take down the whole section — skip it.
+          console.error("[getExclusiveCorridors]", c.from, c.to, err);
+          return null;
+        }
+      }),
+    );
+    return settled.filter((r): r is ExclusiveCorridor => r !== null);
+  },
+);
+
 // ---------- trackAffiliateClick ----------
 const trackSchema = z.object({
   provider_slug: z.string().min(1).max(64),

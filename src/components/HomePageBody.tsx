@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
+import { TodaysRoutesSection } from "@/sections/TodaysRoutesSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { EmbedWidgetSection } from "@/sections/EmbedWidgetSection";
@@ -47,6 +48,9 @@ export function HomePageBody({
         onHasResultChange={setHasResult}
         onQueryChange={onQueryChange}
       />
+      {/* design/AJUSTES-1.md §E — below the comparator only while no search
+          has run yet, same gate HeroSection's compact mode uses. */}
+      {!hasResult && <TodaysRoutesSection />}
       <HowItWorksSection />
       <AboutManifestoSection />
       <EmbedWidgetSection />

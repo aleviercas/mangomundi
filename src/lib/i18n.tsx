@@ -2753,6 +2753,17 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
     "comparator.rateAlert.error": "Something went wrong. Please try again.",
     "comparator.trustpilot.rated": "Rated 4.6 on Trustpilot",
+    // design/AJUSTES-1.md §E — "Today's routes, already priced". The
+    // mockup's subtitle claims a specific freshness ("updated 2 min ago")
+    // that a real page combining several corridors with different fetch
+    // times can't honestly assert as one number — dropped rather than
+    // hardcoded.
+    "todaysRoutes.title": "Today's routes, already priced",
+    "todaysRoutes.subtitle":
+      "Routes where a partner gives us an exclusive rate — rotating on every visit. Prices are the best of all providers we compare.",
+    "todaysRoutes.exclusiveRate": "Exclusive rate",
+    "todaysRoutes.bestOf": "Best of {n} · {amount} {from}",
+    "todaysRoutes.gain": "+{amount} vs worst",
     "comparator.rankingExplainer":
       "Results are ranked by whichever **Sort** you pick. **Smart** blends fee, exchange rate, speed and trust into one score; the rest (Speed, Fees, Rate, Trust, Receive) sort strictly by that one thing. **Sponsored** offers only ever win a genuine tie between otherwise-equal options — never a real difference.",
     "comparator.table.exchangeRate": "Exchange rate",

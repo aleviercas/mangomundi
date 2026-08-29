@@ -74,7 +74,12 @@
     "search.noHiddenFees",
     "search.promise",
     "search.verified",
-    "seo.home.title"
+    "seo.home.title",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "ar": [
     "about.coverage.body",
@@ -196,7 +201,12 @@
     "legal.terms.p3",
     "legal.terms.p4",
     "retail.emailPlaceholder",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "bn": [
     "about.coverage.body",
@@ -319,7 +329,12 @@
     "legal.terms.p4",
     "legal.terms.s5.body",
     "retail.emailPlaceholder",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "de": [
     "about.coverage.body",
@@ -441,7 +456,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "fr": [
     "about.coverage.body",
@@ -562,7 +582,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "hi": [
     "about.coverage.body",
@@ -684,7 +709,12 @@
     "legal.terms.p3",
     "legal.terms.p4",
     "retail.emailPlaceholder",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "id": [
     "about.coverage.body",
@@ -805,7 +835,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "it": [
     "about.coverage.body",
@@ -926,7 +961,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "ja": [
     "about.coverage.body",
@@ -1048,7 +1088,12 @@
     "legal.terms.p3",
     "legal.terms.p4",
     "retail.emailPlaceholder",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "ko": [
     "about.coverage.body",
@@ -1170,7 +1215,12 @@
     "legal.terms.p3",
     "legal.terms.p4",
     "retail.emailPlaceholder",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "pl": [
     "about.coverage.body",
@@ -1291,7 +1341,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "ru": [
     "about.coverage.body",
@@ -1412,7 +1467,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "th": [
     "about.coverage.body",
@@ -1534,7 +1594,12 @@
     "legal.terms.p3",
     "legal.terms.p4",
     "retail.emailPlaceholder",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "tl": [
     "about.coverage.body",
@@ -1658,7 +1723,12 @@
     "legal.terms.p4",
     "retail.consent",
     "rfq.consent",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "tr": [
     "about.coverage.body",
@@ -1779,7 +1849,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "ur": [
     "about.coverage.body",
@@ -1915,7 +1990,12 @@
     "rfq.consent",
     "rfq.notice",
     "rfq.success",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "vi": [
     "about.coverage.body",
@@ -2036,7 +2116,12 @@
     "legal.terms.p2",
     "legal.terms.p3",
     "legal.terms.p4",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "zh": [
     "about.coverage.body",
@@ -2158,7 +2243,12 @@
     "legal.terms.p3",
     "legal.terms.p4",
     "retail.emailPlaceholder",
-    "search.guide"
+    "search.guide",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ],
   "pt": [
     "agent.newResult",
@@ -2236,6 +2326,11 @@
     "home.contact.getQuotes",
     "home.hero.localExchangeLink",
     "home.stats.trustpilot",
-    "home.stats.trustpilotValue"
+    "home.stats.trustpilotValue",
+    "todaysRoutes.bestOf",
+    "todaysRoutes.exclusiveRate",
+    "todaysRoutes.gain",
+    "todaysRoutes.subtitle",
+    "todaysRoutes.title"
   ]
 }
