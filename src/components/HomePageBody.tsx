@@ -51,12 +51,22 @@ export function HomePageBody({
       {/* design/AJUSTES-1.md §E — below the comparator only while no search
           has run yet, same gate HeroSection's compact mode uses. */}
       {!hasResult && <TodaysRoutesSection />}
-      <HowItWorksSection />
-      <AboutManifestoSection />
-      <EmbedWidgetSection />
-      <BusinessSection />
-      <ContactSection />
-      <BlogSection />
+      {/* design/AJUSTES-2.md §2 — with a result, the page is header + search
+          bar + rail/results + footer, nothing else: someone comparing 52
+          prices isn't reading the manifesto. Header/Footer are root-layout
+          chrome (__root.tsx), not part of this list, so they're unaffected;
+          the Business-upsell line stays too, but it lives inside
+          ComparatorSection's own results output, not in this list. */}
+      {!hasResult && (
+        <>
+          <HowItWorksSection />
+          <AboutManifestoSection />
+          <EmbedWidgetSection />
+          <BusinessSection />
+          <ContactSection />
+          <BlogSection />
+        </>
+      )}
     </>
   );
 }

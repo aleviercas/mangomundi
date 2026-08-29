@@ -1281,14 +1281,27 @@ export function ComparatorSection({
                 happen BEFORE the search runs, not as a post-results filter
                 — so it stays here. */}
             <div
-              className={`flex items-center justify-between gap-3 border-b border-border ${
-                embedded ? "px-3 py-1" : "px-4 py-1.5 sm:px-5"
+              className={`flex items-center gap-3 border-b border-border ${
+                embedded
+                  ? "px-3 py-1"
+                  : compact
+                    ? "px-4 py-3.5 sm:px-[30px]"
+                    : "px-4 py-1.5 sm:px-5"
               }`}
             >
-              <div className="flex min-w-0 items-center gap-2 text-eyebrow font-bold uppercase text-brand-cta">
-                <Sparkle className="h-3.5 w-3.5 shrink-0" />
-                <span className="truncate">{t("home.search.compareLabel")}</span>
-              </div>
+              {/* design/AJUSTES-2.md §2 — the "COMPARE" eyebrow only shows
+                  before a result exists; the mockup's compact/with-results
+                  header row has no eyebrow, just toggle+count on the left
+                  and the mid-market rate on the right (ml-auto below,
+                  replacing the standalone bordered rate box that used to
+                  sit below the fields — see resultsRef/scroll-mt-24 moved
+                  onto that rate block now). */}
+              {!compact && (
+                <div className="flex min-w-0 items-center gap-2 text-eyebrow font-bold uppercase text-brand-cta">
+                  <Sparkle className="h-3.5 w-3.5 shrink-0" />
+                  <span className="truncate">{t("home.search.compareLabel")}</span>
+                </div>
+              )}
               <div className="flex shrink-0 items-center gap-2.5">
                 <div
                   role="tablist"
@@ -1346,6 +1359,30 @@ export function ComparatorSection({
                   </button>
                 )}
               </div>
+              {/* Mid-market exchange rate — moved into this header row when
+                  compact (design/AJUSTES-2.md §2), replacing the standalone
+                  bordered box that used to sit below the fields. No "+X%"
+                  figure next to it: the mockup shows one, but that would be
+                  a rate-of-change number this app doesn't track anywhere
+                  (market_rate has no stored history to diff against) — not
+                  invented for this row. resultsRef/scroll-mt-24 (previously
+                  on the removed box) move here — see the ref's own comment
+                  a few hundred lines up for why it exists. */}
+              {compact && result && (
+                <div
+                  ref={resultsRef}
+                  className="ml-auto flex shrink-0 scroll-mt-24 items-baseline gap-2.5"
+                >
+                  <span className="font-heading text-[18px] font-extrabold tracking-tight tabular-nums text-foreground">
+                    1 {from} ={" "}
+                    {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+                    {to}
+                  </span>
+                  <span className="hidden text-xs sm:inline" style={{ color: "#8A7C6E" }}>
+                    {t("comparator.midMarketRate")}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Form body. @container lets the rows adapt to the CARD's width, not
@@ -1594,29 +1631,6 @@ export function ComparatorSection({
                   >
                     {t("comparator.field.useLocalCurrency")}
                   </button>
-                </div>
-              )}
-
-              {/* Mid-market exchange rate — shown as soon as a comparison has
-                  run, right inside this same box (like Wise's compare page).
-                  Skipped in embed mode: CompactResultsList already prints
-                  the winner's own rate inline, and the widget has no
-                  vertical budget to spare for a second rate line — this is
-                  one of the concrete cuts that gets it to fit without an
-                  internal scroll. */}
-              {result && !embedded && (
-                <div
-                  ref={resultsRef}
-                  className="flex flex-wrap items-baseline justify-between gap-2 rounded-lg border border-border bg-muted/40 px-4 py-3 scroll-mt-24"
-                >
-                  <span className="font-heading text-base font-bold text-foreground sm:text-lg">
-                    1 {from} ={" "}
-                    {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
-                    {to}
-                  </span>
-                  <span className="text-xs text-muted-foreground">
-                    {t("comparator.midMarketRate")}
-                  </span>
                 </div>
               )}
 
