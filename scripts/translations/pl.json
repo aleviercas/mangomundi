@@ -749,5 +749,8 @@
   "home.blog.compactTitle": "From the blog",
   "home.blog.allArticles": "All articles ↗",
   "home.about.cta.method": "Read our method",
-  "home.about.cta.aboutUs": "About us"
+  "home.about.cta.aboutUs": "About us",
+  "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
+  "comparator.filters.clear": "Clear · {n}",
+  "comparator.disclaimer.howWeMakeMoney": "How we make money"
 }

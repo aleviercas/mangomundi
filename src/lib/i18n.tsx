@@ -2759,12 +2759,25 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.badge.promoPrefix": "Promo:",
     "comparator.exclusiveRateNudge": "Check for exclusive rate",
     "comparator.filter.exclusiveOnly": "Exclusive rates",
+    // design/AJUSTES-2.md §6 — the rail's own "Exclusive rates only" row
+    // text (mockup line 308), kept separate from the shorter
+    // comparator.filter.exclusiveOnly used by the inline mobile chip so
+    // that one isn't stretched by the other's width constraints.
+    "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
     // Left rail — design/HANDOFF.md §3 (29-ago-2026).
     "comparator.filters.title": "Filters",
     "comparator.filters.payoutMethod": "Payout method",
     "comparator.filters.exclusiveOffers": "Exclusive offers",
     "comparator.filters.rankBy": "Rank by",
-    "comparator.filters.rankByHint": "Replaces the three tabs above while active.",
+    // design/AJUSTES-2.md §6 — "Clear · {n}" header action (mockup line
+    // 296), {n} is the count of active filter criteria (delivery method +
+    // exclusive-only, not sort — there's always an active sort, so
+    // "clearing" it isn't meaningful).
+    "comparator.filters.clear": "Clear · {n}",
+    // design/AJUSTES-2.md §6 (mockup line 317) — corrected from "above" to
+    // "on the right": the rail now sits to the LEFT of the 3 sort tabs,
+    // not above them, so the old copy described the wrong layout.
+    "comparator.filters.rankByHint": "Replaces the three tabs on the right while active.",
     "comparator.rateAlert.title": "Watch {from} → {to}",
     "comparator.rateAlert.body":
       "One email when the best rate on this route improves. No account needed.",
@@ -2772,6 +2785,11 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
     "comparator.rateAlert.error": "Something went wrong. Please try again.",
     "comparator.trustpilot.rated": "Rated 4.6 on Trustpilot",
+    // design/AJUSTES-2.md §6 (mockup line 363) — the rail's Trustpilot
+    // card links its neutrality disclaimer to /legal#risk, same real
+    // destination "Read our method" in AboutManifestoSection uses; no
+    // dedicated "how we make money" page exists yet.
+    "comparator.disclaimer.howWeMakeMoney": "How we make money",
     // design/AJUSTES-1.md §E — "Today's routes, already priced". The
     // mockup's subtitle claims a specific freshness ("updated 2 min ago")
     // that a real page combining several corridors with different fetch

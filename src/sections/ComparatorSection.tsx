@@ -1,4 +1,5 @@
 import { useServerFn } from "@tanstack/react-start";
+import { Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -1762,16 +1763,18 @@ export function ComparatorSection({
               />
             </div>
           ) : (
-            <div className="mt-5 grid min-w-0 scroll-mt-24 gap-5 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-start">
-              {/* Left rail — design/HANDOFF.md §3: Filters → AI Agent →
-                  Rate alert → Trustpilot. ≥lg only; below that the page
+            <div className="mt-5 grid min-w-0 scroll-mt-24 gap-5 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-start lg:gap-[22px]">
+              {/* Left rail — design/AJUSTES-2.md §6 (mockup line 290-365):
+                  Filters → AI Agent → Rate alert → Trustpilot, 268px wide,
+                  13px gap between cards. ≥lg only; below that the page
                   keeps the existing inline filter row + floating agent
                   (rendered elsewhere), unchanged. */}
-              <aside className="hidden lg:flex lg:flex-col lg:gap-4">
+              <aside className="hidden lg:flex lg:flex-col lg:gap-[13px]">
                 <FiltersCard
                   t={t}
                   deliveryMethod={deliveryMethod}
                   toggleDeliveryMethod={toggleDeliveryMethod}
+                  setDeliveryMethod={setDeliveryMethod}
                   deliveryCounts={deliveryCounts}
                   showOnlyExclusive={showOnlyExclusive}
                   setShowOnlyExclusive={setShowOnlyExclusive}
@@ -2160,11 +2163,19 @@ export function ComparatorSection({
 
 /** Vertical Filters card: the same delivery-method/exclusive/rank-by state
  *  the inline filter row above already drives, re-skinned into the rail's
- *  list layout with a per-option count (design/HANDOFF.md §3). */
+ *  list layout with a per-option count (design/AJUSTES-2.md §6, mockup
+ *  line 293-319). The mockup marks each option with a literal ☑/☐
+ *  character rather than an icon — this card follows that literally
+ *  (the inline filter row above keeps its own lucide icons, unchanged;
+ *  this is a separate, rail-only presentation of the same state), and its
+ *  active/inactive colors come straight from the mockup's own payoutChips
+ *  script (line 853-866): active is a dark border/cream fill, not the
+ *  dark-filled pill the inline row above uses. */
 function FiltersCard({
   t,
   deliveryMethod,
   toggleDeliveryMethod,
+  setDeliveryMethod,
   deliveryCounts,
   showOnlyExclusive,
   setShowOnlyExclusive,
@@ -2175,6 +2186,7 @@ function FiltersCard({
   t: (k: string) => string;
   deliveryMethod: DeliveryMethod | null;
   toggleDeliveryMethod: (m: DeliveryMethod) => void;
+  setDeliveryMethod: (m: DeliveryMethod | null) => void;
   deliveryCounts: Record<DeliveryMethod, number>;
   showOnlyExclusive: boolean;
   setShowOnlyExclusive: (v: boolean | ((prev: boolean) => boolean)) => void;
@@ -2182,18 +2194,38 @@ function FiltersCard({
   sortBy: SortKey;
   setSortBy: (k: SortKey) => void;
 }) {
+  const criteriaCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
+  const optionRowClass = (active: boolean) =>
+    `flex h-[38px] items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+      active
+        ? "border-[1.5px] border-[#241C16] bg-[#F5EFE8] font-bold text-[#241C16]"
+        : "border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#241C16]/40"
+    }`;
+
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
+    <div className="rounded-[18px] border border-border bg-card px-[17px] py-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-bold text-foreground">{t("comparator.filters.title")}</h4>
+        <h4 className="text-[15px] font-extrabold text-foreground">
+          {t("comparator.filters.title")}
+        </h4>
+        <button
+          type="button"
+          onClick={() => {
+            setDeliveryMethod(null);
+            setShowOnlyExclusive(false);
+          }}
+          className="text-[12px] font-bold text-[#C2410C] hover:underline"
+        >
+          {t("comparator.filters.clear").replace("{n}", String(criteriaCount))}
+        </button>
       </div>
 
-      <div className="mt-3">
-        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+      <div className="mt-[15px]">
+        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
           {t("comparator.filters.payoutMethod")}
         </div>
-        <div className="mt-2 flex flex-col gap-1.5">
-          {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
+        <div className="mt-[9px] flex flex-col gap-[6px]">
+          {DELIVERY_METHODS.map(({ key, labelKey }) => {
             const isActive = deliveryMethod === key;
             return (
               <button
@@ -2201,17 +2233,11 @@ function FiltersCard({
                 type="button"
                 onClick={() => toggleDeliveryMethod(key)}
                 aria-pressed={isActive}
-                className={`flex h-9 items-center gap-2 rounded-md border px-2.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                  isActive
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-input bg-background text-foreground hover:border-foreground/30"
-                }`}
+                className={optionRowClass(isActive)}
               >
-                <Icon className="h-3.5 w-3.5 shrink-0" />
+                <span aria-hidden>{isActive ? "☑" : "☐"}</span>
                 <span className="truncate">{t(labelKey)}</span>
-                <span
-                  className={`ml-auto shrink-0 tabular-nums ${isActive ? "text-background/70" : "text-muted-foreground"}`}
-                >
+                <span className="ml-auto shrink-0 text-[11.5px] font-semibold text-[#8A7C6E] tabular-nums">
                   {deliveryCounts[key]}
                 </span>
               </button>
@@ -2220,52 +2246,50 @@ function FiltersCard({
         </div>
       </div>
 
-      <div className="mt-3 border-t border-border pt-3">
-        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+      <div className="mt-[15px] border-t border-[#F2EBE3] pt-[13px]">
+        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
           {t("comparator.filters.exclusiveOffers")}
         </div>
         <button
           type="button"
           onClick={() => setShowOnlyExclusive((prev) => !prev)}
           aria-pressed={showOnlyExclusive}
-          className={`mt-2 flex h-9 w-full items-center gap-2 rounded-md border px-2.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+          className={`mt-[9px] flex h-[38px] w-full items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
             showOnlyExclusive
-              ? "border-transparent bg-accent text-accent-foreground"
-              : "border-accent/40 bg-accent/10 text-accent hover:border-accent/70"
+              ? "border-[1.5px] border-[#EE5B3E] bg-[#FDE9E4] text-[#C2410C]"
+              : "border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#EE5B3E]/40"
           }`}
         >
-          <Sparkle className="h-3.5 w-3.5 shrink-0" />
-          <span className="truncate">{t("comparator.filter.exclusiveOnly")}</span>
-          <span
-            className={`ml-auto shrink-0 tabular-nums ${showOnlyExclusive ? "text-accent-foreground/70" : "text-accent/70"}`}
-          >
+          <span aria-hidden>{showOnlyExclusive ? "☑" : "☐"}</span>
+          <span className="truncate">{t("comparator.filter.exclusiveOnlyLong")}</span>
+          <span className="ml-auto shrink-0 text-[11.5px] font-bold tabular-nums">
             {exclusiveCount}
           </span>
         </button>
       </div>
 
-      <div className="mt-3 border-t border-border pt-3">
-        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+      <div className="mt-[15px] border-t border-[#F2EBE3] pt-[13px]">
+        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
           {t("comparator.filters.rankBy")}
         </div>
-        <div className="mt-2 flex flex-wrap gap-1.5">
+        <div className="mt-[9px] flex flex-wrap gap-[7px]">
           {MORE_SORT_CHIPS.map((key) => (
             <button
               key={key}
               type="button"
               onClick={() => setSortBy(key)}
               aria-pressed={sortBy === key}
-              className={`inline-flex h-8 items-center rounded-md border px-2.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+              className={`inline-flex h-9 items-center rounded-[10px] border px-3.5 text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                 sortBy === key
-                  ? "border-foreground bg-foreground text-background"
-                  : "border-input bg-background text-foreground hover:border-foreground/30"
+                  ? "border-[1.5px] border-[#241C16] bg-[#F5EFE8] font-bold text-[#241C16]"
+                  : "border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#241C16]/40"
               }`}
             >
               {t(sortLabelKey(key))}
             </button>
           ))}
         </div>
-        <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+        <p className="mt-2 text-[11px] leading-[1.5] text-[#8A7C6E]">
           {t("comparator.filters.rankByHint")}
         </p>
       </div>
@@ -2332,7 +2356,7 @@ function RateAlertCard({
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">
+    <div className="overflow-hidden rounded-[18px] border border-border bg-card">
       <div
         className="h-[104px] bg-cover bg-center"
         style={{
@@ -2341,11 +2365,11 @@ function RateAlertCard({
         }}
         aria-hidden
       />
-      <div className="p-4">
-        <h4 className="text-sm font-bold text-foreground">
+      <div className="px-[15px] pb-[15px] pt-[13px]">
+        <h4 className="text-[14.5px] font-extrabold text-foreground">
           {t("comparator.rateAlert.title").replace("{from}", from).replace("{to}", to)}
         </h4>
-        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+        <p className="mt-1.5 text-xs leading-[1.55] text-muted-foreground">
           {t("comparator.rateAlert.body")}
         </p>
         {done ? (
@@ -2353,7 +2377,7 @@ function RateAlertCard({
             {t("comparator.rateAlert.success")}
           </p>
         ) : (
-          <form onSubmit={onSubmit} className="mt-3 space-y-2">
+          <form onSubmit={onSubmit} className="mt-[10px] space-y-2">
             <label htmlFor="rate-alert-email" className="sr-only">
               {t("common.email")}
             </label>
@@ -2372,7 +2396,7 @@ function RateAlertCard({
             <button
               type="submit"
               disabled={pending}
-              className="flex h-9 w-full items-center justify-center gap-1.5 rounded-md border border-foreground text-xs font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
+              className="flex h-10 w-full items-center justify-center gap-1.5 rounded-[11px] border-[1.5px] border-foreground text-[13px] font-bold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
             >
               {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {t("comparator.rateAlert.cta")}
@@ -2385,18 +2409,27 @@ function RateAlertCard({
 }
 
 /** Trustpilot rating + the same "affiliate links never move a row up"
- *  disclaimer already shown elsewhere (design/HANDOFF.md §3). */
+ *  disclaimer already shown elsewhere (design/HANDOFF.md §3). Colors and
+ *  the "How we make money" link are literal to design/AJUSTES-2.md §6
+ *  (mockup line 358-364) — the star/label are the success green token, not
+ *  the warning-amber lucide default. No dedicated "how we make money" page
+ *  exists in the app yet, so the link points at the same real destination
+ *  "Read our method" in AboutManifestoSection already uses (/legal#risk):
+ *  the closest existing content about affiliate neutrality. */
 function TrustpilotCard({ t }: { t: (k: string) => string }) {
   return (
-    <div className="rounded-xl border border-border bg-muted/40 p-4">
-      <div className="flex items-center gap-1.5">
-        <Star className="h-3.5 w-3.5 fill-warning text-warning" />
-        <span className="text-xs font-bold text-foreground">
+    <div className="rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
+      <div className="flex items-center gap-[7px]">
+        <Star className="h-[13px] w-[13px] fill-success text-success" />
+        <span className="text-[12.5px] font-bold text-success">
           {t("comparator.trustpilot.rated")}
         </span>
       </div>
-      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-        {t("comparator.disclaimer.neutrality")}
+      <p className="mt-2 text-[11.5px] leading-[1.55] text-[#5C5147]">
+        {t("comparator.disclaimer.neutrality")}{" "}
+        <Link to="/legal" hash="risk" className="font-semibold text-[#C2410C] hover:underline">
+          {t("comparator.disclaimer.howWeMakeMoney")}
+        </Link>
       </p>
       <div className="mt-2">
         <TrustBox />
@@ -2540,7 +2573,9 @@ function FloatingAgent(p: FloatingAgentProps) {
           style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
           className={
             docked
-              ? "flex h-[480px] w-full flex-col overflow-hidden rounded-xl shadow-xl"
+              ? // design/AJUSTES-2.md §6 — the rail's own card radius (mockup
+                // line 321), 18px like every other rail card.
+                "flex h-[480px] w-full flex-col overflow-hidden rounded-[18px] shadow-xl"
               : "flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl"
           }
         >
