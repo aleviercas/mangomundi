@@ -240,6 +240,21 @@ Orden de prioridad acordado con Alejandro:
    - Hallazgo relevante para el paso 5: **cero headers de seguridad
      configurados** (`vercel.json` no tiene CSP/HSTS/X-Frame-Options/etc.)
      — pendiente.
+   - **Ronda 3 (29-ago-2026, en curso) — rediseño "Mangomundi 4"**: paquete
+     de diseño completo entregado por Alejandro (home, comparador, modo
+     Business, widget, identidad de marca), en rama
+     `claude/reorganizar-entrega-rediseno-za6gmc` (aún no mergeada, nada
+     LIVE todavía). Hecho hasta ahora: favicons/og:image apuntando a
+     `public/brand/`, `Wordmark.tsx` con el ícono de marca real (clip-path
+     diagonal) y Rubik cargada, y `AboutManifestoSection`+`StatsSection`
+     fusionadas en una banda oscura a sangre. Queda: rail izquierdo del
+     comparador, estado del comparador en la URL + rutas `/send`/`/business`,
+     ajustes al modo Business, banner de upsell estable, y conteo real de
+     proveedores. **Ver
+     [`docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-rediseno-mangomundi-4.md)**
+     para el estado exacto, las decisiones de producto ya tomadas y cómo
+     continuar — es el documento a leer antes de tocar cualquier cosa de
+     este rediseño.
 2. **Precisión de producto/datos** (este documento) — modelo de elegibilidad
    de proveedores por corredor **cerrado y documentado** en
    `docs/architecture-motor-comparador.md` (27-ago-2026, fase 2) — es el
