@@ -13,7 +13,7 @@ export function BusinessSection() {
   return (
     <section id="business" className="scroll-mt-24 py-14 sm:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.5fr_0.5fr] lg:gap-12">
+        <div className="grid items-center gap-8 lg:grid-cols-[1.3fr_0.7fr] lg:gap-12">
           <div>
             <p className="text-eyebrow font-bold uppercase text-accent">{t("nav.business")}</p>
             <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
@@ -37,9 +37,9 @@ export function BusinessSection() {
           <img
             src="/images/business-person.jpg"
             alt=""
-            width={1120}
-            height={610}
-            className="aspect-[16/9] w-full max-w-xs rounded-2xl object-cover shadow-[0_16px_40px_-20px_rgba(15,23,42,0.3)] lg:justify-self-end"
+            width={420}
+            height={315}
+            className="aspect-[4/3] w-full max-w-sm rounded-2xl object-cover shadow-[0_16px_40px_-20px_rgba(15,23,42,0.3)] lg:justify-self-end"
             loading="lazy"
           />
         </div>
