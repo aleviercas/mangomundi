@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Tỷ Giá Tốt Nhất",
   "search.startTransfer": "Bắt đầu chuyển tiền",
   "search.liveRates": "Tỷ giá trực tiếp",
-  "home.hero.titlePre": "So sánh",
-  "home.hero.titleAccent": "tỷ giá hối đoái",
   "home.about.subtitle": "Một công cụ quyết định trung lập: chúng tôi kết nối các dòng tiền cá nhân và doanh nghiệp với nhà điều hành đổi ngoại tệ xuyên biên giới hoặc địa phương tốt nhất hiện có, không thiên vị hay phí ẩn.",
   "home.about.mission.body": "Tạo điều kiện tiếp cận các quyết định ngoại hối tốt nhất thông qua trí tuệ trung lập được hỗ trợ bởi AI, loại bỏ sự bất cân xứng thông tin và chi phí ẩn trong thanh toán toàn cầu.",
   "home.about.vision.body": "Một thế giới nơi mọi khoản thanh toán ngoại hối địa phương hoặc xuyên biên giới, từ một khoản kiều hối gia đình đến một hoạt động ngân quỹ đa quốc gia, đều đi qua một lớp quyết định minh bạch và công bằng.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "So sánh tỷ giá hối đoái",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

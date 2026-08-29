@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Kurs Terbaik",
   "search.startTransfer": "Mulai transfer",
   "search.liveRates": "Kurs langsung",
-  "home.hero.titlePre": "Bandingkan",
-  "home.hero.titleAccent": "kurs mata uang",
   "home.about.subtitle": "Mesin keputusan netral: kami menghubungkan arus ritel dan bisnis ke rute lintas batas atau operator penukaran mata uang lokal terbaik yang tersedia, tanpa bias atau margin tersembunyi.",
   "home.about.mission.body": "Memfasilitasi akses ke keputusan valas terbaik melalui kecerdasan netral bertenaga AI, menghilangkan asimetri informasi dan biaya tersembunyi dari pembayaran global.",
   "home.about.vision.body": "Sebuah dunia di mana setiap pembayaran valas lokal atau lintas batas, dari pengiriman uang keluarga hingga operasi treasury multinasional, melewati lapisan keputusan yang transparan dan adil.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Bandingkan kurs mata uang",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

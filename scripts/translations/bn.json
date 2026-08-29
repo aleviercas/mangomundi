@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "সেরা হার",
   "search.startTransfer": "স্থানান্তর শুরু করুন",
   "search.liveRates": "লাইভ হার",
-  "home.hero.titlePre": "মুদ্রা বিনিময়",
-  "home.hero.titleAccent": "হার তুলনা করুন",
   "home.about.subtitle": "একটি নিরপেক্ষ সিদ্ধান্ত ইঞ্জিন: আমরা কোনো পক্ষপাত বা লুকানো মার্জিন ছাড়াই খুচরা এবং কর্পোরেট প্রবাহকে সেরা উপলব্ধ সীমান্ত-পার রুট বা স্থানীয় মুদ্রা বিনিময় অপারেটরের সাথে সংযুক্ত করি।",
   "home.about.mission.body": "নিরপেক্ষ, AI-চালিত বুদ্ধিমত্তার মাধ্যমে সেরা বৈদেশিক মুদ্রা সিদ্ধান্তে প্রবেশাধিকার সহজতর করা, বৈশ্বিক পেমেন্ট থেকে তথ্য অসামঞ্জস্য এবং লুকানো খরচ দূর করা।",
   "home.about.vision.body": "এমন একটি বিশ্ব যেখানে প্রতিটি স্থানীয় বা সীমান্ত-পার বৈদেশিক মুদ্রা পেমেন্ট, একটি পারিবারিক প্রেরণ থেকে বহুজাতিক ট্রেজারি অপারেশন পর্যন্ত, একটি স্বচ্ছ এবং ন্যায্য সিদ্ধান্ত স্তরের মধ্য দিয়ে চলে।",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "মুদ্রা বিনিময় হার তুলনা করুন",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

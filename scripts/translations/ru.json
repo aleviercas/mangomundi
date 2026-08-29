@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Лучший курс",
   "search.startTransfer": "Начать перевод",
   "search.liveRates": "Курсы в реальном времени",
-  "home.hero.titlePre": "Сравнивайте",
-  "home.hero.titleAccent": "курсы валют",
   "home.about.subtitle": "Нейтральный механизм принятия решений: мы связываем розничные и корпоративные потоки с лучшим доступным трансграничным маршрутом или локальным оператором обмена валюты, без предвзятости и скрытых наценок.",
   "home.about.mission.body": "Облегчить доступ к лучшим валютным решениям с помощью нейтрального интеллекта на основе ИИ, устраняя информационную асимметрию и скрытые издержки глобальных платежей.",
   "home.about.vision.body": "Мир, где каждый локальный или трансграничный валютный платёж, от семейного денежного перевода до операции казначейства транснациональной компании, проходит через прозрачный и справедливый уровень принятия решений.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Сравнивайте курсы валют",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

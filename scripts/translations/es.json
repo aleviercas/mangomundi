@@ -145,8 +145,6 @@
   "home.finalCta.subtitle": "Accedé a un ruteo FX transparente respaldado por el mercado y a protocolos personalizados de licitación RFQ asincrónica para tus corredores empresariales.",
   "home.finalCta.rfq": "Acceder a la Terminal RFQ",
   "home.hero.ctaCompare": "Probar Comparador FX",
-  "home.hero.titlePre": "Compará",
-  "home.hero.titleAccent": "tipos de cambio",
   "home.dual.title": "Construido para cada flujo transfronterizo — retail y corporativo",
   "home.dual.retail.title": "Remesas Retail y Patrimonio Privado",
   "home.dual.retail.body": "Enviá dinero internacionalmente, pagá viajes globales o gestioná transferencias personales. Accedé a tasas mayoristas interbancarias sin recargos ocultos, con transparencia absoluta y seguimiento automatizado.",
@@ -728,5 +726,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Compará tipos de cambio",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "最良レート",
   "search.startTransfer": "送金を開始",
   "search.liveRates": "リアルタイムレート",
-  "home.hero.titlePre": "為替レートを",
-  "home.hero.titleAccent": "比較",
   "home.about.subtitle": "中立的な意思決定エンジン：個人および法人の資金フローを、偏りや隠れたマージンのない、利用可能な最適な国際送金ルートまたは現地通貨両替業者に接続します。",
   "home.about.mission.body": "中立的なAI主導のインテリジェンスを通じて最適な外国為替決定へのアクセスを促進し、グローバル決済における情報の非対称性と隠れたコストを排除します。",
   "home.about.vision.body": "家族送金から多国籍企業の財務業務まで、あらゆるローカルまたは国境を越えた外国為替決済が、透明で公平な意思決定層を通過する世界。",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "為替レートを 比較",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

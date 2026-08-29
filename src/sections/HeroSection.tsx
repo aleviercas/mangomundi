@@ -22,16 +22,16 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
     >
       <div className="overflow-hidden">
         <div className="relative mx-auto w-full max-w-7xl px-5 text-center sm:px-8">
-          <h1 className="font-heading text-[26px] font-extrabold leading-[1.15] tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-            {t("home.hero.titlePre")}{" "}
-            <span
-              className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, var(--accent) 0%, #ff4d3d 100%)" }}
-            >
-              {t("home.hero.titleAccent")}
-            </span>
+          {/* design/AJUSTES-1.md §B — literal 44px/800/-0.035em h1, no
+              gradient accent (the mockup's h2 is plain text). Smaller on
+              mobile since the doc only specifies one reference size. */}
+          <h1 className="font-heading text-[28px] font-extrabold leading-[1.1] tracking-[-0.035em] text-foreground sm:text-[44px]">
+            {t("home.hero.headline")}
           </h1>
-          <p className="mx-auto mt-3 max-w-5xl text-base leading-relaxed text-muted-foreground sm:mt-5">
+          <p
+            className="mx-auto mt-3 max-w-5xl text-[15px] leading-relaxed sm:text-[17px]"
+            style={{ color: "#6B5F55" }}
+          >
             {t("home.hero.tagline")}
           </p>
           {/* Trust bar — same 3 numbers as the stat tiles inside the dark

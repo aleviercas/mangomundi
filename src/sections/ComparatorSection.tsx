@@ -1327,6 +1327,20 @@ export function ComparatorSection({
                     )}
                   </span>
                 )}
+                {/* design/AJUSTES-1.md §B — inert on purpose: there's no
+                    /exchange screen to send it to yet (redesign decision
+                    #5 explicitly deferred that page, "no está diseñada").
+                    Shown as a button, not an <a>, so it never behaves like
+                    a broken link. */}
+                {!embedded && (
+                  <button
+                    type="button"
+                    className="hidden shrink-0 truncate text-[13px] font-bold sm:inline"
+                    style={{ color: "#C2410C" }}
+                  >
+                    {t("home.hero.localExchangeLink")}
+                  </button>
+                )}
               </div>
             </div>
 

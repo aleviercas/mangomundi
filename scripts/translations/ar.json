@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "أفضل سعر",
   "search.startTransfer": "بدء التحويل",
   "search.liveRates": "الأسعار المباشرة",
-  "home.hero.titlePre": "قارن",
-  "home.hero.titleAccent": "أسعار صرف العملات",
   "home.about.subtitle": "محرك قرار محايد: نربط التدفقات الفردية والمؤسسية بأفضل مسار عابر للحدود أو مشغل صرف عملة محلي متاح، دون تحيز أو هوامش خفية.",
   "home.about.mission.body": "تسهيل الوصول إلى أفضل قرارات الصرف الأجنبي من خلال ذكاء محايد مدعوم بالذكاء الاصطناعي، والقضاء على عدم تناسق المعلومات والتكاليف الخفية من المدفوعات العالمية.",
   "home.about.vision.body": "عالم يمر فيه كل دفع صرف أجنبي محلي أو عابر للحدود، من حوالة عائلية إلى عملية خزينة متعددة الجنسيات، عبر طبقة قرار شفافة وعادلة.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "قارن أسعار صرف العملات",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "最佳汇率",
   "search.startTransfer": "开始转账",
   "search.liveRates": "实时汇率",
-  "home.hero.titlePre": "比较",
-  "home.hero.titleAccent": "汇率",
   "home.about.subtitle": "一个中立的决策引擎：我们将零售和企业资金流对接到现有最佳的跨境路径或本地货币兑换服务商，没有偏见，也没有隐藏费用。",
   "home.about.mission.body": "通过中立的人工智能驱动的智能，消除全球支付中的信息不对称和隐藏成本，促进获取最佳外汇决策。",
   "home.about.vision.body": "在这个世界里，从家庭汇款到跨国财资运营的每一笔本地或跨境外汇支付，都通过一个透明公平的决策层。",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "比较 汇率",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

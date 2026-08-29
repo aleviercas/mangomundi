@@ -407,8 +407,17 @@ export const DICTS: Record<Lang, Dict> = {
       "Access transparent, market-backed FX routing and custom asynchronous RFQ bidding protocols for your enterprise corridors.",
     "home.finalCta.rfq": "Access RFQ Terminal",
     "home.hero.ctaCompare": "Try FX Comparator",
-    "home.hero.titlePre": "Compare currency",
-    "home.hero.titleAccent": "exchange rates",
+    // design/AJUSTES-1.md §B — literal h1 copy, plain text (the mockup has
+    // no gradient accent on this headline, unlike the old titlePre/
+    // titleAccent split it replaces). Renamed rather than reusing
+    // "home.hero.title" — that key already exists (line ~377) as dead
+    // copy from an earlier hero design, unused anywhere in src/.
+    "home.hero.headline": "Compare exchange rates and transfer fees",
+    // The link next to the Individual/Business switcher (§B) — renders as
+    // an inert button (no destination route exists yet; decision #5 of
+    // the redesign explicitly deferred building /exchange because "la
+    // pantalla no está diseñada").
+    "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
     "home.dual.title": "Built for every cross-border flow — retail and corporate",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
@@ -475,8 +484,9 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.blog.viewAll": "View all posts",
+    // design/AJUSTES-1.md §B — literal subtitle copy.
     "home.hero.tagline":
-      "Find the best way to send money. Compare rates, fees, transfer speeds, and providers in real time. Powered by neutral AI.",
+      "Who delivers more of your money? Real rates and total fees, side by side, updated every minute. No sign-up.",
     "home.contact.simple.title": "Get in touch",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
@@ -796,8 +806,11 @@ export const DICTS: Record<Lang, Dict> = {
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
     "home.blog.viewAll": "Ver todas las notas",
-    "home.hero.titlePre": "Compará",
-    "home.hero.titleAccent": "tipos de cambio",
+    // Reconstruido de las viejas titlePre+titleAccent (no traducción nueva
+    // sin revisión — decisión #8 del rediseño). El subtítulo se queda con
+    // el string viejo por la misma razón; el copy nuevo de EN todavía no
+    // tiene revisión en español.
+    "home.hero.headline": "Compará tipos de cambio",
     "home.hero.tagline":
       "Encontrá la mejor forma de enviar dinero. Compará tasas, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
     "home.contact.simple.title": "Contáctanos",

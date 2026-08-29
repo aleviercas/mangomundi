@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Najlepszy Kurs",
   "search.startTransfer": "Rozpocznij przelew",
   "search.liveRates": "Kursy na żywo",
-  "home.hero.titlePre": "Porównaj",
-  "home.hero.titleAccent": "kursy walut",
   "home.about.subtitle": "Neutralny silnik decyzyjny: łączymy przepływy detaliczne i firmowe z najlepszym dostępnym operatorem transgranicznym lub lokalnym wymiany walut, bez uprzedzeń i ukrytych marż.",
   "home.about.mission.body": "Ułatwienie dostępu do najlepszych decyzji walutowych dzięki neutralnej inteligencji opartej na AI, eliminując asymetrię informacji i ukryte koszty płatności globalnych.",
   "home.about.vision.body": "Świat, w którym każda lokalna lub transgraniczna płatność walutowa, od rodzinnego przekazu pieniężnego po operację skarbową międzynarodowej korporacji, przechodzi przez przejrzystą i sprawiedliwą warstwę decyzyjną.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Porównaj kursy walut",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

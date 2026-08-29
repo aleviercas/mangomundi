@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "อัตราที่ดีที่สุด",
   "search.startTransfer": "เริ่มการโอนเงิน",
   "search.liveRates": "อัตราแบบเรียลไทม์",
-  "home.hero.titlePre": "เปรียบเทียบ",
-  "home.hero.titleAccent": "อัตราแลกเปลี่ยน",
   "home.about.subtitle": "เครื่องมือตัดสินใจที่เป็นกลาง เราเชื่อมโยงกระแสเงินของลูกค้ารายย่อยและธุรกิจเข้ากับผู้ให้บริการแลกเปลี่ยนข้ามพรมแดนหรือในประเทศที่ดีที่สุดที่มีอยู่ โดยไม่มีอคติหรือส่วนต่างที่ซ่อนอยู่",
   "home.about.mission.body": "อำนวยความสะดวกในการเข้าถึงการตัดสินใจด้านอัตราแลกเปลี่ยนที่ดีที่สุดผ่านปัญญาที่เป็นกลางซึ่งขับเคลื่อนด้วย AI ขจัดความไม่สมมาตรของข้อมูลและต้นทุนที่ซ่อนอยู่จากการชำระเงินทั่วโลก",
   "home.about.vision.body": "โลกที่การชำระเงินแลกเปลี่ยนเงินตราในประเทศหรือข้ามพรมแดนทุกครั้ง ตั้งแต่การส่งเงินของครอบครัวไปจนถึงการดำเนินงานบริหารเงินสดของบริษัทข้ามชาติ ผ่านชั้นการตัดสินใจที่โปร่งใสและเป็นธรรม",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "เปรียบเทียบ อัตราแลกเปลี่ยน",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

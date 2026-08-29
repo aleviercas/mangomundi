@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Bester Kurs",
   "search.startTransfer": "Überweisung starten",
   "search.liveRates": "Live-Kurse",
-  "home.hero.titlePre": "Vergleichen Sie",
-  "home.hero.titleAccent": "Wechselkurse",
   "home.about.subtitle": "Eine neutrale Entscheidungs-Engine: Wir verbinden Privatkunden- und Unternehmensströme mit dem besten verfügbaren grenzüberschreitenden oder lokalen Wechseloperator, ohne Voreingenommenheit oder versteckte Margen.",
   "home.about.mission.body": "Den Zugang zu den besten Devisenentscheidungen durch neutrale, KI-gestützte Intelligenz erleichtern und dabei Informationsasymmetrie und versteckte Kosten bei globalen Zahlungen beseitigen.",
   "home.about.vision.body": "Eine Welt, in der jede lokale oder grenzüberschreitende Devisenzahlung, von einer familiären Geldüberweisung bis zu einer multinationalen Treasury-Operation, über eine transparente und gerechte Entscheidungsebene läuft.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Vergleichen Sie Wechselkurse",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

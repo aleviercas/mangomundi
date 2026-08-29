@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "최고 환율",
   "search.startTransfer": "송금 시작",
   "search.liveRates": "실시간 환율",
-  "home.hero.titlePre": "환율",
-  "home.hero.titleAccent": "비교",
   "home.about.subtitle": "중립적인 의사결정 엔진: 편향이나 숨겨진 마진 없이 개인 및 기업 자금 흐름을 이용 가능한 최고의 국경 간 경로 또는 현지 통화 환전 사업자와 연결합니다.",
   "home.about.mission.body": "중립적인 AI 기반 인텔리전스를 통해 최고의 외환 결정에 대한 접근을 촉진하고, 글로벌 결제의 정보 비대칭성과 숨겨진 비용을 제거합니다.",
   "home.about.vision.body": "가족 송금부터 다국적 기업의 자금 운용까지, 모든 로컬 또는 국경 간 외환 결제가 투명하고 공정한 의사결정 계층을 거치는 세상.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "환율 비교",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "بہترین شرح",
   "search.startTransfer": "منتقلی شروع کریں",
   "search.liveRates": "لائیو شرحیں",
-  "home.hero.titlePre": "زر مبادلہ کی شرحوں کا",
-  "home.hero.titleAccent": "موازنہ کریں",
   "home.about.subtitle": "ایک غیرجانبدار فیصلہ سازی انجن: ہم ریٹیل اور کارپوریٹ بہاؤ کو کسی تعصب یا پوشیدہ مارجن کے بغیر بہترین دستیاب سرحد پار راستے یا مقامی کرنسی ایکسچینج آپریٹر سے جوڑتے ہیں۔",
   "home.about.mission.body": "غیرجانبدار، AI سے چلنے والی ذہانت کے ذریعے بہترین زرمبادلہ فیصلوں تک رسائی کو آسان بنانا، عالمی ادائیگیوں سے معلوماتی عدم توازن اور پوشیدہ اخراجات کو ختم کرنا۔",
   "home.about.vision.body": "ایک ایسی دنیا جہاں ہر مقامی یا سرحد پار زرمبادلہ ادائیگی، خاندانی ترسیل سے لے کر کثیر القومی ٹریژری آپریشن تک، ایک شفاف اور منصفانہ فیصلہ سازی کی تہہ سے گزرتی ہے۔",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "زر مبادلہ کی شرحوں کا موازنہ کریں",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

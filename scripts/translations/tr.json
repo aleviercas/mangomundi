@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "En İyi Kur",
   "search.startTransfer": "Transfer başlat",
   "search.liveRates": "Canlı kurlar",
-  "home.hero.titlePre": "Döviz kurlarını",
-  "home.hero.titleAccent": "karşılaştırın",
   "home.about.subtitle": "Tarafsız bir karar motoru: bireysel ve kurumsal akışları, önyargı veya gizli marj olmadan mevcut en iyi sınır ötesi rotaya veya yerel döviz operatörüne bağlıyoruz.",
   "home.about.mission.body": "Küresel ödemelerdeki bilgi asimetrisini ve gizli maliyetleri ortadan kaldırarak, tarafsız yapay zekâ destekli zekâ yoluyla en iyi döviz kararlarına erişimi kolaylaştırmak.",
   "home.about.vision.body": "Bir aile havalesinden çok uluslu bir hazine işlemine kadar her yerel veya sınır ötesi döviz ödemesinin şeffaf ve adil bir karar katmanından geçtiği bir dünya.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Döviz kurlarını karşılaştırın",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

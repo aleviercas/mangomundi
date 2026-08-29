@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Pinakamahusay na Rate",
   "search.startTransfer": "Magsimula ng transfer",
   "search.liveRates": "Live na rate",
-  "home.hero.titlePre": "Ihambing ang",
-  "home.hero.titleAccent": "mga exchange rate",
   "home.about.subtitle": "Isang neutral na decision engine: kinokonekta namin ang retail at corporate na daloy sa pinakamahusay na available na cross-border route o lokal na currency exchange operator, walang bias o nakatagong margin.",
   "home.about.mission.body": "Padaliin ang access sa pinakamahusay na desisyon sa foreign exchange sa pamamagitan ng neutral, AI-powered na intelligence, na inaalis ang information asymmetry at nakatagong gastos mula sa global na pagbabayad.",
   "home.about.vision.body": "Isang mundo kung saan bawat lokal o cross-border na bayad sa FX, mula sa padala ng pamilya hanggang sa operasyon ng treasury ng multinasyunal na kumpanya, ay dumadaan sa isang transparent at patas na layer ng desisyon.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Ihambing ang mga exchange rate",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

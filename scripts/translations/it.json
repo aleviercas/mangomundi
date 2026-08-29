@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Tasso Migliore",
   "search.startTransfer": "Avvia un trasferimento",
   "search.liveRates": "Tassi in tempo reale",
-  "home.hero.titlePre": "Confronta",
-  "home.hero.titleAccent": "i tassi di cambio",
   "home.about.subtitle": "Un motore decisionale neutrale: colleghiamo i flussi retail e aziendali al miglior operatore di cambio transfrontaliero o locale disponibile, senza pregiudizi né margini nascosti.",
   "home.about.mission.body": "Facilitare l'accesso alle migliori decisioni valutarie attraverso un'intelligenza neutrale basata sull'IA, eliminando l'asimmetria informativa e i costi nascosti dei pagamenti globali.",
   "home.about.vision.body": "Un mondo in cui ogni pagamento valutario locale o transfrontaliero, da una rimessa familiare a un'operazione di tesoreria multinazionale, passa attraverso un livello decisionale trasparente ed equo.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Confronta i tassi di cambio",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

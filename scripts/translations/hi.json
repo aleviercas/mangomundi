@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "सर्वश्रेष्ठ दर",
   "search.startTransfer": "ट्रांसफर शुरू करें",
   "search.liveRates": "लाइव दरें",
-  "home.hero.titlePre": "मुद्रा विनिमय",
-  "home.hero.titleAccent": "दरों की तुलना करें",
   "home.about.subtitle": "एक निष्पक्ष निर्णय इंजन: हम खुदरा और कॉर्पोरेट प्रवाह को बिना किसी पूर्वाग्रह या छिपे हुए मार्जिन के सर्वश्रेष्ठ उपलब्ध सीमा-पार मार्ग या स्थानीय मुद्रा विनिमय ऑपरेटर से जोड़ते हैं।",
   "home.about.mission.body": "निष्पक्ष, AI-संचालित बुद्धिमत्ता के माध्यम से सर्वोत्तम विदेशी मुद्रा निर्णयों तक पहुंच को आसान बनाना, वैश्विक भुगतान से सूचना असमानता और छिपी हुई लागतों को समाप्त करना।",
   "home.about.vision.body": "एक ऐसी दुनिया जहां हर स्थानीय या सीमा-पार विदेशी मुद्रा भुगतान, पारिवारिक प्रेषण से लेकर बहुराष्ट्रीय ट्रेजरी संचालन तक, एक पारदर्शी और न्यायसंगत निर्णय परत से होकर गुजरता है।",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "मुद्रा विनिमय दरों की तुलना करें",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }

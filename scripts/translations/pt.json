@@ -492,8 +492,6 @@
   "comparator.table.bestRate": "Melhor Taxa",
   "search.startTransfer": "Iniciar uma transferência",
   "search.liveRates": "Taxas em tempo real",
-  "home.hero.titlePre": "Compare",
-  "home.hero.titleAccent": "taxas de câmbio",
   "home.about.subtitle": "Um motor de decisão neutro: ligamos fluxos de particulares e empresas ao melhor operador de câmbio transfronteiriço ou local disponível, sem viés nem margens ocultas.",
   "home.about.mission.body": "Facilitar o acesso às melhores decisões cambiais através de inteligência neutra alimentada por IA, eliminando a assimetria de informação e os custos ocultos dos pagamentos globais.",
   "home.about.vision.body": "Um mundo onde cada pagamento cambial local ou transfronteiriço, desde uma remessa familiar até uma operação de tesouraria multinacional, passa por uma camada de decisão transparente e equitativa.",
@@ -731,5 +729,7 @@
   "comparator.tab.receiveMoreHint": "Highest payout",
   "comparator.tab.receiveMoreSub": "the max",
   "comparator.tab.fastest": "Fastest",
-  "comparator.tab.fastestHint": "Fastest option"
+  "comparator.tab.fastestHint": "Fastest option",
+  "home.hero.headline": "Compare taxas de câmbio",
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
 }
