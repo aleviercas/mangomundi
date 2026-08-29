@@ -2690,6 +2690,19 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.badge.promoPrefix": "Promo:",
     "comparator.exclusiveRateNudge": "Check for exclusive rate",
     "comparator.filter.exclusiveOnly": "Exclusive rates",
+    // Left rail — design/HANDOFF.md §3 (29-ago-2026).
+    "comparator.filters.title": "Filters",
+    "comparator.filters.payoutMethod": "Payout method",
+    "comparator.filters.exclusiveOffers": "Exclusive offers",
+    "comparator.filters.rankBy": "Rank by",
+    "comparator.filters.rankByHint": "Replaces the three tabs above while active.",
+    "comparator.rateAlert.title": "Watch {from} → {to}",
+    "comparator.rateAlert.body":
+      "One email when the best rate on this route improves. No account needed.",
+    "comparator.rateAlert.cta": "Set a rate alert",
+    "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
+    "comparator.rateAlert.error": "Something went wrong. Please try again.",
+    "comparator.trustpilot.rated": "Rated 4.6 on Trustpilot",
     "comparator.rankingExplainer":
       "Results are ranked by whichever **Sort** you pick. **Smart** blends fee, exchange rate, speed and trust into one score; the rest (Speed, Fees, Rate, Trust, Receive) sort strictly by that one thing. **Sponsored** offers only ever win a genuine tie between otherwise-equal options — never a real difference.",
     "comparator.table.exchangeRate": "Exchange rate",

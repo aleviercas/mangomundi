@@ -703,5 +703,16 @@
   "comparator.b2bBanner.above": "Sending {amount} {cur} or more? Business brokers quote negotiated rates above {threshold} — usually 0.3–0.7% better than retail.",
   "comparator.b2bBanner.cta": "See business quotes",
   "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route."
+  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
+  "comparator.filters.title": "Filters",
+  "comparator.filters.payoutMethod": "Payout method",
+  "comparator.filters.exclusiveOffers": "Exclusive offers",
+  "comparator.filters.rankBy": "Rank by",
+  "comparator.filters.rankByHint": "Replaces the three tabs above while active.",
+  "comparator.rateAlert.title": "Watch {from} → {to}",
+  "comparator.rateAlert.body": "One email when the best rate on this route improves. No account needed.",
+  "comparator.rateAlert.cta": "Set a rate alert",
+  "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
+  "comparator.rateAlert.error": "Something went wrong. Please try again.",
+  "comparator.trustpilot.rated": "Rated 4.6 on Trustpilot"
 }

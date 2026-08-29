@@ -55,7 +55,8 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { useProviderCounts } from "@/hooks/use-provider-counts";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { SITE_URL } from "@/config/site";
-import { captureBusinessLead } from "@/lib/agent.functions";
+import { captureBusinessLead, captureEnterpriseLead } from "@/lib/agent.functions";
+import { TrustBox } from "@/components/TrustBox";
 import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
 import {
   MasterRateStore,
@@ -190,6 +191,22 @@ const MORE_SORT_CHIPS: SortKey[] = ["most_trusted", "lowest_cost", "best_exchang
  *  guaranteed to return [0,1] (weights sum to 1.0, every component
  *  normalized to [0,1]) — cheap insurance against a future weights change
  *  breaking that invariant and printing something outside 7-9. */
+// Matches Tailwind's `lg:` breakpoint (1024px) — the width the results grid
+// switches from stacked to a 268px rail + results column (design/HANDOFF.md
+// §3). Defaults to false (today's floating-agent behavior) until the effect
+// confirms a wide viewport, so SSR/first paint never assumes desktop.
+function useIsDesktopRail(): boolean {
+  const [isDesktop, setIsDesktop] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+  return isDesktop;
+}
+
 function compactNumber(n: number): string {
   return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(
     n,
@@ -438,6 +455,31 @@ export function ComparatorSection({
   // every row adds clutter without adding clarity. One explanation, shown
   // once, toggled on demand.
   const [showLegend, setShowLegend] = useState(false);
+  // Per-option match counts for the rail's Filters card (design/HANDOFF.md
+  // §3 — "conteo por opción"). Computed from the current result set, not
+  // hardcoded — an option with 0 matches on this corridor still shows "0",
+  // never a stale number from a previous search.
+  const { deliveryCounts, exclusiveCount } = useMemo(() => {
+    const counts: Record<DeliveryMethod, number> = {
+      bank_transfer: 0,
+      cash_pickup: 0,
+      card_payout: 0,
+      broker: 0,
+    };
+    if (!result) return { deliveryCounts: counts, exclusiveCount: 0 };
+    for (const { key } of DELIVERY_METHODS) {
+      counts[key] = result.rows.filter(DELIVERY_METHOD_PREDICATES[key]).length;
+    }
+    return {
+      deliveryCounts: counts,
+      exclusiveCount: result.rows.filter((r) => r.has_exclusive_deal).length,
+    };
+  }, [result]);
+  // Rail (design/HANDOFF.md §3) only replaces the floating agent once
+  // there's a result to show a rail next to, and only at ≥lg — below that,
+  // and before any result, the agent keeps its existing floating behavior.
+  const isDesktopRail = useIsDesktopRail();
+  const showDockedAgent = isDesktopRail && Boolean(result) && !embedded;
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -1532,8 +1574,10 @@ export function ComparatorSection({
         {/* Floating AI Agent — fixed bottom-right, minimized by default.
             Chat state (history, result context) is preserved across collapse/expand
             because we only toggle visibility, not unmount. Hidden in embed mode:
-            a floating chat inside a third-party iframe would be out of place. */}
-        {!embedded && (
+            a floating chat inside a third-party iframe would be out of place.
+            Rendered exactly once: floating here, OR docked in the rail below
+            (design/HANDOFF.md §3) — never both, see showDockedAgent. */}
+        {!embedded && !showDockedAgent && (
           <FloatingAgent
             collapsed={aiCollapsed}
             onToggle={handleAgentToggle}
@@ -1633,14 +1677,77 @@ export function ComparatorSection({
               />
             </div>
           ) : (
-            <div className="mt-5 min-w-0 scroll-mt-24">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <h3 className="text-eyebrow font-bold uppercase text-brand-cta">
-                  {t("comparator.results")}
-                </h3>
-              </div>
-              <div className="mb-2.5 flex flex-col gap-3">
-                {/* Sort chips + delivery-method cluster + legend button, all
+            <div className="mt-5 grid min-w-0 scroll-mt-24 gap-5 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-start">
+              {/* Left rail — design/HANDOFF.md §3: Filters → AI Agent →
+                  Rate alert → Trustpilot. ≥lg only; below that the page
+                  keeps the existing inline filter row + floating agent
+                  (rendered elsewhere), unchanged. */}
+              <aside className="hidden lg:flex lg:flex-col lg:gap-4">
+                <FiltersCard
+                  t={t}
+                  deliveryMethod={deliveryMethod}
+                  toggleDeliveryMethod={toggleDeliveryMethod}
+                  deliveryCounts={deliveryCounts}
+                  showOnlyExclusive={showOnlyExclusive}
+                  setShowOnlyExclusive={setShowOnlyExclusive}
+                  exclusiveCount={exclusiveCount}
+                  sortBy={sortBy}
+                  setSortBy={setSortBy}
+                />
+                {showDockedAgent && (
+                  <FloatingAgent
+                    docked
+                    collapsed={aiCollapsed}
+                    onToggle={handleAgentToggle}
+                    hasNewResult={hasNewResult}
+                    amount={amount}
+                    lang={lang}
+                    t={t}
+                    aiLoading={aiLoading}
+                    chat={chat}
+                    result={result}
+                    chatInput={chatInput}
+                    setChatInput={setChatInput}
+                    sendChat={sendChat}
+                    chatMutPending={chatMut.isPending}
+                    comparePending={compareMut.isPending}
+                    onSuggestedCompare={runSuggestedCompare}
+                    chatBottomRef={chatBottomRef}
+                    openPreferredRate={openPreferredRate}
+                    segment={segment}
+                    businessStage={businessStage}
+                    savingBusinessLead={savingBusinessLead}
+                    confirmBusinessLead={confirmBusinessLead}
+                    setBusinessStage={setBusinessStage}
+                    setChat={setChat}
+                    onWizardAction={handleWizardAction}
+                  />
+                )}
+                <RateAlertCard
+                  t={t}
+                  from={from}
+                  to={to}
+                  amount={amount}
+                  sendingCountry={sendingCountry}
+                  receivingCountry={receivingCountry}
+                />
+                <TrustpilotCard t={t} />
+              </aside>
+
+              <div className="min-w-0">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                  <h3 className="text-eyebrow font-bold uppercase text-brand-cta">
+                    {t("comparator.results")}
+                  </h3>
+                </div>
+                <div className="mb-2.5 flex flex-col gap-3">
+                  {/* Sort chips row stays visible at every width (the 3 main
+                    tabs aren't rail content). The secondary filters
+                    cluster right below (delivery method / exclusive /
+                    "more sort" dropdown) is redundant with the rail's
+                    Filters card once that exists, so it's lg:hidden —
+                    mobile/tablet keep using it exactly as before. */}
+                  {/* Sort chips + delivery-method cluster + legend button, all
                   in ONE flex-wrap row now (on request) — they used to be
                   two separate rows. Still two visually distinct sections
                   within it: the sort chips are plain pill buttons, the
@@ -1663,107 +1770,109 @@ export function ComparatorSection({
                   content existed off-screen, so it just looked cut off
                   instead of scrollable; wrapping costs vertical space
                   instead, but never hides anything. */}
-                {/* Primary tabs — Kayak/Google Flights "Best/Cheapest/Fastest"
+                  {/* Primary tabs — Kayak/Google Flights "Best/Cheapest/Fastest"
                   pattern: a distinct, prominent tab track (not plain chips
                   mixed in with the filters below it), so these 3 read as
                   THE way to reorder, with everything else secondary. */}
-                <div className="flex flex-wrap items-center gap-1 rounded-xl bg-muted p-1">
-                  {PRIMARY_SORT_CHIPS.map((key) => {
-                    const Icon = sortIcon(key);
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => setSortBy(key)}
-                        aria-pressed={sortBy === key}
-                        className={`inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                          sortBy === key
-                            ? "bg-card text-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {t(sortLabelKey(key))}
-                      </button>
-                    );
-                  })}
+                  <div className="flex flex-wrap items-center gap-1 rounded-xl bg-muted p-1">
+                    {PRIMARY_SORT_CHIPS.map((key) => {
+                      const Icon = sortIcon(key);
+                      return (
+                        <button
+                          key={key}
+                          type="button"
+                          onClick={() => setSortBy(key)}
+                          aria-pressed={sortBy === key}
+                          className={`inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                            sortBy === key
+                              ? "bg-card text-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          <Icon className="h-4 w-4" />
+                          {t(sortLabelKey(key))}
+                        </button>
+                      );
+                    })}
 
-                  {/* The other 3 criteria (trust, fee, exchange rate) — same
+                    {/* The other 3 criteria (trust, fee, exchange rate) — same
                     control, tucked behind a dropdown instead of a 4th-6th
                     tab so the primary row stays a 3-way decision. The
                     trigger itself reflects the active choice when one of
                     these 3 is selected, so switching via the dropdown is
                     still visible without reopening it. */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <button
-                        type="button"
-                        aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
-                        className={`inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                          MORE_SORT_CHIPS.includes(sortBy)
-                            ? "bg-card text-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {(() => {
-                          const Icon = MORE_SORT_CHIPS.includes(sortBy) ? sortIcon(sortBy) : Gauge;
-                          return <Icon className="h-4 w-4" />;
-                        })()}
-                        {MORE_SORT_CHIPS.includes(sortBy)
-                          ? t(sortLabelKey(sortBy))
-                          : t("comparator.sort.more")}
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      <DropdownMenuRadioGroup
-                        value={sortBy}
-                        onValueChange={(v) => setSortBy(v as SortKey)}
-                      >
-                        {MORE_SORT_CHIPS.map((key) => (
-                          <DropdownMenuRadioItem key={key} value={key}>
-                            {t(sortLabelKey(key))}
-                          </DropdownMenuRadioItem>
-                        ))}
-                      </DropdownMenuRadioGroup>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
+                          className={`inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                            MORE_SORT_CHIPS.includes(sortBy)
+                              ? "bg-card text-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
+                          }`}
+                        >
+                          {(() => {
+                            const Icon = MORE_SORT_CHIPS.includes(sortBy)
+                              ? sortIcon(sortBy)
+                              : Gauge;
+                            return <Icon className="h-4 w-4" />;
+                          })()}
+                          {MORE_SORT_CHIPS.includes(sortBy)
+                            ? t(sortLabelKey(sortBy))
+                            : t("comparator.sort.more")}
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        <DropdownMenuRadioGroup
+                          value={sortBy}
+                          onValueChange={(v) => setSortBy(v as SortKey)}
+                        >
+                          {MORE_SORT_CHIPS.map((key) => (
+                            <DropdownMenuRadioItem key={key} value={key}>
+                              {t(sortLabelKey(key))}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
 
-                {/* Secondary filters — delivery method, exclusive-only, legend.
+                  {/* Secondary filters — delivery method, exclusive-only, legend.
                   Visually separate row (smaller chips) so it never competes
                   with the primary tabs above for attention. */}
-                <div className="flex flex-wrap items-center gap-2">
-                  {/* Delivery method — single-select, mutually exclusive,
+                  <div className="flex flex-wrap items-center gap-2 lg:hidden">
+                    {/* Delivery method — single-select, mutually exclusive,
                     click the active one again to clear back to "all
                     methods". Its own bordered cluster (not plain pill
                     buttons like the sort chips above) is what visually
                     marks this as a different KIND of control — a filter
                     that narrows the result set, not a reorder — without
                     needing a text label to say so. */}
-                  <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
-                    {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
-                      const isActive = deliveryMethod === key;
-                      return (
-                        <button
-                          key={key}
-                          type="button"
-                          onClick={() => toggleDeliveryMethod(key)}
-                          aria-pressed={isActive}
-                          className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                            isActive
-                              ? "border-foreground bg-foreground text-background"
-                              : "border-input bg-card text-foreground hover:border-foreground/30"
-                          }`}
-                        >
-                          <Icon className="h-3.5 w-3.5" />
-                          {t(labelKey)}
-                        </button>
-                      );
-                    })}
-                  </div>
+                    <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
+                      {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
+                        const isActive = deliveryMethod === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => toggleDeliveryMethod(key)}
+                            aria-pressed={isActive}
+                            className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                              isActive
+                                ? "border-foreground bg-foreground text-background"
+                                : "border-input bg-card text-foreground hover:border-foreground/30"
+                            }`}
+                          >
+                            <Icon className="h-3.5 w-3.5" />
+                            {t(labelKey)}
+                          </button>
+                        );
+                      })}
+                    </div>
 
-                  {/* Exclusive-rates filter — an explicit opt-in the person
+                    {/* Exclusive-rates filter — an explicit opt-in the person
                     turns on themselves, not a default. Accent-colored like
                     the "Check for exclusive rate" nudge pill on each row —
                     same visual language for the same underlying disclosed
@@ -1771,102 +1880,102 @@ export function ComparatorSection({
                     OFF (default) shows everyone, ordered purely by the
                     chosen sort; ON only narrows to a labeled subset,
                     still ordered by that same sort — never a re-ranking. */}
-                  <button
-                    type="button"
-                    onClick={() => setShowOnlyExclusive((prev) => !prev)}
-                    aria-pressed={showOnlyExclusive}
-                    className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                      showOnlyExclusive
-                        ? "border-transparent bg-accent text-accent-foreground"
-                        : "border-accent/40 bg-accent/10 text-accent hover:border-accent/70"
-                    }`}
-                  >
-                    <Sparkle className="h-3.5 w-3.5" />
-                    {t("comparator.filter.exclusiveOnly")}
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowOnlyExclusive((prev) => !prev)}
+                      aria-pressed={showOnlyExclusive}
+                      className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                        showOnlyExclusive
+                          ? "border-transparent bg-accent text-accent-foreground"
+                          : "border-accent/40 bg-accent/10 text-accent hover:border-accent/70"
+                      }`}
+                    >
+                      <Sparkle className="h-3.5 w-3.5" />
+                      {t("comparator.filter.exclusiveOnly")}
+                    </button>
 
-                  {/* Legend opens in a modal — never pushes the results table
+                    {/* Legend opens in a modal — never pushes the results table
                     down, unlike an inline expand. Same content available on
                     both desktop (click) and mobile (tap), no hover needed. */}
-                  <button
-                    type="button"
-                    onClick={() => setShowLegend(true)}
-                    aria-label={t("comparator.legend.toggle")}
-                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
-                  >
-                    <Info className="h-3.5 w-3.5" />
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => setShowLegend(true)}
+                      aria-label={t("comparator.legend.toggle")}
+                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
+                    >
+                      <Info className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <Dialog open={showLegend} onOpenChange={setShowLegend}>
-                <DialogContent className="max-w-md">
-                  <DialogHeader>
-                    <DialogTitle>{t("comparator.legend.toggle")}</DialogTitle>
-                    <DialogDescription className="sr-only">
-                      {t("comparator.legend.toggle")}
-                    </DialogDescription>
-                  </DialogHeader>
-                  {/* Moved here from the filter row, on request — same
+                <Dialog open={showLegend} onOpenChange={setShowLegend}>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>{t("comparator.legend.toggle")}</DialogTitle>
+                      <DialogDescription className="sr-only">
+                        {t("comparator.legend.toggle")}
+                      </DialogDescription>
+                    </DialogHeader>
+                    {/* Moved here from the filter row, on request — same
                     ReactMarkdown treatment (bold spans translate correctly
                     across all 20 locales without hardcoding word
                     position), just relocated so it doesn't compete for
                     space with the sort/filter chips. */}
-                  <div className="border-b border-border pb-3 text-sm leading-relaxed text-muted-foreground [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-foreground">
-                    <ReactMarkdown>{t("comparator.rankingExplainer")}</ReactMarkdown>
-                  </div>
-                  <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
-                    {(
-                      [
-                        [Gauge, "comparator.legend.score"],
-                        [Coins, "comparator.legend.fee"],
-                        [Percent, "comparator.legend.bestExchangeRate"],
-                        [Clock, "comparator.legend.speed"],
-                        [Star, "comparator.legend.trust"],
-                        // The 4 delivery methods, each with its OWN real
-                        // icon (matching DELIVERY_METHODS above) instead of
-                        // just explaining "Cash pickup" alone — that used to
-                        // leave Bank/Card/Broker unexplained, an inconsistency
-                        // once all 4 became equal chips in the same cluster.
-                        [Building2, "comparator.legend.bankTransfer"],
-                        [Banknote, "comparator.legend.cashPickup"],
-                        [CreditCard, "comparator.legend.cardPayout"],
-                        [Handshake, "comparator.legend.broker"],
-                        // No separate "Exclusive rates" row here — same
-                        // Sparkle icon as Sponsored right below would read as
-                        // a duplicate entry; the Sponsored text already
-                        // covers the filter in its last sentence instead.
-                        [Sparkle, "comparator.legend.sponsored"],
-                      ] as const
-                    ).map(([Icon, key]) => (
-                      <div key={key} className="flex items-start gap-2">
-                        <Icon className="mt-0.5 h-4 w-4 shrink-0" />
-                        <span>{t(key)}</span>
-                      </div>
-                    ))}
-                  </div>
-                </DialogContent>
-              </Dialog>
-              <ResultsBlock
-                result={result}
-                amount={amount}
-                sortBy={sortBy}
-                deliveryMethod={deliveryMethod}
-                showOnlyExclusive={showOnlyExclusive}
-                hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
-                handleAffiliateClick={openPreferredRate}
-                tDisclaimer={t("fx.disclaimer")}
-                tTrademarks={t("fx.trademarks")}
-                tRatesSource={t("fx.ratesSource")}
-                tAt={t("fx.at")}
-                tRecipient={t("fx.recipient")}
-                tTotalFee={t("fx.totalFee")}
-                tSpeed={t("fx.speed")}
-                tExchangeRate={t("comparator.table.exchangeRate")}
-                tCta={t("retail.cta")}
-                tNeutrality={t("comparator.disclaimer.neutrality")}
-              />
+                    <div className="border-b border-border pb-3 text-sm leading-relaxed text-muted-foreground [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-foreground">
+                      <ReactMarkdown>{t("comparator.rankingExplainer")}</ReactMarkdown>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
+                      {(
+                        [
+                          [Gauge, "comparator.legend.score"],
+                          [Coins, "comparator.legend.fee"],
+                          [Percent, "comparator.legend.bestExchangeRate"],
+                          [Clock, "comparator.legend.speed"],
+                          [Star, "comparator.legend.trust"],
+                          // The 4 delivery methods, each with its OWN real
+                          // icon (matching DELIVERY_METHODS above) instead of
+                          // just explaining "Cash pickup" alone — that used to
+                          // leave Bank/Card/Broker unexplained, an inconsistency
+                          // once all 4 became equal chips in the same cluster.
+                          [Building2, "comparator.legend.bankTransfer"],
+                          [Banknote, "comparator.legend.cashPickup"],
+                          [CreditCard, "comparator.legend.cardPayout"],
+                          [Handshake, "comparator.legend.broker"],
+                          // No separate "Exclusive rates" row here — same
+                          // Sparkle icon as Sponsored right below would read as
+                          // a duplicate entry; the Sponsored text already
+                          // covers the filter in its last sentence instead.
+                          [Sparkle, "comparator.legend.sponsored"],
+                        ] as const
+                      ).map(([Icon, key]) => (
+                        <div key={key} className="flex items-start gap-2">
+                          <Icon className="mt-0.5 h-4 w-4 shrink-0" />
+                          <span>{t(key)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                <ResultsBlock
+                  result={result}
+                  amount={amount}
+                  sortBy={sortBy}
+                  deliveryMethod={deliveryMethod}
+                  showOnlyExclusive={showOnlyExclusive}
+                  hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
+                  handleAffiliateClick={openPreferredRate}
+                  tDisclaimer={t("fx.disclaimer")}
+                  tTrademarks={t("fx.trademarks")}
+                  tRatesSource={t("fx.ratesSource")}
+                  tAt={t("fx.at")}
+                  tRecipient={t("fx.recipient")}
+                  tTotalFee={t("fx.totalFee")}
+                  tSpeed={t("fx.speed")}
+                  tExchangeRate={t("comparator.table.exchangeRate")}
+                  tCta={t("retail.cta")}
+                  tNeutrality={t("comparator.disclaimer.neutrality")}
+                />
 
-              {/* Stable business upsell (design/HANDOFF.md §3 + decision
+                {/* Stable business upsell (design/HANDOFF.md §3 + decision
                   29-ago-2026): always rendered once there's a result, never
                   popping in/out as the typed amount crosses the threshold —
                   only its emphasis changes. B2B_UPSELL_MIN_AMOUNT (not the
@@ -1876,45 +1985,299 @@ export function ComparatorSection({
                   amount, never a fixed figure. Retail only: a business-
                   segment user is already talking to brokers. The always-on
                   band in BusinessSection (home) is unrelated and unchanged. */}
-              {segment === "retail" && (
-                <div
-                  className={`mt-4 flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-colors ${
-                    amount >= B2B_UPSELL_MIN_AMOUNT
-                      ? "border-border bg-muted text-foreground"
-                      : "border-border/60 bg-transparent text-muted-foreground"
-                  }`}
-                >
-                  <span className="min-w-0 flex-1">
-                    {amount >= B2B_UPSELL_MIN_AMOUNT
-                      ? t("comparator.b2bBanner.above")
-                          .replace("{amount}", amount.toLocaleString())
-                          .replace("{cur}", from)
-                          .replace("{threshold}", B2B_UPSELL_MIN_AMOUNT.toLocaleString())
-                      : t("comparator.b2bBanner.below").replace(
-                          "{threshold}",
-                          B2B_UPSELL_MIN_AMOUNT.toLocaleString(),
-                        )}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setSegment("business")}
-                    className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+                {segment === "retail" && (
+                  <div
+                    className={`mt-4 flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-colors ${
                       amount >= B2B_UPSELL_MIN_AMOUNT
-                        ? "bg-foreground text-background hover:bg-foreground/90"
-                        : "text-brand-cta hover:text-brand-cta-hover"
+                        ? "border-border bg-muted text-foreground"
+                        : "border-border/60 bg-transparent text-muted-foreground"
                     }`}
                   >
-                    {t("comparator.b2bBanner.cta")}
-                    <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-                  </button>
-                </div>
-              )}
+                    <span className="min-w-0 flex-1">
+                      {amount >= B2B_UPSELL_MIN_AMOUNT
+                        ? t("comparator.b2bBanner.above")
+                            .replace("{amount}", amount.toLocaleString())
+                            .replace("{cur}", from)
+                            .replace("{threshold}", B2B_UPSELL_MIN_AMOUNT.toLocaleString())
+                        : t("comparator.b2bBanner.below").replace(
+                            "{threshold}",
+                            B2B_UPSELL_MIN_AMOUNT.toLocaleString(),
+                          )}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSegment("business")}
+                      className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+                        amount >= B2B_UPSELL_MIN_AMOUNT
+                          ? "bg-foreground text-background hover:bg-foreground/90"
+                          : "text-brand-cta hover:text-brand-cta-hover"
+                      }`}
+                    >
+                      {t("comparator.b2bBanner.cta")}
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
       </div>
 
       <PreferredRateModal open={modalOpen} onOpenChange={setModalOpen} context={modalCtx} />
     </SectionTag>
+  );
+}
+
+// ===== Left rail (desktop, ≥lg only) — design/HANDOFF.md §3 =====
+// Filters → AI Agent (docked) → Rate alert → Trustpilot, stacked in a 268px
+// column. Below lg the page keeps today's existing layout (inline filter
+// chips further up + the floating agent) unchanged — this rail doesn't
+// replace that, it's additive at the breakpoint where there's room for it.
+
+/** Vertical Filters card: the same delivery-method/exclusive/rank-by state
+ *  the inline filter row above already drives, re-skinned into the rail's
+ *  list layout with a per-option count (design/HANDOFF.md §3). */
+function FiltersCard({
+  t,
+  deliveryMethod,
+  toggleDeliveryMethod,
+  deliveryCounts,
+  showOnlyExclusive,
+  setShowOnlyExclusive,
+  exclusiveCount,
+  sortBy,
+  setSortBy,
+}: {
+  t: (k: string) => string;
+  deliveryMethod: DeliveryMethod | null;
+  toggleDeliveryMethod: (m: DeliveryMethod) => void;
+  deliveryCounts: Record<DeliveryMethod, number>;
+  showOnlyExclusive: boolean;
+  setShowOnlyExclusive: (v: boolean | ((prev: boolean) => boolean)) => void;
+  exclusiveCount: number;
+  sortBy: SortKey;
+  setSortBy: (k: SortKey) => void;
+}) {
+  return (
+    <div className="rounded-xl border border-border bg-card p-4">
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-bold text-foreground">{t("comparator.filters.title")}</h4>
+      </div>
+
+      <div className="mt-3">
+        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          {t("comparator.filters.payoutMethod")}
+        </div>
+        <div className="mt-2 flex flex-col gap-1.5">
+          {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
+            const isActive = deliveryMethod === key;
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => toggleDeliveryMethod(key)}
+                aria-pressed={isActive}
+                className={`flex h-9 items-center gap-2 rounded-md border px-2.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                  isActive
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-input bg-background text-foreground hover:border-foreground/30"
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">{t(labelKey)}</span>
+                <span
+                  className={`ml-auto shrink-0 tabular-nums ${isActive ? "text-background/70" : "text-muted-foreground"}`}
+                >
+                  {deliveryCounts[key]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-3 border-t border-border pt-3">
+        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          {t("comparator.filters.exclusiveOffers")}
+        </div>
+        <button
+          type="button"
+          onClick={() => setShowOnlyExclusive((prev) => !prev)}
+          aria-pressed={showOnlyExclusive}
+          className={`mt-2 flex h-9 w-full items-center gap-2 rounded-md border px-2.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+            showOnlyExclusive
+              ? "border-transparent bg-accent text-accent-foreground"
+              : "border-accent/40 bg-accent/10 text-accent hover:border-accent/70"
+          }`}
+        >
+          <Sparkle className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate">{t("comparator.filter.exclusiveOnly")}</span>
+          <span
+            className={`ml-auto shrink-0 tabular-nums ${showOnlyExclusive ? "text-accent-foreground/70" : "text-accent/70"}`}
+          >
+            {exclusiveCount}
+          </span>
+        </button>
+      </div>
+
+      <div className="mt-3 border-t border-border pt-3">
+        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          {t("comparator.filters.rankBy")}
+        </div>
+        <div className="mt-2 flex flex-wrap gap-1.5">
+          {MORE_SORT_CHIPS.map((key) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setSortBy(key)}
+              aria-pressed={sortBy === key}
+              className={`inline-flex h-8 items-center rounded-md border px-2.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                sortBy === key
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-input bg-background text-foreground hover:border-foreground/30"
+              }`}
+            >
+              {t(sortLabelKey(key))}
+            </button>
+          ))}
+        </div>
+        <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground">
+          {t("comparator.filters.rankByHint")}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** Email capture for "notify me if this rate improves" — design/HANDOFF.md
+ *  §3. Honest about what it actually is right now: this saves the lead
+ *  (email + corridor/amount context) to `enterprise_leads` via
+ *  captureEnterpriseLead (feature_source: "rate_alert"), same table
+ *  captureBusinessLead already writes route context into. There is NO
+ *  automated job yet that watches rates and fires the email — someone has
+ *  to build that monitor before this promise is fulfilled automatically.
+ *  Decided explicitly (29-ago-2026, see docs/handoff/
+ *  handoff-2026-08-29-rediseno-mangomundi-4.md §4 point 6): capture real
+ *  interest now with honest internal docs, rather than a fake "coming soon"
+ *  button or skipping the card entirely. */
+function RateAlertCard({
+  t,
+  from,
+  to,
+  amount,
+  sendingCountry,
+  receivingCountry,
+}: {
+  t: (k: string) => string;
+  from: string;
+  to: string;
+  amount: number;
+  sendingCountry: string;
+  receivingCountry: string;
+}) {
+  const submit = useServerFn(captureEnterpriseLead);
+  const [email, setEmail] = useState("");
+  const [pending, setPending] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || pending) return;
+    setPending(true);
+    setError(false);
+    try {
+      await submit({
+        data: {
+          email,
+          featureSource: "rate_alert",
+          consent: true,
+          fromCurrency: from,
+          toCurrency: to,
+          sendingCountry: sendingCountry || undefined,
+          receivingCountry: receivingCountry || undefined,
+          amount,
+        },
+      });
+      setDone(true);
+    } catch {
+      setError(true);
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return (
+    <div className="overflow-hidden rounded-xl border border-border bg-card">
+      <div
+        className="h-[104px] bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/images/howitworks-person.jpg')",
+          backgroundPosition: "center 28%",
+        }}
+        aria-hidden
+      />
+      <div className="p-4">
+        <h4 className="text-sm font-bold text-foreground">
+          {t("comparator.rateAlert.title").replace("{from}", from).replace("{to}", to)}
+        </h4>
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          {t("comparator.rateAlert.body")}
+        </p>
+        {done ? (
+          <p className="mt-3 text-xs font-semibold text-success">
+            {t("comparator.rateAlert.success")}
+          </p>
+        ) : (
+          <form onSubmit={onSubmit} className="mt-3 space-y-2">
+            <label htmlFor="rate-alert-email" className="sr-only">
+              {t("common.email")}
+            </label>
+            <input
+              id="rate-alert-email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("retail.emailPlaceholder")}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-brand-cta focus:outline-none"
+            />
+            {error && (
+              <p className="text-[11px] text-destructive">{t("comparator.rateAlert.error")}</p>
+            )}
+            <button
+              type="submit"
+              disabled={pending}
+              className="flex h-9 w-full items-center justify-center gap-1.5 rounded-md border border-foreground text-xs font-semibold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
+            >
+              {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              {t("comparator.rateAlert.cta")}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Trustpilot rating + the same "affiliate links never move a row up"
+ *  disclaimer already shown elsewhere (design/HANDOFF.md §3). */
+function TrustpilotCard({ t }: { t: (k: string) => string }) {
+  return (
+    <div className="rounded-xl border border-border bg-muted/40 p-4">
+      <div className="flex items-center gap-1.5">
+        <Star className="h-3.5 w-3.5 fill-warning text-warning" />
+        <span className="text-xs font-bold text-foreground">
+          {t("comparator.trustpilot.rated")}
+        </span>
+      </div>
+      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+        {t("comparator.disclaimer.neutrality")}
+      </p>
+      <div className="mt-2">
+        <TrustBox />
+      </div>
+    </div>
   );
 }
 
@@ -1933,6 +2296,10 @@ function FieldLight({ label, children }: { label: string; children: React.ReactN
 interface FloatingAgentProps {
   collapsed: boolean;
   onToggle: (next: boolean) => void;
+  /** Rail mode (design/HANDOFF.md §3, ≥lg with a result): always the
+   *  expanded panel, in-flow instead of fixed to the viewport edge, no
+   *  minimize button. `collapsed` is ignored while this is true. */
+  docked?: boolean;
   hasNewResult: boolean;
   amount: number;
   lang: string;
@@ -1960,6 +2327,7 @@ interface FloatingAgentProps {
 function FloatingAgent(p: FloatingAgentProps) {
   const {
     collapsed,
+    docked = false,
     onToggle,
     hasNewResult,
     amount,
@@ -1988,16 +2356,18 @@ function FloatingAgent(p: FloatingAgentProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const panelLabelId = "ai-agent-title";
 
-  // Escape closes; auto-focus composer on open.
+  // Escape closes; auto-focus composer on open. Docked mode has no
+  // collapsed state to escape out of (there's no toggle button to return
+  // focus to), so this whole effect is a no-op there.
   useEffect(() => {
-    if (collapsed) return;
+    if (docked || collapsed) return;
     inputRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onToggle(true);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [collapsed, onToggle]);
+  }, [docked, collapsed, onToggle]);
 
   return (
     // Docked to the side edge, vertically centered — Kayak's pattern for a
@@ -2005,9 +2375,11 @@ function FloatingAgent(p: FloatingAgentProps) {
     // that sits on top of content (on mobile it used to overlap the last
     // result row's CTA). Collapsed, it's a slim edge tab rather than a
     // floating circle, so it reads as part of the page's furniture, not an
-    // overlay competing with whatever's underneath it.
-    <div className="fixed right-0 top-1/2 z-[60] -translate-y-1/2 sm:right-0">
-      {collapsed ? (
+    // overlay competing with whatever's underneath it. `docked` (the rail,
+    // ≥lg with a result — design/HANDOFF.md §3) drops all of that: in-flow,
+    // full width of its rail column, always the expanded panel.
+    <div className={docked ? "w-full" : "fixed right-0 top-1/2 z-[60] -translate-y-1/2 sm:right-0"}>
+      {!docked && collapsed ? (
         <button
           ref={toggleBtnRef}
           type="button"
@@ -2038,7 +2410,11 @@ function FloatingAgent(p: FloatingAgentProps) {
           role="dialog"
           aria-modal="false"
           aria-labelledby={panelLabelId}
-          className="surface-card flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl ring-1 ring-foreground/10"
+          className={
+            docked
+              ? "surface-card flex h-[480px] w-full flex-col overflow-hidden rounded-xl ring-1 ring-foreground/10"
+              : "surface-card flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl ring-1 ring-foreground/10"
+          }
         >
           <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3">
             <span
@@ -2055,16 +2431,23 @@ function FloatingAgent(p: FloatingAgentProps) {
               >
                 ● {lang.toUpperCase()}
               </span>
-              <button
-                type="button"
-                onClick={() => onToggle(true)}
-                aria-label={t("agent.minimize")}
-                className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                  <path d="M3 7h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
-              </button>
+              {!docked && (
+                <button
+                  type="button"
+                  onClick={() => onToggle(true)}
+                  aria-label={t("agent.minimize")}
+                  className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                    <path
+                      d="M3 7h8"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </button>
+              )}
             </div>
           </div>
 

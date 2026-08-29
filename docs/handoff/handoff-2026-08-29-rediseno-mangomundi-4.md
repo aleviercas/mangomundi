@@ -203,6 +203,53 @@ Commits en `claude/reorganizar-entrega-rediseno-za6gmc`, en orden:
    - `src/routeTree.gen.ts` (autogenerado por el plugin de Vite de TanStack
      Start) se regeneró para incluir las dos rutas nuevas — se commitea
      porque está trackeado en git, no es un artefacto ignorado.
+10. **Rail izquierdo, 268px (punto 6)** — restructuración real del grid
+    madre de `ComparatorSection.tsx` (no un ajuste de estilos), solo en
+    `≥lg` (1024px) y solo con resultado, para no tocar el layout mobile que
+    ya funcionaba:
+    - **`<aside className="hidden lg:flex ...">`** con 4 piezas: `FiltersCard`
+      (Payout method / Exclusive offers / Rank by, con conteo real por
+      opción vía un nuevo `useMemo` — `deliveryCounts`/`exclusiveCount`,
+      recalculado desde `result.rows` en cada búsqueda, nunca un número
+      fijo), el agente IA **acoplado** (`FloatingAgent` con un prop nuevo
+      `docked` — mismo componente, misma lógica de chat, pero en flujo
+      normal en vez de `fixed`, siempre expandido, sin botón de minimizar),
+      `RateAlertCard` (nueva) y `TrustpilotCard` (nueva, envuelve el
+      `TrustBox` ya existente que hasta ahora solo se usaba en
+      `ContactSection`).
+    - **La fila de filtros inline que ya existía** (chips de método de
+      pago + toggle de exclusivos + dropdown "more sort") se marcó
+      `lg:hidden` — sigue exactamente igual en mobile/tablet, es redundante
+      con la `FiltersCard` del rail a partir de `lg`. Los 3 botones grandes
+      de orden (`PRIMARY_SORT_CHIPS`) NO se tocaron, siguen visibles a
+      cualquier ancho — no son parte del rail.
+    - **`FloatingAgent` nunca se monta dos veces.** Un hook nuevo,
+      `useIsDesktopRail()` (matchMedia a 1024px, default `false` hasta que
+      el efecto confirma — nunca asume desktop en SSR/primer render),
+      decide `showDockedAgent = isDesktopRail && Boolean(result) &&
+      !embedded`. La instancia flotante de siempre se sigue renderizando
+      donde ya estaba, condicionada a `!showDockedAgent`; la instancia
+      acoplada solo se renderiza dentro del `<aside>`. Mutuamente
+      excluyentes por construcción, así que nunca compiten (dos
+      `useEffect` de foco/Escape corriendo a la vez, etc.).
+    - **`RateAlertCard` — la única pieza sin backend real**, decidida
+      explícitamente el 29-ago-2026 (no preguntar de nuevo): captura el
+      email + contexto de la comparación (moneda/monto/países) llamando a
+      `captureEnterpriseLead` (`src/lib/agent.functions.ts`) con
+      `featureSource: "rate_alert"` — la misma función que ya usa
+      `ComingSoonModal.tsx`, extendida con 5 campos opcionales nuevos
+      (`fromCurrency`/`toCurrency`/`sendingCountry`/`receivingCountry`/
+      `amount`) que se guardan en `enterprise_leads` cuando vienen
+      presentes, mismas columnas que `captureBusinessLead` ya escribe ahí.
+      **No existe ningún job que monitoree la tasa y dispare el email
+      automáticamente** — el lead queda capturado de verdad (no es un
+      placeholder), pero el seguimiento hoy tendría que ser manual hasta
+      que alguien construya ese monitor. Documentado en el comentario del
+      componente para que quede claro sin tener que redescubrirlo.
+    - **Modo `embedded` revisado** (parte explícita del punto 6, no
+      opcional): el rail entero vive fuera de la rama `embedded` — el
+      widget sigue usando `CompactResultsList` sin cambios, nunca ve la
+      fila de filtros inline oculta ni el rail.
 
 **i18n de todo lo anterior:** cada key nueva se agregó primero en inglés
 (`src/lib/i18n.tsx`) y se propagó como **placeholder EN** (no traducción
@@ -239,6 +286,24 @@ el conmutador en "Business" (`aria-selected="true"`) en `/business`, el
 parseo de `/send/gb-mx`, `/send/gbp-mxn` y `/send/GB-MX` (mayúsculas)
 funcionando igual, y `/send/nonsense`/`/send/xx-yy` redirigiendo a `/` con
 307 como se esperaba.
+
+**El rail (§3.10) es la única pieza de esta sesión que no se pudo ver
+armada con datos reales.** `/business` y `/send/:corridor` renderizan
+completos, pero el rail solo aparece cuando `result` existe — y conseguir
+un `result` real requiere que `compareProviders` (una server fn que sí
+pega contra Supabase) devuelva datos, cosa que este sandbox no puede
+hacer. Quedó verificado por: `tsc --noEmit` y `eslint` limpios (mismo
+único error preexistente sin relación) tras una restructuración de JSX
+grande (agregar un `<div>` de columna + `<aside>` en el medio del grid
+sin romper el balance de tags — se confirmó con el compilador, no a
+ojo), y que `/embed`, `/business` y `/send/gb-mx` siguen respondiendo
+200 después del cambio (el rail no se monta en ninguno de los tres en
+este sandbox — `/embed` es `embedded=true`, los otros dos no llegan a
+tener `result` sin Supabase — pero confirma que la restructuración no
+rompió nada alrededor). **La primera sesión con credenciales de Supabase
+o un preview de Vercel debería, antes que nada, cargar un resultado real
+en `/` o `/business` y mirar el rail** — es la verificación pendiente
+más importante de todo este documento.
 
 ## 4. Decisiones de producto ya tomadas (para lo que falta)
 
@@ -292,7 +357,7 @@ Todas confirmadas por Alejandro el 29-ago-2026 — no volver a preguntarlas:
      levantado a la URL en la fase A.
    - **`/exchange` no entra** en ninguna fase — la pantalla no está
      diseñada (el propio HANDOFF §8 lo reconoce como pendiente).
-6. **Pendiente.** **Rail izquierdo de 268px** (Filtros → Agente IA → Alerta de tasa →
+6. ✅ **HECHO** (ver §3.10). **Rail izquierdo de 268px** (Filtros → Agente IA → Alerta de tasa →
    Trustpilot) en `ComparatorSection.tsx` — paso propio, **después** de
    reposicionar filtros/sort (que ya existen casi completos —
    `PRIMARY_SORT_CHIPS`/`MORE_SORT_CHIPS`/`DELIVERY_METHODS`, solo hay que

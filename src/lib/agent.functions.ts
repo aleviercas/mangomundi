@@ -6,14 +6,37 @@ const LeadInput = z.object({
   email: z.string().email().max(255),
   featureSource: z.string().min(1).max(120),
   consent: z.literal(true),
+  // Optional route context — populated by callers that have one (e.g. the
+  // comparator's rate-alert card), so a captured lead isn't just an email
+  // with no idea which corridor/rate the person actually cares about.
+  // Same columns captureBusinessLead already writes on this same table.
+  fromCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/)
+    .optional(),
+  toCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/)
+    .optional(),
+  sendingCountry: z.string().length(2).optional(),
+  receivingCountry: z.string().length(2).optional(),
+  amount: z.number().positive().finite().optional(),
 });
 
 const BusinessLeadInput = z.object({
   email: z.string().trim().email().max(255),
   monthlyVolume: z.number().positive().finite().max(1e15),
   sector: z.string().trim().min(2).max(120),
-  fromCurrency: z.string().length(3).regex(/^[A-Z]{3}$/),
-  toCurrency: z.string().length(3).regex(/^[A-Z]{3}$/),
+  fromCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
+  toCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
   sendingCountry: z.string().length(2),
   receivingCountry: z.string().length(2),
   locale: z.string().min(2).max(5),
@@ -38,8 +61,16 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
       status: "beta_pending",
       privacy_consent: true,
       consent_timestamp: new Date().toISOString(),
+      ...(data.fromCurrency ? { from_currency: data.fromCurrency } : {}),
+      ...(data.toCurrency ? { to_currency: data.toCurrency } : {}),
+      ...(data.sendingCountry ? { sending_country: data.sendingCountry } : {}),
+      ...(data.receivingCountry ? { receiving_country: data.receivingCountry } : {}),
+      ...(data.amount ? { amount: data.amount } : {}),
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
     return { ok: true };
   });
 
@@ -66,7 +97,10 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
       privacy_consent: true,
       consent_timestamp: consentAt,
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
 
     const webhookUrl = process.env.RFQ_WEBHOOK_URL;
     if (webhookUrl) {
@@ -123,6 +157,9 @@ export const captureGeneralInquiry = createServerFn({ method: "POST" })
       message: data.message,
       source: "about_contact_form",
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
     return { ok: true };
   });
