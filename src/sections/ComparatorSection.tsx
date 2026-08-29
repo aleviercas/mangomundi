@@ -171,7 +171,6 @@ const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labe
  *  the STRICT_SORT_FIELD entry, the SCORE_PROFILES weight in every profile
  *  (redistributed), and the per-row display chip. If a real, sourced
  *  methodology gets established later, it can come back. */
-const PRIMARY_SORT_CHIPS: SortKey[] = ["overall", "recipient_gets_most", "fastest"];
 const MORE_SORT_CHIPS: SortKey[] = ["most_trusted", "lowest_cost", "best_exchange_rate"];
 /** Maps a profile to its i18n key. Reuses existing fee/speed copy where the
  *  concept lines up 1:1, so we don't duplicate translated strings. */
@@ -478,6 +477,25 @@ export function ComparatorSection({
     return {
       deliveryCounts: counts,
       exclusiveCount: result.rows.filter((r) => r.has_exclusive_deal).length,
+    };
+  }, [result]);
+  // The 3 big order-tab headline numbers (design/AJUSTES-1.md §C2) — real
+  // values from the current result set, never invented. fastestFigure
+  // reuses formatDeliverySpeed, the same function ProviderRow's own
+  // Delivery metric prints, so the tab and the row it points at can never
+  // disagree.
+  const tabSummary = useMemo(() => {
+    if (!result || result.rows.length === 0) return null;
+    const recommendedRow = sortByScore(result.rows, "overall")[0];
+    const receiveMoreRow = sortByScore(result.rows, "recipient_gets_most")[0];
+    const fastestRow = sortByScore(result.rows, "fastest")[0];
+    return {
+      quote: result.quote,
+      recommendedFigure: Math.round(recommendedRow.received).toLocaleString(),
+      recommendedName: recommendedRow.name,
+      receiveMoreFigure: Math.round(receiveMoreRow.received).toLocaleString(),
+      fastestFigure: formatDeliverySpeed(fastestRow.speed_hours),
+      fastestName: fastestRow.name,
     };
   }, [result]);
   // Rail (design/HANDOFF.md §3) only replaces the floating agent once
@@ -1775,53 +1793,100 @@ export function ComparatorSection({
                   content existed off-screen, so it just looked cut off
                   instead of scrollable; wrapping costs vertical space
                   instead, but never hides anything. */}
-                  {/* Primary tabs — Kayak/Google Flights "Best/Cheapest/Fastest"
-                  pattern: a distinct, prominent tab track (not plain chips
-                  mixed in with the filters below it), so these 3 read as
-                  THE way to reorder, with everything else secondary. */}
-                  <div className="flex flex-wrap items-center gap-1 rounded-xl bg-muted p-1">
-                    {PRIMARY_SORT_CHIPS.map((key) => {
-                      const Icon = sortIcon(key);
+                  {/* Primary tabs (design/AJUSTES-1.md §C2) — 3 big buttons,
+                  not 4 small pills. The headline figure is the point: a
+                  sort tab that shows how much you gain by using it gets
+                  tapped; a pill that just says "Smart" doesn't. "More
+                  criteria" no longer lives here — its 3 groups live in the
+                  left rail (FiltersCard, ≥lg) and, below lg where the rail
+                  is hidden, in the secondary filters row underneath. */}
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                    {(
+                      [
+                        {
+                          key: "overall" as SortKey,
+                          label: t("comparator.tab.recommended"),
+                          hint: t("comparator.tab.recommendedHint"),
+                          figure: tabSummary?.recommendedFigure ?? "—",
+                          sub: tabSummary
+                            ? `${tabSummary.quote} · ${tabSummary.recommendedName}`
+                            : "",
+                        },
+                        {
+                          key: "recipient_gets_most" as SortKey,
+                          label: t("comparator.tab.receiveMore"),
+                          hint: t("comparator.tab.receiveMoreHint"),
+                          figure: tabSummary?.receiveMoreFigure ?? "—",
+                          sub: tabSummary
+                            ? `${tabSummary.quote} · ${t("comparator.tab.receiveMoreSub")}`
+                            : "",
+                        },
+                        {
+                          key: "fastest" as SortKey,
+                          label: t("comparator.tab.fastest"),
+                          hint: t("comparator.tab.fastestHint"),
+                          figure: tabSummary?.fastestFigure ?? "—",
+                          sub: tabSummary?.fastestName ?? "",
+                        },
+                      ] as const
+                    ).map((tab) => {
+                      const isActive = sortBy === tab.key;
                       return (
                         <button
-                          key={key}
+                          key={tab.key}
                           type="button"
-                          onClick={() => setSortBy(key)}
-                          aria-pressed={sortBy === key}
-                          className={`inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                            sortBy === key
-                              ? "bg-card text-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          }`}
+                          onClick={() => setSortBy(tab.key)}
+                          aria-pressed={isActive}
+                          className="flex min-h-[78px] flex-col justify-between rounded-xl px-3.5 py-2.5 text-left transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/40"
+                          style={{
+                            border: isActive ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
+                            boxShadow: isActive ? "0 4px 14px -6px rgba(238,91,62,.35)" : "none",
+                          }}
                         >
-                          <Icon className="h-4 w-4" />
-                          {t(sortLabelKey(key))}
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-bold text-foreground">{tab.label}</span>
+                            <span className="whitespace-nowrap text-[11px] font-medium text-muted-foreground">
+                              {tab.hint}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="font-heading text-[20px] font-extrabold leading-tight tabular-nums text-foreground">
+                              {tab.figure}
+                            </div>
+                            <div className="truncate text-[11px] font-medium text-muted-foreground">
+                              {tab.sub}
+                            </div>
+                          </div>
                         </button>
                       );
                     })}
+                  </div>
 
-                    {/* The other 3 criteria (trust, fee, exchange rate) — same
-                    control, tucked behind a dropdown instead of a 4th-6th
-                    tab so the primary row stays a 3-way decision. The
-                    trigger itself reflects the active choice when one of
-                    these 3 is selected, so switching via the dropdown is
-                    still visible without reopening it. */}
+                  {/* Secondary filters — delivery method, exclusive-only, legend.
+                  Visually separate row (smaller chips) so it never competes
+                  with the primary tabs above for attention. */}
+                  <div className="flex flex-wrap items-center gap-2 lg:hidden">
+                    {/* "More criteria" (trust, fee, exchange rate) — moved out
+                    of the primary tab row (§C2: only 3 tabs there now). At
+                    ≥lg these 3 live in the rail's FiltersCard instead, so
+                    this dropdown only needs to exist below that breakpoint,
+                    same as the rest of this row. */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
                           type="button"
                           aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
-                          className={`inline-flex h-10 items-center gap-1.5 rounded-lg px-4 text-sm font-semibold normal-case tracking-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                          className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                             MORE_SORT_CHIPS.includes(sortBy)
-                              ? "bg-card text-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
+                              ? "border-foreground bg-foreground text-background"
+                              : "border-input bg-card text-foreground hover:border-foreground/30"
                           }`}
                         >
                           {(() => {
                             const Icon = MORE_SORT_CHIPS.includes(sortBy)
                               ? sortIcon(sortBy)
                               : Gauge;
-                            return <Icon className="h-4 w-4" />;
+                            return <Icon className="h-3.5 w-3.5" />;
                           })()}
                           {MORE_SORT_CHIPS.includes(sortBy)
                             ? t(sortLabelKey(sortBy))
@@ -1842,12 +1907,7 @@ export function ComparatorSection({
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                  </div>
 
-                  {/* Secondary filters — delivery method, exclusive-only, legend.
-                  Visually separate row (smaller chips) so it never competes
-                  with the primary tabs above for attention. */}
-                  <div className="flex flex-wrap items-center gap-2 lg:hidden">
                     {/* Delivery method — single-select, mutually exclusive,
                     click the active one again to clear back to "all
                     methods". Its own bordered cluster (not plain pill

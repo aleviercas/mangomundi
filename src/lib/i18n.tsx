@@ -266,6 +266,21 @@ export const DICTS: Record<Lang, Dict> = {
     // "not verified"/"unconfirmed" pills + separate "Updated: {date}" text.
     "comparator.row.stampLive": "Live",
     "comparator.row.stampEstimated": "Estimated",
+    // The 3 big order tabs (§C2) replacing the old 4 small sort pills.
+    // "Fastest"'s hint is deliberately NOT the mockup's literal "Under 10
+    // min" — that's a specific time promise the mockup's static demo data
+    // happens to support, but a real fastest row can be hours or days away.
+    // Same "no inventes datos" principle as B2B_UPSELL_MIN_AMOUNT/provider
+    // counts elsewhere in this redesign: the figure is computed for real
+    // via formatDeliverySpeed (same function the row's own Delivery metric
+    // uses), so the hint stays generic instead of asserting a number.
+    "comparator.tab.recommended": "Recommended",
+    "comparator.tab.recommendedHint": "Best balance",
+    "comparator.tab.receiveMore": "Receive more",
+    "comparator.tab.receiveMoreHint": "Highest payout",
+    "comparator.tab.receiveMoreSub": "the max",
+    "comparator.tab.fastest": "Fastest",
+    "comparator.tab.fastestHint": "Fastest option",
     "fx.action": "Action",
     "fx.goto": "Go to",
     "fx.disclaimer":

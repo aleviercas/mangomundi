@@ -724,5 +724,12 @@
   "comparator.row.labelPayout": "Payout",
   "comparator.row.labelReceive": "They receive",
   "comparator.row.stampLive": "Live",
-  "comparator.row.stampEstimated": "Estimated"
+  "comparator.row.stampEstimated": "Estimated",
+  "comparator.tab.recommended": "Recommended",
+  "comparator.tab.recommendedHint": "Best balance",
+  "comparator.tab.receiveMore": "Receive more",
+  "comparator.tab.receiveMoreHint": "Highest payout",
+  "comparator.tab.receiveMoreSub": "the max",
+  "comparator.tab.fastest": "Fastest",
+  "comparator.tab.fastestHint": "Fastest option"
 }
