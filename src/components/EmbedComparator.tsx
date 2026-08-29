@@ -17,6 +17,7 @@ export function EmbedComparator({
   initialAmount,
   geoCountry = "GB",
   geoCurrency = "GBP",
+  previewDestination,
 }: {
   initialCurrency?: string;
   initialAmount?: number;
@@ -25,6 +26,14 @@ export function EmbedComparator({
    *  fallback below matches getVisitorGeo()'s own fallback. */
   geoCountry?: string;
   geoCurrency?: string;
+  /** design/AJUSTES-1.md §H — set ONLY by the home page's widget preview
+   *  (EmbedWidgetSection), never by the real /embed route: a real embedder
+   *  who didn't configure a destination should still land on the empty
+   *  "pick a currency" state, not a comparison they never asked for. The
+   *  preview is different — it exists to show off a real result, so it
+   *  supplies one and auto-runs it (a genuine compareProviders call, not
+   *  mocked data). */
+  previewDestination?: { country: string; currency: string };
 }) {
   // Presets from the embed's data-*/query params, falling back to the
   // visitor's real geo instead of a hardcoded "US"/"USD" — destination
@@ -33,11 +42,12 @@ export function EmbedComparator({
   const from = initialCurrency ?? geoCurrency;
   const initialQuery: ComparatorQuery = {
     origin: geoCountry,
-    destination: "",
+    destination: previewDestination?.country ?? "",
     segment: "retail",
     from,
-    to: defaultCounterCurrency(from),
+    to: previewDestination?.currency ?? defaultCounterCurrency(from),
     amount: initialAmount ?? 1000,
+    autoRun: previewDestination != null,
   };
 
   // Down-chevron scroll affordance: shown while there's more content below the

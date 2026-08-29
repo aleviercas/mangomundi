@@ -101,7 +101,15 @@ export function EmbedWidgetSection() {
           <div className="lg:pt-2">
             <div className="mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
               <div className="h-[540px]">
-                <EmbedComparator initialCurrency="USD" />
+                {/* design/AJUSTES-1.md §H — a real result, not the empty
+                    "Select…" state: this is the widget's own demo, so it
+                    should show what embedding it actually gets you. Same
+                    USD→MXN pair TodaysRoutesSection's candidate list already
+                    checks, not a new one-off example. */}
+                <EmbedComparator
+                  initialCurrency="USD"
+                  previewDestination={{ country: "MX", currency: "MXN" }}
+                />
               </div>
             </div>
           </div>
