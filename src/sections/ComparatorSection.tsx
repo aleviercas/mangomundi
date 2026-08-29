@@ -76,6 +76,7 @@ import {
   localNeutral,
   localSend,
   localProviders,
+  DEFAULT_WIZARD_ACTIONS,
   type WizardAction,
 } from "@/components/AiCopilot";
 import { Button } from "@/components/ui/button";
@@ -1070,6 +1071,18 @@ export function ComparatorSection({
   const handleAgentToggle = (nextCollapsed: boolean) => {
     setAiCollapsed(nextCollapsed);
     if (!nextCollapsed) setHasNewResult(false);
+  };
+
+  // design/AJUSTES-2.md §3 — every row's "Fee breakdown" footer link opens
+  // the agent (docked or floating, same toggle the panel's own minimize
+  // button uses) and asks the SAME "fees" wizard action already wired to
+  // AiCopilot's quick-actions grid (localFeeBreakdown, top 3 rows) — not a
+  // new per-row computation, and not per-provider: every row's link does
+  // the same thing, matching what the agent already knows how to answer.
+  const handleFeeBreakdownClick = () => {
+    handleAgentToggle(false);
+    const feesAction = DEFAULT_WIZARD_ACTIONS.find((a) => a.id === "fees");
+    if (feesAction) handleWizardAction(feesAction);
   };
 
   const openPreferredRate = (slug: string, url: string, name?: string) => {
@@ -2077,6 +2090,7 @@ export function ComparatorSection({
                   showOnlyExclusive={showOnlyExclusive}
                   hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
                   handleAffiliateClick={openPreferredRate}
+                  onFeeBreakdown={handleFeeBreakdownClick}
                   tDisclaimer={t("fx.disclaimer")}
                   tTrademarks={t("fx.trademarks")}
                   tRatesSource={t("fx.ratesSource")}
@@ -2758,6 +2772,7 @@ function ResultsBlock({
   showOnlyExclusive,
   hasCorridorContext,
   handleAffiliateClick,
+  onFeeBreakdown,
   tDisclaimer,
   tTrademarks,
   tRatesSource,
@@ -2779,6 +2794,8 @@ function ResultsBlock({
    *  first place. */
   hasCorridorContext: boolean;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
+  /** design/AJUSTES-2.md §3 — the row footer's "Fee breakdown" link. */
+  onFeeBreakdown: () => void;
   tDisclaimer: string;
   tTrademarks: string;
   tRatesSource: string;
@@ -2885,7 +2902,7 @@ function ResultsBlock({
           without the eye having to travel back up to a header — which is
           also what lets the same row layout work on mobile without a
           separate table. */}
-      <div className={displayRows.length > 0 ? "flex flex-col gap-3" : ""}>
+      <div className={displayRows.length > 0 ? "flex flex-col gap-[11px]" : ""}>
         {displayRows.map((row, i) => (
           <ProviderRow
             key={row.slug}
@@ -2898,6 +2915,8 @@ function ResultsBlock({
             hasCorridorContext={hasCorridorContext}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
+            sortBy={sortBy}
+            onFeeBreakdown={onFeeBreakdown}
           />
         ))}
         {organic.length === 0 && (
@@ -2920,6 +2939,29 @@ function ResultsBlock({
   );
 }
 
+// design/AJUSTES-2.md §3 — the small orange tag next to the featured row's
+// name ("Best overall"/"Fastest"/…), naming which active sort criterion it
+// won. Distinct from sortLabelKey's short tab/chip words (e.g. "Smart",
+// "Rate") — this is a full phrase explaining the win, matching the
+// mockup's dynamic tag literally ("Best overall", "Receives most",
+// "Fastest").
+function winnerTagKey(sortBy: SortKey): string {
+  switch (sortBy) {
+    case "recipient_gets_most":
+      return "comparator.row.tagReceivesMost";
+    case "fastest":
+      return "comparator.row.tagFastest";
+    case "most_trusted":
+      return "comparator.row.tagMostTrusted";
+    case "lowest_cost":
+      return "comparator.row.tagLowestFee";
+    case "best_exchange_rate":
+      return "comparator.row.tagBestRate";
+    default:
+      return "comparator.row.tagBestOverall";
+  }
+}
+
 function ProviderRow({
   row,
   quote,
@@ -2930,6 +2972,8 @@ function ProviderRow({
   hasCorridorContext,
   onClick,
   tCta,
+  sortBy,
+  onFeeBreakdown,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -2954,6 +2998,14 @@ function ProviderRow({
   hasCorridorContext: boolean;
   onClick: () => void;
   tCta: string;
+  /** Drives the featured row's winner tag (design/AJUSTES-2.md §3) — which
+   *  criterion it won under the currently active sort. */
+  sortBy: SortKey;
+  /** Opens the docked/floating AI agent and asks it to break down fees
+   *  (design/AJUSTES-2.md §3's "Fee breakdown" footer link) — the same
+   *  wizard action already wired to the agent's own quick-actions grid,
+   *  not a new per-row computation. */
+  onFeeBreakdown: () => void;
 }) {
   const { t } = useI18n();
   const deliveryLabel = formatDeliverySpeed(row.speed_hours);
@@ -3025,10 +3077,13 @@ function ProviderRow({
   // count. row.regulator holds the real per-provider regulator name when
   // one exists (e.g. "FCA") — kept as real data rather than the mockup's
   // literal placeholder word "Regulated".
+  // design/AJUSTES-2.md §0/§3 — the rating star is filled #F59E0B (amber),
+  // one of the two exceptions to "no filled icons" the doc calls out
+  // (the other is the Trustpilot star elsewhere, filled #1F7A5A/green).
   const rating = row.trust_score != null && (
-    <span className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] font-medium text-muted-foreground">
-      <Star className="h-2.5 w-2.5 shrink-0" /> {row.trust_score.toFixed(1)}{" "}
-      {t("comparator.row.onTrustpilot")}
+    <span className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] text-muted-foreground">
+      <Star className="h-2.5 w-2.5 shrink-0 fill-[#F59E0B] text-[#F59E0B]" />{" "}
+      {row.trust_score.toFixed(1)} {t("comparator.row.onTrustpilot")}
       {row.regulator && <> · {row.regulator}</>}
     </span>
   );
@@ -3062,16 +3117,44 @@ function ProviderRow({
       {t("comparator.row.affiliateLink")}
     </span>
   );
-  const trustLine = (priceStamp || row.promo_text || affiliateNote) && (
+  // design/AJUSTES-2.md §3 — literal "·" dividers between footer elements,
+  // and "Fee breakdown" pinned right (ml-auto). Built as an array so the
+  // dot only ever renders BETWEEN two real elements, never dangling if one
+  // is absent (has_exclusive_deal false, no promo_text, etc.).
+  const footerDot = (
+    <span className="whitespace-nowrap" style={{ color: "#B3A698" }}>
+      ·
+    </span>
+  );
+  const footerParts = [
+    priceStamp,
+    row.promo_text && (
+      <span key="promo" className="inline-flex items-center gap-1 font-medium text-accent">
+        <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
+        {row.promo_text}
+      </span>
+    ),
+    affiliateNote,
+  ].filter(Boolean);
+  // Always renders now — "Fee breakdown" (design/AJUSTES-2.md §3) is on
+  // every row's footer unconditionally, not just when there's a stamp/
+  // promo/affiliate note to show alongside it.
+  const trustLine = (
     <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] leading-snug">
-      {priceStamp}
-      {row.promo_text && (
-        <span className="inline-flex items-center gap-1 font-medium text-accent">
-          <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
-          {row.promo_text}
+      {footerParts.map((part, i) => (
+        <span key={i} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          {i > 0 && footerDot}
+          {part}
         </span>
-      )}
-      {affiliateNote}
+      ))}
+      <button
+        type="button"
+        onClick={onFeeBreakdown}
+        className="ml-auto whitespace-nowrap font-bold hover:underline"
+        style={{ color: "#C2410C" }}
+      >
+        {t("comparator.row.feeBreakdown")}
+      </button>
     </div>
   );
 
@@ -3085,10 +3168,10 @@ function ProviderRow({
     <button
       onClick={onClick}
       aria-label={`${tCta} — ${row.name}`}
-      className={`inline-flex h-11 w-full shrink-0 items-center justify-center gap-1.5 rounded-md px-4 text-sm font-semibold transition-transform duration-200 ease-out group-hover:-translate-y-0.5 sm:w-auto ${
+      className={`inline-flex h-11 w-full shrink-0 items-center justify-center gap-1.5 rounded-md border-[1.5px] px-4 text-[14px] font-bold transition-transform duration-200 ease-out group-hover:-translate-y-0.5 sm:w-auto ${
         featured
-          ? "btn-cta group-hover:shadow-[0_8px_24px_-10px_color-mix(in_oklab,var(--color-brand-cta)_55%,transparent)]"
-          : "border border-border bg-card text-foreground hover:border-foreground/30"
+          ? "btn-cta border-transparent group-hover:shadow-[0_8px_24px_-10px_color-mix(in_oklab,var(--color-brand-cta)_55%,transparent)]"
+          : "border-input bg-card text-foreground hover:border-foreground/30"
       }`}
     >
       <span className="truncate">
@@ -3104,14 +3187,16 @@ function ProviderRow({
 
   return (
     <div
-      className={`group relative overflow-hidden rounded-2xl bg-card p-4 transition-shadow duration-200 ease-out hover:shadow-md sm:p-5 ${
-        featured ? "border-2 border-brand-cta" : "border border-border"
-      }`}
+      className="group relative overflow-hidden rounded-2xl bg-card p-4 transition-shadow duration-200 ease-out hover:shadow-md sm:px-[19px] sm:py-4"
+      style={{
+        border: featured ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
+        boxShadow: featured ? "0 14px 34px -22px rgba(238,91,62,.55)" : "none",
+      }}
     >
       {/* Desktop — single grid, columns match the ResultsBlock header
           exactly, so values line up under their titles instead of each
           row repeating its own "Comisión"/"Tasa"/"Entrega" micro-labels. */}
-      <div className="hidden sm:grid sm:grid-cols-[224px_1fr_204px] sm:items-center sm:gap-4">
+      <div className="hidden sm:grid sm:grid-cols-[224px_1fr_204px] sm:items-center sm:gap-[18px]">
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <BrandLogo
@@ -3123,7 +3208,20 @@ function ProviderRow({
               className="shrink-0 rounded-sm border border-border bg-white transition-transform duration-200 ease-out group-hover:scale-110"
             />
             <div className="min-w-0">
-              <div className="truncate text-[15px] font-bold text-foreground">{row.name}</div>
+              <div className="flex items-center gap-1.5">
+                <span className="truncate text-[15px] font-bold text-foreground">{row.name}</span>
+                {/* design/AJUSTES-2.md §3 — the featured row's "why this
+                    won" tag, matching the active sort criterion literally
+                    (mockup: "Best overall"/"Fastest"/"Receives most"). */}
+                {featured && (
+                  <span
+                    className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+                    style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
+                  >
+                    {t(winnerTagKey(sortBy))}
+                  </span>
+                )}
+              </div>
               {score != null && (
                 <div className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/80">
                   {t("comparator.score.label")} {displayScore(score)}
@@ -3136,10 +3234,10 @@ function ProviderRow({
         {/* Four equal metric columns, each with its own micro-label above
             the value (design/AJUSTES-1.md §C1) — replaces the shared
             header row that used to title these from above the whole list. */}
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-4 gap-[10px]">
           <div className="min-w-0 tabular-nums">
             <div className={METRIC_LABEL}>{t("comparator.row.labelFee")}</div>
-            <div className="mt-0.5 text-sm font-medium text-foreground">
+            <div className="mt-0.5 text-[14.5px] font-semibold text-foreground">
               {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
             </div>
             {/* Fee/rate split is the whole point of a neutral comparator (a
@@ -3157,20 +3255,22 @@ function ProviderRow({
           </div>
           <div className="min-w-0 tabular-nums">
             <div className={METRIC_LABEL}>{t("comparator.row.labelRate")}</div>
-            <div className="mt-0.5 text-sm font-medium text-foreground">
+            <div className="mt-0.5 text-[14.5px] font-semibold text-foreground">
               {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
             </div>
             <div className={`text-[10px] ${ratePctClass}`}>{ratePctLabel}</div>
           </div>
           <div className="min-w-0 tabular-nums">
             <div className={METRIC_LABEL}>{t("comparator.row.labelDelivery")}</div>
-            <div className="mt-0.5 inline-flex items-center gap-1 text-sm font-medium text-foreground">
+            <div className="mt-0.5 inline-flex items-center gap-1 text-[14.5px] font-semibold text-foreground">
               <Clock className="h-3.5 w-3.5" /> {deliveryLabel}
             </div>
           </div>
           <div className="min-w-0">
             <div className={METRIC_LABEL}>{t("comparator.row.labelPayout")}</div>
-            <div className="mt-0.5 truncate text-sm font-medium text-foreground">{payoutText}</div>
+            <div className="mt-0.5 truncate text-[14.5px] font-semibold text-foreground">
+              {payoutText}
+            </div>
           </div>
         </div>
         <div className="min-w-0 text-right">
@@ -3185,7 +3285,7 @@ function ProviderRow({
             </div>
           )}
           <div className={METRIC_LABEL}>{t("comparator.row.labelReceive")}</div>
-          <div className="mt-0.5 whitespace-nowrap font-heading text-[28px] font-extrabold leading-[1.1] tabular-nums text-foreground">
+          <div className="mt-0.5 whitespace-nowrap font-heading text-[28px] font-extrabold leading-[1.1] tracking-[-0.03em] tabular-nums text-foreground">
             {row.received.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -3193,7 +3293,7 @@ function ProviderRow({
             <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
           </div>
           <div
-            className={`mt-0.5 text-[11px] font-semibold tabular-nums ${
+            className={`mt-0.5 text-[12px] font-bold tabular-nums ${
               isBest ? "text-success" : "text-muted-foreground"
             }`}
           >
@@ -3203,7 +3303,12 @@ function ProviderRow({
         </div>
       </div>
       {trustLine && (
-        <div className="mt-2 hidden border-t border-border pt-2 sm:block">{trustLine}</div>
+        <div
+          className="mt-[10px] hidden pt-[9px] sm:block"
+          style={{ borderTop: "1px solid #F5EFE8" }}
+        >
+          {trustLine}
+        </div>
       )}
 
       {/* Mobile — a card of its own, not a squeezed-down grid: identity +
@@ -3232,7 +3337,7 @@ function ProviderRow({
               <span className="text-[11px] font-semibold text-muted-foreground">{quote}</span>
             </div>
             <div
-              className={`mt-0.5 text-[11px] font-semibold tabular-nums ${
+              className={`mt-0.5 text-[12px] font-bold tabular-nums ${
                 isBest ? "text-success" : "text-muted-foreground"
               }`}
             >

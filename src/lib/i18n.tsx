@@ -291,6 +291,15 @@ export const DICTS: Record<Lang, Dict> = {
     // above the whole list (comparator.disclaimer.neutrality, below).
     "comparator.row.affiliateLink": "Affiliate link",
     "comparator.row.onTrustpilot": "on Trustpilot",
+    // design/AJUSTES-2.md §3 — the featured row's "why this won" tag, one
+    // phrase per sort criterion (winnerTagKey in ComparatorSection.tsx).
+    "comparator.row.tagBestOverall": "Best overall",
+    "comparator.row.tagReceivesMost": "Receives most",
+    "comparator.row.tagFastest": "Fastest",
+    "comparator.row.tagMostTrusted": "Most trusted",
+    "comparator.row.tagLowestFee": "Lowest fee",
+    "comparator.row.tagBestRate": "Best rate",
+    "comparator.row.feeBreakdown": "Fee breakdown",
     "fx.action": "Action",
     "fx.goto": "Go to",
     "fx.disclaimer":

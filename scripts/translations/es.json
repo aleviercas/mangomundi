@@ -735,5 +735,12 @@
   "todaysRoutes.exclusiveRate": "Exclusive rate",
   "todaysRoutes.bestOf": "Best of {n} · {amount} {from}",
   "todaysRoutes.gain": "+{amount} vs worst",
-  "comparator.cta.update": "Update"
+  "comparator.cta.update": "Update",
+  "comparator.row.tagBestOverall": "Best overall",
+  "comparator.row.tagReceivesMost": "Receives most",
+  "comparator.row.tagFastest": "Fastest",
+  "comparator.row.tagMostTrusted": "Most trusted",
+  "comparator.row.tagLowestFee": "Lowest fee",
+  "comparator.row.tagBestRate": "Best rate",
+  "comparator.row.feeBreakdown": "Fee breakdown"
 }
