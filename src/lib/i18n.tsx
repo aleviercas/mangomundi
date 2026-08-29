@@ -476,6 +476,9 @@ export const DICTS: Record<Lang, Dict> = {
     "home.about.problem.label": "Problem",
     "home.about.problem.body":
       "A two-sided inefficiency. On one side, retail clients and businesses face a frustrating maze regarding best rates. On the other, financial institutions struggle with high acquisition costs and fragmented channels.",
+    // design/AJUSTES-2.md §5 — the dark band's two CTA buttons.
+    "home.about.cta.method": "Read our method",
+    "home.about.cta.aboutUs": "About us",
     // Home — Stats / Market coverage
     "home.stats.eyebrow": "Market coverage",
     "home.stats.title": "One view across the global FX market",

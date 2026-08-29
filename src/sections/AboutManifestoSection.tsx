@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 
 /** Full-bleed dark band (design/HANDOFF.md §6): about-coins-globe.jpg behind
@@ -6,7 +7,18 @@ import { useI18n } from "@/lib/i18n";
  *  credibility beat instead of two near-identical light sections back to
  *  back. Eyebrow/title/subtitle copy unchanged from before the merge; the 4
  *  stat tiles are design/AJUSTES-1.md §F's set (Countries/Currencies/
- *  Providers/Trustpilot, no founding date). */
+ *  Providers/Trustpilot, no founding date).
+ *
+ *  design/AJUSTES-2.md §5 (mockup line 169-186) only calls out the grid
+ *  ratio, the stat-tile styling and the two CTA buttons — not the
+ *  eyebrow/title/subtitle copy or their sizing, which AJUSTES-1 §F already
+ *  set deliberately, so those stay untouched here. "Read our method" has
+ *  no dedicated methodology page anywhere in the app; it links to the same
+ *  real destination Footer.tsx already uses for "Risk Disclosure"
+ *  (/legal#risk), the closest existing content to "how routing/ranking
+ *  actually works" rather than a fabricated page. "About us" reuses the
+ *  same /about → #about redirect the header nav's own About link already
+ *  points to. */
 export function AboutManifestoSection() {
   const { t } = useI18n();
   // design/AJUSTES-1.md §F — "2026 Founded" drops out (a founding date is
@@ -53,7 +65,7 @@ export function AboutManifestoSection() {
         aria-hidden
       />
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_360px]">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_340px] lg:gap-11">
           <div className="max-w-2xl">
             <p className="text-eyebrow font-bold uppercase text-[#FF8A6B]">
               {t("home.about.eyebrow")}
@@ -64,16 +76,31 @@ export function AboutManifestoSection() {
             <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/70 sm:text-lg">
               {t("home.about.subtitle")}
             </p>
+            <div className="mt-5 flex flex-wrap gap-3.5">
+              <Link
+                to="/legal"
+                hash="risk"
+                className="inline-flex h-11 items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
+              >
+                {t("home.about.cta.method")}
+              </Link>
+              <Link
+                to="/about"
+                className="inline-flex h-11 items-center rounded-xl border-[1.5px] border-white/28 px-5 text-[14px] font-bold text-white"
+              >
+                {t("home.about.cta.aboutUs")}
+              </Link>
+            </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-3.5">
             {stats.map((s) => (
-              <div key={s.label} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+              <div key={s.label} className="rounded-[14px] border border-white/14 bg-white/8 p-3.5">
                 <div
-                  className={`font-heading text-2xl font-extrabold tracking-tight sm:text-3xl ${s.valueClassName ?? "text-white"}`}
+                  className={`font-heading text-[26px] font-extrabold tracking-[-0.03em] ${s.valueClassName ?? "text-white"}`}
                 >
                   {s.value}
                 </div>
-                <div className="mt-1 text-xs font-medium leading-snug text-white/60">{s.label}</div>
+                <div className="mt-[2px] text-[11.5px] text-[#A79C92]">{s.label}</div>
               </div>
             ))}
           </div>

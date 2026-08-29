@@ -747,5 +747,7 @@
   "comparator.row.tagBestRate": "Best rate",
   "comparator.row.feeBreakdown": "Fee breakdown",
   "home.blog.compactTitle": "From the blog",
-  "home.blog.allArticles": "All articles ↗"
+  "home.blog.allArticles": "All articles ↗",
+  "home.about.cta.method": "Read our method",
+  "home.about.cta.aboutUs": "About us"
 }
