@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "Ưu đãi độc quyền",
   "comparator.copilot.proactive.generic": "**{provider}** nổi bật về **{criterion}** cho hành lang này. Tiếp tục nhé?",
   "comparator.table.features": "Tính năng",
-  "comparator.table.reviews": "đánh giá",
   "comparator.filterBy": "Yêu cầu",
   "comparator.delivery.all": "Tất cả phương thức",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "Broker",
   "comparator.delivery.bestDeal": "Ưu đãi tốt nhất",
   "comparator.emptyFiltered": "Không có nhà cung cấp phù hợp với lựa chọn của bạn trong \"Yêu cầu\". Hãy thử bỏ một bộ lọc.",
-  "comparator.badge.sponsored": "Ưu đãi được tài trợ",
   "comparator.legend.toggle": "Các biểu tượng này nghĩa là gì?",
   "comparator.score.label": "Điểm số",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "So sánh tỷ giá hối đoái",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

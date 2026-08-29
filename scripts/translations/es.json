@@ -642,7 +642,6 @@
   "comparator.sort.bestDeal": "Oferta exclusiva",
   "comparator.copilot.proactive.generic": "**{provider}** se destaca en **{criterion}** para este corredor. ¿Avanzamos?",
   "comparator.table.features": "Características",
-  "comparator.table.reviews": "reseñas",
   "comparator.filterBy": "Requiere",
   "comparator.delivery.all": "Todos los métodos",
   "comparator.delivery.bankTransfer": "Banco",
@@ -651,7 +650,6 @@
   "comparator.delivery.broker": "Broker",
   "comparator.delivery.bestDeal": "Mejor oferta",
   "comparator.emptyFiltered": "Ningún proveedor cumple lo que seleccionaste en \"Requiere\". Probá sacar algún filtro.",
-  "comparator.badge.sponsored": "Oferta patrocinada",
   "comparator.legend.toggle": "¿Qué significan estos íconos?",
   "comparator.score.label": "Puntaje",
   "comparator.legend.score": "Ideal: una combinación ponderada de comisión, tipo de cambio, velocidad y confianza, relativa a los proveedores mostrados para esta ruta — no es una calificación universal ni absoluta.",
@@ -728,5 +726,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "Compará tipos de cambio",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

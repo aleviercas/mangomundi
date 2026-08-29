@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "Eksklusibong alok",
   "comparator.copilot.proactive.generic": "Natatangi ang **{provider}** sa **{criterion}** para sa corridor na ito. Magpatuloy?",
   "comparator.table.features": "Mga tampok",
-  "comparator.table.reviews": "review",
   "comparator.filterBy": "Kailangan",
   "comparator.delivery.all": "Lahat ng paraan",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "Broker",
   "comparator.delivery.bestDeal": "Pinakamagandang deal",
   "comparator.emptyFiltered": "Walang provider na tumutugma sa napili mo sa ilalim ng \"Kailangan\". Subukang alisin ang isang filter.",
-  "comparator.badge.sponsored": "Sponsored na alok",
   "comparator.legend.toggle": "Ano ang ibig sabihin ng mga icon na ito?",
   "comparator.score.label": "Score",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "Ihambing ang mga exchange rate",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

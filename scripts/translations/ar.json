@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "عرض حصري",
   "comparator.copilot.proactive.generic": "**{provider}** يتميز في **{criterion}** لهذا المسار. هل نتابع؟",
   "comparator.table.features": "الميزات",
-  "comparator.table.reviews": "تقييم",
   "comparator.filterBy": "يتطلب",
   "comparator.delivery.all": "كل الطرق",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "وسيط",
   "comparator.delivery.bestDeal": "أفضل عرض",
   "comparator.emptyFiltered": "لا يوجد مزودون يطابقون ما اخترته في \"يتطلب\". حاول إزالة أحد الفلاتر.",
-  "comparator.badge.sponsored": "عرض برعاية",
   "comparator.legend.toggle": "ماذا تعني هذه الرموز؟",
   "comparator.score.label": "التقييم",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "قارن أسعار صرف العملات",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

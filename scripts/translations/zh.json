@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "专属优惠",
   "comparator.copilot.proactive.generic": "在这条路线上，**{provider}** 在**{criterion}**方面表现突出。要继续吗?",
   "comparator.table.features": "特点",
-  "comparator.table.reviews": "条评价",
   "comparator.filterBy": "需要",
   "comparator.delivery.all": "所有方式",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "经纪商",
   "comparator.delivery.bestDeal": "最优惠",
   "comparator.emptyFiltered": "没有符合您在\"需要\"中所选条件的服务商。试试去掉一个筛选条件。",
-  "comparator.badge.sponsored": "赞助优惠",
   "comparator.legend.toggle": "这些图标是什么意思？",
   "comparator.score.label": "评分",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "比较 汇率",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

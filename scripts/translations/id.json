@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "Penawaran eksklusif",
   "comparator.copilot.proactive.generic": "**{provider}** unggul dalam **{criterion}** untuk koridor ini. Lanjutkan?",
   "comparator.table.features": "Fitur",
-  "comparator.table.reviews": "ulasan",
   "comparator.filterBy": "Membutuhkan",
   "comparator.delivery.all": "Semua metode",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "Broker",
   "comparator.delivery.bestDeal": "Penawaran terbaik",
   "comparator.emptyFiltered": "Tidak ada penyedia yang cocok dengan pilihan Anda di \"Membutuhkan\". Coba hapus salah satu filter.",
-  "comparator.badge.sponsored": "Penawaran bersponsor",
   "comparator.legend.toggle": "Apa arti ikon-ikon ini?",
   "comparator.score.label": "Skor",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "Bandingkan kurs mata uang",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

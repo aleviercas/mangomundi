@@ -281,6 +281,16 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.tab.receiveMoreSub": "the max",
     "comparator.tab.fastest": "Fastest",
     "comparator.tab.fastestHint": "Fastest option",
+    // Row details (§C4). "vs best" makes the delta legible on its own —
+    // just "−6,271 DZD" doesn't say what it's a delta FROM.
+    "comparator.row.deltaVsBest": "{amount} vs best",
+    "comparator.row.deltaWinner": "the most we found",
+    // Sponsored corner badge demoted to plain footer text, next to the
+    // price stamp — same has_exclusive_deal trigger as before, presentation
+    // only. The neutrality statement moves from a per-row badge to one line
+    // above the whole list (comparator.disclaimer.neutrality, below).
+    "comparator.row.affiliateLink": "Affiliate link",
+    "comparator.row.onTrustpilot": "on Trustpilot",
     "fx.action": "Action",
     "fx.goto": "Go to",
     "fx.disclaimer":
@@ -2657,8 +2667,13 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.lastUpdate": "Last update",
     "comparator.savings.label": "Your estimated saving",
     "comparator.savings.baseline": "vs 3.5% market average for this corridor",
+    // design/AJUSTES-1.md §C4 — literal copy, moved from a per-row footer
+    // note to one line above the results list (see ResultsBlock). Other
+    // languages keep their old string per decision #8 (no financial copy
+    // translated without review); this key isn't in .pending.json since
+    // it's not an EN placeholder, just a stale-but-native translation.
     "comparator.disclaimer.neutrality":
-      "mangomundi may earn affiliate commissions; this does not alter the neutrality of the ranking.",
+      "Affiliate links are labelled. Ranking never depends on them.",
     "search.eyebrow": "Financial intelligence terminal",
     "search.origin": "Origin country",
     "search.destination": "Recipient country",
@@ -2725,7 +2740,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.mostTransparent": "Most transparent",
     "comparator.sort.largeTransfers": "Large transfers",
     "comparator.sort.bestDeal": "Exclusive offer",
-    "comparator.badge.sponsored": "Sponsored offer",
     "comparator.badge.notVerified": "Estimated price — not verified for this exact route",
     "comparator.badge.unconfirmed": "Unconfirmed",
     "comparator.badge.promoPrefix": "Promo:",
@@ -2840,7 +2854,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.table.amountSent": "Amount Sent",
     "comparator.table.bestRate": "Best Rate",
     "comparator.table.features": "Features",
-    "comparator.table.reviews": "reviews",
     "about.title": "Financial intelligence for every currency decision",
     "about.metric4.label": "Global providers evaluated in real time",
     "about.coverage.eyebrow": "Market Coverage",

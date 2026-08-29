@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "ข้อเสนอพิเศษ",
   "comparator.copilot.proactive.generic": "**{provider}** โดดเด่นด้าน **{criterion}** สำหรับเส้นทางนี้ ดำเนินการต่อไหม?",
   "comparator.table.features": "คุณสมบัติ",
-  "comparator.table.reviews": "รีวิว",
   "comparator.filterBy": "ต้องการ",
   "comparator.delivery.all": "ทุกวิธี",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "โบรกเกอร์",
   "comparator.delivery.bestDeal": "ข้อเสนอที่ดีที่สุด",
   "comparator.emptyFiltered": "ไม่มีผู้ให้บริการที่ตรงกับที่คุณเลือกไว้ใน \"ต้องการ\" ลองลบตัวกรองออกดู",
-  "comparator.badge.sponsored": "ข้อเสนอที่ได้รับการสนับสนุน",
   "comparator.legend.toggle": "ไอคอนเหล่านี้หมายถึงอะไร?",
   "comparator.score.label": "คะแนน",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "เปรียบเทียบ อัตราแลกเปลี่ยน",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

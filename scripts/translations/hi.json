@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "विशेष ऑफर",
   "comparator.copilot.proactive.generic": "इस कॉरिडोर के लिए **{provider}** **{criterion}** में सबसे आगे है। आगे बढ़ें?",
   "comparator.table.features": "विशेषताएं",
-  "comparator.table.reviews": "समीक्षाएं",
   "comparator.filterBy": "आवश्यक",
   "comparator.delivery.all": "सभी तरीके",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "ब्रोकर",
   "comparator.delivery.bestDeal": "सर्वश्रेष्ठ ऑफर",
   "comparator.emptyFiltered": "\"आवश्यक\" के अंतर्गत आपके चयन से कोई प्रदाता मेल नहीं खाता। कोई फ़िल्टर हटाकर देखें।",
-  "comparator.badge.sponsored": "प्रायोजित ऑफर",
   "comparator.legend.toggle": "इन आइकनों का क्या मतलब है?",
   "comparator.score.label": "स्कोर",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "मुद्रा विनिमय दरों की तुलना करें",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

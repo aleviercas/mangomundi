@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "Oferta ekskluzywna",
   "comparator.copilot.proactive.generic": "**{provider}** wyróżnia się pod względem **{criterion}** na tej trasie. Kontynuować?",
   "comparator.table.features": "Cechy",
-  "comparator.table.reviews": "opinii",
   "comparator.filterBy": "Wymaga",
   "comparator.delivery.all": "Wszystkie metody",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "Broker",
   "comparator.delivery.bestDeal": "Najlepsza oferta",
   "comparator.emptyFiltered": "Żaden dostawca nie spełnia wyboru w \"Wymaga\". Spróbuj usunąć jeden filtr.",
-  "comparator.badge.sponsored": "Oferta sponsorowana",
   "comparator.legend.toggle": "Co oznaczają te ikony?",
   "comparator.score.label": "Wynik",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "Porównaj kursy walut",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }

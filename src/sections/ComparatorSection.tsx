@@ -211,12 +211,6 @@ function useIsDesktopRail(): boolean {
   return isDesktop;
 }
 
-function compactNumber(n: number): string {
-  return new Intl.NumberFormat(undefined, { notation: "compact", maximumFractionDigits: 1 }).format(
-    n,
-  );
-}
-
 /** Derived from speed_hours ONLY — deliberately not delivery_minutes. See
  *  the long-form rationale on this same logic in ProviderRow: speed_hours
  *  is the only field the scoring/sort engine reads, so the printed label
@@ -2046,7 +2040,6 @@ export function ComparatorSection({
                   tTrademarks={t("fx.trademarks")}
                   tRatesSource={t("fx.ratesSource")}
                   tAt={t("fx.at")}
-                  tRecipient={t("fx.recipient")}
                   tCta={t("retail.cta")}
                   tNeutrality={t("comparator.disclaimer.neutrality")}
                 />
@@ -2717,7 +2710,6 @@ function ResultsBlock({
   tTrademarks,
   tRatesSource,
   tAt,
-  tRecipient,
   tCta,
   tNeutrality,
 }: {
@@ -2739,7 +2731,6 @@ function ResultsBlock({
   tTrademarks: string;
   tRatesSource: string;
   tAt: string;
-  tRecipient: string;
   tCta: string;
   tNeutrality: string;
 }) {
@@ -2828,6 +2819,14 @@ function ResultsBlock({
 
   return (
     <div className="min-w-0">
+      {/* Neutrality declared once, here, above the list (design/AJUSTES-1.md
+          §C4) — not per-row anymore. The old "Sponsored offer" corner badge
+          on every promoted row did this six times over with color; ranking
+          disclosure only needs saying once. */}
+      <p className="mb-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
+        <span className="font-semibold text-foreground">⚖︎ </span>
+        {tNeutrality}
+      </p>
       {/* No shared header row (design/AJUSTES-1.md §C1 — removed on
           purpose): each row now carries its own per-metric micro-label
           above its value (see ProviderRow), so a card reads on its own
@@ -2847,7 +2846,6 @@ function ResultsBlock({
             hasCorridorContext={hasCorridorContext}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
-            tRecipient={tRecipient}
           />
         ))}
         {organic.length === 0 && (
@@ -2864,10 +2862,6 @@ function ResultsBlock({
           <span className="tabular-nums">{updatedTime}</span>
         </span>
       </div>
-      <p className="mt-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
-        <span className="font-semibold text-foreground">⚖︎ </span>
-        {tNeutrality}
-      </p>
       <p className="mt-2 text-[11px] text-muted-foreground">{tDisclaimer}</p>
       <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground/80">{tTrademarks}</p>
     </div>
@@ -2884,7 +2878,6 @@ function ProviderRow({
   hasCorridorContext,
   onClick,
   tCta,
-  tRecipient,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -2909,7 +2902,6 @@ function ProviderRow({
   hasCorridorContext: boolean;
   onClick: () => void;
   tCta: string;
-  tRecipient: string;
 }) {
   const { t } = useI18n();
   const deliveryLabel = formatDeliverySpeed(row.speed_hours);
@@ -2961,39 +2953,32 @@ function ProviderRow({
     return chips;
   })();
   // PAYOUT metric cell text (design/AJUSTES-1.md §C1) — same delivery
-  // methods as the chips below the name, joined since a row can support
-  // more than one. The chips themselves stay for now (removing them is
-  // §C4, a separate step); this is additive, not a replacement yet.
+  // methods that used to render as chips below the name. §C4 removes those
+  // chips outright: payout is one of the four metrics now, text only, not
+  // repeated as a pill below the name too.
   const payoutText = highlightChips.map((c) => c.text).join(" · ") || "—";
 
-  // Delta vs. the best received amount in view — 0 (or a hair off it, due
-  // to float rounding) means this row IS the best, so it gets no "−N"
-  // line at all rather than a confusing "-0".
+  // Delta vs. the best received amount in view (§C4) — 0 (or a hair off it,
+  // due to float rounding) means this row IS the best, so it gets the
+  // winner label instead of a "−N vs best" line.
   const isBest = delta >= -0.005;
   const deltaLabel = isBest
     ? null
-    : `${delta.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${quote}`;
+    : t("comparator.row.deltaVsBest").replace(
+        "{amount}",
+        `${delta.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${quote}`,
+      );
 
-  const rating = row.review_count > 0 && row.trust_score != null && (
-    <span className="inline-flex items-center gap-1 whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
-      <Star className="h-2.5 w-2.5" /> {row.trust_score.toFixed(1)} (
-      {compactNumber(row.review_count)} {t("comparator.table.reviews")})
+  // Name + rating (§C4) — "★ 4.3 on Trustpilot · {regulator}", no review
+  // count. row.regulator holds the real per-provider regulator name when
+  // one exists (e.g. "FCA") — kept as real data rather than the mockup's
+  // literal placeholder word "Regulated".
+  const rating = row.trust_score != null && (
+    <span className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] font-medium text-muted-foreground">
+      <Star className="h-2.5 w-2.5 shrink-0" /> {row.trust_score.toFixed(1)}{" "}
+      {t("comparator.row.onTrustpilot")}
       {row.regulator && <> · {row.regulator}</>}
     </span>
-  );
-
-  const deliveryChips = highlightChips.length > 0 && (
-    <div className="flex flex-wrap items-center gap-1.5">
-      {highlightChips.map((c) => (
-        <span
-          key={c.key}
-          className="inline-flex items-center gap-1 whitespace-nowrap rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-foreground"
-        >
-          {c.icon && <c.icon className="h-2.5 w-2.5" />}
-          {c.text}
-        </span>
-      ))}
-    </div>
   );
 
   // Price stamp (design/AJUSTES-1.md §C3) — one line, no pill/background,
@@ -3014,7 +2999,18 @@ function ProviderRow({
       {lastUpdatedLabel}
     </span>
   );
-  const trustLine = (priceStamp || row.promo_text) && (
+  // Sponsored disclosure (§C4) — demoted from a colored corner tab to plain
+  // footer text, same size/weight as the price stamp next to it. Same
+  // has_exclusive_deal trigger as before (presentation change only, not a
+  // rewiring of which flag counts as "sponsored"). The neutrality statement
+  // itself now lives once above the whole list (see ResultsBlock), not
+  // repeated here.
+  const affiliateNote = row.has_exclusive_deal && (
+    <span className="whitespace-nowrap font-medium text-muted-foreground">
+      {t("comparator.row.affiliateLink")}
+    </span>
+  );
+  const trustLine = (priceStamp || row.promo_text || affiliateNote) && (
     <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] leading-snug">
       {priceStamp}
       {row.promo_text && (
@@ -3023,14 +3019,16 @@ function ProviderRow({
           {row.promo_text}
         </span>
       )}
+      {affiliateNote}
     </div>
   );
 
-  // Labeled CTA (was an icon-only 44×44 square with no text — the audit's
-  // H5: no way to tell what it does, and five identical buttons in a list
-  // have no hierarchy). The featured row gets the full-color fill; every
-  // other row gets an outlined version — Kayak's "Best value / Cheapest"
-  // pattern, one clear lead instead of five equal buttons.
+  // Labeled CTA (§C4 — "Go to {name} ↗"; was an icon-only 44×44 square with
+  // no text before that, then just the bare name — the audit's H5: no way
+  // to tell what it does, and five identical buttons in a list have no
+  // hierarchy). The featured row gets the full-color fill; every other row
+  // gets an outlined version — Kayak's "Best value / Cheapest" pattern, one
+  // clear lead instead of five equal buttons.
   const cta = row.affiliate_url ? (
     <button
       onClick={onClick}
@@ -3041,8 +3039,9 @@ function ProviderRow({
           : "border border-border bg-card text-foreground hover:border-foreground/30"
       }`}
     >
-      <span className="truncate">{row.name}</span>
-      <ArrowRight className="h-4 w-4 shrink-0" />
+      <span className="truncate">
+        {t("fx.goto")} {row.name} ↗
+      </span>
     </button>
   ) : (
     // Always reserve the same height, whether or not there's a real link
@@ -3055,24 +3054,8 @@ function ProviderRow({
     <div
       className={`group relative overflow-hidden rounded-2xl bg-card p-4 transition-shadow duration-200 ease-out hover:shadow-md sm:p-5 ${
         featured ? "border-2 border-brand-cta" : "border border-border"
-      } ${row.has_exclusive_deal ? "pt-[38px] sm:pt-[34px]" : ""}`}
+      }`}
     >
-      {/* Sponsored disclosure — a corner tab, not an inline badge next to
-          the name, so it never crowds the Score pill. Reuses the same
-          comparator.badge.sponsored copy/key as the "Sponsored offer"
-          filter chip (not a separate string) so the wording is identical
-          wherever it appears, in every language. Always says exactly what
-          it is: a disclosed commercial placement — this stays true (and
-          more important to keep, not less) now that "Recomendado" also
-          surfaces these providers first; the badge is what keeps that
-          disclosed instead of silent. */}
-      {row.has_exclusive_deal && (
-        <span className="absolute left-0 top-0 rounded-br-sm border border-l-0 border-t-0 border-border bg-muted px-3 py-1 text-[10px] font-extrabold text-muted-foreground">
-          <Sparkle className="mr-1 inline h-2.5 w-2.5" />
-          {t("comparator.badge.sponsored")}
-        </span>
-      )}
-
       {/* Desktop — single grid, columns match the ResultsBlock header
           exactly, so values line up under their titles instead of each
           row repeating its own "Comisión"/"Tasa"/"Entrega" micro-labels. */}
@@ -3088,7 +3071,7 @@ function ProviderRow({
               className="shrink-0 rounded-sm border border-border bg-white transition-transform duration-200 ease-out group-hover:scale-110"
             />
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold text-foreground">{row.name}</div>
+              <div className="truncate text-[15px] font-bold text-foreground">{row.name}</div>
               {score != null && (
                 <div className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/80">
                   {t("comparator.score.label")} {displayScore(score)}
@@ -3096,10 +3079,7 @@ function ProviderRow({
               )}
             </div>
           </div>
-          <div className="mt-1.5 space-y-1">
-            {rating}
-            {deliveryChips}
-          </div>
+          <div className="mt-1.5">{rating}</div>
         </div>
         {/* Four equal metric columns, each with its own micro-label above
             the value (design/AJUSTES-1.md §C1) — replaces the shared
@@ -3165,7 +3145,7 @@ function ProviderRow({
               isBest ? "text-success" : "text-muted-foreground"
             }`}
           >
-            {isBest ? tRecipient : deltaLabel}
+            {isBest ? t("comparator.row.deltaWinner") : deltaLabel}
           </div>
           <div className="mt-2.5 flex justify-end">{cta}</div>
         </div>
@@ -3190,7 +3170,7 @@ function ProviderRow({
               className="shrink-0 rounded-sm border border-border bg-white"
             />
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold text-foreground">{row.name}</div>
+              <div className="truncate text-[15px] font-bold text-foreground">{row.name}</div>
               {rating}
             </div>
           </div>
@@ -3204,7 +3184,7 @@ function ProviderRow({
                 isBest ? "text-success" : "text-muted-foreground"
               }`}
             >
-              {isBest ? tRecipient : deltaLabel}
+              {isBest ? t("comparator.row.deltaWinner") : deltaLabel}
             </div>
           </div>
         </div>
@@ -3219,7 +3199,6 @@ function ProviderRow({
             {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
           </span>
         </div>
-        {deliveryChips && <div className="mt-2">{deliveryChips}</div>}
         {trustLine && <div className="mt-2">{trustLine}</div>}
         {row.has_exclusive_deal && (
           <div className="mt-2 inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-semibold text-accent">

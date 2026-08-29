@@ -650,7 +650,6 @@
   "comparator.sort.bestDeal": "독점 혜택",
   "comparator.copilot.proactive.generic": "이 구간에서 **{provider}**는 **{criterion}** 부문이 뛰어납니다. 진행할까요?",
   "comparator.table.features": "특징",
-  "comparator.table.reviews": "리뷰",
   "comparator.filterBy": "필수 조건",
   "comparator.delivery.all": "모든 방법",
   "comparator.delivery.bankTransfer": "Bank",
@@ -659,7 +658,6 @@
   "comparator.delivery.broker": "브로커",
   "comparator.delivery.bestDeal": "최고의 딜",
   "comparator.emptyFiltered": "\"필수 조건\"에서 선택한 항목과 일치하는 제공업체가 없습니다. 필터를 하나 제거해보세요.",
-  "comparator.badge.sponsored": "스폰서 혜택",
   "comparator.legend.toggle": "이 아이콘들은 무엇을 의미하나요?",
   "comparator.score.label": "점수",
   "comparator.legend.score": "Smart: a weighted blend of fee, exchange rate, speed and trust, relative to the providers shown for this route — not a universal or absolute rating.",
@@ -731,5 +729,9 @@
   "comparator.tab.fastest": "Fastest",
   "comparator.tab.fastestHint": "Fastest option",
   "home.hero.headline": "환율 비교",
-  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗"
+  "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
+  "comparator.row.deltaVsBest": "{amount} vs best",
+  "comparator.row.deltaWinner": "the most we found",
+  "comparator.row.affiliateLink": "Affiliate link",
+  "comparator.row.onTrustpilot": "on Trustpilot"
 }
