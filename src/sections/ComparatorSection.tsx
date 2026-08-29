@@ -3075,7 +3075,7 @@ function ProviderRow({
               <Sparkle className="h-2.5 w-2.5" /> {t("comparator.exclusiveRateNudge")}
             </div>
           )}
-          <div className="whitespace-nowrap text-[26px] font-extrabold leading-none tabular-nums text-foreground">
+          <div className="whitespace-nowrap font-heading text-[28px] font-extrabold leading-[1.1] tabular-nums text-foreground">
             {row.received.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
@@ -3117,7 +3117,7 @@ function ProviderRow({
             </div>
           </div>
           <div className="shrink-0 text-right">
-            <div className="whitespace-nowrap text-xl font-extrabold leading-none tabular-nums text-foreground">
+            <div className="whitespace-nowrap font-heading text-xl font-extrabold leading-[1.1] tabular-nums text-foreground">
               {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
               <span className="text-[11px] font-semibold text-muted-foreground">{quote}</span>
             </div>
@@ -3231,7 +3231,7 @@ function CompactResultsList({
             </div>
           </div>
           <div className="shrink-0 text-right">
-            <div className="text-lg font-extrabold leading-none tabular-nums text-foreground">
+            <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
               {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </div>
             <div className="text-[10px] font-semibold text-muted-foreground">{result.quote}</div>

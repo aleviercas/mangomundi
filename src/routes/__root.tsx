@@ -123,10 +123,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
         {
           rel: "stylesheet",
-          // Sora/Manrope: site body/heading type. Rubik ital,wght@0,700;1,700:
-          // the brand wordmark only (design/HANDOFF.md §1) — 700 upright for
-          // the straight "m"s, 700 italic for the "ango"/"undi" tails.
-          href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=swap",
+          // Bricolage Grotesque: headings AND figures — h1/h2/section titles,
+          // every received/rate/delta/stat number (design/AJUSTES-1.md §A).
+          // Replaces Sora, retired from the project. Manrope: everything
+          // else (labels, row text, buttons, paragraphs). Rubik
+          // ital,wght@0,700;1,700: the brand wordmark/icon only
+          // (design/HANDOFF.md §1) — 700 upright for the straight "m"s, 700
+          // italic for the "ango"/"undi" tails.
+          href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=swap",
         },
       ],
     };

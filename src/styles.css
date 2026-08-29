@@ -18,7 +18,9 @@
   --radius-4xl: calc(var(--radius) + 16px);
 
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  --font-heading: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  /* Headings AND figures (received amounts, rates, deltas, stat numbers) —
+     design/AJUSTES-1.md §A. Replaces Sora, retired from the project. */
+  --font-heading: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   /* Brand wordmark/icon only (Header, Footer, "powered by" lockups) — not a
      site-wide type change. See design/HANDOFF.md §1. */
   --font-brand: 'Rubik', ui-sans-serif, system-ui, sans-serif;
@@ -84,13 +86,15 @@
   --text-eyebrow--line-height: 1.4;
   --text-eyebrow--letter-spacing: 0.18em;
 
+  /* Bricolage Grotesque needs negative tracking to read tight — unlike Sora,
+     it looks loose at these sizes without it (design/AJUSTES-1.md §A). */
   --text-h1: 3rem;
   --text-h1--line-height: 1.05;
-  --text-h1--letter-spacing: -0.02em;
+  --text-h1--letter-spacing: -0.035em;
 
   --text-h2: 2.75rem;
   --text-h2--line-height: 1.1;
-  --text-h2--letter-spacing: -0.015em;
+  --text-h2--letter-spacing: -0.03em;
 
   --text-h3: 1.25rem;
   --text-h3--line-height: 1.3;
@@ -168,7 +172,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   }
 
   .input {
