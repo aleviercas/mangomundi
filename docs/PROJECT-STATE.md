@@ -255,14 +255,25 @@ Orden de prioridad acordado con Alejandro:
      widget a 360×540 con bloque de invitación completo; estado del
      comparador en la URL + rutas reales `/send/:corridor` y `/business`;
      y el rail izquierdo (Filtros, agente IA acoplado, alerta de tasa,
-     Trustpilot) reestructurando el grid del comparador en `≥lg`. Pendiente
-     de verificar con datos reales (el rail solo se monta con un resultado,
-     y este sandbox no tiene credenciales de Supabase) y lo que el propio
-     handoff nunca prometió resolver (`/exchange`, SVG del logo, estados de
-     carga/error rediseñados, tabla de brokers del modo Business). **Ver
+     Trustpilot) reestructurando el grid del comparador en `≥lg`. **Ver
      [`docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-rediseno-mangomundi-4.md)**
-     para el detalle completo de cada pieza — es el documento a leer antes
-     de tocar cualquier cosa de este rediseño.
+     para el detalle completo de cada pieza.
+   - **Ronda de ajustes 1 (29-ago-2026)** — sobre lo anterior, un segundo
+     documento (`design/AJUSTES-1.md`) pidió fidelidad pixel-a-pixel al
+     mockup: tipografía Bricolage Grotesque, tabla de resultados
+     rediseñada (sin encabezado compartido, sello de precio de una línea,
+     3 botones grandes de orden, detalles de fila), h1 del hero, reskin
+     oscuro completo del panel del agente IA (alcance confirmado con
+     Alejandro — mayor que "arreglar chips truncados"), copy de la banda
+     oscura y de "For business", la sección nueva "Today's routes, already
+     priced" (reusa `compareProviders` sobre una lista candidata de
+     corredores — no hay query nueva de backend sin poder probarla), y el
+     preview del widget con un resultado real. **Los 8 pasos están
+     completos.** Pendiente de verificar con datos reales (mismo límite:
+     sin credenciales de Supabase en este sandbox) — ver
+     [`docs/handoff/handoff-2026-08-29-ajustes-1-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-ajustes-1-rediseno-mangomundi-4.md)
+     para el detalle completo y el orden de verificación sugerido antes de
+     mergear esta rama.
 2. **Precisión de producto/datos** (este documento) — modelo de elegibilidad
    de proveedores por corredor **cerrado y documentado** en
    `docs/architecture-motor-comparador.md` (27-ago-2026, fase 2) — es el
