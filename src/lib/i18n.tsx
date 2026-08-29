@@ -504,6 +504,11 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.blog.viewAll": "View all posts",
+    // design/AJUSTES-2.md §4 — the compact home-page band's own title and
+    // link, separate from home.blog.title/viewAll which stay the full
+    // /blog listing page's <h1> and are unrelated to this band.
+    "home.blog.compactTitle": "From the blog",
+    "home.blog.allArticles": "All articles ↗",
     // design/AJUSTES-1.md §B — literal subtitle copy.
     "home.hero.tagline":
       "Who delivers more of your money? Real rates and total fees, side by side, updated every minute. No sign-up.",

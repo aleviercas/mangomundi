@@ -742,5 +742,7 @@
   "comparator.row.tagMostTrusted": "Most trusted",
   "comparator.row.tagLowestFee": "Lowest fee",
   "comparator.row.tagBestRate": "Best rate",
-  "comparator.row.feeBreakdown": "Fee breakdown"
+  "comparator.row.feeBreakdown": "Fee breakdown",
+  "home.blog.compactTitle": "From the blog",
+  "home.blog.allArticles": "All articles ↗"
 }
