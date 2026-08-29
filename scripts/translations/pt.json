@@ -717,5 +717,12 @@
   "comparator.rateAlert.cta": "Set a rate alert",
   "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
   "comparator.rateAlert.error": "Something went wrong. Please try again.",
-  "comparator.trustpilot.rated": "Rated 4.6 on Trustpilot"
+  "comparator.trustpilot.rated": "Rated 4.6 on Trustpilot",
+  "comparator.row.labelFee": "Fee",
+  "comparator.row.labelRate": "Rate",
+  "comparator.row.labelDelivery": "Delivery",
+  "comparator.row.labelPayout": "Payout",
+  "comparator.row.labelReceive": "They receive",
+  "comparator.row.stampLive": "Live",
+  "comparator.row.stampEstimated": "Estimated"
 }

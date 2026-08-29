@@ -253,6 +253,19 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.recipient": "Recipient gets",
     "fx.totalFee": "Total fee",
     "fx.speed": "Speed",
+    // Per-row micro-labels (design/AJUSTES-1.md §C1) — short on purpose,
+    // 10.5px uppercase above each metric's value, not the longer column
+    // labels above (fx.totalFee/fx.speed/fx.recipient), which the shared
+    // header row used before it was removed.
+    "comparator.row.labelFee": "Fee",
+    "comparator.row.labelRate": "Rate",
+    "comparator.row.labelDelivery": "Delivery",
+    "comparator.row.labelPayout": "Payout",
+    "comparator.row.labelReceive": "They receive",
+    // The single price-stamp line (§C3) replacing the old orange
+    // "not verified"/"unconfirmed" pills + separate "Updated: {date}" text.
+    "comparator.row.stampLive": "Live",
+    "comparator.row.stampEstimated": "Estimated",
     "fx.action": "Action",
     "fx.goto": "Go to",
     "fx.disclaimer":

@@ -94,6 +94,11 @@ type AmountMode = "send" | "receive";
  *  a recessed pill distinct from the card's own surface. */
 const WHITE_FIELD =
   "h-11 rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground shadow-sm hover:bg-muted hover:border-border focus:outline-none focus:ring-2 focus:ring-brand-cta/40";
+/** Per-metric micro-label above each row value — design/AJUSTES-1.md §C1's
+ *  literal spec (10.5px/700/.06em/uppercase/#6B5F55), not the site's
+ *  cooler-toned --muted-foreground token: this is a mockup-exact value,
+ *  not a general UI gray. */
+const METRIC_LABEL = "text-[10.5px] font-bold uppercase tracking-[.06em] text-[#6B5F55]";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
 /** Monito-style "how does the recipient get paid" filter — single-select
@@ -1968,9 +1973,6 @@ export function ComparatorSection({
                   tRatesSource={t("fx.ratesSource")}
                   tAt={t("fx.at")}
                   tRecipient={t("fx.recipient")}
-                  tTotalFee={t("fx.totalFee")}
-                  tSpeed={t("fx.speed")}
-                  tExchangeRate={t("comparator.table.exchangeRate")}
                   tCta={t("retail.cta")}
                   tNeutrality={t("comparator.disclaimer.neutrality")}
                 />
@@ -2642,9 +2644,6 @@ function ResultsBlock({
   tRatesSource,
   tAt,
   tRecipient,
-  tTotalFee,
-  tSpeed,
-  tExchangeRate,
   tCta,
   tNeutrality,
 }: {
@@ -2667,9 +2666,6 @@ function ResultsBlock({
   tRatesSource: string;
   tAt: string;
   tRecipient: string;
-  tTotalFee: string;
-  tSpeed: string;
-  tExchangeRate: string;
   tCta: string;
   tNeutrality: string;
 }) {
@@ -2758,24 +2754,13 @@ function ResultsBlock({
 
   return (
     <div className="min-w-0">
-      {/* Single header, once — not repeated per row (see ProviderRow: no
-          more per-row "Comisión"/"Tasa"/"Entrega" micro-labels). Its own
-          bar, not glued to the rows below, since each row is now its own
-          card (gap-separated) rather than a divided list inside one
-          shared box — that's what lets the featured row's border read as
-          "this one card stands out" instead of an inline accent buried in
-          a continuous list. Desktop only; the mobile stack below sm:
-          doesn't have fixed columns to title. */}
-      {displayRows.length > 0 && (
-        <div className="hidden items-center gap-4 rounded-xl border border-border bg-muted/40 px-5 py-2.5 text-[11px] font-bold uppercase tracking-wide text-muted-foreground sm:grid sm:grid-cols-[minmax(180px,220px)_1fr_1fr_1fr_minmax(160px,200px)]">
-          <span>{t("comparator.results")}</span>
-          <span>{tTotalFee}</span>
-          <span>{tExchangeRate}</span>
-          <span>{tSpeed}</span>
-          <span className="text-right">{tRecipient}</span>
-        </div>
-      )}
-      <div className={displayRows.length > 0 ? "mt-3 flex flex-col gap-3" : ""}>
+      {/* No shared header row (design/AJUSTES-1.md §C1 — removed on
+          purpose): each row now carries its own per-metric micro-label
+          above its value (see ProviderRow), so a card reads on its own
+          without the eye having to travel back up to a header — which is
+          also what lets the same row layout work on mobile without a
+          separate table. */}
+      <div className={displayRows.length > 0 ? "flex flex-col gap-3" : ""}>
         {displayRows.map((row, i) => (
           <ProviderRow
             key={row.slug}
@@ -2867,13 +2852,17 @@ function ProviderRow({
   const notVerifiedForRoute = hasCorridorContext && !row.has_corridor_data;
   const unconfirmed = row.corridor_verified_status === "sin_confirmar";
   const lastUpdatedRaw = row.corridor_data_collected_at ?? row.provider_rates_last_updated;
+  // Day + month + time (no year) — design/AJUSTES-1.md §C3's "28 Aug,
+  // 09:41" stamp, not the plain date the pre-adjustment label used.
   const lastUpdatedLabel = lastUpdatedRaw
-    ? new Date(lastUpdatedRaw).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "short",
+    ? new Date(lastUpdatedRaw).toLocaleString(undefined, {
         day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
       })
     : null;
+  const isVerified = !notVerifiedForRoute && !unconfirmed;
 
   // Feature highlight chips: only the delivery-method pills remain now (on
   // request) — the merit badges (lowest fee / best exchange rate / most
@@ -2897,6 +2886,11 @@ function ProviderRow({
     }
     return chips;
   })();
+  // PAYOUT metric cell text (design/AJUSTES-1.md §C1) — same delivery
+  // methods as the chips below the name, joined since a row can support
+  // more than one. The chips themselves stay for now (removing them is
+  // §C4, a separate step); this is additive, not a replacement yet.
+  const payoutText = highlightChips.map((c) => c.text).join(" · ") || "—";
 
   // Delta vs. the best received amount in view — 0 (or a hair off it, due
   // to float rounding) means this row IS the best, so it gets no "−N"
@@ -2928,32 +2922,27 @@ function ProviderRow({
     </div>
   );
 
-  // Trust/confidence line — separate from the merit chips above on purpose:
-  // this isn't ranking the provider, it's disclosing how confident we are
-  // in the NUMBERS shown elsewhere on the row. "Not verified" and
-  // "unconfirmed" both mean "treat this row's fee/rate as an estimate,
-  // double-check on the provider's site" — the disclaimer text below the
-  // whole list already says this generically, but this per-row flag is
-  // what actually tells a person WHICH rows need that caution. See
-  // fx.functions.ts (has_corridor_data, corridor_verified_status,
+  // Price stamp (design/AJUSTES-1.md §C3) — one line, no pill/background,
+  // replacing the old orange "not verified"/"unconfirmed" badges plus the
+  // separate "Updated: {date}" text. "Not verified" and "unconfirmed" both
+  // collapse into the same "Estimated" state here — both still mean
+  // exactly what the comment above isVerified used to say: treat this
+  // row's fee/rate as an estimate, double-check on the provider's site.
+  // See fx.functions.ts (has_corridor_data, corridor_verified_status,
   // provider_rates_last_updated) for how these are computed server-side.
-  const trustLine = (notVerifiedForRoute || unconfirmed || lastUpdatedLabel || row.promo_text) && (
-    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] leading-snug">
-      {notVerifiedForRoute && (
-        <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 font-semibold text-warning">
-          <Info className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.notVerified")}
-        </span>
-      )}
-      {unconfirmed && (
-        <span className="inline-flex items-center gap-1 rounded-full bg-warning/15 px-2 py-0.5 font-semibold text-warning">
-          <Info className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.unconfirmed")}
-        </span>
-      )}
-      {lastUpdatedLabel && (
-        <span className="whitespace-nowrap text-muted-foreground">
-          {t("fx.updated")}: {lastUpdatedLabel}
-        </span>
-      )}
+  const priceStamp = lastUpdatedLabel && (
+    <span
+      className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] font-semibold"
+      style={{ color: isVerified ? "#1F7A5A" : "#6B5F55" }}
+    >
+      <Clock className="h-3 w-3 shrink-0" />
+      {isVerified ? t("comparator.row.stampLive") : t("comparator.row.stampEstimated")} ·{" "}
+      {lastUpdatedLabel}
+    </span>
+  );
+  const trustLine = (priceStamp || row.promo_text) && (
+    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] leading-snug">
+      {priceStamp}
       {row.promo_text && (
         <span className="inline-flex items-center gap-1 font-medium text-accent">
           <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
@@ -3013,7 +3002,7 @@ function ProviderRow({
       {/* Desktop — single grid, columns match the ResultsBlock header
           exactly, so values line up under their titles instead of each
           row repeating its own "Comisión"/"Tasa"/"Entrega" micro-labels. */}
-      <div className="hidden sm:grid sm:grid-cols-[minmax(180px,220px)_1fr_1fr_1fr_minmax(160px,200px)] sm:items-center sm:gap-4">
+      <div className="hidden sm:grid sm:grid-cols-[224px_1fr_204px] sm:items-center sm:gap-4">
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <BrandLogo
@@ -3038,30 +3027,44 @@ function ProviderRow({
             {deliveryChips}
           </div>
         </div>
-        <div className="min-w-0 tabular-nums">
-          <div className="text-sm font-medium text-foreground">
-            {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
-          </div>
-          {/* Fee/rate split is the whole point of a neutral comparator (a
-              "$0 fee" headline can still hide a bad spread) — kept as a
-              small subline rather than dropped. */}
-          {(row.fee_percent_applied > 0 || row.fee_fixed_applied > 0 || row.spread_applied > 0) && (
-            <div className="text-[10px] leading-snug text-muted-foreground">
-              {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
-              {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
-              {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
+        {/* Four equal metric columns, each with its own micro-label above
+            the value (design/AJUSTES-1.md §C1) — replaces the shared
+            header row that used to title these from above the whole list. */}
+        <div className="grid grid-cols-4 gap-3">
+          <div className="min-w-0 tabular-nums">
+            <div className={METRIC_LABEL}>{t("comparator.row.labelFee")}</div>
+            <div className="mt-0.5 text-sm font-medium text-foreground">
+              {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
             </div>
-          )}
-        </div>
-        <div className="min-w-0 tabular-nums">
-          <div className="text-sm font-medium text-foreground">
-            {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
+            {/* Fee/rate split is the whole point of a neutral comparator (a
+                "$0 fee" headline can still hide a bad spread) — kept as a
+                small subline rather than dropped. */}
+            {(row.fee_percent_applied > 0 ||
+              row.fee_fixed_applied > 0 ||
+              row.spread_applied > 0) && (
+              <div className="text-[10px] leading-snug text-muted-foreground">
+                {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
+                {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
+                {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
+              </div>
+            )}
           </div>
-          <div className={`text-[10px] ${ratePctClass}`}>{ratePctLabel}</div>
-        </div>
-        <div className="min-w-0 tabular-nums">
-          <div className="inline-flex items-center gap-1 text-sm font-medium text-foreground">
-            <Clock className="h-3.5 w-3.5" /> {deliveryLabel}
+          <div className="min-w-0 tabular-nums">
+            <div className={METRIC_LABEL}>{t("comparator.row.labelRate")}</div>
+            <div className="mt-0.5 text-sm font-medium text-foreground">
+              {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
+            </div>
+            <div className={`text-[10px] ${ratePctClass}`}>{ratePctLabel}</div>
+          </div>
+          <div className="min-w-0 tabular-nums">
+            <div className={METRIC_LABEL}>{t("comparator.row.labelDelivery")}</div>
+            <div className="mt-0.5 inline-flex items-center gap-1 text-sm font-medium text-foreground">
+              <Clock className="h-3.5 w-3.5" /> {deliveryLabel}
+            </div>
+          </div>
+          <div className="min-w-0">
+            <div className={METRIC_LABEL}>{t("comparator.row.labelPayout")}</div>
+            <div className="mt-0.5 truncate text-sm font-medium text-foreground">{payoutText}</div>
           </div>
         </div>
         <div className="min-w-0 text-right">
@@ -3075,7 +3078,8 @@ function ProviderRow({
               <Sparkle className="h-2.5 w-2.5" /> {t("comparator.exclusiveRateNudge")}
             </div>
           )}
-          <div className="whitespace-nowrap font-heading text-[28px] font-extrabold leading-[1.1] tabular-nums text-foreground">
+          <div className={METRIC_LABEL}>{t("comparator.row.labelReceive")}</div>
+          <div className="mt-0.5 whitespace-nowrap font-heading text-[28px] font-extrabold leading-[1.1] tabular-nums text-foreground">
             {row.received.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
