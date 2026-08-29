@@ -2636,6 +2636,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.copilot.empty": "Run a comparison to enable the copilot.",
     "comparator.copilot.send": "Send",
     "comparator.copilot.analyzing": "Analyzing results…",
+    // design/AJUSTES-1.md §D — the line under the composer, dark panel only.
+    "comparator.copilot.trustLine":
+      "Answers come from the loaded comparison. It never favours a provider that pays us more.",
     "comparator.copilot.proceed": "Continue with {provider}",
     "comparator.copilot.proactive.rate":
       "I noticed **{provider}** offers the best rate right now for this amount. Want me to help you proceed?",

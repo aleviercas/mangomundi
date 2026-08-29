@@ -86,6 +86,12 @@ interface AiCopilotProps {
  * floating AI Agent so users get guided suggestions (low token burn) before
  * free-form chat.
  */
+/**
+ * Suggested-question chips (design/AJUSTES-1.md §D) — one per line, full
+ * width, arrow on the right. Only ever rendered inside FloatingAgent's
+ * dark #241C16 panel (its only consumer), so the colors here are that
+ * panel's literal palette, not a general-purpose light/dark variant.
+ */
 export function AiCopilot({
   actions = DEFAULT_WIZARD_ACTIONS,
   onAction,
@@ -95,25 +101,24 @@ export function AiCopilot({
   const { t } = useI18n();
   return (
     <div
-      className={`grid grid-cols-1 gap-1.5 sm:grid-cols-2 ${className}`}
+      className={`flex flex-col gap-1.5 ${className}`}
       role="group"
       aria-label={t("wizard.quickActionsAria")}
     >
-      {actions.map((a) => {
-        const Icon = a.icon;
-        return (
-          <button
-            key={a.id}
-            type="button"
-            onClick={() => onAction(a)}
-            disabled={disabled}
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-2.5 py-2 text-left text-xs font-medium text-foreground transition hover:border-foreground/30 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
-            <span className="truncate">{t(a.label)}</span>
-          </button>
-        );
-      })}
+      {actions.map((a) => (
+        <button
+          key={a.id}
+          type="button"
+          onClick={() => onAction(a)}
+          disabled={disabled}
+          className="flex w-full items-center justify-between gap-2 rounded-[10px] border border-white/[.12] bg-white/[.07] px-[11px] py-[9px] text-left text-[12px] font-semibold text-[#F1EBE4] transition hover:bg-white/[.1] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
+        >
+          <span className="truncate">{t(a.label)}</span>
+          <span className="shrink-0 text-[#FF8A6B]" aria-hidden>
+            →
+          </span>
+        </button>
+      ))}
     </div>
   );
 }

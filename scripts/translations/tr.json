@@ -733,5 +733,6 @@
   "comparator.row.deltaVsBest": "{amount} vs best",
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
-  "comparator.row.onTrustpilot": "on Trustpilot"
+  "comparator.row.onTrustpilot": "on Trustpilot",
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
 }

@@ -2479,18 +2479,19 @@ function FloatingAgent(p: FloatingAgentProps) {
           role="dialog"
           aria-modal="false"
           aria-labelledby={panelLabelId}
+          style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
           className={
             docked
-              ? "surface-card flex h-[480px] w-full flex-col overflow-hidden rounded-xl ring-1 ring-foreground/10"
-              : "surface-card flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl ring-1 ring-foreground/10"
+              ? "flex h-[480px] w-full flex-col overflow-hidden rounded-xl shadow-xl"
+              : "flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl"
           }
         >
-          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3">
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
             <span
               id={panelLabelId}
-              className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
+              className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60"
             >
-              <Sparkle className="h-3.5 w-3.5 shrink-0 text-foreground" aria-hidden />
+              <Sparkle className="h-3.5 w-3.5 shrink-0 text-[#FF8A6B]" aria-hidden />
               <span className="truncate">{t("comparator.copilot.agent")}</span>
             </span>
             <div className="flex shrink-0 items-center gap-2">
@@ -2505,7 +2506,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                   type="button"
                   onClick={() => onToggle(true)}
                   aria-label={t("agent.minimize")}
-                  className="rounded-md p-1 text-muted-foreground transition hover:bg-muted hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="rounded-md p-1 text-white/60 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
                     <path
@@ -2522,7 +2523,7 @@ function FloatingAgent(p: FloatingAgentProps) {
 
           <div className="flex-1 space-y-3 overflow-y-auto p-4" aria-live="polite">
             {aiLoading && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2 text-sm text-[#A79C92]">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t("fx.analyzing")}
               </div>
             )}
@@ -2540,20 +2541,20 @@ function FloatingAgent(p: FloatingAgentProps) {
             {chat.length === 0 && !aiLoading && (
               <>
                 {segment === "business" && businessStage !== "done" && result ? (
-                  <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                  <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
                     <ReactMarkdown>{t("comparator.copilot.business.intro")}</ReactMarkdown>
                   </div>
                 ) : (
                   <>
                     {segment === "retail" && result && amount >= B2B_UPSELL_MIN_AMOUNT && (
-                      <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                      <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
                         <ReactMarkdown>{t("comparator.copilot.b2bUpsell")}</ReactMarkdown>
                       </div>
                     )}
-                    <div className="rounded-md border border-border bg-card p-3 text-sm leading-relaxed text-foreground">
+                    <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
                       <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
                     </div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">
                       {t("wizard.quickActions")}
                     </div>
                     <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
@@ -2569,12 +2570,12 @@ function FloatingAgent(p: FloatingAgentProps) {
                     key={i}
                     className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
                       m.role === "user"
-                        ? "ml-6 bg-foreground text-background"
-                        : "mr-6 border border-border bg-card text-foreground"
+                        ? "ml-6 bg-white/[.15] text-[#F1EBE4]"
+                        : "mr-6 border border-white/10 bg-white/[.06] text-[#F1EBE4]"
                     }`}
                   >
                     {m.role === "assistant" ? (
-                      <div className="prose prose-sm max-w-none prose-p:my-1 prose-strong:text-foreground">
+                      <div className="prose prose-sm prose-invert max-w-none prose-p:my-1">
                         <ReactMarkdown>{m.content}</ReactMarkdown>
                       </div>
                     ) : (
@@ -2609,7 +2610,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                   </div>
                 ))}
                 {chatMutPending && (
-                  <div className="mr-6 flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2 text-sm text-muted-foreground">
+                  <div className="mr-6 flex items-center gap-2 rounded-md border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-[#A79C92]">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />{" "}
                     {t("comparator.copilot.analyzing")}
                   </div>
@@ -2622,7 +2623,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 the whole product can be explored without free-typing/AI. */}
             {chat.length > 0 && !aiLoading && (
               <div className="pt-1">
-                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/50">
                   {t("wizard.moreQuestions")}
                 </div>
                 <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
@@ -2630,7 +2631,7 @@ function FloatingAgent(p: FloatingAgentProps) {
             )}
           </div>
 
-          <div className="shrink-0 border-t border-border p-3">
+          <div className="shrink-0 border-t border-white/10 p-3">
             {segment === "business" && businessStage === "consent" && (
               <div className="mb-3 flex flex-wrap gap-2">
                 <Button
@@ -2656,17 +2657,21 @@ function FloatingAgent(p: FloatingAgentProps) {
                       { role: "assistant", content: t("comparator.copilot.business.no") },
                     ]);
                   }}
+                  className="border-white/20 bg-transparent text-[#F1EBE4] hover:bg-white/10 hover:text-[#F1EBE4]"
                 >
                   {t("comparator.copilot.business.review")}
                 </Button>
               </div>
             )}
+            {/* Composer (design/AJUSTES-1.md §D) — a white pill on the dark
+                panel, matching the mockup exactly, rather than the site's
+                usual bordered input field. */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 sendChat(chatInput);
               }}
-              className="flex items-center gap-2"
+              className="flex h-[42px] items-center gap-2 rounded-[11px] bg-white py-0 pl-3 pr-1.5"
             >
               <label htmlFor="ai-agent-composer" className="sr-only">
                 {t("comparator.copilot.placeholder")}
@@ -2678,18 +2683,21 @@ function FloatingAgent(p: FloatingAgentProps) {
                 onChange={(e) => setChatInput(e.target.value)}
                 placeholder={t("comparator.copilot.placeholder")}
                 aria-label={t("comparator.copilot.placeholder")}
-                className="flex h-10 w-full min-w-0 rounded-md border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
+                className="h-full min-w-0 flex-1 border-0 bg-transparent text-[12.5px] font-medium text-[#241C16] outline-none placeholder:text-[#9C9089]"
                 disabled={chatMutPending}
               />
               <button
                 type="submit"
                 disabled={chatMutPending || !chatInput.trim()}
-                className="btn-cta inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
+                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[#EE5B3E] text-white transition disabled:opacity-50"
                 aria-label={t("comparator.copilot.send")}
               >
                 <Send className="h-3.5 w-3.5" aria-hidden />
               </button>
             </form>
+            <p className="mt-2 text-[11px] leading-relaxed text-[#A79C92]">
+              {t("comparator.copilot.trustLine")}
+            </p>
           </div>
         </div>
       )}
