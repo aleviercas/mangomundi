@@ -1,10 +1,15 @@
 # Handoff — rediseño "Mangomundi 4" (29-ago-2026)
 
-> Estado: **en curso**, sobre la rama `claude/reorganizar-entrega-rediseno-za6gmc`
-> (todavía no mergeada a `main`, nada de esto está LIVE). Este documento es el
-> punto de entrada para cualquier sesión de Claude que retome este trabajo —
-> resume qué se pidió, qué ya se hizo, y qué queda, con las decisiones de
-> producto ya tomadas para no tener que volver a preguntarlas.
+> Estado: **las 6 decisiones de producto de la sección 4 están hechas**
+> (commits en `claude/reorganizar-entrega-rediseno-za6gmc`, todavía no
+> mergeada a `main` — nada de esto está LIVE). Queda pendiente verificar el
+> rail (§3.10) con datos reales — es lo primero que hay que mirar en cuanto
+> haya credenciales de Supabase o un preview de Vercel — y lo que el propio
+> `design/HANDOFF.md` §8 ya reconocía como no diseñado (`/exchange`, SVG del
+> logo, estados de carga/error). Este documento es el punto de entrada para
+> cualquier sesión de Claude que retome este trabajo — resume qué se pidió,
+> qué ya se hizo, y qué queda, con las decisiones de producto ya tomadas
+> para no tener que volver a preguntarlas.
 
 ## 1. Origen y dónde está la especificación
 
