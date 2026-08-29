@@ -737,5 +737,6 @@
   "todaysRoutes.subtitle": "Routes where a partner gives us an exclusive rate — rotating on every visit. Prices are the best of all providers we compare.",
   "todaysRoutes.exclusiveRate": "Exclusive rate",
   "todaysRoutes.bestOf": "Best of {n} · {amount} {from}",
-  "todaysRoutes.gain": "+{amount} vs worst"
+  "todaysRoutes.gain": "+{amount} vs worst",
+  "comparator.cta.update": "Update"
 }

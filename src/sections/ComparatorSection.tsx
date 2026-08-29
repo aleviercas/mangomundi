@@ -92,8 +92,13 @@ type AmountMode = "send" | "receive";
 
 /** Field styling for inputs/triggers inside the (light) comparator card —
  *  a recessed pill distinct from the card's own surface. */
+// design/AJUSTES-2.md §1/§0 — field border is Borde 2 #E5DCD1 (--input,
+// updated in §0), not the card-border token; field background is white,
+// not the page background. Used for the two business-only secondary
+// fields (contract type/frequency) below the main row, which the doc
+// doesn't size explicitly — height stays as it was.
 const WHITE_FIELD =
-  "h-11 rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground shadow-sm hover:bg-muted hover:border-border focus:outline-none focus:ring-2 focus:ring-brand-cta/40";
+  "h-11 rounded-md border-[1.5px] border-input bg-card px-3 text-sm font-medium text-foreground shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40";
 /** Per-metric micro-label above each row value — design/AJUSTES-1.md §C1's
  *  literal spec (10.5px/700/.06em/uppercase/#6B5F55), not the site's
  *  cooler-toned --muted-foreground token: this is a mockup-exact value,
@@ -1242,6 +1247,11 @@ export function ComparatorSection({
   // Embed mode drops the section chrome (padding/centered max-width) so the
   // comparator fills the iframe container; otherwise it's a home section.
   const SectionTag = embedded ? "div" : "section";
+  // design/AJUSTES-2.md §1 — the search row shrinks (58px→52px fields,
+  // "Compare"→"Update") once there's a result to make room for. Same gate
+  // as the sticky-positioning check a few lines below (`result && !embedded`)
+  // — the widget's own sizing is unrelated to this home-page pattern.
+  const compact = Boolean(result) && !embedded;
 
   return (
     <SectionTag
@@ -1358,8 +1368,13 @@ export function ComparatorSection({
                   that fx_rates keys corridor-specific pricing by country pair,
                   not currency pair. `from`/`to` (currency) are still the state
                   everything downstream reads — these handlers just derive them
-                  from the country pick instead of the other way around. */}
-              <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[1.5fr_auto_1.2fr_auto]">
+                  from the country pick instead of the other way around.
+                  design/AJUSTES-2.md §1 — field heights/copy shrink once a
+                  result exists (58px→52px, "Compare"→"Update"); the compact
+                  fields also swap to #FDFBF9 instead of white. Gated on
+                  `!embedded` — the widget's own compact sizing is unrelated
+                  to this home-page-only "search collapses" pattern. */}
+              <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[minmax(280px,1.1fr)_46px_minmax(260px,1fr)_176px]">
                 {/* FROM box: "You send" — amount + country unified pill
                     (currency shown as the combobox's secondary/dropdown hint,
                     and in the mid-market rate banner once a comparison runs). */}
@@ -1367,7 +1382,11 @@ export function ComparatorSection({
                   <FieldLight label={t("comparator.field.amount")}>
                     {/* Unified pill: amount + country read as one control,
                         split by a hairline divider instead of two boxes. */}
-                    <div className="flex h-11 w-full min-w-0 items-stretch overflow-hidden rounded-md border border-border bg-background shadow-sm transition-colors hover:bg-muted focus-within:ring-2 focus-within:ring-brand-cta/40">
+                    <div
+                      className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                        compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
+                      }`}
+                    >
                       <input
                         type="number"
                         inputMode="decimal"
@@ -1376,7 +1395,9 @@ export function ComparatorSection({
                         placeholder="1000"
                         onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                         aria-label={t("comparator.field.amount")}
-                        className="min-w-0 flex-1 bg-transparent px-3 text-sm font-medium tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                        className={`min-w-0 flex-1 bg-transparent px-3.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                          compact ? "text-[21px]" : "text-[25px]"
+                        }`}
                       />
                       <CountryCombobox
                         value={sendingCountry}
@@ -1385,14 +1406,18 @@ export function ComparatorSection({
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.sourceCurrency")}
-                        triggerClassName="h-11 w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-3 shadow-none hover:bg-muted focus:ring-0"
+                        triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                          compact ? "text-[14px]" : "text-[14.5px]"
+                        }`}
                       />
                     </div>
                   </FieldLight>
                 </div>
 
                 {/* Swap — click to flip FROM/TO country (currency follows).
-                    Rotated 90° when the row stacks vertically. */}
+                    Rotated 90° when the row stacks vertically.
+                    design/AJUSTES-2.md §0/§1 — Arena bg, Mango stroke, its
+                    own 46px/44px column, not a generic bordered square. */}
                 <div className="flex items-center justify-center py-0.5 @2xl:flex-col @2xl:justify-end @2xl:pb-1">
                   <button
                     type="button"
@@ -1403,13 +1428,19 @@ export function ComparatorSection({
                       handleReceivingCountryChange(prevSending);
                     }}
                     aria-label={t("comparator.swap")}
-                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-brand-cta transition hover:bg-muted/70 hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                    className={`flex shrink-0 items-center justify-center rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                      compact ? "h-[52px] w-[44px]" : "h-[58px] w-[46px]"
+                    }`}
+                    style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                   >
-                    <ArrowLeftRight className="h-4 w-4 rotate-90 @2xl:rotate-0" />
+                    <ArrowLeftRight
+                      strokeWidth={2.2}
+                      className={`rotate-90 @2xl:rotate-0 ${compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
+                    />
                   </button>
                 </div>
 
-                {/* TO box: "You receive" — country only, highlighted while it
+                {/* TO box: "They receive" — country only, highlighted while it
                     still matches FROM (nudges picking a different country). */}
                 <div className="min-w-0">
                   <FieldLight label={t("comparator.field.youReceive")}>
@@ -1420,11 +1451,11 @@ export function ComparatorSection({
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.targetCurrency")}
-                      triggerClassName={
-                        sameCorridorBlocked
-                          ? `${WHITE_FIELD} ring-2 ring-brand-cta/60`
-                          : WHITE_FIELD
-                      }
+                      triggerClassName={`w-full rounded-md border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                        compact
+                          ? "h-[52px] bg-[#FDFBF9] text-[14px]"
+                          : "h-[58px] bg-card text-[14.5px]"
+                      } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
                     />
                   </FieldLight>
                 </div>
@@ -1446,24 +1477,20 @@ export function ComparatorSection({
                       sameCorridorBlocked ||
                       amount <= 0
                     }
-                    className="btn-cta inline-flex h-11 w-full items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-ring @2xl:w-[168px]"
+                    className={`btn-cta inline-flex w-full items-center justify-center rounded-md px-6 text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @2xl:w-[176px] ${
+                      compact
+                        ? "h-[52px]"
+                        : "h-[58px] shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
+                    }`}
                   >
                     {compareMut.isPending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        <span className="truncate">…</span>
-                      </>
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <>
-                        <span className="truncate">
-                          {t(
-                            segment === "business"
-                              ? "comparator.cta.request"
-                              : "comparator.cta.compareRates",
-                          )}
-                        </span>
-                        <ArrowRight className="h-4 w-4 shrink-0" />
-                      </>
+                      <span className="truncate">
+                        {segment === "business"
+                          ? t("comparator.cta.request")
+                          : t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                      </span>
                     )}
                   </button>
                 </div>
@@ -2350,10 +2377,13 @@ function TrustpilotCard({ t }: { t: (k: string) => string }) {
   );
 }
 
+// design/AJUSTES-2.md §1 — "You send"/"They receive" style labels: 11.5px/
+// 700/#6B5F55, sentence case (was 11px uppercase/tracked, closer to the
+// row's own METRIC_LABEL style than to what this form actually uses).
 function FieldLight({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block truncate text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+      <span className="mb-1.5 block truncate text-[11.5px] font-bold" style={{ color: "#6B5F55" }}>
         {label}
       </span>
       <div className="min-w-0">{children}</div>

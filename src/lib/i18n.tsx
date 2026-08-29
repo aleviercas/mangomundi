@@ -2615,7 +2615,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.field.sourceCountry": "Source country",
     "comparator.field.targetCountry": "Target country",
     "comparator.field.amount": "You send",
-    "comparator.field.youReceive": "You receive",
+    // design/AJUSTES-2.md §1 — literal mockup copy ("They receive", not
+    // "You receive").
+    "comparator.field.youReceive": "They receive",
     "comparator.swap": "Swap currencies",
     "comparator.midMarketRate": "Mid-market exchange rate",
     "comparator.field.urgency": "Urgency",
@@ -2859,7 +2861,11 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.amountMode.receive": "Receive",
     "comparator.field.amountSent": "Amount sent",
     "comparator.field.amountReceived": "Amount received",
-    "comparator.cta.compareRates": "Search",
+    // design/AJUSTES-2.md §1 — "Compare" (no result yet), not "Search":
+    // searching is Google, comparing is the product. "Update" is the
+    // literal label once a result exists (comparator.cta.update, below).
+    "comparator.cta.compareRates": "Compare",
+    "comparator.cta.update": "Update",
     "comparator.table.amountSent": "Amount Sent",
     "comparator.table.bestRate": "Best Rate",
     "comparator.table.features": "Features",
