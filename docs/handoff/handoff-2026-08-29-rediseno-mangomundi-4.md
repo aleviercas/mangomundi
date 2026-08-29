@@ -111,25 +111,88 @@ Commits en `claude/reorganizar-entrega-rediseno-za6gmc`, en orden:
      pantalla); sus i18n keys quedan definidas pero sin uso, no se
      borraron.
 
-Verificación hecha en cada paso: `tsc --noEmit` limpio, `bun run
-scripts/i18n-validate.ts` en verde, y render aislado (SSR local con el dev
-server, más un `renderToStaticMarkup` puntual para `AboutManifestoSection`)
-confirmando que el markup sale como se espera. **No se pudo levantar la
-home completa en este sandbox** — falta `SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY`
-en el entorno (no es un problema de este cambio, es una limitación del
-sandbox de esta sesión; la tabla `providers`/`fx_rates` necesita
-credenciales reales). Cualquier verificación visual completa del comparador
-necesita esas credenciales o un preview de Vercel.
+5. **Conteo real de proveedores (punto 7)** — nuevo server fn
+   `getProviderCounts` (`src/lib/fx.functions.ts`), misma regla de
+   elegibilidad que `compareProviders` (`segment IN (x, "both")`), consumido
+   por un hook compartido `useProviderCounts` (`src/hooks/use-provider-counts.ts`,
+   una sola query cacheada por React Query — nunca un número escrito a
+   mano). Alimenta la línea "N providers · retail rates" / "N brokers ·
+   negotiated rates" junto al conmutador Individual/Business en
+   `ComparatorSection.tsx`.
+6. **Modo Business, campos "ahora" (punto 4)** — antes de tocar nada se
+   confirmó que **`RfqTerminal.tsx` no se usaba en ningún lado de la app**
+   (ninguna ruta lo importaba); se borró junto con `rfq.functions.ts`, su
+   único consumidor. El flujo de Business real vive en `ComparatorSection`
+   (buscador compartido + chat de captación), así que ahí se sumaron
+   **Contract type** (Spot/Forward/Option) y **Frequency**
+   (One-off/Monthly/Quarterly), visibles solo con el conmutador en Business,
+   con el CTA cambiando a "Request". Son estado de UI únicamente por ahora
+   — no hay tabla de brokers ni backend para spread/minimum/settlement, así
+   que no se fuerza ningún envío con estos datos.
+7. **Banner estable de upsell a Business (punto 2)** — el banner que
+   aparecía/desaparecía debajo de resultados según el monto tipeado
+   (removido a propósito, ver el comentario en `BusinessSection.tsx`) se
+   reintrodujo distinto: una línea **siempre visible** una vez que hay
+   resultado (segmento retail), que solo cambia de énfasis según
+   `B2B_UPSELL_MIN_AMOUNT` (gris por debajo, fondo arena + CTA marcado por
+   encima) — nunca un salto de layout entre los dos estados. El copy usa el
+   importe que el usuario realmente tipeó, no un número fijo. La banda
+   estable de `BusinessSection.tsx` (home) y el nudge dentro del chat del
+   agente (`comparator.copilot.b2bUpsell`) son piezas distintas, no se
+   tocaron.
+8. **Widget 360×540 + bloque de invitación (punto 3)** — se confirmó
+   explícitamente con Alejandro cambiar el **default público** del widget
+   (`public/widget.js` era 440×600, no 360×540 — afecta en silencio a
+   cualquier sitio de terceros que ya lo haya embebido sin fijar
+   `data-height`/`data-max-width`). Actualizado en las 3 fuentes de esa
+   medida (`public/widget.js`, el snippet `<iframe>` copiable y el preview
+   en vivo de `EmbedWidgetSection.tsx`). Proveedores mostrados: se mantiene
+   ganador + 2 (sin cambios) — con el formulario compartido apilándose a
+   ~4 campos a 360px de ancho, el presupuesto vertical de un box de 540px
+   no alcanza para más (razonamiento completo en el comentario de
+   `CompactResultsList`, `ComparatorSection.tsx`). Lo que sí cambió, la
+   parte innegociable: el bloque de invitación pasó de un link suelto
+   ("See all N on mangomundi") a un bloque completo — título + bajada + CTA
+   — con el número real de proveedores restantes de ESE corredor, nunca el
+   catálogo global.
+
+**i18n de todo lo anterior:** cada key nueva se agregó primero en inglés
+(`src/lib/i18n.tsx`) y se propagó como **placeholder EN** (no traducción
+real) a los 19 `scripts/translations/<lang>.json` + el ledger
+`scripts/translations/.pending.json` — es el mismo mecanismo de fallback
+que ya usa `scripts/translate.ts` (`t()` cae a inglés si falta la key, y el
+propio script trata "idéntico al EN" como "todavía no traducido, en cola").
+Sin este paso, `I18N_STRICT=1` (parte del `prebuild`) rompía el build en
+Vercel — no es opcional, hay que hacerlo cada vez que se agrega una key
+genuinamente nueva (no aplica cuando solo se MODIFICA el texto de una key
+existente — ahí sí alcanza con tocar el inglés, la traducción vieja de las
+otras 19 sigue siendo válida hasta el próximo lote real de traducción, que
+necesita `OPENROUTER_API_KEY` — no disponible en este sandbox).
+
+Verificación hecha en cada paso: `tsc --noEmit` limpio, `eslint` sin errores
+nuevos (queda un error preexistente en `i18n.tsx` línea ~3524,
+`react-hooks/rules-of-hooks` sobre un `useRouterState` envuelto a propósito
+en `try/catch` — no relacionado con nada de este handoff), `I18N_STRICT=1
+bun run scripts/i18n-validate.ts` en verde, y SSR real vía `/embed`
+(la única ruta que no depende de Supabase en su loader) confirmando que
+`ComparatorSection`/`EmbedComparator` siguen renderizando sin errores en
+cada paso. **No se pudo levantar la home completa en este sandbox** — falta
+`SUPABASE_URL`/`SUPABASE_SERVICE_ROLE_KEY` (no es un problema de estos
+cambios, es una limitación del sandbox: `index.tsx`'s loader hace
+`ensureQueryData` de `listBlogPosts` sin try/catch, y tira abajo toda la
+ruta si Supabase no responde). Cualquier verificación visual completa del
+comparador (incluido el bloque de campos de Business, que no se pudo
+renderizar por esto) necesita esas credenciales o un preview de Vercel.
 
 ## 4. Decisiones de producto ya tomadas (para lo que falta)
 
 Todas confirmadas por Alejandro el 29-ago-2026 — no volver a preguntarlas:
 
-1. **Umbral de upsell a Business**: usar `B2B_UPSELL_MIN_AMOUNT`
+1. ✅ **HECHO** (ver §3.7). **Umbral de upsell a Business**: usar `B2B_UPSELL_MIN_AMOUNT`
    (`src/config/providers.config.ts`, hoy 10.000) — el 25.000 del mockup era
    el importe de ejemplo de esa pantalla, no una regla nueva. El copy debe
    mostrar el importe que tipeó el usuario, no un número fijo.
-2. **Banner de captación a Business en el comparador**: no debe aparecer y
+2. ✅ **HECHO** (ver §3.7). **Banner de captación a Business en el comparador**: no debe aparecer y
    desaparecer según el monto tipeado (por eso se había sacado — ver el
    comentario ya existente en `BusinessSection.tsx`). Convertirlo en **una
    línea estable al pie de los resultados**, siempre visible, que cambia de
@@ -138,7 +201,8 @@ Todas confirmadas por Alejandro el 29-ago-2026 — no volver a preguntarlas:
    texto con fondo arena y el CTA marcado. Sin salto de layout entre los dos
    estados. La banda estable que ya vive en `BusinessSection.tsx` (home) NO
    se toca — esto es una pieza nueva, adentro de `ComparatorSection.tsx`.
-3. **Widget (`EmbedComparator.tsx`)**: el bloque de invitación a mangomundi
+3. ✅ **HECHO** (ver §3.8, con una decisión extra confirmada: cambiar también
+   el default público 440×600 → 360×540). **Widget (`EmbedComparator.tsx`)**: el bloque de invitación a mangomundi
    ("X more providers... Compare all 52 ↗") es **innegociable** — es el
    punto central de ese rediseño. La cantidad de proveedores mostrados (4 en
    el mockup) NO es innegociable: hay que medirlo con la densidad visual
@@ -148,16 +212,19 @@ Todas confirmadas por Alejandro el 29-ago-2026 — no volver a preguntarlas:
    entraba con la densidad actual) pero el bloque de invitación se mantiene
    completo siempre.
 4. **`RfqTerminal.tsx` (modo Business)** — partido en dos fases:
-   - **Ahora**: sumar al form los dos campos que faltan (tipo de contrato:
-     Spot/Forward/Option; frecuencia: One-off/Monthly/Quarterly) y la línea
-     "14 brokers · negotiated rates" junto al conmutador Individual/Business.
-   - **Aparte, no ahora**: la tabla de brokers con SPREAD/MINIMUM/SETTLEMENT/
+   - ✅ **HECHO** (ver §3.6, con un hallazgo que cambió el plan: `RfqTerminal.tsx`
+     no se usaba en ningún lado, se borró). **Ahora**: sumar al form los dos
+     campos que faltan (tipo de contrato: Spot/Forward/Option; frecuencia:
+     One-off/Monthly/Quarterly) — la línea "N brokers · negotiated rates"
+     junto al conmutador salió gratis del punto 7, que también quedó hecho.
+   - **Sigue pendiente — no hacer sin confirmar primero.** La tabla de
+     brokers con SPREAD/MINIMUM/SETTLEMENT/
      CONTRACTS + panel acumulativo "Your request". **No inventar estos datos**
      si no existen en el schema de Supabase — confirmar primero si
      `providers` (o una tabla nueva) tiene spread/minimum/settlement para
      brokers corporate; si no existe, es trabajo de backend, se decide y se
      prioriza aparte.
-5. **Rutas `/send/:from-:to`, `/exchange/...`, `/business` con estado en la
+5. **Pendiente.** **Rutas `/send/:from-:to`, `/exchange/...`, `/business` con estado en la
    URL** — partido en dos fases también:
    - **Fase A** (refactor puro, sin cambio visual): mover el estado del
      comparador (`from`/`to`/`amount`/países/segmento en
@@ -169,7 +236,7 @@ Todas confirmadas por Alejandro el 29-ago-2026 — no volver a preguntarlas:
      levantado a la URL en la fase A.
    - **`/exchange` no entra** en ninguna fase — la pantalla no está
      diseñada (el propio HANDOFF §8 lo reconoce como pendiente).
-6. **Rail izquierdo de 268px** (Filtros → Agente IA → Alerta de tasa →
+6. **Pendiente.** **Rail izquierdo de 268px** (Filtros → Agente IA → Alerta de tasa →
    Trustpilot) en `ComparatorSection.tsx` — paso propio, **después** de
    reposicionar filtros/sort (que ya existen casi completos —
    `PRIMARY_SORT_CHIPS`/`MORE_SORT_CHIPS`/`DELIVERY_METHODS`, solo hay que
@@ -177,7 +244,7 @@ Todas confirmadas por Alejandro el 29-ago-2026 — no volver a preguntarlas:
    `EmbedComparator.tsx`) revisado explícitamente, porque hoy la sección es
    de una sola columna y esto reestructura el grid madre, no es un ajuste
    de estilos.
-7. **Conteos "52 providers" / "14 brokers"**: no existen en el código ni
+7. ✅ **HECHO** (ver §3.5). **Conteos "52 providers" / "14 brokers"**: no existen en el código ni
    derivados de datos reales hoy (lo más parecido es un `"50+"` hardcodeado
    en `HeroSection.tsx`, `home.stats.providers`). Contarlos **de verdad**
    desde la config/datos de proveedores. Si no se puede resolver ahora, usar
