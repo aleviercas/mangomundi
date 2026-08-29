@@ -701,5 +701,7 @@
   "comparator.cta.request": "Request",
   "comparator.b2bBanner.below": "Sending more than {threshold}? Business brokers quote negotiated rates.",
   "comparator.b2bBanner.above": "Sending {amount} {cur} or more? Business brokers quote negotiated rates above {threshold} — usually 0.3–0.7% better than retail.",
-  "comparator.b2bBanner.cta": "See business quotes"
+  "comparator.b2bBanner.cta": "See business quotes",
+  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
+  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route."
 }

@@ -8,7 +8,7 @@ const SCRIPT_SNIPPET = `<script src="https://mangomundi.com/widget.js"
   data-lang="auto" async></script>`;
 
 const IFRAME_SNIPPET = `<iframe src="https://mangomundi.com/embed"
-  width="440" height="600" style="border:0;border-radius:16px"
+  width="360" height="540" style="border:0;border-radius:16px"
   title="Currency comparison by mangomundi" loading="lazy"></iframe>`;
 
 /** The embeddable "powered by mangomundi" comparator: a live preview of the
@@ -99,8 +99,8 @@ export function EmbedWidgetSection() {
 
           {/* Live preview — the real widget, exactly what gets embedded. */}
           <div className="lg:pt-2">
-            <div className="mx-auto w-full max-w-[440px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
-              <div className="h-[600px]">
+            <div className="mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
+              <div className="h-[540px]">
                 <EmbedComparator initialCurrency="USD" />
               </div>
             </div>

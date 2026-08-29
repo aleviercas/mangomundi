@@ -468,6 +468,12 @@ export const DICTS: Record<Lang, Dict> = {
     // one winner card + compact provider lines + this link back to the
     // full site. {n} is the total number of providers in the comparison.
     "comparator.widget.viewAll": "See all {n} on mangomundi",
+    // The invitation block above viewAll (design/HANDOFF.md §5) — {n} is
+    // the real remaining-provider count for THIS corridor (total minus the
+    // winner and compact rows already shown), never the whole catalog.
+    "comparator.widget.moreProviders": "{n} more providers on mangomundi",
+    "comparator.widget.moreProvidersBody":
+      "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
     // Footer
     "footer.tagline": "Smart currency exchange comparison, powered by AI.",
     "footer.nav.title": "Navigate",

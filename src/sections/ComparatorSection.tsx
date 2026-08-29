@@ -2745,7 +2745,7 @@ function ProviderRow({
 
 // ===== Compact results — embeddable widget only =====
 // A dedicated renderer, not ProviderRow reused at a small size: the widget
-// lives in a fixed ~360-440px container regardless of the page's actual
+// lives in a fixed 360px-wide container regardless of the page's actual
 // viewport (see EmbedComparator), so viewport-based sm:/lg: breakpoints
 // can't tell it apart from a real mobile screen — reusing ProviderRow's
 // responsive grid here would either render the desktop 5-column layout
@@ -2781,10 +2781,13 @@ function CompactResultsList({
   }, [result.rows]);
   const winner = ranked[0];
   // Capped at 2 extra lines — the point is "fits without scrolling", not
-  // "shows everyone"; "See all N on mangomundi" is the escape hatch for
+  // "shows everyone"; the invitation block below is the escape hatch for
   // the rest. (3 was tried first and still needed an internal scroll at
-  // the widget's default 600px iframe height once the winner card and the
-  // send/receive form above it are accounted for.)
+  // the widget's OLD 600px default height; the default shrank to 540px
+  // on 29-ago-2026 (design/HANDOFF.md §5's 360×540) specifically to match
+  // the mockup, which makes 2 the safer cap, not a looser one — the
+  // send/receive form above already stacks to ~4 fields at 360px wide and
+  // eats most of the vertical budget on its own.)
   const rest = ranked.slice(1, 3);
 
   if (!winner) {
@@ -2869,15 +2872,32 @@ function CompactResultsList({
         </div>
       )}
 
-      <a
-        href={SITE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-2.5 flex h-9 w-full items-center justify-center gap-1 rounded-md border border-border text-xs font-semibold text-foreground transition-colors hover:border-foreground/30"
-      >
-        {t("comparator.widget.viewAll").replace("{n}", String(result.rows.length))}
-        <ArrowRight className="h-3.5 w-3.5" />
-      </a>
+      {/* Invitation block — the non-negotiable part of this widget's
+          redesign (design/HANDOFF.md §5): never just a bare link, always a
+          full pitch for why to leave the compact list for the real site.
+          {n} is this corridor's real remaining count (rows.length minus the
+          winner and the compact rows already shown above), never the whole
+          provider catalog. */}
+      <div className="mt-2.5 rounded-lg bg-muted p-2.5">
+        <div className="text-xs font-bold text-foreground">
+          {t("comparator.widget.moreProviders").replace(
+            "{n}",
+            String(Math.max(result.rows.length - 1 - rest.length, 0)),
+          )}
+        </div>
+        <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+          {t("comparator.widget.moreProvidersBody")}
+        </p>
+        <a
+          href={SITE_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 flex h-9 w-full items-center justify-center gap-1 rounded-md bg-foreground text-xs font-semibold text-background transition-colors hover:bg-foreground/90"
+        >
+          {t("comparator.widget.viewAll").replace("{n}", String(result.rows.length))}
+          <ArrowRight className="h-3.5 w-3.5" />
+        </a>
+      </div>
       <div className="mt-1 text-center text-[9px] text-muted-foreground">{tRecipient}</div>
     </div>
   );
