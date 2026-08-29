@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as BusinessRouteImport } from './routes/business'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EmbedRouteImport } from './routes/embed'
@@ -24,6 +25,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as AdminI18nStatusRouteImport } from './routes/admin.i18n-status'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
+import { Route as SendCorridorRouteImport } from './routes/send.$corridor'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -38,6 +40,11 @@ const AboutRoute = AboutRouteImport.update({
 const BlogRoute = BlogRouteImport.update({
   id: '/blog',
   path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BusinessRoute = BusinessRouteImport.update({
+  id: '/business',
+  path: '/business',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CompareRoute = CompareRouteImport.update({
@@ -100,11 +107,17 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/blog/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SendCorridorRoute = SendCorridorRouteImport.update({
+  id: '/send/$corridor',
+  path: '/send/$corridor',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/business': typeof BusinessRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/embed': typeof EmbedRoute
@@ -117,11 +130,13 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/send/$corridor': typeof SendCorridorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/business': typeof BusinessRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/embed': typeof EmbedRoute
@@ -134,12 +149,14 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/send/$corridor': typeof SendCorridorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/blog': typeof BlogRoute
+  '/business': typeof BusinessRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/embed': typeof EmbedRoute
@@ -152,6 +169,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog_/$slug': typeof BlogSlugRoute
+  '/send/$corridor': typeof SendCorridorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -159,6 +177,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/blog'
+    | '/business'
     | '/compare'
     | '/contact'
     | '/embed'
@@ -171,11 +190,13 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin/i18n-status'
     | '/blog/$slug'
+    | '/send/$corridor'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/blog'
+    | '/business'
     | '/compare'
     | '/contact'
     | '/embed'
@@ -188,11 +209,13 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin/i18n-status'
     | '/blog/$slug'
+    | '/send/$corridor'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/blog'
+    | '/business'
     | '/compare'
     | '/contact'
     | '/embed'
@@ -205,12 +228,14 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin/i18n-status'
     | '/blog_/$slug'
+    | '/send/$corridor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   BlogRoute: typeof BlogRoute
+  BusinessRoute: typeof BusinessRoute
   CompareRoute: typeof CompareRoute
   ContactRoute: typeof ContactRoute
   EmbedRoute: typeof EmbedRoute
@@ -223,6 +248,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   AdminI18nStatusRoute: typeof AdminI18nStatusRoute
   BlogSlugRoute: typeof BlogSlugRoute
+  SendCorridorRoute: typeof SendCorridorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -246,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/blog'
       fullPath: '/blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/business': {
+      id: '/business'
+      path: '/business'
+      fullPath: '/business'
+      preLoaderRoute: typeof BusinessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/compare': {
@@ -332,6 +365,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/send/$corridor': {
+      id: '/send/$corridor'
+      path: '/send/$corridor'
+      fullPath: '/send/$corridor'
+      preLoaderRoute: typeof SendCorridorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -339,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   BlogRoute: BlogRoute,
+  BusinessRoute: BusinessRoute,
   CompareRoute: CompareRoute,
   ContactRoute: ContactRoute,
   EmbedRoute: EmbedRoute,
@@ -351,6 +392,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   AdminI18nStatusRoute: AdminI18nStatusRoute,
   BlogSlugRoute: BlogSlugRoute,
+  SendCorridorRoute: SendCorridorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

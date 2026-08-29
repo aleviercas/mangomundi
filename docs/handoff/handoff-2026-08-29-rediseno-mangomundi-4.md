@@ -155,6 +155,54 @@ Commits en `claude/reorganizar-entrega-rediseno-za6gmc`, en orden:
    ("See all N on mangomundi") a un bloque completo — título + bajada + CTA
    — con el número real de proveedores restantes de ESE corredor, nunca el
    catálogo global.
+9. **Rutas — Fase A y Fase B, las dos completas (punto 5)**:
+   - **Fase A**: `src/routes/index.tsx` suma `from`/`to`/`amount`/`segment`/
+     `origin`/`destination` a su `validateSearch` (cada campo con su propio
+     `.catch(undefined)`, mismo patrón que `embedSearchSchema` en
+     `embed.tsx`). `ComparatorSection.tsx` gana un callback opcional
+     `onQueryChange`, disparado desde el mismo efecto debounced de 300ms que
+     ya limpiaba resultados obsoletos — **no se tocó su estado interno**
+     (sigue siendo `useState` puro); esto solo reporta hacia arriba para que
+     la ruta haga `navigate({ search, replace: true })`. Sincronización de
+     una sola vía (estado → URL) — alcanza para que una comparación sea
+     compartible/indexable, mucho más simple que invertir el control del
+     componente entero. `embed.tsx` no pasa este callback.
+   - **Extraído `src/components/HomePageBody.tsx`**: todo el JSX de
+     `Index()` (Hero + comparador + las 6 secciones institucionales) más el
+     estado `hasResult`, parametrizado por `initialQuery`/`onQueryChange` —
+     mismo contrato de props que `ComparatorSection` ya usaba, un nivel más
+     arriba. Esto es lo que hizo la Fase B barata: cada ruta nueva solo
+     arma su propio estado/URL y renderiza `<HomePageBody>`, sin duplicar
+     las ~30 líneas de secciones.
+   - **Fase B — `src/routes/business.tsx`**: mismo `searchSchema` que `/`
+     menos `segment` (la ruta ya lo implica: `segment: "business"` fijo en
+     el `initialQuery`, el resto —`from`/`to`/`amount`/`origin`/
+     `destination`— sincronizado igual que en `/`). `head()` propio con
+     título/descripción en inglés (no pasa por `SEO_PER_ROUTE`/
+     `getRouteSeo` — esos son para SSR vía `head()` directamente, más
+     confiable para crawlers que el mecanismo cliente-only de
+     `getRouteSeo`) + canonical + hreflang.
+   - **Fase B — `src/routes/send.$corridor.tsx`**: parsea el segmento de
+     ruta (`"gb-mx"`, el ejemplo literal del HANDOFF, o `"gbp-mxn"`)
+     reusando `resolveRouteCode()` de `src/lib/countries.ts` — el mismo
+     parser que ya usa el tag `[[SUGGEST_COMPARE:...]]` del chat del
+     agente, así que una ruta tipeada a mano y una sugerida por el agente
+     resuelven exactamente igual. Un slug que no parsea a un corredor válido
+     redirige a `/` (`beforeLoad`) en vez de mostrar una página vacía.
+     Título/descripción en el `head()` se arman con los códigos de moneda
+     (`"Compare GBP to MXN exchange rates — mangomundi"`) — no hace falta
+     traducción porque los códigos de moneda son iguales en todos los
+     idiomas. A diferencia de `/` y `/business` (que sincronizan por query
+     string), acá el corredor vive en el PATH: cambiar de país navega a un
+     `/send/:corridor` nuevo (`navigate({ to: "/send/$corridor", params })`)
+     en vez de parchear search params. El importe y los overrides de moneda
+     no se seedean desde esta ruta — coincide con la propia tabla de rutas
+     del HANDOFF §2, que solo menciona `:from-:to` en el path.
+   - **`/exchange` sigue sin entrar**, como estaba decidido — la pantalla no
+     está diseñada.
+   - `src/routeTree.gen.ts` (autogenerado por el plugin de Vite de TanStack
+     Start) se regeneró para incluir las dos rutas nuevas — se commitea
+     porque está trackeado en git, no es un artefacto ignorado.
 
 **i18n de todo lo anterior:** cada key nueva se agregó primero en inglés
 (`src/lib/i18n.tsx`) y se propagó como **placeholder EN** (no traducción
@@ -183,6 +231,14 @@ cambios, es una limitación del sandbox: `index.tsx`'s loader hace
 ruta si Supabase no responde). Cualquier verificación visual completa del
 comparador (incluido el bloque de campos de Business, que no se pudo
 renderizar por esto) necesita esas credenciales o un preview de Vercel.
+
+**Excepción — `/business` y `/send/:corridor` sí se pudieron levantar
+completos**, porque a diferencia de `/` no tienen ningún `loader` que
+dependa de Supabase: SSR real confirmó título/canonical correctos por ruta,
+el conmutador en "Business" (`aria-selected="true"`) en `/business`, el
+parseo de `/send/gb-mx`, `/send/gbp-mxn` y `/send/GB-MX` (mayúsculas)
+funcionando igual, y `/send/nonsense`/`/send/xx-yy` redirigiendo a `/` con
+307 como se esperaba.
 
 ## 4. Decisiones de producto ya tomadas (para lo que falta)
 
@@ -224,7 +280,7 @@ Todas confirmadas por Alejandro el 29-ago-2026 — no volver a preguntarlas:
      `providers` (o una tabla nueva) tiene spread/minimum/settlement para
      brokers corporate; si no existe, es trabajo de backend, se decide y se
      prioriza aparte.
-5. **Pendiente.** **Rutas `/send/:from-:to`, `/exchange/...`, `/business` con estado en la
+5. ✅ **HECHO** (ver §3.9). **Rutas `/send/:from-:to`, `/exchange/...`, `/business` con estado en la
    URL** — partido en dos fases también:
    - **Fase A** (refactor puro, sin cambio visual): mover el estado del
      comparador (`from`/`to`/`amount`/países/segmento en
