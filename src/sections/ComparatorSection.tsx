@@ -294,6 +294,7 @@ export function ComparatorSection({
   initialQuery,
   embedded = false,
   onHasResultChange,
+  onQueryChange,
 }: {
   initialQuery?: ComparatorQuery;
   /** Embed mode (iframe widget): drop the floating AI agent and the section
@@ -304,6 +305,21 @@ export function ComparatorSection({
    *  the "search becomes a sticky bar, results take the screen" pattern.
    *  Home-only; the embed widget has no hero to collapse. */
   onHasResultChange?: (hasResult: boolean) => void;
+  /** Reports the debounced corridor state (same fields as ComparatorQuery,
+   *  minus lang/autoRun) so the parent route can mirror it into the URL —
+   *  see handleQueryChange in routes/index.tsx and design/HANDOFF.md §2.
+   *  This component's own useState stays the source of truth; this is a
+   *  one-way, best-effort notification, not a controlled-value callback.
+   *  Home-only, same as onHasResultChange — the embed widget's corridor
+   *  lives inside an iframe with no URL of its own worth syncing. */
+  onQueryChange?: (q: {
+    from: string;
+    to: string;
+    amount: number;
+    segment: Segment;
+    sendingCountry: string;
+    receivingCountry: string;
+  }) => void;
 }) {
   const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
@@ -932,9 +948,11 @@ export function ComparatorSection({
 
   // Keep form state shareable, but only compare after the explicit CTA.
   // Debounced 300ms so rapid input changes (e.g. typing the amount) don't
-  // trigger redundant state resets. (This used to also sync the /compare URL;
-  // the comparator now lives on the home page with a clean URL, so only the
-  // stale-result hygiene remains.)
+  // trigger redundant state resets or URL writes. (This used to sync the old
+  // /compare URL and got cut down to just stale-result hygiene when the
+  // comparator moved to the home page — see design/HANDOFF.md §2 for why the
+  // URL sync is back, now on "/" via the onQueryChange callback below rather
+  // than this component touching the router directly.)
   useEffect(() => {
     setValidationError(null);
     if (amount <= 0 || !receivingCountry || sameCorridorBlocked) {
@@ -951,9 +969,19 @@ export function ComparatorSection({
         setAiText("");
         setChat([]);
       }
+      onQueryChange?.({ from, to, amount, segment, sendingCountry, receivingCountry });
     }, 300);
     return () => clearTimeout(handle);
-  }, [amount, from, to, segment, sendingCountry, receivingCountry, sameCorridorBlocked]);
+  }, [
+    amount,
+    from,
+    to,
+    segment,
+    sendingCountry,
+    receivingCountry,
+    sameCorridorBlocked,
+    onQueryChange,
+  ]);
 
   useEffect(() => {
     chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });

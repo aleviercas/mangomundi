@@ -1,6 +1,6 @@
 import { createFileRoute, useLoaderData } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { z } from "zod";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
@@ -14,13 +14,33 @@ import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
 import { listBlogPosts, toBlogLocale } from "@/lib/blog.functions";
 
-// Only used to read ?lang= for the self-referencing canonical below (see
+// `lang` — used to read ?lang= for the self-referencing canonical below (see
 // selfCanonical). Reading it via validateSearch — rather than reaching into
 // the root route's async loaderData through `matches` — avoids a known
 // TanStack Start ordering issue where head() can run before a parent
 // route's loader has resolved (search validation happens synchronously
 // during route matching, before any loader runs).
-const searchSchema = z.object({ lang: z.string().optional() }).catch({});
+//
+// The rest (from/to/amount/segment/origin/destination) is the comparator's
+// own corridor state, lifted from ComparatorSection's internal useState so a
+// comparison is a shareable/bookmarkable URL (design/HANDOFF.md §2 — "el
+// estado vive en la URL, no solo en React"). This is Fase A only: reading and
+// writing these params on the existing "/" route, no new route files yet
+// (see docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md §4.5 for
+// Fase B, the actual /send/:from-:to and /business routes). Per-field
+// `.catch(undefined)` (same pattern as embed.tsx's embedSearchSchema) so one
+// garbage param doesn't wipe out the others.
+const searchSchema = z
+  .object({
+    lang: z.string().optional(),
+    from: z.string().optional().catch(undefined),
+    to: z.string().optional().catch(undefined),
+    amount: z.coerce.number().positive().optional().catch(undefined),
+    segment: z.enum(["retail", "business"]).optional().catch(undefined),
+    origin: z.string().optional().catch(undefined),
+    destination: z.string().optional().catch(undefined),
+  })
+  .catch({});
 
 // Same queryKey shape BlogSection.tsx's own useQuery already uses
 // (["blog", "list", locale]) — prefetching it here under the identical key
@@ -101,18 +121,62 @@ function Index() {
   };
   const geoCountry = rootData?.geoCountry ?? "GB";
   const geoCurrency = rootData?.geoCurrency ?? "GBP";
+  const search = Route.useSearch();
+  const navigate = Route.useNavigate();
 
   // The comparator is THE single box now (basic row + fold-out advanced
   // options live inside it) — no hero widget to bridge, no remount machinery.
-  // Destination starts empty so the user picks it (the CTA validates).
+  // Destination starts empty (unless the URL already names one) so the user
+  // picks it (the CTA validates). A URL corridor wins over the geo-detected
+  // one — someone opening a shared /?from=GBP&to=MXN&... link should land on
+  // THAT corridor, not their own geo-detected default.
   const geoDefaults: ComparatorQuery = {
-    origin: geoCountry,
-    destination: "",
-    segment: "retail",
-    from: geoCurrency,
-    to: defaultCounterCurrency(geoCurrency),
-    amount: 1000,
+    origin: search.origin ?? geoCountry,
+    destination: search.destination ?? "",
+    segment: search.segment ?? "retail",
+    from: search.from ?? geoCurrency,
+    to: search.to ?? defaultCounterCurrency(search.from ?? geoCurrency),
+    amount: search.amount ?? 1000,
+    // A URL that already names a full corridor (shared/bookmarked link) runs
+    // the comparison immediately instead of waiting for the user to press
+    // Compare again — same intent this prop already had (see its own comment
+    // in ComparatorSection.tsx), just never wired to anything until now.
+    autoRun: Boolean(search.origin && search.destination),
   };
+
+  // Fase A of design/HANDOFF.md §2 ("el estado vive en la URL, no solo en
+  // React") — see docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md
+  // §4.5. Pure one-way sync: ComparatorSection keeps its own useState as the
+  // live source of truth (untouched internally) and just reports its
+  // debounced corridor state up here, which pushes it into the URL via
+  // `replace` (no history entry per keystroke/selection). This alone makes a
+  // comparison shareable/bookmarkable/crawlable — Fase B (real /send/:from-to
+  // and /business route files reusing this same synced state) is separate,
+  // deliberately not part of this change.
+  const handleQueryChange = useCallback(
+    (q: {
+      from: string;
+      to: string;
+      amount: number;
+      segment: ComparatorQuery["segment"];
+      sendingCountry: string;
+      receivingCountry: string;
+    }) => {
+      navigate({
+        search: (prev) => ({
+          ...prev,
+          from: q.from || undefined,
+          to: q.to || undefined,
+          amount: q.amount || undefined,
+          segment: q.segment === "retail" ? undefined : q.segment,
+          origin: q.sendingCountry || undefined,
+          destination: q.receivingCountry || undefined,
+        }),
+        replace: true,
+      });
+    },
+    [navigate],
+  );
 
   // Drives the Kayak/Skyscanner-style "search mode" swap: once a comparison
   // has a result, the hero collapses and the comparator card (see its own
@@ -123,7 +187,11 @@ function Index() {
   return (
     <>
       <HeroSection compact={hasResult} />
-      <ComparatorSection initialQuery={geoDefaults} onHasResultChange={setHasResult} />
+      <ComparatorSection
+        initialQuery={geoDefaults}
+        onHasResultChange={setHasResult}
+        onQueryChange={handleQueryChange}
+      />
       <HowItWorksSection />
       <AboutManifestoSection />
       <EmbedWidgetSection />
