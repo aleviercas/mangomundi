@@ -1,0 +1,32 @@
+<!-- mangomundi · firma de correo
+     Pegar en Gmail (Configuración → Firma) u Outlook (Nueva firma → pegar).
+     Subir signature-logo.png y signature-logo-dark.png a https://mangomundi.com/brand/
+     antes de usar: los clientes de correo no muestran imágenes locales.
+
+     Los dos PNG llevan el fondo horneado (blanco y tinta). Un logo transparente
+     desaparecería sobre un mensaje en modo oscuro, y ningún cliente de correo
+     recolorea imágenes. Apple Mail, Mail de iOS y Outlook para Mac eligen la
+     versión oscura con prefers-color-scheme; el resto usa la clara del <img>. -->
+<table cellpadding="0" cellspacing="0" border="0" style="font-family:-apple-system,'Segoe UI',Arial,sans-serif">
+  <tr>
+    <td style="padding-right:18px;border-right:1px solid #E8E0D6">
+      <picture>
+        <source srcset="https://mangomundi.com/brand/signature-logo-dark.png"
+                media="(prefers-color-scheme: dark)">
+        <img src="https://mangomundi.com/brand/signature-logo.png"
+             width="264" height="52" alt="mangomundi"
+             style="display:block;border:0">
+      </picture>
+    </td>
+    <td style="padding-left:18px">
+      <div style="font-size:15px;font-weight:700;color:#241C16">NOMBRE APELLIDO</div>
+      <div style="font-size:13px;color:#6B5F55;padding-top:2px">CARGO</div>
+      <div style="font-size:13px;color:#6B5F55;padding-top:7px">
+        <a href="mailto:NOMBRE@mangomundi.com" style="color:#6B5F55;text-decoration:none">NOMBRE@mangomundi.com</a>
+        &nbsp;·&nbsp;
+        <a href="https://mangomundi.com" style="color:#C2410C;text-decoration:none">mangomundi.com</a>
+      </div>
+      <div style="font-size:12px;color:#8A7C6E;padding-top:5px">Compare exchange rates and transfer fees</div>
+    </td>
+  </tr>
+</table>

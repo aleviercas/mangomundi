@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Manrope:wght@400;500;600;700;800&family=Rubik:ital,wght@0,500;0,700;1,700&display=swap">
+<style>
+  body { margin:0; background:#E8E2DA; font-family:'Manrope',ui-sans-serif,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,h4 { margin:0; font-family:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif; }
+  p { margin:0; text-wrap:pretty; }
+  a { color:#C2410C; text-decoration:none; }
+  a:hover { color:#9A3412; }
+</style>
+</helmet>
+
+<section style="padding:44px;display:flex;flex-direction:column;gap:26px">
+
+  <div style="max-width:1000px">
+    <div style="font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#6B5F55">Paquete de marca</div>
+    <h1 style="margin-top:10px;font-size:34px;font-weight:800;letter-spacing:-0.03em;color:#241C16">Favicons, imagen social y firma de mail</h1>
+    <p style="margin-top:12px;font-size:15px;line-height:1.65;color:#5C5147">Cada bloque es una mesa de trabajo al tamaño exacto de exportación. Las tres piezas salen del mismo dibujo: Rubik 700 con colas en cursiva verdadera e icono V1 —una eme partida por un hilo que nace en el valle y baja al ángulo de la cursiva—. Bajo 18px, una sola tinta.</p>
+  </div>
+
+  <!-- ============ FAVICONS ============ -->
+  <div style="max-width:1360px;background:#fff;border:1px solid #EBE3D9;border-radius:18px;padding:24px 26px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span style="display:inline-flex;align-items:center;justify-content:center;height:24px;padding:0 9px;border-radius:6px;background:#241C16;color:#fff;font-size:12.5px;font-weight:700">1</span>
+      <h2 style="font-size:18px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Favicon · pestaña del navegador</h2>
+    </div>
+    <p style="margin-top:10px;max-width:900px;font-size:14px;line-height:1.6;color:#5C5147">Va el sello, no la eme suelta: en una pestaña compiten quince iconos de 16px y un cuadro de color se distingue antes que un trazo. El hilo se abre a medida que baja el tamaño — es lo único que cambia entre las cinco piezas.</p>
+
+    <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:26px;align-items:flex-end">
+      <div style="text-align:center">
+        <div id="favicon-512" style="height:512px;width:512px;display:flex;align-items:center;justify-content:center;border-radius:112px;background:#241C16">
+          <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:400px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(62.5% 0%, 100% 0%, 100% 100%, 48.5% 100%)">m</span></span>
+        </div>
+        <div style="margin-top:10px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">512 · maskable / PWA</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:22px">
+        <div style="display:flex;align-items:flex-end;gap:22px">
+          <div style="text-align:center">
+            <div id="favicon-180" style="height:180px;width:180px;display:flex;align-items:center;justify-content:center;border-radius:40px;background:#241C16">
+              <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:141px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 60.9% 0%, 46.9% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span>
+            </div>
+            <div style="margin-top:9px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">180 · apple-touch</div>
+          </div>
+          <div style="text-align:center">
+            <div id="favicon-64" style="height:64px;width:64px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#241C16">
+              <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:50px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 61.2% 0%, 47.2% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(63.6% 0%, 100% 0%, 100% 100%, 49.6% 100%)">m</span></span>
+            </div>
+            <div style="margin-top:9px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">64</div>
+          </div>
+          <div style="text-align:center">
+            <div id="favicon-32" style="height:32px;width:32px;display:flex;align-items:center;justify-content:center;border-radius:7px;background:#241C16">
+              <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:26px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 61.5% 0%, 47.5% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(64.4% 0%, 100% 0%, 100% 100%, 50.4% 100%)">m</span></span>
+            </div>
+            <div style="margin-top:9px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">32</div>
+          </div>
+          <div style="text-align:center">
+            <div id="favicon-16" style="height:16px;width:16px;display:flex;align-items:center;justify-content:center;border-radius:4px;background:#241C16">
+              <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:14px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 61.8% 0%, 47.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(65.8% 0%, 100% 0%, 100% 100%, 51.8% 100%)">m</span></span>
+            </div>
+            <div style="margin-top:9px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">16</div>
+          </div>
+        </div>
+
+        <div style="border:1px solid #EBE3D9;border-radius:14px;background:#FBF8F4;padding:16px 18px;max-width:520px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B5F55">Prueba en pestaña real</div>
+          <div style="margin-top:12px;display:flex;gap:6px;align-items:flex-end">
+            <div style="display:flex;align-items:center;gap:8px;background:#fff;border-radius:9px 9px 0 0;padding:9px 14px;box-shadow:0 -1px 0 rgba(36,28,22,.08)">
+              <span style="display:inline-flex;height:16px;width:16px;align-items:center;justify-content:center;border-radius:4px;background:#241C16;flex:none"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:14px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 61.8% 0%, 47.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(65.8% 0%, 100% 0%, 100% 100%, 51.8% 100%)">m</span></span></span>
+              <span style="font-size:12px;font-weight:600;color:#241C16;white-space:nowrap">Compare rates · mangomundi</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;background:#EDE6DE;border-radius:9px 9px 0 0;padding:9px 14px">
+              <span style="height:16px;width:16px;border-radius:4px;background:#C7BCB0;flex:none"></span>
+              <span style="font-size:12px;color:#6B5F55;white-space:nowrap">Otra pestaña</span>
+            </div>
+          </div>
+          <p style="margin-top:12px;font-size:12.5px;line-height:1.55;color:#5C5147">Exportar: <code style="font-size:12px">favicon-16.png</code>, <code style="font-size:12px">favicon-32.png</code>, <code style="font-size:12px">favicon-64.png</code>, <code style="font-size:12px">apple-touch-icon.png</code> (180) y <code style="font-size:12px">icon-512.png</code>. El <code style="font-size:12px">.ico</code> se arma con los tres primeros; el 512 va también en el <code style="font-size:12px">manifest.json</code> como <code style="font-size:12px">maskable</code>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SOCIAL ============ -->
+  <div style="max-width:1360px;background:#fff;border:1px solid #EBE3D9;border-radius:18px;padding:24px 26px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span style="display:inline-flex;align-items:center;justify-content:center;height:24px;padding:0 9px;border-radius:6px;background:#241C16;color:#fff;font-size:12.5px;font-weight:700">2</span>
+      <h2 style="font-size:18px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Redes sociales</h2>
+    </div>
+    <p style="margin-top:10px;max-width:900px;font-size:14px;line-height:1.6;color:#5C5147">Dos piezas: la tarjeta que se ve cuando alguien comparte un enlace (1200×630, la misma medida para Open Graph, X, LinkedIn y WhatsApp) y el avatar cuadrado del perfil.</p>
+
+    <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
+      <div>
+        <div id="og-card" style="position:relative;height:630px;width:1200px;overflow:hidden;background:#120E0B">
+          <div style="position:absolute;inset:0;background:url('public/images/about-coins-globe.jpg') right center/cover no-repeat;opacity:.5"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(90deg,#120E0B 30%,rgba(18,14,11,.85) 58%,rgba(18,14,11,.3) 100%)"></div>
+          <div style="position:absolute;left:72px;top:56px">
+            <div style="display:inline-flex;align-items:center;gap:16px">
+              <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:60px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span>
+              <span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:40px;line-height:1.1;color:#fff">m<span style="font-style:italic">ango</span><span style="color:#FF8A6B">m<span style="font-style:italic">undi</span></span></span>
+            </div>
+          </div>
+          <div style="position:absolute;left:72px;top:214px;max-width:760px">
+            <h3 style="font-size:62px;font-weight:800;letter-spacing:-0.035em;line-height:1.04;color:#fff">Compare exchange rates and transfer fees</h3>
+            <p style="margin-top:20px;font-size:25px;line-height:1.45;color:#D9D1C8">Who delivers more of your money? Real rates and total fees, side by side. No sign-up.</p>
+          </div>
+          <div style="position:absolute;left:72px;top:518px;display:flex;align-items:center;gap:32px">
+              <span style="display:inline-flex;align-items:center;height:56px;padding:0 26px;border-radius:14px;background:#EE5B3E;font-size:21px;font-weight:700;color:#fff">mangomundi.com</span>
+          <span style="font-size:19px;font-weight:600;color:#A79C92">150+ countries · 100+ currencies · rated 4.6 on Trustpilot</span>
+          </div>
+        </div>
+        <div style="margin-top:10px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">1200 × 630 · og:image · twitter:card summary_large_image</div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div id="avatar-400" style="height:400px;width:400px;display:flex;align-items:center;justify-content:center;background:#241C16">
+            <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:300px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(62.6% 0%, 100% 0%, 100% 100%, 48.6% 100%)">m</span></span>
+          </div>
+          <div style="margin-top:10px;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">400 × 400 · avatar</div>
+        </div>
+        <div style="border:1px solid #EBE3D9;border-radius:14px;background:#FBF8F4;padding:15px 17px;max-width:400px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B5F55">Cómo se ve recortado</div>
+          <div style="margin-top:12px;display:flex;align-items:center;gap:14px">
+            <span style="display:inline-flex;height:64px;width:64px;align-items:center;justify-content:center;border-radius:50%;background:#241C16;flex:none"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:44px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 61% 0%, 47% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(63.2% 0%, 100% 0%, 100% 100%, 49.2% 100%)">m</span></span></span>
+            <span style="display:inline-flex;height:40px;width:40px;align-items:center;justify-content:center;border-radius:50%;background:#241C16;flex:none"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:28px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 61.2% 0%, 47.2% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(63.8% 0%, 100% 0%, 100% 100%, 49.8% 100%)">m</span></span></span>
+            <span style="display:inline-flex;height:28px;width:28px;align-items:center;justify-content:center;border-radius:50%;background:#241C16;flex:none"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;font-family:'Rubik',sans-serif;font-weight:700;font-size:20px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 61.4% 0%, 47.4% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(64.2% 0%, 100% 0%, 100% 100%, 50.2% 100%)">m</span></span></span>
+            <span style="font-size:12px;line-height:1.5;color:#5C5147">Redondo en casi todas las plataformas. La eme queda centrada con aire suficiente para que ningún recorte la toque.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FIRMA DE MAIL ============ -->
+  <div style="max-width:1360px;background:#fff;border:1px solid #EBE3D9;border-radius:18px;padding:24px 26px">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <span style="display:inline-flex;align-items:center;justify-content:center;height:24px;padding:0 9px;border-radius:6px;background:#241C16;color:#fff;font-size:12.5px;font-weight:700">3</span>
+      <h2 style="font-size:18px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Firma de correo</h2>
+    </div>
+    <p style="margin-top:10px;max-width:900px;font-size:14px;line-height:1.6;color:#5C5147">Los clientes de correo no cargan fuentes externas, así que la firma se arma en tabla HTML con el logo como <strong>imagen PNG</strong> y el texto en fuentes del sistema. Debajo está el diseño y, al lado, el bloque exacto que hay que pegar.</p>
+
+    <div style="margin-top:20px;display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
+      <div>
+        <div style="border:1px solid #EBE3D9;border-radius:14px;background:#FBF8F4;padding:22px 24px">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B5F55">Cómo se ve en el correo</div>
+          <div style="margin-top:16px;background:#fff;border-radius:10px;padding:22px 24px;box-shadow:0 2px 10px -6px rgba(36,28,22,.3)">
+            <p style="font-family:-apple-system,'Segoe UI',Arial,sans-serif;font-size:14px;line-height:1.6;color:#241C16">Hola Ana,<br>Te paso la comparación de la ruta GBP → MXN que hablamos. Cualquier duda, avisame.</p>
+            <div style="margin-top:20px;padding-top:18px;border-top:1px solid #E8E0D6;display:flex;align-items:center;gap:18px">
+              <div id="signature-logo" style="display:inline-flex;align-items:center;gap:11px;flex:none">
+                <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:44px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#241C16;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#EE5B3E;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span>
+                <span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:30px;line-height:1.1;color:#241C16">m<span style="font-style:italic">ango</span><span style="color:#EE5B3E">m<span style="font-style:italic">undi</span></span></span>
+              </div>
+              <div style="width:1px;height:62px;background:#E8E0D6;flex:none"></div>
+              <div style="font-family:-apple-system,'Segoe UI',Arial,sans-serif">
+                <div style="font-size:15px;font-weight:700;color:#241C16">Alejandro Viercas</div>
+                <div style="margin-top:2px;font-size:13px;color:#6B5F55">Founder</div>
+                <div style="margin-top:7px;font-size:13px;color:#6B5F55">ale@mangomundi.com · <span style="color:#C2410C">mangomundi.com</span></div>
+                <div style="margin-top:5px;font-size:12px;color:#8A7C6E">Compare exchange rates and transfer fees</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top:11px;max-width:640px;font-size:12.5px;line-height:1.55;color:#6B5F55">El logo de la firma va bicolor porque se muestra a 44px — por encima del umbral de 18px. El separador vertical y el filete superior mantienen la firma legible aunque el cliente de correo ignore parte de los estilos.</p>
+
+        <div style="margin-top:18px;border:1.5px solid #C2410C;border-radius:14px;background:#FDFBF9;padding:18px 20px;max-width:640px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span style="border-radius:6px;background:#FDE9E4;padding:3px 8px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#C2410C">Modo oscuro</span>
+            <h3 style="font-size:15px;font-weight:800;color:#241C16">Un PNG transparente desaparece en un correo oscuro</h3>
+          </div>
+          <p style="margin-top:10px;font-size:13px;line-height:1.6;color:#5C5147">Es exactamente el riesgo que viste. Si el logo se exporta con fondo transparente, las letras en tinta <code style="font-size:12px">#241C16</code> quedan casi invisibles cuando el cliente pinta el mensaje sobre negro — y ningún cliente de correo recolorea una imagen. La solución de oficio son <strong>dos archivos con el fondo horneado</strong>, y dejar que el cliente elija cuál mostrar.</p>
+          <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start">
+            <div>
+              <div id="sig-light" style="box-sizing:border-box;height:52px;width:264px;display:flex;align-items:center;padding:0 12px;background:#FFFFFF">
+                <span style="display:inline-flex;align-items:center;gap:10px">
+                  <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:38px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#241C16;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#EE5B3E;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span>
+                  <span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:26px;line-height:1.1;color:#241C16">m<span style="font-style:italic">ango</span><span style="color:#EE5B3E">m<span style="font-style:italic">undi</span></span></span>
+                </span>
+              </div>
+              <div style="margin-top:8px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">signature-logo.png · fondo blanco</div>
+            </div>
+            <div>
+              <div id="sig-dark" style="box-sizing:border-box;height:52px;width:264px;display:flex;align-items:center;padding:0 12px;background:#241C16">
+                <span style="display:inline-flex;align-items:center;gap:10px">
+                  <span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:38px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span>
+                  <span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:26px;line-height:1.1;color:#fff">m<span style="font-style:italic">ango</span><span style="color:#FF8A6B">m<span style="font-style:italic">undi</span></span></span>
+                </span>
+              </div>
+              <div style="margin-top:8px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">signature-logo-dark.png · fondo tinta</div>
+            </div>
+          </div>
+          <p style="margin-top:14px;font-size:12.5px;line-height:1.55;color:#5C5147">Los dos son rectángulos a sangre, sin esquinas redondeadas: una esquina redonda necesita transparencia y volvería el problema. Apple Mail, Mail de iOS y Outlook para Mac respetan <code style="font-size:12px">prefers-color-scheme</code> dentro de un <code style="font-size:12px">&lt;picture&gt;</code>; el resto se queda con la versión clara, que es la que va en el <code style="font-size:12px">&lt;img&gt;</code> de respaldo y funciona en cualquier caso.</p>
+        </div>
+      </div>
+
+      <div style="flex:1 1 420px;min-width:400px;border:1px solid #EBE3D9;border-radius:14px;background:#120E0B;padding:20px 22px">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <span style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#A79C92">signature.html · pegar en Gmail / Outlook</span>
+        </div>
+        <pre style="margin:14px 0 0;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;line-height:1.7;color:#D9D1C8;white-space:pre-wrap;word-break:break-word">&lt;table cellpadding="0" cellspacing="0" border="0" style="font-family:-apple-system,'Segoe UI',Arial,sans-serif"&gt;
+  &lt;tr&gt;
+    &lt;td style="padding-right:18px;border-right:1px solid #E8E0D6"&gt;
+      &lt;picture&gt;
+        &lt;source srcset="https://mangomundi.com/brand/signature-logo-dark.png"
+                media="(prefers-color-scheme: dark)"&gt;
+        &lt;img src="https://mangomundi.com/brand/signature-logo.png"
+             width="264" height="52" alt="mangomundi"
+             style="display:block;border:0"&gt;
+      &lt;/picture&gt;
+    &lt;/td&gt;
+    &lt;td style="padding-left:18px"&gt;
+      &lt;div style="font-size:15px;font-weight:700;color:#241C16"&gt;Alejandro Viercas&lt;/div&gt;
+      &lt;div style="font-size:13px;color:#6B5F55;padding-top:2px"&gt;Founder&lt;/div&gt;
+      &lt;div style="font-size:13px;color:#6B5F55;padding-top:7px"&gt;
+        &lt;a href="mailto:ale@mangomundi.com" style="color:#6B5F55;text-decoration:none"&gt;ale@mangomundi.com&lt;/a&gt;
+        &amp;nbsp;·&amp;nbsp;
+        &lt;a href="https://mangomundi.com" style="color:#C2410C;text-decoration:none"&gt;mangomundi.com&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div style="font-size:12px;color:#8A7C6E;padding-top:5px"&gt;Compare exchange rates and transfer fees&lt;/div&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;</pre>
+        <p style="margin-top:14px;font-size:12px;line-height:1.6;color:#A79C92">Cuatro reglas que hacen que una firma no se rompa: el logo es una imagen (nunca fuente web), el fondo va horneado (nunca transparente), lleva <code style="font-size:11.5px">width</code> y <code style="font-size:11.5px">height</code> en atributos además del estilo, y se exporta al doble —528×104— para pantallas retina.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ENTREGA ============ -->
+  <div style="max-width:1360px;background:#fff;border:1px solid #EBE3D9;border-radius:18px;padding:24px 26px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B5F55">Archivos de este paquete</div>
+    <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px">
+      <div>
+        <div style="font-size:12.5px;font-weight:800;color:#241C16">Favicon</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#5C5147">
+          <span>favicon-16.png · favicon-32.png · favicon-64.png</span>
+          <span>apple-touch-icon.png · 180</span>
+          <span>icon-512.png · maskable</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12.5px;font-weight:800;color:#241C16">Redes</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#5C5147">
+          <span>og-card.png · 1200 × 630</span>
+          <span>avatar.png · 400 × 400</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:12.5px;font-weight:800;color:#241C16">Correo</div>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px;font-size:12.5px;color:#5C5147">
+          <span>signature-logo.png · 528 × 104 @2x · fondo blanco</span>
+          <span>signature-logo-dark.png · idem · fondo tinta</span>
+          <span>signature.html · el bloque de arriba</span>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:18px;max-width:960px;font-size:13.5px;line-height:1.65;color:#5C5147">Los PNG de este paquete están renderizados con la fuente Rubik, que es exactamente lo que va a producción hasta que exista el SVG trazado. Cuando el trazado esté —con las dos costuras propias del manual— se regeneran los mismos archivos desde el vector, sin cambiar ninguna medida ni ningún nombre.</p>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1400}}"></script>
+</body>
+</html>

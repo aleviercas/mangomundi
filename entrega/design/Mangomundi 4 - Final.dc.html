@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Rubik:ital,wght@0,500;0,700;1,700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons@7.2.3/css/flag-icons.min.css">
+<style>
+  body { margin:0; background:#E8E2DA; font-family:'Manrope',ui-sans-serif,system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  h1,h2,h3,h4 { margin:0; font-family:'Bricolage Grotesque',ui-sans-serif,system-ui,sans-serif; }
+  p { margin:0; text-wrap:pretty; }
+  a { color:#C2410C; text-decoration:none; }
+  a:hover { color:#9A3412; }
+  input { font-family:inherit; }
+</style>
+</helmet>
+
+<section style="padding:44px;display:flex;flex-direction:column;gap:26px">
+
+  <div style="max-width:1000px">
+    <div style="font-size:12px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#8A7C6E">Versión final · todo lo decidido, aplicado</div>
+    <h1 style="margin-top:10px;font-size:34px;font-weight:800;letter-spacing:-0.03em;color:#241C16">La home que yo llevaría a producción</h1>
+    <p style="margin-top:12px;font-size:15px;line-height:1.65;color:#5C5147">Cuatro pantallas: home antes de comparar, home con resultados, modo Business y mobile. Sin bloques de auditoría — esto es el diseño, no la discusión. Logotipo definitivo: Rubik 700, «ango» y «undi» en cursiva verdadera, emes rectas, e icono V1 —una sola <em>m</em> partida por un hilo que nace en el vértice del valle y baja al ángulo de la cursiva—; bicolor sobre 18px, una tinta por debajo. Conmutador Individual/Business arriba del buscador; dos campos país·moneda; rail izquierdo con filtros, agente y alertas; etiqueta chica en cada métrica; «Estimated · fecha»; h1 con la keyword y la promesa en el subtítulo.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;max-width:1320px">
+    <div style="background:#fff;border:1px solid #EBE3D9;border-radius:16px;padding:16px 18px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1F7A5A">Primer pliegue</div>
+      <p style="margin-top:8px;font-size:13px;line-height:1.6;color:#5C5147">Conmutador de dos, dos campos, un botón. Geodetectado: se puede comparar sin escribir nada. Nada de siete secciones institucionales antes del producto.</p>
+    </div>
+    <div style="background:#fff;border:1px solid #EBE3D9;border-radius:16px;padding:16px 18px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1F7A5A">Una sola tabla</div>
+      <p style="margin-top:8px;font-size:13px;line-height:1.6;color:#5C5147">Retícula fija, cifras tabulares, etiqueta chica por métrica, delta contra el mejor y un CTA que dice a dónde lleva. El score absoluto no aparece.</p>
+    </div>
+    <div style="background:#fff;border:1px solid #EBE3D9;border-radius:16px;padding:16px 18px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1F7A5A">Rail izquierdo</div>
+      <p style="margin-top:8px;font-size:13px;line-height:1.6;color:#5C5147">Filtros, agente y alerta de tasa en vertical. El agente deja de flotar sobre el contenido y el orden queda arriba, en tres botones grandes.</p>
+    </div>
+    <div style="background:#fff;border:1px solid #EBE3D9;border-radius:16px;padding:16px 18px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#1F7A5A">Fotos con oficio</div>
+      <p style="margin-top:8px;font-size:13px;line-height:1.6;color:#5C5147">Banda oscura a sangre, banda de negocio y tarjeta de alertas. Ninguna aparece antes del primer resultado: el producto es la tabla.</p>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:22px;align-items:flex-start">
+
+  <!-- ================= A · ANTES DE COMPARAR ================= -->
+  <div style="flex:none">
+    <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A7C6E;margin-bottom:9px">A · Antes de comparar — 1320</div>
+    <div style="width:1320px;border-radius:18px;overflow:hidden;background:#FBF8F4;box-shadow:0 30px 80px -38px rgba(60,40,30,.5)">
+
+      <div style="height:66px;background:#fff;border-bottom:1px solid #EBE3D9;display:flex;align-items:center;justify-content:space-between;padding:0 30px">
+        <span style="display:inline-flex;align-items:center;gap:11px"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:34px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#241C16;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#EE5B3E;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span><span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:24px;line-height:1.15;color:#241C16">m<span style="font-style:italic">ango</span><span style="color:#EE5B3E">m<span style="font-style:italic">undi</span></span></span></span>
+        <div style="display:flex;align-items:center;gap:26px;font-size:14px;font-weight:600;color:#6B5F55">
+          <span>How it works</span><span>For business</span><span>Widget</span><span>Blog</span><span>About</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;border:1px solid #E5DCD1;border-radius:20px;padding:6px 12px;font-size:13px;color:#241C16"><span class="fi fi-gb" style="border-radius:2px"></span>EN</span>
+        </div>
+      </div>
+
+      <div style="background:#fff;border-bottom:1px solid #EBE3D9;padding:44px 30px 28px;text-align:center">
+        <h2 style="font-size:44px;font-weight:800;letter-spacing:-0.035em;line-height:1.06;color:#241C16">Compare exchange rates and transfer fees</h2>
+        <p style="margin-top:13px;font-size:17px;line-height:1.5;color:#6B5F55">Who delivers more of your money? Real rates and total fees, side by side, updated every minute. No sign-up.</p>
+
+        <div style="margin-top:24px;max-width:1020px;margin-left:auto;margin-right:auto;text-align:left">
+          <div style="display:flex;align-items:center;gap:13px;flex-wrap:wrap">
+            <div style="display:flex;gap:4px;background:#F0EAE2;border-radius:11px;padding:3px">
+              <span style="border-radius:9px;background:#fff;padding:8px 18px;font-size:13px;font-weight:700;color:#241C16;box-shadow:0 2px 6px -2px rgba(60,40,30,.25)">Individual</span>
+              <span style="border-radius:9px;padding:8px 18px;font-size:13px;font-weight:600;color:#6B5F55">Business</span>
+            </div>
+            <span style="font-size:12.5px;color:#6B5F55">52 providers · retail rates</span>
+            <a href="#" style="margin-left:auto;font-size:13px;font-weight:700">Exchanging currency inside one country? ↗</a>
+          </div>
+
+          <div style="margin-top:12px;display:grid;grid-template-columns:minmax(280px,1.1fr) 46px minmax(260px,1fr) 176px;gap:10px;align-items:end;background:#FDFBF9;border:1px solid #EBE3D9;border-radius:18px;padding:14px;box-shadow:0 14px 36px -22px rgba(60,40,30,.4)">
+            <div style="min-width:0">
+              <div style="font-size:11.5px;font-weight:700;color:#6B5F55">You send</div>
+              <div style="margin-top:6px;display:flex;height:58px;align-items:center;border:1.5px solid #E5DCD1;border-radius:12px;overflow:hidden;background:#fff">
+                <input value="1,000" style="flex:1;min-width:0;border:0;outline:none;background:transparent;padding:0 14px;font-size:25px;font-weight:700;font-variant-numeric:tabular-nums;color:#241C16">
+                <div style="display:flex;align-items:center;gap:8px;border-left:1px solid #EBE3D9;height:100%;padding:0 14px;font-size:14.5px;font-weight:700;white-space:nowrap;color:#241C16"><span class="fi fi-gb" style="border-radius:2px"></span>United Kingdom · GBP<span style="color:#B3A698;font-size:12px">▾</span></div>
+              </div>
+            </div>
+            <div style="display:flex;height:58px;width:46px;align-items:center;justify-content:center;border-radius:12px;background:#F5EFE8;color:#EE5B3E">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>
+            </div>
+            <div style="min-width:0">
+              <div style="font-size:11.5px;font-weight:700;color:#6B5F55">They receive</div>
+              <div style="margin-top:6px;display:flex;height:58px;align-items:center;gap:9px;border:1.5px solid #241C16;border-radius:12px;background:#fff;padding:0 14px;font-size:14.5px;font-weight:700;white-space:nowrap;color:#9C9089">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#241C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+                Country or currency…
+              </div>
+            </div>
+            <div style="display:flex;height:58px;align-items:center;justify-content:center;border-radius:12px;background:#EE5B3E;font-size:16px;font-weight:700;color:#fff;box-shadow:0 10px 24px -12px rgba(238,91,62,.8)">Compare</div>
+          </div>
+
+          <div style="margin-top:11px;display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+            <span style="font-size:12px;font-weight:700;color:#6B5F55">Send in another currency</span>
+            <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:9px;border:1.5px solid #241C16;background:#F5EFE8;font-size:12.5px;font-weight:700;color:#241C16">GBP</span>
+            <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:9px;border:1px solid #E5DCD1;background:#fff;font-size:12.5px;font-weight:600;color:#5C5147">EUR</span>
+            <span style="display:inline-flex;align-items:center;height:32px;padding:0 12px;border-radius:9px;border:1px solid #E5DCD1;background:#fff;font-size:12.5px;font-weight:600;color:#5C5147">USD</span>
+            <span style="display:inline-flex;align-items:center;height:32px;padding:0 11px;border-radius:9px;border:1px dashed #DCD1C4;font-size:12.5px;font-weight:600;color:#6B5F55">All 100 ▾</span>
+            <span style="font-size:12px;color:#8A7C6E">·  the destination currency unlocks once you pick a country</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:28px 30px 26px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px">
+          <div>
+            <h3 style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Today's routes, already priced</h3>
+            <p style="margin-top:4px;font-size:13px;color:#6B5F55">Routes where a partner gives us an exclusive rate — rotating on every visit. Prices are the best of all 52 providers, updated 2 min ago.</p>
+          </div>
+          <span style="display:inline-flex;align-items:center;gap:7px;border-radius:20px;background:#E4F3EC;padding:7px 13px;font-size:12.5px;font-weight:700;color:#1F7A5A">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M11.5 2.3a.53.53 0 0 1 .95 0l2.31 4.68a2.1 2.1 0 0 0 1.6 1.16l5.16.75a.53.53 0 0 1 .3.91l-3.74 3.63a2.1 2.1 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.1 2.1 0 0 0-1.97 0L6.4 21.01a.53.53 0 0 1-.77-.56l.88-5.14a2.1 2.1 0 0 0-.61-1.88L2.16 9.8a.53.53 0 0 1 .29-.91l5.17-.75a2.1 2.1 0 0 0 1.6-1.16z"></path></svg>
+            Rated 4.6 on Trustpilot
+          </span>
+        </div>
+        <div style="margin-top:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+          <sc-for list="{{ corridors }}" as="c" hint-placeholder-count="4">
+            <div style="background:#fff;border:1px solid #EBE3D9;border-radius:16px;padding:15px 17px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:#241C16">
+                <span class="{{ c.fromFlag }}" style="border-radius:2px"></span>{{ c.from }}
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#B3A698" stroke-width="2.4" stroke-linecap="round"><path d="m9 6 6 6-6 6"></path></svg>
+                <span class="{{ c.toFlag }}" style="border-radius:2px"></span>{{ c.to }}
+              </div>
+              <div style="margin-top:10px;display:inline-flex;border-radius:7px;background:#FDE9E4;padding:3px 8px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#C2410C">Exclusive rate</div>
+              <div style="margin-top:9px;font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Best of 52 · 1,000 {{ c.from }}</div>
+              <div style="margin-top:3px;font-family:'Bricolage Grotesque';font-size:26px;font-weight:800;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;color:#241C16">{{ c.best }} <span style="font-size:12.5px;font-weight:700;color:#6B5F55">{{ c.to }}</span></div>
+              <div style="margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px">
+                <div role="img" aria-label="{{ c.provider }}" style="height:18px;width:56px;background:{{ c.logoBg }}"></div>
+                <span style="font-size:11.5px;font-weight:700;color:#1F7A5A;font-variant-numeric:tabular-nums">+{{ c.gain }} vs worst</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background:#fff;border-top:1px solid #EBE3D9;padding:42px 30px">
+        <div style="display:grid;grid-template-columns:1fr 470px;gap:44px;align-items:center">
+          <div>
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#C2410C">How it works</div>
+            <h3 style="margin-top:12px;font-size:30px;font-weight:800;letter-spacing:-0.03em;line-height:1.12;color:#241C16">3 steps to a better exchange rate</h3>
+            <div style="margin-top:24px;display:flex;flex-direction:column;gap:18px">
+              <div style="display:flex;gap:15px">
+                <span style="font-family:'Bricolage Grotesque';flex:none;width:34px;font-size:15px;font-weight:800;color:#EE5B3E">01</span>
+                <div><h4 style="font-size:16.5px;font-weight:800;color:#241C16">Enter your transfer</h4><p style="margin-top:5px;font-size:14px;line-height:1.55;color:#6B5F55">Amount, origin and destination — and the currency on each side if it isn't the local one.</p></div>
+              </div>
+              <div style="display:flex;gap:15px">
+                <span style="font-family:'Bricolage Grotesque';flex:none;width:34px;font-size:15px;font-weight:800;color:#EE5B3E">02</span>
+                <div><h4 style="font-size:16.5px;font-weight:800;color:#241C16">Compare in real time</h4><p style="margin-top:5px;font-size:14px;line-height:1.55;color:#6B5F55">Every provider with rate, total fee and delivery time normalised into one unit: what actually arrives.</p></div>
+              </div>
+              <div style="display:flex;gap:15px">
+                <span style="font-family:'Bricolage Grotesque';flex:none;width:34px;font-size:15px;font-weight:800;color:#EE5B3E">03</span>
+                <div><h4 style="font-size:16.5px;font-weight:800;color:#241C16">Send with your provider</h4><p style="margin-top:5px;font-size:14px;line-height:1.55;color:#6B5F55">You go straight to the provider you chose. We never touch your money.</p></div>
+              </div>
+            </div>
+          </div>
+          <div style="border-radius:20px;overflow:hidden;height:340px;background:url('public/images/howitworks-person.jpg') center 30%/cover no-repeat;box-shadow:0 26px 60px -30px rgba(60,40,30,.55)"></div>
+        </div>
+      </div>
+
+      <div style="position:relative;background:#120E0B;padding:46px 30px">
+        <div style="position:absolute;inset:0;background:url('public/images/about-coins-globe.jpg') right center/cover no-repeat;opacity:.55"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(90deg,#120E0B 12%,rgba(18,14,11,.82) 46%,rgba(18,14,11,.25) 100%)"></div>
+        <div style="position:relative;display:grid;grid-template-columns:1fr 340px;gap:44px;align-items:center">
+          <div style="max-width:620px">
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#FF8A6B">Neutral by design</div>
+            <h3 style="margin-top:12px;font-size:30px;font-weight:800;letter-spacing:-0.03em;line-height:1.15;color:#fff">We don't sell currency. We tell you who sells it best.</h3>
+            <p style="margin-top:14px;font-size:15px;line-height:1.65;color:#D9D1C8">Every route is priced from public provider data and normalised into the only number that matters — what lands in the recipient's account. Commissions exist and are labelled; they never change the ranking.</p>
+            <div style="margin-top:20px;display:flex;gap:14px">
+              <span style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:12px;background:#EE5B3E;font-size:14px;font-weight:700;color:#fff">Read our method</span>
+              <span style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:12px;border:1.5px solid rgba(255,255,255,.28);font-size:14px;font-weight:700;color:#fff">About us</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div style="border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:14px"><div style="font-family:'Bricolage Grotesque';font-size:26px;font-weight:800;letter-spacing:-0.03em;color:#fff">150+</div><div style="margin-top:2px;font-size:11.5px;color:#A79C92">Countries</div></div>
+            <div style="border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:14px"><div style="font-family:'Bricolage Grotesque';font-size:26px;font-weight:800;letter-spacing:-0.03em;color:#fff">100+</div><div style="margin-top:2px;font-size:11.5px;color:#A79C92">Currencies</div></div>
+            <div style="border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:14px"><div style="font-family:'Bricolage Grotesque';font-size:26px;font-weight:800;letter-spacing:-0.03em;color:#fff">52</div><div style="margin-top:2px;font-size:11.5px;color:#A79C92">Providers</div></div>
+            <div style="border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:14px"><div style="font-family:'Bricolage Grotesque';font-size:26px;font-weight:800;letter-spacing:-0.03em;color:#4ADE80">4.6</div><div style="margin-top:2px;font-size:11.5px;color:#A79C92">on Trustpilot</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#fff;padding:38px 30px;display:grid;grid-template-columns:1.5fr 1fr;gap:26px;align-items:stretch">
+        <div style="display:grid;grid-template-columns:300px 1fr;gap:24px;align-items:center;border:1px solid #EBE3D9;border-radius:20px;padding:20px">
+          <div style="border-radius:14px;overflow:hidden;height:210px;background:url('public/images/business-person.jpg') center/cover no-repeat"></div>
+          <div>
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#C2410C">For business</div>
+            <h3 style="margin-top:10px;font-size:24px;font-weight:800;letter-spacing:-0.025em;line-height:1.18;color:#241C16">Payroll or supplier payments? Different brokers, different rates.</h3>
+            <p style="margin-top:10px;font-size:14px;line-height:1.6;color:#6B5F55">14 FX brokers quote settlement terms, minimum amounts and contract type. Same neutrality, applied to volume.</p>
+            <div style="margin-top:16px;display:flex;gap:12px">
+              <span style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:12px;background:#241C16;font-size:14px;font-weight:700;color:#fff">Get business quotes</span>
+              <span style="display:inline-flex;align-items:center;height:44px;padding:0 18px;border-radius:12px;border:1.5px solid #E5DCD1;font-size:14px;font-weight:700;color:#241C16">Talk to us</span>
+            </div>
+          </div>
+        </div>
+        <div style="border:1px solid #EBE3D9;border-radius:20px;padding:20px;display:flex;flex-direction:column;justify-content:space-between">
+          <div>
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#C2410C">Widget</div>
+            <h3 style="margin-top:10px;font-size:22px;font-weight:800;letter-spacing:-0.025em;line-height:1.2;color:#241C16">Put the comparator on your site</h3>
+            <p style="margin-top:10px;font-size:14px;line-height:1.6;color:#6B5F55">360×540, one line of embed code, free. Your readers compare without leaving your article.</p>
+          </div>
+          <div style="margin-top:16px;display:flex;align-items:center;gap:12px">
+            <span style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:12px;border:1.5px solid #241C16;font-size:14px;font-weight:700;color:#241C16">Get the embed code</span>
+            <span style="display:inline-flex;height:36px;width:36px;align-items:center;justify-content:center;border-radius:9px;background:#241C16"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:29px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span></span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#F5EFE8;border-top:1px solid #EBE3D9;padding:28px 30px">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px">
+          <h3 style="font-size:19px;font-weight:800;letter-spacing:-0.02em;color:#241C16">From the blog</h3>
+          <a href="#" style="font-size:13px;font-weight:700">All articles ↗</a>
+        </div>
+        <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px">
+          <sc-for list="{{ posts }}" as="p" hint-placeholder-count="3">
+            <div style="background:#fff;border:1px solid #EBE3D9;border-radius:14px;padding:15px 17px">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6B5F55">{{ p.date }} · {{ p.mins }}</div>
+              <a href="#" style="display:block;margin-top:7px;font-family:'Bricolage Grotesque';font-size:16.5px;font-weight:800;letter-spacing:-0.02em;line-height:1.25;color:#241C16">{{ p.title }}</a>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="background:#1B1510;padding:28px 30px;display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:26px">
+        <div>
+          <span style="display:inline-flex;align-items:center;gap:10px"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:29px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#fff;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#FF8A6B;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span><span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:21px;line-height:1.15;color:#fff">m<span style="font-style:italic">ango</span><span style="color:#FF8A6B">m<span style="font-style:italic">undi</span></span></span></span>
+          <p style="margin-top:10px;max-width:280px;font-size:12.5px;line-height:1.6;color:#8A7C6E">Neutral decision engine for international transfers. We never move your money.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#A79C92"><span style="font-weight:700;color:#fff">Product</span><span>Comparator</span><span>Local exchange</span><span>Widget</span><span>Rate alerts</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#A79C92"><span style="font-weight:700;color:#fff">Company</span><span>About</span><span>For business</span><span>How we make money</span><span>Contact</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:#A79C92"><span style="font-weight:700;color:#fff">Legal</span><span>Terms</span><span>Privacy</span><span>Risk notice</span><span>© 2026 Mangomundi</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= B · CON RESULTADOS ================= -->
+  <div style="flex:none">
+    <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A7C6E;margin-bottom:9px">B · Con resultados, rail izquierdo — 1320</div>
+    <div style="width:1320px;border-radius:18px;overflow:hidden;background:#FBF8F4;box-shadow:0 30px 80px -38px rgba(60,40,30,.5)">
+
+      <div style="height:66px;background:#fff;border-bottom:1px solid #EBE3D9;display:flex;align-items:center;justify-content:space-between;padding:0 30px">
+        <span style="display:inline-flex;align-items:center;gap:11px"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:34px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#241C16;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#EE5B3E;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span><span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:24px;line-height:1.15;color:#241C16">m<span style="font-style:italic">ango</span><span style="color:#EE5B3E">m<span style="font-style:italic">undi</span></span></span></span>
+        <div style="display:flex;align-items:center;gap:26px;font-size:14px;font-weight:600;color:#6B5F55">
+          <span>How it works</span><span>For business</span><span>Widget</span><span>Blog</span><span>About</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;border:1px solid #E5DCD1;border-radius:20px;padding:6px 12px;font-size:13px;color:#241C16"><span class="fi fi-gb" style="border-radius:2px"></span>EN</span>
+        </div>
+      </div>
+
+      <div style="background:#fff;border-bottom:1px solid #EBE3D9;padding:14px 30px 13px">
+        <div style="display:flex;align-items:center;gap:13px;flex-wrap:wrap">
+          <div style="display:flex;gap:4px;background:#F0EAE2;border-radius:10px;padding:3px">
+            <span style="border-radius:8px;background:#fff;padding:7px 15px;font-size:12.5px;font-weight:700;color:#241C16;box-shadow:0 2px 6px -2px rgba(60,40,30,.25)">Individual</span>
+            <span style="border-radius:8px;padding:7px 15px;font-size:12.5px;font-weight:600;color:#6B5F55">Business</span>
+          </div>
+          <span style="font-size:12px;color:#6B5F55">52 providers · retail rates</span>
+          <span style="margin-left:auto;display:flex;align-items:baseline;gap:10px">
+            <span style="font-family:'Bricolage Grotesque';font-size:18px;font-weight:800;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:#241C16">1 GBP = 24.1382 MXN</span>
+            <span style="font-size:12.5px;font-weight:700;color:#1F7A5A;font-variant-numeric:tabular-nums">+0.31%</span>
+            <span style="font-size:12px;color:#8A7C6E">interbank</span>
+          </span>
+        </div>
+        <div style="margin-top:11px;display:grid;grid-template-columns:minmax(300px,1.1fr) 44px minmax(260px,1fr) 138px;gap:10px;align-items:center">
+          <div style="display:flex;height:52px;align-items:center;border:1.5px solid #E5DCD1;border-radius:12px;overflow:hidden;background:#FDFBF9;min-width:0">
+            <input value="1,000" style="flex:1;min-width:0;border:0;outline:none;background:transparent;padding:0 13px;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;color:#241C16">
+            <div style="display:flex;align-items:center;gap:8px;border-left:1px solid #EBE3D9;height:100%;padding:0 13px;font-size:14px;font-weight:700;white-space:nowrap;color:#241C16"><span class="fi fi-gb" style="border-radius:2px"></span>United Kingdom · GBP<span style="color:#B3A698;font-size:12px">▾</span></div>
+          </div>
+          <div style="display:flex;height:52px;width:44px;align-items:center;justify-content:center;border-radius:12px;background:#F5EFE8;color:#EE5B3E">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>
+          </div>
+          <div style="display:flex;height:52px;align-items:center;gap:9px;border:1.5px solid #E5DCD1;border-radius:12px;background:#FDFBF9;padding:0 13px;font-size:14px;font-weight:700;white-space:nowrap;color:#241C16;min-width:0"><span class="fi fi-mx" style="border-radius:2px"></span>Mexico · MXN<span style="margin-left:auto;color:#B3A698;font-size:12px">▾</span></div>
+          <div style="display:flex;height:52px;align-items:center;justify-content:center;border-radius:12px;background:#EE5B3E;font-size:15px;font-weight:700;color:#fff">Update</div>
+        </div>
+        <div style="margin-top:10px;display:flex;align-items:center;gap:9px;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:700;color:#6B5F55">Receive in another currency</span>
+          <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:8px;border:1.5px solid #241C16;background:#F5EFE8;font-size:12px;font-weight:700;color:#241C16">MXN</span>
+          <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:8px;border:1px solid #E5DCD1;font-size:12px;font-weight:600;color:#5C5147">USD</span>
+          <span style="display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:8px;border:1px dashed #DCD1C4;font-size:12px;font-weight:600;color:#6B5F55">All 100 ▾</span>
+          <a href="#" style="margin-left:auto;font-size:12.5px;font-weight:700">Exchanging currency inside one country? ↗</a>
+        </div>
+      </div>
+
+      <div style="padding:20px 30px 30px;display:grid;grid-template-columns:268px minmax(0,1fr);gap:22px;align-items:start">
+
+        <div style="display:flex;flex-direction:column;gap:13px">
+          <div style="background:#fff;border:1px solid #EBE3D9;border-radius:18px;padding:16px 17px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <h4 style="font-size:15px;font-weight:800;color:#241C16">Filters</h4>
+              <span style="font-size:12px;font-weight:700;color:#C2410C">Clear · {{ criteriaCount }}</span>
+            </div>
+            <div style="margin-top:15px">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B5F55">Payout method</div>
+              <div style="margin-top:9px;display:flex;flex-direction:column;gap:6px">
+                <sc-for list="{{ payoutChips }}" as="c" hint-placeholder-count="4">
+                  <span style="display:flex;align-items:center;gap:9px;height:38px;padding:0 11px;border-radius:10px;border:{{ c.border }};background:{{ c.bg }};font-size:13px;font-weight:{{ c.weight }};color:{{ c.color }}">{{ c.mark }} {{ c.label }}<span style="margin-left:auto;font-size:11.5px;font-weight:600;color:#8A7C6E">{{ c.count }}</span></span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="margin-top:15px;border-top:1px solid #F2EBE3;padding-top:13px">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B5F55">Exclusive offers</div>
+              <span style="margin-top:9px;display:flex;align-items:center;gap:9px;height:38px;padding:0 11px;border-radius:10px;border:1.5px solid #EE5B3E;background:#FDE9E4;font-size:13px;font-weight:700;color:#C2410C">☑ Exclusive rates only<span style="margin-left:auto;font-size:11.5px;font-weight:700">6</span></span>
+            </div>
+            <div style="margin-top:15px;border-top:1px solid #F2EBE3;padding-top:13px">
+              <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#6B5F55">Rank by</div>
+              <div style="margin-top:9px;display:flex;flex-wrap:wrap;gap:7px">
+                <span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:10px;border:1px solid #E5DCD1;font-size:13px;font-weight:600;color:#5C5147">Trust</span>
+                <span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:10px;border:1px solid #E5DCD1;font-size:13px;font-weight:600;color:#5C5147">Fees</span>
+                <span style="display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:10px;border:1px solid #E5DCD1;font-size:13px;font-weight:600;color:#5C5147">Rate</span>
+              </div>
+              <p style="margin-top:8px;font-size:11px;line-height:1.5;color:#8A7C6E">Replaces the three tabs on the right while active.</p>
+            </div>
+          </div>
+
+          <div style="background:#241C16;border-radius:18px;padding:16px 17px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <span style="display:inline-flex;height:26px;width:26px;align-items:center;justify-content:center;border-radius:8px;background:rgba(238,91,62,.18)">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#FF8A6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path></svg>
+              </span>
+              <div>
+                <div style="font-size:14px;font-weight:800;color:#fff">Mangomundi AI</div>
+                <div style="font-size:10.5px;font-weight:600;color:#A79C92">Reads every result for you</div>
+              </div>
+            </div>
+            <div style="margin-top:12px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);padding:11px 12px">
+              <p style="font-size:12.5px;line-height:1.55;color:#F1EBE4">{{ agentInsight }}</p>
+            </div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:6px">
+              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:9px 11px;font-size:12px;font-weight:600;color:#F1EBE4">Why does Wise win?<span style="color:#FF8A6B">→</span></span>
+              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:9px 11px;font-size:12px;font-weight:600;color:#F1EBE4">Break down the fees<span style="color:#FF8A6B">→</span></span>
+              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:9px 11px;font-size:12px;font-weight:600;color:#F1EBE4">Cash pickup in Mexico?<span style="color:#FF8A6B">→</span></span>
+              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:9px 11px;font-size:12px;font-weight:600;color:#F1EBE4">Report a missing route<span style="color:#FF8A6B">→</span></span>
+            </div>
+            <div style="margin-top:11px;display:flex;height:42px;align-items:center;gap:8px;border-radius:11px;background:#fff;padding:0 5px 0 12px">
+              <span style="flex:1;font-size:12.5px;font-weight:500;color:#9C9089">Ask about this route…</span>
+              <span style="display:inline-flex;height:31px;width:34px;align-items:center;justify-content:center;border-radius:8px;background:#EE5B3E">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12h13"></path><path d="m12 5 7 7-7 7"></path></svg>
+              </span>
+            </div>
+            <p style="margin-top:8px;font-size:11px;line-height:1.5;color:#A79C92">Answers come from the loaded comparison. It never favours a provider that pays us more.</p>
+          </div>
+
+          <div style="background:#fff;border:1px solid #EBE3D9;border-radius:18px;overflow:hidden">
+            <div style="height:104px;background:url('public/images/howitworks-person.jpg') center 28%/cover no-repeat"></div>
+            <div style="padding:13px 15px 15px">
+              <h4 style="font-size:14.5px;font-weight:800;color:#241C16">Watch GBP → MXN</h4>
+              <p style="margin-top:6px;font-size:12px;line-height:1.55;color:#6B5F55">One email when the best provider on this route beats 24,200 MXN. No account.</p>
+              <div style="margin-top:10px;display:flex;height:40px;align-items:center;justify-content:center;border-radius:11px;border:1.5px solid #241C16;font-size:13px;font-weight:700;color:#241C16">Set a rate alert</div>
+            </div>
+          </div>
+
+          <div style="background:#F5EFE8;border:1px solid #EBE3D9;border-radius:18px;padding:14px 15px">
+            <div style="display:flex;align-items:center;gap:7px">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="#1F7A5A"><path d="M11.5 2.3a.53.53 0 0 1 .95 0l2.31 4.68a2.1 2.1 0 0 0 1.6 1.16l5.16.75a.53.53 0 0 1 .3.91l-3.74 3.63a2.1 2.1 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.1 2.1 0 0 0-1.97 0L6.4 21.01a.53.53 0 0 1-.77-.56l.88-5.14a2.1 2.1 0 0 0-.61-1.88L2.16 9.8a.53.53 0 0 1 .29-.91l5.17-.75a2.1 2.1 0 0 0 1.6-1.16z"></path></svg>
+              <span style="font-size:12.5px;font-weight:700;color:#1F7A5A">Rated 4.6 on Trustpilot</span>
+            </div>
+            <p style="margin-top:8px;font-size:11.5px;line-height:1.55;color:#5C5147">Affiliate links are labelled and never move a row up. <a href="#">How we make money</a></p>
+          </div>
+        </div>
+
+        <div style="min-width:0">
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="3">
+              <div style="box-sizing:border-box;min-width:0;border-radius:14px;background:#fff;border:{{ t.border }};box-shadow:{{ t.shadow }};padding:13px 16px 12px;display:flex;flex-direction:column;justify-content:space-between;min-height:78px">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                  <span style="font-size:16px;font-weight:800;letter-spacing:-0.01em;color:{{ t.labelColor }}">{{ t.label }}</span>
+                  <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:{{ t.hintColor }}">{{ t.hint }}</span>
+                </div>
+                <div style="margin-top:8px;display:flex;align-items:baseline;gap:7px">
+                  <span style="font-family:'Bricolage Grotesque';font-size:20px;font-weight:800;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;color:{{ t.figureColor }}">{{ t.figure }}</span>
+                  <span style="font-size:12.5px;font-weight:600;color:#6B5F55">{{ t.sub }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top:18px;display:flex;align-items:flex-end;justify-content:space-between;gap:16px">
+            <div>
+              <h3 style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Results</h3>
+              <p style="margin-top:4px;font-size:13px;color:#6B5F55">{{ visibleCount }} of 52 providers · sorted by {{ sortLabel }} · updated 2 min ago</p>
+            </div>
+            <span style="font-size:12px;color:#8A7C6E">Bank + Cash · exclusive rates only</span>
+          </div>
+
+          <div style="margin-top:13px;display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ rows }}" as="r" hint-placeholder-count="5">
+              <div style="background:#fff;border:{{ r.border }};border-radius:18px;padding:16px 19px;box-shadow:{{ r.shadow }}">
+                <div style="display:grid;grid-template-columns:224px minmax(0,1fr) 204px;align-items:center;gap:18px">
+                  <div style="display:flex;align-items:center;gap:12px;min-width:0">
+                    <div role="img" aria-label="{{ r.name }}" style="height:30px;width:76px;flex:none;background:{{ r.logoBg }}"></div>
+                    <div style="min-width:0">
+                      <div style="display:flex;align-items:center;gap:6px">
+                        <span style="font-size:15px;font-weight:700;color:#241C16">{{ r.name }}</span>
+                        <sc-if value="{{ r.tag }}"><span style="border-radius:6px;background:#FDE9E4;padding:2px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#C2410C">{{ r.tag }}</span></sc-if>
+                      </div>
+                      <div style="margin-top:3px;display:flex;align-items:center;gap:5px;font-size:11.5px;color:#6B5F55">
+                        <svg viewBox="0 0 24 24" width="11" height="11" fill="#F59E0B"><path d="M11.5 2.3a.53.53 0 0 1 .95 0l2.31 4.68a2.1 2.1 0 0 0 1.6 1.16l5.16.75a.53.53 0 0 1 .3.91l-3.74 3.63a2.1 2.1 0 0 0-.61 1.88l.88 5.14a.53.53 0 0 1-.77.56l-4.62-2.43a2.1 2.1 0 0 0-1.97 0L6.4 21.01a.53.53 0 0 1-.77-.56l.88-5.14a2.1 2.1 0 0 0-.61-1.88L2.16 9.8a.53.53 0 0 1 .29-.91l5.17-.75a2.1 2.1 0 0 0 1.6-1.16z"></path></svg>
+                        <span style="font-variant-numeric:tabular-nums">{{ r.rating }} on Trustpilot · Regulated</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Fee</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">{{ r.fee }}</div></div>
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Rate</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">{{ r.rate }}</div></div>
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Delivery</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;color:#241C16">{{ r.speed }}</div></div>
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Payout</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;color:#241C16">{{ r.payout }}</div></div>
+                  </div>
+                  <div style="text-align:right">
+                    <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">They receive</div>
+                    <div style="font-family:'Bricolage Grotesque';font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;line-height:1.1;color:#241C16">{{ r.received }} <span style="font-size:12.5px;font-weight:700;color:#6B5F55">MXN</span></div>
+                    <div style="margin-top:1px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:{{ r.deltaColor }}">{{ r.delta }}</div>
+                    <div style="margin-top:9px;display:flex;height:44px;align-items:center;justify-content:center;border-radius:12px;font-size:14px;font-weight:700;background:{{ r.ctaBg }};color:{{ r.ctaFg }};border:1.5px solid {{ r.ctaBorder }}">{{ r.ctaLabel }}</div>
+                  </div>
+                </div>
+                <div style="margin-top:10px;border-top:1px solid #F5EFE8;padding-top:9px;display:flex;align-items:center;gap:13px">
+                  <span style="display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;color:{{ r.stampColor }}">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5l3 1.8"></path></svg>
+                    {{ r.stamp }}
+                  </span>
+                  <span style="font-size:11.5px;color:#B3A698">·</span>
+                  <span style="font-size:11.5px;font-weight:600;color:#6B5F55">{{ r.note }}</span>
+                  <span style="margin-left:auto;font-size:11.5px;font-weight:700;color:#C2410C">Fee breakdown</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="margin-top:13px;display:flex;align-items:center;justify-content:space-between;gap:16px">
+            <span style="display:inline-flex;align-items:center;height:44px;padding:0 20px;border-radius:12px;border:1.5px solid #E5DCD1;background:#fff;font-size:14px;font-weight:700;color:#241C16">Show 46 more providers</span>
+            <p style="max-width:520px;font-size:11.5px;line-height:1.6;color:#8A7C6E">Rates and fees estimated from each provider's public data. Confirm the final amount on the provider's site before sending.</p>
+          </div>
+
+          <div style="margin-top:14px;display:flex;align-items:center;gap:12px;border:1px dashed #DCD1C4;border-radius:14px;background:#F5EFE8;padding:13px 16px">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#241C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21V8l6-4 6 4 6-4v13"></path><path d="M9 21V4"></path><path d="M15 21V8"></path></svg>
+            <p style="font-size:13px;line-height:1.55;color:#5C5147"><strong>Sending 25,000 GBP or more?</strong> Business brokers quote negotiated rates above 10,000 — usually 0.3–0.7% better than retail.</p>
+            <span style="margin-left:auto;flex:none;display:inline-flex;align-items:center;height:38px;padding:0 16px;border-radius:10px;background:#241C16;font-size:12.5px;font-weight:700;color:#fff">See business quotes ↗</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#1B1510;padding:20px 30px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px">
+        <span style="font-size:12px;color:#8A7C6E">© 2026 Mangomundi. All rights reserved.</span>
+        <div style="display:flex;gap:18px;font-size:12px;color:#A79C92"><span>About</span><span>For business</span><span>Local exchange</span><span>Contact</span><span>Widget</span><span>Blog</span><span>Terms</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= C · MODO BUSINESS ================= -->
+  <div style="flex:none">
+    <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A7C6E;margin-bottom:9px">C · Conmutador en Business — otro inventario, otro output</div>
+    <div style="width:1320px;border-radius:18px;overflow:hidden;background:#FBF8F4;box-shadow:0 30px 80px -38px rgba(60,40,30,.5)">
+      <div style="background:#fff;border-bottom:1px solid #EBE3D9;padding:14px 30px 13px">
+        <div style="display:flex;align-items:center;gap:13px;flex-wrap:wrap">
+          <div style="display:flex;gap:4px;background:#F0EAE2;border-radius:10px;padding:3px">
+            <span style="border-radius:8px;padding:7px 15px;font-size:12.5px;font-weight:600;color:#6B5F55">Individual</span>
+            <span style="border-radius:8px;background:#241C16;padding:7px 15px;font-size:12.5px;font-weight:700;color:#fff">Business</span>
+          </div>
+          <span style="font-size:12px;font-weight:600;color:#C2410C">14 brokers · negotiated rates</span>
+          <span style="margin-left:auto;font-size:12px;color:#6B5F55">Quotes arrive by email, typically within 2 business hours</span>
+        </div>
+        <div style="margin-top:11px;display:grid;grid-template-columns:minmax(270px,1fr) 44px minmax(220px,0.9fr) minmax(150px,0.6fr) minmax(150px,0.6fr) 150px;gap:10px;align-items:end">
+          <div style="min-width:0">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Amount</div>
+            <div style="margin-top:6px;display:flex;height:52px;align-items:center;border:1.5px solid #E5DCD1;border-radius:12px;overflow:hidden;background:#FDFBF9">
+              <input value="250,000" style="flex:1;min-width:0;border:0;outline:none;background:transparent;padding:0 13px;font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;color:#241C16">
+              <div style="display:flex;align-items:center;gap:8px;border-left:1px solid #EBE3D9;height:100%;padding:0 13px;font-size:14px;font-weight:700;white-space:nowrap;color:#241C16"><span class="fi fi-gb" style="border-radius:2px"></span>UK · GBP<span style="color:#B3A698;font-size:12px">▾</span></div>
+            </div>
+          </div>
+          <div style="display:flex;height:52px;width:44px;align-items:center;justify-content:center;border-radius:12px;background:#F5EFE8;color:#EE5B3E">
+            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>
+          </div>
+          <div style="min-width:0">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Destination</div>
+            <div style="margin-top:6px;display:flex;height:52px;align-items:center;gap:9px;border:1.5px solid #E5DCD1;border-radius:12px;background:#FDFBF9;padding:0 13px;font-size:14px;font-weight:700;white-space:nowrap;color:#241C16"><span class="fi fi-mx" style="border-radius:2px"></span>Mexico · MXN<span style="margin-left:auto;color:#B3A698;font-size:12px">▾</span></div>
+          </div>
+          <div style="min-width:0">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Contract type</div>
+            <div style="margin-top:6px;display:flex;height:52px;align-items:center;border:1.5px solid #E5DCD1;border-radius:12px;background:#FDFBF9;padding:0 12px;font-size:13px;font-weight:700;white-space:nowrap;color:#241C16">Spot<span style="margin-left:auto;color:#B3A698;font-size:12px">▾</span></div>
+          </div>
+          <div style="min-width:0">
+            <div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Frequency</div>
+            <div style="margin-top:6px;display:flex;height:52px;align-items:center;border:1.5px solid #E5DCD1;border-radius:12px;background:#FDFBF9;padding:0 12px;font-size:13px;font-weight:700;white-space:nowrap;color:#241C16">Monthly<span style="margin-left:auto;color:#B3A698;font-size:12px">▾</span></div>
+          </div>
+          <div style="display:flex;height:52px;align-items:center;justify-content:center;border-radius:12px;background:#EE5B3E;font-size:15px;font-weight:700;color:#fff">Request</div>
+        </div>
+      </div>
+
+      <div style="padding:20px 30px 28px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:22px;align-items:start">
+        <div style="min-width:0">
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px">
+            <div>
+              <h3 style="font-size:22px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Brokers that cover this volume</h3>
+              <p style="margin-top:4px;font-size:13px;color:#6B5F55">4 of 14 brokers · indicative spreads, not live prices — the binding rate comes in the quote</p>
+            </div>
+            <span style="font-size:12px;color:#8A7C6E">No provider sees your identity until you accept</span>
+          </div>
+          <div style="margin-top:13px;display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ brokers }}" as="b" hint-placeholder-count="4">
+              <div style="background:#fff;border:{{ b.border }};border-radius:18px;padding:16px 19px">
+                <div style="display:grid;grid-template-columns:230px minmax(0,1fr) 190px;align-items:center;gap:18px">
+                  <div>
+                    <div style="display:flex;align-items:center;gap:7px">
+                      <span style="font-size:15.5px;font-weight:700;color:#241C16">{{ b.name }}</span>
+                      <sc-if value="{{ b.tag }}"><span style="border-radius:6px;background:#FDE9E4;padding:2px 6px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:#C2410C">{{ b.tag }}</span></sc-if>
+                    </div>
+                    <div style="margin-top:3px;font-size:11.5px;color:#6B5F55">{{ b.regulator }}</div>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px">
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Spread</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">{{ b.spread }}</div></div>
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Minimum</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">{{ b.min }}</div></div>
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Settlement</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;color:#241C16">{{ b.settlement }}</div></div>
+                    <div><div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Contracts</div><div style="margin-top:3px;font-size:14.5px;font-weight:600;color:#241C16">{{ b.contracts }}</div></div>
+                  </div>
+                  <div style="text-align:right">
+                    <div style="font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Est. on 250,000</div>
+                    <div style="font-family:'Bricolage Grotesque';font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;line-height:1.1;color:#241C16">{{ b.saving }} <span style="font-size:12px;font-weight:700;color:#6B5F55">GBP saved</span></div>
+                    <div style="margin-top:9px;display:flex;height:42px;align-items:center;justify-content:center;border-radius:12px;font-size:13.5px;font-weight:700;background:{{ b.ctaBg }};color:{{ b.ctaFg }};border:1.5px solid {{ b.ctaBorder }}">Add to request</div>
+                  </div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <p style="margin-top:12px;font-size:11.5px;line-height:1.6;color:#8A7C6E">Savings estimated against the retail best on the same route. Indicative only: brokers price by volume, frequency and settlement date, which is why this screen ends in a quote instead of a rate.</p>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:13px">
+          <div style="background:#fff;border:1.5px solid #241C16;border-radius:18px;padding:16px 17px">
+            <h4 style="font-size:15px;font-weight:800;color:#241C16">Your request</h4>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:9px">
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><span style="font-size:12px;color:#6B5F55">Volume</span><span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:#241C16">250,000 GBP</span></div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><span style="font-size:12px;color:#6B5F55">Route</span><span style="font-size:13px;font-weight:700;color:#241C16">GBP → MXN</span></div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><span style="font-size:12px;color:#6B5F55">Contract</span><span style="font-size:13px;font-weight:700;color:#241C16">Spot · monthly</span></div>
+              <div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px"><span style="font-size:12px;color:#6B5F55">Brokers selected</span><span style="font-size:13px;font-weight:700;color:#241C16">2 of 14</span></div>
+            </div>
+            <div style="margin-top:13px;display:flex;height:44px;align-items:center;justify-content:center;border-radius:12px;background:#EE5B3E;font-size:14px;font-weight:700;color:#fff">Send request to 2 brokers</div>
+            <p style="margin-top:9px;font-size:11px;line-height:1.5;color:#8A7C6E">One email with your requirements. No broker gets your contact details until you reply to their quote.</p>
+          </div>
+          <div style="background:#241C16;border-radius:18px;padding:16px 17px">
+            <div style="display:flex;align-items:center;gap:9px">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#FF8A6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path></svg>
+              <span style="font-size:14px;font-weight:800;color:#fff">Mangomundi AI</span>
+            </div>
+            <p style="margin-top:11px;font-size:12.5px;line-height:1.55;color:#F1EBE4">On 250,000 GBP a month, a 0.4% spread difference is 1,000 GBP per transfer. Ask two brokers for a forward on three months and compare it against spot.</p>
+            <div style="margin-top:11px;display:flex;flex-direction:column;gap:6px">
+              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:9px 11px;font-size:12px;font-weight:600;color:#F1EBE4">Spot or forward for payroll?<span style="color:#FF8A6B">→</span></span>
+              <span style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:9px 11px;font-size:12px;font-weight:600;color:#F1EBE4">What does FCA regulated mean?<span style="color:#FF8A6B">→</span></span>
+            </div>
+          </div>
+          <div style="background:#fff;border:1px solid #EBE3D9;border-radius:18px;overflow:hidden">
+            <div style="height:120px;background:url('public/images/business-person.jpg') center 30%/cover no-repeat"></div>
+            <div style="padding:13px 15px 15px">
+              <h4 style="font-size:14.5px;font-weight:800;color:#241C16">Rather talk to someone?</h4>
+              <p style="margin-top:6px;font-size:12px;line-height:1.55;color:#6B5F55">We introduce you to the brokers and stay out of the pricing. No fee for you either way.</p>
+              <div style="margin-top:10px;display:flex;height:40px;align-items:center;justify-content:center;border-radius:11px;border:1.5px solid #241C16;font-size:13px;font-weight:700;color:#241C16">Book a 15-min call</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MOBILE ================= -->
+  <div style="display:flex;gap:18px;flex:none">
+    <div>
+      <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A7C6E;margin-bottom:9px">Mobile · antes de comparar</div>
+      <div style="width:390px;border-radius:26px;overflow:hidden;background:#FBF8F4;box-shadow:0 26px 70px -34px rgba(60,40,30,.45)">
+        <div style="background:#fff;padding:14px 18px 18px;border-bottom:1px solid #EBE3D9">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:inline-flex;align-items:center;gap:9px"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:28px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#241C16;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#EE5B3E;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span><span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:20px;line-height:1.15;color:#241C16">m<span style="font-style:italic">ango</span><span style="color:#EE5B3E">m<span style="font-style:italic">undi</span></span></span></span>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#8A7C6E" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </div>
+          <h2 style="margin-top:16px;font-size:28px;font-weight:800;letter-spacing:-0.035em;line-height:1.1;color:#241C16">Compare exchange rates and transfer fees</h2>
+          <p style="margin-top:9px;font-size:14px;line-height:1.5;color:#6B5F55">Who delivers more of your money? Real rates, no sign-up.</p>
+
+          <div style="margin-top:14px;display:flex;gap:4px;background:#F0EAE2;border-radius:11px;padding:3px">
+            <span style="flex:1;text-align:center;border-radius:9px;background:#fff;padding:9px 6px;font-size:13px;font-weight:700;color:#241C16;box-shadow:0 2px 6px -2px rgba(60,40,30,.25)">Individual</span>
+            <span style="flex:1;text-align:center;border-radius:9px;padding:9px 6px;font-size:13px;font-weight:600;color:#6B5F55">Business</span>
+          </div>
+
+          <div style="margin-top:10px;display:flex;flex-direction:column;gap:9px">
+            <div style="display:flex;height:56px;align-items:center;border:1.5px solid #E5DCD1;border-radius:12px;overflow:hidden;background:#FDFBF9">
+              <input value="1,000" style="flex:1;min-width:0;border:0;outline:none;background:transparent;padding:0 13px;font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;color:#241C16">
+              <div style="display:flex;align-items:center;gap:6px;border-left:1px solid #EBE3D9;height:100%;padding:0 12px;font-size:13.5px;font-weight:700;white-space:nowrap;color:#241C16"><span class="fi fi-gb" style="border-radius:2px"></span>UK · GBP<span style="color:#B3A698;font-size:11px">▾</span></div>
+            </div>
+            <div style="display:flex;height:56px;align-items:center;gap:9px;border:1.5px solid #241C16;border-radius:12px;background:#fff;padding:0 13px;font-size:14px;font-weight:700;color:#9C9089">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#241C16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+              Country or currency…
+            </div>
+            <div style="display:flex;height:52px;align-items:center;justify-content:center;border-radius:12px;background:#EE5B3E;font-size:16px;font-weight:700;color:#fff">Compare</div>
+          </div>
+          <div style="margin-top:10px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+            <span style="font-size:11.5px;font-weight:700;color:#6B5F55">Send in</span>
+            <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:8px;border:1.5px solid #241C16;background:#F5EFE8;font-size:12px;font-weight:700;color:#241C16">GBP</span>
+            <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:8px;border:1px solid #E5DCD1;font-size:12px;font-weight:600;color:#5C5147">EUR</span>
+            <span style="display:inline-flex;align-items:center;height:30px;padding:0 11px;border-radius:8px;border:1px solid #E5DCD1;font-size:12px;font-weight:600;color:#5C5147">USD</span>
+            <span style="display:inline-flex;align-items:center;height:30px;padding:0 10px;border-radius:8px;border:1px dashed #DCD1C4;font-size:12px;font-weight:600;color:#6B5F55">All 100 ▾</span>
+          </div>
+          <a href="#" style="margin-top:11px;display:block;font-size:12.5px;font-weight:700">Exchanging currency inside one country? ↗</a>
+        </div>
+
+        <div style="padding:16px 18px 20px">
+          <h3 style="font-size:16px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Today's routes, already priced</h3>
+          <div style="margin-top:11px;display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ corridorsMobile }}" as="c" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:1px solid #EBE3D9;border-radius:14px;padding:13px 15px">
+                <div>
+                  <div style="display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:#241C16">
+                    <span class="{{ c.fromFlag }}" style="border-radius:2px"></span>{{ c.from }}
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#B3A698" stroke-width="2.4" stroke-linecap="round"><path d="m9 6 6 6-6 6"></path></svg>
+                    <span class="{{ c.toFlag }}" style="border-radius:2px"></span>{{ c.to }}
+                  </div>
+                  <div style="margin-top:4px;display:flex;align-items:center;gap:7px">
+                    <span style="border-radius:6px;background:#FDE9E4;padding:2px 6px;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#C2410C">Exclusive</span>
+                    <span style="font-size:11px;color:#6B5F55">Best of 52 · 1,000 {{ c.from }}</span>
+                  </div>
+                </div>
+                <div style="text-align:right">
+                  <div style="font-family:'Bricolage Grotesque';font-size:19px;font-weight:800;letter-spacing:-0.03em;font-variant-numeric:tabular-nums;color:#241C16">{{ c.best }}</div>
+                  <div style="font-size:10.5px;font-weight:700;color:#1F7A5A">{{ c.to }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="position:relative;padding:24px 18px;background:#120E0B">
+          <div style="position:absolute;inset:0;background:url('public/images/about-coins-globe.jpg') center/cover no-repeat;opacity:.5"></div>
+          <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,14,11,.6),#120E0B 82%)"></div>
+          <div style="position:relative">
+            <h3 style="font-size:19px;font-weight:800;letter-spacing:-0.03em;line-height:1.2;color:#fff">We don't sell currency. We tell you who sells it best.</h3>
+            <div style="margin-top:14px;display:flex;justify-content:space-between">
+              <div><div style="font-family:'Bricolage Grotesque';font-size:19px;font-weight:800;color:#fff">150+</div><div style="font-size:10.5px;color:#A79C92">Countries</div></div>
+              <div><div style="font-family:'Bricolage Grotesque';font-size:19px;font-weight:800;color:#fff">100+</div><div style="font-size:10.5px;color:#A79C92">Currencies</div></div>
+              <div><div style="font-family:'Bricolage Grotesque';font-size:19px;font-weight:800;color:#fff">52</div><div style="font-size:10.5px;color:#A79C92">Providers</div></div>
+              <div><div style="font-family:'Bricolage Grotesque';font-size:19px;font-weight:800;color:#4ADE80">4.6</div><div style="font-size:10.5px;color:#A79C92">on Trustpilot</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A7C6E;margin-bottom:9px">Mobile · resultados</div>
+      <div style="width:390px;border-radius:26px;overflow:hidden;background:#FBF8F4;box-shadow:0 26px 70px -34px rgba(60,40,30,.45)">
+        <div style="background:#fff;border-bottom:1px solid #EBE3D9;padding:14px 18px 15px">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <span style="display:inline-flex;align-items:center;gap:9px"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:28px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#241C16;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#EE5B3E;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span><span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.025em;font-size:20px;line-height:1.15;color:#241C16">m<span style="font-style:italic">ango</span><span style="color:#EE5B3E">m<span style="font-style:italic">undi</span></span></span></span>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#8A7C6E" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </div>
+          <div style="margin-top:12px;display:flex;align-items:center;gap:9px;border-radius:12px;background:#F5EFE8;padding:10px 12px">
+            <span style="font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;color:#241C16">1,000 GBP</span>
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#B3A698" stroke-width="2.4" stroke-linecap="round"><path d="m9 6 6 6-6 6"></path></svg>
+            <span style="font-size:13px;font-weight:700;color:#241C16">Mexico · MXN</span>
+            <span style="margin-left:auto;font-size:12.5px;font-weight:700;color:#C2410C">Edit</span>
+          </div>
+          <div style="margin-top:9px;display:flex;align-items:center;gap:7px;flex-wrap:wrap">
+            <span style="font-size:11.5px;font-weight:700;color:#6B5F55">Receive in</span>
+            <span style="display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:8px;border:1.5px solid #241C16;background:#F5EFE8;font-size:11.5px;font-weight:700;color:#241C16">MXN</span>
+            <span style="display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:8px;border:1px solid #E5DCD1;font-size:11.5px;font-weight:600;color:#5C5147">USD</span>
+            <span style="display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:8px;border:1px dashed #DCD1C4;font-size:11.5px;font-weight:600;color:#6B5F55">All 100 ▾</span>
+          </div>
+        </div>
+
+        <div style="padding:14px 18px 20px">
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+            <sc-for list="{{ tabsMobile }}" as="t" hint-placeholder-count="3">
+              <div style="box-sizing:border-box;min-width:0;border-radius:13px;background:#fff;border:{{ t.border }};padding:10px 11px">
+                <div style="font-size:12.5px;font-weight:800;letter-spacing:-0.01em;color:{{ t.labelColor }}">{{ t.label }}</div>
+                <div style="margin-top:5px;font-family:'Bricolage Grotesque';font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:{{ t.figureColor }}">{{ t.figure }}</div>
+                <div style="font-size:10.5px;font-weight:600;color:#6B5F55">{{ t.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="margin-top:9px;display:flex;gap:8px">
+            <div style="flex:1;display:flex;height:44px;align-items:center;justify-content:center;gap:8px;border-radius:12px;border:1.5px solid #241C16;background:#fff;font-size:13.5px;font-weight:700;color:#241C16">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#241C16" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M7 12h10M11 18h2"></path></svg>
+              Filters · {{ criteriaCount }}
+            </div>
+            <div style="flex:none;display:flex;height:44px;width:52px;align-items:center;justify-content:center;border-radius:12px;background:#241C16">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#FF8A6B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path></svg>
+            </div>
+          </div>
+
+          <div style="margin-top:13px;display:flex;align-items:flex-end;justify-content:space-between">
+            <h3 style="font-size:17px;font-weight:800;letter-spacing:-0.02em;color:#241C16">Results</h3>
+            <span style="font-size:11.5px;color:#6B5F55">sorted by {{ sortLabel }}</span>
+          </div>
+
+          <div style="margin-top:11px;display:flex;flex-direction:column;gap:11px">
+            <sc-for list="{{ rowsMobile }}" as="r" hint-placeholder-count="3">
+              <div style="background:#fff;border:{{ r.border }};border-radius:16px;padding:14px">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                  <div style="display:flex;align-items:center;gap:11px;min-width:0">
+                    <div role="img" aria-label="{{ r.name }}" style="height:26px;width:68px;flex:none;background:{{ r.logoBg }}"></div>
+                    <div style="min-width:0">
+                      <div style="font-size:14px;font-weight:700;color:#241C16">{{ r.name }}</div>
+                      <div style="font-size:11px;color:#6B5F55;font-variant-numeric:tabular-nums">★ {{ r.rating }} · {{ r.speed }}</div>
+                    </div>
+                  </div>
+                  <div style="text-align:right">
+                    <div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Receives</div>
+                    <div style="font-family:'Bricolage Grotesque';font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;line-height:1.05;color:#241C16">{{ r.received }}</div>
+                    <div style="font-size:11.5px;font-weight:700;font-variant-numeric:tabular-nums;color:{{ r.deltaColor }}">{{ r.delta }}</div>
+                  </div>
+                </div>
+                <div style="margin-top:11px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+                  <div><div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Fee</div><div style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">{{ r.fee }}</div></div>
+                  <div><div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Rate</div><div style="font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">{{ r.rate }}</div></div>
+                  <div><div style="font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6B5F55">Payout</div><div style="font-size:13px;font-weight:600;color:#241C16">{{ r.payout }}</div></div>
+                </div>
+                <div style="margin-top:11px;display:flex;height:46px;align-items:center;justify-content:center;border-radius:12px;font-size:14px;font-weight:700;background:{{ r.ctaBg }};color:{{ r.ctaFg }};border:1.5px solid {{ r.ctaBorder }}">{{ r.ctaLabel }}</div>
+                <div style="margin-top:8px;font-size:11px;font-weight:600;color:{{ r.stampColor }}">{{ r.stamp }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WIDGET -->
+    <div>
+      <div style="font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#8A7C6E;margin-bottom:9px">Widget · sin scroll</div>
+      <div style="width:360px;border:1px solid #EBE3D9;border-radius:16px;overflow:hidden;background:#fff;box-shadow:0 20px 50px -30px rgba(60,40,30,.5)">
+        <div style="padding:11px 13px;border-bottom:1px solid #F2EBE3;display:flex;align-items:center;justify-content:space-between">
+          <span style="display:inline-flex;align-items:center;gap:7px"><span role="img" aria-label="mangomundi" style="position:relative;display:inline-block;flex:none;font-family:'Rubik',sans-serif;font-weight:700;font-size:22px;line-height:1;color:transparent">m<span aria-hidden="true" style="position:absolute;left:0;top:0;color:#241C16;clip-path:polygon(0% 0%, 60.8% 0%, 46.8% 100%, 0% 100%)">m</span><span aria-hidden="true" style="position:absolute;left:0;top:0;color:#EE5B3E;clip-path:polygon(62.8% 0%, 100% 0%, 100% 100%, 48.8% 100%)">m</span></span><span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.02em;font-size:16px;line-height:1.15;color:#241C16">m<span style="font-style:italic">ango</span>m<span style="font-style:italic">undi</span></span></span>
+          <span style="font-size:10.5px;font-weight:600;color:#6B5F55">rates 2 min ago</span>
+        </div>
+        <div style="padding:11px 13px;background:#FDFBF9;border-bottom:1px solid #F2EBE3">
+          <div style="display:flex;gap:7px">
+            <div style="flex:1;display:flex;height:42px;align-items:center;border:1.5px solid #E5DCD1;border-radius:9px;overflow:hidden;background:#fff;min-width:0">
+              <input value="1,000" style="flex:1;min-width:0;border:0;outline:none;padding:0 9px;font-size:16px;font-weight:700;font-variant-numeric:tabular-nums;color:#241C16">
+              <div style="display:flex;align-items:center;gap:5px;border-left:1px solid #EBE3D9;height:100%;padding:0 9px;font-size:12.5px;font-weight:700;color:#241C16"><span class="fi fi-gb" style="border-radius:2px"></span>GBP</div>
+            </div>
+            <div style="flex:none;display:flex;height:42px;width:34px;align-items:center;justify-content:center;border-radius:9px;background:#F5EFE8;color:#EE5B3E">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>
+            </div>
+            <div style="flex:none;width:96px;display:flex;height:42px;align-items:center;gap:6px;border:1.5px solid #E5DCD1;border-radius:9px;background:#fff;padding:0 9px;font-size:12.5px;font-weight:700;color:#241C16"><span class="fi fi-mx" style="border-radius:2px"></span>MXN</div>
+          </div>
+        </div>
+        <div style="padding:11px 13px 12px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between">
+            <span style="font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#6B5F55">Delivers the most</span>
+            <span style="font-size:10.5px;font-weight:700;color:#1F7A5A">of 52 compared</span>
+          </div>
+          <div style="margin-top:8px;border:1.5px solid #EE5B3E;border-radius:11px;padding:11px 12px">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+              <div style="display:flex;align-items:center;gap:9px">
+                <div role="img" aria-label="Wise" style="height:22px;width:56px;flex:none;background:url('public/logos/wise.png') center/contain no-repeat"></div>
+                <div style="font-size:11.5px;color:#6B5F55;font-variant-numeric:tabular-nums">3.45 fee · hours</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-family:'Bricolage Grotesque';font-size:23px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.03em;line-height:1;color:#241C16">24,009</div>
+                <div style="font-size:10px;font-weight:700;color:#6B5F55">MXN</div>
+              </div>
+            </div>
+            <div style="margin-top:9px;height:38px;border-radius:9px;background:#EE5B3E;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff">Go to Wise ↗</div>
+          </div>
+          <div style="margin-top:9px;display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 2px;border-bottom:1px solid #F2EBE3">
+              <div role="img" aria-label="Remitly" style="height:16px;width:54px;flex:none;background:url('public/logos/remitly.png') center/contain no-repeat"></div>
+              <span style="font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">23,794</span>
+              <span style="width:62px;text-align:right;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;color:#6B5F55">−215</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 2px;border-bottom:1px solid #F2EBE3">
+              <div role="img" aria-label="Instarem" style="height:16px;width:54px;flex:none;background:url('public/logos/instarem.png') center/contain no-repeat"></div>
+              <span style="font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">23,755</span>
+              <span style="width:62px;text-align:right;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;color:#6B5F55">−254</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 2px">
+              <div role="img" aria-label="Western Union" style="height:16px;width:54px;flex:none;background:url('public/logos/western-union.png') center/contain no-repeat"></div>
+              <span style="font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:#241C16">23,342</span>
+              <span style="width:62px;text-align:right;font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;color:#6B5F55">−667</span>
+            </div>
+          </div>
+          <div style="margin-top:11px;border-radius:11px;background:#F5EFE8;border:1px solid #EBE3D9;padding:11px 12px">
+            <div style="font-size:12.5px;font-weight:800;color:#241C16">48 more providers on mangomundi</div>
+            <p style="margin-top:4px;font-size:11.5px;line-height:1.5;color:#6B5F55">Cash pickup, card payout, exclusive rates and the AI agent for this exact route.</p>
+            <div style="margin-top:9px;height:36px;border-radius:9px;background:#241C16;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:700;color:#fff">Compare all 52 ↗</div>
+          </div>
+        </div>
+        <div style="border-top:1px solid #F2EBE3;background:#FDFBF9;padding:7px;text-align:center;font-size:10.5px;color:#6B5F55">powered by <span style="font-family:'Rubik',sans-serif;text-transform:lowercase;font-weight:700;letter-spacing:-0.015em;font-size:12px;color:#241C16">m<span style="font-style:italic">ango</span>m<span style="font-style:italic">undi</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <div style="max-width:1040px;border-top:1px solid #D6CDC2;padding-top:22px">
+    <h3 style="font-size:17px;font-weight:800;color:#241C16">Lo que falta y no inventé</h3>
+    <p style="margin-top:9px;font-size:14px;line-height:1.65;color:#5C5147">Estados de carga, sin resultados y error del comparador; la pantalla <code style="font-size:12.5px">/exchange</code> completa (acá está resuelto el enlace y el modelo, no la pantalla); y las páginas institucionales, que ya existen como rutas y solo necesitan que la home deje de duplicarlas. El logotipo de estas pantallas ya es el definitivo — Rubik 700 con colas en cursiva verdadera e icono V1 — renderizado con la fuente. El entregable de marca es el mismo dibujo trazado a curvas, con las dos costuras propias del manual.</p>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1500,&quot;height&quot;:2600},&quot;sort&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Recommended&quot;,&quot;Receive more&quot;,&quot;Fastest&quot;],&quot;default&quot;:&quot;Recommended&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Comparador&quot;},&quot;rotation&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:0,&quot;min&quot;:0,&quot;max&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Today's routes&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const sort = this.props.sort ?? "Recommended";
+
+    const base = [
+      { logo: "public/logos/wise.png", name: "Wise", rating: "4.3", fee: "3.45 GBP", rate: "24.0921", speed: "Hours", payout: "Bank", received: "24,009", gap: 0, verified: true, note: "Rate verified for GBP → MXN" },
+      { logo: "public/logos/remitly.png", name: "Remitly", rating: "4.1", fee: "1.99 GBP", rate: "23.8410", speed: "Minutes", payout: "Cash", received: "23,794", gap: 215, verified: true, note: "Cash pickup in 12,400 points" },
+      { logo: "public/logos/instarem.png", name: "Instarem", rating: "4.0", fee: "0.00 GBP", rate: "23.7550", speed: "1–2 days", payout: "Bank", received: "23,755", gap: 254, verified: false, note: "No fee, wider spread" },
+      { logo: "public/logos/western-union.png", name: "Western Union", rating: "3.6", fee: "2.90 GBP", rate: "23.4102", speed: "Minutes", payout: "Cash", received: "23,342", gap: 667, verified: true, note: "Affiliate link" },
+      { logo: "public/logos/xoom.png", name: "Xoom", rating: "3.4", fee: "3.99 GBP", rate: "23.2010", speed: "Hours", payout: "Bank", received: "23,108", gap: 901, verified: true, note: "Affiliate link" },
+    ];
+
+    const ordered = sort === "Fastest"
+      ? [...base].sort((a, b) => (a.speed === "Minutes" ? 0 : 1) - (b.speed === "Minutes" ? 0 : 1))
+      : base;
+
+    const winnerTag = sort === "Fastest" ? "Fastest" : sort === "Receive more" ? "Receives most" : "Best overall";
+
+    const rows = ordered.map((r, i) => ({
+      ...r,
+      logoBg: `url('${r.logo}') center/contain no-repeat`,
+      ctaLabel: `Go to ${r.name} \u2197`,
+      tag: i === 0 ? winnerTag : "",
+      delta: i === 0 ? "the most we found" : `\u2212${r.gap.toLocaleString("en-US")} MXN vs best`,
+      deltaColor: i === 0 ? "#1F7A5A" : "#6B5F55",
+      border: i === 0 ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
+      shadow: i === 0 ? "0 14px 34px -22px rgba(238,91,62,.55)" : "none",
+      ctaBg: i === 0 ? "#EE5B3E" : "#fff",
+      ctaFg: i === 0 ? "#fff" : "#241C16",
+      ctaBorder: i === 0 ? "#EE5B3E" : "#E5DCD1",
+      stamp: r.verified ? "Live · 28 Aug, 09:41" : "Estimated · 28 Aug, 09:41",
+      stampColor: r.verified ? "#1F7A5A" : "#6B5F55",
+    }));
+
+    const tabDefs = [
+      { label: "Recommended", figure: "24,009", sub: "MXN · Wise", hint: "Best balance" },
+      { label: "Receive more", figure: "24,009", sub: "MXN · the max", hint: "Highest payout" },
+      { label: "Fastest", figure: "Minutes", sub: "Remitly", hint: "Under 10 min" },
+    ];
+    const tabStyle = (t) => {
+      const on = t.label === sort;
+      return {
+        ...t,
+        border: on ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
+        shadow: on ? "0 12px 28px -18px rgba(238,91,62,.6)" : "none",
+        labelColor: on ? "#241C16" : "#5C5147",
+        figureColor: on ? "#C2410C" : "#241C16",
+        hintColor: on ? "#C2410C" : "#8A7C6E",
+      };
+    };
+
+    const payoutChips = [
+      { label: "Bank", on: true, count: "41" },
+      { label: "Cash", on: true, count: "18" },
+      { label: "Card", on: false, count: "12" },
+      { label: "Broker", on: false, count: "7" },
+    ].map((c) => ({
+      label: c.label,
+      count: c.count,
+      mark: c.on ? "\u2611" : "\u2610",
+      border: c.on ? "1.5px solid #241C16" : "1px solid #E5DCD1",
+      bg: c.on ? "#F5EFE8" : "#fff",
+      color: c.on ? "#241C16" : "#5C5147",
+      weight: c.on ? "700" : "600",
+    }));
+
+    const exclusivePool = [
+      { from: "GBP", to: "MXN", fromFlag: "fi fi-gb", toFlag: "fi fi-mx", best: "24,009", gain: "901", provider: "Wise", logo: "public/logos/wise.png" },
+      { from: "USD", to: "PHP", fromFlag: "fi fi-us", toFlag: "fi fi-ph", best: "57,240", gain: "1,880", provider: "Remitly", logo: "public/logos/remitly.png" },
+      { from: "EUR", to: "COP", fromFlag: "fi fi-eu", toFlag: "fi fi-co", best: "4,412,600", gain: "96,400", provider: "Instarem", logo: "public/logos/instarem.png" },
+      { from: "GBP", to: "INR", fromFlag: "fi fi-gb", toFlag: "fi fi-in", best: "106,480", gain: "2,310", provider: "Revolut", logo: "public/logos/revolut.png" },
+      { from: "USD", to: "MXN", fromFlag: "fi fi-us", toFlag: "fi fi-mx", best: "18,412", gain: "740", provider: "Western Union", logo: "public/logos/western-union.png" },
+      { from: "EUR", to: "BRL", fromFlag: "fi fi-eu", toFlag: "fi fi-br", best: "6,284", gain: "212", provider: "Xoom", logo: "public/logos/xoom.png" },
+    ];
+    const offset = (this.props.rotation ?? 0) % exclusivePool.length;
+    const corridors = Array.from({ length: 4 }, (_, i) => exclusivePool[(i + offset) % exclusivePool.length])
+      .map((c) => ({ ...c, logoBg: `url('${c.logo}') left center/contain no-repeat` }));
+
+    const brokers = [
+      { name: "Corpay", regulator: "FCA · e-money licence", spread: "0.24%", min: "50,000", settlement: "T+1", contracts: "Spot · forward", saving: "1,780", best: true, tag: "Best indicative" },
+      { name: "Ebury", regulator: "FCA · payment institution", spread: "0.31%", min: "25,000", settlement: "T+1", contracts: "Spot · forward · option", saving: "1,610", best: false, tag: "" },
+      { name: "Moneycorp", regulator: "FCA · payment institution", spread: "0.38%", min: "10,000", settlement: "Same day", contracts: "Spot · forward", saving: "1,430", best: false, tag: "" },
+      { name: "OFX", regulator: "FCA · ASIC", spread: "0.45%", min: "10,000", settlement: "T+2", contracts: "Spot", saving: "1,255", best: false, tag: "" },
+    ].map((b) => ({
+      ...b,
+      border: b.best ? "1.5px solid #241C16" : "1px solid #EBE3D9",
+      ctaBg: b.best ? "#241C16" : "#fff",
+      ctaFg: b.best ? "#fff" : "#241C16",
+      ctaBorder: b.best ? "#241C16" : "#E5DCD1",
+    }));
+
+    const posts = [
+      { date: "26 Aug 2026", mins: "6 min", title: "Why the cheapest fee is almost never the best deal" },
+      { date: "19 Aug 2026", mins: "4 min", title: "GBP → MXN: what a 0.4% spread costs you on 5,000 GBP" },
+      { date: "11 Aug 2026", mins: "7 min", title: "Cash pickup in Mexico: the six networks compared" },
+    ];
+
+    const agentInsight = sort === "Fastest"
+      ? "Remitly and Western Union are the only two that land in minutes on this route. Remitly pays 452 MXN more for the same speed."
+      : "Wise wins by 215 MXN even though Instarem charges no fee — the fee is smaller than Instarem's spread. Below 300 GBP the order flips.";
+
+    return {
+      rows,
+      rowsMobile: rows.slice(0, 3),
+      tabs: tabDefs.map(tabStyle),
+      tabsMobile: tabDefs.map(tabStyle),
+      payoutChips,
+      corridors,
+      corridorsMobile: corridors.slice(0, 3),
+      brokers,
+      posts,
+      sortLabel: sort.toLowerCase(),
+      criteriaCount: 3,
+      visibleCount: 5,
+      agentInsight,
+    };
+  }
+}
+
+</script>
+</body>
+</html>
