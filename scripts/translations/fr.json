@@ -168,7 +168,6 @@
   "home.platform.text": "Le FX est notre premier vertical.",
   "home.platform.tail": "est le moteur de décision IA sous-jacent — l'assurance, les courtiers, le SaaS et plus encore sont les prochaines étapes.",
   "home.platform.learn": "En savoir plus",
-  "home.stats.founded": "Création",
   "home.stats.countries": "Pays",
   "home.stats.currencies": "Devises",
   "home.test.badge": "Neutralité auditable",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Un monde où chaque paiement de change local ou transfrontalier, d'un envoi de fonds familial à une opération de trésorerie multinationale, passe par une couche de décision transparente et équitable.",
   "home.about.problem.body": "Une inefficacité à double face. D'un côté, les particuliers et les entreprises font face à un labyrinthe frustrant pour trouver les meilleurs taux. De l'autre, les institutions financières peinent avec des coûts d'acquisition élevés et des canaux fragmentés.",
   "home.stats.subtitle": "Notre moteur de décision évalue plus de 50 fournisseurs mondiaux en temps réel, normalisant les taux, les frais, la vitesse de livraison et la disponibilité des corridors en une comparaison claire.",
-  "home.contact.treasury.body": "Nous pouvons développer des agents IA sur mesure, hébergés sur site, adaptés au flux de travail de votre équipe de trésorerie d'entreprise pour optimiser le financement du commerce et les opérations de liquidité.",
-  "home.contact.partners.body": "Nous cherchons à nous associer avec des opérateurs de paiement transfrontalier et des fournisseurs de change ; explorons ensemble des synergies via des placements sponsorisés intégrés et des programmes d'affiliation conçus pour maximiser l'efficacité et réduire votre coût d'acquisition client (CAC).",
   "home.blog.body": "Nous préparons des analyses approfondies sur les paiements transfrontaliers, l'économie des corridors et l'intelligence FX. Revenez bientôt.",
   "legal.pageSubtitle": "Conditions d'utilisation, avertissement sur les risques et politique de confidentialité.",
   "legal.terms.h1": "01 — Service",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Fournisseurs mondiaux évalués en temps réel",
   "home.contact.eyebrow": "Contact",
   "home.contact.title": "Demandes institutionnelles et de partenariat",
-  "home.contact.treasury.title": "Pour les opérations de trésorerie",
-  "home.contact.partners.title": "Pour les partenariats FX et paiements",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Analyses sur le FX mondial, les paiements et les transferts d'argent",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

@@ -472,21 +472,22 @@ export const DICTS: Record<Lang, Dict> = {
     "home.stats.title": "One view across the global FX market",
     "home.stats.subtitle":
       "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
-    "home.stats.founded": "Founded",
     "home.stats.countries": "Countries Covered",
     "home.stats.currencies": "Currencies Supported",
-    "home.stats.providers": "Global providers evaluated in real time",
+    // design/AJUSTES-1.md §F — shortened for the dark-band stat tile
+    // (AboutManifestoSection); also feeds HeroSection's trust bar, same key.
+    "home.stats.providers": "Providers",
+    "home.stats.trustpilotValue": "4.6",
+    "home.stats.trustpilot": "on Trustpilot",
     // Home — Contact
     "home.contact.eyebrow": "Contact",
-    "home.contact.title": "Institutional & Partnership Inquiries",
+    // design/AJUSTES-1.md §G — literal copy for the business pitch band,
+    // replacing the old "Institutional & Partnership Inquiries" + two
+    // treasury/partnership cards (bank language, per the doc).
+    "home.contact.title": "Payroll or supplier payments? Different brokers, different rates.",
     "home.contact.subtitle":
-      "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
-    "home.contact.treasury.title": "For Treasury Operations",
-    "home.contact.treasury.body":
-      "We can develop custom, on-premise AI agents as a service, tailored to your corporate treasury team's workflow to optimize trade finance and liquidity operations.",
-    "home.contact.partners.title": "For FX & Payment Partnerships",
-    "home.contact.partners.body":
-      "We are looking to align with cross-border payment operators and currency exchange providers; let's explore synergies through integrated sponsored placements and affiliate programs designed to maximize efficiency and reduce your Customer Acquisition Cost (CAC).",
+      "14 FX brokers quote settlement terms, minimum amounts and contract type. Same neutrality, applied to volume.",
+    "home.contact.getQuotes": "Get business quotes",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
     "home.blog.title": "Insights on global FX, payments and remittances",
@@ -794,7 +795,6 @@ export const DICTS: Record<Lang, Dict> = {
     "home.stats.title": "Una vista completa del mercado global de divisas",
     "home.stats.subtitle":
       "Nuestro motor de decisión evalúa más de 50 proveedores globales en tiempo real, normalizando tasas, comisiones, velocidad de entrega y disponibilidad por corredor en una comparación clara.",
-    "home.stats.founded": "Fundada en",
     "home.stats.countries": "Países cubiertos",
     "home.stats.currencies": "Divisas soportadas",
     "home.stats.providers": "Proveedores globales evaluados en tiempo real",
@@ -803,12 +803,6 @@ export const DICTS: Record<Lang, Dict> = {
     "home.contact.title": "Consultas institucionales y de alianzas",
     "home.contact.subtitle":
       "Para equipos de tesorería y partners de FX que buscan tasas dedicadas, integraciones a medida, o una línea directa con nuestro equipo.",
-    "home.contact.treasury.title": "Para operaciones de tesorería",
-    "home.contact.treasury.body":
-      "Desarrollamos agentes de IA personalizados, on-premise, adaptados al flujo de trabajo de tu equipo de tesorería corporativa para optimizar operaciones de financiamiento comercial y liquidez.",
-    "home.contact.partners.title": "Para alianzas de FX y pagos",
-    "home.contact.partners.body":
-      "Buscamos alinearnos con operadores de pagos transfronterizos y proveedores de cambio de divisas; exploremos sinergias mediante colocaciones patrocinadas integradas y programas de afiliados diseñados para maximizar eficiencia y reducir tu Costo de Adquisición de Clientes (CAC).",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
     "home.blog.title": "Análisis sobre FX global, pagos y remesas",
@@ -2134,7 +2128,6 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.platform.tail":
       "is the AI decision engine behind it — insurance, brokers, SaaS, and more are next.",
     "home.platform.learn": "Learn more",
-    "home.stats.founded": "Founded",
     "home.stats.countries": "Countries",
     "home.stats.currencies": "Currencies",
     "home.test.badge": "Auditable Neutrality",
@@ -2168,7 +2161,6 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.platform.tail":
       "es el motor de decisión IA detrás — seguros, brokers, SaaS y más vienen después.",
     "home.platform.learn": "Saber más",
-    "home.stats.founded": "Fundada",
     "home.stats.countries": "Países",
     "home.stats.currencies": "Divisas",
     "home.test.badge": "Neutralidad Auditable",
@@ -2794,7 +2786,10 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.b2b.title": "Sending over {amount} {cur}? Talk to our business desk.",
     "comparator.b2b.body":
       "For high-volume transfers, dedicated providers offer custom rates, treasury tooling and an account manager. →",
-    "comparator.b2b.cta": "Email our business desk",
+    // design/AJUSTES-1.md §G — "Talk to us" (outline button next to "Get
+    // business quotes" in BusinessSection). Same mailto action as before,
+    // only the label changed.
+    "comparator.b2b.cta": "Talk to us",
     "comparator.b2bBanner.below":
       "Sending more than {threshold}? Business brokers quote negotiated rates.",
     "comparator.b2bBanner.above":

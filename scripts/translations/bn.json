@@ -204,7 +204,6 @@
   "home.platform.brand": "mangomundi প্ল্যাটফর্ম",
   "home.platform.tail": "এর পেছনে থাকা AI ডিসিশন ইঞ্জিন — ইন্স্যুরেন্স, ব্রোকার, SaaS এবং আরও অনেক কিছু পরবর্তী পর্যায়ে রয়েছে।",
   "home.platform.learn": "আরও জানুন",
-  "home.stats.founded": "প্রতিষ্ঠিত",
   "home.stats.countries": "দেশসমূহ",
   "home.stats.currencies": "কারেন্সি সমূহ",
   "home.test.badge": "নিরীক্ষণযোগ্য নিরপেক্ষতা",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "এমন একটি বিশ্ব যেখানে প্রতিটি স্থানীয় বা সীমান্ত-পার বৈদেশিক মুদ্রা পেমেন্ট, একটি পারিবারিক প্রেরণ থেকে বহুজাতিক ট্রেজারি অপারেশন পর্যন্ত, একটি স্বচ্ছ এবং ন্যায্য সিদ্ধান্ত স্তরের মধ্য দিয়ে চলে।",
   "home.about.problem.body": "একটি দ্বিমুখী অদক্ষতা। একদিকে, খুচরা গ্রাহক এবং ব্যবসাগুলো সেরা হার খুঁজতে একটি হতাশাজনক গোলকধাঁধার মুখোমুখি হয়। অন্যদিকে, আর্থিক প্রতিষ্ঠানগুলো উচ্চ অধিগ্রহণ খরচ এবং খণ্ডিত চ্যানেলের সাথে লড়াই করে।",
   "home.stats.subtitle": "আমাদের সিদ্ধান্ত ইঞ্জিন রিয়েল-টাইমে ৫০টিরও বেশি বৈশ্বিক প্রদানকারীর মূল্যায়ন করে, হার, ফি, ডেলিভারি গতি এবং করিডোর প্রাপ্যতাকে একটি স্পষ্ট তুলনায় স্বাভাবিক করে।",
-  "home.contact.treasury.body": "আমরা ট্রেড ফাইন্যান্স এবং তারল্য অপারেশন অপ্টিমাইজ করতে আপনার কর্পোরেট ট্রেজারি টিমের ওয়ার্কফ্লোর সাথে সামঞ্জস্যপূর্ণ, অন-প্রিমাইস কাস্টম AI এজেন্ট সেবা হিসেবে তৈরি করতে পারি।",
-  "home.contact.partners.body": "আমরা সীমান্ত-পার পেমেন্ট অপারেটর এবং মুদ্রা বিনিময় প্রদানকারীদের সাথে সংযুক্ত হতে চাই; দক্ষতা সর্বাধিক করতে এবং আপনার গ্রাহক অধিগ্রহণ খরচ (CAC) কমাতে ডিজাইন করা সমন্বিত স্পনসরড প্লেসমেন্ট এবং অ্যাফিলিয়েট প্রোগ্রামের মাধ্যমে একসাথে সমন্বয় অন্বেষণ করি।",
   "home.blog.body": "আমরা সীমান্ত-পার পেমেন্ট, করিডোর অর্থনীতি এবং বৈদেশিক মুদ্রা বুদ্ধিমত্তা নিয়ে গভীর বিশ্লেষণ প্রস্তুত করছি। শীঘ্রই আবার দেখুন।",
   "legal.pageSubtitle": "সেবার শর্তাবলী, ঝুঁকি প্রকাশ এবং গোপনীয়তা নীতি।",
   "legal.terms.h1": "০১ — পরিষেবা",
@@ -539,8 +536,6 @@
   "home.stats.providers": "রিয়েল-টাইমে মূল্যায়িত বৈশ্বিক প্রদানকারী",
   "home.contact.eyebrow": "যোগাযোগ",
   "home.contact.title": "প্রাতিষ্ঠানিক এবং অংশীদারিত্ব অনুসন্ধান",
-  "home.contact.treasury.title": "ট্রেজারি অপারেশনের জন্য",
-  "home.contact.partners.title": "FX এবং পেমেন্ট অংশীদারিত্বের জন্য",
   "home.blog.eyebrow": "ব্লগ",
   "home.blog.title": "বৈশ্বিক এফএক্স, পেমেন্ট এবং রেমিট্যান্স সম্পর্কে বিশ্লেষণ",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

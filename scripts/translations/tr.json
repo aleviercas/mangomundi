@@ -206,7 +206,6 @@
   "home.platform.brand": "mangomundi Platformu",
   "home.platform.tail": "arkasındaki yapay zeka karar motorudur — sigorta, brokerler, SaaS ve daha fazlası sırada.",
   "home.platform.learn": "Daha fazla bilgi al",
-  "home.stats.founded": "Kuruluş",
   "home.stats.countries": "Ülke",
   "home.stats.currencies": "Para Birimi",
   "home.test.badge": "Denetlenebilir Tarafsızlık",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Bir aile havalesinden çok uluslu bir hazine işlemine kadar her yerel veya sınır ötesi döviz ödemesinin şeffaf ve adil bir karar katmanından geçtiği bir dünya.",
   "home.about.problem.body": "İki taraflı bir verimsizlik. Bir yanda, bireysel müşteriler ve işletmeler en iyi kurları bulmak için sinir bozucu bir labirentle karşılaşıyor. Diğer yanda, finans kuruluşları yüksek edinme maliyetleri ve parçalı kanallarla mücadele ediyor.",
   "home.stats.subtitle": "Karar motorumuz 50'den fazla küresel sağlayıcıyı gerçek zamanlı değerlendirerek kurları, ücretleri, teslimat hızını ve koridor kullanılabilirliğini net bir karşılaştırmada birleştirir.",
-  "home.contact.treasury.body": "Ticaret finansmanı ve likidite operasyonlarını optimize etmek için kurumsal hazine ekibinizin iş akışına özel, yerinde barındırılan özel yapay zekâ ajanları geliştirebiliriz.",
-  "home.contact.partners.body": "Sınır ötesi ödeme operatörleri ve döviz sağlayıcılarıyla uyum sağlamayı hedefliyoruz; verimliliği en üst düzeye çıkarmak ve Müşteri Edinme Maliyetinizi (CAC) düşürmek için tasarlanmış entegre sponsorlu yerleşimler ve iştirak programları aracılığıyla sinerjileri birlikte keşfedelim.",
   "home.blog.body": "Sınır ötesi ödemeler, koridor ekonomisi ve döviz zekâsı üzerine derinlemesine analizler hazırlıyoruz. Yakında tekrar uğrayın.",
   "legal.pageSubtitle": "Hizmet Şartları, Risk Bildirimi ve Gizlilik Politikası.",
   "legal.terms.h1": "01 — Hizmet",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Gerçek zamanlı değerlendirilen küresel sağlayıcı",
   "home.contact.eyebrow": "İletişim",
   "home.contact.title": "Kurumsal ve Ortaklık Talepleri",
-  "home.contact.treasury.title": "Hazine Operasyonları İçin",
-  "home.contact.partners.title": "FX ve Ödeme Ortaklıkları İçin",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Küresel döviz, ödemeler ve para transferleri hakkında bilgiler",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

@@ -177,7 +177,6 @@
   "home.platform.text": "FX ang unang vertical.",
   "home.platform.tail": "ang AI decision engine sa likod nito — ang insurance, mga broker, SaaS, at iba pa ang susunod.",
   "home.platform.learn": "Matuto nang higit pa",
-  "home.stats.founded": "Itinatag noong",
   "home.stats.countries": "Bansa",
   "home.stats.currencies": "Mga Pera",
   "home.test.title": "Paano Gumagana ang Decision Engine",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Isang mundo kung saan bawat lokal o cross-border na bayad sa FX, mula sa padala ng pamilya hanggang sa operasyon ng treasury ng multinasyunal na kumpanya, ay dumadaan sa isang transparent at patas na layer ng desisyon.",
   "home.about.problem.body": "Isang dalawang-panig na kakulangan sa kahusayan. Sa isang banda, ang mga retail client at negosyo ay nahaharap sa nakakainis na labirint sa paghahanap ng pinakamahusay na rate. Sa kabilang banda, nahihirapan ang mga institusyong pinansyal sa mataas na gastos sa pagkuha ng kliyente at fragmented na mga channel.",
   "home.stats.subtitle": "Sinusuri ng aming decision engine ang mahigit 50 global na provider sa real-time, isinasabay ang mga rate, bayarin, bilis ng paghahatid, at availability ng corridor sa isang malinaw na paghahambing.",
-  "home.contact.treasury.body": "Maaari kaming bumuo ng custom, on-premise na AI agent bilang serbisyo, na iniangkop sa workflow ng inyong corporate treasury team para i-optimize ang trade finance at liquidity operations.",
-  "home.contact.partners.body": "Naghahanap kami ng pagkakaisa sa mga cross-border payment operator at currency exchange provider; tuklasin natin ang mga synergy sa pamamagitan ng integrated sponsored placement at affiliate program na idinisenyo upang i-maximize ang efficiency at bawasan ang inyong Customer Acquisition Cost (CAC).",
   "home.blog.body": "Naghahanda kami ng malalim na analysis sa cross-border payments, corridor economics, at FX intelligence. Bumalik ulit sa lalong madaling panahon.",
   "legal.pageSubtitle": "Mga Tuntunin ng Serbisyo, Pagsisiwalat ng Panganib, at Patakaran sa Privacy.",
   "legal.terms.h1": "01 — Serbisyo",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Global na provider na sinusuri sa real-time",
   "home.contact.eyebrow": "Makipag-ugnayan",
   "home.contact.title": "Mga Katanungan sa Institusyonal at Partnership",
-  "home.contact.treasury.title": "Para sa Treasury Operations",
-  "home.contact.partners.title": "Para sa FX at Payment Partnerships",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Mga insight sa global FX, mga bayad, at remittances",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

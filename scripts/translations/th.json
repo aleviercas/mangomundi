@@ -200,7 +200,6 @@
   "home.platform.text": "FX คือธุรกิจแนวดิ่งแรกของเรา",
   "home.platform.tail": "คือเครื่องมือตัดสินใจด้วย AI ที่อยู่เบื้องหลัง — ประกันภัย, โบรกเกอร์, SaaS และอื่นๆ คือเป้าหมายถัดไป",
   "home.platform.learn": "เรียนรู้เพิ่มเติม",
-  "home.stats.founded": "ก่อตั้งเมื่อ",
   "home.stats.countries": "ประเทศ",
   "home.stats.currencies": "สกุลเงิน",
   "home.test.badge": "ความเป็นกลางที่ตรวจสอบได้",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "โลกที่การชำระเงินแลกเปลี่ยนเงินตราในประเทศหรือข้ามพรมแดนทุกครั้ง ตั้งแต่การส่งเงินของครอบครัวไปจนถึงการดำเนินงานบริหารเงินสดของบริษัทข้ามชาติ ผ่านชั้นการตัดสินใจที่โปร่งใสและเป็นธรรม",
   "home.about.problem.body": "ความไม่มีประสิทธิภาพสองด้าน ด้านหนึ่งลูกค้ารายย่อยและธุรกิจต้องเผชิญกับเขาวงกตที่น่าหงุดหงิดในการหาอัตราที่ดีที่สุด อีกด้านหนึ่งสถาบันการเงินต้องดิ้นรนกับต้นทุนการหาลูกค้าที่สูงและช่องทางที่กระจัดกระจาย",
   "home.stats.subtitle": "เครื่องมือตัดสินใจของเราประเมินผู้ให้บริการทั่วโลกกว่า 50 รายแบบเรียลไทม์ ทำให้อัตราแลกเปลี่ยน ค่าธรรมเนียม ความเร็วในการส่ง และความพร้อมของเส้นทางเป็นมาตรฐานเดียวกันในการเปรียบเทียบที่ชัดเจน",
-  "home.contact.treasury.body": "เราสามารถพัฒนาตัวแทน AI ที่ปรับแต่งเฉพาะ ติดตั้งในสถานที่ของคุณ ให้เหมาะกับขั้นตอนการทำงานของทีมบริหารเงินสดขององค์กรคุณ เพื่อเพิ่มประสิทธิภาพการเงินการค้าและการดำเนินงานสภาพคล่อง",
-  "home.contact.partners.body": "เรากำลังมองหาความร่วมมือกับผู้ให้บริการชำระเงินข้ามพรมแดนและผู้ให้บริการแลกเปลี่ยนเงินตรา มาสำรวจการทำงานร่วมกันผ่านตำแหน่งสปอนเซอร์แบบบูรณาการและโปรแกรมพันธมิตรที่ออกแบบมาเพื่อเพิ่มประสิทธิภาพสูงสุดและลดต้นทุนการหาลูกค้า (CAC) ของคุณ",
   "home.blog.body": "เรากำลังเตรียมการวิเคราะห์เชิงลึกเกี่ยวกับการชำระเงินข้ามพรมแดน เศรษฐศาสตร์เส้นทาง และปัญญาด้านอัตราแลกเปลี่ยน กลับมาดูอีกครั้งเร็วๆ นี้",
   "legal.pageSubtitle": "ข้อกำหนดการให้บริการ การเปิดเผยความเสี่ยง และนโยบายความเป็นส่วนตัว",
   "legal.terms.h1": "01 — บริการ",
@@ -539,8 +536,6 @@
   "home.stats.providers": "ผู้ให้บริการทั่วโลกที่ประเมินแบบเรียลไทม์",
   "home.contact.eyebrow": "ติดต่อ",
   "home.contact.title": "คำขอจากสถาบันและพันธมิตร",
-  "home.contact.treasury.title": "สำหรับการดำเนินงานบริหารเงินสด",
-  "home.contact.partners.title": "สำหรับพันธมิตรด้าน FX และการชำระเงิน",
   "home.blog.eyebrow": "บล็อก",
   "home.blog.title": "ข้อมูลเชิงลึกเกี่ยวกับ FX ทั่วโลก การชำระเงิน และการโอนเงิน",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

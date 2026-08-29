@@ -176,16 +176,11 @@
   "home.stats.eyebrow": "Cobertura de mercado",
   "home.stats.title": "Una vista completa del mercado global de divisas",
   "home.stats.subtitle": "Nuestro motor de decisión evalúa más de 50 proveedores globales en tiempo real, normalizando tasas, comisiones, velocidad de entrega y disponibilidad por corredor en una comparación clara.",
-  "home.stats.founded": "Fundada",
   "home.stats.countries": "Países",
   "home.stats.currencies": "Divisas",
   "home.stats.providers": "Proveedores globales evaluados en tiempo real",
   "home.contact.eyebrow": "Contacto",
   "home.contact.title": "Consultas institucionales y de alianzas",
-  "home.contact.treasury.title": "Para operaciones de tesorería",
-  "home.contact.treasury.body": "Desarrollamos agentes de IA personalizados, on-premise, adaptados al flujo de trabajo de tu equipo de tesorería corporativa para optimizar operaciones de financiamiento comercial y liquidez.",
-  "home.contact.partners.title": "Para alianzas de FX y pagos",
-  "home.contact.partners.body": "Buscamos alinearnos con operadores de pagos transfronterizos y proveedores de cambio de divisas; exploremos sinergias mediante colocaciones patrocinadas integradas y programas de afiliados diseñados para maximizar eficiencia y reducir tu Costo de Adquisición de Clientes (CAC).",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Análisis sobre FX global, pagos y remesas",
   "home.blog.body": "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
@@ -731,5 +726,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

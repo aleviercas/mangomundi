@@ -205,7 +205,6 @@
   "home.platform.brand": "Platform mangomundi",
   "home.platform.tail": "adalah mesin keputusan AI di baliknya — asuransi, broker, SaaS, dan lainnya segera hadir.",
   "home.platform.learn": "Pelajari selengkapnya",
-  "home.stats.founded": "Didirikan",
   "home.stats.countries": "Negara",
   "home.stats.currencies": "Mata Uang",
   "home.test.badge": "Netralitas yang Dapat Diaudit",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Sebuah dunia di mana setiap pembayaran valas lokal atau lintas batas, dari pengiriman uang keluarga hingga operasi treasury multinasional, melewati lapisan keputusan yang transparan dan adil.",
   "home.about.problem.body": "Inefisiensi dua sisi. Di satu sisi, klien ritel dan bisnis menghadapi labirin yang membuat frustrasi dalam mencari kurs terbaik. Di sisi lain, lembaga keuangan berjuang dengan biaya akuisisi tinggi dan saluran yang terfragmentasi.",
   "home.stats.subtitle": "Mesin keputusan kami mengevaluasi lebih dari 50 penyedia global secara real-time, menormalkan kurs, biaya, kecepatan pengiriman, dan ketersediaan koridor menjadi satu perbandingan yang jelas.",
-  "home.contact.treasury.body": "Kami dapat mengembangkan agen AI khusus, yang dihosting di lokasi, disesuaikan dengan alur kerja tim treasury korporat Anda untuk mengoptimalkan pembiayaan perdagangan dan operasi likuiditas.",
-  "home.contact.partners.body": "Kami ingin bermitra dengan operator pembayaran lintas batas dan penyedia penukaran mata uang; mari kita jajaki sinergi melalui penempatan bersponsor terintegrasi dan program afiliasi yang dirancang untuk memaksimalkan efisiensi dan mengurangi Biaya Akuisisi Pelanggan (CAC) Anda.",
   "home.blog.body": "Kami sedang menyiapkan analisis mendalam tentang pembayaran lintas batas, ekonomi koridor, dan kecerdasan valas. Kunjungi lagi segera.",
   "legal.pageSubtitle": "Ketentuan Layanan, Pengungkapan Risiko, dan Kebijakan Privasi.",
   "legal.terms.h1": "01 — Layanan",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Penyedia global dievaluasi secara real-time",
   "home.contact.eyebrow": "Kontak",
   "home.contact.title": "Pertanyaan Institusional dan Kemitraan",
-  "home.contact.treasury.title": "Untuk Operasi Treasury",
-  "home.contact.partners.title": "Untuk Kemitraan FX & Pembayaran",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Wawasan tentang FX global, pembayaran, dan pengiriman uang",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

@@ -204,7 +204,6 @@
   "home.platform.brand": "mangomundi プラットフォーム",
   "home.platform.tail": "はその背後にあるAI意思決定エンジンです。保険、ブローカー、SaaSなど、さらなる展開を予定しています。",
   "home.platform.learn": "詳細を見る",
-  "home.stats.founded": "設立",
   "home.stats.countries": "提供国",
   "home.stats.currencies": "対応通貨",
   "home.test.badge": "監査可能な中立性",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "家族送金から多国籍企業の財務業務まで、あらゆるローカルまたは国境を越えた外国為替決済が、透明で公平な意思決定層を通過する世界。",
   "home.about.problem.body": "双方向の非効率性。一方で、個人顧客と企業は最適なレートを見つけるためのもどかしい迷路に直面しています。他方で、金融機関は高い顧客獲得コストと分断されたチャネルに苦労しています。",
   "home.stats.subtitle": "当社の意思決定エンジンは、50社を超えるグローバルプロバイダーをリアルタイムで評価し、レート、手数料、配送速度、コリドーの利用可能性を明確な比較として正規化します。",
-  "home.contact.treasury.body": "貿易金融と流動性業務を最適化するため、貴社の財務チームのワークフローに合わせたカスタムのオンプレミスAIエージェントをサービスとして開発できます。",
-  "home.contact.partners.body": "国際決済事業者や外貨両替プロバイダーとの連携を目指しています。効率を最大化し、顧客獲得コスト（CAC）を削減するために設計された統合スポンサー掲載やアフィリエイトプログラムを通じて、共にシナジーを探りましょう。",
   "home.blog.body": "国境を越えた決済、コリドー経済、FXインテリジェンスに関する詳細な分析を準備中です。近日中にご確認ください。",
   "legal.pageSubtitle": "利用規約、リスク開示、プライバシーポリシー。",
   "legal.terms.h1": "01 — サービス",
@@ -539,8 +536,6 @@
   "home.stats.providers": "リアルタイムで評価されるグローバルプロバイダー数",
   "home.contact.eyebrow": "お問い合わせ",
   "home.contact.title": "法人・提携に関するお問い合わせ",
-  "home.contact.treasury.title": "財務業務向け",
-  "home.contact.partners.title": "FX・決済パートナーシップ向け",
   "home.blog.eyebrow": "ブログ",
   "home.blog.title": "グローバルFX、決済、送金に関するインサイト",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

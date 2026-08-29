@@ -204,7 +204,6 @@
   "home.platform.brand": "منصة mangomundi",
   "home.platform.tail": "هي محرك اتخاذ القرار بالذكاء الاصطناعي الذي يقف خلفه — التأمين، والوسطاء، والبرمجيات كخدمة (SaaS)، وغيرها هي الخطوات التالية.",
   "home.platform.learn": "تعرف على المزيد",
-  "home.stats.founded": "تأسست في",
   "home.stats.countries": "دول",
   "home.stats.currencies": "عملات",
   "home.test.badge": "حياد قابل للتدقيق",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "عالم يمر فيه كل دفع صرف أجنبي محلي أو عابر للحدود، من حوالة عائلية إلى عملية خزينة متعددة الجنسيات، عبر طبقة قرار شفافة وعادلة.",
   "home.about.problem.body": "عدم كفاءة ذو وجهين. من ناحية، يواجه العملاء الأفراد والشركات متاهة محبطة بحثًا عن أفضل الأسعار. ومن ناحية أخرى، تكافح المؤسسات المالية مع ارتفاع تكاليف الاستحواذ وتجزؤ القنوات.",
   "home.stats.subtitle": "يقيّم محرك القرار لدينا أكثر من 50 مزودًا عالميًا في الوقت الفعلي، موحدًا الأسعار والرسوم وسرعة التسليم وتوافر الممرات في مقارنة واضحة.",
-  "home.contact.treasury.body": "يمكننا تطوير وكلاء ذكاء اصطناعي مخصصين، مستضافين محليًا، مصممين خصيصًا لسير عمل فريق الخزينة المؤسسي لديكم لتحسين تمويل التجارة وعمليات السيولة.",
-  "home.contact.partners.body": "نتطلع إلى التوافق مع مشغلي المدفوعات العابرة للحدود ومزودي صرف العملات؛ دعونا نستكشف أوجه التآزر من خلال مواضع رعاية متكاملة وبرامج شراكة مصممة لتعظيم الكفاءة وتقليل تكلفة اكتساب العملاء لديكم.",
   "home.blog.body": "نحن نُعِدّ تحليلات معمقة حول المدفوعات العابرة للحدود واقتصاديات الممرات وذكاء الصرف الأجنبي. عودوا قريبًا.",
   "legal.pageSubtitle": "شروط الخدمة والإفصاح عن المخاطر وسياسة الخصوصية.",
   "legal.terms.h1": "01 — الخدمة",
@@ -539,8 +536,6 @@
   "home.stats.providers": "مزود عالمي يتم تقييمه في الوقت الفعلي",
   "home.contact.eyebrow": "اتصل بنا",
   "home.contact.title": "استفسارات المؤسسات والشراكات",
-  "home.contact.treasury.title": "لعمليات الخزينة",
-  "home.contact.partners.title": "لشراكات الصرف الأجنبي والمدفوعات",
   "home.blog.eyebrow": "المدونة",
   "home.blog.title": "رؤى حول الفوركس العالمي والمدفوعات والتحويلات المالية",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

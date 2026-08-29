@@ -169,7 +169,6 @@
   "home.platform.text": "FX پہلا ورٹیکل ہے۔",
   "home.platform.tail": "اس کے پیچھے AI ڈیسیژن انجن ہے — انشورنس، بروکرز، SaaS اور بہت کچھ جلد آرہے ہیں۔",
   "home.platform.learn": "مزید جانیں",
-  "home.stats.founded": "قائم ہوا",
   "home.stats.countries": "ممالک",
   "home.stats.currencies": "کرنسیاں",
   "home.test.badge": "قابلِ آڈٹ غیر جانبداری",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "ایک ایسی دنیا جہاں ہر مقامی یا سرحد پار زرمبادلہ ادائیگی، خاندانی ترسیل سے لے کر کثیر القومی ٹریژری آپریشن تک، ایک شفاف اور منصفانہ فیصلہ سازی کی تہہ سے گزرتی ہے۔",
   "home.about.problem.body": "دو طرفہ ناکارکردگی۔ ایک طرف، ریٹیل کلائنٹس اور کاروبار بہترین شرحوں کی تلاش میں ایک مایوس کن بھول بھلیوں کا سامنا کرتے ہیں۔ دوسری طرف، مالیاتی ادارے زیادہ حصولی اخراجات اور بکھرے ہوئے چینلز سے نبردآزما ہیں۔",
   "home.stats.subtitle": "ہمارا فیصلہ سازی انجن حقیقی وقت میں 50 سے زیادہ عالمی فراہم کنندگان کا جائزہ لیتا ہے، شرحوں، فیسوں، ترسیل کی رفتار، اور کوریڈور کی دستیابی کو ایک واضح موازنے میں معیاری بناتا ہے۔",
-  "home.contact.treasury.body": "ہم تجارتی مالیات اور لیکویڈیٹی آپریشنز کو بہتر بنانے کے لیے آپ کی کارپوریٹ ٹریژری ٹیم کے ورک فلو کے مطابق، ان-پریمائسز اپنی مرضی کے AI ایجنٹس بطور سروس تیار کر سکتے ہیں۔",
-  "home.contact.partners.body": "ہم سرحد پار ادائیگی آپریٹرز اور کرنسی ایکسچینج فراہم کنندگان کے ساتھ صف بندی کرنا چاہتے ہیں؛ آئیے کارکردگی کو زیادہ سے زیادہ کرنے اور آپ کی کسٹمر ایکوزیشن لاگت (CAC) کو کم کرنے کے لیے ڈیزائن کردہ مربوط اسپانسر شدہ جگہوں اور ایفیلیٹ پروگراموں کے ذریعے مل کر ہم آہنگی تلاش کریں۔",
   "home.blog.body": "ہم سرحد پار ادائیگیوں، کوریڈور اکنامکس، اور زرمبادلہ ذہانت پر گہرا تجزیہ تیار کر رہے ہیں۔ جلد دوبارہ چیک کریں۔",
   "legal.pageSubtitle": "سروس کی شرائط، خطرے کا انکشاف، اور رازداری کی پالیسی۔",
   "legal.terms.h1": "01 — سروس",
@@ -539,8 +536,6 @@
   "home.stats.providers": "حقیقی وقت میں جانچے گئے عالمی فراہم کنندگان",
   "home.contact.eyebrow": "رابطہ",
   "home.contact.title": "ادارہ جاتی اور شراکت داری کی درخواستیں",
-  "home.contact.treasury.title": "ٹریژری آپریشنز کے لیے",
-  "home.contact.partners.title": "FX اور ادائیگی کی شراکت داری کے لیے",
   "home.blog.eyebrow": "بلاگ",
   "home.blog.title": "عالمی ایف ایکس، ادائیگیوں اور ترسیلات زر پر تحقیقی مضامین",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

@@ -198,7 +198,6 @@
   "home.platform.brand": "mangomundi Plattform",
   "home.platform.tail": "ist die dahinterstehende KI-Entscheidungseinheit – Versicherungen, Broker, SaaS und mehr folgen als Nächstes.",
   "home.platform.learn": "Mehr erfahren",
-  "home.stats.founded": "Gegründet",
   "home.stats.countries": "Länder",
   "home.stats.currencies": "Währungen",
   "home.test.badge": "Prüfbare Neutralität",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Eine Welt, in der jede lokale oder grenzüberschreitende Devisenzahlung, von einer familiären Geldüberweisung bis zu einer multinationalen Treasury-Operation, über eine transparente und gerechte Entscheidungsebene läuft.",
   "home.about.problem.body": "Eine zweiseitige Ineffizienz. Auf der einen Seite stehen Privatkunden und Unternehmen vor einem frustrierenden Labyrinth bei der Suche nach den besten Kursen. Auf der anderen Seite kämpfen Finanzinstitute mit hohen Akquisitionskosten und fragmentierten Kanälen.",
   "home.stats.subtitle": "Unsere Entscheidungs-Engine bewertet mehr als 50 globale Anbieter in Echtzeit und normalisiert Kurse, Gebühren, Liefergeschwindigkeit und Korridorverfügbarkeit zu einem klaren Vergleich.",
-  "home.contact.treasury.body": "Wir können maßgeschneiderte, vor Ort gehostete KI-Agenten als Service entwickeln, die auf den Arbeitsablauf Ihres Corporate-Treasury-Teams zugeschnitten sind, um Handelsfinanzierung und Liquiditätsoperationen zu optimieren.",
-  "home.contact.partners.body": "Wir suchen die Zusammenarbeit mit grenzüberschreitenden Zahlungsanbietern und Devisenanbietern; lassen Sie uns Synergien durch integrierte gesponserte Platzierungen und Partnerprogramme erkunden, die darauf ausgelegt sind, die Effizienz zu maximieren und Ihre Kundenakquisitionskosten (CAC) zu senken.",
   "home.blog.body": "Wir bereiten ausführliche Analysen zu grenzüberschreitenden Zahlungen, Korridorökonomie und FX-Intelligenz vor. Schauen Sie bald wieder vorbei.",
   "legal.pageSubtitle": "Nutzungsbedingungen, Risikohinweis und Datenschutzrichtlinie.",
   "legal.terms.h1": "01 — Dienstleistung",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Weltweit in Echtzeit bewertete Anbieter",
   "home.contact.eyebrow": "Kontakt",
   "home.contact.title": "Institutionelle Anfragen und Partnerschaften",
-  "home.contact.treasury.title": "Für Treasury-Operationen",
-  "home.contact.partners.title": "Für FX- und Zahlungspartnerschaften",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Einblicke in globalen Devisenhandel, Zahlungen und Geldtransfers",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

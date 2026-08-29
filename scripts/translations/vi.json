@@ -205,7 +205,6 @@
   "home.platform.brand": "Nền tảng mangomundi",
   "home.platform.tail": "là công cụ quyết định bằng AI đằng sau đó — bảo hiểm, môi giới, SaaS và nhiều lĩnh vực khác sẽ là bước tiếp theo.",
   "home.platform.learn": "Tìm hiểu thêm",
-  "home.stats.founded": "Được thành lập",
   "home.stats.countries": "Quốc gia",
   "home.stats.currencies": "Tiền tệ",
   "home.test.badge": "Tính Trung lập có thể Kiểm chứng",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Một thế giới nơi mọi khoản thanh toán ngoại hối địa phương hoặc xuyên biên giới, từ một khoản kiều hối gia đình đến một hoạt động ngân quỹ đa quốc gia, đều đi qua một lớp quyết định minh bạch và công bằng.",
   "home.about.problem.body": "Sự kém hiệu quả hai chiều. Một mặt, khách hàng cá nhân và doanh nghiệp phải đối mặt với một mê cung gây khó chịu để tìm tỷ giá tốt nhất. Mặt khác, các tổ chức tài chính phải vật lộn với chi phí thu hút khách hàng cao và các kênh phân mảnh.",
   "home.stats.subtitle": "Công cụ quyết định của chúng tôi đánh giá hơn 50 nhà cung cấp toàn cầu theo thời gian thực, chuẩn hóa tỷ giá, phí, tốc độ giao hàng và tính khả dụng của hành lang thành một so sánh rõ ràng.",
-  "home.contact.treasury.body": "Chúng tôi có thể phát triển các tác nhân AI tùy chỉnh, được lưu trữ tại chỗ, phù hợp với quy trình làm việc của đội ngũ ngân quỹ doanh nghiệp của bạn để tối ưu hóa tài trợ thương mại và hoạt động thanh khoản.",
-  "home.contact.partners.body": "Chúng tôi mong muốn hợp tác với các nhà điều hành thanh toán xuyên biên giới và nhà cung cấp đổi ngoại tệ; hãy cùng khám phá sự hợp lực thông qua các vị trí được tài trợ tích hợp và chương trình liên kết được thiết kế để tối đa hóa hiệu quả và giảm Chi phí Thu hút Khách hàng (CAC) của bạn.",
   "home.blog.body": "Chúng tôi đang chuẩn bị các phân tích chuyên sâu về thanh toán xuyên biên giới, kinh tế hành lang và trí tuệ ngoại hối. Hãy quay lại sớm.",
   "legal.pageSubtitle": "Điều khoản Dịch vụ, Công bố Rủi ro và Chính sách Bảo mật.",
   "legal.terms.h1": "01 — Dịch vụ",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Nhà cung cấp toàn cầu được đánh giá theo thời gian thực",
   "home.contact.eyebrow": "Liên hệ",
   "home.contact.title": "Yêu cầu Hợp tác và Tổ chức",
-  "home.contact.treasury.title": "Dành cho Hoạt động Ngân quỹ",
-  "home.contact.partners.title": "Dành cho Đối tác FX & Thanh toán",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Thông tin chuyên sâu về FX toàn cầu, thanh toán và chuyển tiền",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

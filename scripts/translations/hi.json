@@ -205,7 +205,6 @@
   "home.platform.brand": "mangomundi प्लेटफॉर्म",
   "home.platform.tail": "इसके पीछे का AI डिसीजन इंजन है — बीमा, ब्रोकर, SaaS, और बहुत कुछ अगले चरण में हैं।",
   "home.platform.learn": "और जानें",
-  "home.stats.founded": "स्थापना",
   "home.stats.countries": "देश",
   "home.stats.currencies": "मुद्राएं",
   "home.test.badge": "ऑडिट करने योग्य निष्पक्षता",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "एक ऐसी दुनिया जहां हर स्थानीय या सीमा-पार विदेशी मुद्रा भुगतान, पारिवारिक प्रेषण से लेकर बहुराष्ट्रीय ट्रेजरी संचालन तक, एक पारदर्शी और न्यायसंगत निर्णय परत से होकर गुजरता है।",
   "home.about.problem.body": "एक दो-तरफा अक्षमता। एक ओर, खुदरा ग्राहक और व्यवसाय सर्वोत्तम दरें खोजने में एक निराशाजनक भूलभुलैया का सामना करते हैं। दूसरी ओर, वित्तीय संस्थान उच्च अधिग्रहण लागत और खंडित चैनलों से जूझते हैं।",
   "home.stats.subtitle": "हमारा निर्णय इंजन रीयल-टाइम में 50 से अधिक वैश्विक प्रदाताओं का मूल्यांकन करता है, दरों, शुल्कों, डिलीवरी गति और कॉरिडोर उपलब्धता को एक स्पष्ट तुलना में सामान्यीकृत करता है।",
-  "home.contact.treasury.body": "हम व्यापार वित्त और तरलता संचालन को अनुकूलित करने के लिए आपकी कॉर्पोरेट ट्रेजरी टीम के वर्कफ़्लो के अनुरूप, ऑन-प्रिमाइस कस्टम AI एजेंट सेवा के रूप में विकसित कर सकते हैं।",
-  "home.contact.partners.body": "हम सीमा-पार भुगतान ऑपरेटरों और मुद्रा विनिमय प्रदाताओं के साथ तालमेल बिठाना चाहते हैं; आइए दक्षता को अधिकतम करने और आपकी ग्राहक अधिग्रहण लागत (CAC) को कम करने के लिए डिज़ाइन किए गए एकीकृत प्रायोजित प्लेसमेंट और सहबद्ध कार्यक्रमों के माध्यम से मिलकर तालमेल तलाशें।",
   "home.blog.body": "हम सीमा-पार भुगतान, कॉरिडोर अर्थशास्त्र, और विदेशी मुद्रा बुद्धिमत्ता पर गहन विश्लेषण तैयार कर रहे हैं। जल्द ही फिर से देखें।",
   "legal.pageSubtitle": "सेवा की शर्तें, जोखिम प्रकटीकरण, और गोपनीयता नीति।",
   "legal.terms.h1": "01 — सेवा",
@@ -539,8 +536,6 @@
   "home.stats.providers": "रीयल-टाइम में मूल्यांकित वैश्विक प्रदाता",
   "home.contact.eyebrow": "संपर्क करें",
   "home.contact.title": "संस्थागत और साझेदारी पूछताछ",
-  "home.contact.treasury.title": "ट्रेजरी संचालन के लिए",
-  "home.contact.partners.title": "FX और भुगतान साझेदारी के लिए",
   "home.blog.eyebrow": "ब्लॉग",
   "home.blog.title": "वैश्विक एफएक्स, भुगतान और रेमिटेंस पर जानकारी",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

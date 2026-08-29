@@ -205,7 +205,6 @@
   "home.platform.brand": "mangomundi 平台",
   "home.platform.tail": "是其背后的 AI 决策引擎 —— 保险、经纪商、SaaS 等领域紧随其后。",
   "home.platform.learn": "了解更多",
-  "home.stats.founded": "成立于",
   "home.stats.countries": "国家/地区",
   "home.stats.currencies": "货币",
   "home.test.badge": "可审计的中立性",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "在这个世界里，从家庭汇款到跨国财资运营的每一笔本地或跨境外汇支付，都通过一个透明公平的决策层。",
   "home.about.problem.body": "一个双向的低效问题。一方面，零售客户和企业在寻找最佳汇率时面临令人沮丧的迷宫。另一方面，金融机构则在高昂的获客成本和分散的渠道中挣扎。",
   "home.stats.subtitle": "我们的决策引擎实时评估超过50家全球服务商，将汇率、手续费、到账速度和走廊可用性整合为清晰的比较。",
-  "home.contact.treasury.body": "我们可以开发定制化、本地部署的人工智能代理服务，根据贵公司财资团队的工作流程量身定制，以优化贸易融资和流动性运营。",
-  "home.contact.partners.body": "我们希望与跨境支付运营商和货币兑换服务商建立联系；让我们通过专为提高效率和降低客户获取成本（CAC）而设计的整合赞助展示位和联盟计划，共同探索协同效应。",
   "home.blog.body": "我们正在准备关于跨境支付、走廊经济学和外汇智能的深度分析。请稍后再来查看。",
   "legal.pageSubtitle": "服务条款、风险披露与隐私政策。",
   "legal.terms.h1": "01 — 服务",
@@ -539,8 +536,6 @@
   "home.stats.providers": "实时评估的全球服务商",
   "home.contact.eyebrow": "联系",
   "home.contact.title": "机构与合作伙伴咨询",
-  "home.contact.treasury.title": "面向财资运营",
-  "home.contact.partners.title": "面向外汇与支付合作伙伴",
   "home.blog.eyebrow": "博客",
   "home.blog.title": "全球外汇、支付与汇款洞察",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

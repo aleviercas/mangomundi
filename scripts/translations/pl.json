@@ -205,7 +205,6 @@
   "home.platform.brand": "Platforma mangomundi",
   "home.platform.tail": "to silnik decyzyjny AI, który za nią stoi — ubezpieczenia, brokerzy, SaaS i inne rozwiązania są następne w kolejce.",
   "home.platform.learn": "Dowiedz się więcej",
-  "home.stats.founded": "Rok założenia",
   "home.stats.countries": "Kraje",
   "home.stats.currencies": "Waluty",
   "home.test.badge": "Audytowalna neutralność",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Świat, w którym każda lokalna lub transgraniczna płatność walutowa, od rodzinnego przekazu pieniężnego po operację skarbową międzynarodowej korporacji, przechodzi przez przejrzystą i sprawiedliwą warstwę decyzyjną.",
   "home.about.problem.body": "Nieefektywność po obu stronach. Z jednej strony klienci detaliczni i firmy stają przed frustrującym labiryntem w poszukiwaniu najlepszych kursów. Z drugiej strony instytucje finansowe zmagają się z wysokimi kosztami pozyskania klienta i rozdrobnionymi kanałami.",
   "home.stats.subtitle": "Nasz silnik decyzyjny ocenia ponad 50 globalnych dostawców w czasie rzeczywistym, normalizując kursy, opłaty, szybkość dostawy i dostępność korytarzy w jednym przejrzystym porównaniu.",
-  "home.contact.treasury.body": "Możemy opracować niestandardowych agentów AI, hostowanych lokalnie, dostosowanych do przepływu pracy Twojego zespołu skarbowego, aby zoptymalizować finansowanie handlu i operacje płynnościowe.",
-  "home.contact.partners.body": "Chcemy nawiązać współpracę z operatorami płatności transgranicznych i dostawcami wymiany walut; wspólnie odkryjmy synergie poprzez zintegrowane sponsorowane pozycjonowanie i programy partnerskie zaprojektowane, by maksymalizować efektywność i obniżać koszt pozyskania klienta (CAC).",
   "home.blog.body": "Przygotowujemy dogłębne analizy dotyczące płatności transgranicznych, ekonomii korytarzy i inteligencji walutowej. Zajrzyj wkrótce ponownie.",
   "legal.pageSubtitle": "Warunki korzystania, ujawnienie ryzyka i polityka prywatności.",
   "legal.terms.h1": "01 — Usługa",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Globalnych dostawców ocenianych w czasie rzeczywistym",
   "home.contact.eyebrow": "Kontakt",
   "home.contact.title": "Zapytania instytucjonalne i partnerskie",
-  "home.contact.treasury.title": "Dla operacji skarbowych",
-  "home.contact.partners.title": "Dla partnerstw FX i płatniczych",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Analizy dotyczące globalnego rynku FX, płatności i przekazów pieniężnych",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

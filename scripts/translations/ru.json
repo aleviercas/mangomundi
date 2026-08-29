@@ -204,7 +204,6 @@
   "home.platform.brand": "Платформа mangomundi",
   "home.platform.tail": "— это ядро принятия решений на базе ИИ; на очереди страхование, брокеры, SaaS и многое другое.",
   "home.platform.learn": "Узнать больше",
-  "home.stats.founded": "Год основания",
   "home.stats.countries": "Страны",
   "home.stats.currencies": "Валюты",
   "home.test.badge": "Проверяемая нейтральность",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Мир, где каждый локальный или трансграничный валютный платёж, от семейного денежного перевода до операции казначейства транснациональной компании, проходит через прозрачный и справедливый уровень принятия решений.",
   "home.about.problem.body": "Двусторонняя неэффективность. С одной стороны, розничные клиенты и компании сталкиваются с разочаровывающим лабиринтом в поиске лучших курсов. С другой — финансовые учреждения борются с высокими затратами на привлечение клиентов и раздробленными каналами.",
   "home.stats.subtitle": "Наш механизм принятия решений оценивает более 50 мировых провайдеров в реальном времени, приводя курсы, комиссии, скорость доставки и доступность коридоров к единому наглядному сравнению.",
-  "home.contact.treasury.body": "Мы можем разработать индивидуальных ИИ-агентов с размещением на вашей стороне, адаптированных под рабочий процесс вашей корпоративной казначейской команды для оптимизации торгового финансирования и операций с ликвидностью.",
-  "home.contact.partners.body": "Мы стремимся сотрудничать с операторами трансграничных платежей и поставщиками валютного обмена; давайте вместе изучим синергию через интегрированные спонсируемые размещения и партнёрские программы, разработанные для максимизации эффективности и снижения стоимости привлечения клиента (CAC).",
   "home.blog.body": "Мы готовим подробные материалы о трансграничных платежах, экономике коридоров и валютной аналитике. Загляните позже.",
   "legal.pageSubtitle": "Условия обслуживания, раскрытие рисков и политика конфиденциальности.",
   "legal.terms.h1": "01 — Услуга",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Мировых провайдеров оценивается в реальном времени",
   "home.contact.eyebrow": "Контакты",
   "home.contact.title": "Институциональные и партнёрские запросы",
-  "home.contact.treasury.title": "Для казначейских операций",
-  "home.contact.partners.title": "Для партнёрств в сфере FX и платежей",
   "home.blog.eyebrow": "Блог",
   "home.blog.title": "Аналитика по глобальному FX, платежам и денежным переводам",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

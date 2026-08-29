@@ -206,7 +206,6 @@
   "home.platform.brand": "Plataforma mangomundi",
   "home.platform.tail": "é o motor de decisão por trás disso — seguros, corretoras, SaaS e muito mais são os próximos.",
   "home.platform.learn": "Saiba mais",
-  "home.stats.founded": "Fundada",
   "home.stats.countries": "Países",
   "home.stats.currencies": "Moedas",
   "home.test.badge": "Neutralidade Auditável",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "Um mundo onde cada pagamento cambial local ou transfronteiriço, desde uma remessa familiar até uma operação de tesouraria multinacional, passa por uma camada de decisão transparente e equitativa.",
   "home.about.problem.body": "Uma ineficiência de dois lados. Por um lado, clientes particulares e empresas enfrentam um labirinto frustrante em busca das melhores taxas. Por outro, as instituições financeiras lidam com custos de aquisição elevados e canais fragmentados.",
   "home.stats.subtitle": "O nosso motor de decisão avalia mais de 50 fornecedores globais em tempo real, normalizando taxas, comissões, velocidade de entrega e disponibilidade de corredores numa comparação clara.",
-  "home.contact.treasury.body": "Podemos desenvolver agentes de IA personalizados, alojados no local, adaptados ao fluxo de trabalho da sua equipa de tesouraria corporativa para otimizar o financiamento comercial e as operações de liquidez.",
-  "home.contact.partners.body": "Procuramos alinhar-nos com operadores de pagamentos transfronteiriços e fornecedores de câmbio; vamos explorar sinergias através de posicionamentos patrocinados integrados e programas de afiliados concebidos para maximizar a eficiência e reduzir o seu custo de aquisição de clientes (CAC).",
   "home.blog.body": "Estamos a preparar análises aprofundadas sobre pagamentos transfronteiriços, economia de corredores e inteligência cambial. Volte em breve.",
   "legal.pageSubtitle": "Termos de Serviço, Divulgação de Riscos e Política de Privacidade.",
   "legal.terms.h1": "01 — Serviço",
@@ -539,8 +536,6 @@
   "home.stats.providers": "Fornecedores globais avaliados em tempo real",
   "home.contact.eyebrow": "Contacto",
   "home.contact.title": "Pedidos institucionais e de parceria",
-  "home.contact.treasury.title": "Para operações de tesouraria",
-  "home.contact.partners.title": "Para parcerias de câmbio e pagamentos",
   "home.blog.eyebrow": "Blog",
   "home.blog.title": "Análises sobre FX global, pagamentos e remessas",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }

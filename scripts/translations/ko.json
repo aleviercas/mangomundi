@@ -205,7 +205,6 @@
   "home.platform.brand": "mangomundi 플랫폼",
   "home.platform.tail": "은 시스템 뒤에 있는 AI 의사결정 엔진입니다. 보험, 브로커, SaaS 등으로 영역을 확장할 예정입니다.",
   "home.platform.learn": "자세히 알아보기",
-  "home.stats.founded": "설립일",
   "home.stats.countries": "국가",
   "home.stats.currencies": "통화",
   "home.test.badge": "감사 가능한 중립성",
@@ -497,8 +496,6 @@
   "home.about.vision.body": "가족 송금부터 다국적 기업의 자금 운용까지, 모든 로컬 또는 국경 간 외환 결제가 투명하고 공정한 의사결정 계층을 거치는 세상.",
   "home.about.problem.body": "양방향의 비효율성. 한편으로 개인 고객과 기업은 최고의 환율을 찾기 위해 답답한 미로에 직면합니다. 다른 한편으로 금융 기관은 높은 고객 유치 비용과 분산된 채널로 어려움을 겪습니다.",
   "home.stats.subtitle": "당사의 의사결정 엔진은 50개 이상의 글로벌 제공업체를 실시간으로 평가하여 환율, 수수료, 배송 속도, 코리도어 가용성을 명확한 비교로 정규화합니다.",
-  "home.contact.treasury.body": "무역 금융과 유동성 운영을 최적화하기 위해 귀사의 기업 자금 운용팀 워크플로우에 맞춘 온프레미스 맞춤형 AI 에이전트를 서비스로 개발해 드릴 수 있습니다.",
-  "home.contact.partners.body": "국경 간 결제 사업자 및 환전 제공업체와 협력하고자 합니다. 효율성을 극대화하고 고객 유치 비용(CAC)을 절감하도록 설계된 통합 스폰서 노출 및 제휴 프로그램을 통해 함께 시너지를 모색해 보시죠.",
   "home.blog.body": "국경 간 결제, 코리도어 경제학, 외환 인텔리전스에 대한 심층 분석을 준비 중입니다. 곧 다시 확인해 주세요.",
   "legal.pageSubtitle": "서비스 약관, 위험 고지 및 개인정보 처리방침.",
   "legal.terms.h1": "01 — 서비스",
@@ -539,8 +536,6 @@
   "home.stats.providers": "실시간으로 평가되는 글로벌 제공업체 수",
   "home.contact.eyebrow": "문의",
   "home.contact.title": "기관 및 파트너십 문의",
-  "home.contact.treasury.title": "자금 운용을 위한",
-  "home.contact.partners.title": "FX 및 결제 파트너십을 위한",
   "home.blog.eyebrow": "블로그",
   "home.blog.title": "글로벌 외환, 결제 및 송금에 대한 인사이트",
   "footer.tagline": "Intelligent currency exchange decisions.",
@@ -734,5 +729,8 @@
   "comparator.row.deltaWinner": "the most we found",
   "comparator.row.affiliateLink": "Affiliate link",
   "comparator.row.onTrustpilot": "on Trustpilot",
-  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more."
+  "comparator.copilot.trustLine": "Answers come from the loaded comparison. It never favours a provider that pays us more.",
+  "home.stats.trustpilotValue": "4.6",
+  "home.stats.trustpilot": "on Trustpilot",
+  "home.contact.getQuotes": "Get business quotes"
 }
