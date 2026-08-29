@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "Xem tất cả {n} trên mangomundi",
   "comparator.badge.notVerified": "Giá ước tính — chưa được xác minh cho tuyến đường này",
   "comparator.badge.unconfirmed": "Chưa xác nhận",
-  "comparator.badge.promoPrefix": "Khuyến mãi:"
+  "comparator.badge.promoPrefix": "Khuyến mãi:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

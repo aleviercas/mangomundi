@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "mangomundi پر تمام {n} دیکھیں",
   "comparator.badge.notVerified": "تخمینی قیمت — اس مخصوص روٹ کے لیے تصدیق شدہ نہیں",
   "comparator.badge.unconfirmed": "غیر تصدیق شدہ",
-  "comparator.badge.promoPrefix": "پرومو:"
+  "comparator.badge.promoPrefix": "پرومو:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

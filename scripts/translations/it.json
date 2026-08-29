@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "Vedi tutti i {n} su mangomundi",
   "comparator.badge.notVerified": "Prezzo stimato — non verificato per questa rotta esatta",
   "comparator.badge.unconfirmed": "Non confermato",
-  "comparator.badge.promoPrefix": "Promo:"
+  "comparator.badge.promoPrefix": "Promo:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

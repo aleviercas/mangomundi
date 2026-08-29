@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "Zobacz wszystkie {n} na mangomundi",
   "comparator.badge.notVerified": "Szacowana cena — niezweryfikowana dla tej dokładnej trasy",
   "comparator.badge.unconfirmed": "Niepotwierdzone",
-  "comparator.badge.promoPrefix": "Promocja:"
+  "comparator.badge.promoPrefix": "Promocja:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

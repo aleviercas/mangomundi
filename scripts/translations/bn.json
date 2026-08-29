@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "mangomundi-তে সব {n}টি দেখুন",
   "comparator.badge.notVerified": "আনুমানিক মূল্য — এই নির্দিষ্ট রুটের জন্য যাচাই করা হয়নি",
   "comparator.badge.unconfirmed": "অনিশ্চিত",
-  "comparator.badge.promoPrefix": "প্রোমো:"
+  "comparator.badge.promoPrefix": "প্রোমো:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

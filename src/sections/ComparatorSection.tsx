@@ -52,6 +52,7 @@ import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { useProviderCounts } from "@/hooks/use-provider-counts";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { SITE_URL } from "@/config/site";
 import { captureBusinessLead } from "@/lib/agent.functions";
@@ -361,6 +362,14 @@ export function ComparatorSection({
   // of two separate magic numbers. This also removes an interactive control
   // from the card header, letting the box sit a bit shorter.
   const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
+  // Business-only fields (design/HANDOFF.md §4) — UI state only for now: no
+  // broker table exists yet to price a Spot/Forward/Option contract or a
+  // recurring schedule differently, so these don't change the query. They
+  // stay local until that table (and a place to persist the choice on a
+  // captured lead) exists — see docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md.
+  const [contractType, setContractType] = useState<"spot" | "forward" | "option">("spot");
+  const [frequency, setFrequency] = useState<"one_off" | "monthly" | "quarterly">("one_off");
+  const providerCounts = useProviderCounts();
   // Fixed: the Send/Receive pill was removed (it changed the meaning of the
   // FROM amount, which read as confusing). The amount is always what you
   // send; the server payload still expects a mode value.
@@ -1183,26 +1192,48 @@ export function ComparatorSection({
                 <Sparkle className="h-3.5 w-3.5 shrink-0" />
                 <span className="truncate">{t("home.search.compareLabel")}</span>
               </div>
-              <div
-                role="tablist"
-                aria-label={t("search.segment")}
-                className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-muted p-1"
-              >
-                {(["retail", "business"] as Segment[]).map((s) => (
-                  <button
-                    key={s}
-                    role="tab"
-                    aria-selected={segment === s}
-                    onClick={() => setSegment(s)}
-                    className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
-                      segment === s
-                        ? "bg-card text-foreground shadow-sm"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {t(`comparator.segment.${s}`)}
-                  </button>
-                ))}
+              <div className="flex shrink-0 items-center gap-2.5">
+                <div
+                  role="tablist"
+                  aria-label={t("search.segment")}
+                  className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-muted p-1"
+                >
+                  {(["retail", "business"] as Segment[]).map((s) => (
+                    <button
+                      key={s}
+                      role="tab"
+                      aria-selected={segment === s}
+                      onClick={() => setSegment(s)}
+                      className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
+                        segment === s
+                          ? "bg-card text-foreground shadow-sm"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {t(`comparator.segment.${s}`)}
+                    </button>
+                  ))}
+                </div>
+                {/* Real, live count (useProviderCounts → getProviderCounts
+                    server fn) — never a number hardcoded into copy, see
+                    design/HANDOFF.md §2. Hidden while loading/embedded
+                    rather than showing a stale or placeholder figure. */}
+                {!embedded && providerCounts.data && (
+                  <span className="hidden truncate text-xs text-muted-foreground sm:inline">
+                    {t(
+                      segment === "business"
+                        ? "comparator.segment.businessCount"
+                        : "comparator.segment.retailCount",
+                    ).replace(
+                      "{n}",
+                      String(
+                        segment === "business"
+                          ? providerCounts.data.business
+                          : providerCounts.data.retail,
+                      ),
+                    )}
+                  </span>
+                )}
               </div>
             </div>
 
@@ -1323,13 +1354,51 @@ export function ComparatorSection({
                       </>
                     ) : (
                       <>
-                        <span className="truncate">{t("comparator.cta.compareRates")}</span>
+                        <span className="truncate">
+                          {t(
+                            segment === "business"
+                              ? "comparator.cta.request"
+                              : "comparator.cta.compareRates",
+                          )}
+                        </span>
                         <ArrowRight className="h-4 w-4 shrink-0" />
                       </>
                     )}
                   </button>
                 </div>
               </div>
+
+              {/* Business-only: contract type + frequency (design/HANDOFF.md
+                  §4). UI state only for now — see the note by their
+                  useState above for why. */}
+              {segment === "business" && (
+                <div className="grid grid-cols-2 gap-2.5 @xl:w-1/2">
+                  <FieldLight label={t("comparator.field.contractType")}>
+                    <select
+                      value={contractType}
+                      onChange={(e) => setContractType(e.target.value as typeof contractType)}
+                      aria-label={t("comparator.field.contractType")}
+                      className={`${WHITE_FIELD} w-full`}
+                    >
+                      <option value="spot">{t("comparator.contractType.spot")}</option>
+                      <option value="forward">{t("comparator.contractType.forward")}</option>
+                      <option value="option">{t("comparator.contractType.option")}</option>
+                    </select>
+                  </FieldLight>
+                  <FieldLight label={t("comparator.field.frequency")}>
+                    <select
+                      value={frequency}
+                      onChange={(e) => setFrequency(e.target.value as typeof frequency)}
+                      aria-label={t("comparator.field.frequency")}
+                      className={`${WHITE_FIELD} w-full`}
+                    >
+                      <option value="one_off">{t("comparator.frequency.oneOff")}</option>
+                      <option value="monthly">{t("comparator.frequency.monthly")}</option>
+                      <option value="quarterly">{t("comparator.frequency.quarterly")}</option>
+                    </select>
+                  </FieldLight>
+                </div>
+              )}
 
               {/* Currency override — collapsed by default (the country pick
                   already implies the right currency for the vast majority of

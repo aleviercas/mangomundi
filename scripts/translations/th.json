@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "ดูทั้งหมด {n} รายการที่ mangomundi",
   "comparator.badge.notVerified": "ราคาโดยประมาณ — ยังไม่ได้ตรวจสอบสำหรับเส้นทางนี้",
   "comparator.badge.unconfirmed": "ยังไม่ยืนยัน",
-  "comparator.badge.promoPrefix": "โปรโม:"
+  "comparator.badge.promoPrefix": "โปรโม:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

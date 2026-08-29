@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "mangomundi पर सभी {n} देखें",
   "comparator.badge.notVerified": "अनुमानित मूल्य — इस सटीक मार्ग के लिए सत्यापित नहीं",
   "comparator.badge.unconfirmed": "अपुष्ट",
-  "comparator.badge.promoPrefix": "प्रोमो:"
+  "comparator.badge.promoPrefix": "प्रोमो:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

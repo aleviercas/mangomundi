@@ -560,6 +560,36 @@ interface CorridorNote {
   note: string;
 }
 
+/**
+ * Real, live counts of active providers per segment — for copy like "52
+ * providers · retail rates" / "14 brokers · negotiated rates" (design/
+ * HANDOFF.md §2/§4). Never hardcode these numbers in a component: the
+ * catalog changes as providers are researched and activated, and a number
+ * baked into copy goes stale silently (the exact problem HANDOFF §2 flags
+ * for the hero subtitle). `segment: "both"` counts toward both totals —
+ * same eligibility rule `compareProviders` already uses above.
+ */
+export const getProviderCounts = createServerFn({ method: "GET" }).handler(async () => {
+  const [{ count: retail, error: retailError }, { count: business, error: businessError }] =
+    await Promise.all([
+      supabaseAdmin
+        .from("providers")
+        .select("*", { count: "exact", head: true })
+        .eq("active", true)
+        .in("segment", ["retail", "both"]),
+      supabaseAdmin
+        .from("providers")
+        .select("*", { count: "exact", head: true })
+        .eq("active", true)
+        .in("segment", ["business", "both"]),
+    ]);
+  if (retailError || businessError) {
+    console.error("[server-fn]", retailError ?? businessError);
+    throw new Error("An unexpected error occurred. Please try again.");
+  }
+  return { retail: retail ?? 0, business: business ?? 0 };
+});
+
 export const compareProviders = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => compareSchema.parse(input))
   .handler(async ({ data }) => {

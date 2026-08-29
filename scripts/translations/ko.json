@@ -690,5 +690,16 @@
   "comparator.widget.viewAll": "mangomundi에서 {n}개 모두 보기",
   "comparator.badge.notVerified": "예상 가격 — 이 경로에 대해 확인되지 않음",
   "comparator.badge.unconfirmed": "미확인",
-  "comparator.badge.promoPrefix": "프로모:"
+  "comparator.badge.promoPrefix": "프로모:",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }

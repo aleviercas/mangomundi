@@ -687,5 +687,16 @@
   "comparator.legend.bankTransfer": "Banco: se deposita directo en la cuenta bancaria de quien recibe.",
   "comparator.legend.cardPayout": "Tarjeta: se acredita directo en la tarjeta de débito o prepaga de quien recibe.",
   "comparator.legend.broker": "Broker: se gestiona a través de una red local de brokers o agentes — común en transferencias grandes o de empresas.",
-  "comparator.widget.viewAll": "Ver los {n} en mangomundi"
+  "comparator.widget.viewAll": "Ver los {n} en mangomundi",
+  "comparator.segment.retailCount": "{n} providers · retail rates",
+  "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+  "comparator.field.contractType": "Contract type",
+  "comparator.contractType.spot": "Spot",
+  "comparator.contractType.forward": "Forward",
+  "comparator.contractType.option": "Option",
+  "comparator.field.frequency": "Frequency",
+  "comparator.frequency.oneOff": "One-off",
+  "comparator.frequency.monthly": "Monthly",
+  "comparator.frequency.quarterly": "Quarterly",
+  "comparator.cta.request": "Request"
 }
