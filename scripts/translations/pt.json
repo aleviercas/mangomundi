@@ -384,9 +384,6 @@
   "comparator.currencyPair.note": "Moedas base e de cotação para a operação.",
   "comparator.field.sourceCurrency": "Moeda de Origem",
   "comparator.field.targetCurrency": "Moeda de Destino",
-  "comparator.field.overrideCurrencyLink": "Precisa de uma moeda diferente da local?",
-  "comparator.field.overrideCurrencyOpen": "Enviar/receber em:",
-  "comparator.field.useLocalCurrency": "Usar a moeda local",
   "comparator.segment.retail": "Varejo",
   "comparator.segment.business": "Empresa",
   "comparator.title": "Encontre a rota ideal",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

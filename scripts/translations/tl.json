@@ -419,9 +419,6 @@
   "comparator.currencyPair": "Currency Pair",
   "comparator.field.sourceCurrency": "Source Currency",
   "comparator.field.targetCurrency": "Target Currency",
-  "comparator.field.overrideCurrencyLink": "Kailangan mo ba ng ibang currency bukod sa lokal?",
-  "comparator.field.overrideCurrencyOpen": "Magpadala/tumanggap sa:",
-  "comparator.field.useLocalCurrency": "Gamitin na lang ang lokal na currency",
   "comparator.copilot.title": "FX Copilot",
   "brand.decisionEngine": "Decision Engine ng Sistema",
   "brand.rfqDesk": "RFQ Desk",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

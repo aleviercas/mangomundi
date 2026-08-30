@@ -750,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

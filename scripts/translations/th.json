@@ -378,9 +378,6 @@
   "comparator.currencyPair.note": "สกุลเงินหลักและสกุลเงินอ้างอิงสำหรับการทำรายการ",
   "comparator.field.sourceCurrency": "สกุลเงินต้นทาง",
   "comparator.field.targetCurrency": "สกุลเงินปลายทาง",
-  "comparator.field.overrideCurrencyLink": "ต้องการสกุลเงินอื่นที่ไม่ใช่สกุลเงินท้องถิ่นหรือไม่?",
-  "comparator.field.overrideCurrencyOpen": "ส่ง/รับเป็น:",
-  "comparator.field.useLocalCurrency": "ใช้สกุลเงินท้องถิ่นแทน",
   "comparator.segment.retail": "รายย่อย",
   "comparator.segment.business": "ธุรกิจ",
   "comparator.title": "ค้นหาเส้นทางที่เหมาะสมที่สุด",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

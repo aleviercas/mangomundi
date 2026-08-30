@@ -385,9 +385,6 @@
   "comparator.currencyPair.note": "거래의 기준 통화 및 상대 통화.",
   "comparator.field.sourceCurrency": "보내는 통화",
   "comparator.field.targetCurrency": "받는 통화",
-  "comparator.field.overrideCurrencyLink": "현지 통화가 아닌 다른 통화가 필요하신가요?",
-  "comparator.field.overrideCurrencyOpen": "송금/수취 통화:",
-  "comparator.field.useLocalCurrency": "대신 현지 통화 사용",
   "comparator.segment.retail": "개인",
   "comparator.segment.business": "기업",
   "comparator.title": "최적의 경로 찾기",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

@@ -2609,9 +2609,13 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Base and quote currencies for the operation.",
     "comparator.field.sourceCurrency": "Source Currency",
     "comparator.field.targetCurrency": "Target Currency",
-    "comparator.field.overrideCurrencyLink": "Need a different currency than the local one?",
-    "comparator.field.overrideCurrencyOpen": "Send/receive in:",
-    "comparator.field.useLocalCurrency": "Use local currency instead",
+    // design/AJUSTES-3.md §A — the currency pill row (comparator.altCurrency.*
+    // below) replaced this collapsed override link; no callers left.
+    "comparator.altCurrency.sendLabel": "Send in another currency",
+    "comparator.altCurrency.receiveLabel": "Receive in another currency",
+    "comparator.altCurrency.all": "All {n}",
+    "comparator.altCurrency.destinationHint":
+      "the destination currency unlocks once you pick a country",
     "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Business",
     "comparator.segment.retailCount": "{n} providers · retail rates",
@@ -2952,9 +2956,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
     "comparator.field.sourceCurrency": "Divisa de Origen",
     "comparator.field.targetCurrency": "Divisa de Destino",
-    "comparator.field.overrideCurrencyLink": "¿Necesitás una moneda distinta a la local?",
-    "comparator.field.overrideCurrencyOpen": "Enviar/recibir en:",
-    "comparator.field.useLocalCurrency": "Usar la moneda local",
     "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Empresas",
     "search.eyebrow": "Terminal de inteligencia financiera",

@@ -380,9 +380,6 @@
   "comparator.currencyPair.note": "Valute di base e di quotazione per l'operazione.",
   "comparator.field.sourceCurrency": "Valuta di origine",
   "comparator.field.targetCurrency": "Valuta di destinazione",
-  "comparator.field.overrideCurrencyLink": "Hai bisogno di una valuta diversa da quella locale?",
-  "comparator.field.overrideCurrencyOpen": "Invia/ricevi in:",
-  "comparator.field.useLocalCurrency": "Usa invece la valuta locale",
   "comparator.segment.retail": "Retail",
   "comparator.segment.business": "Azienda",
   "comparator.title": "Trova la rotta ottimale",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

@@ -382,9 +382,6 @@
   "comparator.currencyPair.note": "Mata uang dasar dan kuotasi untuk operasi.",
   "comparator.field.sourceCurrency": "Mata Uang Asal",
   "comparator.field.targetCurrency": "Mata Uang Tujuan",
-  "comparator.field.overrideCurrencyLink": "Butuh mata uang yang berbeda dari mata uang lokal?",
-  "comparator.field.overrideCurrencyOpen": "Kirim/terima dalam:",
-  "comparator.field.useLocalCurrency": "Gunakan mata uang lokal saja",
   "comparator.segment.retail": "Ritel",
   "comparator.segment.business": "Bisnis",
   "comparator.title": "Temukan rute optimal",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

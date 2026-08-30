@@ -382,9 +382,6 @@
   "comparator.currencyPair.note": "संचालन के लिए आधार और उद्धरण मुद्राएँ।",
   "comparator.field.sourceCurrency": "स्रोत मुद्रा",
   "comparator.field.targetCurrency": "लक्ष्य मुद्रा",
-  "comparator.field.overrideCurrencyLink": "स्थानीय मुद्रा के बजाय किसी अलग मुद्रा की आवश्यकता है?",
-  "comparator.field.overrideCurrencyOpen": "भेजें/प्राप्त करें:",
-  "comparator.field.useLocalCurrency": "स्थानीय मुद्रा का उपयोग करें",
   "comparator.segment.retail": "रिटेल",
   "comparator.segment.business": "व्यवसाय",
   "comparator.title": "इष्टतम मार्ग खोजें",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

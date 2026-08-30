@@ -421,9 +421,6 @@
   "comparator.currencyPair.note": "Devises de base et de cotation pour l'opération.",
   "comparator.field.sourceCurrency": "Devise source",
   "comparator.field.targetCurrency": "Devise cible",
-  "comparator.field.overrideCurrencyLink": "Besoin d'une devise différente de la devise locale ?",
-  "comparator.field.overrideCurrencyOpen": "Envoyer/recevoir en :",
-  "comparator.field.useLocalCurrency": "Utiliser la devise locale à la place",
   "brand.rfqDesk": "Bureau RFQ",
   "brand.blog": "blog",
   "comparator.copilot.agent": "Agent IA",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

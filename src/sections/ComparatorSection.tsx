@@ -47,7 +47,13 @@ import {
   type ComparisonResult,
 } from "@/lib/fx.functions";
 import { useI18n } from "@/lib/i18n";
-import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/lib/countries";
+import {
+  localCurrency,
+  plausibleCurrencies,
+  primaryCountryForCurrency,
+  resolveRouteCode,
+} from "@/lib/countries";
+import { CURRENCIES } from "@/lib/currencies";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
@@ -366,23 +372,23 @@ export function ComparatorSection({
   const handleSendingCountryChange = (code: string) => {
     setSendingCountry(code);
     setFrom(localCurrency(code));
-    setFromCurrencyOverride(false);
   };
   const handleReceivingCountryChange = (code: string) => {
     setReceivingCountry(code);
     setTo(localCurrency(code));
-    setToCurrencyOverride(false);
   };
-  // Escape hatch for the real minority case where currency and country
-  // genuinely diverge: a multi-currency account (Wise, Revolut, business FX)
-  // held by someone sending from — or receiving into — a country whose local
-  // currency isn't the one they want. Off by default so the common case
-  // (country implies currency) stays a single click; once on, the server
-  // (fx.functions.ts, `currencyOverridden`) drops every corridor-specific
-  // MTO from the results, since e.g. Sendwave literally cannot pay a GBP
-  // account into EUR — only the broad-coverage brokers apply here.
-  const [fromCurrencyOverride, setFromCurrencyOverride] = useState(false);
-  const [toCurrencyOverride, setToCurrencyOverride] = useState(false);
+  // design/AJUSTES-3.md §A — the currency pill row (CurrencyPillRow, below)
+  // is the escape hatch for the real minority case where currency and
+  // country genuinely diverge: a multi-currency account (Wise, Revolut,
+  // business FX) held by someone sending from — or receiving into — a
+  // country whose local currency isn't the one they want. No separate
+  // override flag needs to travel with it: fx.functions.ts computes
+  // `currencyOverridden` purely by comparing from/to against
+  // localCurrency(sendingCountry/receivingCountry), so setting `from`/`to`
+  // away from the country's local currency (a pill tap) is itself the
+  // signal — and setting them back via handleSendingCountryChange/
+  // handleReceivingCountryChange above is itself the reset, since it always
+  // re-derives from `localCurrency(code)`.
   // Same country is only a dead-end when currency is left at the local
   // default too (comparing GBP->GBP within the UK is meaningless). Once the
   // override diverges the currency (e.g. UK->UK but GBP->EUR, a multi-
@@ -1359,20 +1365,20 @@ export function ComparatorSection({
                     )}
                   </span>
                 )}
-                {/* design/AJUSTES-1.md §B — inert on purpose: there's no
-                    /exchange screen to send it to yet (redesign decision
-                    #5 explicitly deferred that page, "no está diseñada").
-                    Shown as a button, not an <a>, so it never behaves like
-                    a broken link. */}
-                {!embedded && (
-                  <button
-                    type="button"
-                    className="hidden shrink-0 truncate text-[13px] font-bold sm:inline"
-                    style={{ color: "#C2410C" }}
-                  >
-                    {t("home.hero.localExchangeLink")}
-                  </button>
-                )}
+                {/* design/AJUSTES-1.md §B originally rendered this inert
+                    (no href, since /exchange doesn't exist — redesign
+                    decision #5, "no está diseñada"). design/AJUSTES-3.md §B
+                    revises that: an inert-but-visible link still reads as
+                    broken, and the rule for an unbuilt destination is to
+                    hide it, not fake it ("un enlace muerto cuesta más
+                    credibilidad que una función que todavía no anunciás").
+                    So it's gone from here entirely now — not moved into
+                    CurrencyPillRow's with-results row either, even though
+                    §A's own mockup literally places it there, because §B
+                    addresses this exact link by name and its rule is the
+                    more recent, more specific one. Re-add once /exchange
+                    is real; home.hero.localExchangeLink is kept in i18n.tsx
+                    for that. */}
               </div>
               {/* Mid-market exchange rate — moved into this header row when
                   compact (design/AJUSTES-2.md §2), replacing the standalone
@@ -1580,74 +1586,34 @@ export function ComparatorSection({
                 </div>
               )}
 
-              {/* Currency override — collapsed by default (the country pick
-                  already implies the right currency for the vast majority of
-                  transfers). Opens up two small currency pickers for the real
-                  minority case: a multi-currency account (Wise, Revolut,
-                  business FX) held by someone sending from — or receiving
-                  into — a country whose local currency isn't the one they
-                  actually want (e.g. sending from the UK but in EUR). Once
-                  open, the server drops every corridor-specific MTO from the
-                  results (see `currencyOverridden` in fx.functions.ts) —
-                  those genuinely can't serve a non-local currency, only the
-                  broad-coverage brokers can. */}
-              {!fromCurrencyOverride && !toCurrencyOverride ? (
-                <button
-                  type="button"
-                  onClick={() => setFromCurrencyOverride(true)}
-                  className="text-[11px] text-muted-foreground underline decoration-dotted underline-offset-2 hover:text-foreground"
-                >
-                  {t("comparator.field.overrideCurrencyLink")}
-                </button>
-              ) : (
-                <div className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-muted/40 px-3 py-2">
-                  <span className="text-[11px] text-muted-foreground">
-                    {t("comparator.field.overrideCurrencyOpen")}
-                  </span>
-                  <CurrencyCombobox
-                    value={from}
-                    onChange={(v) => {
-                      setFrom(v);
-                      setFromCurrencyOverride(true);
-                    }}
-                    ariaLabel={t("comparator.field.sourceCurrency")}
-                    triggerClassName="h-8 w-auto text-xs"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const prevFrom = from;
-                      setFrom(to);
-                      setTo(prevFrom);
-                    }}
-                    aria-label={t("comparator.swap")}
-                    className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-brand-cta-hover focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
-                  >
-                    <ArrowLeftRight className="h-3.5 w-3.5" />
-                  </button>
-                  <CurrencyCombobox
-                    value={to}
-                    onChange={(v) => {
-                      setTo(v);
-                      setToCurrencyOverride(true);
-                    }}
-                    ariaLabel={t("comparator.field.targetCurrency")}
-                    triggerClassName="h-8 w-auto text-xs"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFromCurrencyOverride(false);
-                      setToCurrencyOverride(false);
-                      setFrom(localCurrency(sendingCountry));
-                      if (receivingCountry) setTo(localCurrency(receivingCountry));
-                    }}
-                    className="ml-auto text-[11px] text-muted-foreground underline hover:text-foreground"
-                  >
-                    {t("comparator.field.useLocalCurrency")}
-                  </button>
-                </div>
-              )}
+              {/* design/AJUSTES-3.md §A — currency pills, replacing the old
+                  collapsed override link above (same underlying escape
+                  hatch: country stays the source of truth, only the
+                  currency shown/sent changes). */}
+              <CurrencyPillRow
+                t={t}
+                compact={compact}
+                sendingCountry={sendingCountry}
+                receivingCountry={receivingCountry}
+                from={from}
+                to={to}
+                onPickFrom={(code) => setFrom(code)}
+                onPickTo={(code) => {
+                  // §A rule 5 — a currency change re-runs the comparison
+                  // without an extra click, but only once a result already
+                  // exists to update (compact ⇒ both countries are already
+                  // set); before that, changing FROM/TO never auto-fires
+                  // either (same explicit-CTA rule every other field
+                  // follows here), so this stays scoped to the one case the
+                  // doc actually describes rather than changing that rule
+                  // for country fields too.
+                  if (compact && result) {
+                    compareMut.mutate({ from, to: code, sendingCountry, receivingCountry });
+                  } else {
+                    setTo(code);
+                  }
+                }}
+              />
 
               {validationError && (
                 <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
@@ -2435,6 +2401,93 @@ function TrustpilotCard({ t }: { t: (k: string) => string }) {
       <div className="mt-2">
         <TrustBox />
       </div>
+    </div>
+  );
+}
+
+// design/AJUSTES-3.md §A — the currency-pill row: a quick way to send in
+// (or receive) a currency other than the picked country's local one,
+// without opening the country picker again. Replaces the old collapsed
+// "override currency" link + two full CurrencyCombobox pickers (still
+// reused here for the "All N" pill) — that escape hatch solved the same
+// underlying problem this section describes (§A: "quien quiere mandar EUR
+// desde Reino Unido... sin las píldoras, ese usuario tiene que abrir el
+// popover"), just hidden behind a text link instead of always visible.
+// Country stays the single source of truth for the corridor (fx.functions.ts
+// computes `currencyOverridden` server-side purely by comparing from/to
+// against localCurrency(sendingCountry/receivingCountry) — no separate
+// override flag needs to travel with the request), so a pill tap only ever
+// calls `onPick`, never touches sendingCountry/receivingCountry.
+function CurrencyPillRow({
+  t,
+  compact,
+  sendingCountry,
+  receivingCountry,
+  from,
+  to,
+  onPickFrom,
+  onPickTo,
+}: {
+  t: (k: string) => string;
+  compact: boolean;
+  sendingCountry: string;
+  receivingCountry: string;
+  from: string;
+  to: string;
+  onPickFrom: (code: string) => void;
+  onPickTo: (code: string) => void;
+}) {
+  // design/AJUSTES-2.md §2 — the row's own header-row rate banner already
+  // reads "compact" as "a result exists"; the pill row follows the same
+  // rule so both flip together: before a result, it's about what you SEND
+  // (the only side that's always known); once a result exists, both
+  // countries are guaranteed set, so it flips to what you RECEIVE — the
+  // more relevant question once you're looking at prices (§A: "porque ahí
+  // la pregunta ya no es en qué mandás sino en qué cobran").
+  const country = compact ? receivingCountry : sendingCountry;
+  if (!country) return null;
+  const current = compact ? to : from;
+  const onPick = compact ? onPickTo : onPickFrom;
+  const pills = plausibleCurrencies(country);
+  const height = compact ? "h-[30px]" : "h-8";
+
+  return (
+    <div className="flex flex-wrap items-center gap-[9px]">
+      <span className="text-[12px] font-bold" style={{ color: "#6B5F55" }}>
+        {t(compact ? "comparator.altCurrency.receiveLabel" : "comparator.altCurrency.sendLabel")}
+      </span>
+      {pills.map((code) => {
+        const active = current.toUpperCase() === code;
+        return (
+          <button
+            key={code}
+            type="button"
+            onClick={() => onPick(code)}
+            aria-pressed={active}
+            className={`inline-flex shrink-0 items-center ${height} rounded-[9px] px-3 text-[12.5px] transition-colors ${
+              active
+                ? "border-[1.5px] border-[#241C16] bg-[#F5EFE8] font-bold text-[#241C16]"
+                : "border border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#241C16]/40"
+            }`}
+          >
+            {code}
+          </button>
+        );
+      })}
+      <CurrencyCombobox
+        value=""
+        onChange={onPick}
+        placeholder={t("comparator.altCurrency.all").replace("{n}", String(CURRENCIES.length))}
+        ariaLabel={t(
+          compact ? "comparator.altCurrency.receiveLabel" : "comparator.altCurrency.sendLabel",
+        )}
+        triggerClassName={`inline-flex shrink-0 items-center ${height} w-auto gap-1 rounded-[9px] border border-dashed border-[#DCD1C4] bg-transparent px-2.5 text-[12.5px] font-semibold text-muted-foreground shadow-none hover:bg-transparent`}
+      />
+      {!compact && (
+        <span className="text-[12px]" style={{ color: "#8A7C6E" }}>
+          · {t("comparator.altCurrency.destinationHint")}
+        </span>
+      )}
     </div>
   );
 }

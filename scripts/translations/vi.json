@@ -383,9 +383,6 @@
   "comparator.currencyPair.note": "Đồng tiền cơ sở và đồng tiền định giá cho giao dịch.",
   "comparator.field.sourceCurrency": "Đồng tiền nguồn",
   "comparator.field.targetCurrency": "Đồng tiền đích",
-  "comparator.field.overrideCurrencyLink": "Cần một loại tiền tệ khác với tiền tệ địa phương?",
-  "comparator.field.overrideCurrencyOpen": "Gửi/nhận bằng:",
-  "comparator.field.useLocalCurrency": "Dùng tiền tệ địa phương",
   "comparator.segment.retail": "Cá nhân",
   "comparator.segment.business": "Doanh nghiệp",
   "comparator.title": "Tìm lộ trình tối ưu",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

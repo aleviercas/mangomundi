@@ -386,9 +386,6 @@
   "comparator.currencyPair.note": "Operasyon için baz ve karşıt para birimleri.",
   "comparator.field.sourceCurrency": "Kaynak Para Birimi",
   "comparator.field.targetCurrency": "Hedef Para Birimi",
-  "comparator.field.overrideCurrencyLink": "Yerel para biriminden farklı bir para birimi mi gerekiyor?",
-  "comparator.field.overrideCurrencyOpen": "Gönder/al:",
-  "comparator.field.useLocalCurrency": "Yerel para birimini kullan",
   "comparator.segment.retail": "Bireysel",
   "comparator.segment.business": "İşletme",
   "comparator.title": "Optimal rotayı bulun",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

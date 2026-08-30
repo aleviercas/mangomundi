@@ -385,9 +385,6 @@
   "comparator.currencyPair.note": "オペレーションの基準通貨と決済通貨。",
   "comparator.field.sourceCurrency": "送金元通貨",
   "comparator.field.targetCurrency": "受取通貨",
-  "comparator.field.overrideCurrencyLink": "現地通貨とは異なる通貨が必要ですか？",
-  "comparator.field.overrideCurrencyOpen": "送金/受取通貨：",
-  "comparator.field.useLocalCurrency": "代わりに現地通貨を使用",
   "comparator.segment.retail": "個人（リテール）",
   "comparator.segment.business": "法人",
   "comparator.title": "最適なルートを見つける",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

@@ -349,9 +349,6 @@
   "comparator.currencyPair.note": "آپریشن کے لیے بنیادی اور کوٹ کرنسی۔",
   "comparator.field.sourceCurrency": "منبع کرنسی",
   "comparator.field.targetCurrency": "ہدف کرنسی",
-  "comparator.field.overrideCurrencyLink": "مقامی کرنسی کے بجائے کوئی مختلف کرنسی چاہیے؟",
-  "comparator.field.overrideCurrencyOpen": "بھیجیں/وصول کریں:",
-  "comparator.field.useLocalCurrency": "مقامی کرنسی استعمال کریں",
   "comparator.segment.retail": "ریٹیل",
   "comparator.segment.business": "کاروبار",
   "comparator.title": "بہترین راستہ تلاش کریں",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

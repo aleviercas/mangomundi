@@ -375,9 +375,6 @@
   "comparator.currencyPair.note": "Basis- und Kurswährung für die Operation.",
   "comparator.field.sourceCurrency": "Quellwährung",
   "comparator.field.targetCurrency": "Zielwährung",
-  "comparator.field.overrideCurrencyLink": "Benötigen Sie eine andere Währung als die lokale?",
-  "comparator.field.overrideCurrencyOpen": "Senden/empfangen in:",
-  "comparator.field.useLocalCurrency": "Stattdessen lokale Währung verwenden",
   "comparator.segment.retail": "Privatkunden",
   "comparator.segment.business": "Unternehmen",
   "comparator.title": "Finden Sie die optimale Route",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }

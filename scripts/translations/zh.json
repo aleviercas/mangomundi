@@ -384,9 +384,6 @@
   "comparator.currencyPair.note": "操作的基础货币与计价货币。",
   "comparator.field.sourceCurrency": "源货币",
   "comparator.field.targetCurrency": "目标货币",
-  "comparator.field.overrideCurrencyLink": "需要使用与当地不同的货币吗？",
-  "comparator.field.overrideCurrencyOpen": "发送/接收货币：",
-  "comparator.field.useLocalCurrency": "改用当地货币",
   "comparator.segment.retail": "零售",
   "comparator.segment.business": "企业",
   "comparator.field.urgency": "Urgency",
@@ -753,5 +750,9 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "comparator.disclaimer.howWeMakeMoney": "How we make money",
-  "nav.forBusiness": "For business"
+  "nav.forBusiness": "For business",
+  "comparator.altCurrency.sendLabel": "Send in another currency",
+  "comparator.altCurrency.receiveLabel": "Receive in another currency",
+  "comparator.altCurrency.all": "All {n}",
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
 }
