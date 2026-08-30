@@ -559,6 +559,10 @@ export const DICTS: Record<Lang, Dict> = {
     // results eyebrow, literal wording, distinct from comparator.results
     // (the full table's "Your results" header) which this deliberately
     // doesn't reuse. {n} is result.rows.length, the real corridor count.
+    // design/Mangomundi 4 - Final.dc.html (line 435) — "Show N more
+    // providers" below the (now capped) results list, distinct from
+    // comparator.widget.viewAll (the widget's own "See all N" link).
+    "comparator.showMoreProviders": "Show {n} more providers",
     "comparator.widget.deliversMost": "Delivers the most",
     "comparator.widget.ofNCompared": "of {n} compared",
     // Business broker table (design/Mangomundi 4 - Final.dc.html line
@@ -588,11 +592,13 @@ export const DICTS: Record<Lang, Dict> = {
       "One email with your requirements. No broker gets your contact details until you reply to their quote.",
     "comparator.business.request.sent":
       "Sent. Brokers will reach out with quotes for you to compare — no obligation.",
-    "comparator.business.contractType.spot": "Spot",
-    "comparator.business.contractType.forward": "Forward",
-    "comparator.business.frequency.oneOff": "One-off",
-    "comparator.business.frequency.monthly": "Monthly",
-    "comparator.business.frequency.quarterly": "Quarterly",
+    // design/Mangomundi 4 - Final.dc.html line 552-557 — literal except the
+    // CTA: the mockup's "Book a 15-min call" is deliberately not built
+    // (2026-08-30 feedback, second round); email is the one real contact
+    // path this site has (business.extras.cta, same address).
+    "comparator.business.contactCard.title": "Rather talk to someone?",
+    "comparator.business.contactCard.body":
+      "We introduce you to the brokers and stay out of the pricing. No fee for you either way.",
     // Widget header freshness stamp (EmbedComparator) — real, per the
     // comment on useRatesFreshness there, not the dropped todaysRoutes claim.
     "widget.header.ratesJustNow": "rates just now",
@@ -606,8 +612,10 @@ export const DICTS: Record<Lang, Dict> = {
     // Footer
     // 2026-08-30 feedback — literal to design/Mangomundi 4 - Final.dc.html
     // line 234; EN-only change (decision #8), other langs keep the old copy.
-    "footer.tagline":
-      "Neutral decision engine for international transfers. We never move your money.",
+    // Second feedback round: drop "We never move your money." — the site
+    // says that elsewhere already (comparator step 3, the mockup's own
+    // "3 steps" copy), redundant in the footer tagline specifically.
+    "footer.tagline": "Neutral decision engine for international transfers.",
     // design/AJUSTES-3.md §B — Footer restructured to 3 literal columns
     // (Product / Company / Legal). footer.nav.title was "Navigate" over a
     // single flat list; repurposed as the "Company" column header now that
@@ -2023,8 +2031,7 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
     // the value that actually renders for EN — the DICTS.en copy above
     // (same key) is shadowed. Kept in sync rather than removed, since the
     // shadowing itself is pre-existing and out of scope here.
-    "footer.tagline":
-      "Neutral decision engine for international transfers. We never move your money.",
+    "footer.tagline": "Neutral decision engine for international transfers.",
     "footer.copyright": "All rights reserved.",
     "footer.disclaimerLabel": "disclaimer",
     "common.close": "Close",
@@ -2690,16 +2697,29 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.field.targetCurrency": "Target Currency",
     // design/AJUSTES-3.md §A — the currency pill row (comparator.altCurrency.*
     // below) replaced this collapsed override link; no callers left.
-    "comparator.altCurrency.sendLabel": "Send in another currency",
-    "comparator.altCurrency.receiveLabel": "Receive in another currency",
+    // 2026-08-30 feedback (second round) — sendLabel/receiveLabel ("Send/
+    // Receive in another currency") read as duplicated against the "You
+    // send"/"They receive" field labels right above this row. Replaced by
+    // one shared, currency-only question — the same copy the pre-AJUSTES-3
+    // collapsed link used (comparator.field.overrideCurrencyLink, now
+    // orphaned) — that works unchanged on both the send-side and
+    // receive-side row (CurrencyPillRow flips which country it reads, not
+    // this label).
+    "comparator.altCurrency.needDifferent": "Need a different currency than the local one?",
     "comparator.altCurrency.all": "All {n}",
     "comparator.altCurrency.destinationHint":
       "the destination currency unlocks once you pick a country",
     // 2026-08-30 feedback — the tooltip on the pill row's own label,
     // clarifying it's the only real currency control (the text next to
     // the country name is a readout of that country's local currency).
+    // Second round: rewritten to state the REAL mechanism (currencyOverridden
+    // in fx.functions.ts) rather than a vague "use this if..." — picking a
+    // non-local currency is real and priced, but it narrows the provider
+    // list to multi-currency platforms/banks; single-market MTOs tied to
+    // the local currency (e.g. a corridor-specific remittance app) drop out
+    // because they structurally can't serve a currency they don't operate.
     "comparator.altCurrency.explainer":
-      "Your currency follows the country you picked by default. Use this only if you're sending from — or receiving into — a different currency, like a multi-currency account. Picking one here never changes the country.",
+      "Your currency follows the country you picked by default. Choosing a different one is real and priced — but it narrows the list to providers that support it (multi-currency platforms, banks), since single-market apps tied to the local currency can't. Picking one here never changes the country.",
     "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Business",
     "comparator.segment.retailCount": "{n} providers · retail rates",

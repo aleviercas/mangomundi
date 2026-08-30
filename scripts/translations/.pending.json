@@ -15,8 +15,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.amountMode.receive",
     "comparator.amountMode.send",
     "comparator.b2bBanner.above",
@@ -141,11 +139,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "ar": [
     "about.coverage.body",
@@ -167,8 +164,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -334,11 +329,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "bn": [
     "about.coverage.body",
@@ -360,8 +354,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -528,11 +520,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "de": [
     "about.coverage.body",
@@ -554,8 +545,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -721,11 +710,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "fr": [
     "about.coverage.body",
@@ -747,8 +735,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -913,11 +899,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "hi": [
     "about.coverage.body",
@@ -939,8 +924,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -1106,11 +1089,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "id": [
     "about.coverage.body",
@@ -1132,8 +1114,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -1298,11 +1278,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "it": [
     "about.coverage.body",
@@ -1324,8 +1303,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -1490,11 +1467,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "ja": [
     "about.coverage.body",
@@ -1516,8 +1492,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -1683,11 +1657,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "ko": [
     "about.coverage.body",
@@ -1709,8 +1682,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -1876,11 +1847,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "pl": [
     "about.coverage.body",
@@ -1902,8 +1872,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -2068,11 +2036,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "ru": [
     "about.coverage.body",
@@ -2094,8 +2061,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -2260,11 +2225,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "th": [
     "about.coverage.body",
@@ -2286,8 +2250,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -2453,11 +2415,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "tl": [
     "about.coverage.body",
@@ -2479,8 +2440,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -2648,11 +2607,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "tr": [
     "about.coverage.body",
@@ -2674,8 +2632,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -2840,11 +2796,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "ur": [
     "about.coverage.body",
@@ -2866,8 +2821,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -3047,11 +3000,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "vi": [
     "about.coverage.body",
@@ -3073,8 +3025,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -3239,11 +3189,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "zh": [
     "about.coverage.body",
@@ -3265,8 +3214,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -3432,11 +3379,10 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ],
   "pt": [
     "agent.newResult",
@@ -3455,8 +3401,6 @@
     "comparator.altCurrency.all",
     "comparator.altCurrency.destinationHint",
     "comparator.altCurrency.explainer",
-    "comparator.altCurrency.receiveLabel",
-    "comparator.altCurrency.sendLabel",
     "comparator.b2bBanner.above",
     "comparator.b2bBanner.below",
     "comparator.b2bBanner.cta",
@@ -3582,10 +3526,9 @@
     "comparator.business.request.error",
     "comparator.business.request.disclaimer",
     "comparator.business.request.sent",
-    "comparator.business.contractType.spot",
-    "comparator.business.contractType.forward",
-    "comparator.business.frequency.oneOff",
-    "comparator.business.frequency.monthly",
-    "comparator.business.frequency.quarterly"
+    "comparator.altCurrency.needDifferent",
+    "comparator.showMoreProviders",
+    "comparator.business.contactCard.title",
+    "comparator.business.contactCard.body"
   ]
 }

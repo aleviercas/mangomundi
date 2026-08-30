@@ -5,43 +5,30 @@ import type { TKey } from "@/lib/i18n";
  *  route, e.g. `{ to: "/about", hash: "contact" }` for /about#contact. */
 export type NavEntry = { labelKey: TKey; to?: string; hash?: string };
 
-/** Home-section navigation shared by Footer's "Company" column. Order
- *  matches the page's scroll order so the anchors read top-to-bottom.
- *  "Home" is intentionally absent — the mangomundi wordmark (a
- *  `<Link to="/">` in both places) is the only home affordance.
- *
- *  design/AJUSTES-3.md §B — "For business" and "About" now point at their
- *  own real routes (/business, /about) rather than the home-page anchor:
- *  the doc calls out "For business" by name ("Hoy «For business» no
- *  apunta a /business — es un arreglo de una línea"), and About gets the
- *  same treatment now that /about is a real page (AJUSTES-4 §1) instead
- *  of a redirect stub — the home anchor is still there for anyone
- *  scrolling the page itself, it's just not what the nav link targets
- *  anymore. "Widget" gets the same treatment (2026-08-30 feedback) now
- *  that /widget is a real page too — the home page only has a small
- *  teaser card for it now (WidgetTeaserSection.tsx), not a full section
- *  worth anchoring to. */
-export const HOME_NAV: ReadonlyArray<NavEntry> = [
-  { hash: "how-it-works", labelKey: "footer.nav.how" },
-  { to: "/about", labelKey: "nav.about" },
-  { to: "/widget", labelKey: "home.widget.eyebrow" },
-  { to: "/business", labelKey: "nav.business" },
-  // 2026-08-30 feedback — Contact moved off the home page onto /about's
-  // own closing section (id="contact" there too), so this now points at
-  // /about#contact instead of a home anchor.
-  { to: "/about", hash: "contact", labelKey: "nav.contact" },
-  { hash: "blog", labelKey: "nav.blog" },
-];
-
 /** design/AJUSTES-2.md §7 (mockup line 252) — Header's own nav, literal
  *  order "How it works · For business · Widget · Blog · About", 5 items,
- *  no Contact. Deliberately separate from HOME_NAV: that one is shared
- *  with Footer and carries Contact plus a different order/label set. */
+ *  no Contact.
+ *
+ *  Navigation architecture (2026-08-30 feedback, second round — audited
+ *  for SEO: real routes get real URLs in the nav, anchors stay for content
+ *  that lives on the page it's reached from):
+ *  - How it works: stays a home-page anchor (`hash`) — it's a section of
+ *    the home page, not a page of its own, same as the comparator itself.
+ *  - For business, Widget, About: real standalone routes — each already
+ *    had one before this audit (design/AJUSTES-3.md §B, §A's own follow-up
+ *    for Widget), unchanged here.
+ *  - Blog: was `{ hash: "blog" }` (scrolled to the home page's teaser
+ *    section) even though a real, indexable /blog listing route already
+ *    exists (routes/blog.tsx) — the nav should send crawlers and visitors
+ *    to that real page, not bury it behind a home anchor. Fixed to
+ *    `{ to: "/blog" }`; the home page keeps its own "From the blog" teaser
+ *    section regardless (its own "All articles" link already points at
+ *    /blog too), it's just no longer what this nav link targets. */
 export const HEADER_NAV: ReadonlyArray<NavEntry> = [
   { hash: "how-it-works", labelKey: "footer.nav.how" },
   { to: "/business", labelKey: "nav.forBusiness" },
   { to: "/widget", labelKey: "home.widget.eyebrow" },
-  { hash: "blog", labelKey: "nav.blog" },
+  { to: "/blog", labelKey: "nav.blog" },
   { to: "/about", labelKey: "nav.about" },
 ];
 

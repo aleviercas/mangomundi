@@ -18,6 +18,7 @@ export function CountryCombobox({
   emptyLabel,
   ariaLabel,
   triggerClassName,
+  compactLabel,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -26,6 +27,7 @@ export function CountryCombobox({
   emptyLabel?: string;
   ariaLabel?: string;
   triggerClassName?: string;
+  compactLabel?: boolean;
 }) {
   return (
     <Combobox
@@ -37,6 +39,7 @@ export function CountryCombobox({
       emptyLabel={emptyLabel}
       ariaLabel={ariaLabel}
       triggerClassName={triggerClassName}
+      compactLabel={compactLabel}
     />
   );
 }

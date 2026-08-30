@@ -739,8 +739,6 @@
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
   "nav.forBusiness": "For business",
-  "comparator.altCurrency.sendLabel": "Send in another currency",
-  "comparator.altCurrency.receiveLabel": "Receive in another currency",
   "comparator.altCurrency.all": "All {n}",
   "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country",
   "footer.product.title": "Product",
@@ -790,9 +788,8 @@
   "comparator.business.request.error": "Something went wrong. Please try again.",
   "comparator.business.request.disclaimer": "One email with your requirements. No broker gets your contact details until you reply to their quote.",
   "comparator.business.request.sent": "Sent. Brokers will reach out with quotes for you to compare — no obligation.",
-  "comparator.business.contractType.spot": "Spot",
-  "comparator.business.contractType.forward": "Forward",
-  "comparator.business.frequency.oneOff": "One-off",
-  "comparator.business.frequency.monthly": "Monthly",
-  "comparator.business.frequency.quarterly": "Quarterly"
+  "comparator.altCurrency.needDifferent": "Need a different currency than the local one?",
+  "comparator.showMoreProviders": "Show {n} more providers",
+  "comparator.business.contactCard.title": "Rather talk to someone?",
+  "comparator.business.contactCard.body": "We introduce you to the brokers and stay out of the pricing. No fee for you either way."
 }

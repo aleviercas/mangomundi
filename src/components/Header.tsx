@@ -12,8 +12,8 @@ import { useI18n } from "@/lib/i18n";
  *  design/AJUSTES-2.md §7 (mockup line 249-254): 66px tall, solid white,
  *  1px #EBE3D9 bottom border, 30px lateral padding; nav 14px/600/#6B5F55
  *  with a 26px gap, in the literal order How it works · For business ·
- *  Widget · Blog · About (HEADER_NAV — a separate, shorter list from the
- *  Footer's HOME_NAV, see config/nav.ts); a language pill at the end. */
+ *  Widget · Blog · About (HEADER_NAV, see config/nav.ts); a language pill
+ *  at the end. */
 export function Header() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);

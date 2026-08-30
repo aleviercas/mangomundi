@@ -33,6 +33,13 @@ export interface ComboboxProps {
   triggerClassName?: string;
   disabled?: boolean;
   ariaLabel?: string;
+  /** 2026-08-30 feedback (second round) — the embeddable widget's own
+   *  amount+country row is a fixed ~360px container, nowhere near enough
+   *  for the trigger's normal "United Kingdom  GBP" (full country name +
+   *  code); shows just `secondary` (the currency code) instead, matching
+   *  the mockup's compact widget row. Off by default — every other caller
+   *  keeps the full country name. */
+  compactLabel?: boolean;
 }
 
 /**
@@ -52,6 +59,7 @@ export function Combobox({
   triggerClassName,
   disabled,
   ariaLabel,
+  compactLabel = false,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const selected = React.useMemo(() => options.find((o) => o.value === value), [options, value]);
@@ -74,15 +82,19 @@ export function Combobox({
             {selected?.leading && (
               <span className="shrink-0 text-base leading-none">{selected.leading}</span>
             )}
-            <span className={cn("truncate", !selected && "text-muted-foreground")}>
-              {selected ? selected.label : placeholder}
-            </span>
+            {!(compactLabel && selected?.secondary) && (
+              <span className={cn("truncate", !selected && "text-muted-foreground")}>
+                {selected ? selected.label : placeholder}
+              </span>
+            )}
             {/* Currency code alongside the country name — was only visible
                 inside the open dropdown list before, never on the closed
                 trigger, so "what currency am I actually sending/receiving"
                 required opening the picker to find out. shrink-0 so it
                 never gets truncated away in favor of the (longer, more
-                variable-length) country name. */}
+                variable-length) country name. compactLabel drops the name
+                entirely instead (see its own doc comment) — this is then
+                the only text left in the trigger. */}
             {selected?.secondary && (
               <span className="shrink-0 text-xs font-semibold text-muted-foreground">
                 {selected.secondary}

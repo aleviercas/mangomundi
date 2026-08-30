@@ -578,9 +578,9 @@ export function ComparatorSection({
     email?: string;
   }>({});
   const [savingBusinessLead, setSavingBusinessLead] = useState(false);
-  // "Add to request" selections on the business broker table (BusinessBrokerRow)
-  // — feeds BusinessRequestPanel's running list and, on submit, the
-  // selected_provider_slugs column added alongside contract_type/frequency.
+  // "Add to request" selections on the business results list (ProviderRow's
+  // businessExtra block) — feeds BusinessRequestPanel's running list and, on
+  // submit, the selected_provider_slugs column alongside contract_type/frequency.
   const [requestedSlugs, setRequestedSlugs] = useState<Set<string>>(new Set());
   const toggleRequestedSlug = (slug: string) => {
     setRequestedSlugs((current) => {
@@ -590,8 +590,6 @@ export function ComparatorSection({
       return next;
     });
   };
-  const [requestContractType, setRequestContractType] = useState("Spot");
-  const [requestFrequency, setRequestFrequency] = useState("Monthly");
   const [requestPanelStatus, setRequestPanelStatus] = useState<
     "idle" | "sending" | "sent" | "error"
   >("idle");
@@ -1394,8 +1392,8 @@ export function ComparatorSection({
           receivingCountry,
           locale: lang,
           consent: true,
-          contractType: requestContractType,
-          frequency: requestFrequency,
+          contractType: t(`comparator.contractType.${contractType}`),
+          frequency: t(`comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`),
           selectedProviderSlugs: Array.from(requestedSlugs),
           featureSource: "business_request_panel",
         },
@@ -1418,9 +1416,20 @@ export function ComparatorSection({
   const SectionTag = embedded ? "div" : "section";
   // design/AJUSTES-2.md §1 — the search row shrinks (58px→52px fields,
   // "Compare"→"Update") once there's a result to make room for. Same gate
-  // as the sticky-positioning check a few lines below (`result && !embedded`)
-  // — the widget's own sizing is unrelated to this home-page pattern.
+  // as the sticky-positioning check a few lines below (`result && !embedded`).
   const compact = Boolean(result) && !embedded;
+  // 2026-08-30 feedback (second round) — the widget's own sizing WAS
+  // "unrelated to this home-page pattern" (see git history), meaning it had
+  // none: `compact` being false for every embedded render left the basic
+  // row at full 58px/25px home-page size inside a fixed 360px container —
+  // exactly the "letra muy grande, mucho espacio desperdiciado" complaint,
+  // screenshotted against the mockup's compact row. Reuses the proven
+  // 52px/21px compact sizing (not a third size) for embedded, but ONLY the
+  // sizing — `compact` itself still separately governs the CTA label
+  // ("Update" only once a real result exists) and CurrencyPillRow's send/
+  // receive context, neither of which should flip just because this is a
+  // widget with no result yet.
+  const compactSize = compact || embedded;
 
   return (
     <SectionTag
@@ -1545,10 +1554,24 @@ export function ComparatorSection({
                   from the country pick instead of the other way around.
                   design/AJUSTES-2.md §1 — field heights/copy shrink once a
                   result exists (58px→52px, "Compare"→"Update"); the compact
-                  fields also swap to #FDFBF9 instead of white. Gated on
-                  `!embedded` — the widget's own compact sizing is unrelated
-                  to this home-page-only "search collapses" pattern. */}
-              <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[minmax(280px,1.1fr)_46px_minmax(260px,1fr)_176px]">
+                  fields also swap to #FDFBF9 instead of white.
+                  2026-08-30 feedback (second round) — the widget's own row
+                  used to be genuinely unrelated to any of this (see
+                  compactSize's own comment): @2xl never fires inside the
+                  widget's fixed ~360px container, so FROM/swap/TO always
+                  stacked vertically instead of sitting in one row like the
+                  mockup, regardless of `compact`. embedded gets its own,
+                  much lower container-query threshold (fields are also
+                  narrower there via compactSize/compactLabel) and drops the
+                  CTA into its own full-width row below instead of a 4th
+                  column, since there's no room for one at that width. */}
+              <div
+                className={
+                  embedded
+                    ? "grid grid-cols-1 items-stretch gap-2 @[280px]:grid-cols-[minmax(0,1fr)_38px_minmax(0,1fr)]"
+                    : "grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[minmax(280px,1.1fr)_46px_minmax(260px,1fr)_176px]"
+                }
+              >
                 {/* FROM box: "You send" — amount + country unified pill
                     (currency shown as the combobox's secondary/dropdown hint,
                     and in the mid-market rate banner once a comparison runs). */}
@@ -1558,7 +1581,7 @@ export function ComparatorSection({
                         split by a hairline divider instead of two boxes. */}
                     <div
                       className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
-                        compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
+                        compactSize ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
                       }`}
                     >
                       <input
@@ -1570,7 +1593,7 @@ export function ComparatorSection({
                         onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                         aria-label={t("comparator.field.amount")}
                         className={`min-w-0 flex-1 bg-transparent px-3.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
-                          compact ? "text-[21px]" : "text-[25px]"
+                          compactSize ? "text-[21px]" : "text-[25px]"
                         }`}
                       />
                       <CountryCombobox
@@ -1580,8 +1603,9 @@ export function ComparatorSection({
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.sourceCurrency")}
+                        compactLabel={embedded}
                         triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold shadow-none hover:bg-transparent focus:ring-0 ${
-                          compact ? "text-[14px]" : "text-[14.5px]"
+                          compactSize ? "text-[14px]" : "text-[14.5px]"
                         }`}
                       />
                     </div>
@@ -1603,13 +1627,13 @@ export function ComparatorSection({
                     }}
                     aria-label={t("comparator.swap")}
                     className={`flex shrink-0 items-center justify-center rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                      compact ? "h-[52px] w-[44px]" : "h-[58px] w-[46px]"
+                      compactSize ? "h-[52px] w-[44px]" : "h-[58px] w-[46px]"
                     }`}
                     style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                   >
                     <ArrowLeftRight
                       strokeWidth={2.2}
-                      className={`rotate-90 @2xl:rotate-0 ${compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
+                      className={`rotate-90 @2xl:rotate-0 ${embedded ? "!rotate-0" : ""} ${compactSize ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
                     />
                   </button>
                 </div>
@@ -1625,8 +1649,9 @@ export function ComparatorSection({
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.targetCurrency")}
+                      compactLabel={embedded}
                       triggerClassName={`w-full rounded-md border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                        compact
+                        compactSize
                           ? "h-[52px] bg-[#FDFBF9] text-[14px]"
                           : "h-[58px] bg-card text-[14.5px]"
                       } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
@@ -1634,7 +1659,9 @@ export function ComparatorSection({
                   </FieldLight>
                 </div>
 
-                <div className="flex flex-col justify-end">
+                <div
+                  className={`flex flex-col justify-end ${embedded ? "@[280px]:col-span-3" : ""}`}
+                >
                   <button
                     type="button"
                     onClick={() => {
@@ -1651,8 +1678,8 @@ export function ComparatorSection({
                       sameCorridorBlocked ||
                       amount <= 0
                     }
-                    className={`btn-cta inline-flex w-full items-center justify-center rounded-md px-6 text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @2xl:w-[176px] ${
-                      compact
+                    className={`btn-cta inline-flex w-full items-center justify-center rounded-md px-6 text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring ${embedded ? "" : "@2xl:w-[176px]"} ${
+                      compactSize
                         ? "h-[52px]"
                         : "h-[58px] shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
                     }`}
@@ -1865,55 +1892,63 @@ export function ComparatorSection({
                   sortBy={sortBy}
                   setSortBy={setSortBy}
                 />
-                {showDockedAgent && segment === "business" ? (
-                  // design/Mangomundi 4 - Final.dc.html line 532-541 — the
-                  // business segment's docked rail is the "Your request"
-                  // summary panel, not the chat wizard (which stays for
-                  // retail, and for business on mobile/floating — see the
-                  // non-docked FloatingAgent below, unchanged).
-                  <BusinessRequestPanel
+                {showDockedAgent && (
+                  // 2026-08-30 feedback (second round) — "el agente ai de
+                  // business puede ser el mismo que se usa en individual...
+                  // ya está incluido el modo business": FloatingAgent's own
+                  // conversation logic already handles segment === "business"
+                  // (businessStage etc.), so it stays, unchanged, for both
+                  // segments — same correction as the results row: the
+                  // business panel below is an ADDITION, not a replacement.
+                  <FloatingAgent
+                    docked
+                    collapsed={aiCollapsed}
+                    onToggle={handleAgentToggle}
+                    hasNewResult={hasNewResult}
                     amount={amount}
-                    from={from}
-                    to={to}
-                    totalBrokers={result?.rows.length ?? 0}
-                    requestedSlugs={requestedSlugs}
-                    requestContractType={requestContractType}
-                    setRequestContractType={setRequestContractType}
-                    requestFrequency={requestFrequency}
-                    setRequestFrequency={setRequestFrequency}
-                    status={requestPanelStatus}
-                    onSend={sendBusinessRequest}
+                    lang={lang}
+                    t={t}
+                    aiLoading={aiLoading}
+                    chat={chat}
+                    result={result}
+                    chatInput={chatInput}
+                    setChatInput={setChatInput}
+                    sendChat={sendChat}
+                    chatMutPending={chatMut.isPending}
+                    comparePending={compareMut.isPending}
+                    onSuggestedCompare={runSuggestedCompare}
+                    chatBottomRef={chatBottomRef}
+                    openPreferredRate={openPreferredRate}
+                    segment={segment}
+                    businessStage={businessStage}
+                    savingBusinessLead={savingBusinessLead}
+                    confirmBusinessLead={confirmBusinessLead}
+                    setBusinessStage={setBusinessStage}
+                    setChat={setChat}
+                    onWizardAction={handleWizardAction}
                   />
-                ) : (
-                  showDockedAgent && (
-                    <FloatingAgent
-                      docked
-                      collapsed={aiCollapsed}
-                      onToggle={handleAgentToggle}
-                      hasNewResult={hasNewResult}
+                )}
+                {showDockedAgent && segment === "business" && (
+                  // design/Mangomundi 4 - Final.dc.html line 532-541 — the
+                  // "Your request" summary + contact card, additional to
+                  // the agent above (not instead of it — see this block's
+                  // own 2026-08-30 comment).
+                  <div className="mt-3 flex flex-col gap-3">
+                    <BusinessRequestPanel
                       amount={amount}
-                      lang={lang}
-                      t={t}
-                      aiLoading={aiLoading}
-                      chat={chat}
-                      result={result}
-                      chatInput={chatInput}
-                      setChatInput={setChatInput}
-                      sendChat={sendChat}
-                      chatMutPending={chatMut.isPending}
-                      comparePending={compareMut.isPending}
-                      onSuggestedCompare={runSuggestedCompare}
-                      chatBottomRef={chatBottomRef}
-                      openPreferredRate={openPreferredRate}
-                      segment={segment}
-                      businessStage={businessStage}
-                      savingBusinessLead={savingBusinessLead}
-                      confirmBusinessLead={confirmBusinessLead}
-                      setBusinessStage={setBusinessStage}
-                      setChat={setChat}
-                      onWizardAction={handleWizardAction}
+                      from={from}
+                      to={to}
+                      totalBrokers={result?.rows.length ?? 0}
+                      requestedSlugs={requestedSlugs}
+                      contractTypeLabel={t(`comparator.contractType.${contractType}`)}
+                      frequencyLabel={t(
+                        `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
+                      )}
+                      status={requestPanelStatus}
+                      onSend={sendBusinessRequest}
                     />
-                  )
+                    <BusinessContactCard />
+                  </div>
                 )}
                 <RateAlertCard
                   t={t}
@@ -2601,7 +2636,16 @@ function CurrencyPillRow({
   return (
     <div className="flex flex-wrap items-center gap-[9px]">
       <span className="flex items-center gap-1 text-[12px] font-bold" style={{ color: "#6B5F55" }}>
-        {t(compact ? "comparator.altCurrency.receiveLabel" : "comparator.altCurrency.sendLabel")}
+        {/* 2026-08-30 feedback (second round) — "Send in another currency" /
+            "Receive in another currency" read as duplicated against the
+            "You send"/"They receive" field labels directly above this row
+            (the word repeats). Back to the pre-AJUSTES-3 question phrasing
+            ("Need a different currency than the local one?", formerly
+            comparator.field.overrideCurrencyLink on the collapsed link this
+            row replaced) — one shared, currency-only question that reads
+            correctly next to either field, and doesn't collide with "send"/
+            "receive" from the labels above it. */}
+        {t("comparator.altCurrency.needDifferent")}
         {/* design/2026-08-30 feedback — "no entiendo el sentido de tener
             [...] otro selector de moneda abajo, no es lo mismo duplicado?"
             The country picker's currency text is a READOUT (its local
@@ -2644,9 +2688,7 @@ function CurrencyPillRow({
         value=""
         onChange={onPick}
         placeholder={t("comparator.altCurrency.all").replace("{n}", String(CURRENCIES.length))}
-        ariaLabel={t(
-          compact ? "comparator.altCurrency.receiveLabel" : "comparator.altCurrency.sendLabel",
-        )}
+        ariaLabel={t("comparator.altCurrency.needDifferent")}
         triggerClassName={`inline-flex shrink-0 items-center ${height} w-auto gap-1 rounded-[9px] border border-dashed border-[#DCD1C4] bg-transparent px-2.5 text-[12.5px] font-semibold text-muted-foreground shadow-none hover:bg-transparent`}
       />
       {!compact && (
@@ -3032,10 +3074,8 @@ function BusinessRequestPanel({
   to,
   totalBrokers,
   requestedSlugs,
-  requestContractType,
-  setRequestContractType,
-  requestFrequency,
-  setRequestFrequency,
+  contractTypeLabel,
+  frequencyLabel,
   status,
   onSend,
 }: {
@@ -3044,10 +3084,12 @@ function BusinessRequestPanel({
   to: string;
   totalBrokers: number;
   requestedSlugs: Set<string>;
-  requestContractType: string;
-  setRequestContractType: (v: string) => void;
-  requestFrequency: string;
-  setRequestFrequency: (v: string) => void;
+  /** Read-only here — the actual controls are the existing "Contract type"/
+   *  "Frequency" selects in the search row above (contractType/frequency
+   *  state, design/HANDOFF.md §4), already real and already wired; this
+   *  panel just reflects the current choice, same as Volume/Route below it. */
+  contractTypeLabel: string;
+  frequencyLabel: string;
   status: "idle" | "sending" | "sent" | "error";
   onSend: (email: string) => void;
 }) {
@@ -3095,25 +3137,9 @@ function BusinessRequestPanel({
           <span className="text-xs text-muted-foreground">
             {t("comparator.business.request.contract")}
           </span>
-          <div className="flex gap-1.5">
-            <select
-              value={requestContractType}
-              onChange={(e) => setRequestContractType(e.target.value)}
-              className="rounded-md border border-input bg-card px-1.5 py-0.5 text-[12px] font-bold text-foreground"
-            >
-              <option value="Spot">{t("comparator.business.contractType.spot")}</option>
-              <option value="Forward">{t("comparator.business.contractType.forward")}</option>
-            </select>
-            <select
-              value={requestFrequency}
-              onChange={(e) => setRequestFrequency(e.target.value)}
-              className="rounded-md border border-input bg-card px-1.5 py-0.5 text-[12px] font-bold text-foreground"
-            >
-              <option value="One-off">{t("comparator.business.frequency.oneOff")}</option>
-              <option value="Monthly">{t("comparator.business.frequency.monthly")}</option>
-              <option value="Quarterly">{t("comparator.business.frequency.quarterly")}</option>
-            </select>
-          </div>
+          <span className="text-[13px] font-bold text-foreground">
+            {contractTypeLabel} · {frequencyLabel}
+          </span>
         </div>
         <div className="flex items-baseline justify-between gap-2.5">
           <span className="text-xs text-muted-foreground">
@@ -3171,6 +3197,42 @@ function BusinessRequestPanel({
   );
 }
 
+// design/Mangomundi 4 - Final.dc.html (line 552-557) — the mockup's third
+// rail card is "Rather talk to someone?" + "Book a 15-min call". 2026-08-30
+// feedback (second round) is explicit: no booking flow — contact stays
+// email, same business desk address the home teaser and BusinessExtrasSection
+// already use. Literal to the mockup otherwise: same photo, top-anchored,
+// bordered card.
+function BusinessContactCard() {
+  const { t } = useI18n();
+  return (
+    <div className="overflow-hidden rounded-[18px] border border-border bg-card">
+      <img
+        src="/images/business-person.jpg"
+        alt=""
+        width={300}
+        height={120}
+        className="h-[120px] w-full object-cover object-[center_30%]"
+        loading="lazy"
+      />
+      <div className="p-4">
+        <h4 className="text-[14.5px] font-extrabold text-foreground">
+          {t("comparator.business.contactCard.title")}
+        </h4>
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          {t("comparator.business.contactCard.body")}
+        </p>
+        <a
+          href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
+          className="mt-2.5 flex h-10 items-center justify-center rounded-xl border-[1.5px] border-foreground text-[13px] font-bold text-foreground"
+        >
+          {t("business.extras.cta")}
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ===== Results table (light) =====
 function ResultsBlock({
   result,
@@ -3198,8 +3260,9 @@ function ResultsBlock({
   deliveryMethod: DeliveryMethod | null;
   showOnlyExclusive: boolean;
   /** design/Mangomundi 4 - Final.dc.html line 494-529 — business segment
-   *  swaps ProviderRow for the broker-table card (BusinessBrokerRow)
-   *  instead of the retail row layout. */
+   *  passes an extra businessExtra prop to every ProviderRow (see
+   *  BusinessRowExtra), never a different row layout — see this prop's own
+   *  2026-08-30 (second round) correction below. */
   segment: Segment;
   /** Best received amount from a same-corridor RETAIL comparison, fetched
    *  separately (see ComparatorSection's retail-baseline effect) so the
@@ -3312,6 +3375,17 @@ function ResultsBlock({
     second: "2-digit",
   });
 
+  // design/Mangomundi 4 - Final.dc.html (line 435) — "Show N more providers"
+  // instead of always rendering the full list; resets to collapsed whenever
+  // the underlying result changes (a new search shouldn't stay expanded from
+  // the previous one). Client-side only — result.rows is already fully
+  // loaded, so this is just how many of it render, not a new fetch.
+  const INITIAL_VISIBLE_ROWS = 6;
+  const [showAllRows, setShowAllRows] = useState(false);
+  useEffect(() => setShowAllRows(false), [result]);
+  const visibleRows = showAllRows ? displayRows : displayRows.slice(0, INITIAL_VISIBLE_ROWS);
+  const hiddenRowCount = displayRows.length - visibleRows.length;
+
   return (
     <div className="min-w-0">
       {/* Neutrality declared once, here, above the list (design/AJUSTES-1.md
@@ -3329,40 +3403,56 @@ function ResultsBlock({
           also what lets the same row layout work on mobile without a
           separate table. */}
       <div className={displayRows.length > 0 ? "flex flex-col gap-[11px]" : ""}>
-        {displayRows.map((row, i) =>
-          segment === "business" ? (
-            <BusinessBrokerRow
-              key={row.slug}
-              row={row}
-              quote={result.quote}
-              amount={amount}
-              savedVsRetail={retailBestReceived != null ? row.received - retailBestReceived : null}
-              requested={requestedSlugs.has(row.slug)}
-              onToggleRequested={() => onToggleRequested(row.slug)}
-            />
-          ) : (
-            <ProviderRow
-              key={row.slug}
-              row={row}
-              quote={result.quote}
-              base={result.base}
-              score={scoresBySlug.get(row.slug) ?? null}
-              delta={row.received - bestReceived}
-              featured={i === 0}
-              hasCorridorContext={hasCorridorContext}
-              onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
-              tCta={tCta}
-              sortBy={sortBy}
-              onFeeBreakdown={onFeeBreakdown}
-            />
-          ),
-        )}
+        {/* 2026-08-30 feedback (second round) — business used to swap this
+            for a completely different card (BusinessBrokerRow). Corrected:
+            the business segment gets the SAME row — same metrics, same
+            affiliate CTA, everything individual already has — with the
+            broker fields (spread/minimum/settlement/contracts) and "Add to
+            special request" appended as an ADDITIONAL block via
+            businessExtra, never a replacement. */}
+        {visibleRows.map((row, i) => (
+          <ProviderRow
+            key={row.slug}
+            row={row}
+            quote={result.quote}
+            base={result.base}
+            score={scoresBySlug.get(row.slug) ?? null}
+            delta={row.received - bestReceived}
+            featured={i === 0}
+            hasCorridorContext={hasCorridorContext}
+            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
+            tCta={tCta}
+            sortBy={sortBy}
+            onFeeBreakdown={onFeeBreakdown}
+            businessExtra={
+              segment === "business"
+                ? {
+                    amount,
+                    savedVsRetail:
+                      retailBestReceived != null ? row.received - retailBestReceived : null,
+                    requested: requestedSlugs.has(row.slug),
+                    onToggleRequested: () => onToggleRequested(row.slug),
+                  }
+                : undefined
+            }
+          />
+        ))}
         {organic.length === 0 && (
           <div className="rounded-2xl border border-border bg-card px-4 py-8 text-center text-sm text-muted-foreground">
             {deliveryMethod != null ? t("comparator.emptyFiltered") : t("comparator.empty")}
           </div>
         )}
       </div>
+
+      {hiddenRowCount > 0 && (
+        <button
+          type="button"
+          onClick={() => setShowAllRows(true)}
+          className="mt-3 flex h-11 w-full items-center justify-center rounded-xl border-[1.5px] border-input bg-card text-sm font-bold text-foreground transition-colors hover:border-foreground/40 sm:w-auto sm:px-5"
+        >
+          {t("comparator.showMoreProviders").replace("{n}", String(hiddenRowCount))}
+        </button>
+      )}
 
       <div className="mt-4 rounded-xl border border-border bg-card/50 px-4 py-3 text-[11px] text-muted-foreground">
         {tRatesSource}{" "}
@@ -3419,6 +3509,7 @@ function ProviderRow({
   tCta,
   sortBy,
   onFeeBreakdown,
+  businessExtra,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -3451,6 +3542,20 @@ function ProviderRow({
    *  wizard action already wired to the agent's own quick-actions grid,
    *  not a new per-row computation. */
   onFeeBreakdown: () => void;
+  /** design/Mangomundi 4 - Final.dc.html line 494-529 — business-only,
+   *  additive block (Spread/Minimum/Settlement/Contracts + "Add to special
+   *  request") appended below the row's existing footer. 2026-08-30
+   *  feedback (second round): this used to be a whole separate row
+   *  component replacing the individual layout — corrected to be exactly
+   *  this, an addition, since the business search should show everything
+   *  individual already does (affiliate CTA included) plus this. undefined
+   *  outside the business segment. */
+  businessExtra?: {
+    amount: number;
+    savedVsRetail: number | null;
+    requested: boolean;
+    onToggleRequested: () => void;
+  };
 }) {
   const { t } = useI18n();
   const deliveryLabel = formatDeliverySpeed(row.speed_hours);
@@ -3809,19 +3914,30 @@ function ProviderRow({
         )}
         <div className="mt-3">{cta}</div>
       </div>
+
+      {businessExtra && (
+        <BusinessRowExtra
+          row={row}
+          quote={quote}
+          amount={businessExtra.amount}
+          savedVsRetail={businessExtra.savedVsRetail}
+          requested={businessExtra.requested}
+          onToggleRequested={businessExtra.onToggleRequested}
+        />
+      )}
     </div>
   );
 }
 
-// ===== Business broker table =====
-// design/Mangomundi 4 - Final.dc.html (line 494-529) — a dedicated card
-// layout for the business/broker segment, not ProviderRow's retail metrics
-// (fee/rate/payout/speed): brokers are compared on Spread/Minimum/
-// Settlement/Contracts instead, plus an estimated saving vs. the retail
-// best on the same route and an "Add to request" toggle that feeds the
-// "Your request" panel (BusinessRequestPanel) rather than an affiliate
-// link — a broker quote is a request, not a one-click transfer.
-function BusinessBrokerRow({
+// ===== Business row extra =====
+// design/Mangomundi 4 - Final.dc.html (line 494-529) — appended below
+// ProviderRow's own footer when businessExtra is set (segment === "business"
+// only). 2026-08-30 feedback (second round): this used to be a whole
+// separate card replacing ProviderRow for business; corrected to be exactly
+// what its name says — an addition to the same row individual gets
+// (metrics, trust line, affiliate CTA all still render above this), not a
+// substitute for any of it.
+function BusinessRowExtra({
   row,
   quote,
   amount,
@@ -3856,78 +3972,48 @@ function BusinessBrokerRow({
   ];
 
   return (
-    <div className="rounded-[18px] border border-border bg-card p-4">
-      <div className="grid items-center gap-4 lg:grid-cols-[minmax(0,230px)_minmax(0,1fr)_190px]">
-        <div className="flex min-w-0 items-center gap-2.5">
-          <BrandLogo
-            name={row.name}
-            url={row.website_url ?? row.affiliate_url}
-            slug={row.slug}
-            size={32}
-            rounded={false}
-            className="shrink-0 rounded-md border border-border bg-white"
-          />
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="truncate text-[15.5px] font-bold text-foreground">{row.name}</span>
-              {row.has_exclusive_deal && (
-                <span
-                  className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide"
-                  style={{ background: "#FDE9E4", color: "#C2410C" }}
-                >
-                  {t("comparator.business.exclusiveTag")}
-                </span>
+    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-4">
+        {metrics.map((m) => (
+          <div key={m.labelKey} className="min-w-0">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t(m.labelKey)}
+            </div>
+            <div className="mt-0.5 truncate text-[13px] font-semibold tabular-nums text-foreground">
+              {m.value}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex shrink-0 items-center gap-3">
+        {savedVsRetail != null && savedVsRetail > 0 && (
+          <div className="text-right">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t("comparator.business.estOn").replace(
+                "{amount}",
+                amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
               )}
             </div>
-            {row.regulator && (
-              <div className="mt-0.5 truncate text-[11.5px] text-muted-foreground">
-                {row.regulator}
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-4">
-          {metrics.map((m) => (
-            <div key={m.labelKey} className="min-w-0">
-              <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-                {t(m.labelKey)}
-              </div>
-              <div className="mt-0.5 truncate text-[14.5px] font-semibold tabular-nums text-foreground">
-                {m.value}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="text-left lg:text-right">
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-            {t("comparator.business.estOn").replace(
-              "{amount}",
-              amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
-            )}
-          </div>
-          {savedVsRetail != null && savedVsRetail > 0 && (
-            <div className="mt-0.5 font-heading text-2xl font-extrabold leading-none tabular-nums text-foreground">
+            <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
               {savedVsRetail.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
-              <span className="text-xs font-bold text-muted-foreground">
+              <span className="text-[11px] font-bold text-muted-foreground">
                 {quote} {t("comparator.business.saved")}
               </span>
             </div>
-          )}
-          <button
-            type="button"
-            onClick={onToggleRequested}
-            aria-pressed={requested}
-            className={`mt-2 flex h-[42px] w-full items-center justify-center rounded-xl text-[13.5px] font-bold transition-colors lg:w-auto lg:min-w-[160px] ${
-              requested
-                ? "border-[1.5px] border-input bg-card text-foreground"
-                : "btn-cta border-transparent"
-            }`}
-          >
-            {requested ? t("comparator.business.added") : t("comparator.business.addToRequest")}
-          </button>
-        </div>
+          </div>
+        )}
+        <button
+          type="button"
+          onClick={onToggleRequested}
+          aria-pressed={requested}
+          className={`flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
+            requested
+              ? "border-[1.5px] border-foreground bg-card text-foreground"
+              : "border-[1.5px] border-input bg-card text-foreground hover:border-foreground/40"
+          }`}
+        >
+          {requested ? t("comparator.business.added") : t("comparator.business.addToRequest")}
+        </button>
       </div>
     </div>
   );

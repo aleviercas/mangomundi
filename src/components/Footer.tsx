@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
 import { FOOTER_COMPANY, FOOTER_PRODUCT, type NavEntry } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
-import { LangSwitcher } from "@/components/LangSwitcher";
 
 const socials = [
   {
@@ -57,8 +56,10 @@ function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyAr
  *  surface this had before, and noticeably more compact (28px/30px
  *  padding, 26px column gap — not py-16/gap-12). Copyright folds into the
  *  end of the Legal column here, literal to the mockup, rather than a
- *  separate bottom bar; the bottom bar that remains carries only the
- *  language switcher (real functionality with no mockup equivalent).
+ *  separate bottom bar — there is no bottom bar at all now: the language
+ *  switcher that used to live there (2026-08-30, first pass) was dropped
+ *  on the next round of feedback since Header already carries one, and a
+ *  second one only added a redundant bar.
  *  "Local exchange" (Product) and "How we make money" (Company) stay
  *  deliberately absent — see FOOTER_PRODUCT/FOOTER_COMPANY's own comments
  *  in config/nav.ts for why. The mockup's own wordmark here carries the
@@ -130,10 +131,6 @@ export function Footer() {
             ))}
             <span>© {new Date().getFullYear()} Mangomundi</span>
           </div>
-        </div>
-
-        <div className="mt-5 flex justify-end border-t border-white/10 pt-4">
-          <LangSwitcher direction="up" />
         </div>
       </div>
     </footer>

@@ -863,11 +863,10 @@ export const compareProviders = createServerFn({ method: "POST" })
 
 // ---------- getExclusiveCorridors ----------
 // design/AJUSTES-1.md §E — "Today's routes, already priced". No backend
-// query for "every corridor with an exclusive-deal provider" exists (and
-// this sandbox has no Supabase credentials to build/test one against real
-// data), so this deliberately reuses compareProviders — the same, already
-// real, already-tested comparison logic the whole site runs on — over a
-// short candidate list of commonly-searched pairs, instead of adding new
+// query for "every corridor with an exclusive-deal provider" exists, so
+// this deliberately reuses compareProviders — the same, already real,
+// already-tested comparison logic the whole site runs on — over a short
+// candidate list of commonly-searched pairs, instead of adding new
 // unverified query logic. TanStack Start server functions are directly
 // callable from other server code (no HTTP round trip server-side), so
 // this is a plain function call, not a new client request per candidate.
@@ -878,15 +877,36 @@ export const compareProviders = createServerFn({ method: "POST" })
 // pitch ("best of N, and it's an exclusive rate") only holds if those are
 // the same provider; otherwise the badge would be attached to a price that
 // has nothing to do with the deal.
-const EXCLUSIVE_CORRIDOR_CANDIDATES: ReadonlyArray<{ from: string; to: string }> = [
-  { from: "GBP", to: "MXN" },
-  { from: "USD", to: "PHP" },
-  { from: "EUR", to: "COP" },
-  { from: "GBP", to: "INR" },
-  { from: "USD", to: "MXN" },
-  { from: "EUR", to: "BRL" },
-  { from: "USD", to: "NGN" },
-  { from: "GBP", to: "PKR" },
+//
+// 2026-08-30 feedback — this section never rendered in production. Checked
+// the real data: every candidate's WITHOUT a sendingCountry/receivingCountry
+// falls back to each provider's generic flat/tiered pricing (the
+// corridor-rates lookup in compareProviders is skipped entirely without
+// both countries — see its own `if (!currencyOverridden && data.sendingCountry
+// && data.receivingCountry)` gate) — and on generic pricing, Atlantic Money
+// (0% spread, $3 flat fee, not an exclusive-deal provider) beats every
+// exclusive-deal provider's own generic default on every candidate, every
+// time. Real per-corridor fx_rates rows exist for several of these exact
+// pairs (e.g. Wise/MoneyGram on USD-MXN both quote fee 0/spread 0 — beats
+// Atlantic Money's generic $3 fee) but were never being used. Adding the
+// real sending/receiving country per candidate — not fabricated, matched to
+// the sending_country/receiving_country values actually present in fx_rates
+// for these pairs — lets that corridor-specific data apply, same as a real
+// visitor's own search would get.
+const EXCLUSIVE_CORRIDOR_CANDIDATES: ReadonlyArray<{
+  from: string;
+  to: string;
+  sendingCountry: string;
+  receivingCountry: string;
+}> = [
+  { from: "GBP", to: "MXN", sendingCountry: "GB", receivingCountry: "MX" },
+  { from: "USD", to: "PHP", sendingCountry: "US", receivingCountry: "PH" },
+  { from: "EUR", to: "COP", sendingCountry: "ES", receivingCountry: "CO" },
+  { from: "GBP", to: "INR", sendingCountry: "GB", receivingCountry: "IN" },
+  { from: "USD", to: "MXN", sendingCountry: "US", receivingCountry: "MX" },
+  { from: "EUR", to: "BRL", sendingCountry: "ES", receivingCountry: "BR" },
+  { from: "USD", to: "NGN", sendingCountry: "US", receivingCountry: "NG" },
+  { from: "GBP", to: "PKR", sendingCountry: "GB", receivingCountry: "PK" },
 ];
 const EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT = 1000;
 
@@ -913,6 +933,8 @@ export const getExclusiveCorridors = createServerFn({ method: "GET" }).handler(
               to: c.to,
               segment: "retail",
               amountMode: "send",
+              sendingCountry: c.sendingCountry,
+              receivingCountry: c.receivingCountry,
             },
           });
           if (result.rows.length === 0) return null;
