@@ -215,6 +215,10 @@ export const DICTS: Record<Lang, Dict> = {
     "nav.legal": "Legal",
     "nav.terms": "Terms",
     "nav.risk": "Risk",
+    // design/AJUSTES-2.md §7 — Header's own nav item text (mockup line
+    // 252), distinct from nav.business ("Business" alone, used by
+    // BusinessSection's eyebrow and Footer's nav — both out of scope here).
+    "nav.forBusiness": "For business",
     "institutional.cta": "Talk to the Institutional Desk",
     "brand.decisionEngine": "Decision Engine",
     "brand.partnerships": "Partnerships",

@@ -752,5 +752,6 @@
   "home.about.cta.aboutUs": "About us",
   "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
   "comparator.filters.clear": "Clear · {n}",
-  "comparator.disclaimer.howWeMakeMoney": "How we make money"
+  "comparator.disclaimer.howWeMakeMoney": "How we make money",
+  "nav.forBusiness": "For business"
 }

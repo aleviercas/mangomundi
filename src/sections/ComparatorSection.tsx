@@ -1277,11 +1277,12 @@ export function ComparatorSection({
         {/* THE comparator box — the single entry point. Basic row always
             visible; advanced fields fold out below inside the same card.
             Once a comparison has run, the card sticks under the fixed
-            header (top-16 = its 64px height) so the search stays reachable
-            and editable while the results list below scrolls underneath it
-            — the Kayak/Skyscanner "search collapses to a sticky bar, results
-            take the screen" pattern, without a second page. */}
-        <div className={`min-w-0 ${result && !embedded ? "sticky top-16 z-30" : ""}`}>
+            header (top-[66px] = its design/AJUSTES-2.md §7 height) so the
+            search stays reachable and editable while the results list below
+            scrolls underneath it — the Kayak/Skyscanner "search collapses
+            to a sticky bar, results take the screen" pattern, without a
+            second page. */}
+        <div className={`min-w-0 ${result && !embedded ? "sticky top-[66px] z-30" : ""}`}>
           {/* Decision card — light surface, same token language as the rest
               of the site (no more dark-navy island). */}
           <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.12)]">

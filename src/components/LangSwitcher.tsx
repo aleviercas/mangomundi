@@ -5,7 +5,18 @@ import { useMemo, useRef, useState, useEffect } from "react";
 
 const LANGS = SUPPORTED_LANGS.map((code) => LANGUAGE_METADATA[code]);
 
-export function LangSwitcher({ direction = "down" }: { direction?: "up" | "down" }) {
+export function LangSwitcher({
+  direction = "down",
+  variant = "default",
+}: {
+  direction?: "up" | "down";
+  /** design/AJUSTES-2.md §7 (mockup line 253) — Header's language pill:
+   *  flag + 13px code in a bordered rounded-full pill, no globe/chevron
+   *  icons. Footer's own trigger (variant "default", unchanged) keeps its
+   *  existing look; this only swaps the closed-state button, the dropdown
+   *  panel underneath is identical either way. */
+  variant?: "default" | "pill";
+}) {
   const { lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -40,16 +51,28 @@ export function LangSwitcher({ direction = "down" }: { direction?: "up" | "down"
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background/60 px-2.5 py-1.5 text-xs font-mono font-medium text-muted-foreground transition hover:border-primary/40 hover:bg-surface-elevated hover:text-primary"
-        aria-label="Change language"
-        aria-expanded={open}
-      >
-        <Globe className="h-3.5 w-3.5" />
-        <span>{current.label}</span>
-        <ChevronDown className="h-3 w-3 opacity-60" />
-      </button>
+      {variant === "pill" ? (
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex items-center gap-1.5 rounded-full border border-input px-3 py-1.5 text-[13px] text-foreground transition hover:border-foreground/40"
+          aria-label="Change language"
+          aria-expanded={open}
+        >
+          <FlagIcon country={current.flag} />
+          <span>{current.label}</span>
+        </button>
+      ) : (
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background/60 px-2.5 py-1.5 text-xs font-mono font-medium text-muted-foreground transition hover:border-primary/40 hover:bg-surface-elevated hover:text-primary"
+          aria-label="Change language"
+          aria-expanded={open}
+        >
+          <Globe className="h-3.5 w-3.5" />
+          <span>{current.label}</span>
+          <ChevronDown className="h-3 w-3 opacity-60" />
+        </button>
+      )}
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} aria-hidden />
@@ -102,7 +125,9 @@ export function LangSwitcher({ direction = "down" }: { direction?: "up" | "down"
                     <span className="min-w-0 flex-1 truncate whitespace-nowrap text-xs text-muted-foreground">
                       {l.native}
                     </span>
-                    {active && <span className="shrink-0 text-[10px] font-mono text-primary">●</span>}
+                    {active && (
+                      <span className="shrink-0 text-[10px] font-mono text-primary">●</span>
+                    )}
                   </button>
                 );
               })}

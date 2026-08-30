@@ -255,7 +255,7 @@ function LangKeyedShell() {
   return (
     <div key={lang} className="relative z-10 flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 pt-16">
+      <main className="flex-1 pt-[66px]">
         <Outlet />
       </main>
       <Footer />
