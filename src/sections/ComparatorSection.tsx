@@ -2376,13 +2376,12 @@ function RateAlertCard({
 }
 
 /** Trustpilot rating + the same "affiliate links never move a row up"
- *  disclaimer already shown elsewhere (design/HANDOFF.md §3). Colors and
- *  the "How we make money" link are literal to design/AJUSTES-2.md §6
- *  (mockup line 358-364) — the star/label are the success green token, not
- *  the warning-amber lucide default. No dedicated "how we make money" page
- *  exists in the app yet, so the link points at the same real destination
- *  "Read our method" in AboutManifestoSection already uses (/legal#risk):
- *  the closest existing content about affiliate neutrality. */
+ *  disclaimer already shown elsewhere (design/HANDOFF.md §3). Colors are
+ *  literal to design/AJUSTES-2.md §6 (mockup line 358-364) — the
+ *  star/label are the success green token, not the warning-amber lucide
+ *  default. The "How we make money" link points at the real page built
+ *  for it in design/AJUSTES-3.md §B (previously /legal#risk, the closest
+ *  substitute before that page existed). */
 function TrustpilotCard({ t }: { t: (k: string) => string }) {
   return (
     <div className="rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
@@ -2394,7 +2393,7 @@ function TrustpilotCard({ t }: { t: (k: string) => string }) {
       </div>
       <p className="mt-2 text-[11.5px] leading-[1.55] text-[#5C5147]">
         {t("comparator.disclaimer.neutrality")}{" "}
-        <Link to="/legal" hash="risk" className="font-semibold text-[#C2410C] hover:underline">
+        <Link to="/how-we-make-money" className="font-semibold text-[#C2410C] hover:underline">
           {t("comparator.disclaimer.howWeMakeMoney")}
         </Link>
       </p>

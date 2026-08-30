@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
-import { HOME_NAV } from "@/config/nav";
+import { FOOTER_COMPANY, FOOTER_PRODUCT, type NavEntry } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 import { LangSwitcher } from "@/components/LangSwitcher";
 
@@ -27,9 +27,32 @@ const socials = [
   },
 ];
 
+/** design/AJUSTES-3.md §B — Footer's own column, given either a home-page
+ *  anchor or a real route (NavEntry, config/nav.ts). */
+function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyArray<NavEntry> }) {
+  const { t } = useI18n();
+  return (
+    <div>
+      <h3 className="font-heading text-sm font-bold text-foreground">{t(titleKey)}</h3>
+      <ul className="mt-4 space-y-3">
+        {items.map((item) => (
+          <li key={item.labelKey}>
+            <Link
+              to={item.to ?? "/"}
+              hash={item.hash}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {t(item.labelKey)}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 export function Footer() {
   const { t } = useI18n();
-  const navigate = HOME_NAV.map(({ hash, labelKey }) => ({ hash, label: t(labelKey) }));
 
   const legal = [
     { to: "/legal", hash: "terms", label: t("footer.legal.terms") },
@@ -40,7 +63,9 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-muted">
       <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
+        {/* design/AJUSTES-3.md §B — Product · Company · Legal, plus the
+            logo/social column (mockup line 232: 1.4fr + 3×1fr). */}
+        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Link
               to="/"
@@ -72,24 +97,8 @@ export function Footer() {
             </div>
           </div>
 
-          <div>
-            <h3 className="font-heading text-sm font-bold text-foreground">
-              {t("footer.nav.title")}
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {navigate.map((l) => (
-                <li key={l.label}>
-                  <Link
-                    to="/"
-                    hash={l.hash}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <FooterColumn titleKey="footer.product.title" items={FOOTER_PRODUCT} />
+          <FooterColumn titleKey="footer.nav.title" items={FOOTER_COMPANY} />
 
           <div>
             <h3 className="font-heading text-sm font-bold text-foreground">

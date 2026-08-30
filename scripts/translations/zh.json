@@ -754,5 +754,18 @@
   "comparator.altCurrency.sendLabel": "Send in another currency",
   "comparator.altCurrency.receiveLabel": "Receive in another currency",
   "comparator.altCurrency.all": "All {n}",
-  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country"
+  "comparator.altCurrency.destinationHint": "the destination currency unlocks once you pick a country",
+  "about.howBusinessWorksLine": "We earn a commission from some providers when you open an account through us — at no extra cost to you, and it never changes who ranks first.",
+  "howWeMakeMoney.eyebrow": "Transparency",
+  "howWeMakeMoney.subtitle": "The short version: some providers pay us when you pick them. The ranking doesn't know that. Here's exactly how both of those are true at once.",
+  "howWeMakeMoney.s1.title": "How the money is made",
+  "howWeMakeMoney.s2.title": "What that commission doesn't change",
+  "howWeMakeMoney.s3.title": "How it's marked",
+  "howWeMakeMoney.s3.example": "Every row that comes from a paid relationship carries this label, right on the row, not in fine print:",
+  "howWeMakeMoney.s4.title": "Where the prices come from",
+  "howWeMakeMoney.s4.body": "A row is stamped Live only once we've researched real, provider-specific pricing for that exact country pair and it's confirmed. Otherwise it's stamped Estimated — the provider's general published rate, not verified for this specific route yet.",
+  "howWeMakeMoney.s4.example": "Both stamps as they appear on a result row:",
+  "footer.product.title": "Product",
+  "footer.product.comparator": "Comparator",
+  "footer.product.rateAlerts": "Rate alerts"
 }

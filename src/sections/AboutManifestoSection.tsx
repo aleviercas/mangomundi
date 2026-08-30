@@ -12,13 +12,12 @@ import { useI18n } from "@/lib/i18n";
  *  design/AJUSTES-2.md §5 (mockup line 169-186) only calls out the grid
  *  ratio, the stat-tile styling and the two CTA buttons — not the
  *  eyebrow/title/subtitle copy or their sizing, which AJUSTES-1 §F already
- *  set deliberately, so those stay untouched here. "Read our method" has
- *  no dedicated methodology page anywhere in the app; it links to the same
- *  real destination Footer.tsx already uses for "Risk Disclosure"
- *  (/legal#risk), the closest existing content to "how routing/ranking
- *  actually works" rather than a fabricated page. "About us" reuses the
- *  same /about → #about redirect the header nav's own About link already
- *  points to. */
+ *  set deliberately, so those stay untouched here.
+ *
+ *  design/AJUSTES-3.md §B: "Read our method" and "About us" now point at
+ *  real, dedicated pages — /how-we-make-money and /about — instead of the
+ *  /legal#risk fallback and the home-anchor redirect used before those
+ *  pages existed. */
 export function AboutManifestoSection() {
   const { t } = useI18n();
   // design/AJUSTES-1.md §F — "2026 Founded" drops out (a founding date is
@@ -78,8 +77,7 @@ export function AboutManifestoSection() {
             </p>
             <div className="mt-5 flex flex-wrap gap-3.5">
               <Link
-                to="/legal"
-                hash="risk"
+                to="/how-we-make-money"
                 className="inline-flex h-11 items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
               >
                 {t("home.about.cta.method")}

@@ -17,7 +17,6 @@ import { useI18n } from "@/lib/i18n";
 export function Header() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
-  const links = HEADER_NAV.map(({ hash, labelKey }) => ({ hash, label: t(labelKey) }));
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-[66px] border-b border-border bg-card">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-5 sm:px-[30px]">
@@ -32,14 +31,14 @@ export function Header() {
 
         {/* Desktop nav — right-aligned (logo left). */}
         <nav className="hidden items-center gap-[26px] md:flex" aria-label="Main">
-          {links.map((l) => (
+          {HEADER_NAV.map((item) => (
             <Link
-              key={l.hash}
-              to="/"
-              hash={l.hash}
+              key={item.labelKey}
+              to={item.to ?? "/"}
+              hash={item.hash}
               className="text-[14px] font-semibold text-muted-foreground transition-colors hover:text-foreground"
             >
-              {l.label}
+              {t(item.labelKey)}
             </Link>
           ))}
           <LangSwitcher variant="pill" />
@@ -64,15 +63,15 @@ export function Header() {
           aria-label="Main"
         >
           <ul className="space-y-1">
-            {links.map((l) => (
-              <li key={l.hash}>
+            {HEADER_NAV.map((item) => (
+              <li key={item.labelKey}>
                 <Link
-                  to="/"
-                  hash={l.hash}
+                  to={item.to ?? "/"}
+                  hash={item.hash}
                   onClick={() => setOpen(false)}
                   className="block rounded-md px-2 py-2 text-sm font-medium text-foreground hover:bg-muted"
                 >
-                  {l.label}
+                  {t(item.labelKey)}
                 </Link>
               </li>
             ))}

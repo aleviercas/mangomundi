@@ -546,8 +546,18 @@ export const DICTS: Record<Lang, Dict> = {
       "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
     // Footer
     "footer.tagline": "Smart currency exchange comparison, powered by AI.",
-    "footer.nav.title": "Navigate",
-    "footer.legal.title": "Legal & Compliance",
+    // design/AJUSTES-3.md §B — Footer restructured to 3 literal columns
+    // (Product / Company / Legal). footer.nav.title was "Navigate" over a
+    // single flat list; repurposed as the "Company" column header now that
+    // the list itself split into FOOTER_PRODUCT/FOOTER_COMPANY (nav.ts) —
+    // EN-only change (decision #8), the role changed, not just the word.
+    // footer.legal.title shortened from "Legal & Compliance" to match the
+    // doc's literal column name.
+    "footer.nav.title": "Company",
+    "footer.legal.title": "Legal",
+    "footer.product.title": "Product",
+    "footer.product.comparator": "Comparator",
+    "footer.product.rateAlerts": "Rate alerts",
     "footer.nav.home": "Home",
     "footer.nav.about": "About",
     "footer.nav.how": "How it works",
@@ -557,6 +567,27 @@ export const DICTS: Record<Lang, Dict> = {
     "footer.legal.risk": "Risk Disclosure",
     "footer.legal.privacy": "Privacy Policy",
     "footer.rights": "All rights reserved.",
+    // design/AJUSTES-3.md §B — /about's own "how the business works" teaser
+    // line, linking out to /how-we-make-money.
+    "about.howBusinessWorksLine":
+      "We earn a commission from some providers when you open an account through us — at no extra cost to you, and it never changes who ranks first.",
+    // design/AJUSTES-3.md §B — /how-we-make-money, the transparency page
+    // "Read our method"/"How we make money" all point to. Section bodies
+    // reuse legal.terms.s3 / home.test.c1 / fx.disclaimer / comparator.row.*
+    // and comparator.badge.notVerified — see the route file's own comment
+    // for exactly which existing key backs which section.
+    "howWeMakeMoney.eyebrow": "Transparency",
+    "howWeMakeMoney.subtitle":
+      "The short version: some providers pay us when you pick them. The ranking doesn't know that. Here's exactly how both of those are true at once.",
+    "howWeMakeMoney.s1.title": "How the money is made",
+    "howWeMakeMoney.s2.title": "What that commission doesn't change",
+    "howWeMakeMoney.s3.title": "How it's marked",
+    "howWeMakeMoney.s3.example":
+      "Every row that comes from a paid relationship carries this label, right on the row, not in fine print:",
+    "howWeMakeMoney.s4.title": "Where the prices come from",
+    "howWeMakeMoney.s4.body":
+      "A row is stamped Live only once we've researched real, provider-specific pricing for that exact country pair and it's confirmed. Otherwise it's stamped Estimated — the provider's general published rate, not verified for this specific route yet.",
+    "howWeMakeMoney.s4.example": "Both stamps as they appear on a result row:",
     // Legal page
     "legal.pageTitle": "Legal & Compliance",
     "legal.pageSubtitle": "Terms of Service, Risk Disclosure and Privacy Policy.",
@@ -3303,6 +3334,19 @@ const ROUTE_SEO_EN: RouteSeoMap = {
     title: "Legal & Risk Disclosures — mangomundi",
     description:
       "mangomundi Terms of Service, Risk Disclosures and Privacy Policy — how the neutral FX decision engine handles data, liability and user obligations.",
+  },
+  // design/AJUSTES-3.md §B — new routes; EN only for now, other languages
+  // fall back to SEO_META[lang] per getRouteSeo()'s documented behavior
+  // (same as any other route/language pair missing from these maps).
+  "/about": {
+    title: "About — mangomundi",
+    description:
+      "mangomundi is a neutral decision engine for cross-border payments and currency exchange — our mission, vision, and how the business works.",
+  },
+  "/how-we-make-money": {
+    title: "How we make money — mangomundi",
+    description:
+      "How mangomundi earns a commission from some providers, why that never changes the ranking, how affiliate links are marked, and where our prices come from.",
   },
 };
 
