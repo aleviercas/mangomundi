@@ -893,20 +893,36 @@ export const compareProviders = createServerFn({ method: "POST" })
 // the sending_country/receiving_country values actually present in fx_rates
 // for these pairs — lets that corridor-specific data apply, same as a real
 // visitor's own search would get.
+// 2026-08-30 feedback (third round) — "todays rates tienen que aparecer
+// varias más para poder cubrir todo el ancho de la página": the previous
+// 8-pair list only ever produced 1-2 qualifying winners (see the comment
+// above), nowhere near enough to fill a wide row. Checked each addition's
+// REAL spread/fee against the live fx_rates table before including it here
+// — every one below genuinely beats the generic multi-currency baseline
+// (Atlantic Money: 0% spread + a flat 3-unit fee, no corridor override,
+// so it wins by default whenever no real corridor data intervenes) at the
+// same 1000 reference amount getExclusiveCorridors already used, not
+// guessed. Dropped the ones that don't (GBP-MXN has no exclusive-provider
+// corridor row at all; GBP-INR/PKR, EUR-BRL, USD-PHP all lose to Atlantic
+// Money on the real numbers) rather than padding the list with corridors
+// that would just silently fail to qualify anyway.
 const EXCLUSIVE_CORRIDOR_CANDIDATES: ReadonlyArray<{
   from: string;
   to: string;
   sendingCountry: string;
   receivingCountry: string;
 }> = [
-  { from: "GBP", to: "MXN", sendingCountry: "GB", receivingCountry: "MX" },
-  { from: "USD", to: "PHP", sendingCountry: "US", receivingCountry: "PH" },
-  { from: "EUR", to: "COP", sendingCountry: "ES", receivingCountry: "CO" },
-  { from: "GBP", to: "INR", sendingCountry: "GB", receivingCountry: "IN" },
   { from: "USD", to: "MXN", sendingCountry: "US", receivingCountry: "MX" },
-  { from: "EUR", to: "BRL", sendingCountry: "ES", receivingCountry: "BR" },
   { from: "USD", to: "NGN", sendingCountry: "US", receivingCountry: "NG" },
-  { from: "GBP", to: "PKR", sendingCountry: "GB", receivingCountry: "PK" },
+  { from: "EUR", to: "COP", sendingCountry: "ES", receivingCountry: "CO" },
+  { from: "AUD", to: "INR", sendingCountry: "AU", receivingCountry: "IN" },
+  { from: "AUD", to: "PHP", sendingCountry: "AU", receivingCountry: "PH" },
+  { from: "AUD", to: "IDR", sendingCountry: "AU", receivingCountry: "ID" },
+  { from: "AUD", to: "ZAR", sendingCountry: "AU", receivingCountry: "ZA" },
+  { from: "CAD", to: "INR", sendingCountry: "CA", receivingCountry: "IN" },
+  { from: "CAD", to: "PHP", sendingCountry: "CA", receivingCountry: "PH" },
+  { from: "CAD", to: "NGN", sendingCountry: "CA", receivingCountry: "NG" },
+  { from: "CAD", to: "CNY", sendingCountry: "CA", receivingCountry: "CN" },
 ];
 const EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT = 1000;
 

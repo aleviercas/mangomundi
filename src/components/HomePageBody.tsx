@@ -6,6 +6,7 @@ import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { BusinessWidgetRow } from "@/sections/BusinessWidgetRow";
 import { BlogSection } from "@/sections/BlogSection";
+import { BusinessExtrasSection } from "@/sections/BusinessExtrasSection";
 
 export interface ComparatorQueryChange {
   from: string;
@@ -29,15 +30,24 @@ export function HomePageBody({
   initialQuery,
   onQueryChange,
   hideMarketingSections = false,
+  businessExtras = false,
 }: {
   initialQuery: ComparatorQuery;
   onQueryChange?: (q: ComparatorQueryChange) => void;
-  /** design/AJUSTES-4.md §3 — /business wants its own dedicated content
-   *  (BusinessExtrasSection, the two-cards + contact block) directly below
-   *  the comparator/results, in every state, not the retail marketing
-   *  stack this component shows every other route while `!hasResult`.
-   *  Default false keeps "/" and "/send/$corridor" exactly as before. */
+  /** design/AJUSTES-4.md §3 — /business drops the retail marketing stack
+   *  this component shows every other route while `!hasResult`. Default
+   *  false keeps "/" and "/send/$corridor" exactly as before. */
   hideMarketingSections?: boolean;
+  /** 2026-08-30 feedback (third round) — BusinessExtrasSection ("Institutional
+   *  & Partnership Inquiries" + the two cards + photo) used to render
+   *  unconditionally below this component (routes/business.tsx rendered it
+   *  itself, outside HomePageBody, so it had no access to `hasResult`).
+   *  Corrected to the same rule every other marketing section here already
+   *  follows: visible before a search, hidden once a result lands — the
+   *  vertical rail's own BusinessContactCard (photo + email CTA) covers the
+   *  same "how to reach us" ground once there IS a result, so keeping both
+   *  visible was double coverage, not addition. */
+  businessExtras?: boolean;
 }) {
   // Drives the Kayak/Skyscanner-style "search mode" swap: once a comparison
   // has a result, the hero collapses and the comparator card (see its own
@@ -78,6 +88,12 @@ export function HomePageBody({
           <BlogSection />
         </>
       )}
+      {/* Same !hasResult gate as the marketing stack above, but independent
+          of hideMarketingSections — /business hides the retail stack
+          unconditionally while still wanting its own content gated on
+          whether a search has actually run (see businessExtras' own doc
+          comment above). */}
+      {!hasResult && businessExtras && <BusinessExtrasSection />}
     </>
   );
 }

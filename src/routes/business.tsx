@@ -3,7 +3,6 @@ import { useCallback } from "react";
 import { z } from "zod";
 import { HomePageBody, type ComparatorQueryChange } from "@/components/HomePageBody";
 import type { ComparatorQuery } from "@/sections/ComparatorSection";
-import { BusinessExtrasSection } from "@/sections/BusinessExtrasSection";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
 
@@ -83,16 +82,11 @@ function BusinessPage() {
   );
 
   return (
-    <>
-      <HomePageBody
-        initialQuery={initialQuery}
-        onQueryChange={handleQueryChange}
-        hideMarketingSections
-      />
-      {/* design/AJUSTES-4.md §3 — always directly below the comparator/quote
-          form and results table, in every state: /business's own content,
-          not the retail marketing stack HomePageBody hides above. */}
-      <BusinessExtrasSection />
-    </>
+    <HomePageBody
+      initialQuery={initialQuery}
+      onQueryChange={handleQueryChange}
+      hideMarketingSections
+      businessExtras
+    />
   );
 }

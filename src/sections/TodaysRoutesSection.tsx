@@ -27,12 +27,16 @@ export function TodaysRoutesSection() {
 
   // "Rotating on every visit" (§E) — a random starting offset into the
   // real qualifying list, re-rolled whenever the query data changes (i.e.
-  // once per page load). Never repeats a corridor to pad out to 4; shows
-  // however many genuinely qualify, up to 4.
+  // once per page load). Never repeats a corridor to pad out the count;
+  // shows however many genuinely qualify, up to 6 — raised from 4
+  // (2026-08-30 feedback, third round: "tienen que aparecer varias más
+  // para poder cubrir todo el ancho de la página") now that
+  // EXCLUSIVE_CORRIDOR_CANDIDATES (fx.functions.ts) has enough verified
+  // real winners to actually fill a 6-wide row on desktop.
   const shown = useMemo(() => {
     if (!corridors || corridors.length === 0) return [];
     const offset = Math.floor(Math.random() * corridors.length);
-    return Array.from({ length: Math.min(4, corridors.length) }, (_, i) => {
+    return Array.from({ length: Math.min(6, corridors.length) }, (_, i) => {
       const c = corridors[(i + offset) % corridors.length];
       return {
         ...c,
@@ -71,7 +75,7 @@ export function TodaysRoutesSection() {
           </a>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           {shown.map((c) => (
             <div key={`${c.from}-${c.to}`} className="rounded-2xl border border-border bg-card p-4">
               <div className="flex items-center gap-2 text-[13.5px] font-bold text-foreground">

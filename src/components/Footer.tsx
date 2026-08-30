@@ -86,7 +86,7 @@ export function Footer() {
               className="inline-flex items-center"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <Wordmark className="text-2xl" tone="light" icon={false} />
+              <Wordmark className="text-[21px]" tone="light" icon={false} />
             </Link>
             <p className="mt-2.5 max-w-[280px] text-[12.5px] leading-[1.6] text-[#8A7C6E]">
               {t("footer.tagline")}

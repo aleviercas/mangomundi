@@ -1418,18 +1418,19 @@ export function ComparatorSection({
   // "Compare"→"Update") once there's a result to make room for. Same gate
   // as the sticky-positioning check a few lines below (`result && !embedded`).
   const compact = Boolean(result) && !embedded;
-  // 2026-08-30 feedback (second round) — the widget's own sizing WAS
-  // "unrelated to this home-page pattern" (see git history), meaning it had
-  // none: `compact` being false for every embedded render left the basic
-  // row at full 58px/25px home-page size inside a fixed 360px container —
-  // exactly the "letra muy grande, mucho espacio desperdiciado" complaint,
-  // screenshotted against the mockup's compact row. Reuses the proven
-  // 52px/21px compact sizing (not a third size) for embedded, but ONLY the
-  // sizing — `compact` itself still separately governs the CTA label
+  // 2026-08-30 feedback (second, then third round) — the widget's own
+  // sizing WAS "unrelated to this home-page pattern" (see git history),
+  // meaning it had none: `compact` being false for every embedded render
+  // left the basic row at full 58px/25px home-page size inside a fixed
+  // 360px container — exactly the "letra muy grande, mucho espacio
+  // desperdiciado" complaint, screenshotted against the mockup's compact
+  // row. `embedded` now gets its OWN third, more aggressive size tier
+  // (42px/16px, closer to the mockup's literal 42px row) at each spot
+  // below, distinct from `compact`'s 52px/21px home-page tier — but ONLY
+  // for sizing; `compact` itself still separately governs the CTA label
   // ("Update" only once a real result exists) and CurrencyPillRow's send/
   // receive context, neither of which should flip just because this is a
   // widget with no result yet.
-  const compactSize = compact || embedded;
 
   return (
     <SectionTag
@@ -1555,16 +1556,17 @@ export function ComparatorSection({
                   design/AJUSTES-2.md §1 — field heights/copy shrink once a
                   result exists (58px→52px, "Compare"→"Update"); the compact
                   fields also swap to #FDFBF9 instead of white.
-                  2026-08-30 feedback (second round) — the widget's own row
-                  used to be genuinely unrelated to any of this (see
-                  compactSize's own comment): @2xl never fires inside the
-                  widget's fixed ~360px container, so FROM/swap/TO always
-                  stacked vertically instead of sitting in one row like the
-                  mockup, regardless of `compact`. embedded gets its own,
-                  much lower container-query threshold (fields are also
-                  narrower there via compactSize/compactLabel) and drops the
-                  CTA into its own full-width row below instead of a 4th
-                  column, since there's no room for one at that width. */}
+                  2026-08-30 feedback (second, then third round) — the
+                  widget's own row used to be genuinely unrelated to any of
+                  this (see the `compact` declaration's own comment): @2xl
+                  never fires inside the widget's fixed ~360px container, so
+                  FROM/swap/TO always stacked vertically instead of sitting
+                  in one row like the mockup, regardless of `compact`.
+                  `embedded` gets its own, much lower container-query
+                  threshold (fields are also narrower there, own 42px size
+                  tier + compactLabel) and drops the CTA into its own
+                  full-width row below instead of a 4th column, since
+                  there's no room for one at that width. */}
               <div
                 className={
                   embedded
@@ -1581,7 +1583,11 @@ export function ComparatorSection({
                         split by a hairline divider instead of two boxes. */}
                     <div
                       className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
-                        compactSize ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
+                        embedded
+                          ? "h-[42px] bg-white"
+                          : compact
+                            ? "h-[52px] bg-[#FDFBF9]"
+                            : "h-[58px] bg-card"
                       }`}
                     >
                       <input
@@ -1592,8 +1598,8 @@ export function ComparatorSection({
                         placeholder="1000"
                         onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                         aria-label={t("comparator.field.amount")}
-                        className={`min-w-0 flex-1 bg-transparent px-3.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
-                          compactSize ? "text-[21px]" : "text-[25px]"
+                        className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                          embedded ? "text-[16px]" : compact ? "text-[21px]" : "text-[25px]"
                         }`}
                       />
                       <CountryCombobox
@@ -1604,8 +1610,12 @@ export function ComparatorSection({
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.sourceCurrency")}
                         compactLabel={embedded}
-                        triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold shadow-none hover:bg-transparent focus:ring-0 ${
-                          compactSize ? "text-[14px]" : "text-[14.5px]"
+                        triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                          embedded
+                            ? "px-2 text-[12.5px]"
+                            : compact
+                              ? "px-3.5 text-[14px]"
+                              : "px-3.5 text-[14.5px]"
                         }`}
                       />
                     </div>
@@ -1627,13 +1637,17 @@ export function ComparatorSection({
                     }}
                     aria-label={t("comparator.swap")}
                     className={`flex shrink-0 items-center justify-center rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                      compactSize ? "h-[52px] w-[44px]" : "h-[58px] w-[46px]"
+                      embedded
+                        ? "h-[42px] w-[34px]"
+                        : compact
+                          ? "h-[52px] w-[44px]"
+                          : "h-[58px] w-[46px]"
                     }`}
                     style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                   >
                     <ArrowLeftRight
                       strokeWidth={2.2}
-                      className={`rotate-90 @2xl:rotate-0 ${embedded ? "!rotate-0" : ""} ${compactSize ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
+                      className={`rotate-90 @2xl:rotate-0 ${embedded ? "!rotate-0 h-[14px] w-[14px]" : compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
                     />
                   </button>
                 </div>
@@ -1651,9 +1665,11 @@ export function ComparatorSection({
                       ariaLabel={t("comparator.field.targetCurrency")}
                       compactLabel={embedded}
                       triggerClassName={`w-full rounded-md border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                        compactSize
-                          ? "h-[52px] bg-[#FDFBF9] text-[14px]"
-                          : "h-[58px] bg-card text-[14.5px]"
+                        embedded
+                          ? "h-[42px] bg-white text-[12.5px]"
+                          : compact
+                            ? "h-[52px] bg-[#FDFBF9] text-[14px]"
+                            : "h-[58px] bg-card text-[14.5px]"
                       } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
                     />
                   </FieldLight>
@@ -1678,10 +1694,12 @@ export function ComparatorSection({
                       sameCorridorBlocked ||
                       amount <= 0
                     }
-                    className={`btn-cta inline-flex w-full items-center justify-center rounded-md px-6 text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring ${embedded ? "" : "@2xl:w-[176px]"} ${
-                      compactSize
-                        ? "h-[52px]"
-                        : "h-[58px] shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
+                    className={`btn-cta inline-flex w-full items-center justify-center rounded-md text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring ${embedded ? "" : "@2xl:w-[176px]"} ${
+                      embedded
+                        ? "h-[42px] px-4 text-[14px]"
+                        : compact
+                          ? "h-[52px] px-6"
+                          : "h-[58px] px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
                     }`}
                   >
                     {compareMut.isPending ? (
@@ -1732,31 +1750,36 @@ export function ComparatorSection({
               {/* design/AJUSTES-3.md §A — currency pills, replacing the old
                   collapsed override link above (same underlying escape
                   hatch: country stays the source of truth, only the
-                  currency shown/sent changes). */}
-              <CurrencyPillRow
-                t={t}
-                compact={compact}
-                sendingCountry={sendingCountry}
-                receivingCountry={receivingCountry}
-                from={from}
-                to={to}
-                onPickFrom={(code) => setFrom(code)}
-                onPickTo={(code) => {
-                  // §A rule 5 — a currency change re-runs the comparison
-                  // without an extra click, but only once a result already
-                  // exists to update (compact ⇒ both countries are already
-                  // set); before that, changing FROM/TO never auto-fires
-                  // either (same explicit-CTA rule every other field
-                  // follows here), so this stays scoped to the one case the
-                  // doc actually describes rather than changing that rule
-                  // for country fields too.
-                  if (compact && result) {
-                    compareMut.mutate({ from, to: code, sendingCountry, receivingCountry });
-                  } else {
-                    setTo(code);
-                  }
-                }}
-              />
+                  currency shown/sent changes). Not part of the mockup's own
+                  widget row (line 726-786 has none) and one more thing
+                  fighting for a ~360px container's height — dropped for
+                  embedded (2026-08-30 feedback, third round). */}
+              {!embedded && (
+                <CurrencyPillRow
+                  t={t}
+                  compact={compact}
+                  sendingCountry={sendingCountry}
+                  receivingCountry={receivingCountry}
+                  from={from}
+                  to={to}
+                  onPickFrom={(code) => setFrom(code)}
+                  onPickTo={(code) => {
+                    // §A rule 5 — a currency change re-runs the comparison
+                    // without an extra click, but only once a result already
+                    // exists to update (compact ⇒ both countries are already
+                    // set); before that, changing FROM/TO never auto-fires
+                    // either (same explicit-CTA rule every other field
+                    // follows here), so this stays scoped to the one case the
+                    // doc actually describes rather than changing that rule
+                    // for country fields too.
+                    if (compact && result) {
+                      compareMut.mutate({ from, to: code, sendingCountry, receivingCountry });
+                    } else {
+                      setTo(code);
+                    }
+                  }}
+                />
+              )}
 
               {validationError && (
                 <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
