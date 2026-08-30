@@ -561,6 +561,38 @@ export const DICTS: Record<Lang, Dict> = {
     // doesn't reuse. {n} is result.rows.length, the real corridor count.
     "comparator.widget.deliversMost": "Delivers the most",
     "comparator.widget.ofNCompared": "of {n} compared",
+    // Business broker table (design/Mangomundi 4 - Final.dc.html line
+    // 494-541) — BusinessBrokerRow + BusinessRequestPanel in ComparatorSection.tsx.
+    "comparator.business.metric.spread": "Spread",
+    "comparator.business.metric.minimum": "Minimum",
+    "comparator.business.metric.settlement": "Settlement",
+    "comparator.business.metric.contracts": "Contracts",
+    "comparator.business.exclusiveTag": "Exclusive",
+    "comparator.business.estOn": "Est. on {amount}",
+    "comparator.business.saved": "saved",
+    "comparator.business.addToRequest": "Add to request",
+    "comparator.business.added": "Added",
+    "comparator.business.methodology":
+      "Savings estimated against the retail best on the same route. Indicative only: brokers price by volume, frequency and settlement date, which is why this screen ends in a quote instead of a rate.",
+    "comparator.business.request.title": "Your request",
+    "comparator.business.request.volume": "Volume",
+    "comparator.business.request.route": "Route",
+    "comparator.business.request.contract": "Contract",
+    "comparator.business.request.brokersSelected": "Brokers selected",
+    "comparator.business.request.of": "of",
+    "comparator.business.request.emailPlaceholder": "you@company.com",
+    "comparator.business.request.sending": "Sending…",
+    "comparator.business.request.cta": "Send request to {n} brokers",
+    "comparator.business.request.error": "Something went wrong. Please try again.",
+    "comparator.business.request.disclaimer":
+      "One email with your requirements. No broker gets your contact details until you reply to their quote.",
+    "comparator.business.request.sent":
+      "Sent. Brokers will reach out with quotes for you to compare — no obligation.",
+    "comparator.business.contractType.spot": "Spot",
+    "comparator.business.contractType.forward": "Forward",
+    "comparator.business.frequency.oneOff": "One-off",
+    "comparator.business.frequency.monthly": "Monthly",
+    "comparator.business.frequency.quarterly": "Quarterly",
     // Widget header freshness stamp (EmbedComparator) — real, per the
     // comment on useRatesFreshness there, not the dropped todaysRoutes claim.
     "widget.header.ratesJustNow": "rates just now",

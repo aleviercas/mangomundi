@@ -578,6 +578,23 @@ export function ComparatorSection({
     email?: string;
   }>({});
   const [savingBusinessLead, setSavingBusinessLead] = useState(false);
+  // "Add to request" selections on the business broker table (BusinessBrokerRow)
+  // — feeds BusinessRequestPanel's running list and, on submit, the
+  // selected_provider_slugs column added alongside contract_type/frequency.
+  const [requestedSlugs, setRequestedSlugs] = useState<Set<string>>(new Set());
+  const toggleRequestedSlug = (slug: string) => {
+    setRequestedSlugs((current) => {
+      const next = new Set(current);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  };
+  const [requestContractType, setRequestContractType] = useState("Spot");
+  const [requestFrequency, setRequestFrequency] = useState("Monthly");
+  const [requestPanelStatus, setRequestPanelStatus] = useState<
+    "idle" | "sending" | "sent" | "error"
+  >("idle");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
@@ -597,6 +614,42 @@ export function ComparatorSection({
   const getMasterFn = useServerFn(getMasterRateState);
   const reportMissingFn = useServerFn(reportMissingCorridor);
   const { track } = useAnalytics();
+
+  // Business broker table's "Est. saved" figure (BusinessBrokerRow) is
+  // disclosed as "vs. the retail best on the same route" (design/Mangomundi
+  // 4 - Final.dc.html line 529) — a real number needs a real retail
+  // comparison, so this runs one extra compareProviders call, retail-forced,
+  // whenever the business segment has a result. Stale responses (query
+  // changed again before this resolves) are dropped via retailBaselineRef.
+  const [retailBestReceived, setRetailBestReceived] = useState<number | null>(null);
+  const retailBaselineRef = useRef(0);
+  useEffect(() => {
+    if (segment !== "business" || !result) {
+      setRetailBestReceived(null);
+      return;
+    }
+    const requestId = ++retailBaselineRef.current;
+    compareFn({
+      data: {
+        amount,
+        from,
+        to,
+        segment: "retail",
+        amountMode,
+        sendingCountry: sendingCountry || undefined,
+        receivingCountry: receivingCountry || undefined,
+      },
+    })
+      .then((data) => {
+        if (requestId !== retailBaselineRef.current) return;
+        setRetailBestReceived(
+          data.rows.length ? Math.max(...data.rows.map((r) => r.received)) : null,
+        );
+      })
+      .catch(() => {
+        if (requestId === retailBaselineRef.current) setRetailBestReceived(null);
+      });
+  }, [segment, result, amount, from, to, amountMode, sendingCountry, receivingCountry, compareFn]);
 
   // Floating agent state: minimized by default on ALL devices. Only expands
   // on explicit user click. Chat transcript + unread badge persist across
@@ -1316,6 +1369,50 @@ export function ComparatorSection({
     }
   };
 
+  // BusinessRequestPanel's own submit — independent of confirmBusinessLead
+  // above (that one belongs to the chat wizard and needs businessData.sector,
+  // which this panel never collects). Sends the brokers actually added via
+  // "Add to request" (requestedSlugs), not the wizard's topProviders guess.
+  const sendBusinessRequest = async (email: string) => {
+    if (
+      !sendingCountry ||
+      sendingCountry.length !== 2 ||
+      !receivingCountry ||
+      receivingCountry.length !== 2 ||
+      requestPanelStatus === "sending"
+    )
+      return;
+    setRequestPanelStatus("sending");
+    try {
+      await captureBusinessFn({
+        data: {
+          email,
+          monthlyVolume: amount,
+          fromCurrency: from,
+          toCurrency: to,
+          sendingCountry,
+          receivingCountry,
+          locale: lang,
+          consent: true,
+          contractType: requestContractType,
+          frequency: requestFrequency,
+          selectedProviderSlugs: Array.from(requestedSlugs),
+          featureSource: "business_request_panel",
+        },
+      });
+      setRequestPanelStatus("sent");
+      track("conversion_completed", {
+        amount,
+        from_currency: from,
+        to_currency: to,
+        segment,
+        source: "business_request_panel",
+      });
+    } catch {
+      setRequestPanelStatus("error");
+    }
+  };
+
   // Embed mode drops the section chrome (padding/centered max-width) so the
   // comparator fills the iframe container; otherwise it's a home section.
   const SectionTag = embedded ? "div" : "section";
@@ -1768,34 +1865,55 @@ export function ComparatorSection({
                   sortBy={sortBy}
                   setSortBy={setSortBy}
                 />
-                {showDockedAgent && (
-                  <FloatingAgent
-                    docked
-                    collapsed={aiCollapsed}
-                    onToggle={handleAgentToggle}
-                    hasNewResult={hasNewResult}
+                {showDockedAgent && segment === "business" ? (
+                  // design/Mangomundi 4 - Final.dc.html line 532-541 — the
+                  // business segment's docked rail is the "Your request"
+                  // summary panel, not the chat wizard (which stays for
+                  // retail, and for business on mobile/floating — see the
+                  // non-docked FloatingAgent below, unchanged).
+                  <BusinessRequestPanel
                     amount={amount}
-                    lang={lang}
-                    t={t}
-                    aiLoading={aiLoading}
-                    chat={chat}
-                    result={result}
-                    chatInput={chatInput}
-                    setChatInput={setChatInput}
-                    sendChat={sendChat}
-                    chatMutPending={chatMut.isPending}
-                    comparePending={compareMut.isPending}
-                    onSuggestedCompare={runSuggestedCompare}
-                    chatBottomRef={chatBottomRef}
-                    openPreferredRate={openPreferredRate}
-                    segment={segment}
-                    businessStage={businessStage}
-                    savingBusinessLead={savingBusinessLead}
-                    confirmBusinessLead={confirmBusinessLead}
-                    setBusinessStage={setBusinessStage}
-                    setChat={setChat}
-                    onWizardAction={handleWizardAction}
+                    from={from}
+                    to={to}
+                    totalBrokers={result?.rows.length ?? 0}
+                    requestedSlugs={requestedSlugs}
+                    requestContractType={requestContractType}
+                    setRequestContractType={setRequestContractType}
+                    requestFrequency={requestFrequency}
+                    setRequestFrequency={setRequestFrequency}
+                    status={requestPanelStatus}
+                    onSend={sendBusinessRequest}
                   />
+                ) : (
+                  showDockedAgent && (
+                    <FloatingAgent
+                      docked
+                      collapsed={aiCollapsed}
+                      onToggle={handleAgentToggle}
+                      hasNewResult={hasNewResult}
+                      amount={amount}
+                      lang={lang}
+                      t={t}
+                      aiLoading={aiLoading}
+                      chat={chat}
+                      result={result}
+                      chatInput={chatInput}
+                      setChatInput={setChatInput}
+                      sendChat={sendChat}
+                      chatMutPending={chatMut.isPending}
+                      comparePending={compareMut.isPending}
+                      onSuggestedCompare={runSuggestedCompare}
+                      chatBottomRef={chatBottomRef}
+                      openPreferredRate={openPreferredRate}
+                      segment={segment}
+                      businessStage={businessStage}
+                      savingBusinessLead={savingBusinessLead}
+                      confirmBusinessLead={confirmBusinessLead}
+                      setBusinessStage={setBusinessStage}
+                      setChat={setChat}
+                      onWizardAction={handleWizardAction}
+                    />
+                  )
                 )}
                 <RateAlertCard
                   t={t}
@@ -2086,6 +2204,10 @@ export function ComparatorSection({
                   tAt={t("fx.at")}
                   tCta={t("retail.cta")}
                   tNeutrality={t("comparator.disclaimer.neutrality")}
+                  segment={segment}
+                  retailBestReceived={retailBestReceived}
+                  requestedSlugs={requestedSlugs}
+                  onToggleRequested={toggleRequestedSlug}
                 />
 
                 {/* Stable business upsell (design/HANDOFF.md §3 + decision
@@ -2896,6 +3018,159 @@ function FloatingAgent(p: FloatingAgentProps) {
   );
 }
 
+// ===== Business "Your request" panel =====
+// design/Mangomundi 4 - Final.dc.html (line 532-541) — replaces FloatingAgent
+// in the docked rail slot when segment === "business" (see showDockedAgent's
+// call site): a running summary of the request being built from the broker
+// table's "Add to request" toggles, not a chat wizard. Email + consent are
+// collected inline once "Send request" is pressed, rather than up front —
+// nothing here blocks browsing/selecting brokers on providing an email
+// first, unlike the old chat flow.
+function BusinessRequestPanel({
+  amount,
+  from,
+  to,
+  totalBrokers,
+  requestedSlugs,
+  requestContractType,
+  setRequestContractType,
+  requestFrequency,
+  setRequestFrequency,
+  status,
+  onSend,
+}: {
+  amount: number;
+  from: string;
+  to: string;
+  totalBrokers: number;
+  requestedSlugs: Set<string>;
+  requestContractType: string;
+  setRequestContractType: (v: string) => void;
+  requestFrequency: string;
+  setRequestFrequency: (v: string) => void;
+  status: "idle" | "sending" | "sent" | "error";
+  onSend: (email: string) => void;
+}) {
+  const { t } = useI18n();
+  const [expanded, setExpanded] = useState(false);
+  const [email, setEmail] = useState("");
+  const selectedCount = requestedSlugs.size;
+
+  if (status === "sent") {
+    return (
+      <div className="rounded-[18px] border-[1.5px] border-foreground bg-card p-4">
+        <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+          {t("comparator.business.request.title")}
+        </h4>
+        <p className="mt-3 text-sm leading-relaxed text-foreground">
+          {t("comparator.business.request.sent")}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-[18px] border-[1.5px] border-foreground bg-card p-4">
+      <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+        {t("comparator.business.request.title")}
+      </h4>
+      <div className="mt-3 flex flex-col gap-2">
+        <div className="flex items-baseline justify-between gap-2.5">
+          <span className="text-xs text-muted-foreground">
+            {t("comparator.business.request.volume")}
+          </span>
+          <span className="text-[13px] font-bold tabular-nums text-foreground">
+            {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+          </span>
+        </div>
+        <div className="flex items-baseline justify-between gap-2.5">
+          <span className="text-xs text-muted-foreground">
+            {t("comparator.business.request.route")}
+          </span>
+          <span className="text-[13px] font-bold text-foreground">
+            {from} → {to}
+          </span>
+        </div>
+        <div className="flex items-baseline justify-between gap-2.5">
+          <span className="text-xs text-muted-foreground">
+            {t("comparator.business.request.contract")}
+          </span>
+          <div className="flex gap-1.5">
+            <select
+              value={requestContractType}
+              onChange={(e) => setRequestContractType(e.target.value)}
+              className="rounded-md border border-input bg-card px-1.5 py-0.5 text-[12px] font-bold text-foreground"
+            >
+              <option value="Spot">{t("comparator.business.contractType.spot")}</option>
+              <option value="Forward">{t("comparator.business.contractType.forward")}</option>
+            </select>
+            <select
+              value={requestFrequency}
+              onChange={(e) => setRequestFrequency(e.target.value)}
+              className="rounded-md border border-input bg-card px-1.5 py-0.5 text-[12px] font-bold text-foreground"
+            >
+              <option value="One-off">{t("comparator.business.frequency.oneOff")}</option>
+              <option value="Monthly">{t("comparator.business.frequency.monthly")}</option>
+              <option value="Quarterly">{t("comparator.business.frequency.quarterly")}</option>
+            </select>
+          </div>
+        </div>
+        <div className="flex items-baseline justify-between gap-2.5">
+          <span className="text-xs text-muted-foreground">
+            {t("comparator.business.request.brokersSelected")}
+          </span>
+          <span className="text-[13px] font-bold tabular-nums text-foreground">
+            {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
+          </span>
+        </div>
+      </div>
+
+      {expanded ? (
+        <form
+          className="mt-3 flex flex-col gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSend(email);
+          }}
+        >
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("comparator.business.request.emailPlaceholder")}
+            className="h-10 rounded-lg border border-input bg-card px-3 text-sm text-foreground"
+          />
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="btn-cta flex h-11 items-center justify-center rounded-xl text-sm font-bold disabled:opacity-60"
+          >
+            {status === "sending"
+              ? t("comparator.business.request.sending")
+              : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+          </button>
+          {status === "error" && (
+            <p className="text-xs text-destructive">{t("comparator.business.request.error")}</p>
+          )}
+        </form>
+      ) : (
+        <button
+          type="button"
+          disabled={selectedCount === 0}
+          onClick={() => setExpanded(true)}
+          className="btn-cta mt-3 flex h-11 w-full items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+        </button>
+      )}
+      <p className="mt-2.5 text-[11px] leading-relaxed text-muted-foreground">
+        {t("comparator.business.request.disclaimer")}
+      </p>
+    </div>
+  );
+}
+
 // ===== Results table (light) =====
 function ResultsBlock({
   result,
@@ -2912,12 +3187,30 @@ function ResultsBlock({
   tAt,
   tCta,
   tNeutrality,
+  segment,
+  retailBestReceived,
+  requestedSlugs,
+  onToggleRequested,
 }: {
   result: ComparisonResult;
   amount: number;
   sortBy: SortKey;
   deliveryMethod: DeliveryMethod | null;
   showOnlyExclusive: boolean;
+  /** design/Mangomundi 4 - Final.dc.html line 494-529 — business segment
+   *  swaps ProviderRow for the broker-table card (BusinessBrokerRow)
+   *  instead of the retail row layout. */
+  segment: Segment;
+  /** Best received amount from a same-corridor RETAIL comparison, fetched
+   *  separately (see ComparatorSection's retail-baseline effect) so the
+   *  broker table's "Est. saved" figure can honestly say "vs the retail
+   *  best on this route" (the mockup's own disclosed methodology, line
+   *  529) instead of a number with no stated baseline. Null while that
+   *  fetch hasn't resolved yet, or outside the business segment — the
+   *  saved figure is hidden rather than guessed in that case. */
+  retailBestReceived: number | null;
+  requestedSlugs: Set<string>;
+  onToggleRequested: (slug: string) => void;
   /** True when the current query has both a sending and receiving country
    *  selected, i.e. a real corridor lookup was attempted server-side — see
    *  fx.functions.ts. Gates the "not verified for this route" badge: without
@@ -3036,22 +3329,34 @@ function ResultsBlock({
           also what lets the same row layout work on mobile without a
           separate table. */}
       <div className={displayRows.length > 0 ? "flex flex-col gap-[11px]" : ""}>
-        {displayRows.map((row, i) => (
-          <ProviderRow
-            key={row.slug}
-            row={row}
-            quote={result.quote}
-            base={result.base}
-            score={scoresBySlug.get(row.slug) ?? null}
-            delta={row.received - bestReceived}
-            featured={i === 0}
-            hasCorridorContext={hasCorridorContext}
-            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
-            tCta={tCta}
-            sortBy={sortBy}
-            onFeeBreakdown={onFeeBreakdown}
-          />
-        ))}
+        {displayRows.map((row, i) =>
+          segment === "business" ? (
+            <BusinessBrokerRow
+              key={row.slug}
+              row={row}
+              quote={result.quote}
+              amount={amount}
+              savedVsRetail={retailBestReceived != null ? row.received - retailBestReceived : null}
+              requested={requestedSlugs.has(row.slug)}
+              onToggleRequested={() => onToggleRequested(row.slug)}
+            />
+          ) : (
+            <ProviderRow
+              key={row.slug}
+              row={row}
+              quote={result.quote}
+              base={result.base}
+              score={scoresBySlug.get(row.slug) ?? null}
+              delta={row.received - bestReceived}
+              featured={i === 0}
+              hasCorridorContext={hasCorridorContext}
+              onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
+              tCta={tCta}
+              sortBy={sortBy}
+              onFeeBreakdown={onFeeBreakdown}
+            />
+          ),
+        )}
         {organic.length === 0 && (
           <div className="rounded-2xl border border-border bg-card px-4 py-8 text-center text-sm text-muted-foreground">
             {deliveryMethod != null ? t("comparator.emptyFiltered") : t("comparator.empty")}
@@ -3068,6 +3373,13 @@ function ResultsBlock({
       </div>
       <p className="mt-2 text-[11px] text-muted-foreground">{tDisclaimer}</p>
       <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground/80">{tTrademarks}</p>
+      {/* design/Mangomundi 4 - Final.dc.html line 529 — the broker table's
+          own disclosed methodology, not the retail footer copy above. */}
+      {segment === "business" && (
+        <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+          {t("comparator.business.methodology")}
+        </p>
+      )}
     </div>
   );
 }
@@ -3496,6 +3808,126 @@ function ProviderRow({
           </div>
         )}
         <div className="mt-3">{cta}</div>
+      </div>
+    </div>
+  );
+}
+
+// ===== Business broker table =====
+// design/Mangomundi 4 - Final.dc.html (line 494-529) — a dedicated card
+// layout for the business/broker segment, not ProviderRow's retail metrics
+// (fee/rate/payout/speed): brokers are compared on Spread/Minimum/
+// Settlement/Contracts instead, plus an estimated saving vs. the retail
+// best on the same route and an "Add to request" toggle that feeds the
+// "Your request" panel (BusinessRequestPanel) rather than an affiliate
+// link — a broker quote is a request, not a one-click transfer.
+function BusinessBrokerRow({
+  row,
+  quote,
+  amount,
+  savedVsRetail,
+  requested,
+  onToggleRequested,
+}: {
+  row: ComparisonResult["rows"][number];
+  quote: string;
+  amount: number;
+  /** null when the retail baseline hasn't loaded yet — the saved figure is
+   *  hidden rather than guessed (see ResultsBlock's own prop comment). */
+  savedVsRetail: number | null;
+  requested: boolean;
+  onToggleRequested: () => void;
+}) {
+  const { t } = useI18n();
+  const metrics: Array<{ labelKey: string; value: string }> = [
+    {
+      labelKey: "comparator.business.metric.spread",
+      value: `${row.spread_applied.toFixed(2)}%`,
+    },
+    {
+      labelKey: "comparator.business.metric.minimum",
+      value:
+        row.min_amount != null
+          ? `${row.min_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${quote}`
+          : "—",
+    },
+    { labelKey: "comparator.business.metric.settlement", value: row.settlement_terms ?? "—" },
+    { labelKey: "comparator.business.metric.contracts", value: row.contract_type ?? "—" },
+  ];
+
+  return (
+    <div className="rounded-[18px] border border-border bg-card p-4">
+      <div className="grid items-center gap-4 lg:grid-cols-[minmax(0,230px)_minmax(0,1fr)_190px]">
+        <div className="flex min-w-0 items-center gap-2.5">
+          <BrandLogo
+            name={row.name}
+            url={row.website_url ?? row.affiliate_url}
+            slug={row.slug}
+            size={32}
+            rounded={false}
+            className="shrink-0 rounded-md border border-border bg-white"
+          />
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="truncate text-[15.5px] font-bold text-foreground">{row.name}</span>
+              {row.has_exclusive_deal && (
+                <span
+                  className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+                  style={{ background: "#FDE9E4", color: "#C2410C" }}
+                >
+                  {t("comparator.business.exclusiveTag")}
+                </span>
+              )}
+            </div>
+            {row.regulator && (
+              <div className="mt-0.5 truncate text-[11.5px] text-muted-foreground">
+                {row.regulator}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-4">
+          {metrics.map((m) => (
+            <div key={m.labelKey} className="min-w-0">
+              <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+                {t(m.labelKey)}
+              </div>
+              <div className="mt-0.5 truncate text-[14.5px] font-semibold tabular-nums text-foreground">
+                {m.value}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-left lg:text-right">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+            {t("comparator.business.estOn").replace(
+              "{amount}",
+              amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+            )}
+          </div>
+          {savedVsRetail != null && savedVsRetail > 0 && (
+            <div className="mt-0.5 font-heading text-2xl font-extrabold leading-none tabular-nums text-foreground">
+              {savedVsRetail.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
+              <span className="text-xs font-bold text-muted-foreground">
+                {quote} {t("comparator.business.saved")}
+              </span>
+            </div>
+          )}
+          <button
+            type="button"
+            onClick={onToggleRequested}
+            aria-pressed={requested}
+            className={`mt-2 flex h-[42px] w-full items-center justify-center rounded-xl text-[13.5px] font-bold transition-colors lg:w-auto lg:min-w-[160px] ${
+              requested
+                ? "border-[1.5px] border-input bg-card text-foreground"
+                : "btn-cta border-transparent"
+            }`}
+          >
+            {requested ? t("comparator.business.added") : t("comparator.business.addToRequest")}
+          </button>
+        </div>
       </div>
     </div>
   );

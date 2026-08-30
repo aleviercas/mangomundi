@@ -212,9 +212,11 @@ export type Database = {
         Row: {
           amount: number | null;
           consent_timestamp: string | null;
+          contract_type: string | null;
           created_at: string;
           email: string;
           feature_source: string | null;
+          frequency: string | null;
           from_currency: string | null;
           id: string;
           locale: string | null;
@@ -224,6 +226,7 @@ export type Database = {
           request_id: string | null;
           sector: string | null;
           segment: string | null;
+          selected_provider_slugs: string[] | null;
           sending_country: string | null;
           status: string;
           to_currency: string | null;
@@ -231,9 +234,11 @@ export type Database = {
         Insert: {
           amount?: number | null;
           consent_timestamp?: string | null;
+          contract_type?: string | null;
           created_at?: string;
           email: string;
           feature_source?: string | null;
+          frequency?: string | null;
           from_currency?: string | null;
           id?: string;
           locale?: string | null;
@@ -243,6 +248,7 @@ export type Database = {
           request_id?: string | null;
           sector?: string | null;
           segment?: string | null;
+          selected_provider_slugs?: string[] | null;
           sending_country?: string | null;
           status?: string;
           to_currency?: string | null;
@@ -250,9 +256,11 @@ export type Database = {
         Update: {
           amount?: number | null;
           consent_timestamp?: string | null;
+          contract_type?: string | null;
           created_at?: string;
           email?: string;
           feature_source?: string | null;
+          frequency?: string | null;
           from_currency?: string | null;
           id?: string;
           locale?: string | null;
@@ -262,6 +270,7 @@ export type Database = {
           request_id?: string | null;
           sector?: string | null;
           segment?: string | null;
+          selected_provider_slugs?: string[] | null;
           sending_country?: string | null;
           status?: string;
           to_currency?: string | null;
@@ -376,6 +385,7 @@ export type Database = {
           business_focus_score: number | null;
           card_payout_available: boolean | null;
           cash_pickup_available: boolean | null;
+          contract_type: string | null;
           countries_covered: number | null;
           created_at: string;
           delivery_minutes: number | null;
@@ -398,6 +408,7 @@ export type Database = {
           regulator: string | null;
           review_count: number | null;
           segment: string;
+          settlement_terms: string | null;
           slug: string;
           speed_hours: number;
           sponsored: boolean;
@@ -421,6 +432,7 @@ export type Database = {
           business_focus_score?: number | null;
           card_payout_available?: boolean | null;
           cash_pickup_available?: boolean | null;
+          contract_type?: string | null;
           countries_covered?: number | null;
           created_at?: string;
           delivery_minutes?: number | null;
@@ -443,6 +455,7 @@ export type Database = {
           regulator?: string | null;
           review_count?: number | null;
           segment?: string;
+          settlement_terms?: string | null;
           slug: string;
           speed_hours?: number;
           sponsored?: boolean;
@@ -466,6 +479,7 @@ export type Database = {
           business_focus_score?: number | null;
           card_payout_available?: boolean | null;
           cash_pickup_available?: boolean | null;
+          contract_type?: string | null;
           countries_covered?: number | null;
           created_at?: string;
           delivery_minutes?: number | null;
@@ -488,6 +502,7 @@ export type Database = {
           regulator?: string | null;
           review_count?: number | null;
           segment?: string;
+          settlement_terms?: string | null;
           slug?: string;
           speed_hours?: number;
           sponsored?: boolean;

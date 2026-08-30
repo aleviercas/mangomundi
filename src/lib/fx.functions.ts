@@ -104,6 +104,12 @@ export interface Provider {
    *  when no corridor-specific fx_rates row exists for this route (i.e.
    *  has_corridor_data is false). */
   rates_last_updated?: string | null;
+  min_amount?: number | null;
+  /** Business/broker table only (design/Mangomundi 4 - Final.dc.html line
+   *  494-529). Null until researched per provider — see the migration's own
+   *  column comment; the UI must not fabricate a value when these are null. */
+  settlement_terms?: string | null;
+  contract_type?: string | null;
 }
 
 export interface ComparisonRow {
@@ -167,6 +173,15 @@ export interface ComparisonRow {
   /** providers.rates_last_updated — generic fallback "last updated" date
    *  for the UI trust badge, used when has_corridor_data is false. */
   provider_rates_last_updated: string | null;
+  /** Business broker table (design/Mangomundi 4 - Final.dc.html line
+   *  494-529) — real minimum ticket size (providers.min_amount, corridor
+   *  min_amount when a corridor rate applies) and, where researched,
+   *  settlement window/contract type. Null settlement_terms/contract_type
+   *  mean genuinely not researched yet, not zero/none — the UI shows a
+   *  neutral "—" rather than fabricating a value. */
+  min_amount: number | null;
+  settlement_terms: string | null;
+  contract_type: string | null;
 }
 
 export interface ComparisonResult {
@@ -553,6 +568,7 @@ interface CorridorRate {
   data_source: string | null;
   data_collected_at: string | null;
   verified_status: string | null;
+  min_amount: number | null;
 }
 
 interface CorridorNote {
@@ -673,6 +689,7 @@ export const compareProviders = createServerFn({ method: "POST" })
             data_source: r.data_source ?? null,
             data_collected_at: r.data_collected_at ?? null,
             verified_status: r.verified_status ?? null,
+            min_amount: r.min_amount != null ? Number(r.min_amount) : null,
           });
         }
       }
@@ -815,6 +832,10 @@ export const compareProviders = createServerFn({ method: "POST" })
           corridor_data_collected_at: corridorRate?.data_collected_at ?? null,
           corridor_verified_status: corridorRate?.verified_status ?? null,
           provider_rates_last_updated: p.rates_last_updated ?? null,
+          min_amount:
+            corridorRate?.min_amount ?? (p.min_amount != null ? Number(p.min_amount) : null),
+          settlement_terms: p.settlement_terms ?? null,
+          contract_type: p.contract_type ?? null,
         };
       });
       rows.sort((a, b) => b.received - a.received);

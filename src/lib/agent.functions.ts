@@ -28,7 +28,10 @@ const LeadInput = z.object({
 const BusinessLeadInput = z.object({
   email: z.string().trim().email().max(255),
   monthlyVolume: z.number().positive().finite().max(1e15),
-  sector: z.string().trim().min(2).max(120),
+  // Optional: the "Your request" panel (BusinessRequestPanel) doesn't ask
+  // for an industry sector — only the older chat-wizard flow does. Nullable
+  // on enterprise_leads already; no default fabricated here when absent.
+  sector: z.string().trim().min(2).max(120).optional(),
   fromCurrency: z
     .string()
     .length(3)
@@ -42,6 +45,16 @@ const BusinessLeadInput = z.object({
   locale: z.string().min(2).max(5),
   consent: z.literal(true),
   topProviders: z.array(z.string().trim().min(1).max(120)).max(2).default([]),
+  // "Your request" panel (design/Mangomundi 4 - Final.dc.html line 526-560)
+  // — the broker slugs the user explicitly added via "Add to request",
+  // distinct from topProviders above (the AI wizard's own suggestions).
+  // Optional: the AI-wizard flow that predates this panel never sends them.
+  contractType: z.string().trim().max(60).optional(),
+  frequency: z.string().trim().max(60).optional(),
+  selectedProviderSlugs: z.array(z.string().trim().min(1).max(120)).max(20).default([]),
+  // Distinguishes which UI produced this lead (defaults to the original
+  // chat-wizard flow's value, so existing callers don't need to change).
+  featureSource: z.string().trim().min(1).max(120).default("comparator_conversational_agent"),
 });
 
 const InquiryInput = z.object({
@@ -82,20 +95,25 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
     const requestId = `B2B-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     const { error } = await supabaseAdmin.from("enterprise_leads").insert({
       email: data.email,
-      feature_source: "comparator_conversational_agent",
+      feature_source: data.featureSource,
       status: "pending",
       request_id: requestId,
       from_currency: data.fromCurrency,
       to_currency: data.toCurrency,
       amount: data.monthlyVolume,
       monthly_volume: data.monthlyVolume,
-      sector: data.sector,
       segment: "business",
       sending_country: data.sendingCountry,
       receiving_country: data.receivingCountry,
       locale: data.locale,
       privacy_consent: true,
       consent_timestamp: consentAt,
+      ...(data.sector ? { sector: data.sector } : {}),
+      ...(data.contractType ? { contract_type: data.contractType } : {}),
+      ...(data.frequency ? { frequency: data.frequency } : {}),
+      ...(data.selectedProviderSlugs.length
+        ? { selected_provider_slugs: data.selectedProviderSlugs }
+        : {}),
     });
     if (error) {
       console.error("[server-fn]", error);
@@ -120,6 +138,9 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
             receiving_country: data.receivingCountry,
             consent_at: consentAt,
             top_providers: data.topProviders,
+            contract_type: data.contractType ?? null,
+            frequency: data.frequency ?? null,
+            selected_provider_slugs: data.selectedProviderSlugs,
           }),
         });
       } catch (error) {
@@ -136,9 +157,12 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
         <p><strong>Request ID:</strong> ${requestId}</p>
         <p><strong>Email:</strong> ${data.email}</p>
         <p><strong>Monthly volume:</strong> ${data.monthlyVolume.toLocaleString()} ${data.fromCurrency}</p>
-        <p><strong>Sector:</strong> ${data.sector}</p>
+        <p><strong>Sector:</strong> ${data.sector ?? "—"}</p>
         <p><strong>Route:</strong> ${data.fromCurrency} → ${data.toCurrency} (${data.sendingCountry} → ${data.receivingCountry})</p>
         <p><strong>Providers suggested to the user:</strong> ${data.topProviders.join(", ") || "—"}</p>
+        <p><strong>Added to request:</strong> ${data.selectedProviderSlugs.join(", ") || "—"}</p>
+        <p><strong>Contract type:</strong> ${data.contractType ?? "—"}</p>
+        <p><strong>Frequency:</strong> ${data.frequency ?? "—"}</p>
         <p><strong>Locale:</strong> ${data.locale}</p>
         <p><strong>Consent recorded at:</strong> ${consentAt}</p>
       `,
