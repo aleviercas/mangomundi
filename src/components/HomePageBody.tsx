@@ -30,15 +30,23 @@ export interface ComparatorQueryChange {
 export function HomePageBody({
   initialQuery,
   onQueryChange,
+  hideMarketingSections = false,
 }: {
   initialQuery: ComparatorQuery;
   onQueryChange?: (q: ComparatorQueryChange) => void;
+  /** design/AJUSTES-4.md §3 — /business wants its own dedicated content
+   *  (BusinessExtrasSection, the two-cards + contact block) directly below
+   *  the comparator/results, in every state, not the retail marketing
+   *  stack this component shows every other route while `!hasResult`.
+   *  Default false keeps "/" and "/send/$corridor" exactly as before. */
+  hideMarketingSections?: boolean;
 }) {
   // Drives the Kayak/Skyscanner-style "search mode" swap: once a comparison
   // has a result, the hero collapses and the comparator card (see its own
   // `result && !embedded` check) sticks under the header — same content,
   // just no longer competing with the results list for the first screenful.
   const [hasResult, setHasResult] = useState(false);
+  const showMarketing = !hasResult && !hideMarketingSections;
 
   return (
     <>
@@ -50,14 +58,14 @@ export function HomePageBody({
       />
       {/* design/AJUSTES-1.md §E — below the comparator only while no search
           has run yet, same gate HeroSection's compact mode uses. */}
-      {!hasResult && <TodaysRoutesSection />}
+      {showMarketing && <TodaysRoutesSection />}
       {/* design/AJUSTES-2.md §2 — with a result, the page is header + search
           bar + rail/results + footer, nothing else: someone comparing 52
           prices isn't reading the manifesto. Header/Footer are root-layout
           chrome (__root.tsx), not part of this list, so they're unaffected;
           the Business-upsell line stays too, but it lives inside
           ComparatorSection's own results output, not in this list. */}
-      {!hasResult && (
+      {showMarketing && (
         <>
           <HowItWorksSection />
           <AboutManifestoSection />

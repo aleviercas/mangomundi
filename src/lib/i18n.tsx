@@ -1492,6 +1492,24 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.risk.s4.title": "Sanctions and Regulatory Compliance",
     "legal.risk.s4.body":
       "Users are solely responsible for ensuring that any cross-border transfer complies with applicable sanctions regimes, anti-money laundering (AML) laws, know-your-customer (KYC) requirements, and cross-border reporting obligations in their jurisdiction. mangomundi does not facilitate transactions to embargoed jurisdictions or sanctioned counterparties. Violations may result in frozen funds, regulatory penalties, or criminal liability.",
+    // design/AJUSTES-4.md §3 — "Two ways we work with companies", /business
+    // only (BusinessExtrasSection.tsx). Neither card had body copy anywhere
+    // in the app or the mockup, only the two titles; bodies describe real
+    // product mechanics (the business-mode contract-type/frequency fields,
+    // the same real quote-request flow), adapted from the old "Corporate
+    // Treasury & Operations" / "Institutional & Partnership Inquiries" copy
+    // (home.dual.corporate, contact.intro) that's sat unused since AJUSTES-1
+    // §G replaced that section — not written from nothing.
+    "business.extras.title": "Two ways we work with companies",
+    "business.extras.treasury.title": "Treasury Operations",
+    "business.extras.treasury.body":
+      "Spot, forward or option — set the contract type and how often you send, and brokers quote against that, not a one-off guess.",
+    "business.extras.partnerships.title": "FX & Payment Partnerships",
+    "business.extras.partnerships.body":
+      "Payroll providers, marketplaces and fintechs with recurring cross-border volume: talk to our business team directly about an ongoing rate arrangement.",
+    "business.extras.contact.title": "Prefer to talk to someone?",
+    "business.extras.contact.body":
+      "Our business team can help you scope volume, corridors and contract terms directly — no form, just an email.",
     "business.badge": "For institutions & corporate treasury",
     "business.hero.title.1": "Institutional Routing &",
     "business.hero.title.2": "Strategy Validation.",

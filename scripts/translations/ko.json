@@ -767,5 +767,12 @@
   "howWeMakeMoney.s4.example": "Both stamps as they appear on a result row:",
   "footer.product.title": "Product",
   "footer.product.comparator": "Comparator",
-  "footer.product.rateAlerts": "Rate alerts"
+  "footer.product.rateAlerts": "Rate alerts",
+  "business.extras.title": "Two ways we work with companies",
+  "business.extras.treasury.title": "Treasury Operations",
+  "business.extras.treasury.body": "Spot, forward or option — set the contract type and how often you send, and brokers quote against that, not a one-off guess.",
+  "business.extras.partnerships.title": "FX & Payment Partnerships",
+  "business.extras.partnerships.body": "Payroll providers, marketplaces and fintechs with recurring cross-border volume: talk to our business team directly about an ongoing rate arrangement.",
+  "business.extras.contact.title": "Prefer to talk to someone?",
+  "business.extras.contact.body": "Our business team can help you scope volume, corridors and contract terms directly — no form, just an email."
 }
