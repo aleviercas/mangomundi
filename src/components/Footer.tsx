@@ -27,54 +27,70 @@ const socials = [
   },
 ];
 
-/** design/AJUSTES-3.md §B — Footer's own column, given either a home-page
- *  anchor or a real route (NavEntry, config/nav.ts). */
+/** design/Mangomundi 4 - Final.dc.html (line 232-240) — Footer's own dark
+ *  column, given either a home-page anchor or a real route (NavEntry,
+ *  config/nav.ts). Literal to the mockup: 12.5px items in #A79C92, bold
+ *  white 12.5px header, 8px gap — hardcoded hex, not the light-theme
+ *  text-muted-foreground/text-foreground tokens, since this is a
+ *  dark-specific palette independent of the rest of the (light) site. */
 function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyArray<NavEntry> }) {
   const { t } = useI18n();
   return (
-    <div>
-      <h3 className="font-heading text-sm font-bold text-foreground">{t(titleKey)}</h3>
-      <ul className="mt-4 space-y-3">
-        {items.map((item) => (
-          <li key={item.labelKey}>
-            <Link
-              to={item.to ?? "/"}
-              hash={item.hash}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {t(item.labelKey)}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div className="flex flex-col gap-2 text-[12.5px] text-[#A79C92]">
+      <span className="font-bold text-white">{t(titleKey)}</span>
+      {items.map((item) => (
+        <Link
+          key={item.labelKey}
+          to={item.to ?? "/"}
+          hash={item.hash}
+          className="transition-colors hover:text-white"
+        >
+          {t(item.labelKey)}
+        </Link>
+      ))}
     </div>
   );
 }
 
+/** design/Mangomundi 4 - Final.dc.html (line 232-240) — 2026-08-30
+ *  feedback: the footer is a dark band (#1B1510), not the light bg-muted
+ *  surface this had before, and noticeably more compact (28px/30px
+ *  padding, 26px column gap — not py-16/gap-12). Copyright folds into the
+ *  end of the Legal column here, literal to the mockup, rather than a
+ *  separate bottom bar; the bottom bar that remains carries only the
+ *  language switcher (real functionality with no mockup equivalent).
+ *  "Local exchange" (Product) and "How we make money" (Company) stay
+ *  deliberately absent — see FOOTER_PRODUCT/FOOTER_COMPANY's own comments
+ *  in config/nav.ts for why. The mockup's own wordmark here carries the
+ *  icon (line 234), but the standing 2026-08-30 instruction to drop the
+ *  icon from Header *and* Footer ("el logo se usa en otros lugares") is
+ *  the more specific, deliberate call — text-only here too, same as
+ *  Header. */
 export function Footer() {
   const { t } = useI18n();
 
   const legal = [
     { to: "/legal", hash: "terms", label: t("footer.legal.terms") },
-    { to: "/legal", hash: "risk", label: t("footer.legal.risk") },
     { to: "/legal", hash: "privacy", label: t("footer.legal.privacy") },
+    { to: "/legal", hash: "risk", label: t("footer.legal.risk") },
   ] as const;
 
   return (
-    <footer className="border-t border-border bg-muted">
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
-        {/* design/AJUSTES-3.md §B — Product · Company · Legal, plus the
-            logo/social column (mockup line 232: 1.4fr + 3×1fr). */}
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+    <footer className="bg-[#1B1510] py-7">
+      <div className="mx-auto max-w-7xl px-5 sm:px-[30px]">
+        <div className="grid gap-[26px] md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Link
               to="/"
               className="inline-flex items-center"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <Wordmark className="text-2xl" compact />
+              <Wordmark className="text-2xl" tone="light" icon={false} />
             </Link>
-            <div className="mt-6 flex items-center gap-3">
+            <p className="mt-2.5 max-w-[280px] text-[12.5px] leading-[1.6] text-[#8A7C6E]">
+              {t("footer.tagline")}
+            </p>
+            <div className="mt-4 flex items-center gap-2.5">
               {socials.map((s) => (
                 <a
                   key={s.label}
@@ -82,11 +98,11 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="group inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-foreground hover:text-background"
+                  className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/14 text-[#A79C92] transition-colors hover:border-white/30 hover:text-white"
                 >
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-4 w-4"
+                    className="h-3.5 w-3.5"
                     fill="currentColor"
                     aria-hidden="true"
                   >
@@ -100,30 +116,23 @@ export function Footer() {
           <FooterColumn titleKey="footer.product.title" items={FOOTER_PRODUCT} />
           <FooterColumn titleKey="footer.nav.title" items={FOOTER_COMPANY} />
 
-          <div>
-            <h3 className="font-heading text-sm font-bold text-foreground">
-              {t("footer.legal.title")}
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {legal.map((l) => (
-                <li key={l.label}>
-                  <Link
-                    to={l.to}
-                    hash={l.hash}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="flex flex-col gap-2 text-[12.5px] text-[#A79C92]">
+            <span className="font-bold text-white">{t("footer.legal.title")}</span>
+            {legal.map((l) => (
+              <Link
+                key={l.label}
+                to={l.to}
+                hash={l.hash}
+                className="transition-colors hover:text-white"
+              >
+                {l.label}
+              </Link>
+            ))}
+            <span>© {new Date().getFullYear()} Mangomundi</span>
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col-reverse items-center gap-4 border-t border-border pt-8 sm:flex-row sm:justify-between">
-          <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Mangomundi. {t("footer.rights")}
-          </p>
+        <div className="mt-5 flex justify-end border-t border-white/10 pt-4">
           <LangSwitcher direction="up" />
         </div>
       </div>

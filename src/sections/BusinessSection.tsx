@@ -9,7 +9,10 @@ import { useI18n } from "@/lib/i18n";
  *  (design/AJUSTES-1.md §G) only the photo had its own border/radius —
  *  the whole card gets that treatment now, matching the mockup. Copy/CTAs
  *  unchanged from §G: "Get business quotes" → /business, "Talk to us" →
- *  the same real mailto. */
+ *  the same real mailto. 2026-08-30 feedback: the primary CTA is filled
+ *  ink (#241C16/white, line 199) rather than the mango btn-cta — this is
+ *  the one button in the mockup that deliberately isn't the brand accent
+ *  color. */
 export function BusinessSection() {
   const { t } = useI18n();
   return (
@@ -38,7 +41,7 @@ export function BusinessSection() {
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             to="/business"
-            className="btn-cta inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold"
+            className="inline-flex h-11 items-center gap-1.5 rounded-xl bg-foreground px-5 text-sm font-semibold text-white hover:opacity-90"
           >
             {t("home.contact.getQuotes")}
             <ArrowRight className="h-4 w-4" aria-hidden />

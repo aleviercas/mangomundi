@@ -50,24 +50,40 @@ interface WordmarkProps {
   className?: string;
   /** Override colour for dark backgrounds (default: ink on light). */
   tone?: "dark" | "light";
-  /** Below the 18px bicolor threshold (HANDOFF §1): single ink colour, no
-   *  icon mark. Use for tiny lockups like the widget's "powered by" line. */
+  /** Below the 18px bicolor threshold (HANDOFF §1): single ink colour. Use
+   *  for tiny lockups like the widget's "powered by" line — genuinely too
+   *  small for the two-tone split to read cleanly. Independent of `icon`
+   *  below; most compact lockups also drop the icon, but the two aren't
+   *  the same thing (see `icon`'s own doc comment). */
   compact?: boolean;
+  /** 2026-08-30 feedback: Header/Footer went text-only (no icon mark) but
+   *  must keep the bicolor "mundi" — `compact` used to force both together,
+   *  which silently flattened the color too. Default true (icon shown);
+   *  set false to drop just the icon while keeping whatever `compact`
+   *  says about color. */
+  icon?: boolean;
 }
 
 /**
  * mangomundi wordmark — Rubik 700 lowercase, "ango"/"undi" in true italic
  * (font-style: italic on the loaded Italic family, not transform: skewX —
  * combining both would double-slant the tails). Both "m"s stay upright.
- * "mundi" carries the brand mango colour; below 18px (compact) everything
- * collapses to one ink colour and the icon mark is dropped.
+ * "mundi" carries the brand mango colour, unless `compact` (a genuinely
+ * tiny lockup, below the 18px bicolor threshold) flattens it to one ink
+ * colour. `icon` independently controls whether the icon mark renders at
+ * all — text-only lockups (Header, Footer) keep the bicolor split.
  */
-export function Wordmark({ className = "", tone = "dark", compact = false }: WordmarkProps) {
+export function Wordmark({
+  className = "",
+  tone = "dark",
+  compact = false,
+  icon = true,
+}: WordmarkProps) {
   const ink = tone === "light" ? "#FFFFFF" : INK;
   const mango = tone === "light" ? MANGO_LIGHT : MANGO;
   return (
     <span className={cn("inline-flex items-center gap-[0.4em]", className)}>
-      {!compact && <BrandMark tone={tone} />}
+      {icon && <BrandMark tone={tone} />}
       <span
         aria-label="mangomundi"
         className="font-brand lowercase font-bold leading-none"

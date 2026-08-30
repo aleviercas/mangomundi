@@ -562,7 +562,10 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.widget.moreProvidersBody":
       "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
     // Footer
-    "footer.tagline": "Smart currency exchange comparison, powered by AI.",
+    // 2026-08-30 feedback — literal to design/Mangomundi 4 - Final.dc.html
+    // line 234; EN-only change (decision #8), other langs keep the old copy.
+    "footer.tagline":
+      "Neutral decision engine for international transfers. We never move your money.",
     // design/AJUSTES-3.md §B — Footer restructured to 3 literal columns
     // (Product / Company / Legal). footer.nav.title was "Navigate" over a
     // single flat list; repurposed as the "Company" column header now that
@@ -575,15 +578,10 @@ export const DICTS: Record<Lang, Dict> = {
     "footer.product.title": "Product",
     "footer.product.comparator": "Comparator",
     "footer.product.rateAlerts": "Rate alerts",
-    "footer.nav.home": "Home",
-    "footer.nav.about": "About",
     "footer.nav.how": "How it works",
-    "footer.nav.contact": "Contact",
-    "footer.nav.blog": "Blog",
     "footer.legal.terms": "Terms of Service",
     "footer.legal.risk": "Risk Disclosure",
     "footer.legal.privacy": "Privacy Policy",
-    "footer.rights": "All rights reserved.",
     // Legal page
     "legal.pageTitle": "Legal & Compliance",
     "legal.pageSubtitle": "Terms of Service, Risk Disclosure and Privacy Policy.",
@@ -882,15 +880,10 @@ export const DICTS: Record<Lang, Dict> = {
     "footer.tagline": "Comparación inteligente de cambio de divisas, con IA.",
     "footer.nav.title": "Navegación",
     "footer.legal.title": "Legal y Cumplimiento",
-    "footer.nav.home": "Inicio",
-    "footer.nav.about": "Nosotros",
     "footer.nav.how": "Cómo funciona",
-    "footer.nav.contact": "Contacto",
-    "footer.nav.blog": "Blog",
     "footer.legal.terms": "Términos del Servicio",
     "footer.legal.risk": "Aviso de Riesgo",
     "footer.legal.privacy": "Política de Privacidad",
-    "footer.rights": "Todos los derechos reservados.",
     // Página Legal
     "legal.pageTitle": "Legal y Cumplimiento",
     "legal.pageSubtitle": "Términos del Servicio, Aviso de Riesgo y Política de Privacidad.",
@@ -1984,7 +1977,12 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
 const UI_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "footer.navigate": "Navigate",
-    "footer.tagline": "Smart currency exchange comparison, powered by AI.",
+    // UI_KEYS is merged over DICTS (see the merge loop below), so this is
+    // the value that actually renders for EN — the DICTS.en copy above
+    // (same key) is shadowed. Kept in sync rather than removed, since the
+    // shadowing itself is pre-existing and out of scope here.
+    "footer.tagline":
+      "Neutral decision engine for international transfers. We never move your money.",
     "footer.copyright": "All rights reserved.",
     "footer.disclaimerLabel": "disclaimer",
     "common.close": "Close",

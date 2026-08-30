@@ -27,9 +27,11 @@ export function Header() {
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
           {/* Text-only lockup here and in Footer — the icon mark is reserved
-              for the widget/embed surfaces where it's the only thing at
-              small sizes (see Wordmark's own "compact" doc comment). */}
-          <Wordmark className="text-2xl" compact />
+              for the widget card/embed surfaces. Still bicolor
+              ("mundi" in mango): icon={false} only drops the icon,
+              unlike `compact` which also flattens the color — see
+              Wordmark's own doc comment (2026-08-30 feedback). */}
+          <Wordmark className="text-2xl" icon={false} />
         </Link>
 
         {/* Desktop nav — right-aligned (logo left). */}

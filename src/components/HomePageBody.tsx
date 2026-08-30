@@ -5,7 +5,6 @@ import { TodaysRoutesSection } from "@/sections/TodaysRoutesSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { BusinessWidgetRow } from "@/sections/BusinessWidgetRow";
-import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
 
 export interface ComparatorQueryChange {
@@ -72,7 +71,10 @@ export function HomePageBody({
               and the widget teaser share one row now (BusinessWidgetRow),
               not two stacked full-width sections. */}
           <BusinessWidgetRow />
-          <ContactSection />
+          {/* 2026-08-30 feedback — ContactSection removed from the home
+              stack: it's now /about's own closing section (the "Get in
+              touch" content moved there when /about was rebuilt), so this
+              was a duplicate of the same mailto CTA. */}
           <BlogSection />
         </>
       )}

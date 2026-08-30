@@ -1,10 +1,9 @@
 import type { TKey } from "@/lib/i18n";
 
-/** A nav entry is either a home-page anchor (`hash`, scrolls "/" to that
- *  section id) or a real standalone route (`to`) — never both. */
-export type NavEntry = { labelKey: TKey } & (
-  { hash: string; to?: undefined } | { to: string; hash?: undefined }
-);
+/** A nav entry always has a route (`to`, defaults to "/" at the render
+ *  site when omitted) and optionally a `hash` — an anchor within that
+ *  route, e.g. `{ to: "/about", hash: "contact" }` for /about#contact. */
+export type NavEntry = { labelKey: TKey; to?: string; hash?: string };
 
 /** Home-section navigation shared by Footer's "Company" column. Order
  *  matches the page's scroll order so the anchors read top-to-bottom.
@@ -27,7 +26,10 @@ export const HOME_NAV: ReadonlyArray<NavEntry> = [
   { to: "/about", labelKey: "nav.about" },
   { to: "/widget", labelKey: "home.widget.eyebrow" },
   { to: "/business", labelKey: "nav.business" },
-  { hash: "contact", labelKey: "nav.contact" },
+  // 2026-08-30 feedback — Contact moved off the home page onto /about's
+  // own closing section (id="contact" there too), so this now points at
+  // /about#contact instead of a home anchor.
+  { to: "/about", hash: "contact", labelKey: "nav.contact" },
   { hash: "blog", labelKey: "nav.blog" },
 ];
 
@@ -65,5 +67,8 @@ export const FOOTER_PRODUCT: ReadonlyArray<NavEntry> = [
 export const FOOTER_COMPANY: ReadonlyArray<NavEntry> = [
   { to: "/about", labelKey: "nav.about" },
   { to: "/business", labelKey: "nav.forBusiness" },
-  { hash: "contact", labelKey: "nav.contact" },
+  // 2026-08-30 feedback — Contact moved off the home page onto /about's
+  // own closing section (id="contact" there too), so this now points at
+  // /about#contact instead of a home anchor.
+  { to: "/about", hash: "contact", labelKey: "nav.contact" },
 ];
