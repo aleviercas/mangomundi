@@ -56,13 +56,19 @@ export function TodaysRoutesSection() {
               {t("todaysRoutes.subtitle")}
             </p>
           </div>
-          <span
-            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-bold"
+          {/* 2026-08-30 feedback — was a hardcoded "4.6", never a real
+              Trustpilot number (see TrustpilotCard's own comment). Real
+              link to the public page instead, no invented figure. */}
+          <a
+            href="https://www.trustpilot.com/review/mangomundi.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-bold hover:underline"
             style={{ backgroundColor: "#E4F3EC", color: "#1F7A5A" }}
           >
             <Star className="h-3 w-3 fill-current" />
-            {t("comparator.trustpilot.rated")}
-          </span>
+            {t("comparator.trustpilot.checkRating")}
+          </a>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

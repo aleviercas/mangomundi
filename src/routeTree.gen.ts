@@ -18,7 +18,6 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EmbedRouteImport } from './routes/embed'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as FxToolRouteImport } from './routes/fx-tool'
-import { Route as HowWeMakeMoneyRouteImport } from './routes/how-we-make-money'
 import { Route as InsuranceRouteImport } from './routes/insurance'
 import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PlatformRouteImport } from './routes/platform'
@@ -73,11 +72,6 @@ const FxToolRoute = FxToolRouteImport.update({
   path: '/fx-tool',
   getParentRoute: () => rootRouteImport,
 } as any)
-const HowWeMakeMoneyRoute = HowWeMakeMoneyRouteImport.update({
-  id: '/how-we-make-money',
-  path: '/how-we-make-money',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const InsuranceRoute = InsuranceRouteImport.update({
   id: '/insurance',
   path: '/insurance',
@@ -129,7 +123,6 @@ export interface FileRoutesByFullPath {
   '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
-  '/how-we-make-money': typeof HowWeMakeMoneyRoute
   '/insurance': typeof InsuranceRoute
   '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
@@ -149,7 +142,6 @@ export interface FileRoutesByTo {
   '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
-  '/how-we-make-money': typeof HowWeMakeMoneyRoute
   '/insurance': typeof InsuranceRoute
   '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
@@ -170,7 +162,6 @@ export interface FileRoutesById {
   '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
-  '/how-we-make-money': typeof HowWeMakeMoneyRoute
   '/insurance': typeof InsuranceRoute
   '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
@@ -192,7 +183,6 @@ export interface FileRouteTypes {
     | '/embed'
     | '/features'
     | '/fx-tool'
-    | '/how-we-make-money'
     | '/insurance'
     | '/legal'
     | '/platform'
@@ -212,7 +202,6 @@ export interface FileRouteTypes {
     | '/embed'
     | '/features'
     | '/fx-tool'
-    | '/how-we-make-money'
     | '/insurance'
     | '/legal'
     | '/platform'
@@ -232,7 +221,6 @@ export interface FileRouteTypes {
     | '/embed'
     | '/features'
     | '/fx-tool'
-    | '/how-we-make-money'
     | '/insurance'
     | '/legal'
     | '/platform'
@@ -253,7 +241,6 @@ export interface RootRouteChildren {
   EmbedRoute: typeof EmbedRoute
   FeaturesRoute: typeof FeaturesRoute
   FxToolRoute: typeof FxToolRoute
-  HowWeMakeMoneyRoute: typeof HowWeMakeMoneyRoute
   InsuranceRoute: typeof InsuranceRoute
   LegalRoute: typeof LegalRoute
   PlatformRoute: typeof PlatformRoute
@@ -329,13 +316,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FxToolRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/how-we-make-money': {
-      id: '/how-we-make-money'
-      path: '/how-we-make-money'
-      fullPath: '/how-we-make-money'
-      preLoaderRoute: typeof HowWeMakeMoneyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/insurance': {
       id: '/insurance'
       path: '/insurance'
@@ -405,7 +385,6 @@ const rootRouteChildren: RootRouteChildren = {
   EmbedRoute: EmbedRoute,
   FeaturesRoute: FeaturesRoute,
   FxToolRoute: FxToolRoute,
-  HowWeMakeMoneyRoute: HowWeMakeMoneyRoute,
   InsuranceRoute: InsuranceRoute,
   LegalRoute: LegalRoute,
   PlatformRoute: PlatformRoute,

@@ -5,40 +5,31 @@ import { useI18n } from "@/lib/i18n";
  *  the manifesto copy, with market-coverage numbers folded in on the right
  *  instead of living in their own StatsSection further down the page — one
  *  credibility beat instead of two near-identical light sections back to
- *  back. Eyebrow/title/subtitle copy unchanged from before the merge; the 4
- *  stat tiles are design/AJUSTES-1.md §F's set (Countries/Currencies/
- *  Providers/Trustpilot, no founding date).
+ *  back.
  *
  *  design/AJUSTES-2.md §5 (mockup line 169-186) only calls out the grid
  *  ratio, the stat-tile styling and the two CTA buttons — not the
  *  eyebrow/title/subtitle copy or their sizing, which AJUSTES-1 §F already
  *  set deliberately, so those stay untouched here.
  *
- *  design/AJUSTES-3.md §B: "Read our method" and "About us" now point at
- *  real, dedicated pages — /how-we-make-money and /about — instead of the
- *  /legal#risk fallback and the home-anchor redirect used before those
- *  pages existed. */
+ *  2026-08-30 feedback: /how-we-make-money is gone (no real copy backed
+ *  it, and the "Read our method" button along with it) — this band goes
+ *  back to a single "About us" button, pointing at /about. The 4th stat
+ *  tile drops the hardcoded "4.6" (never a real Trustpilot number — see
+ *  TrustpilotCard's own comment) for "Founded in 2026", a real fact
+ *  instead of an unverifiable one. */
 export function AboutManifestoSection() {
   const { t } = useI18n();
-  // design/AJUSTES-1.md §F — "2026 Founded" drops out (a founding date is
-  // an argument against a new brand, not for it); Trustpilot takes its
-  // slot instead, in green. The 4.6 rating reuses the same
-  // comparator.trustpilot.rated figure already shown elsewhere on the
-  // page (TrustpilotCard, the rail) — not a new number invented for this
-  // tile. Providers stays "50+": no single real total-active-providers
-  // count exists server-side today (getProviderCounts only returns
-  // segment-split retail/business counts, which double-count providers
-  // marked "both"), so this is the safe generic fallback decision #7 of
-  // this redesign already established for exactly this situation.
+  // Providers stays "50+": no single real total-active-providers count
+  // exists server-side today (getProviderCounts only returns segment-split
+  // retail/business counts, which double-count providers marked "both"),
+  // so this is the safe generic fallback decision #7 of this redesign
+  // already established for exactly this situation.
   const stats: { value: string; label: string; valueClassName?: string }[] = [
     { value: "150+", label: t("home.stats.countries") },
     { value: "100+", label: t("home.stats.currencies") },
     { value: "50+", label: t("home.stats.providers") },
-    {
-      value: t("home.stats.trustpilotValue"),
-      label: t("home.stats.trustpilot"),
-      valueClassName: "text-[#4ADE80]",
-    },
+    { value: "2026", label: t("home.stats.founded") },
   ];
   return (
     <section
@@ -77,14 +68,8 @@ export function AboutManifestoSection() {
             </p>
             <div className="mt-5 flex flex-wrap gap-3.5">
               <Link
-                to="/how-we-make-money"
-                className="inline-flex h-11 items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
-              >
-                {t("home.about.cta.method")}
-              </Link>
-              <Link
                 to="/about"
-                className="inline-flex h-11 items-center rounded-xl border-[1.5px] border-white/28 px-5 text-[14px] font-bold text-white"
+                className="inline-flex h-11 items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
               >
                 {t("home.about.cta.aboutUs")}
               </Link>

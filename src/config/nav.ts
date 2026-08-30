@@ -56,9 +56,11 @@ export const FOOTER_PRODUCT: ReadonlyArray<NavEntry> = [
   { to: "/", labelKey: "footer.product.rateAlerts" },
 ];
 
+// 2026-08-30 feedback — /how-we-make-money removed (no real copy backed
+// it, and the site's only trust page is /about now), so its footer link
+// goes with it.
 export const FOOTER_COMPANY: ReadonlyArray<NavEntry> = [
   { to: "/about", labelKey: "nav.about" },
   { to: "/business", labelKey: "nav.forBusiness" },
-  { to: "/how-we-make-money", labelKey: "comparator.disclaimer.howWeMakeMoney" },
   { hash: "contact", labelKey: "nav.contact" },
 ];

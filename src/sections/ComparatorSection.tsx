@@ -1,5 +1,5 @@
 import { useServerFn } from "@tanstack/react-start";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
@@ -59,7 +59,6 @@ import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
-import { useProviderCounts } from "@/hooks/use-provider-counts";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { SITE_URL } from "@/config/site";
 import { captureBusinessLead, captureEnterpriseLead } from "@/lib/agent.functions";
@@ -399,13 +398,59 @@ export function ComparatorSection({
     from.toUpperCase() !== localCurrency(sendingCountry) ||
     (receivingCountry !== "" && to.toUpperCase() !== localCurrency(receivingCountry));
   const sameCorridorBlocked = sendingCountry === receivingCountry && !currencyOverridden;
-  // Segment used to be a manual tab the user toggled. Now it's derived
-  // automatically from the amount — same threshold already used for the
-  // business-desk upsell banner (B2B_UPSELL_MIN_AMOUNT), so the whole
-  // product agrees on one line between "individual" and "business" instead
-  // of two separate magic numbers. This also removes an interactive control
-  // from the card header, letting the box sit a bit shorter.
+  // There are two ways to change segment: the Individual/Business tablist
+  // (manual) and the amount-triggered B2B upsell banner below
+  // (B2B_UPSELL_MIN_AMOUNT — a nudge, not a hard switch). Both go through
+  // handleSegmentChange (below `to`/`sendingCountry` etc. so it can read
+  // them), not this raw setter directly.
   const [segment, setSegment] = useState<Segment>(initialQuery?.segment ?? "retail");
+  const segmentNavigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  // 2026-08-30 feedback — switching segment used to only flip local state:
+  // from /business, tapping "Individual" changed the results to retail
+  // pricing but left the page shell as /business (hideMarketingSections,
+  // BusinessExtrasSection still below); from "/", tapping "Business" never
+  // actually took you to /business either. Segment now implies a real
+  // route (retail → "/", business → "/business"); changing it navigates
+  // there, carrying the current amount/currencies/countries over as query
+  // params so the comparison isn't lost. A no-op when the target already
+  // matches the current route (e.g. the B2B banner's CTA while already on
+  // /business), which just flips local state — nothing to navigate to.
+  const handleSegmentChange = (next: Segment) => {
+    if (next === segment) return;
+    const onBusinessRoute = pathname.startsWith("/business");
+    const wantsBusinessRoute = next === "business";
+    if (onBusinessRoute === wantsBusinessRoute) {
+      setSegment(next);
+      return;
+    }
+    if (wantsBusinessRoute) {
+      segmentNavigate({
+        to: "/business",
+        search: (prev) => ({
+          ...prev,
+          from,
+          to,
+          amount,
+          origin: sendingCountry || undefined,
+          destination: receivingCountry || undefined,
+        }),
+      });
+    } else {
+      segmentNavigate({
+        to: "/",
+        search: (prev) => ({
+          ...prev,
+          from,
+          to,
+          amount,
+          segment: undefined,
+          origin: sendingCountry || undefined,
+          destination: receivingCountry || undefined,
+        }),
+      });
+    }
+  };
   // Business-only fields (design/HANDOFF.md §4) — UI state only for now: no
   // broker table exists yet to price a Spot/Forward/Option contract or a
   // recurring schedule differently, so these don't change the query. They
@@ -413,7 +458,6 @@ export function ComparatorSection({
   // captured lead) exists — see docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md.
   const [contractType, setContractType] = useState<"spot" | "forward" | "option">("spot");
   const [frequency, setFrequency] = useState<"one_off" | "monthly" | "quarterly">("one_off");
-  const providerCounts = useProviderCounts();
   // Fixed: the Send/Receive pill was removed (it changed the meaning of the
   // FROM amount, which read as confusing). The amount is always what you
   // send; the server payload still expects a mode value.
@@ -1310,19 +1354,6 @@ export function ComparatorSection({
                     : "px-4 py-1.5 sm:px-5"
               }`}
             >
-              {/* design/AJUSTES-2.md §2 — the "COMPARE" eyebrow only shows
-                  before a result exists; the mockup's compact/with-results
-                  header row has no eyebrow, just toggle+count on the left
-                  and the mid-market rate on the right (ml-auto below,
-                  replacing the standalone bordered rate box that used to
-                  sit below the fields — see resultsRef/scroll-mt-24 moved
-                  onto that rate block now). */}
-              {!compact && (
-                <div className="flex min-w-0 items-center gap-2 text-eyebrow font-bold uppercase text-brand-cta">
-                  <Sparkle className="h-3.5 w-3.5 shrink-0" />
-                  <span className="truncate">{t("home.search.compareLabel")}</span>
-                </div>
-              )}
               <div className="flex shrink-0 items-center gap-2.5">
                 <div
                   role="tablist"
@@ -1334,7 +1365,7 @@ export function ComparatorSection({
                       key={s}
                       role="tab"
                       aria-selected={segment === s}
-                      onClick={() => setSegment(s)}
+                      onClick={() => handleSegmentChange(s)}
                       className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
                         segment === s
                           ? "bg-card text-foreground shadow-sm"
@@ -1345,26 +1376,6 @@ export function ComparatorSection({
                     </button>
                   ))}
                 </div>
-                {/* Real, live count (useProviderCounts → getProviderCounts
-                    server fn) — never a number hardcoded into copy, see
-                    design/HANDOFF.md §2. Hidden while loading/embedded
-                    rather than showing a stale or placeholder figure. */}
-                {!embedded && providerCounts.data && (
-                  <span className="hidden truncate text-xs text-muted-foreground sm:inline">
-                    {t(
-                      segment === "business"
-                        ? "comparator.segment.businessCount"
-                        : "comparator.segment.retailCount",
-                    ).replace(
-                      "{n}",
-                      String(
-                        segment === "business"
-                          ? providerCounts.data.business
-                          : providerCounts.data.retail,
-                      ),
-                    )}
-                  </span>
-                )}
                 {/* design/AJUSTES-1.md §B originally rendered this inert
                     (no href, since /exchange doesn't exist — redesign
                     decision #5, "no está diseñada"). design/AJUSTES-3.md §B
@@ -2100,7 +2111,7 @@ export function ComparatorSection({
                     </span>
                     <button
                       type="button"
-                      onClick={() => setSegment("business")}
+                      onClick={() => handleSegmentChange("business")}
                       className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
                         amount >= B2B_UPSELL_MIN_AMOUNT
                           ? "bg-foreground text-background hover:bg-foreground/90"
@@ -2379,23 +2390,30 @@ function RateAlertCard({
  *  disclaimer already shown elsewhere (design/HANDOFF.md §3). Colors are
  *  literal to design/AJUSTES-2.md §6 (mockup line 358-364) — the
  *  star/label are the success green token, not the warning-amber lucide
- *  default. The "How we make money" link points at the real page built
- *  for it in design/AJUSTES-3.md §B (previously /legal#risk, the closest
- *  substitute before that page existed). */
+ *  default.
+ *
+ *  2026-08-30 feedback: the "4.6" figure was a hardcoded string, not a
+ *  real number from Trustpilot (no API integration exists anywhere in the
+ *  app — see TrustBox.tsx, a real live widget but a review-collector, not
+ *  a rating display). Rather than keep publishing an unverifiable score,
+ *  this is now a real link to the actual public Trustpilot page (same URL
+ *  TrustBox's own fallback link uses) with no number attached. */
 function TrustpilotCard({ t }: { t: (k: string) => string }) {
   return (
     <div className="rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
       <div className="flex items-center gap-[7px]">
         <Star className="h-[13px] w-[13px] fill-success text-success" />
-        <span className="text-[12.5px] font-bold text-success">
-          {t("comparator.trustpilot.rated")}
-        </span>
+        <a
+          href="https://www.trustpilot.com/review/mangomundi.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[12.5px] font-bold text-success hover:underline"
+        >
+          {t("comparator.trustpilot.checkRating")}
+        </a>
       </div>
       <p className="mt-2 text-[11.5px] leading-[1.55] text-[#5C5147]">
-        {t("comparator.disclaimer.neutrality")}{" "}
-        <Link to="/how-we-make-money" className="font-semibold text-[#C2410C] hover:underline">
-          {t("comparator.disclaimer.howWeMakeMoney")}
-        </Link>
+        {t("comparator.disclaimer.neutrality")}
       </p>
       <div className="mt-2">
         <TrustBox />
@@ -2452,8 +2470,27 @@ function CurrencyPillRow({
 
   return (
     <div className="flex flex-wrap items-center gap-[9px]">
-      <span className="text-[12px] font-bold" style={{ color: "#6B5F55" }}>
+      <span className="flex items-center gap-1 text-[12px] font-bold" style={{ color: "#6B5F55" }}>
         {t(compact ? "comparator.altCurrency.receiveLabel" : "comparator.altCurrency.sendLabel")}
+        {/* design/2026-08-30 feedback — "no entiendo el sentido de tener
+            [...] otro selector de moneda abajo, no es lo mismo duplicado?"
+            The country picker's currency text is a READOUT (its local
+            currency, not a separate control); this pill row is the only
+            place currency is actually chosen, and it only ever changes
+            currency, never country. A tooltip spells that out inline
+            instead of a permanent line of copy on every render. */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span tabIndex={0} className="cursor-help text-muted-foreground/70">
+                <Info className="h-3 w-3" />
+              </span>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-[240px] text-xs">
+              {t("comparator.altCurrency.explainer")}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </span>
       {pills.map((code) => {
         const active = current.toUpperCase() === code;

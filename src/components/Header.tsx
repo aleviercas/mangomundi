@@ -26,7 +26,10 @@ export function Header() {
           className="flex items-center"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
-          <Wordmark className="text-2xl" />
+          {/* Text-only lockup here and in Footer — the icon mark is reserved
+              for the widget/embed surfaces where it's the only thing at
+              small sizes (see Wordmark's own "compact" doc comment). */}
+          <Wordmark className="text-2xl" compact />
         </Link>
 
         {/* Desktop nav — right-aligned (logo left). */}

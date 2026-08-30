@@ -72,7 +72,7 @@ export function Footer() {
               className="inline-flex items-center"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             >
-              <Wordmark className="text-2xl" />
+              <Wordmark className="text-2xl" compact />
             </Link>
             <div className="mt-6 flex items-center gap-3">
               {socials.map((s) => (

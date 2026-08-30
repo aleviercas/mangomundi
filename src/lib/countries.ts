@@ -37,8 +37,16 @@ function nameOf(code: string): string {
   }
 }
 
+// No permanent civilian population and no banking/remittance infrastructure
+// — `country-to-currency`'s raw 251-territory list includes these, but no
+// real transfer corridor originates or ends there. Curated exclusion, not a
+// guess: each one checked individually (Antarctica, Bouvet Island, the
+// British Indian Ocean Territory, French Southern Territories, Heard &
+// McDonald Islands, Pitcairn, South Georgia & the South Sandwich Islands).
+const UNINHABITED_TERRITORIES = new Set(["AQ", "BV", "GS", "HM", "IO", "PN", "TF"]);
+
 export const COUNTRIES: CountryInfo[] = Object.keys(RAW)
-  .filter((code) => /^[A-Z]{2}$/.test(code))
+  .filter((code) => /^[A-Z]{2}$/.test(code) && !UNINHABITED_TERRITORIES.has(code))
   .map((code) => ({
     code,
     name: nameOf(code),

@@ -1,24 +1,16 @@
 import { useI18n } from "@/lib/i18n";
 
-/** design/AJUSTES-4.md §3 — "Two ways we work with companies", below the
- *  quote form and results table on /business only (never on the home
- *  band, which stays the simple hook it already was per AJUSTES-1 §G —
- *  see BusinessSection.tsx's own comment). Card styling is literal to the
- *  doc: white, 1px #EBE3D9 border, 18px radius, 16.5px/800 title, 14px
- *  #6B5F55 body.
+/** design/AJUSTES-4.md §3 — below the quote form and results table on
+ *  /business only (never on the home band, which stays the simple hook it
+ *  already was per AJUSTES-1 §G — see BusinessSection.tsx's own comment).
  *
- *  Neither card had body copy anywhere in the app or the mockup — only
- *  the two titles are named in the doc. Rather than invent claims, each
- *  body describes only what the product actually does today: real
- *  contract-type/frequency fields already in ComparatorSection's business
- *  mode (spot/forward/option, one-off/monthly/quarterly) for Treasury
- *  Operations, and the same real quote-request flow (captureBusinessLead)
- *  for FX & Payment Partnerships, framed for an embedded/ongoing-volume
- *  relationship rather than a one-off quote. Adapted from the old
- *  "Corporate Treasury & Operations" / "Institutional & Partnership
- *  Inquiries" copy already sitting unused in i18n.tsx (home.dual.corporate,
- *  contact.intro) since before AJUSTES-1 §G replaced that section — not
- *  written from nothing. */
+ *  2026-08-30 feedback: replaced the generic "Two ways we work with
+ *  companies" copy (written when no real text existed anywhere for these
+ *  two cards — see the git history on this file) with the actual original
+ *  "Institutional & Partnership Inquiries" section text the user supplied
+ *  verbatim, from the site's previous design. Card styling stays literal
+ *  to AJUSTES-4 §3: white, 1px #EBE3D9 border, 18px radius, 16.5px/800
+ *  title, 14px #6B5F55 body. */
 export function BusinessExtrasSection() {
   const { t } = useI18n();
   const cards = [
@@ -34,9 +26,22 @@ export function BusinessExtrasSection() {
   return (
     <section className="py-10 sm:py-14">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground">
-          {t("business.extras.title")}
-        </h2>
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground">
+              {t("business.extras.title")}
+            </h2>
+            <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[#6B5F55]">
+              {t("business.extras.subtitle")}
+            </p>
+          </div>
+          <a
+            href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-input bg-card px-4 py-2 text-sm font-semibold text-foreground hover:border-foreground/30"
+          >
+            {t("business.extras.cta")}
+          </a>
+        </div>
         <div className="mt-5 grid gap-4 sm:grid-cols-2">
           {cards.map((c) => (
             <div key={c.title} className="rounded-[18px] border border-[#EBE3D9] bg-white p-6">
@@ -44,26 +49,6 @@ export function BusinessExtrasSection() {
               <p className="mt-2 text-[14px] leading-relaxed text-[#6B5F55]">{c.body}</p>
             </div>
           ))}
-        </div>
-
-        {/* "Contacto directo del equipo de negocio" — same real mailto the
-            home band's "Talk to us" already uses (comparator.b2b.cta),
-            not a new form. */}
-        <div className="mt-6 rounded-[18px] border border-[#EBE3D9] bg-white p-6 sm:flex sm:items-center sm:justify-between sm:gap-6">
-          <div>
-            <h3 className="text-[16.5px] font-extrabold text-foreground">
-              {t("business.extras.contact.title")}
-            </h3>
-            <p className="mt-2 text-[14px] leading-relaxed text-[#6B5F55]">
-              {t("business.extras.contact.body")}
-            </p>
-          </div>
-          <a
-            href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
-            className="mt-4 inline-flex shrink-0 items-center gap-1.5 rounded-md border border-input bg-card px-4 py-2 text-sm font-semibold text-foreground hover:border-foreground/30 sm:mt-0"
-          >
-            {t("comparator.b2b.cta")}
-          </a>
         </div>
       </div>
     </section>

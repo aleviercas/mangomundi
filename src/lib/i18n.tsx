@@ -480,8 +480,9 @@ export const DICTS: Record<Lang, Dict> = {
     "home.about.problem.label": "Problem",
     "home.about.problem.body":
       "A two-sided inefficiency. On one side, retail clients and businesses face a frustrating maze regarding best rates. On the other, financial institutions struggle with high acquisition costs and fragmented channels.",
-    // design/AJUSTES-2.md §5 — the dark band's two CTA buttons.
-    "home.about.cta.method": "Read our method",
+    // design/AJUSTES-2.md §5 — the dark band's CTA button. "Read our
+    // method"/home.about.cta.method removed 2026-08-30 (see
+    // AboutManifestoSection.tsx's own comment) — only "About us" remains.
     "home.about.cta.aboutUs": "About us",
     // Home — Stats / Market coverage
     "home.stats.eyebrow": "Market coverage",
@@ -493,8 +494,10 @@ export const DICTS: Record<Lang, Dict> = {
     // design/AJUSTES-1.md §F — shortened for the dark-band stat tile
     // (AboutManifestoSection); also feeds HeroSection's trust bar, same key.
     "home.stats.providers": "Providers",
-    "home.stats.trustpilotValue": "4.6",
-    "home.stats.trustpilot": "on Trustpilot",
+    // 2026-08-30 feedback — replaces the dark band's 4th stat tile, which
+    // used to show a hardcoded, unverifiable "4.6" Trustpilot figure (no
+    // real API integration exists — see TrustpilotCard's own comment).
+    "home.stats.founded": "Founded",
     // Home — Contact
     "home.contact.eyebrow": "Contact",
     // design/AJUSTES-1.md §G — literal copy for the business pitch band,
@@ -567,27 +570,6 @@ export const DICTS: Record<Lang, Dict> = {
     "footer.legal.risk": "Risk Disclosure",
     "footer.legal.privacy": "Privacy Policy",
     "footer.rights": "All rights reserved.",
-    // design/AJUSTES-3.md §B — /about's own "how the business works" teaser
-    // line, linking out to /how-we-make-money.
-    "about.howBusinessWorksLine":
-      "We earn a commission from some providers when you open an account through us — at no extra cost to you, and it never changes who ranks first.",
-    // design/AJUSTES-3.md §B — /how-we-make-money, the transparency page
-    // "Read our method"/"How we make money" all point to. Section bodies
-    // reuse legal.terms.s3 / home.test.c1 / fx.disclaimer / comparator.row.*
-    // and comparator.badge.notVerified — see the route file's own comment
-    // for exactly which existing key backs which section.
-    "howWeMakeMoney.eyebrow": "Transparency",
-    "howWeMakeMoney.subtitle":
-      "The short version: some providers pay us when you pick them. The ranking doesn't know that. Here's exactly how both of those are true at once.",
-    "howWeMakeMoney.s1.title": "How the money is made",
-    "howWeMakeMoney.s2.title": "What that commission doesn't change",
-    "howWeMakeMoney.s3.title": "How it's marked",
-    "howWeMakeMoney.s3.example":
-      "Every row that comes from a paid relationship carries this label, right on the row, not in fine print:",
-    "howWeMakeMoney.s4.title": "Where the prices come from",
-    "howWeMakeMoney.s4.body":
-      "A row is stamped Live only once we've researched real, provider-specific pricing for that exact country pair and it's confirmed. Otherwise it's stamped Estimated — the provider's general published rate, not verified for this specific route yet.",
-    "howWeMakeMoney.s4.example": "Both stamps as they appear on a result row:",
     // Legal page
     "legal.pageTitle": "Legal & Compliance",
     "legal.pageSubtitle": "Terms of Service, Risk Disclosure and Privacy Policy.",
@@ -1492,24 +1474,22 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.risk.s4.title": "Sanctions and Regulatory Compliance",
     "legal.risk.s4.body":
       "Users are solely responsible for ensuring that any cross-border transfer complies with applicable sanctions regimes, anti-money laundering (AML) laws, know-your-customer (KYC) requirements, and cross-border reporting obligations in their jurisdiction. mangomundi does not facilitate transactions to embargoed jurisdictions or sanctioned counterparties. Violations may result in frozen funds, regulatory penalties, or criminal liability.",
-    // design/AJUSTES-4.md §3 — "Two ways we work with companies", /business
-    // only (BusinessExtrasSection.tsx). Neither card had body copy anywhere
-    // in the app or the mockup, only the two titles; bodies describe real
-    // product mechanics (the business-mode contract-type/frequency fields,
-    // the same real quote-request flow), adapted from the old "Corporate
-    // Treasury & Operations" / "Institutional & Partnership Inquiries" copy
-    // (home.dual.corporate, contact.intro) that's sat unused since AJUSTES-1
-    // §G replaced that section — not written from nothing.
-    "business.extras.title": "Two ways we work with companies",
-    "business.extras.treasury.title": "Treasury Operations",
+    // design/AJUSTES-4.md §3, /business only (BusinessExtrasSection.tsx).
+    // 2026-08-30 feedback — this is the literal original "Institutional &
+    // Partnership Inquiries" copy from the site's previous design, supplied
+    // verbatim by the user, replacing the generic mechanics-only text
+    // written in an earlier round when no real copy existed anywhere for
+    // these two cards.
+    "business.extras.title": "Institutional & Partnership Inquiries",
+    "business.extras.subtitle":
+      "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
+    "business.extras.cta": "Email our business desk",
+    "business.extras.treasury.title": "For Treasury Operations",
     "business.extras.treasury.body":
-      "Spot, forward or option — set the contract type and how often you send, and brokers quote against that, not a one-off guess.",
-    "business.extras.partnerships.title": "FX & Payment Partnerships",
+      "We can develop custom, on-premise AI agents as a service, tailored to your corporate treasury team's workflow to optimize trade finance and liquidity operations.",
+    "business.extras.partnerships.title": "For FX & Payment Partnerships",
     "business.extras.partnerships.body":
-      "Payroll providers, marketplaces and fintechs with recurring cross-border volume: talk to our business team directly about an ongoing rate arrangement.",
-    "business.extras.contact.title": "Prefer to talk to someone?",
-    "business.extras.contact.body":
-      "Our business team can help you scope volume, corridors and contract terms directly — no form, just an email.",
+      "We are looking to align with cross-border payment operators and currency exchange providers; let's explore synergies through integrated sponsored placements and affiliate programs designed to maximize efficiency and reduce your Customer Acquisition Cost (CAC).",
     "business.badge": "For institutions & corporate treasury",
     "business.hero.title.1": "Institutional Routing &",
     "business.hero.title.2": "Strategy Validation.",
@@ -2665,6 +2645,11 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.altCurrency.all": "All {n}",
     "comparator.altCurrency.destinationHint":
       "the destination currency unlocks once you pick a country",
+    // 2026-08-30 feedback — the tooltip on the pill row's own label,
+    // clarifying it's the only real currency control (the text next to
+    // the country name is a readout of that country's local currency).
+    "comparator.altCurrency.explainer":
+      "Your currency follows the country you picked by default. Use this only if you're sending from — or receiving into — a different currency, like a multi-currency account. Picking one here never changes the country.",
     "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Business",
     "comparator.segment.retailCount": "{n} providers · retail rates",
@@ -2841,12 +2826,11 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.rateAlert.cta": "Set a rate alert",
     "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
     "comparator.rateAlert.error": "Something went wrong. Please try again.",
-    "comparator.trustpilot.rated": "Rated 4.6 on Trustpilot",
-    // design/AJUSTES-2.md §6 (mockup line 363) — the rail's Trustpilot
-    // card links its neutrality disclaimer to /legal#risk, same real
-    // destination "Read our method" in AboutManifestoSection uses; no
-    // dedicated "how we make money" page exists yet.
-    "comparator.disclaimer.howWeMakeMoney": "How we make money",
+    // 2026-08-30 feedback — comparator.trustpilot.rated ("Rated 4.6 on
+    // Trustpilot") was a hardcoded figure, not a real number (no Trustpilot
+    // API integration exists anywhere in the app). Replaced everywhere it
+    // was used with a real link to the public Trustpilot page, no number.
+    "comparator.trustpilot.checkRating": "Check our rating on Trustpilot",
     // design/AJUSTES-1.md §E — "Today's routes, already priced". The
     // mockup's subtitle claims a specific freshness ("updated 2 min ago")
     // that a real page combining several corridors with different fetch
@@ -3360,11 +3344,6 @@ const ROUTE_SEO_EN: RouteSeoMap = {
     title: "About — mangomundi",
     description:
       "mangomundi is a neutral decision engine for cross-border payments and currency exchange — our mission, vision, and how the business works.",
-  },
-  "/how-we-make-money": {
-    title: "How we make money — mangomundi",
-    description:
-      "How mangomundi earns a commission from some providers, why that never changes the ranking, how affiliate links are marked, and where our prices come from.",
   },
 };
 

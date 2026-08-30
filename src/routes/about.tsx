@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
@@ -7,14 +7,18 @@ import { ContactSection } from "@/sections/ContactSection";
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
 /** design/AJUSTES-3.md §B + design/AJUSTES-4.md §1 — /about promoted from a
- *  redirect-to-home-anchor stub into a real page: the mission/vision the
- *  home's dark band only summarizes, plus a link out to /how-we-make-money
- *  and a real contact point. Deliberately NOT the market-coverage stats
- *  (150+ Countries etc.) — AJUSTES-4 §2 confirms those stay in the dark
- *  band only, "una página de misión que abre con números se lee como un
- *  pitch de inversores". Every paragraph here reuses existing, already-
- *  translated home.about.* copy (mission/vision, i18n.tsx) that sat unused
- *  in the dictionary before this — no new claims, just a page for it. */
+ *  redirect-to-home-anchor stub into a real page: the mission/vision/problem
+ *  the home's dark band only summarizes, plus a real contact point.
+ *  Deliberately NOT the market-coverage stats (150+ Countries etc.) —
+ *  AJUSTES-4 §2 confirms those stay in the dark band only, "una página de
+ *  misión que abre con números se lee como un pitch de inversores".
+ *
+ *  2026-08-30 feedback: this is now the *only* trust page — /how-we-make-
+ *  money is gone (no real copy backed it) and its link along with it. Also
+ *  restores "the problem" (home.about.problem), the third of the original
+ *  three-part mission/vision/problem copy that sat unused in i18n.tsx even
+ *  before /about existed as a page. Every paragraph reuses that existing
+ *  copy — no new claims, just a page for it. */
 export const Route = createFileRoute("/about")({
   validateSearch: (search) => searchSchema.parse(search),
   loader: async () => {
@@ -69,14 +73,15 @@ function AboutPage() {
               {t("home.about.vision.body")}
             </p>
           </div>
+          <div>
+            <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
+              {t("home.about.problem.label")}
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-foreground">
+              {t("home.about.problem.body")}
+            </p>
+          </div>
         </div>
-
-        <p className="mt-10 border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground">
-          {t("about.howBusinessWorksLine")}{" "}
-          <Link to="/how-we-make-money" className="font-semibold text-brand-cta hover:underline">
-            {t("comparator.disclaimer.howWeMakeMoney")}
-          </Link>
-        </p>
       </section>
       <ContactSection />
     </main>
