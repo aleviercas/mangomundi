@@ -274,6 +274,25 @@ Orden de prioridad acordado con Alejandro:
      [`docs/handoff/handoff-2026-08-29-ajustes-1-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-ajustes-1-rediseno-mangomundi-4.md)
      para el detalle completo y el orden de verificación sugerido antes de
      mergear esta rama.
+   - **Ronda de ajustes 2 (30-ago-2026)** — sobre lo anterior, un tercer
+     documento (`design/AJUSTES-2.md`) pidió fidelidad pixel-a-pixel de
+     colores/medidas/tipografía (no estructura, eso ya lo arregló la
+     ronda 1): paleta base pasada de oklch a hex literal, copy y tamaños
+     del CTA "Compare", marketing oculto en la pantalla de resultados,
+     medidas exactas de cada fila (tag de ganador según criterio de
+     orden, link "Fee breakdown"), blog rediseñado como banda compacta al
+     pie, retícula y botones de la banda oscura, las cuatro tarjetas del
+     rail izquierdo a medida exacta, y el header a 66px con nav de 5
+     ítems y pastilla de idioma. **Las 8 secciones están completas.**
+     Instrucción explícita de esta ronda: inspeccionar el markup del
+     `.dc.html` directamente en vez de confiar en la prosa del documento
+     — encontró al menos dos discrepancias reales entre ambos (ver el
+     handoff). Mismo límite de siempre, agravado en esta ronda porque casi
+     todo lo tocado solo se ve con un resultado de comparación real (sin
+     credenciales de Supabase en este sandbox) — ver
+     [`docs/handoff/handoff-2026-08-30-ajustes-2-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-30-ajustes-2-rediseno-mangomundi-4.md)
+     para el detalle completo y el orden de verificación sugerido antes de
+     mergear esta rama.
 2. **Precisión de producto/datos** (este documento) — modelo de elegibilidad
    de proveedores por corredor **cerrado y documentado** en
    `docs/architecture-motor-comparador.md` (27-ago-2026, fase 2) — es el
