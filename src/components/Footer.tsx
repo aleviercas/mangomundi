@@ -132,6 +132,15 @@ export function Footer() {
             <span>© {new Date().getFullYear()} Mangomundi</span>
           </div>
         </div>
+        {/* 2026-08-30 feedback (fifth round) — consolidates the two paragraphs
+            that used to sit below the results list (fx.disclaimer: independence
+            + affiliate-commission notice; fx.trademarks: third-party trademark
+            disclaimer) into one concise line here instead, per "se podria dejar
+            en el fondo de todo... de paso hacerlas mas consisas, tiene demasiado
+            texto con letra chica". */}
+        <p className="mt-6 border-t border-white/10 pt-4 text-[11px] leading-relaxed text-[#8A7C6E]">
+          {t("footer.legalNote")}
+        </p>
       </div>
     </footer>
   );

@@ -21,7 +21,16 @@ import { BrandLogo } from "@/components/BrandLogo";
  * fallback — there's no honest generic version of "here's an exclusive
  * rate" when there isn't one.
  */
-export function TodaysRoutesSection() {
+export function TodaysRoutesSection({
+  agentSlotRef,
+}: {
+  /** 2026-08-30 feedback (fifth round) — a slot in this section's own
+   *  header row for ComparatorSection to portal its collapsed pre-search
+   *  AI trigger into (see HomePageBody, which owns the actual DOM node via
+   *  useState + this callback ref). Optional so this component still works
+   *  standalone/in tests without a caller wiring the portal. */
+  agentSlotRef?: (node: HTMLDivElement | null) => void;
+}) {
   const { t } = useI18n();
   const { data: corridors } = useExclusiveCorridors();
 
@@ -60,19 +69,27 @@ export function TodaysRoutesSection() {
               {t("todaysRoutes.subtitle")}
             </p>
           </div>
-          {/* 2026-08-30 feedback — was a hardcoded "4.6", never a real
-              Trustpilot number (see TrustpilotCard's own comment). Real
-              link to the public page instead, no invented figure. */}
-          <a
-            href="https://www.trustpilot.com/review/mangomundi.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-bold hover:underline"
-            style={{ backgroundColor: "#E4F3EC", color: "#1F7A5A" }}
-          >
-            <Star className="h-3 w-3 fill-current" />
-            {t("comparator.trustpilot.checkRating")}
-          </a>
+          <div className="flex shrink-0 items-center gap-2">
+            {/* 2026-08-30 feedback (fifth round) — ComparatorSection portals
+                its compact "Ask Mangomundi AI" trigger here (desktop,
+                pre-search) instead of the fixed floating edge tab. Empty
+                (renders nothing) whenever there's no portal content — the
+                div itself is just the mount point. */}
+            {agentSlotRef && <div ref={agentSlotRef} className="contents" />}
+            {/* 2026-08-30 feedback — was a hardcoded "4.6", never a real
+                Trustpilot number (see TrustpilotCard's own comment). Real
+                link to the public page instead, no invented figure. */}
+            <a
+              href="https://www.trustpilot.com/review/mangomundi.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-bold hover:underline"
+              style={{ backgroundColor: "#E4F3EC", color: "#1F7A5A" }}
+            >
+              <Star className="h-3 w-3 fill-current" />
+              {t("comparator.trustpilot.checkRating")}
+            </a>
+          </div>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">

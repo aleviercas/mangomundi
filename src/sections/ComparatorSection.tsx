@@ -2,6 +2,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
@@ -32,7 +33,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,13 +47,7 @@ import {
   type ComparisonResult,
 } from "@/lib/fx.functions";
 import { useI18n } from "@/lib/i18n";
-import {
-  localCurrency,
-  plausibleCurrencies,
-  primaryCountryForCurrency,
-  resolveRouteCode,
-} from "@/lib/countries";
-import { CURRENCIES } from "@/lib/currencies";
+import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
@@ -315,6 +309,7 @@ export function ComparatorSection({
   onHasResultChange,
   onResult,
   onQueryChange,
+  agentPortalTarget,
 }: {
   initialQuery?: ComparatorQuery;
   /** Embed mode (iframe widget): drop the floating AI agent and the section
@@ -346,6 +341,12 @@ export function ComparatorSection({
     sendingCountry: string;
     receivingCountry: string;
   }) => void;
+  /** design/Mangomundi 4 - Final.dc.html — 2026-08-30 feedback (fifth
+   *  round): a DOM node (HomePageBody's own useState, set via a callback
+   *  ref on the slot TodaysRoutesSection renders) to portal the collapsed
+   *  pre-search agent trigger into, instead of the fixed floating tab. See
+   *  showPreSearchInlineTrigger's own comment. */
+  agentPortalTarget?: HTMLElement | null;
 }) {
   const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
@@ -375,18 +376,48 @@ export function ComparatorSection({
     setReceivingCountry(code);
     setTo(localCurrency(code));
   };
-  // design/AJUSTES-3.md §A — the currency pill row (CurrencyPillRow, below)
-  // is the escape hatch for the real minority case where currency and
-  // country genuinely diverge: a multi-currency account (Wise, Revolut,
-  // business FX) held by someone sending from — or receiving into — a
-  // country whose local currency isn't the one they want. No separate
-  // override flag needs to travel with it: fx.functions.ts computes
-  // `currencyOverridden` purely by comparing from/to against
-  // localCurrency(sendingCountry/receivingCountry), so setting `from`/`to`
-  // away from the country's local currency (a pill tap) is itself the
-  // signal — and setting them back via handleSendingCountryChange/
-  // handleReceivingCountryChange above is itself the reset, since it always
-  // re-derives from `localCurrency(code)`.
+  // 2026-08-30 feedback (fifth round) — replaces CurrencyPillRow's tooltip-
+  // gated escape hatch with a plain, always-visible currency dropdown next
+  // to each country (Monito-style: country and currency are independent,
+  // always-shown fields, not one derived silently from the other with a
+  // hidden override). No separate override flag needs to travel with it:
+  // fx.functions.ts computes `currencyOverridden` purely by comparing
+  // from/to against localCurrency(sendingCountry/receivingCountry), so
+  // picking a currency here is itself the signal — and re-picking a country
+  // via handleSendingCountryChange/handleReceivingCountryChange above is
+  // itself the reset, since it always re-derives from `localCurrency(code)`.
+  const handlePickFromCurrency = (code: string) => {
+    setFrom(code);
+    // §A rule 5 — a currency change re-runs the comparison without an extra
+    // click, but only once a result already exists to update (both
+    // countries are already set by then); before that, changing FROM/TO
+    // never auto-fires either (same explicit-CTA rule every other field
+    // follows here).
+    if (compact && result) {
+      compareMut.mutate({ from: code, to, sendingCountry, receivingCountry });
+    }
+  };
+  const handlePickToCurrency = (code: string) => {
+    setTo(code);
+    if (compact && result) {
+      compareMut.mutate({ from, to: code, sendingCountry, receivingCountry });
+    }
+  };
+  // Swaps country AND currency together — unlike handleSendingCountryChange/
+  // handleReceivingCountryChange (which always re-derive currency from the
+  // new country), a swap must preserve a currency override on either side,
+  // so it sets all four pieces of state directly instead of routing through
+  // those handlers.
+  const handleSwap = () => {
+    const prevSendingCountry = sendingCountry;
+    const prevReceivingCountry = receivingCountry;
+    const prevFrom = from;
+    const prevTo = to;
+    setSendingCountry(prevReceivingCountry);
+    setReceivingCountry(prevSendingCountry);
+    setFrom(prevTo);
+    setTo(prevFrom);
+  };
   // Same country is only a dead-end when currency is left at the local
   // default too (comparing GBP->GBP within the UK is meaningless). Once the
   // override diverges the currency (e.g. UK->UK but GBP->EUR, a multi-
@@ -554,16 +585,6 @@ export function ComparatorSection({
   // and before any result, the agent keeps its existing floating behavior.
   const isDesktopRail = useIsDesktopRail();
   const showDockedAgent = isDesktopRail && Boolean(result) && !embedded;
-  // 2026-08-30 feedback (fourth round) — "el agente no se podria poner al
-  // lado de todays routes... y luego cuando se busca queda movido en la
-  // franja vertical?" Before a result, on desktop, the agent now renders
-  // docked (in-flow) right after the search card — no longer the `fixed`
-  // edge tab floating over the page — landing directly above
-  // TodaysRoutesSection in HomePageBody's own stacking order. It still
-  // moves into the results rail once showDockedAgent takes over. Mobile/
-  // narrow keeps the floating tab (no rail-width column to dock into
-  // there).
-  const showPreSearchDockedAgent = isDesktopRail && !result && !embedded;
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -661,6 +682,19 @@ export function ComparatorSection({
   // A plain boolean — "a result landed while the panel was collapsed" — is
   // what's left to signal.
   const [hasNewResult, setHasNewResult] = useState(false);
+  // 2026-08-30 feedback (fourth, then fifth round) — "el agente no se
+  // podria poner al lado de todays routes... a la derecha y mas chiquito?"
+  // Before a result, on desktop, the collapsed trigger renders into a slot
+  // TodaysRoutesSection exposes in its own header row (agentPortalTarget,
+  // a DOM node HomePageBody wires between the two sibling components via a
+  // portal — ComparatorSection still owns all the chat state/logic here,
+  // this only changes WHERE the closed trigger paints). Opening it still
+  // pops the full panel out via the normal fixed positioning below — a
+  // chat panel doesn't belong squeezed into a header row next to a badge.
+  // No target (embed, mobile, any caller that doesn't pass one) falls back
+  // to the original floating tab untouched.
+  const showPreSearchInlineTrigger =
+    isDesktopRail && !result && !embedded && aiCollapsed && agentPortalTarget != null;
 
   // MasterRateMap / MissingCorridorsLog (client mirror). Hydrated from the
   // server on mount and re-synced after each comparison so the AI Wizard
@@ -1185,18 +1219,6 @@ export function ComparatorSection({
     if (!nextCollapsed) setHasNewResult(false);
   };
 
-  // design/AJUSTES-2.md §3 — every row's "Fee breakdown" footer link opens
-  // the agent (docked or floating, same toggle the panel's own minimize
-  // button uses) and asks the SAME "fees" wizard action already wired to
-  // AiCopilot's quick-actions grid (localFeeBreakdown, top 3 rows) — not a
-  // new per-row computation, and not per-provider: every row's link does
-  // the same thing, matching what the agent already knows how to answer.
-  const handleFeeBreakdownClick = () => {
-    handleAgentToggle(false);
-    const feesAction = DEFAULT_WIZARD_ACTIONS.find((a) => a.id === "fees");
-    if (feesAction) handleWizardAction(feesAction);
-  };
-
   const openPreferredRate = (slug: string, url: string, name?: string) => {
     trackFn({
       data: {
@@ -1430,9 +1452,8 @@ export function ComparatorSection({
   // (42px/16px, closer to the mockup's literal 42px row) at each spot
   // below, distinct from `compact`'s 52px/21px home-page tier — but ONLY
   // for sizing; `compact` itself still separately governs the CTA label
-  // ("Update" only once a real result exists) and CurrencyPillRow's send/
-  // receive context, neither of which should flip just because this is a
-  // widget with no result yet.
+  // ("Update" only once a real result exists), which shouldn't flip just
+  // because this is a widget with no result yet.
 
   return (
     <SectionTag
@@ -1545,215 +1566,280 @@ export function ComparatorSection({
                   {t("search.sameCountry")}
                 </div>
               )}
-              {/* One consolidated row — FROM country → swap → TO country → CTA.
-                  Country-first (not currency-first), matching how every real
+              {/* Search form — two shapes depending on `embedded`. Both are
+                  country-first (not currency-first), matching how every real
                   MTO comparator does it (Remitly, WorldRemit, Western Union
-                  all lead with country; currency is a derived label, never an
-                  independent choice) — see the note by handleSendingCountryChange/
-                  handleReceivingCountryChange above for why this matters now
-                  that fx_rates keys corridor-specific pricing by country pair,
-                  not currency pair. `from`/`to` (currency) are still the state
-                  everything downstream reads — these handlers just derive them
-                  from the country pick instead of the other way around.
+                  all lead with country; currency is a byproduct, not an
+                  independent choice by default) — see the note by
+                  handleSendingCountryChange/handleReceivingCountryChange
+                  above for why this matters now that fx_rates keys
+                  corridor-specific pricing by country pair, not currency
+                  pair. `from`/`to` (currency) are still the state everything
+                  downstream reads — country selection just derives them by
+                  default, and the currency dropdowns below (2026-08-30
+                  feedback, fifth round) let a person override them directly
+                  without opening the country picker again.
                   design/AJUSTES-2.md §1 — field heights/copy shrink once a
                   result exists (58px→52px, "Compare"→"Update"); the compact
-                  fields also swap to #FDFBF9 instead of white.
-                  2026-08-30 feedback (second, then third round) — the
-                  widget's own row used to be genuinely unrelated to any of
-                  this (see the `compact` declaration's own comment): @2xl
-                  never fires inside the widget's fixed ~360px container, so
-                  FROM/swap/TO always stacked vertically instead of sitting
-                  in one row like the mockup, regardless of `compact`.
-                  `embedded` gets its own, much lower container-query
-                  threshold (fields are also narrower there, own 42px size
-                  tier + compactLabel) and drops the CTA into its own
-                  full-width row below instead of a 4th column, since
-                  there's no room for one at that width. */}
-              <div
-                className={
-                  embedded
-                    ? "grid grid-cols-1 items-stretch gap-[7px] @[260px]:grid-cols-[minmax(0,1fr)_34px_96px]"
-                    : "grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[minmax(280px,1.1fr)_46px_minmax(260px,1fr)_176px]"
-                }
-              >
-                {/* FROM box: "You send" — amount + country unified pill
-                    (currency shown as the combobox's secondary/dropdown hint,
-                    and in the mid-market rate banner once a comparison runs). */}
-                <div className="min-w-0">
-                  <FieldLight label={t("comparator.field.amount")} hideLabel={embedded}>
-                    {/* Unified pill: amount + country read as one control,
-                        split by a hairline divider instead of two boxes. */}
-                    <div
-                      className={`flex w-full min-w-0 items-stretch overflow-hidden border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
-                        embedded
-                          ? "h-[42px] rounded-[9px] bg-white"
-                          : compact
-                            ? "h-[52px] rounded-md bg-[#FDFBF9]"
-                            : "h-[58px] rounded-md bg-card"
-                      }`}
+                  fields also swap to #FDFBF9 instead of white. */}
+              {embedded ? (
+                // design/Mangomundi 4 - Final.dc.html line 726-786 ("Widget ·
+                // sin scroll") — the widget's own compact row is literal to
+                // the mockup: amount + currency-flag pill, swap, currency-flag
+                // box, nothing else. No separate country row and no currency
+                // override here — one more control would break "sin scroll"
+                // in a fixed ~360px container. CountryCombobox + compactLabel
+                // already renders flag + currency code only (no country
+                // name), which is exactly what the mockup shows.
+                <div className="grid grid-cols-1 items-stretch gap-[7px] @[260px]:grid-cols-[minmax(0,1fr)_34px_96px]">
+                  <div className="min-w-0">
+                    <FieldLight label={t("comparator.field.amount")} hideLabel>
+                      <div className="flex h-[42px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={1}
+                          value={amount || ""}
+                          placeholder="1000"
+                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                          aria-label={t("comparator.field.amount")}
+                          className="min-w-0 flex-1 bg-transparent px-2.5 text-[16px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                        />
+                        <CountryCombobox
+                          value={sendingCountry}
+                          onChange={handleSendingCountryChange}
+                          placeholder={t("comparator.combobox.placeholder")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.sourceCurrency")}
+                          compactLabel
+                          triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                        />
+                      </div>
+                    </FieldLight>
+                  </div>
+
+                  <div className="flex items-center justify-center py-0.5">
+                    <button
+                      type="button"
+                      onClick={handleSwap}
+                      aria-label={t("comparator.swap")}
+                      className="flex h-[42px] w-[34px] shrink-0 items-center justify-center rounded-[9px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                      style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                     >
-                      <input
-                        type="number"
-                        inputMode="decimal"
-                        min={1}
-                        value={amount || ""}
-                        placeholder="1000"
-                        onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                        aria-label={t("comparator.field.amount")}
-                        className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
-                          embedded ? "text-[16px]" : compact ? "text-[21px]" : "text-[25px]"
-                        }`}
-                      />
+                      <ArrowLeftRight strokeWidth={2.2} className="h-[14px] w-[14px]" />
+                    </button>
+                  </div>
+
+                  <div className="min-w-0">
+                    <FieldLight label={t("comparator.field.youReceive")} hideLabel>
                       <CountryCombobox
-                        value={sendingCountry}
-                        onChange={handleSendingCountryChange}
+                        value={receivingCountry}
+                        onChange={handleReceivingCountryChange}
                         placeholder={t("comparator.combobox.placeholder")}
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.sourceCurrency")}
-                        compactLabel={embedded}
-                        triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
-                          embedded
-                            ? "px-2 text-[12.5px]"
-                            : compact
-                              ? "px-3.5 text-[14px]"
-                              : "px-3.5 text-[14.5px]"
-                        }`}
+                        ariaLabel={t("comparator.field.targetCurrency")}
+                        compactLabel
+                        triggerClassName={`h-[42px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-3.5 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
                       />
-                    </div>
-                  </FieldLight>
-                </div>
+                    </FieldLight>
+                  </div>
 
-                {/* Swap — click to flip FROM/TO country (currency follows).
-                    Rotated 90° when the row stacks vertically.
-                    design/AJUSTES-2.md §0/§1 — Arena bg, Mango stroke, its
-                    own 46px/44px column, not a generic bordered square. */}
-                <div className="flex items-center justify-center py-0.5 @2xl:flex-col @2xl:justify-end @2xl:pb-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const prevSending = sendingCountry;
-                      const prevReceiving = receivingCountry;
-                      if (prevReceiving) handleSendingCountryChange(prevReceiving);
-                      handleReceivingCountryChange(prevSending);
-                    }}
-                    aria-label={t("comparator.swap")}
-                    className={`flex shrink-0 items-center justify-center transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                      embedded
-                        ? "h-[42px] w-[34px] rounded-[9px]"
-                        : compact
-                          ? "h-[52px] w-[44px] rounded-md"
-                          : "h-[58px] w-[46px] rounded-md"
-                    }`}
-                    style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
-                  >
-                    <ArrowLeftRight
-                      strokeWidth={2.2}
-                      className={`rotate-90 @2xl:rotate-0 ${embedded ? "!rotate-0 h-[14px] w-[14px]" : compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
-                    />
-                  </button>
-                </div>
-
-                {/* TO box: "They receive" — country only, highlighted while it
-                    still matches FROM (nudges picking a different country). */}
-                <div className="min-w-0">
-                  <FieldLight label={t("comparator.field.youReceive")} hideLabel={embedded}>
-                    <CountryCombobox
-                      value={receivingCountry}
-                      onChange={handleReceivingCountryChange}
-                      placeholder={t("comparator.combobox.placeholder")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.targetCurrency")}
-                      compactLabel={embedded}
-                      triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                        embedded
-                          ? "h-[42px] rounded-[9px] bg-white text-[12.5px]"
-                          : compact
-                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
-                            : "h-[58px] rounded-md bg-card text-[14.5px]"
-                      } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
-                    />
-                  </FieldLight>
-                </div>
-
-                <div
-                  className={`flex flex-col justify-end ${embedded ? "@[260px]:col-span-3" : ""}`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
-                        setValidationError(t("fx.validation"));
-                        return;
+                  <div className="flex flex-col justify-end @[260px]:col-span-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                          setValidationError(t("fx.validation"));
+                          return;
+                        }
+                        setValidationError(null);
+                        compareMut.mutate(undefined);
+                      }}
+                      disabled={
+                        compareMut.isPending ||
+                        !receivingCountry ||
+                        sameCorridorBlocked ||
+                        amount <= 0
                       }
-                      setValidationError(null);
-                      compareMut.mutate(undefined);
-                    }}
-                    disabled={
-                      compareMut.isPending ||
-                      !receivingCountry ||
-                      sameCorridorBlocked ||
-                      amount <= 0
-                    }
-                    className={`btn-cta inline-flex w-full items-center justify-center text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring ${embedded ? "" : "@2xl:w-[176px]"} ${
-                      embedded
-                        ? "h-[42px] rounded-[9px] px-4 text-[14px]"
-                        : compact
-                          ? "h-[52px] rounded-md px-6"
-                          : "h-[58px] rounded-md px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
-                    }`}
-                  >
-                    {compareMut.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <span className="truncate">
-                        {/* 2026-08-30 feedback (fourth round) — "el boton de
-                            accion tiene que ser Compare igual que individual":
-                            business used to say comparator.cta.request here;
-                            the search action is the same as individual's
-                            (compare providers), "Add to request"/"Send
-                            request" is its own separate action below the
-                            results, not this button's job. */}
-                        {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
-                      </span>
-                    )}
-                  </button>
+                      className="btn-cta inline-flex h-[42px] w-full items-center justify-center rounded-[9px] px-4 text-[14px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      {compareMut.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <span className="truncate">
+                          {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
+                // comparador... poder seleccionar pais de origen y destino y
+                // moneda de origen y destino y monto". Country and currency
+                // are now two separate, always-visible rows (Monito-style:
+                // COUNTRY FROM/TO, then YOU SEND amount+currency / TO
+                // currency), replacing the old single amount+country pill
+                // plus the CurrencyPillRow escape hatch below it.
+                <div className="space-y-2.5">
+                  {/* Row 1 — country only. */}
+                  <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[1fr_46px_1fr]">
+                    <div className="min-w-0">
+                      <FieldLight label={t("comparator.field.sourceCountry")}>
+                        <CountryCombobox
+                          value={sendingCountry}
+                          onChange={handleSendingCountryChange}
+                          placeholder={t("comparator.combobox.placeholder")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.sourceCountry")}
+                          triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                            compact
+                              ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
+                              : "h-[58px] rounded-md bg-card text-[14.5px]"
+                          }`}
+                        />
+                      </FieldLight>
+                    </div>
 
-              {/* design/AJUSTES-3.md §A — currency pills, replacing the old
-                  collapsed override link above (same underlying escape
-                  hatch: country stays the source of truth, only the
-                  currency shown/sent changes). Not part of the mockup's own
-                  widget row (line 726-786 has none) and one more thing
-                  fighting for a ~360px container's height — dropped for
-                  embedded (2026-08-30 feedback, third round). */}
-              {!embedded && (
-                <CurrencyPillRow
-                  t={t}
-                  compact={compact}
-                  sendingCountry={sendingCountry}
-                  receivingCountry={receivingCountry}
-                  from={from}
-                  to={to}
-                  onPickFrom={(code) => setFrom(code)}
-                  onPickTo={(code) => {
-                    // §A rule 5 — a currency change re-runs the comparison
-                    // without an extra click, but only once a result already
-                    // exists to update (compact ⇒ both countries are already
-                    // set); before that, changing FROM/TO never auto-fires
-                    // either (same explicit-CTA rule every other field
-                    // follows here), so this stays scoped to the one case the
-                    // doc actually describes rather than changing that rule
-                    // for country fields too.
-                    if (compact && result) {
-                      compareMut.mutate({ from, to: code, sendingCountry, receivingCountry });
-                    } else {
-                      setTo(code);
-                    }
-                  }}
-                />
+                    {/* Swap — click to flip FROM/TO, country and currency
+                        together. Rotated 90° when the row stacks vertically. */}
+                    <div className="flex items-center justify-center py-0.5 @2xl:flex-col @2xl:justify-end @2xl:pb-1">
+                      <button
+                        type="button"
+                        onClick={handleSwap}
+                        aria-label={t("comparator.swap")}
+                        className={`flex shrink-0 items-center justify-center transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                          compact ? "h-[52px] w-[44px] rounded-md" : "h-[58px] w-[46px] rounded-md"
+                        }`}
+                        style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
+                      >
+                        <ArrowLeftRight
+                          strokeWidth={2.2}
+                          className={`rotate-90 @2xl:rotate-0 ${compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
+                        />
+                      </button>
+                    </div>
+
+                    <div className="min-w-0">
+                      <FieldLight label={t("comparator.field.targetCountry")}>
+                        <CountryCombobox
+                          value={receivingCountry}
+                          onChange={handleReceivingCountryChange}
+                          placeholder={t("comparator.combobox.placeholder")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.targetCountry")}
+                          triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                            compact
+                              ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
+                              : "h-[58px] rounded-md bg-card text-[14.5px]"
+                          } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
+                        />
+                      </FieldLight>
+                    </div>
+                  </div>
+
+                  {/* Row 2 — amount + currency (send/receive), then CTA. */}
+                  <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[minmax(260px,1.3fr)_minmax(140px,0.75fr)_176px]">
+                    <div className="min-w-0">
+                      <FieldLight label={t("comparator.field.amount")}>
+                        <div
+                          className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                            compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
+                          }`}
+                        >
+                          <input
+                            type="number"
+                            inputMode="decimal"
+                            min={1}
+                            value={amount || ""}
+                            placeholder="1000"
+                            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                            aria-label={t("comparator.field.amount")}
+                            className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                              compact ? "text-[21px]" : "text-[25px]"
+                            }`}
+                          />
+                          <CurrencyCombobox
+                            value={from}
+                            onChange={handlePickFromCurrency}
+                            placeholder={t("comparator.field.sourceCurrency")}
+                            searchPlaceholder={t("comparator.combobox.search")}
+                            emptyLabel={t("comparator.combobox.empty")}
+                            ariaLabel={t("comparator.field.sourceCurrency")}
+                            compactLabel
+                            triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                              compact ? "px-3.5 text-[14px]" : "px-3.5 text-[14.5px]"
+                            }`}
+                          />
+                        </div>
+                      </FieldLight>
+                    </div>
+
+                    <div className="min-w-0">
+                      <FieldLight label={t("comparator.field.youReceive")}>
+                        <CurrencyCombobox
+                          value={to}
+                          onChange={handlePickToCurrency}
+                          placeholder={t("comparator.field.targetCurrency")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.targetCurrency")}
+                          compactLabel
+                          triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                            compact
+                              ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
+                              : "h-[58px] rounded-md bg-card text-[14.5px]"
+                          }`}
+                        />
+                      </FieldLight>
+                    </div>
+
+                    <div className="flex flex-col justify-end">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                            setValidationError(t("fx.validation"));
+                            return;
+                          }
+                          setValidationError(null);
+                          compareMut.mutate(undefined);
+                        }}
+                        disabled={
+                          compareMut.isPending ||
+                          !receivingCountry ||
+                          sameCorridorBlocked ||
+                          amount <= 0
+                        }
+                        className={`btn-cta inline-flex w-full items-center justify-center text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @2xl:w-[176px] ${
+                          compact
+                            ? "h-[52px] rounded-md px-6"
+                            : "h-[58px] rounded-md px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
+                        }`}
+                      >
+                        {compareMut.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <span className="truncate">
+                            {/* 2026-08-30 feedback (fourth round) — "el boton
+                                de accion tiene que ser Compare igual que
+                                individual": business used to say
+                                comparator.cta.request here; the search action
+                                is the same as individual's (compare
+                                providers), "Add to request"/"Send request" is
+                                its own separate action below the results, not
+                                this button's job. */}
+                            {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
               )}
 
               {validationError && (
@@ -1765,19 +1851,24 @@ export function ComparatorSection({
           </div>
         </div>
 
-        {/* AI Agent — three mutually exclusive render sites, never more than
-            one at once: floating (fixed edge tab, mobile/narrow default),
-            pre-search docked (desktop, right here, above TodaysRoutesSection
-            — see showPreSearchDockedAgent's own comment), or docked in the
-            results rail (design/HANDOFF.md §3, showDockedAgent). Hidden in
-            embed mode entirely: out of place inside a third-party iframe.
-            Chat state (history, result context) is preserved across
-            collapse/expand/re-parenting because we only toggle visibility/
-            docked-ness, not unmount. */}
-        {!embedded && !showDockedAgent && (
-          <div className={showPreSearchDockedAgent ? "mt-4 max-w-sm" : ""}>
+        {/* AI Agent — two mutually exclusive render sites, never more than
+            one at once: the collapsed pre-search trigger portaled into
+            TodaysRoutesSection's header row (showPreSearchInlineTrigger,
+            desktop only), or the normal floating tab/panel (mobile/narrow,
+            or once expanded, or once docked in the results rail —
+            design/HANDOFF.md §3, showDockedAgent). Hidden in embed mode
+            entirely: out of place inside a third-party iframe. Chat state
+            (history, result context) is preserved regardless of which one
+            is rendering — this only ever toggles visibility, not unmount. */}
+        {!embedded &&
+          !showDockedAgent &&
+          (showPreSearchInlineTrigger ? (
+            createPortal(
+              <CompactAgentTrigger onClick={() => handleAgentToggle(false)} t={t} />,
+              agentPortalTarget,
+            )
+          ) : (
             <FloatingAgent
-              docked={showPreSearchDockedAgent}
               collapsed={aiCollapsed}
               onToggle={handleAgentToggle}
               hasNewResult={hasNewResult}
@@ -1803,8 +1894,7 @@ export function ComparatorSection({
               setChat={setChat}
               onWizardAction={handleWizardAction}
             />
-          </div>
-        )}
+          ))}
 
         {/* Missing corridor — crowdsourced discovery CTA. */}
         {missingCorridor && (
@@ -2241,9 +2331,6 @@ export function ComparatorSection({
                   showOnlyExclusive={showOnlyExclusive}
                   hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
                   handleAffiliateClick={openPreferredRate}
-                  onFeeBreakdown={handleFeeBreakdownClick}
-                  tDisclaimer={t("fx.disclaimer")}
-                  tTrademarks={t("fx.trademarks")}
                   tRatesSource={t("fx.ratesSource")}
                   tAt={t("fx.at")}
                   tCta={t("retail.cta")}
@@ -2645,122 +2732,6 @@ function TrustpilotCard({ t }: { t: (k: string) => string }) {
         <Star className="h-[13px] w-[13px] fill-success text-success" />
         {t("comparator.trustpilot.checkRating")}
       </a>
-      <p className="mt-2 text-[11.5px] leading-[1.55] text-[#5C5147]">
-        {t("comparator.disclaimer.neutrality")}
-      </p>
-    </div>
-  );
-}
-
-// design/AJUSTES-3.md §A — the currency-pill row: a quick way to send in
-// (or receive) a currency other than the picked country's local one,
-// without opening the country picker again. Replaces the old collapsed
-// "override currency" link + two full CurrencyCombobox pickers (still
-// reused here for the "All N" pill) — that escape hatch solved the same
-// underlying problem this section describes (§A: "quien quiere mandar EUR
-// desde Reino Unido... sin las píldoras, ese usuario tiene que abrir el
-// popover"), just hidden behind a text link instead of always visible.
-// Country stays the single source of truth for the corridor (fx.functions.ts
-// computes `currencyOverridden` server-side purely by comparing from/to
-// against localCurrency(sendingCountry/receivingCountry) — no separate
-// override flag needs to travel with the request), so a pill tap only ever
-// calls `onPick`, never touches sendingCountry/receivingCountry.
-function CurrencyPillRow({
-  t,
-  compact,
-  sendingCountry,
-  receivingCountry,
-  from,
-  to,
-  onPickFrom,
-  onPickTo,
-}: {
-  t: (k: string) => string;
-  compact: boolean;
-  sendingCountry: string;
-  receivingCountry: string;
-  from: string;
-  to: string;
-  onPickFrom: (code: string) => void;
-  onPickTo: (code: string) => void;
-}) {
-  // design/AJUSTES-2.md §2 — the row's own header-row rate banner already
-  // reads "compact" as "a result exists"; the pill row follows the same
-  // rule so both flip together: before a result, it's about what you SEND
-  // (the only side that's always known); once a result exists, both
-  // countries are guaranteed set, so it flips to what you RECEIVE — the
-  // more relevant question once you're looking at prices (§A: "porque ahí
-  // la pregunta ya no es en qué mandás sino en qué cobran").
-  const country = compact ? receivingCountry : sendingCountry;
-  if (!country) return null;
-  const current = compact ? to : from;
-  const onPick = compact ? onPickTo : onPickFrom;
-  const pills = plausibleCurrencies(country);
-  const height = compact ? "h-[30px]" : "h-8";
-
-  return (
-    <div className="flex flex-wrap items-center gap-[9px]">
-      <span className="flex items-center gap-1 text-[12px] font-bold" style={{ color: "#6B5F55" }}>
-        {/* 2026-08-30 feedback (second round) — "Send in another currency" /
-            "Receive in another currency" read as duplicated against the
-            "You send"/"They receive" field labels directly above this row
-            (the word repeats). Back to the pre-AJUSTES-3 question phrasing
-            ("Need a different currency than the local one?", formerly
-            comparator.field.overrideCurrencyLink on the collapsed link this
-            row replaced) — one shared, currency-only question that reads
-            correctly next to either field, and doesn't collide with "send"/
-            "receive" from the labels above it. */}
-        {t("comparator.altCurrency.needDifferent")}
-        {/* design/2026-08-30 feedback — "no entiendo el sentido de tener
-            [...] otro selector de moneda abajo, no es lo mismo duplicado?"
-            The country picker's currency text is a READOUT (its local
-            currency, not a separate control); this pill row is the only
-            place currency is actually chosen, and it only ever changes
-            currency, never country. A tooltip spells that out inline
-            instead of a permanent line of copy on every render. */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <span tabIndex={0} className="cursor-help text-muted-foreground/70">
-                <Info className="h-3 w-3" />
-              </span>
-            </TooltipTrigger>
-            <TooltipContent side="top" className="max-w-[240px] text-xs">
-              {t("comparator.altCurrency.explainer")}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </span>
-      {pills.map((code) => {
-        const active = current.toUpperCase() === code;
-        return (
-          <button
-            key={code}
-            type="button"
-            onClick={() => onPick(code)}
-            aria-pressed={active}
-            className={`inline-flex shrink-0 items-center ${height} rounded-[9px] px-3 text-[12.5px] transition-colors ${
-              active
-                ? "border-[1.5px] border-[#241C16] bg-[#F5EFE8] font-bold text-[#241C16]"
-                : "border border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#241C16]/40"
-            }`}
-          >
-            {code}
-          </button>
-        );
-      })}
-      <CurrencyCombobox
-        value=""
-        onChange={onPick}
-        placeholder={t("comparator.altCurrency.all").replace("{n}", String(CURRENCIES.length))}
-        ariaLabel={t("comparator.altCurrency.needDifferent")}
-        triggerClassName={`inline-flex shrink-0 items-center ${height} w-auto gap-1 rounded-[9px] border border-dashed border-[#DCD1C4] bg-transparent px-2.5 text-[12.5px] font-semibold text-muted-foreground shadow-none hover:bg-transparent`}
-      />
-      {!compact && (
-        <span className="text-[12px]" style={{ color: "#8A7C6E" }}>
-          · {t("comparator.altCurrency.destinationHint")}
-        </span>
-      )}
     </div>
   );
 }
@@ -2823,6 +2794,26 @@ interface FloatingAgentProps {
   setBusinessStage: (s: BusinessStage) => void;
   setChat: React.Dispatch<React.SetStateAction<ChatMsg[]>>;
   onWizardAction: (action: WizardAction) => void;
+}
+
+// design/Mangomundi 4 - Final.dc.html — 2026-08-30 feedback (fifth round):
+// "el agente de ai... a la derecha y mas chiquito" — a small horizontal
+// pill (portaled into TodaysRoutesSection's header row, see
+// showPreSearchInlineTrigger), not the vertical fixed edge tab this
+// replaces in that one spot. Opening it hands off to the normal
+// FloatingAgent panel (fixed positioning) — this component only ever
+// renders the closed state.
+function CompactAgentTrigger({ onClick, t }: { onClick: () => void; t: (k: string) => string }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="btn-cta inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-bold"
+    >
+      <Sparkle className="h-3 w-3" aria-hidden />
+      {t("comparator.copilot.agent")}
+    </button>
+  );
 }
 
 function FloatingAgent(p: FloatingAgentProps) {
@@ -3321,9 +3312,6 @@ function ResultsBlock({
   showOnlyExclusive,
   hasCorridorContext,
   handleAffiliateClick,
-  onFeeBreakdown,
-  tDisclaimer,
-  tTrademarks,
   tRatesSource,
   tAt,
   tCta,
@@ -3362,10 +3350,6 @@ function ResultsBlock({
    *  first place. */
   hasCorridorContext: boolean;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
-  /** design/AJUSTES-2.md §3 — the row footer's "Fee breakdown" link. */
-  onFeeBreakdown: () => void;
-  tDisclaimer: string;
-  tTrademarks: string;
   tRatesSource: string;
   tAt: string;
   tCta: string;
@@ -3502,7 +3486,6 @@ function ResultsBlock({
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             sortBy={sortBy}
-            onFeeBreakdown={onFeeBreakdown}
             businessExtra={
               segment === "business"
                 ? {
@@ -3540,8 +3523,6 @@ function ResultsBlock({
           <span className="tabular-nums">{updatedTime}</span>
         </span>
       </div>
-      <p className="mt-2 text-[11px] text-muted-foreground">{tDisclaimer}</p>
-      <p className="mt-2 text-[10px] leading-relaxed text-muted-foreground/80">{tTrademarks}</p>
       {/* design/Mangomundi 4 - Final.dc.html line 529 — the broker table's
           own disclosed methodology, not the retail footer copy above. */}
       {segment === "business" && (
@@ -3587,7 +3568,6 @@ function ProviderRow({
   onClick,
   tCta,
   sortBy,
-  onFeeBreakdown,
   businessExtra,
 }: {
   row: ComparisonResult["rows"][number];
@@ -3616,11 +3596,6 @@ function ProviderRow({
   /** Drives the featured row's winner tag (design/AJUSTES-2.md §3) — which
    *  criterion it won under the currently active sort. */
   sortBy: SortKey;
-  /** Opens the docked/floating AI agent and asks it to break down fees
-   *  (design/AJUSTES-2.md §3's "Fee breakdown" footer link) — the same
-   *  wizard action already wired to the agent's own quick-actions grid,
-   *  not a new per-row computation. */
-  onFeeBreakdown: () => void;
   /** design/Mangomundi 4 - Final.dc.html line 494-529 — business-only,
    *  additive block (Spread/Minimum/Settlement/Contracts + "Add to special
    *  request") appended below the row's existing footer. 2026-08-30
@@ -3765,10 +3740,12 @@ function ProviderRow({
     ),
     affiliateNote,
   ].filter(Boolean);
-  // Always renders now — "Fee breakdown" (design/AJUSTES-2.md §3) is on
-  // every row's footer unconditionally, not just when there's a stamp/
-  // promo/affiliate note to show alongside it.
-  const trustLine = (
+  // 2026-08-30 feedback (fifth round) — "Fee breakdown" removed: it opened
+  // the AI agent's canned fee-explainer rather than showing an inline
+  // breakdown, which read as a dead/confusing link ("no tiene sentido").
+  // That explainer is still reachable through the agent itself (its own
+  // quick-actions grid), just not duplicated as a per-row footer link.
+  const trustLine = footerParts.length > 0 && (
     <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] leading-snug">
       {footerParts.map((part, i) => (
         <span key={i} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
@@ -3776,14 +3753,6 @@ function ProviderRow({
           {part}
         </span>
       ))}
-      <button
-        type="button"
-        onClick={onFeeBreakdown}
-        className="ml-auto whitespace-nowrap font-bold hover:underline"
-        style={{ color: "#C2410C" }}
-      >
-        {t("comparator.row.feeBreakdown")}
-      </button>
     </div>
   );
 
@@ -3903,16 +3872,6 @@ function ProviderRow({
           </div>
         </div>
         <div className="min-w-0 text-right">
-          {/* Exclusive-rate nudge — deliberately uncertain ("might be worth
-              a look"), separate from the sponsored corner tag which is the
-              one guaranteed-true disclosure ("this is a paid placement").
-              Conflating them would make the honest disclosure read like a
-              sales pitch. */}
-          {row.has_exclusive_deal && (
-            <div className="mb-0.5 inline-flex w-full items-center justify-end gap-1 whitespace-nowrap text-[10px] font-semibold text-accent">
-              <Sparkle className="h-2.5 w-2.5" /> {t("comparator.exclusiveRateNudge")}
-            </div>
-          )}
           <div className={METRIC_LABEL}>{t("comparator.row.labelReceive")}</div>
           <div className="mt-0.5 whitespace-nowrap font-heading text-[28px] font-extrabold leading-[1.1] tracking-[-0.03em] tabular-nums text-foreground">
             {row.received.toLocaleString(undefined, {
@@ -3986,11 +3945,6 @@ function ProviderRow({
           </span>
         </div>
         {trustLine && <div className="mt-2">{trustLine}</div>}
-        {row.has_exclusive_deal && (
-          <div className="mt-2 inline-flex items-center gap-1 whitespace-nowrap text-[11px] font-semibold text-accent">
-            <Sparkle className="h-2.5 w-2.5" /> {t("comparator.exclusiveRateNudge")}
-          </div>
-        )}
         <div className="mt-3">{cta}</div>
       </div>
 

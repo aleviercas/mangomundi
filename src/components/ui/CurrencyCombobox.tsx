@@ -5,6 +5,9 @@ import { CURRENCIES } from "@/lib/currencies";
 const OPTIONS = CURRENCIES.map((c) => ({
   value: c.code,
   label: `${c.code} — ${c.name}`,
+  // Lets compactLabel (below) show just the code — same pattern as
+  // CountryCombobox's own secondary/compactLabel pair.
+  secondary: c.code,
   leading: <FlagIcon country={c.flag} />,
   keywords: [c.code, c.name],
 }));
@@ -17,6 +20,7 @@ export function CurrencyCombobox({
   emptyLabel,
   ariaLabel,
   triggerClassName,
+  compactLabel,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -25,6 +29,11 @@ export function CurrencyCombobox({
   emptyLabel?: string;
   ariaLabel?: string;
   triggerClassName?: string;
+  /** 2026-08-30 feedback (fifth round) — the new always-visible currency
+   *  dropdowns (replacing CurrencyPillRow) need a code-only trigger inside
+   *  the embedded widget's tight row, same as CountryCombobox's own
+   *  compactLabel. */
+  compactLabel?: boolean;
 }) {
   return (
     <Combobox
@@ -36,6 +45,7 @@ export function CurrencyCombobox({
       emptyLabel={emptyLabel}
       ariaLabel={ariaLabel}
       triggerClassName={triggerClassName}
+      compactLabel={compactLabel}
     />
   );
 }

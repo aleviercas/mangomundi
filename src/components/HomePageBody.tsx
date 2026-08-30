@@ -55,6 +55,14 @@ export function HomePageBody({
   // just no longer competing with the results list for the first screenful.
   const [hasResult, setHasResult] = useState(false);
   const showMarketing = !hasResult && !hideMarketingSections;
+  // 2026-08-30 feedback (fifth round) — a DOM node ComparatorSection
+  // portals its collapsed pre-search AI trigger into, so it can sit inside
+  // TodaysRoutesSection's own header row (siblings here, not parent/child
+  // — a portal is how one lets the other paint into it without lifting all
+  // of ComparatorSection's chat state up to this level). useState (not
+  // useRef) because the callback ref needs to trigger a re-render once the
+  // slot div actually mounts.
+  const [agentSlot, setAgentSlot] = useState<HTMLDivElement | null>(null);
 
   return (
     <>
@@ -63,10 +71,11 @@ export function HomePageBody({
         initialQuery={initialQuery}
         onHasResultChange={setHasResult}
         onQueryChange={onQueryChange}
+        agentPortalTarget={agentSlot}
       />
       {/* design/AJUSTES-1.md §E — below the comparator only while no search
           has run yet, same gate HeroSection's compact mode uses. */}
-      {showMarketing && <TodaysRoutesSection />}
+      {showMarketing && <TodaysRoutesSection agentSlotRef={setAgentSlot} />}
       {/* design/AJUSTES-2.md §2 — with a result, the page is header + search
           bar + rail/results + footer, nothing else: someone comparing 52
           prices isn't reading the manifesto. Header/Footer are root-layout

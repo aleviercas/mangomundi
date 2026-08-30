@@ -265,7 +265,7 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.row.labelRate": "Rate",
     "comparator.row.labelDelivery": "Delivery",
     "comparator.row.labelPayout": "Payout",
-    "comparator.row.labelReceive": "They receive",
+    "comparator.row.labelReceive": "Receive",
     // The single price-stamp line (§C3) replacing the old orange
     // "not verified"/"unconfirmed" pills + separate "Updated: {date}" text.
     "comparator.row.stampLive": "Live",
@@ -293,7 +293,7 @@ export const DICTS: Record<Lang, Dict> = {
     // price stamp — same has_exclusive_deal trigger as before, presentation
     // only. The neutrality statement moves from a per-row badge to one line
     // above the whole list (comparator.disclaimer.neutrality, below).
-    "comparator.row.affiliateLink": "Affiliate link",
+    "comparator.row.affiliateLink": "Affiliate link · with exclusive rates",
     "comparator.row.onTrustpilot": "on Trustpilot",
     // design/AJUSTES-2.md §3 — the featured row's "why this won" tag, one
     // phrase per sort criterion (winnerTagKey in ComparatorSection.tsx).
@@ -303,11 +303,8 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.row.tagMostTrusted": "Most trusted",
     "comparator.row.tagLowestFee": "Lowest fee",
     "comparator.row.tagBestRate": "Best rate",
-    "comparator.row.feeBreakdown": "Fee breakdown",
     "fx.action": "Action",
     "fx.goto": "Go to",
-    "fx.disclaimer":
-      "mangomundi is independent. Some links are affiliate links — we may earn a commission at no extra cost to you. Rates and fees are estimates; verify on the provider's site before sending.",
     "fx.chat.title": "Ask Mango about this recommendation",
     "fx.chat.placeholder": "Why this provider? What if I'm not in a rush?",
     "fx.chat.send": "Send",
@@ -361,8 +358,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.validation": "Please fill in sending country, receiving country and amount.",
     "fx.ratesSource": "Values fetched directly from the wholesale interbank market. Last update:",
     "fx.at": "at",
-    "fx.trademarks":
-      "All third-party trademarks, logos, and provider names (including Wise, Airwallex, OFX, Convera, and Currencies Direct) are the property of their respective owners. Their appearance on this platform is strictly for informational, comparative, and market reference purposes, and does not imply any affiliation, sponsorship, or commercial endorsement by said owners with mangomundi.",
     "biz.rfqCta": "Open the RFQ desk",
     "biz.rfqRoute": "Get routed to the right desk for your corridor",
     // About
@@ -616,6 +611,12 @@ export const DICTS: Record<Lang, Dict> = {
     // says that elsewhere already (comparator step 3, the mockup's own
     // "3 steps" copy), redundant in the footer tagline specifically.
     "footer.tagline": "Neutral decision engine for international transfers.",
+    // 2026-08-30 feedback (fifth round) — replaces fx.disclaimer +
+    // fx.trademarks (both removed from below the results list) with one
+    // concise line at the very bottom of the footer, alongside the other
+    // legal notes already there.
+    "footer.legalNote":
+      "mangomundi is independent; some links are affiliate links and may earn us a commission at no extra cost to you. Rates are estimates — verify on the provider's site. Third-party names and logos belong to their owners and imply no endorsement.",
     // design/AJUSTES-3.md §B — Footer restructured to 3 literal columns
     // (Product / Company / Legal). footer.nav.title was "Navigate" over a
     // single flat list; repurposed as the "Company" column header now that
@@ -727,8 +728,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.speed": "Velocidad",
     "fx.action": "Acción",
     "fx.goto": "Ir a",
-    "fx.disclaimer":
-      "mangomundi es independiente. Algunos enlaces son de afiliados — podemos cobrar una comisión sin costo extra para vos. Las tasas y comisiones son estimadas; verificá en el sitio del proveedor antes de enviar.",
     "fx.chat.title": "Preguntale a Mango sobre esta recomendación",
     "fx.chat.placeholder": "¿Por qué este proveedor? ¿Y si no tengo apuro?",
     "fx.chat.send": "Enviar",
@@ -783,8 +782,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.ratesSource":
       "Valores obtenidos directamente del mercado interbancario mayorista. Última actualización:",
     "fx.at": "a las",
-    "fx.trademarks":
-      "Todas las marcas comerciales, logotipos y nombres de proveedores de terceros (incluidos Wise, Airwallex, OFX, Convera y Currencies Direct) son propiedad de sus respectivos titulares. Su aparición en esta plataforma se realiza exclusivamente con fines informativos, comparativos y de referencia de mercado, y no implica afiliación, patrocinio o endoso comercial alguno por parte de dichos titulares con mangomundi.",
     "biz.rfqCta": "Abrir mesa RFQ",
     "biz.rfqRoute": "Acceder a la mesa adecuada para tu corredor",
     // About
@@ -1029,8 +1026,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.speed": "Velocidade",
     "fx.action": "Ação",
     "fx.goto": "Ir para",
-    "fx.disclaimer":
-      "mangomundi é independente. Alguns links são de afiliados — podemos receber comissão sem custo extra para você. Taxas são estimativas; verifique no site do provedor antes de enviar.",
     "fx.chat.title": "Pergunte à Mango sobre esta recomendação",
     "fx.chat.placeholder": "Por que este provedor? E se eu não tiver pressa?",
     "fx.chat.send": "Enviar",
@@ -1085,8 +1080,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.ratesSource":
       "Valores obtidos diretamente do mercado interbancário atacadista. Última atualização:",
     "fx.at": "às",
-    "fx.trademarks":
-      "Todas as marcas comerciais, logotipos e nomes de provedores terceiros (incluindo Wise, Airwallex, OFX, Convera e Currencies Direct) são de propriedade de seus respectivos titulares. Sua exibição nesta plataforma é feita exclusivamente para fins informativos, comparativos e de referência de mercado, não implicando qualquer afiliação, patrocínio ou endosso comercial por parte de tais titulares com a mangomundi.",
     "biz.rfqCta": "Abrir mesa RFQ",
     "biz.rfqRoute": "Acessar a mesa adequada para o seu corredor",
     // About
@@ -2695,31 +2688,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Base and quote currencies for the operation.",
     "comparator.field.sourceCurrency": "Source Currency",
     "comparator.field.targetCurrency": "Target Currency",
-    // design/AJUSTES-3.md §A — the currency pill row (comparator.altCurrency.*
-    // below) replaced this collapsed override link; no callers left.
-    // 2026-08-30 feedback (second round) — sendLabel/receiveLabel ("Send/
-    // Receive in another currency") read as duplicated against the "You
-    // send"/"They receive" field labels right above this row. Replaced by
-    // one shared, currency-only question — the same copy the pre-AJUSTES-3
-    // collapsed link used (comparator.field.overrideCurrencyLink, now
-    // orphaned) — that works unchanged on both the send-side and
-    // receive-side row (CurrencyPillRow flips which country it reads, not
-    // this label).
-    "comparator.altCurrency.needDifferent": "Need a different currency than the local one?",
-    "comparator.altCurrency.all": "All {n}",
-    "comparator.altCurrency.destinationHint":
-      "the destination currency unlocks once you pick a country",
-    // 2026-08-30 feedback — the tooltip on the pill row's own label,
-    // clarifying it's the only real currency control (the text next to
-    // the country name is a readout of that country's local currency).
-    // Second round: rewritten to state the REAL mechanism (currencyOverridden
-    // in fx.functions.ts) rather than a vague "use this if..." — picking a
-    // non-local currency is real and priced, but it narrows the provider
-    // list to multi-currency platforms/banks; single-market MTOs tied to
-    // the local currency (e.g. a corridor-specific remittance app) drop out
-    // because they structurally can't serve a currency they don't operate.
-    "comparator.altCurrency.explainer":
-      "Your currency follows the country you picked by default. Choosing a different one is real and priced — but it narrows the list to providers that support it (multi-currency platforms, banks), since single-market apps tied to the local currency can't. Picking one here never changes the country.",
     "comparator.segment.retail": "Individual",
     "comparator.segment.business": "Business",
     "comparator.segment.retailCount": "{n} providers · retail rates",
@@ -2867,7 +2835,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.badge.notVerified": "Estimated price — not verified for this exact route",
     "comparator.badge.unconfirmed": "Unconfirmed",
     "comparator.badge.promoPrefix": "Promo:",
-    "comparator.exclusiveRateNudge": "Check for exclusive rate",
     "comparator.filter.exclusiveOnly": "Exclusive rates",
     // design/AJUSTES-2.md §6 — the rail's own "Exclusive rates only" row
     // text (mockup line 308), kept separate from the shorter
@@ -3107,7 +3074,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.badge.notVerified": "Precio estimado — no verificado para esta ruta",
     "comparator.badge.unconfirmed": "Sin confirmar",
     "comparator.badge.promoPrefix": "Promo:",
-    "comparator.exclusiveRateNudge": "Consultá tarifa exclusiva",
     "comparator.filter.exclusiveOnly": "Tarifas exclusivas",
     "comparator.filter.size": "Tamaño",
     "comparator.filter.showOnly": "Mostrar solo",
