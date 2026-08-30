@@ -15,6 +15,7 @@ import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { BrandLogo } from "@/components/BrandLogo";
+import { BrandMark } from "@/components/Wordmark";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
@@ -371,12 +372,20 @@ function BlogPostPage() {
   return (
     <article className="bg-background">
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pt-20 pb-24">
-        <Link
-          to="/blog"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8"
-        >
-          <ArrowLeft className="h-4 w-4" /> {t("blog.backShort")}
-        </Link>
+        <div className="mb-8 flex items-center justify-between">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> {t("blog.backShort")}
+          </Link>
+          {/* 2026-08-30 feedback (fourth round) — a small brand mark on every
+              post, same icon the widget badge uses (BrandMark, Wordmark.tsx),
+              not the full wordmark — this is a watermark, not navigation. */}
+          <Link to="/" aria-label="mangomundi home">
+            <BrandMark />
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground mb-4">
           {/* Two separate badges for "both", not one combined "Both" label

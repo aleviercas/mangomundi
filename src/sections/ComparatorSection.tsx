@@ -62,7 +62,6 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { SITE_URL } from "@/config/site";
 import { captureBusinessLead, captureEnterpriseLead } from "@/lib/agent.functions";
-import { TrustBox } from "@/components/TrustBox";
 import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
 import {
   MasterRateStore,
@@ -99,13 +98,6 @@ type AmountMode = "send" | "receive";
 
 /** Field styling for inputs/triggers inside the (light) comparator card —
  *  a recessed pill distinct from the card's own surface. */
-// design/AJUSTES-2.md §1/§0 — field border is Borde 2 #E5DCD1 (--input,
-// updated in §0), not the card-border token; field background is white,
-// not the page background. Used for the two business-only secondary
-// fields (contract type/frequency) below the main row, which the doc
-// doesn't size explicitly — height stays as it was.
-const WHITE_FIELD =
-  "h-11 rounded-md border-[1.5px] border-input bg-card px-3 text-sm font-medium text-foreground shadow-sm hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40";
 /** Per-metric micro-label above each row value — design/AJUSTES-1.md §C1's
  *  literal spec (10.5px/700/.06em/uppercase/#6B5F55), not the site's
  *  cooler-toned --muted-foreground token: this is a mockup-exact value,
@@ -562,6 +554,16 @@ export function ComparatorSection({
   // and before any result, the agent keeps its existing floating behavior.
   const isDesktopRail = useIsDesktopRail();
   const showDockedAgent = isDesktopRail && Boolean(result) && !embedded;
+  // 2026-08-30 feedback (fourth round) — "el agente no se podria poner al
+  // lado de todays routes... y luego cuando se busca queda movido en la
+  // franja vertical?" Before a result, on desktop, the agent now renders
+  // docked (in-flow) right after the search card — no longer the `fixed`
+  // edge tab floating over the page — landing directly above
+  // TodaysRoutesSection in HomePageBody's own stacking order. It still
+  // moves into the results rail once showDockedAgent takes over. Mobile/
+  // narrow keeps the floating tab (no rail-width column to dock into
+  // there).
+  const showPreSearchDockedAgent = isDesktopRail && !result && !embedded;
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -1570,7 +1572,7 @@ export function ComparatorSection({
               <div
                 className={
                   embedded
-                    ? "grid grid-cols-1 items-stretch gap-2 @[280px]:grid-cols-[minmax(0,1fr)_38px_minmax(0,1fr)]"
+                    ? "grid grid-cols-1 items-stretch gap-[7px] @[260px]:grid-cols-[minmax(0,1fr)_34px_96px]"
                     : "grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[minmax(280px,1.1fr)_46px_minmax(260px,1fr)_176px]"
                 }
               >
@@ -1578,16 +1580,16 @@ export function ComparatorSection({
                     (currency shown as the combobox's secondary/dropdown hint,
                     and in the mid-market rate banner once a comparison runs). */}
                 <div className="min-w-0">
-                  <FieldLight label={t("comparator.field.amount")}>
+                  <FieldLight label={t("comparator.field.amount")} hideLabel={embedded}>
                     {/* Unified pill: amount + country read as one control,
                         split by a hairline divider instead of two boxes. */}
                     <div
-                      className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                      className={`flex w-full min-w-0 items-stretch overflow-hidden border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
                         embedded
-                          ? "h-[42px] bg-white"
+                          ? "h-[42px] rounded-[9px] bg-white"
                           : compact
-                            ? "h-[52px] bg-[#FDFBF9]"
-                            : "h-[58px] bg-card"
+                            ? "h-[52px] rounded-md bg-[#FDFBF9]"
+                            : "h-[58px] rounded-md bg-card"
                       }`}
                     >
                       <input
@@ -1636,12 +1638,12 @@ export function ComparatorSection({
                       handleReceivingCountryChange(prevSending);
                     }}
                     aria-label={t("comparator.swap")}
-                    className={`flex shrink-0 items-center justify-center rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                    className={`flex shrink-0 items-center justify-center transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
                       embedded
-                        ? "h-[42px] w-[34px]"
+                        ? "h-[42px] w-[34px] rounded-[9px]"
                         : compact
-                          ? "h-[52px] w-[44px]"
-                          : "h-[58px] w-[46px]"
+                          ? "h-[52px] w-[44px] rounded-md"
+                          : "h-[58px] w-[46px] rounded-md"
                     }`}
                     style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                   >
@@ -1655,7 +1657,7 @@ export function ComparatorSection({
                 {/* TO box: "They receive" — country only, highlighted while it
                     still matches FROM (nudges picking a different country). */}
                 <div className="min-w-0">
-                  <FieldLight label={t("comparator.field.youReceive")}>
+                  <FieldLight label={t("comparator.field.youReceive")} hideLabel={embedded}>
                     <CountryCombobox
                       value={receivingCountry}
                       onChange={handleReceivingCountryChange}
@@ -1664,19 +1666,19 @@ export function ComparatorSection({
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.targetCurrency")}
                       compactLabel={embedded}
-                      triggerClassName={`w-full rounded-md border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                      triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
                         embedded
-                          ? "h-[42px] bg-white text-[12.5px]"
+                          ? "h-[42px] rounded-[9px] bg-white text-[12.5px]"
                           : compact
-                            ? "h-[52px] bg-[#FDFBF9] text-[14px]"
-                            : "h-[58px] bg-card text-[14.5px]"
+                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
+                            : "h-[58px] rounded-md bg-card text-[14.5px]"
                       } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
                     />
                   </FieldLight>
                 </div>
 
                 <div
-                  className={`flex flex-col justify-end ${embedded ? "@[280px]:col-span-3" : ""}`}
+                  className={`flex flex-col justify-end ${embedded ? "@[260px]:col-span-3" : ""}`}
                 >
                   <button
                     type="button"
@@ -1694,58 +1696,31 @@ export function ComparatorSection({
                       sameCorridorBlocked ||
                       amount <= 0
                     }
-                    className={`btn-cta inline-flex w-full items-center justify-center rounded-md text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring ${embedded ? "" : "@2xl:w-[176px]"} ${
+                    className={`btn-cta inline-flex w-full items-center justify-center text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring ${embedded ? "" : "@2xl:w-[176px]"} ${
                       embedded
-                        ? "h-[42px] px-4 text-[14px]"
+                        ? "h-[42px] rounded-[9px] px-4 text-[14px]"
                         : compact
-                          ? "h-[52px] px-6"
-                          : "h-[58px] px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
+                          ? "h-[52px] rounded-md px-6"
+                          : "h-[58px] rounded-md px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
                     }`}
                   >
                     {compareMut.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <span className="truncate">
-                        {segment === "business"
-                          ? t("comparator.cta.request")
-                          : t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                        {/* 2026-08-30 feedback (fourth round) — "el boton de
+                            accion tiene que ser Compare igual que individual":
+                            business used to say comparator.cta.request here;
+                            the search action is the same as individual's
+                            (compare providers), "Add to request"/"Send
+                            request" is its own separate action below the
+                            results, not this button's job. */}
+                        {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
                       </span>
                     )}
                   </button>
                 </div>
               </div>
-
-              {/* Business-only: contract type + frequency (design/HANDOFF.md
-                  §4). UI state only for now — see the note by their
-                  useState above for why. */}
-              {segment === "business" && (
-                <div className="grid grid-cols-2 gap-2.5 @xl:w-1/2">
-                  <FieldLight label={t("comparator.field.contractType")}>
-                    <select
-                      value={contractType}
-                      onChange={(e) => setContractType(e.target.value as typeof contractType)}
-                      aria-label={t("comparator.field.contractType")}
-                      className={`${WHITE_FIELD} w-full`}
-                    >
-                      <option value="spot">{t("comparator.contractType.spot")}</option>
-                      <option value="forward">{t("comparator.contractType.forward")}</option>
-                      <option value="option">{t("comparator.contractType.option")}</option>
-                    </select>
-                  </FieldLight>
-                  <FieldLight label={t("comparator.field.frequency")}>
-                    <select
-                      value={frequency}
-                      onChange={(e) => setFrequency(e.target.value as typeof frequency)}
-                      aria-label={t("comparator.field.frequency")}
-                      className={`${WHITE_FIELD} w-full`}
-                    >
-                      <option value="one_off">{t("comparator.frequency.oneOff")}</option>
-                      <option value="monthly">{t("comparator.frequency.monthly")}</option>
-                      <option value="quarterly">{t("comparator.frequency.quarterly")}</option>
-                    </select>
-                  </FieldLight>
-                </div>
-              )}
 
               {/* design/AJUSTES-3.md §A — currency pills, replacing the old
                   collapsed override link above (same underlying escape
@@ -1790,39 +1765,45 @@ export function ComparatorSection({
           </div>
         </div>
 
-        {/* Floating AI Agent — fixed bottom-right, minimized by default.
-            Chat state (history, result context) is preserved across collapse/expand
-            because we only toggle visibility, not unmount. Hidden in embed mode:
-            a floating chat inside a third-party iframe would be out of place.
-            Rendered exactly once: floating here, OR docked in the rail below
-            (design/HANDOFF.md §3) — never both, see showDockedAgent. */}
+        {/* AI Agent — three mutually exclusive render sites, never more than
+            one at once: floating (fixed edge tab, mobile/narrow default),
+            pre-search docked (desktop, right here, above TodaysRoutesSection
+            — see showPreSearchDockedAgent's own comment), or docked in the
+            results rail (design/HANDOFF.md §3, showDockedAgent). Hidden in
+            embed mode entirely: out of place inside a third-party iframe.
+            Chat state (history, result context) is preserved across
+            collapse/expand/re-parenting because we only toggle visibility/
+            docked-ness, not unmount. */}
         {!embedded && !showDockedAgent && (
-          <FloatingAgent
-            collapsed={aiCollapsed}
-            onToggle={handleAgentToggle}
-            hasNewResult={hasNewResult}
-            amount={amount}
-            lang={lang}
-            t={t}
-            aiLoading={aiLoading}
-            chat={chat}
-            result={result}
-            chatInput={chatInput}
-            setChatInput={setChatInput}
-            sendChat={sendChat}
-            chatMutPending={chatMut.isPending}
-            comparePending={compareMut.isPending}
-            onSuggestedCompare={runSuggestedCompare}
-            chatBottomRef={chatBottomRef}
-            openPreferredRate={openPreferredRate}
-            segment={segment}
-            businessStage={businessStage}
-            savingBusinessLead={savingBusinessLead}
-            confirmBusinessLead={confirmBusinessLead}
-            setBusinessStage={setBusinessStage}
-            setChat={setChat}
-            onWizardAction={handleWizardAction}
-          />
+          <div className={showPreSearchDockedAgent ? "mt-4 max-w-sm" : ""}>
+            <FloatingAgent
+              docked={showPreSearchDockedAgent}
+              collapsed={aiCollapsed}
+              onToggle={handleAgentToggle}
+              hasNewResult={hasNewResult}
+              amount={amount}
+              lang={lang}
+              t={t}
+              aiLoading={aiLoading}
+              chat={chat}
+              result={result}
+              chatInput={chatInput}
+              setChatInput={setChatInput}
+              sendChat={sendChat}
+              chatMutPending={chatMut.isPending}
+              comparePending={compareMut.isPending}
+              onSuggestedCompare={runSuggestedCompare}
+              chatBottomRef={chatBottomRef}
+              openPreferredRate={openPreferredRate}
+              segment={segment}
+              businessStage={businessStage}
+              savingBusinessLead={savingBusinessLead}
+              confirmBusinessLead={confirmBusinessLead}
+              setBusinessStage={setBusinessStage}
+              setChat={setChat}
+              onWizardAction={handleWizardAction}
+            />
+          </div>
         )}
 
         {/* Missing corridor — crowdsourced discovery CTA. */}
@@ -1914,6 +1895,11 @@ export function ComparatorSection({
                   exclusiveCount={exclusiveCount}
                   sortBy={sortBy}
                   setSortBy={setSortBy}
+                  businessFilters={
+                    segment === "business"
+                      ? { contractType, setContractType, frequency, setFrequency }
+                      : undefined
+                  }
                 />
                 {showDockedAgent && (
                   // 2026-08-30 feedback (second round) — "el agente ai de
@@ -2348,6 +2334,7 @@ function FiltersCard({
   exclusiveCount,
   sortBy,
   setSortBy,
+  businessFilters,
 }: {
   t: (k: string) => string;
   deliveryMethod: DeliveryMethod | null;
@@ -2359,6 +2346,18 @@ function FiltersCard({
   exclusiveCount: number;
   sortBy: SortKey;
   setSortBy: (k: SortKey) => void;
+  /** 2026-08-30 feedback (fourth round) — Contract type/Frequency used to
+   *  live in the main search row, which made them look like they affected
+   *  the compare results (they never did — see the useState declarations'
+   *  own comment). Moved here, into the left rail's filters, since that's
+   *  what they actually are: context for the "Add to request" action, not
+   *  the search. undefined outside the business segment. */
+  businessFilters?: {
+    contractType: "spot" | "forward" | "option";
+    setContractType: (v: "spot" | "forward" | "option") => void;
+    frequency: "one_off" | "monthly" | "quarterly";
+    setFrequency: (v: "one_off" | "monthly" | "quarterly") => void;
+  };
 }) {
   const criteriaCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
   const optionRowClass = (active: boolean) =>
@@ -2386,7 +2385,46 @@ function FiltersCard({
         </button>
       </div>
 
-      <div className="mt-[15px]">
+      {businessFilters && (
+        <div className="mt-[15px]">
+          <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
+            {t("comparator.field.contractType")}
+          </div>
+          <div className="mt-[9px] flex gap-[6px]">
+            {(["spot", "forward", "option"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => businessFilters.setContractType(v)}
+                aria-pressed={businessFilters.contractType === v}
+                className={optionRowClass(businessFilters.contractType === v)}
+              >
+                {t(`comparator.contractType.${v}`)}
+              </button>
+            ))}
+          </div>
+          <div className="mt-[13px] text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
+            {t("comparator.field.frequency")}
+          </div>
+          <div className="mt-[9px] flex flex-col gap-[6px]">
+            {(["one_off", "monthly", "quarterly"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => businessFilters.setFrequency(v)}
+                aria-pressed={businessFilters.frequency === v}
+                className={optionRowClass(businessFilters.frequency === v)}
+              >
+                {t(`comparator.frequency.${v === "one_off" ? "oneOff" : v}`)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div
+        className={businessFilters ? "mt-[15px] border-t border-[#F2EBE3] pt-[13px]" : "mt-[15px]"}
+      >
         <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
           {t("comparator.filters.payoutMethod")}
         </div>
@@ -2586,26 +2624,30 @@ function RateAlertCard({
  *  a rating display). Rather than keep publishing an unverifiable score,
  *  this is now a real link to the actual public Trustpilot page (same URL
  *  TrustBox's own fallback link uses) with no number attached. */
+// 2026-08-30 feedback (fourth round) — this card had two links to the
+// exact same Trustpilot page (the star link below, plus <TrustBox />'s own
+// "Trustpilot" link inside the widget it rendered), and TrustBox itself is
+// the "Review Collector" template — it invites visitors to WRITE a review,
+// unrelated to "check our rating" this card is actually about. TrustBox
+// stays where that DOES fit (ContactSection, a "get in touch" context);
+// here it's just the one real link. The star is a lucide Star tinted
+// Trustpilot's green rather than the trademarked logo file (none exists in
+// this repo to use legitimately).
 function TrustpilotCard({ t }: { t: (k: string) => string }) {
   return (
     <div className="rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
-      <div className="flex items-center gap-[7px]">
+      <a
+        href="https://www.trustpilot.com/review/mangomundi.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-[7px] text-[12.5px] font-bold text-success hover:underline"
+      >
         <Star className="h-[13px] w-[13px] fill-success text-success" />
-        <a
-          href="https://www.trustpilot.com/review/mangomundi.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[12.5px] font-bold text-success hover:underline"
-        >
-          {t("comparator.trustpilot.checkRating")}
-        </a>
-      </div>
+        {t("comparator.trustpilot.checkRating")}
+      </a>
       <p className="mt-2 text-[11.5px] leading-[1.55] text-[#5C5147]">
         {t("comparator.disclaimer.neutrality")}
       </p>
-      <div className="mt-2">
-        <TrustBox />
-      </div>
     </div>
   );
 }
@@ -2726,7 +2768,21 @@ function CurrencyPillRow({
 // design/AJUSTES-2.md §1 — "You send"/"They receive" style labels: 11.5px/
 // 700/#6B5F55, sentence case (was 11px uppercase/tracked, closer to the
 // row's own METRIC_LABEL style than to what this form actually uses).
-function FieldLight({ label, children }: { label: string; children: React.ReactNode }) {
+// 2026-08-30 feedback (fourth round) — the widget's own compact row (mockup
+// line 734-744) has no label above the amount/destination boxes at all;
+// hideLabel drops it (still an aria-label on the control itself) rather
+// than fighting the mockup's own "hay que comprimirlo mucho más" for a
+// label the widget was never meant to carry.
+function FieldLight({
+  label,
+  children,
+  hideLabel = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  hideLabel?: boolean;
+}) {
+  if (hideLabel) return <div className="min-w-0">{children}</div>;
   return (
     <label className="block min-w-0">
       <span className="mb-1.5 block truncate text-[11.5px] font-bold" style={{ color: "#6B5F55" }}>

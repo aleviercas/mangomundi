@@ -2732,7 +2732,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.frequency.oneOff": "One-off",
     "comparator.frequency.monthly": "Monthly",
     "comparator.frequency.quarterly": "Quarterly",
-    "comparator.cta.request": "Request",
     "hero.subheadline.short":
       "AI agent for global and local payments. Best rates for individuals and businesses.",
     "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",

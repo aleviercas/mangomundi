@@ -5,6 +5,7 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
+import { BrandMark } from "@/components/Wordmark";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
@@ -34,10 +35,7 @@ export const Route = createFileRoute("/blog")({
         { property: "og:description", content: seo.description },
         { property: "og:url", content: canonical },
       ],
-      links: [
-        { rel: "canonical", href: canonical },
-        ...hreflangLinks("/blog"),
-      ],
+      links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/blog")],
     };
   },
   component: BlogIndexPage,
@@ -50,7 +48,14 @@ function BlogIndexPage() {
   return (
     <div className="min-h-screen bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <p className="text-eyebrow font-bold uppercase text-brand-cta">{t("home.blog.eyebrow")}</p>
+        {/* 2026-08-30 feedback (fourth round) — a small brand mark on the
+            blog index too, same icon the widget badge/post pages use. */}
+        <Link to="/" aria-label="mangomundi home" className="inline-block">
+          <BrandMark />
+        </Link>
+        <p className="mt-3 text-eyebrow font-bold uppercase text-brand-cta">
+          {t("home.blog.eyebrow")}
+        </p>
         <h1 className="mt-3 font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-h1">
           {t("home.blog.title")}
         </h1>
