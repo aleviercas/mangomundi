@@ -293,6 +293,30 @@ Orden de prioridad acordado con Alejandro:
      [`docs/handoff/handoff-2026-08-30-ajustes-2-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-30-ajustes-2-rediseno-mangomundi-4.md)
      para el detalle completo y el orden de verificación sugerido antes de
      mergear esta rama.
+   - **Rondas de ajustes 3 y 4 (30-ago-2026)** — dos documentos nuevos,
+     distintos en naturaleza a los anteriores: no piden fidelidad visual
+     sino una pieza de arquitectura que faltaba y contenido/páginas que
+     el diseño daba por hechas pero nunca se construyeron.
+     `design/AJUSTES-3.md` §A agrega las píldoras de moneda al
+     comparador (cambiar moneda sin cambiar país, siempre visible, en
+     vez del link colapsado que abría un picker de ~110 monedas) con un
+     dataset curado nuevo de monedas plausibles por país
+     (`plausibleCurrencies()`, `src/lib/countries.ts`); §B + AJUSTES-4
+     §1 construyen `/about` y `/how-we-make-money` como páginas reales
+     (antes un redirect y un fallback a `/legal#risk`), reusando copy
+     que ya existía huérfano en `i18n.tsx`, y reestructuran el footer a
+     3 columnas (Product/Company/Legal). AJUSTES-4 §3 agrega "Two ways
+     we work with companies" (Treasury Operations / FX & Payment
+     Partnerships) a `/business`, debajo del formulario/resultados —
+     **el único gap real de estas dos rondas**: ninguna de esas dos
+     tarjetas tenía texto en el mockup, el repo o el historial de git,
+     solo los títulos aparecen nombrados en el doc; el cuerpo describe
+     mecánica real ya construida en vez de inventar afirmaciones, ver el
+     handoff para el detalle. **Las 3 piezas están completas.** Ver
+     [`docs/handoff/handoff-2026-08-30-ajustes-3-4-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-30-ajustes-3-4-rediseno-mangomundi-4.md)
+     para el detalle completo, incluida una discrepancia real entre §A y
+     §B del mismo documento (AJUSTES-3) sobre un link, y el orden de
+     verificación sugerido antes de mergear esta rama.
 2. **Precisión de producto/datos** (este documento) — modelo de elegibilidad
    de proveedores por corredor **cerrado y documentado** en
    `docs/architecture-motor-comparador.md` (27-ago-2026, fase 2) — es el
