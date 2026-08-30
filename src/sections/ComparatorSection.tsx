@@ -49,6 +49,7 @@ import {
 import { useI18n } from "@/lib/i18n";
 import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
+import { TrustBox } from "@/components/TrustBox";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
@@ -1678,166 +1679,170 @@ export function ComparatorSection({
               ) : (
                 // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
                 // comparador... poder seleccionar pais de origen y destino y
-                // moneda de origen y destino y monto". Country and currency
-                // are now two separate, always-visible rows (Monito-style:
-                // COUNTRY FROM/TO, then YOU SEND amount+currency / TO
-                // currency), replacing the old single amount+country pill
-                // plus the CurrencyPillRow escape hatch below it.
-                <div className="space-y-2.5">
-                  {/* Row 1 — country only. */}
-                  <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[1fr_46px_1fr]">
-                    <div className="min-w-0">
-                      <FieldLight label={t("comparator.field.sourceCountry")}>
-                        <CountryCombobox
-                          value={sendingCountry}
-                          onChange={handleSendingCountryChange}
-                          placeholder={t("comparator.combobox.placeholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCountry")}
-                          triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                            compact
-                              ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
-                              : "h-[58px] rounded-md bg-card text-[14.5px]"
+                // moneda de origen y destino y monto". 2026-08-30 feedback
+                // (sixth round) — "ponerlo todo en la misma linea": what was
+                // a country row + an amount/currency row is now one row —
+                // amount+currency FROM, country FROM, swap, country TO,
+                // currency TO, CTA — matching the "1000 GBP from United
+                // Kingdom, receive in United States USD" reading order.
+                // Below the wide breakpoint it still stacks to one column,
+                // same fallback every other tier here already uses.
+                <div className="grid grid-cols-1 items-stretch gap-2.5 @4xl:grid-cols-[minmax(200px,1.15fr)_minmax(150px,0.85fr)_46px_minmax(150px,0.85fr)_minmax(110px,0.65fr)_176px]">
+                  <div className="min-w-0">
+                    <FieldLight label={t("comparator.field.amount")}>
+                      <div
+                        className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                          compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
+                        }`}
+                      >
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={1}
+                          value={amount || ""}
+                          placeholder="1000"
+                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                          aria-label={t("comparator.field.amount")}
+                          className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                            compact ? "text-[21px]" : "text-[25px]"
                           }`}
                         />
-                      </FieldLight>
-                    </div>
-
-                    {/* Swap — click to flip FROM/TO, country and currency
-                        together. Rotated 90° when the row stacks vertically. */}
-                    <div className="flex items-center justify-center py-0.5 @2xl:flex-col @2xl:justify-end @2xl:pb-1">
-                      <button
-                        type="button"
-                        onClick={handleSwap}
-                        aria-label={t("comparator.swap")}
-                        className={`flex shrink-0 items-center justify-center transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                          compact ? "h-[52px] w-[44px] rounded-md" : "h-[58px] w-[46px] rounded-md"
-                        }`}
-                        style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
-                      >
-                        <ArrowLeftRight
-                          strokeWidth={2.2}
-                          className={`rotate-90 @2xl:rotate-0 ${compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
-                        />
-                      </button>
-                    </div>
-
-                    <div className="min-w-0">
-                      <FieldLight label={t("comparator.field.targetCountry")}>
-                        <CountryCombobox
-                          value={receivingCountry}
-                          onChange={handleReceivingCountryChange}
-                          placeholder={t("comparator.combobox.placeholder")}
+                        <CurrencyCombobox
+                          value={from}
+                          onChange={handlePickFromCurrency}
+                          placeholder={t("comparator.field.sourceCurrency")}
                           searchPlaceholder={t("comparator.combobox.search")}
                           emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCountry")}
-                          triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                            compact
-                              ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
-                              : "h-[58px] rounded-md bg-card text-[14.5px]"
-                          } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
+                          ariaLabel={t("comparator.field.sourceCurrency")}
+                          compactLabel
+                          triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                            compact ? "px-3.5 text-[14px]" : "px-3.5 text-[14.5px]"
+                          }`}
                         />
-                      </FieldLight>
-                    </div>
+                      </div>
+                    </FieldLight>
                   </div>
 
-                  {/* Row 2 — amount + currency (send/receive), then CTA. */}
-                  <div className="grid grid-cols-1 items-stretch gap-2.5 @2xl:grid-cols-[minmax(260px,1.3fr)_minmax(140px,0.75fr)_176px]">
-                    <div className="min-w-0">
-                      <FieldLight label={t("comparator.field.amount")}>
-                        <div
-                          className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
-                            compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
-                          }`}
-                        >
-                          <input
-                            type="number"
-                            inputMode="decimal"
-                            min={1}
-                            value={amount || ""}
-                            placeholder="1000"
-                            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                            aria-label={t("comparator.field.amount")}
-                            className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
-                              compact ? "text-[21px]" : "text-[25px]"
-                            }`}
-                          />
-                          <CurrencyCombobox
-                            value={from}
-                            onChange={handlePickFromCurrency}
-                            placeholder={t("comparator.field.sourceCurrency")}
-                            searchPlaceholder={t("comparator.combobox.search")}
-                            emptyLabel={t("comparator.combobox.empty")}
-                            ariaLabel={t("comparator.field.sourceCurrency")}
-                            compactLabel
-                            triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
-                              compact ? "px-3.5 text-[14px]" : "px-3.5 text-[14.5px]"
-                            }`}
-                          />
-                        </div>
-                      </FieldLight>
-                    </div>
-
-                    <div className="min-w-0">
-                      <FieldLight label={t("comparator.field.youReceive")}>
-                        <CurrencyCombobox
-                          value={to}
-                          onChange={handlePickToCurrency}
-                          placeholder={t("comparator.field.targetCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCurrency")}
-                          compactLabel
-                          triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                            compact
-                              ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
-                              : "h-[58px] rounded-md bg-card text-[14.5px]"
-                          }`}
-                        />
-                      </FieldLight>
-                    </div>
-
-                    <div className="flex flex-col justify-end">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
-                            setValidationError(t("fx.validation"));
-                            return;
-                          }
-                          setValidationError(null);
-                          compareMut.mutate(undefined);
-                        }}
-                        disabled={
-                          compareMut.isPending ||
-                          !receivingCountry ||
-                          sameCorridorBlocked ||
-                          amount <= 0
-                        }
-                        className={`btn-cta inline-flex w-full items-center justify-center text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @2xl:w-[176px] ${
+                  <div className="min-w-0">
+                    <FieldLight label={t("comparator.field.sourceCountry")}>
+                      <CountryCombobox
+                        value={sendingCountry}
+                        onChange={handleSendingCountryChange}
+                        placeholder={t("comparator.combobox.placeholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.sourceCountry")}
+                        // 2026-08-30 feedback (sixth round) — "en el país se
+                        // podría sacar la moneda porque la moneda se
+                        // selecciona aparte": the currency field just to the
+                        // left already covers it, so this plain country
+                        // picker drops the redundant currency-code readout.
+                        hideSecondary
+                        triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
                           compact
-                            ? "h-[52px] rounded-md px-6"
-                            : "h-[58px] rounded-md px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
+                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
+                            : "h-[58px] rounded-md bg-card text-[14.5px]"
                         }`}
-                      >
-                        {compareMut.isPending ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <span className="truncate">
-                            {/* 2026-08-30 feedback (fourth round) — "el boton
-                                de accion tiene que ser Compare igual que
-                                individual": business used to say
-                                comparator.cta.request here; the search action
-                                is the same as individual's (compare
-                                providers), "Add to request"/"Send request" is
-                                its own separate action below the results, not
-                                this button's job. */}
-                            {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
-                          </span>
-                        )}
-                      </button>
-                    </div>
+                      />
+                    </FieldLight>
+                  </div>
+
+                  {/* Swap — click to flip FROM/TO, country and currency
+                      together. Rotated 90° when the row stacks vertically. */}
+                  <div className="flex items-center justify-center py-0.5 @4xl:flex-col @4xl:justify-end @4xl:pb-1">
+                    <button
+                      type="button"
+                      onClick={handleSwap}
+                      aria-label={t("comparator.swap")}
+                      className={`flex shrink-0 items-center justify-center transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                        compact ? "h-[52px] w-[44px] rounded-md" : "h-[58px] w-[46px] rounded-md"
+                      }`}
+                      style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
+                    >
+                      <ArrowLeftRight
+                        strokeWidth={2.2}
+                        className={`rotate-90 @4xl:rotate-0 ${compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
+                      />
+                    </button>
+                  </div>
+
+                  <div className="min-w-0">
+                    <FieldLight label={t("comparator.field.targetCountry")}>
+                      <CountryCombobox
+                        value={receivingCountry}
+                        onChange={handleReceivingCountryChange}
+                        placeholder={t("comparator.combobox.placeholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCountry")}
+                        hideSecondary
+                        triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                          compact
+                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
+                            : "h-[58px] rounded-md bg-card text-[14.5px]"
+                        } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
+                      />
+                    </FieldLight>
+                  </div>
+
+                  <div className="min-w-0">
+                    <FieldLight label={t("comparator.field.youReceive")}>
+                      <CurrencyCombobox
+                        value={to}
+                        onChange={handlePickToCurrency}
+                        placeholder={t("comparator.field.targetCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCurrency")}
+                        compactLabel
+                        triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                          compact
+                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
+                            : "h-[58px] rounded-md bg-card text-[14.5px]"
+                        }`}
+                      />
+                    </FieldLight>
+                  </div>
+
+                  <div className="flex flex-col justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                          setValidationError(t("fx.validation"));
+                          return;
+                        }
+                        setValidationError(null);
+                        compareMut.mutate(undefined);
+                      }}
+                      disabled={
+                        compareMut.isPending ||
+                        !receivingCountry ||
+                        sameCorridorBlocked ||
+                        amount <= 0
+                      }
+                      className={`btn-cta inline-flex w-full items-center justify-center text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:w-[176px] ${
+                        compact
+                          ? "h-[52px] rounded-md px-6"
+                          : "h-[58px] rounded-md px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
+                      }`}
+                    >
+                      {compareMut.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <span className="truncate">
+                          {/* 2026-08-30 feedback (fourth round) — "el boton de
+                              accion tiene que ser Compare igual que
+                              individual": business used to say
+                              comparator.cta.request here; the search action
+                              is the same as individual's (compare
+                              providers), "Add to request"/"Send request" is
+                              its own separate action below the results, not
+                              this button's job. */}
+                          {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                        </span>
+                      )}
+                    </button>
                   </div>
                 </div>
               )}
@@ -2057,7 +2062,7 @@ export function ComparatorSection({
                   sendingCountry={sendingCountry}
                   receivingCountry={receivingCountry}
                 />
-                <TrustpilotCard t={t} />
+                <TrustpilotCard />
               </aside>
 
               <div className="min-w-0">
@@ -2699,39 +2704,19 @@ function RateAlertCard({
   );
 }
 
-/** Trustpilot rating + the same "affiliate links never move a row up"
- *  disclaimer already shown elsewhere (design/HANDOFF.md §3). Colors are
- *  literal to design/AJUSTES-2.md §6 (mockup line 358-364) — the
- *  star/label are the success green token, not the warning-amber lucide
- *  default.
+/** Trustpilot presence in the vertical rail (design/HANDOFF.md §3).
  *
  *  2026-08-30 feedback: the "4.6" figure was a hardcoded string, not a
  *  real number from Trustpilot (no API integration exists anywhere in the
- *  app — see TrustBox.tsx, a real live widget but a review-collector, not
- *  a rating display). Rather than keep publishing an unverifiable score,
- *  this is now a real link to the actual public Trustpilot page (same URL
- *  TrustBox's own fallback link uses) with no number attached. */
-// 2026-08-30 feedback (fourth round) — this card had two links to the
-// exact same Trustpilot page (the star link below, plus <TrustBox />'s own
-// "Trustpilot" link inside the widget it rendered), and TrustBox itself is
-// the "Review Collector" template — it invites visitors to WRITE a review,
-// unrelated to "check our rating" this card is actually about. TrustBox
-// stays where that DOES fit (ContactSection, a "get in touch" context);
-// here it's just the one real link. The star is a lucide Star tinted
-// Trustpilot's green rather than the trademarked logo file (none exists in
-// this repo to use legitimately).
-function TrustpilotCard({ t }: { t: (k: string) => string }) {
+ *  app). A custom "Check our rating" link replaced it for a few rounds,
+ *  but 2026-08-30 feedback (sixth round) asked for the real thing back:
+ *  "dejar el original... que es embebido el codigo desde trustpilot no
+ *  uno hecho a medida" — the actual Trustpilot embed (TrustBox.tsx, same
+ *  widget ContactSection uses), not a look-alike link built here. */
+function TrustpilotCard() {
   return (
     <div className="rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
-      <a
-        href="https://www.trustpilot.com/review/mangomundi.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-[7px] text-[12.5px] font-bold text-success hover:underline"
-      >
-        <Star className="h-[13px] w-[13px] fill-success text-success" />
-        {t("comparator.trustpilot.checkRating")}
-      </a>
+      <TrustBox />
     </div>
   );
 }

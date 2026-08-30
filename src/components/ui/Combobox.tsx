@@ -40,6 +40,14 @@ export interface ComboboxProps {
    *  the mockup's compact widget row. Off by default — every other caller
    *  keeps the full country name. */
   compactLabel?: boolean;
+  /** 2026-08-30 feedback (sixth round) — "en el país se podría sacar la
+   *  moneda porque la moneda se selecciona aparte": once a currency has its
+   *  own dedicated field next to a plain country picker, showing the
+   *  country's local currency code here too is redundant. Drops `secondary`
+   *  everywhere (trigger and dropdown list) rather than just the trigger.
+   *  Off by default — CountryCombobox callers that don't have a separate
+   *  currency field still want the readout. */
+  hideSecondary?: boolean;
 }
 
 /**
@@ -60,6 +68,7 @@ export function Combobox({
   disabled,
   ariaLabel,
   compactLabel = false,
+  hideSecondary = false,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const selected = React.useMemo(() => options.find((o) => o.value === value), [options, value]);
@@ -82,7 +91,7 @@ export function Combobox({
             {selected?.leading && (
               <span className="shrink-0 text-base leading-none">{selected.leading}</span>
             )}
-            {!(compactLabel && selected?.secondary) && (
+            {!(compactLabel && selected?.secondary && !hideSecondary) && (
               <span className={cn("truncate", !selected && "text-muted-foreground")}>
                 {selected ? selected.label : placeholder}
               </span>
@@ -94,8 +103,10 @@ export function Combobox({
                 never gets truncated away in favor of the (longer, more
                 variable-length) country name. compactLabel drops the name
                 entirely instead (see its own doc comment) — this is then
-                the only text left in the trigger. */}
-            {selected?.secondary && (
+                the only text left in the trigger. hideSecondary drops this
+                readout altogether, for callers with their own separate
+                currency field. */}
+            {selected?.secondary && !hideSecondary && (
               <span className="shrink-0 text-xs font-semibold text-muted-foreground">
                 {selected.secondary}
               </span>
@@ -138,7 +149,7 @@ export function Combobox({
                     <span className="shrink-0 text-base leading-none">{opt.leading}</span>
                   )}
                   <span className="truncate">{opt.label}</span>
-                  {opt.secondary && (
+                  {opt.secondary && !hideSecondary && (
                     <span className="ml-auto truncate text-xs text-muted-foreground">
                       {opt.secondary}
                     </span>

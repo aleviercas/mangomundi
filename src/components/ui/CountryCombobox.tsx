@@ -19,6 +19,7 @@ export function CountryCombobox({
   ariaLabel,
   triggerClassName,
   compactLabel,
+  hideSecondary,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -28,6 +29,9 @@ export function CountryCombobox({
   ariaLabel?: string;
   triggerClassName?: string;
   compactLabel?: boolean;
+  /** See Combobox's own doc comment — drops the local-currency readout,
+   *  for callers with a separate currency field right next to this one. */
+  hideSecondary?: boolean;
 }) {
   return (
     <Combobox
@@ -40,6 +44,7 @@ export function CountryCombobox({
       ariaLabel={ariaLabel}
       triggerClassName={triggerClassName}
       compactLabel={compactLabel}
+      hideSecondary={hideSecondary}
     />
   );
 }

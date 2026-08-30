@@ -1,10 +1,11 @@
 import { useMemo } from "react";
-import { Sparkle, Star } from "lucide-react";
+import { Sparkle } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
 import { primaryCountryForCurrency } from "@/lib/countries";
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { BrandLogo } from "@/components/BrandLogo";
+import { TrustBox } from "@/components/TrustBox";
 
 /**
  * "Today's routes, already priced" (design/AJUSTES-1.md §E) — the one
@@ -37,15 +38,15 @@ export function TodaysRoutesSection({
   // "Rotating on every visit" (§E) — a random starting offset into the
   // real qualifying list, re-rolled whenever the query data changes (i.e.
   // once per page load). Never repeats a corridor to pad out the count;
-  // shows however many genuinely qualify, up to 6 — raised from 4
+  // shows however many genuinely qualify, up to 4. Was raised to 6
   // (2026-08-30 feedback, third round: "tienen que aparecer varias más
-  // para poder cubrir todo el ancho de la página") now that
-  // EXCLUSIVE_CORRIDOR_CANDIDATES (fx.functions.ts) has enough verified
-  // real winners to actually fill a 6-wide row on desktop.
+  // para poder cubrir todo el ancho de la página"); brought back down here
+  // (2026-08-30 feedback, sixth round) to leave the header row room for the
+  // AI agent trigger without it feeling squeezed against the title.
   const shown = useMemo(() => {
     if (!corridors || corridors.length === 0) return [];
     const offset = Math.floor(Math.random() * corridors.length);
-    return Array.from({ length: Math.min(6, corridors.length) }, (_, i) => {
+    return Array.from({ length: Math.min(4, corridors.length) }, (_, i) => {
       const c = corridors[(i + offset) % corridors.length];
       return {
         ...c,
@@ -76,23 +77,20 @@ export function TodaysRoutesSection({
                 (renders nothing) whenever there's no portal content — the
                 div itself is just the mount point. */}
             {agentSlotRef && <div ref={agentSlotRef} className="contents" />}
-            {/* 2026-08-30 feedback — was a hardcoded "4.6", never a real
-                Trustpilot number (see TrustpilotCard's own comment). Real
-                link to the public page instead, no invented figure. */}
-            <a
-              href="https://www.trustpilot.com/review/mangomundi.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-bold hover:underline"
-              style={{ backgroundColor: "#E4F3EC", color: "#1F7A5A" }}
-            >
-              <Star className="h-3 w-3 fill-current" />
-              {t("comparator.trustpilot.checkRating")}
-            </a>
+            {/* 2026-08-30 feedback (sixth round) — "dejar el original... que
+                es embebido el codigo desde trustpilot no uno hecho a
+                medida": back to the real Trustpilot embed (same one
+                ContactSection uses) instead of the custom "Check our
+                rating" pill built earlier this session — no invented rating
+                figure either way, but this is Trustpilot's own widget code,
+                not a look-alike. */}
+            <div className="w-[150px] shrink-0">
+              <TrustBox />
+            </div>
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {shown.map((c) => (
             <div key={`${c.from}-${c.to}`} className="rounded-2xl border border-border bg-card p-4">
               <div className="flex items-center gap-2 text-[13.5px] font-bold text-foreground">

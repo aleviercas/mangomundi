@@ -2861,11 +2861,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.rateAlert.cta": "Set a rate alert",
     "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
     "comparator.rateAlert.error": "Something went wrong. Please try again.",
-    // 2026-08-30 feedback — comparator.trustpilot.rated ("Rated 4.6 on
-    // Trustpilot") was a hardcoded figure, not a real number (no Trustpilot
-    // API integration exists anywhere in the app). Replaced everywhere it
-    // was used with a real link to the public Trustpilot page, no number.
-    "comparator.trustpilot.checkRating": "Check our rating on Trustpilot",
     // design/AJUSTES-1.md §E — "Today's routes, already priced". The
     // mockup's subtitle claims a specific freshness ("updated 2 min ago")
     // that a real page combining several corridors with different fetch
