@@ -763,5 +763,9 @@
   "widget.page.how.label": "How it works",
   "widget.page.how.body": "Add one script tag or an iframe wherever you want the comparator to appear. It renders in its own isolated frame, so there's no CSS conflict with your page and nothing new is tracked on your site.",
   "widget.page.who.label": "Who it's for",
-  "widget.page.who.body": "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded."
+  "widget.page.who.body": "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded.",
+  "comparator.widget.deliversMost": "Delivers the most",
+  "comparator.widget.ofNCompared": "of {n} compared",
+  "widget.header.ratesJustNow": "rates just now",
+  "widget.header.ratesMinAgo": "rates {n} min ago"
 }

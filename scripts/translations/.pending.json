@@ -114,7 +114,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "ar": [
     "about.coverage.body",
@@ -276,7 +280,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "bn": [
     "about.coverage.body",
@@ -439,7 +447,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "de": [
     "about.coverage.body",
@@ -601,7 +613,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "fr": [
     "about.coverage.body",
@@ -762,7 +778,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "hi": [
     "about.coverage.body",
@@ -924,7 +944,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "id": [
     "about.coverage.body",
@@ -1085,7 +1109,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "it": [
     "about.coverage.body",
@@ -1246,7 +1274,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "ja": [
     "about.coverage.body",
@@ -1408,7 +1440,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "ko": [
     "about.coverage.body",
@@ -1570,7 +1606,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "pl": [
     "about.coverage.body",
@@ -1731,7 +1771,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "ru": [
     "about.coverage.body",
@@ -1892,7 +1936,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "th": [
     "about.coverage.body",
@@ -2054,7 +2102,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "tl": [
     "about.coverage.body",
@@ -2218,7 +2270,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "tr": [
     "about.coverage.body",
@@ -2379,7 +2435,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "ur": [
     "about.coverage.body",
@@ -2555,7 +2615,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "vi": [
     "about.coverage.body",
@@ -2716,7 +2780,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "zh": [
     "about.coverage.body",
@@ -2878,7 +2946,11 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ],
   "pt": [
     "agent.newResult",
@@ -2997,6 +3069,10 @@
     "widget.page.how.label",
     "widget.page.who.body",
     "widget.page.who.label",
-    "wizard.moreOptions"
+    "wizard.moreOptions",
+    "comparator.widget.deliversMost",
+    "comparator.widget.ofNCompared",
+    "widget.header.ratesJustNow",
+    "widget.header.ratesMinAgo"
   ]
 }

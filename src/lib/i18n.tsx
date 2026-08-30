@@ -555,6 +555,16 @@ export const DICTS: Record<Lang, Dict> = {
     // one winner card + compact provider lines + this link back to the
     // full site. {n} is the total number of providers in the comparison.
     "comparator.widget.viewAll": "See all {n} on mangomundi",
+    // design/Mangomundi 4 - Final.dc.html (line 743-744) — the widget's own
+    // results eyebrow, literal wording, distinct from comparator.results
+    // (the full table's "Your results" header) which this deliberately
+    // doesn't reuse. {n} is result.rows.length, the real corridor count.
+    "comparator.widget.deliversMost": "Delivers the most",
+    "comparator.widget.ofNCompared": "of {n} compared",
+    // Widget header freshness stamp (EmbedComparator) — real, per the
+    // comment on useRatesFreshness there, not the dropped todaysRoutes claim.
+    "widget.header.ratesJustNow": "rates just now",
+    "widget.header.ratesMinAgo": "rates {n} min ago",
     // The invitation block above viewAll (design/HANDOFF.md §5) — {n} is
     // the real remaining-provider count for THIS corridor (total minus the
     // winner and compact rows already shown), never the whole catalog.

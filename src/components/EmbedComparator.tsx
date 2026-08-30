@@ -1,8 +1,33 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
+import type { ComparisonResult } from "@/lib/fx.functions";
 import { Wordmark } from "@/components/Wordmark";
 import { defaultCounterCurrency } from "@/lib/countries";
+import { useI18n } from "@/lib/i18n";
+
+/** design/Mangomundi 4 - Final.dc.html (line 727-729) — "rates 2 min ago" in
+ *  the widget's own header bar. Computed from the ONE comparison this
+ *  widget actually ran (ComparisonResult.fetched_at via ComparatorSection's
+ *  onResult), not a page-wide claim across several corridors — that's the
+ *  case design/AJUSTES-1.md §E deliberately dropped as unhonest (see
+ *  todaysRoutes.title's comment in i18n.tsx). A single widget query has a
+ *  single real fetch time, so this one is real. Hidden until a result
+ *  exists — nothing to be fresh about before that. */
+function useRatesFreshness(fetchedAt: string | null): string | null {
+  const { t } = useI18n();
+  const [, forceTick] = useState(0);
+  useEffect(() => {
+    if (!fetchedAt) return;
+    const id = setInterval(() => forceTick((n) => n + 1), 30_000);
+    return () => clearInterval(id);
+  }, [fetchedAt]);
+  if (!fetchedAt) return null;
+  const minutes = Math.max(0, Math.round((Date.now() - new Date(fetchedAt).getTime()) / 60_000));
+  return minutes < 1
+    ? t("widget.header.ratesJustNow")
+    : t("widget.header.ratesMinAgo").replace("{n}", String(minutes));
+}
 
 /**
  * Self-contained comparator for the embeddable widget — the SAME unified box
@@ -50,6 +75,9 @@ export function EmbedComparator({
     autoRun: previewDestination != null,
   };
 
+  const [result, setResult] = useState<ComparisonResult | null>(null);
+  const freshness = useRatesFreshness(result?.fetched_at ?? null);
+
   // Down-chevron scroll affordance: shown while there's more content below the
   // fold of the internal scroll region (e.g. a long results list).
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -75,12 +103,23 @@ export function EmbedComparator({
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-[#fcfcfc]">
+      {/* design/Mangomundi 4 - Final.dc.html (line 726-729) — the widget's
+          own header bar, distinct from ComparatorSection's chrome (which
+          `embedded` strips entirely): wordmark + a real freshness stamp,
+          shown only once a comparison has actually run. */}
+      <div className="flex shrink-0 items-center justify-between border-b border-border px-3.5 py-2.5">
+        <Wordmark className="text-base" />
+        {freshness && (
+          <span className="text-[10.5px] font-semibold text-muted-foreground">{freshness}</span>
+        )}
+      </div>
+
       <div
         ref={scrollRef}
         onScroll={updateHint}
         className="min-h-0 flex-1 overflow-y-auto px-3 py-3 sm:px-4"
       >
-        <ComparatorSection embedded initialQuery={initialQuery} />
+        <ComparatorSection embedded initialQuery={initialQuery} onResult={setResult} />
       </div>
 
       {showScrollHint && (
@@ -98,7 +137,7 @@ export function EmbedComparator({
         rel="noopener noreferrer"
         className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
-        powered by <Wordmark className="text-xs" compact />
+        powered by <Wordmark className="text-xs" compact icon={false} />
       </a>
     </div>
   );

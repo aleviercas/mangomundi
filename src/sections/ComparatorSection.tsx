@@ -321,6 +321,7 @@ export function ComparatorSection({
   initialQuery,
   embedded = false,
   onHasResultChange,
+  onResult,
   onQueryChange,
 }: {
   initialQuery?: ComparatorQuery;
@@ -332,6 +333,12 @@ export function ComparatorSection({
    *  the "search becomes a sticky bar, results take the screen" pattern.
    *  Home-only; the embed widget has no hero to collapse. */
   onHasResultChange?: (hasResult: boolean) => void;
+  /** Same trigger as onHasResultChange but hands back the result itself (or
+   *  null) — the embed widget's own header uses this to show a real
+   *  "rates updated Nm ago" stamp instead of fabricating one, since that
+   *  data only exists once a comparison has actually run (see
+   *  EmbedComparator). */
+  onResult?: (result: ComparisonResult | null) => void;
   /** Reports the debounced corridor state (same fields as ComparatorQuery,
    *  minus lang/autoRun) so the parent route can mirror it into the URL —
    *  see handleQueryChange in routes/index.tsx and design/HANDOFF.md §2.
@@ -470,7 +477,8 @@ export function ComparatorSection({
   const [result, setResult] = useState<ComparisonResult | null>(null);
   useEffect(() => {
     onHasResultChange?.(Boolean(result));
-  }, [result, onHasResultChange]);
+    onResult?.(result);
+  }, [result, onHasResultChange, onResult]);
   const [aiText, setAiText] = useState<string>("");
   const [aiLoading, setAiLoading] = useState(false);
   const [chat, setChat] = useState<ChatMsg[]>([]);
@@ -3548,9 +3556,18 @@ function CompactResultsList({
 
   return (
     <div className="min-w-0">
-      <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-        {t("comparator.results")}
-      </span>
+      {/* design/Mangomundi 4 - Final.dc.html (line 743-744) — "Delivers the
+          most / of N compared", not the generic comparator.results header
+          the full table uses; a dedicated pair of keys so this doesn't
+          drag that shared string's wording along with it. */}
+      <div className="flex items-baseline justify-between">
+        <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+          {t("comparator.widget.deliversMost")}
+        </span>
+        <span className="text-[10px] font-bold" style={{ color: "#1F7A5A" }}>
+          {t("comparator.widget.ofNCompared").replace("{n}", String(result.rows.length))}
+        </span>
+      </div>
 
       {/* Winner — the only row with a CTA and full details. */}
       <div className="mt-1.5 rounded-xl border-2 border-brand-cta bg-card p-2.5">
