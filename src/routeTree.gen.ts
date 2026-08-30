@@ -23,6 +23,7 @@ import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PlatformRouteImport } from './routes/platform'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as WidgetRouteImport } from './routes/widget'
 import { Route as AdminI18nStatusRouteImport } from './routes/admin.i18n-status'
 import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
 import { Route as SendCorridorRouteImport } from './routes/send.$corridor'
@@ -97,6 +98,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WidgetRoute = WidgetRouteImport.update({
+  id: '/widget',
+  path: '/widget',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminI18nStatusRoute = AdminI18nStatusRouteImport.update({
   id: '/admin/i18n-status',
   path: '/admin/i18n-status',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/widget': typeof WidgetRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/send/$corridor': typeof SendCorridorRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/widget': typeof WidgetRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/send/$corridor': typeof SendCorridorRoute
@@ -167,6 +175,7 @@ export interface FileRoutesById {
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/widget': typeof WidgetRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
   '/blog_/$slug': typeof BlogSlugRoute
   '/send/$corridor': typeof SendCorridorRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
+    | '/widget'
     | '/admin/i18n-status'
     | '/blog/$slug'
     | '/send/$corridor'
@@ -207,6 +217,7 @@ export interface FileRouteTypes {
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
+    | '/widget'
     | '/admin/i18n-status'
     | '/blog/$slug'
     | '/send/$corridor'
@@ -226,6 +237,7 @@ export interface FileRouteTypes {
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
+    | '/widget'
     | '/admin/i18n-status'
     | '/blog_/$slug'
     | '/send/$corridor'
@@ -246,6 +258,7 @@ export interface RootRouteChildren {
   PlatformRoute: typeof PlatformRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  WidgetRoute: typeof WidgetRoute
   AdminI18nStatusRoute: typeof AdminI18nStatusRoute
   BlogSlugRoute: typeof BlogSlugRoute
   SendCorridorRoute: typeof SendCorridorRoute
@@ -351,6 +364,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/widget': {
+      id: '/widget'
+      path: '/widget'
+      fullPath: '/widget'
+      preLoaderRoute: typeof WidgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/i18n-status': {
       id: '/admin/i18n-status'
       path: '/admin/i18n-status'
@@ -390,6 +410,7 @@ const rootRouteChildren: RootRouteChildren = {
   PlatformRoute: PlatformRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  WidgetRoute: WidgetRoute,
   AdminI18nStatusRoute: AdminI18nStatusRoute,
   BlogSlugRoute: BlogSlugRoute,
   SendCorridorRoute: SendCorridorRoute,

@@ -15,7 +15,12 @@ const MANGO_LIGHT = "#FF8A6B"; // bicolor mango on a dark background only
  * stays pixel-identical to design/Mangomundi 4 - Final.dc.html, which is
  * the literal reference until the traced SVG exists (see HANDOFF §8).
  */
-function BrandMark({ tone = "dark" }: { tone?: "dark" | "light" }) {
+/** Icon mark alone (no wordmark text) — the badge design/Mangomundi 4 -
+ *  Final.dc.html's small "Widget" card uses (line 212, a 36×36 dark
+ *  square). 2026-08-30: exported so that one real spot can still use the
+ *  icon while Header/Footer go text-only. Font-size controls the whole
+ *  glyph's box, same as Wordmark's own sizing. */
+export function BrandMark({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const ink = tone === "light" ? "#FFFFFF" : INK;
   const mango = tone === "light" ? MANGO_LIGHT : MANGO;
   return (

@@ -474,7 +474,6 @@
   "contact.success": "メッセージを送信しました。まもなくご連絡します。",
   "contact.error": "メッセージを送信できませんでした。もう一度お試しください。",
   "search.destinationPrompt": "受取人の国",
-  "search.guide": "金額を入力して通貨を選ぶと、mangomundiが数十社のライブレート・手数料・所要時間を即座に比較します。登録不要。",
   "search.promise": "スマートな市場比較。口座不要。隠れた手数料なし。",
   "comparator.transferDetails": "送金詳細",
   "comparator.transferDetails.subtitle": "市場比較を実行する前に、金額と通貨を調整してください。",
@@ -627,7 +626,6 @@
   "wizard.send": "mangomundi自体はお金を動かしません — 最適な選択肢を示し、その事業者のサイトへ直接ご案内して送金を完了します。比較して行を選び、クリックして完了。当社のアカウントは不要です。",
   "wizard.exampleNote": "こちらがライブの例です — 人気ルートを比較中。上の金額や国を変えてご自身のルートを比較できます。",
   "wizard.moreQuestions": "他の質問",
-  "home.how.aiAside": "mangomundiエージェントを開いて手数料の内訳、別ルートの試算、最適解の確認を — アカウント不要。",
   "home.blog.viewAll": "すべての記事を見る",
   "home.contact.subtitle": "専用レート、カスタム統合、または当社チームとの直接窓口をお探しの財務チームおよびFXパートナーの方へ。",
   "comparator.sort.overall": "Smart",
@@ -762,5 +760,13 @@
   "comparator.altCurrency.explainer": "Your currency follows the country you picked by default. Use this only if you're sending from — or receiving into — a different currency, like a multi-currency account. Picking one here never changes the country.",
   "comparator.trustpilot.checkRating": "Check our rating on Trustpilot",
   "business.extras.subtitle": "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
-  "business.extras.cta": "Email our business desk"
+  "business.extras.cta": "Email our business desk",
+  "wizard.moreOptions": "More options",
+  "home.widget.card.title": "Put the comparator on your site",
+  "home.widget.card.body": "360×540, one line of embed code, free. Your readers compare without leaving your article.",
+  "home.widget.card.cta": "Get the embed code",
+  "widget.page.how.label": "How it works",
+  "widget.page.how.body": "Add one script tag or an iframe wherever you want the comparator to appear. It renders in its own isolated frame, so there's no CSS conflict with your page and nothing new is tracked on your site.",
+  "widget.page.who.label": "Who it's for",
+  "widget.page.who.body": "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded."
 }

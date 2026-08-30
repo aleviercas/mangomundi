@@ -18,11 +18,14 @@ export type NavEntry = { labelKey: TKey } & (
  *  same treatment now that /about is a real page (AJUSTES-4 §1) instead
  *  of a redirect stub — the home anchor is still there for anyone
  *  scrolling the page itself, it's just not what the nav link targets
- *  anymore. */
+ *  anymore. "Widget" gets the same treatment (2026-08-30 feedback) now
+ *  that /widget is a real page too — the home page only has a small
+ *  teaser card for it now (WidgetTeaserSection.tsx), not a full section
+ *  worth anchoring to. */
 export const HOME_NAV: ReadonlyArray<NavEntry> = [
   { hash: "how-it-works", labelKey: "footer.nav.how" },
   { to: "/about", labelKey: "nav.about" },
-  { hash: "widget", labelKey: "home.widget.eyebrow" },
+  { to: "/widget", labelKey: "home.widget.eyebrow" },
   { to: "/business", labelKey: "nav.business" },
   { hash: "contact", labelKey: "nav.contact" },
   { hash: "blog", labelKey: "nav.blog" },
@@ -35,7 +38,7 @@ export const HOME_NAV: ReadonlyArray<NavEntry> = [
 export const HEADER_NAV: ReadonlyArray<NavEntry> = [
   { hash: "how-it-works", labelKey: "footer.nav.how" },
   { to: "/business", labelKey: "nav.forBusiness" },
-  { hash: "widget", labelKey: "home.widget.eyebrow" },
+  { to: "/widget", labelKey: "home.widget.eyebrow" },
   { hash: "blog", labelKey: "nav.blog" },
   { to: "/about", labelKey: "nav.about" },
 ];
@@ -48,7 +51,7 @@ export const HEADER_NAV: ReadonlyArray<NavEntry> = [
  *  that route is real. */
 export const FOOTER_PRODUCT: ReadonlyArray<NavEntry> = [
   { hash: "comparator", labelKey: "footer.product.comparator" },
-  { hash: "widget", labelKey: "home.widget.eyebrow" },
+  { to: "/widget", labelKey: "home.widget.eyebrow" },
   // "Rate alerts" (RateAlertCard) only mounts inside the left rail once a
   // comparison has a result — no stable anchor exists to land on directly,
   // so this points at the comparator itself (where the feature lives)

@@ -474,7 +474,6 @@
   "contact.success": "消息已发送。我们会尽快联系您。",
   "contact.error": "消息发送失败，请重试。",
   "search.destinationPrompt": "收款人国家",
-  "search.guide": "输入金额并选择您的货币——mangomundi 即时比较数十家服务商的实时汇率、费用和到账时间，无需注册。",
   "search.promise": "智能市场比较。无需开户。无隐藏费用。",
   "comparator.transferDetails": "转账详情",
   "comparator.transferDetails.subtitle": "在运行市场比较之前，请调整金额和货币。",
@@ -627,7 +626,6 @@
   "wizard.send": "mangomundi 本身不转移资金——它为你展示最佳选项，然后直接把你带到该服务商，在其网站上完成转账。比较、选择一行、点击即可完成。无需在我们这里开户。",
   "wizard.exampleNote": "这是一个实时示例——正在比较一条热门路线。修改上方的金额或国家以比较你自己的路线。",
   "wizard.moreQuestions": "更多问题",
-  "home.how.aiAside": "打开 mangomundi 智能助手，拆解费用、试试其他路线或复核最佳选项——无需账户。",
   "home.blog.viewAll": "查看所有文章",
   "home.contact.subtitle": "适合寻求专属汇率、定制集成或与我们团队直接联系的资金团队和外汇合作伙伴。",
   "comparator.sort.overall": "Smart",
@@ -762,5 +760,13 @@
   "comparator.altCurrency.explainer": "Your currency follows the country you picked by default. Use this only if you're sending from — or receiving into — a different currency, like a multi-currency account. Picking one here never changes the country.",
   "comparator.trustpilot.checkRating": "Check our rating on Trustpilot",
   "business.extras.subtitle": "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
-  "business.extras.cta": "Email our business desk"
+  "business.extras.cta": "Email our business desk",
+  "wizard.moreOptions": "More options",
+  "home.widget.card.title": "Put the comparator on your site",
+  "home.widget.card.body": "360×540, one line of embed code, free. Your readers compare without leaving your article.",
+  "home.widget.card.cta": "Get the embed code",
+  "widget.page.how.label": "How it works",
+  "widget.page.how.body": "Add one script tag or an iframe wherever you want the comparator to appear. It renders in its own isolated frame, so there's no CSS conflict with your page and nothing new is tracked on your site.",
+  "widget.page.who.label": "Who it's for",
+  "widget.page.who.body": "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded."
 }

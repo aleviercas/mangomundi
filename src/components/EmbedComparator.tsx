@@ -26,8 +26,8 @@ export function EmbedComparator({
    *  fallback below matches getVisitorGeo()'s own fallback. */
   geoCountry?: string;
   geoCurrency?: string;
-  /** design/AJUSTES-1.md §H — set ONLY by the home page's widget preview
-   *  (EmbedWidgetSection), never by the real /embed route: a real embedder
+  /** design/AJUSTES-1.md §H — set ONLY by /widget's own live preview
+   *  (routes/widget.tsx), never by the real /embed route: a real embedder
    *  who didn't configure a destination should still land on the empty
    *  "pick a currency" state, not a comparison they never asked for. The
    *  preview is different — it exists to show off a real result, so it

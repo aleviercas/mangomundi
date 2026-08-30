@@ -4,8 +4,7 @@ import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSe
 import { TodaysRoutesSection } from "@/sections/TodaysRoutesSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
-import { EmbedWidgetSection } from "@/sections/EmbedWidgetSection";
-import { BusinessSection } from "@/sections/BusinessSection";
+import { BusinessWidgetRow } from "@/sections/BusinessWidgetRow";
 import { ContactSection } from "@/sections/ContactSection";
 import { BlogSection } from "@/sections/BlogSection";
 
@@ -69,8 +68,10 @@ export function HomePageBody({
         <>
           <HowItWorksSection />
           <AboutManifestoSection />
-          <EmbedWidgetSection />
-          <BusinessSection />
+          {/* design/Mangomundi 4 - Final.dc.html (line 191) — "For business"
+              and the widget teaser share one row now (BusinessWidgetRow),
+              not two stacked full-width sections. */}
+          <BusinessWidgetRow />
           <ContactSection />
           <BlogSection />
         </>

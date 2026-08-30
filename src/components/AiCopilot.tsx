@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Info,
   MapPin,
@@ -81,6 +82,17 @@ interface AiCopilotProps {
   className?: string;
 }
 
+// design/Mangomundi 4 - Final.dc.html (line 335-338) — the docked agent
+// card shows 4 quick-action rows, not the full list. 2026-08-30 feedback:
+// "que aparezcan solo algunas opciones al principio y diga mas opciones
+// porque si aparece todo con el scroll queda mal y que quede espacio para
+// escribir" — all 9 DEFAULT_WIZARD_ACTIONS rendering unconditionally ate
+// the panel's scroll space and pushed the chat input further from view.
+// Capped here, not by trimming DEFAULT_WIZARD_ACTIONS itself (every
+// caller — welcome screen and "more questions" after a turn — still has
+// all 9 available on request).
+const COLLAPSED_ACTION_COUNT = 4;
+
 /**
  * AiCopilot — Wizard-style action grid. Acts as the entry surface for the
  * floating AI Agent so users get guided suggestions (low token burn) before
@@ -99,13 +111,16 @@ export function AiCopilot({
   className = "",
 }: AiCopilotProps) {
   const { t } = useI18n();
+  const [expanded, setExpanded] = useState(false);
+  const hasMore = actions.length > COLLAPSED_ACTION_COUNT;
+  const shown = expanded ? actions : actions.slice(0, COLLAPSED_ACTION_COUNT);
   return (
     <div
       className={`flex flex-col gap-1.5 ${className}`}
       role="group"
       aria-label={t("wizard.quickActionsAria")}
     >
-      {actions.map((a) => (
+      {shown.map((a) => (
         <button
           key={a.id}
           type="button"
@@ -119,6 +134,15 @@ export function AiCopilot({
           </span>
         </button>
       ))}
+      {hasMore && !expanded && (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="w-full rounded-[10px] px-[11px] py-[7px] text-center text-[11.5px] font-semibold text-[#F1EBE4]/70 transition hover:text-[#F1EBE4] focus:outline-none focus:ring-2 focus:ring-white/30"
+        >
+          {t("wizard.moreOptions")}
+        </button>
+      )}
     </div>
   );
 }

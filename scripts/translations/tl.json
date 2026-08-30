@@ -474,7 +474,6 @@
   "contact.success": "Naipadala ang mensahe. Makikipag-ugnayan kami kaagad.",
   "contact.error": "Hindi naipadala ang mensahe. Subukang muli.",
   "search.destinationPrompt": "Bansa ng tatanggap",
-  "search.guide": "Maglagay ng halaga at pumili ng iyong mga currency — agad na inihahambing ng mangomundi ang live na rate, bayarin, at bilis ng paghahatid ng dose-dosenang provider, walang sign-up.",
   "search.promise": "Matalinong paghahambing sa market. Hindi kailangan ng account. Walang nakatagong bayarin.",
   "comparator.transferDetails": "Mga Detalye ng Transfer",
   "comparator.transferDetails.subtitle": "I-adjust ang halaga at mga currency bago patakbuhin ang paghahambing sa market.",
@@ -627,7 +626,6 @@
   "wizard.send": "Hindi mismo naglilipat ng pera ang mangomundi — ipinapakita nito ang pinakamahusay na opsyon, tapos dinadala ka diretso sa provider na iyon para tapusin ang transfer sa site nila. Maghambing, pumili ng row, at mag-click para matapos. Walang account na kailangan sa amin.",
   "wizard.exampleNote": "Narito ang live na halimbawa — naghahambing ng sikat na ruta ngayon. Baguhin ang halaga o mga bansa sa itaas para ihambing ang sa iyo.",
   "wizard.moreQuestions": "Iba pang tanong",
-  "home.how.aiAside": "Buksan ang mangomundi agent para hatiin ang bayarin, sumubok ng ibang ruta, o i-double-check ang pinakamagandang opsyon — walang account.",
   "home.blog.viewAll": "Tingnan lahat ng post",
   "home.contact.subtitle": "Para sa mga treasury team at FX partner na naghahanap ng dedikadong rate, custom na integrasyon, o direktang linya sa aming team.",
   "comparator.sort.overall": "Smart",
@@ -762,5 +760,13 @@
   "comparator.altCurrency.explainer": "Your currency follows the country you picked by default. Use this only if you're sending from — or receiving into — a different currency, like a multi-currency account. Picking one here never changes the country.",
   "comparator.trustpilot.checkRating": "Check our rating on Trustpilot",
   "business.extras.subtitle": "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
-  "business.extras.cta": "Email our business desk"
+  "business.extras.cta": "Email our business desk",
+  "wizard.moreOptions": "More options",
+  "home.widget.card.title": "Put the comparator on your site",
+  "home.widget.card.body": "360×540, one line of embed code, free. Your readers compare without leaving your article.",
+  "home.widget.card.cta": "Get the embed code",
+  "widget.page.how.label": "How it works",
+  "widget.page.how.body": "Add one script tag or an iframe wherever you want the comparator to appear. It renders in its own isolated frame, so there's no CSS conflict with your page and nothing new is tracked on your site.",
+  "widget.page.who.label": "Who it's for",
+  "widget.page.who.body": "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded."
 }

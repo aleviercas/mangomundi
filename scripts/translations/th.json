@@ -474,7 +474,6 @@
   "contact.success": "ส่งข้อความแล้ว เราจะติดต่อกลับเร็ว ๆ นี้",
   "contact.error": "ส่งข้อความไม่สำเร็จ โปรดลองอีกครั้ง",
   "search.destinationPrompt": "ประเทศผู้รับ",
-  "search.guide": "กรอกจำนวนเงินและเลือกสกุลเงินของคุณ — mangomundi เปรียบเทียบเรตสด ค่าธรรมเนียม และเวลาส่งของผู้ให้บริการหลายสิบรายทันที ไม่ต้องสมัคร",
   "search.promise": "การเปรียบเทียบตลาดอย่างชาญฉลาด ไม่ต้องเปิดบัญชี ไม่มีค่าธรรมเนียมแอบแฝง",
   "comparator.transferDetails": "รายละเอียดการโอนเงิน",
   "comparator.transferDetails.subtitle": "ปรับจำนวนเงินและสกุลเงินก่อนเริ่มการเปรียบเทียบตลาด",
@@ -627,7 +626,6 @@
   "wizard.send": "mangomundi ไม่ได้โอนเงินเอง — แต่แสดงตัวเลือกที่ดีที่สุดแล้วพาคุณตรงไปยังผู้ให้บริการเพื่อทำรายการให้เสร็จบนเว็บของเขา เปรียบเทียบ เลือกแถวหนึ่ง แล้วคลิกเพื่อจบ ไม่ต้องมีบัญชีกับเรา",
   "wizard.exampleNote": "นี่คือตัวอย่างสด — กำลังเปรียบเทียบเส้นทางยอดนิยม เปลี่ยนจำนวนเงินหรือประเทศด้านบนเพื่อเปรียบเทียบของคุณ",
   "wizard.moreQuestions": "คำถามเพิ่มเติม",
-  "home.how.aiAside": "เปิดผู้ช่วย mangomundi เพื่อแยกค่าธรรมเนียม ลองเส้นทางอื่น หรือตรวจสอบตัวเลือกที่ดีที่สุด — ไม่ต้องมีบัญชี",
   "home.blog.viewAll": "ดูบทความทั้งหมด",
   "home.contact.subtitle": "สำหรับทีมการเงินและพันธมิตรด้านอัตราแลกเปลี่ยนที่ต้องการอัตราเฉพาะ การเชื่อมต่อระบบแบบกำหนดเอง หรือช่องทางติดต่อโดยตรงกับทีมของเรา",
   "comparator.sort.overall": "Smart",
@@ -762,5 +760,13 @@
   "comparator.altCurrency.explainer": "Your currency follows the country you picked by default. Use this only if you're sending from — or receiving into — a different currency, like a multi-currency account. Picking one here never changes the country.",
   "comparator.trustpilot.checkRating": "Check our rating on Trustpilot",
   "business.extras.subtitle": "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
-  "business.extras.cta": "Email our business desk"
+  "business.extras.cta": "Email our business desk",
+  "wizard.moreOptions": "More options",
+  "home.widget.card.title": "Put the comparator on your site",
+  "home.widget.card.body": "360×540, one line of embed code, free. Your readers compare without leaving your article.",
+  "home.widget.card.cta": "Get the embed code",
+  "widget.page.how.label": "How it works",
+  "widget.page.how.body": "Add one script tag or an iframe wherever you want the comparator to appear. It renders in its own isolated frame, so there's no CSS conflict with your page and nothing new is tracked on your site.",
+  "widget.page.who.label": "Who it's for",
+  "widget.page.who.body": "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded."
 }

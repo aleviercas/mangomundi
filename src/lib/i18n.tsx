@@ -461,8 +461,6 @@ export const DICTS: Record<Lang, Dict> = {
     "home.how.s3.title": "Send with your provider",
     "home.how.s3.desc":
       "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
-    "home.how.aiAside":
-      "Not sure which option fits best? Ask the mangomundi AI agent, free and with no account needed, to break down fees or double-check your options.",
     "home.feat.liveRates": "Live Rates",
     "home.feat.zeroFees": "Zero Fees",
     "home.feat.noSignup": "No Sign-up",
@@ -537,6 +535,22 @@ export const DICTS: Record<Lang, Dict> = {
     "home.widget.copied": "Copied!",
     "home.widget.hint":
       "Paste it anywhere in your HTML. The widget is free and runs in an isolated iframe — no code conflicts, no tracking added to your site.",
+    // 2026-08-30 feedback — the home page's own small Widget card
+    // (WidgetTeaserSection.tsx), literal to design/Mangomundi 4 - Final.dc.html
+    // line 206-211. Separate from home.widget.title/body above, which are
+    // now /widget's own page heading/intro (longer, page-appropriate copy).
+    "home.widget.card.title": "Put the comparator on your site",
+    "home.widget.card.body":
+      "360×540, one line of embed code, free. Your readers compare without leaving your article.",
+    "home.widget.card.cta": "Get the embed code",
+    // /widget's own extended explanation (routes/widget.tsx) — the part the
+    // home card no longer has room for.
+    "widget.page.how.label": "How it works",
+    "widget.page.how.body":
+      "Add one script tag or an iframe wherever you want the comparator to appear. It renders in its own isolated frame, so there's no CSS conflict with your page and nothing new is tracked on your site.",
+    "widget.page.who.label": "Who it's for",
+    "widget.page.who.body":
+      "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded.",
     // Compact results list inside the embeddable widget (EmbedComparator) —
     // one winner card + compact provider lines + this link back to the
     // full site. {n} is the total number of providers in the comparison.
@@ -805,8 +819,6 @@ export const DICTS: Record<Lang, Dict> = {
     "home.how.s3.title": "Enviá con tu proveedor",
     "home.how.s3.desc":
       "Andá directo al proveedor elegido para completar la transferencia. Sin registro, sin recargos ocultos.",
-    "home.how.aiAside":
-      "¿No estás seguro cuál conviene? Preguntale al agente de IA de mangomundi, gratis y sin necesidad de cuenta, para desglosar comisiones o confirmar la mejor opción.",
     "home.feat.liveRates": "Tasas en vivo",
     "home.feat.zeroFees": "Sin comisiones",
     "home.feat.noSignup": "Sin registro",
@@ -2171,8 +2183,6 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.how.s3.title": "Send with your provider",
     "home.how.s3.desc":
       "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
-    "home.how.aiAside":
-      "Not sure which option fits best? Ask the mangomundi AI agent, free and with no account needed, to break down fees or double-check your options.",
     "home.platform.text": "FX is the first vertical.",
     "home.platform.brand": "mangomundi Platform",
     "home.platform.tail":
@@ -2684,7 +2694,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.combobox.empty": "No results.",
     "comparator.combobox.placeholder": "Select…",
     "comparator.copilot.title": "FX Copilot",
-    "comparator.copilot.agent": "AI Agent",
+    // 2026-08-30 feedback — "que se llame mangomundi ai como en el diseno".
+    "comparator.copilot.agent": "Mangomundi AI",
     "comparator.copilot.placeholder": "Ask a follow-up about this route…",
     "comparator.copilot.empty": "Run a comparison to enable the copilot.",
     "comparator.copilot.send": "Send",
@@ -2741,8 +2752,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.startTransfer": "Start a transfer",
     "search.liveRates": "Live rates",
     "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
-    "search.guide":
-      "Enter an amount and choose your currencies — mangomundi instantly compares live rates, fees and delivery speed across dozens of providers, no sign-up needed.",
     "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
     "search.hint": "Independent market comparison. No account required.",
     "search.verified": "Market verified",
@@ -2919,6 +2928,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "wizard.exampleNote":
       "Here's a live example — comparing a popular route now. Change the amount or countries above to compare your own.",
     "wizard.moreQuestions": "More questions",
+    // 2026-08-30 feedback — AiCopilot.tsx's own collapse-toggle button,
+    // distinct from wizard.moreQuestions (a section header elsewhere).
+    "wizard.moreOptions": "More options",
     "wizard.quickActions": "Wizard — quick actions",
     "wizard.quickActionsAria": "AI Wizard quick actions",
     "wizard.reportNote":
@@ -3343,7 +3355,12 @@ const ROUTE_SEO_EN: RouteSeoMap = {
   "/about": {
     title: "About — mangomundi",
     description:
-      "mangomundi is a neutral decision engine for cross-border payments and currency exchange — our mission, vision, and how the business works.",
+      "mangomundi is a neutral decision engine for cross-border payments and currency exchange — our mission, vision, and the problem we're solving.",
+  },
+  "/widget": {
+    title: "Widget — mangomundi",
+    description:
+      "Embed the mangomundi FX comparator on your site with one script tag or an iframe — free, live rates, no account needed.",
   },
 };
 
