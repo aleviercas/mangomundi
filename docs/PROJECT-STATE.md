@@ -11,12 +11,16 @@
 > **🔴 Rama activa (31-ago-2026):** el trabajo del rediseño en curso vive en
 > `claude/coordinar-trabajo-simultaneo-y85idz` (contiene, sin cambios, todos
 > los commits que antes estaban en `claude/reorganizar-entrega-rediseno-za6gmc`
-> — esa rama quedó congelada como snapshot, no sigas commiteando ahí). Sin PR
-> abierto todavía, deploy de preview en Vercel activo sobre esa rama. Si sos
-> una sesión de Claude que arranca a seguir este trabajo: hacé
+> — esa rama quedó congelada como snapshot en `237ffbe`, confirmado sin
+> cambios sin commitear, no sigas pusheando ahí). Sin PR abierto todavía,
+> deploy de preview en Vercel activo sobre esa rama. Si sos una sesión de
+> Claude que arranca a seguir este trabajo: hacé
 > `git fetch origin claude/coordinar-trabajo-simultaneo-y85idz` y trabajá
 > sobre esa rama, no crees una rama nueva desde `main` — perderías todo este
-> contexto y forkearías el trabajo en curso.
+> contexto y forkearías el trabajo en curso. El handoff del último round
+> cerrado (buscador en una línea, agente junto a Today's routes, Trustpilot
+> real) está en
+> `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md`.
 
 ## 1. Qué es mangomundi
 
@@ -518,6 +522,7 @@ marketing genérico sin cifra concreta en ninguna página oficial revisada.
 | Brief: auditoría de tarifas, sesión Cowork (27-ago) | `docs/handoff/brief-cowork-2026-08-27-audit-tarifas.md` |
 | Handoff: resultado de la auditoría de tarifas, sesión Cowork fase 1 (27-ago) | `docs/handoff/handoff-2026-08-27-audit-tarifas-cowork.md` |
 | Handoff: fix de corredores + investigación de fintechs, sesión Cowork fase 2 (27-ago) | `docs/handoff/handoff-2026-08-27-fix-corredores-fintechs-cowork.md` |
+| Handoff: sexto round de ajustes de diseño — buscador en una línea, agente junto a Today's routes, Trustpilot real (31-ago) | `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md` |
 
 ## 10. Cómo continuar
 
