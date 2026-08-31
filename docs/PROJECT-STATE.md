@@ -8,6 +8,16 @@
 > este archivo es el índice y el resumen ejecutivo, se actualiza cada vez que
 > se cierra un sprint o se toma una decisión de arquitectura importante.
 
+> **🔴 Rama activa (31-ago-2026):** el trabajo del rediseño en curso vive en
+> `claude/coordinar-trabajo-simultaneo-y85idz` (contiene, sin cambios, todos
+> los commits que antes estaban en `claude/reorganizar-entrega-rediseno-za6gmc`
+> — esa rama quedó congelada como snapshot, no sigas commiteando ahí). Sin PR
+> abierto todavía, deploy de preview en Vercel activo sobre esa rama. Si sos
+> una sesión de Claude que arranca a seguir este trabajo: hacé
+> `git fetch origin claude/coordinar-trabajo-simultaneo-y85idz` y trabajá
+> sobre esa rama, no crees una rama nueva desde `main` — perderías todo este
+> contexto y forkearías el trabajo en curso.
+
 ## 1. Qué es mangomundi
 
 Plataforma multilingüe (20 idiomas) de comparación de proveedores de
