@@ -2,7 +2,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
@@ -310,7 +309,6 @@ export function ComparatorSection({
   onHasResultChange,
   onResult,
   onQueryChange,
-  agentPortalTarget,
 }: {
   initialQuery?: ComparatorQuery;
   /** Embed mode (iframe widget): drop the floating AI agent and the section
@@ -342,12 +340,6 @@ export function ComparatorSection({
     sendingCountry: string;
     receivingCountry: string;
   }) => void;
-  /** design/Mangomundi 4 - Final.dc.html — 2026-08-30 feedback (fifth
-   *  round): a DOM node (HomePageBody's own useState, set via a callback
-   *  ref on the slot TodaysRoutesSection renders) to portal the collapsed
-   *  pre-search agent trigger into, instead of the fixed floating tab. See
-   *  showPreSearchInlineTrigger's own comment. */
-  agentPortalTarget?: HTMLElement | null;
 }) {
   const { t, lang } = useI18n();
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
@@ -683,19 +675,6 @@ export function ComparatorSection({
   // A plain boolean — "a result landed while the panel was collapsed" — is
   // what's left to signal.
   const [hasNewResult, setHasNewResult] = useState(false);
-  // 2026-08-30 feedback (fourth, then fifth round) — "el agente no se
-  // podria poner al lado de todays routes... a la derecha y mas chiquito?"
-  // Before a result, on desktop, the collapsed trigger renders into a slot
-  // TodaysRoutesSection exposes in its own header row (agentPortalTarget,
-  // a DOM node HomePageBody wires between the two sibling components via a
-  // portal — ComparatorSection still owns all the chat state/logic here,
-  // this only changes WHERE the closed trigger paints). Opening it still
-  // pops the full panel out via the normal fixed positioning below — a
-  // chat panel doesn't belong squeezed into a header row next to a badge.
-  // No target (embed, mobile, any caller that doesn't pass one) falls back
-  // to the original floating tab untouched.
-  const showPreSearchInlineTrigger =
-    isDesktopRail && !result && !embedded && aiCollapsed && agentPortalTarget != null;
 
   // MasterRateMap / MissingCorridorsLog (client mirror). Hydrated from the
   // server on mount and re-synced after each comparison so the AI Wizard
@@ -1856,50 +1835,42 @@ export function ComparatorSection({
           </div>
         </div>
 
-        {/* AI Agent — two mutually exclusive render sites, never more than
-            one at once: the collapsed pre-search trigger portaled into
-            TodaysRoutesSection's header row (showPreSearchInlineTrigger,
-            desktop only), or the normal floating tab/panel (mobile/narrow,
-            or once expanded, or once docked in the results rail —
-            design/HANDOFF.md §3, showDockedAgent). Hidden in embed mode
-            entirely: out of place inside a third-party iframe. Chat state
-            (history, result context) is preserved regardless of which one
-            is rendering — this only ever toggles visibility, not unmount. */}
-        {!embedded &&
-          !showDockedAgent &&
-          (showPreSearchInlineTrigger ? (
-            createPortal(
-              <CompactAgentTrigger onClick={() => handleAgentToggle(false)} t={t} />,
-              agentPortalTarget,
-            )
-          ) : (
-            <FloatingAgent
-              collapsed={aiCollapsed}
-              onToggle={handleAgentToggle}
-              hasNewResult={hasNewResult}
-              amount={amount}
-              lang={lang}
-              t={t}
-              aiLoading={aiLoading}
-              chat={chat}
-              result={result}
-              chatInput={chatInput}
-              setChatInput={setChatInput}
-              sendChat={sendChat}
-              chatMutPending={chatMut.isPending}
-              comparePending={compareMut.isPending}
-              onSuggestedCompare={runSuggestedCompare}
-              chatBottomRef={chatBottomRef}
-              openPreferredRate={openPreferredRate}
-              segment={segment}
-              businessStage={businessStage}
-              savingBusinessLead={savingBusinessLead}
-              confirmBusinessLead={confirmBusinessLead}
-              setBusinessStage={setBusinessStage}
-              setChat={setChat}
-              onWizardAction={handleWizardAction}
-            />
-          ))}
+        {/* AI Agent — the floating tab/panel (collapsed edge tab, or once
+            expanded), everywhere on the site consistently (2026-08-31
+            feedback — "que en todo el sitio quede como pestaña": previously
+            swapped for a small trigger portaled into TodaysRoutesSection's
+            header row before a result existed on desktop; removed so this
+            is always the same fixed tab regardless of page/state). Hidden
+            once docked in the results rail instead (showDockedAgent) or in
+            embed mode entirely: out of place inside a third-party iframe. */}
+        {!embedded && !showDockedAgent && (
+          <FloatingAgent
+            collapsed={aiCollapsed}
+            onToggle={handleAgentToggle}
+            hasNewResult={hasNewResult}
+            amount={amount}
+            lang={lang}
+            t={t}
+            aiLoading={aiLoading}
+            chat={chat}
+            result={result}
+            chatInput={chatInput}
+            setChatInput={setChatInput}
+            sendChat={sendChat}
+            chatMutPending={chatMut.isPending}
+            comparePending={compareMut.isPending}
+            onSuggestedCompare={runSuggestedCompare}
+            chatBottomRef={chatBottomRef}
+            openPreferredRate={openPreferredRate}
+            segment={segment}
+            businessStage={businessStage}
+            savingBusinessLead={savingBusinessLead}
+            confirmBusinessLead={confirmBusinessLead}
+            setBusinessStage={setBusinessStage}
+            setChat={setChat}
+            onWizardAction={handleWizardAction}
+          />
+        )}
 
         {/* Missing corridor — crowdsourced discovery CTA. */}
         {missingCorridor && (
@@ -2781,26 +2752,6 @@ interface FloatingAgentProps {
   onWizardAction: (action: WizardAction) => void;
 }
 
-// design/Mangomundi 4 - Final.dc.html — 2026-08-30 feedback (fifth round):
-// "el agente de ai... a la derecha y mas chiquito" — a small horizontal
-// pill (portaled into TodaysRoutesSection's header row, see
-// showPreSearchInlineTrigger), not the vertical fixed edge tab this
-// replaces in that one spot. Opening it hands off to the normal
-// FloatingAgent panel (fixed positioning) — this component only ever
-// renders the closed state.
-function CompactAgentTrigger({ onClick, t }: { onClick: () => void; t: (k: string) => string }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="btn-cta inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[12.5px] font-bold"
-    >
-      <Sparkle className="h-3 w-3" aria-hidden />
-      {t("comparator.copilot.agent")}
-    </button>
-  );
-}
-
 function FloatingAgent(p: FloatingAgentProps) {
   const {
     collapsed,
@@ -2830,7 +2781,7 @@ function FloatingAgent(p: FloatingAgentProps) {
     onWizardAction,
   } = p;
   const toggleBtnRef = useRef<HTMLButtonElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const panelLabelId = "ai-agent-title";
 
   // Escape closes; auto-focus composer on open. Docked mode has no
@@ -2838,13 +2789,60 @@ function FloatingAgent(p: FloatingAgentProps) {
   // focus to), so this whole effect is a no-op there.
   useEffect(() => {
     if (docked || collapsed) return;
-    inputRef.current?.focus();
+    // 2026-08-31 feedback — "eliminar los movimientos automáticos... por
+    // ejemplo en el agente": this focus alone was enough to make the
+    // browser auto-scroll the page toward the composer whenever the panel
+    // opened near the edge of the viewport. The focus itself is still
+    // useful (composer ready to type into); preventScroll just drops the
+    // side effect.
+    inputRef.current?.focus({ preventScroll: true });
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onToggle(true);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [docked, collapsed, onToggle]);
+
+  // 2026-08-31 feedback — "en los lugares verticales que lo pusimos va a
+  // quedar como un smart filter como el que tiene kayak.com... con la
+  // paleta de mangomundi": docked mode (the results rail, showDockedAgent)
+  // drops the dark floating-chat chrome for a light card matching its rail
+  // siblings (FiltersCard/TrustpilotCard) — same content/logic below,
+  // colors swapped through this one table instead of duplicating every
+  // branch. The floating tab/panel keeps its original dark look.
+  const theme = docked
+    ? {
+        panelStyle: undefined as React.CSSProperties | undefined,
+        panelClass: "border border-border bg-card text-foreground",
+        border: "border-border",
+        headerLabel: "text-muted-foreground",
+        minimizeHover: "",
+        scroll: "",
+        loadingText: "text-muted-foreground",
+        bubble: "border border-border bg-muted text-foreground",
+        bubbleUser: "bg-[#F5EFE8] text-foreground",
+        sectionLabel: "text-muted-foreground",
+        composerWrap: "border border-border bg-muted",
+        composerText: "text-foreground",
+        composerPlaceholder: "placeholder:text-muted-foreground",
+        trustLine: "text-muted-foreground",
+      }
+    : {
+        panelStyle: { backgroundColor: "#241C16", color: "#F1EBE4" } as React.CSSProperties,
+        panelClass: "",
+        border: "border-white/10",
+        headerLabel: "text-white/60",
+        minimizeHover: "hover:bg-white/10 hover:text-white",
+        scroll: "thin-scrollbar",
+        loadingText: "text-[#A79C92]",
+        bubble: "border border-white/10 bg-white/[.06] text-[#F1EBE4]",
+        bubbleUser: "bg-white/[.15] text-[#F1EBE4]",
+        sectionLabel: "text-white/50",
+        composerWrap: "bg-white",
+        composerText: "text-[#241C16]",
+        composerPlaceholder: "placeholder:text-[#9C9089]",
+        trustLine: "text-[#A79C92]",
+      };
 
   return (
     // Docked to the side edge, vertically centered — Kayak's pattern for a
@@ -2887,21 +2885,30 @@ function FloatingAgent(p: FloatingAgentProps) {
           role="dialog"
           aria-modal="false"
           aria-labelledby={panelLabelId}
-          style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
+          style={theme.panelStyle}
           className={
             docked
               ? // design/AJUSTES-2.md §6 — the rail's own card radius (mockup
-                // line 321), 18px like every other rail card.
-                "flex h-[480px] w-full flex-col overflow-hidden rounded-[18px] shadow-xl"
+                // line 321), 18px like every other rail card. No fixed
+                // height/overflow here anymore (2026-08-31 feedback — "sin
+                // scroll"): it just flows in the rail column like its
+                // FiltersCard/TrustpilotCard siblings, however tall its
+                // content actually is.
+                `flex w-full flex-col rounded-[18px] ${theme.panelClass}`
               : "flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl"
           }
         >
-          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+          <div
+            className={`flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3 ${theme.border}`}
+          >
             <span
               id={panelLabelId}
-              className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60"
+              className={`flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider ${theme.headerLabel}`}
             >
-              <Sparkle className="h-3.5 w-3.5 shrink-0 text-[#FF8A6B]" aria-hidden />
+              <Sparkle
+                className={`h-3.5 w-3.5 shrink-0 ${docked ? "text-brand-cta" : "text-[#FF8A6B]"}`}
+                aria-hidden
+              />
               <span className="truncate">{t("comparator.copilot.agent")}</span>
             </span>
             <div className="flex shrink-0 items-center gap-2">
@@ -2916,7 +2923,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                   type="button"
                   onClick={() => onToggle(true)}
                   aria-label={t("agent.minimize")}
-                  className="rounded-md p-1 text-white/60 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                  className={`rounded-md p-1 text-white/60 transition focus:outline-none focus:ring-2 focus:ring-white/30 ${theme.minimizeHover}`}
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
                     <path
@@ -2931,9 +2938,12 @@ function FloatingAgent(p: FloatingAgentProps) {
             </div>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto p-4" aria-live="polite">
+          <div
+            className={`flex-1 space-y-3 p-4 ${docked ? "" : `overflow-y-auto ${theme.scroll}`}`}
+            aria-live="polite"
+          >
             {aiLoading && (
-              <div className="flex items-center gap-2 text-sm text-[#A79C92]">
+              <div className={`flex items-center gap-2 text-sm ${theme.loadingText}`}>
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t("fx.analyzing")}
               </div>
             )}
@@ -2951,23 +2961,29 @@ function FloatingAgent(p: FloatingAgentProps) {
             {chat.length === 0 && !aiLoading && (
               <>
                 {segment === "business" && businessStage !== "done" && result ? (
-                  <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                  <div className={`rounded-xl p-3 text-sm leading-relaxed ${theme.bubble}`}>
                     <ReactMarkdown>{t("comparator.copilot.business.intro")}</ReactMarkdown>
                   </div>
                 ) : (
                   <>
                     {segment === "retail" && result && amount >= B2B_UPSELL_MIN_AMOUNT && (
-                      <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                      <div className={`rounded-xl p-3 text-sm leading-relaxed ${theme.bubble}`}>
                         <ReactMarkdown>{t("comparator.copilot.b2bUpsell")}</ReactMarkdown>
                       </div>
                     )}
-                    <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                    <div className={`rounded-xl p-3 text-sm leading-relaxed ${theme.bubble}`}>
                       <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
                     </div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">
+                    <div
+                      className={`text-[10px] font-semibold uppercase tracking-wider ${theme.sectionLabel}`}
+                    >
                       {t("wizard.quickActions")}
                     </div>
-                    <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+                    <AiCopilot
+                      onAction={onWizardAction}
+                      disabled={chatMutPending || aiLoading}
+                      docked={docked}
+                    />
                   </>
                 )}
               </>
@@ -2979,13 +2995,13 @@ function FloatingAgent(p: FloatingAgentProps) {
                   <div
                     key={i}
                     className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
-                      m.role === "user"
-                        ? "ml-6 bg-white/[.15] text-[#F1EBE4]"
-                        : "mr-6 border border-white/10 bg-white/[.06] text-[#F1EBE4]"
+                      m.role === "user" ? `ml-6 ${theme.bubbleUser}` : `mr-6 ${theme.bubble}`
                     }`}
                   >
                     {m.role === "assistant" ? (
-                      <div className="prose prose-sm prose-invert max-w-none prose-p:my-1">
+                      <div
+                        className={`prose prose-sm max-w-none prose-p:my-1 ${docked ? "" : "prose-invert"}`}
+                      >
                         <ReactMarkdown>{m.content}</ReactMarkdown>
                       </div>
                     ) : (
@@ -3020,7 +3036,9 @@ function FloatingAgent(p: FloatingAgentProps) {
                   </div>
                 ))}
                 {chatMutPending && (
-                  <div className="mr-6 flex items-center gap-2 rounded-md border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-[#A79C92]">
+                  <div
+                    className={`mr-6 flex items-center gap-2 rounded-md px-3 py-2 text-sm ${theme.bubble}`}
+                  >
                     <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />{" "}
                     {t("comparator.copilot.analyzing")}
                   </div>
@@ -3033,15 +3051,21 @@ function FloatingAgent(p: FloatingAgentProps) {
                 the whole product can be explored without free-typing/AI. */}
             {chat.length > 0 && !aiLoading && (
               <div className="pt-1">
-                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/50">
+                <div
+                  className={`mb-1.5 text-[10px] font-semibold uppercase tracking-wider ${theme.sectionLabel}`}
+                >
                   {t("wizard.moreQuestions")}
                 </div>
-                <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+                <AiCopilot
+                  onAction={onWizardAction}
+                  disabled={chatMutPending || aiLoading}
+                  docked={docked}
+                />
               </div>
             )}
           </div>
 
-          <div className="shrink-0 border-t border-white/10 p-3">
+          <div className={`shrink-0 border-t p-3 ${theme.border}`}>
             {segment === "business" && businessStage === "consent" && (
               <div className="mb-3 flex flex-wrap gap-2">
                 <Button
@@ -3067,45 +3091,60 @@ function FloatingAgent(p: FloatingAgentProps) {
                       { role: "assistant", content: t("comparator.copilot.business.no") },
                     ]);
                   }}
-                  className="border-white/20 bg-transparent text-[#F1EBE4] hover:bg-white/10 hover:text-[#F1EBE4]"
+                  className={
+                    docked
+                      ? ""
+                      : "border-white/20 bg-transparent text-[#F1EBE4] hover:bg-white/10 hover:text-[#F1EBE4]"
+                  }
                 >
                   {t("comparator.copilot.business.review")}
                 </Button>
               </div>
             )}
-            {/* Composer (design/AJUSTES-1.md §D) — a white pill on the dark
-                panel, matching the mockup exactly, rather than the site's
-                usual bordered input field. */}
+            {/* Composer (design/AJUSTES-1.md §D) — a white/light pill on the
+                panel, matching the mockup, rather than the site's usual
+                bordered input field. 2026-08-31 feedback — "que el espacio
+                para escribir sea mas grande": a 2-row textarea (was a
+                single-line 42px input) that grows the panel instead of
+                cramming everything into one line; Enter still sends
+                (Shift+Enter for a literal newline), same as before. */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 sendChat(chatInput);
               }}
-              className="flex h-[42px] items-center gap-2 rounded-[11px] bg-white py-0 pl-3 pr-1.5"
+              className={`flex items-end gap-2 rounded-[11px] py-1.5 pl-3 pr-1.5 ${theme.composerWrap}`}
             >
               <label htmlFor="ai-agent-composer" className="sr-only">
                 {t("comparator.copilot.placeholder")}
               </label>
-              <input
+              <textarea
                 id="ai-agent-composer"
                 ref={inputRef}
+                rows={2}
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChat(chatInput);
+                  }
+                }}
                 placeholder={t("comparator.copilot.placeholder")}
                 aria-label={t("comparator.copilot.placeholder")}
-                className="h-full min-w-0 flex-1 border-0 bg-transparent text-[12.5px] font-medium text-[#241C16] outline-none placeholder:text-[#9C9089]"
+                className={`min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium outline-none thin-scrollbar ${theme.composerText} ${theme.composerPlaceholder}`}
                 disabled={chatMutPending}
               />
               <button
                 type="submit"
                 disabled={chatMutPending || !chatInput.trim()}
-                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[#EE5B3E] text-white transition disabled:opacity-50"
+                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center self-end rounded-lg bg-[#EE5B3E] text-white transition disabled:opacity-50"
                 aria-label={t("comparator.copilot.send")}
               >
                 <Send className="h-3.5 w-3.5" aria-hidden />
               </button>
             </form>
-            <p className="mt-2 text-[11px] leading-relaxed text-[#A79C92]">
+            <p className={`mt-2 text-[11px] leading-relaxed ${theme.trustLine}`}>
               {t("comparator.copilot.trustLine")}
             </p>
           </div>

@@ -81,11 +81,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-5 sm:px-[30px]">
         <div className="grid gap-[26px] md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link
-              to="/"
-              className="inline-flex items-center"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            >
+            <Link to="/" className="inline-flex items-center">
               <Wordmark className="text-[21px]" tone="light" icon={false} />
             </Link>
             <p className="mt-2.5 max-w-[280px] text-[12.5px] leading-[1.6] text-[#8A7C6E]">
@@ -112,6 +108,11 @@ export function Footer() {
                 </a>
               ))}
             </div>
+            {/* 2026-08-31 feedback — copyright moved here, under the social
+                icons, off the end of the Legal column. */}
+            <span className="mt-4 block text-[12.5px] text-[#A79C92]">
+              © {new Date().getFullYear()} Mangomundi
+            </span>
           </div>
 
           <FooterColumn titleKey="footer.product.title" items={FOOTER_PRODUCT} />
@@ -129,18 +130,8 @@ export function Footer() {
                 {l.label}
               </Link>
             ))}
-            <span>© {new Date().getFullYear()} Mangomundi</span>
           </div>
         </div>
-        {/* 2026-08-30 feedback (fifth round) — consolidates the two paragraphs
-            that used to sit below the results list (fx.disclaimer: independence
-            + affiliate-commission notice; fx.trademarks: third-party trademark
-            disclaimer) into one concise line here instead, per "se podria dejar
-            en el fondo de todo... de paso hacerlas mas consisas, tiene demasiado
-            texto con letra chica". */}
-        <p className="mt-6 border-t border-white/10 pt-4 text-[11px] leading-relaxed text-[#8A7C6E]">
-          {t("footer.legalNote")}
-        </p>
       </div>
     </footer>
   );

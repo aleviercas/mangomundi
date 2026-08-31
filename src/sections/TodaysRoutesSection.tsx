@@ -5,7 +5,6 @@ import { useExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
 import { primaryCountryForCurrency } from "@/lib/countries";
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { BrandLogo } from "@/components/BrandLogo";
-import { TrustBox } from "@/components/TrustBox";
 
 /**
  * "Today's routes, already priced" (design/AJUSTES-1.md §E) — the one
@@ -22,16 +21,7 @@ import { TrustBox } from "@/components/TrustBox";
  * fallback — there's no honest generic version of "here's an exclusive
  * rate" when there isn't one.
  */
-export function TodaysRoutesSection({
-  agentSlotRef,
-}: {
-  /** 2026-08-30 feedback (fifth round) — a slot in this section's own
-   *  header row for ComparatorSection to portal its collapsed pre-search
-   *  AI trigger into (see HomePageBody, which owns the actual DOM node via
-   *  useState + this callback ref). Optional so this component still works
-   *  standalone/in tests without a caller wiring the portal. */
-  agentSlotRef?: (node: HTMLDivElement | null) => void;
-}) {
+export function TodaysRoutesSection() {
   const { t } = useI18n();
   const { data: corridors } = useExclusiveCorridors();
 
@@ -61,33 +51,13 @@ export function TodaysRoutesSection({
   return (
     <section className="border-t border-border py-7 sm:py-9">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground sm:text-[22px]">
-              {t("todaysRoutes.title")}
-            </h2>
-            <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
-              {t("todaysRoutes.subtitle")}
-            </p>
-          </div>
-          <div className="flex shrink-0 items-center gap-2">
-            {/* 2026-08-30 feedback (fifth round) — ComparatorSection portals
-                its compact "Ask Mangomundi AI" trigger here (desktop,
-                pre-search) instead of the fixed floating edge tab. Empty
-                (renders nothing) whenever there's no portal content — the
-                div itself is just the mount point. */}
-            {agentSlotRef && <div ref={agentSlotRef} className="contents" />}
-            {/* 2026-08-30 feedback (sixth round) — "dejar el original... que
-                es embebido el codigo desde trustpilot no uno hecho a
-                medida": back to the real Trustpilot embed (same one
-                ContactSection uses) instead of the custom "Check our
-                rating" pill built earlier this session — no invented rating
-                figure either way, but this is Trustpilot's own widget code,
-                not a look-alike. */}
-            <div className="w-[150px] shrink-0">
-              <TrustBox />
-            </div>
-          </div>
+        <div>
+          <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground sm:text-[22px]">
+            {t("todaysRoutes.title")}
+          </h2>
+          <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
+            {t("todaysRoutes.subtitle")}
+          </p>
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">

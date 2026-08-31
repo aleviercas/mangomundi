@@ -38,7 +38,7 @@ export function LangSwitcher({
 
   useEffect(() => {
     if (open) {
-      const id = window.setTimeout(() => inputRef.current?.focus(), 30);
+      const id = window.setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 30);
       return () => window.clearTimeout(id);
     }
     setQuery("");

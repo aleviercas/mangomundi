@@ -84,6 +84,32 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
       console.error("[server-fn]", error);
       throw new Error("An unexpected error occurred. Please try again.");
     }
+    // 2026-08-31 feedback — "qué hace el sitio cuando el usuario envía el
+    // mail de set alert": until now, nothing after this insert — no
+    // internal heads-up (unlike captureBusinessLead's own notification),
+    // and no automated rate-checking job exists anywhere in this codebase
+    // to actually honor comparator.rateAlert.success's promise ("we'll
+    // email you when this rate improves"). This at least gets a human
+    // notified so a rate-alert (or any other beta-waitlist) lead can be
+    // followed up on manually — same best-effort pattern as the business
+    // lead notification, never blocks the response.
+    const routeLine =
+      data.fromCurrency && data.toCurrency
+        ? `<p><strong>Route:</strong> ${data.fromCurrency} → ${data.toCurrency}${
+            data.sendingCountry && data.receivingCountry
+              ? ` (${data.sendingCountry} → ${data.receivingCountry})`
+              : ""
+          }</p>`
+        : "";
+    await sendLeadNotificationEmail({
+      subject: `New lead — ${data.featureSource} (${data.email})`,
+      html: `
+        <h2>New ${data.featureSource} lead</h2>
+        <p><strong>Email:</strong> ${data.email}</p>
+        ${routeLine}
+        ${data.amount ? `<p><strong>Amount:</strong> ${data.amount.toLocaleString()}</p>` : ""}
+      `,
+    });
     return { ok: true };
   });
 

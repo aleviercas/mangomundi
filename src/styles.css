@@ -1,9 +1,6 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-/* SVG country flags (fi fi-xx classes) — emoji flags render as plain letters
-   on Windows, so the selects use these instead. */
-@import "flag-icons/css/flag-icons.min.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -286,6 +283,25 @@
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* 2026-08-31 feedback — AI agent panel: "que el scroll sea una barra
+   muchísimo más finita" (was the browser's default ~15px scrollbar). A
+   thin, low-contrast thumb instead of hiding it outright (no-scrollbar,
+   above) — there's real content to page through here. */
+@utility thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, currentColor 30%, transparent) transparent;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, currentColor 30%, transparent);
+    border-radius: 9999px;
   }
 }
 

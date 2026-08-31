@@ -1,14 +1,16 @@
 import { Combobox } from "@/components/ui/Combobox";
-import { FlagIcon } from "@/components/ui/FlagIcon";
 import { CURRENCIES } from "@/lib/currencies";
 
+// 2026-08-31 feedback — no flag here: the currency picker sits right next to
+// a country picker that already shows one, and a flag on a *currency* is
+// misleading anyway (one currency, many countries, e.g. EUR/USD). Flags stay
+// on CountryCombobox only.
 const OPTIONS = CURRENCIES.map((c) => ({
   value: c.code,
   label: `${c.code} — ${c.name}`,
   // Lets compactLabel (below) show just the code — same pattern as
   // CountryCombobox's own secondary/compactLabel pair.
   secondary: c.code,
-  leading: <FlagIcon country={c.flag} />,
   keywords: [c.code, c.name],
 }));
 

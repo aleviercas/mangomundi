@@ -18,8 +18,11 @@
 > `git fetch origin claude/coordinar-trabajo-simultaneo-y85idz` y trabajá
 > sobre esa rama, no crees una rama nueva desde `main` — perderías todo este
 > contexto y forkearías el trabajo en curso. El handoff del último round
-> cerrado (buscador en una línea, agente junto a Today's routes, Trustpilot
-> real) está en
+> cerrado (nav/footer reestructurados, banderas por `<img>`, agente
+> rediseñado — modo docked claro sin scroll propio, floating sin cambios)
+> está en
+> `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md`
+> — a su vez continúa
 > `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md`.
 
 ## 1. Qué es mangomundi
@@ -523,6 +526,7 @@ marketing genérico sin cifra concreta en ninguna página oficial revisada.
 | Handoff: resultado de la auditoría de tarifas, sesión Cowork fase 1 (27-ago) | `docs/handoff/handoff-2026-08-27-audit-tarifas-cowork.md` |
 | Handoff: fix de corredores + investigación de fintechs, sesión Cowork fase 2 (27-ago) | `docs/handoff/handoff-2026-08-27-fix-corredores-fintechs-cowork.md` |
 | Handoff: sexto round de ajustes de diseño — buscador en una línea, agente junto a Today's routes, Trustpilot real (31-ago) | `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md` |
+| Handoff: séptimo round — nav/footer reestructurados, fix de banderas, agente rediseñado (docked claro sin scroll) (31-ago) | `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md` |
 
 ## 10. Cómo continuar
 

@@ -48,17 +48,18 @@ function BlogIndexPage() {
   return (
     <div className="min-h-screen bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        {/* 2026-08-30 feedback (fourth round) — a small brand mark on the
-            blog index too, same icon the widget badge/post pages use. */}
-        <Link to="/" aria-label="mangomundi home" className="inline-block">
-          <BrandMark />
-        </Link>
-        <p className="mt-3 text-eyebrow font-bold uppercase text-brand-cta">
-          {t("home.blog.eyebrow")}
-        </p>
-        <h1 className="mt-3 font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-h1">
-          {t("home.blog.title")}
-        </h1>
+        <p className="text-eyebrow font-bold uppercase text-brand-cta">{t("home.blog.eyebrow")}</p>
+        <div className="mt-3 flex items-center justify-between gap-4">
+          <h1 className="font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-h1">
+            {t("home.blog.title")}
+          </h1>
+          {/* 2026-08-31 feedback — moved to the right, level with the "Blog"
+              title (was stacked above the eyebrow, on the left). Same brand
+              mark the post pages/widget badge use. */}
+          <Link to="/" aria-label="mangomundi home" className="shrink-0">
+            <BrandMark />
+          </Link>
+        </div>
 
         {isLoading && (
           <div className="mt-16 flex justify-center">
@@ -72,28 +73,30 @@ function BlogIndexPage() {
           </div>
         )}
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2">
+        {/* 2026-08-31 feedback — full-width horizontal rows, stacked one
+            below the other, instead of a 2-column card grid. */}
+        <div className="mt-10 flex flex-col divide-y divide-border border-t border-border">
           {(posts ?? []).map((post: BlogListItem) => (
             <Link
               key={post.slug}
               to="/blog/$slug"
               params={{ slug: post.slug }}
-              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg"
+              className="group flex flex-col gap-5 py-6 transition-colors hover:bg-muted/40 sm:flex-row sm:items-center"
             >
               {post.cover_url && (
                 <img
                   src={post.cover_url}
                   alt=""
-                  className="h-44 w-full object-cover"
+                  className="h-44 w-full shrink-0 rounded-2xl object-cover sm:h-32 sm:w-52"
                   loading="lazy"
                 />
               )}
-              <div className="flex flex-1 flex-col p-6">
+              <div className="flex min-w-0 flex-1 flex-col">
                 <h2 className="font-heading text-h3 font-bold text-foreground group-hover:text-brand-cta">
                   {post.title}
                 </h2>
                 {post.excerpt && (
-                  <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                  <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                     {post.excerpt}
                   </p>
                 )}

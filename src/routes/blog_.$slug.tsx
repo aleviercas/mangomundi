@@ -447,10 +447,17 @@ function BlogPostPage() {
 
         <div className="mt-16 rounded-2xl border border-border bg-card p-6 text-center">
           <p className="text-sm text-muted-foreground">{t("blog.cta.prompt")}</p>
+          {/* 2026-08-31 feedback — the mangomundi "m" mark on the button, and
+              the destination now follows the post's own audience: a
+              business post sends you to the business comparator, not the
+              individual one (post.audience is already "business" | "retail"
+              | "both" — "both" falls back to the individual comparator,
+              same as a post with no stronger business signal). */}
           <Link
-            to="/"
+            to={post.audience === "business" ? "/business" : "/"}
             className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
+            <BrandMark tone="light" />
             {t("blog.cta.button")}
           </Link>
         </div>

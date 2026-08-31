@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import { TrustBox } from "@/components/TrustBox";
 
 /** Full-bleed dark band (design/HANDOFF.md §6): about-coins-globe.jpg behind
  *  the manifesto copy, with market-coverage numbers folded in on the right
@@ -66,13 +67,22 @@ export function AboutManifestoSection() {
             <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/70 sm:text-lg">
               {t("home.about.subtitle")}
             </p>
-            <div className="mt-5 flex flex-wrap gap-3.5">
+            <div className="mt-5 flex flex-wrap items-center gap-3.5">
               <Link
                 to="/about"
                 className="inline-flex h-11 items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
               >
                 {t("home.about.cta.aboutUs")}
               </Link>
+              {/* 2026-08-31 feedback — moved here from TodaysRoutesSection's
+                  header row, next to the About us CTA. Wrapped in a solid
+                  white pill (rather than sitting directly on this band's
+                  dark background) since Trustpilot's own widget theme is
+                  white-on-transparent, same idea as the stat tiles' own
+                  bg-white/8 treatment just for legibility, not tinted. */}
+              <div className="w-[150px] shrink-0 rounded-xl bg-white px-2 py-1.5">
+                <TrustBox />
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3.5">

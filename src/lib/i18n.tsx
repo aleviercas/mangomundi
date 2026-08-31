@@ -210,7 +210,7 @@ export const DICTS: Record<Lang, Dict> = {
     "nav.blog": "Blog",
     "nav.features": "Features",
     "nav.pricing": "Pricing",
-    "nav.about": "About",
+    "nav.about": "About us",
     "nav.contact": "Contact",
     "nav.legal": "Legal",
     "nav.terms": "Terms",
@@ -460,7 +460,10 @@ export const DICTS: Record<Lang, Dict> = {
     "home.feat.zeroFees": "Zero Fees",
     "home.feat.noSignup": "No Sign-up",
     // Home — About / Manifesto
-    "home.about.eyebrow": "About",
+    // 2026-08-31 feedback — back to the mockup's own eyebrow
+    // (design/Mangomundi 4 - Final.dc.html line 174 / AJUSTES-4.md §2),
+    // dropped in an earlier round in favor of the generic "About".
+    "home.about.eyebrow": "Neutral by design",
     "home.about.title": "Financial intelligence for every currency decision",
     "home.about.subtitle":
       "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
@@ -2710,10 +2713,10 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.cta.compare": "Compare Providers",
     "comparator.field.sourceCountry": "Source country",
     "comparator.field.targetCountry": "Target country",
-    "comparator.field.amount": "You send",
-    // design/AJUSTES-2.md §1 — literal mockup copy ("They receive", not
-    // "You receive").
-    "comparator.field.youReceive": "They receive",
+    // 2026-08-31 feedback — dropped "You"/"They" (was "You send"/"They
+    // receive" per design/AJUSTES-2.md §1): just "Send"/"Receive".
+    "comparator.field.amount": "Send",
+    "comparator.field.youReceive": "Receive",
     "comparator.swap": "Swap currencies",
     "comparator.midMarketRate": "Mid-market exchange rate",
     "comparator.field.urgency": "Urgency",
