@@ -24,6 +24,25 @@ for (const [path, url] of Object.entries(FLAG_URLS)) {
   if (code) FLAG_BY_CODE[code] = url;
 }
 
+/** 2026-08-31 feedback — "las banderitas... tienen un delay" when a country
+ *  dropdown first opens: Radix's Popover doesn't mount its content (so none
+ *  of the list's <img> tags exist) until the first open, so nothing asks
+ *  the browser for those ~195 SVGs before that moment — the <img> switch
+ *  above only fixed the flags already visible on the page (the closed
+ *  trigger), not ones still hidden inside an unopened list. Call this once,
+ *  after the page has settled, to warm the browser's HTTP cache for all of
+ *  them ahead of time — see __root.tsx's LangKeyedShell, the one place that
+ *  mounts for every route including /embed. */
+let flagsPrefetched = false;
+export function prefetchAllFlags() {
+  if (flagsPrefetched || typeof window === "undefined") return;
+  flagsPrefetched = true;
+  for (const url of Object.values(FLAG_BY_CODE)) {
+    const img = new Image();
+    img.src = url;
+  }
+}
+
 /** Accepts either a 2-letter ISO-3166 code or a flag emoji (the code is
  *  derived by reversing the regional indicators — works for 🇪🇺 too,
  *  flag-icons ships eu.svg). */

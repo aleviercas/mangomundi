@@ -20,7 +20,16 @@ export function Header() {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-[66px] border-b border-border bg-card">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-5 sm:px-[30px]">
-        <Link to="/" aria-label="mangomundi home" className="flex items-center">
+        {/* 2026-08-31 feedback — the forced scrollTo here is fine/expected
+            (logo → home, including a scroll reset if already home and
+            scrolled down — standard practice); what needed to go was the
+            scroll caused by focus() elsewhere (comparator/agent), not this. */}
+        <Link
+          to="/"
+          aria-label="mangomundi home"
+          className="flex items-center"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        >
           {/* Text-only lockup here and in Footer — the icon mark is reserved
               for the widget card/embed surfaces. Still bicolor
               ("mundi" in mango): icon={false} only drops the icon,

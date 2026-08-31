@@ -193,22 +193,6 @@ const MORE_SORT_CHIPS: SortKey[] = ["most_trusted", "lowest_cost", "best_exchang
  *  guaranteed to return [0,1] (weights sum to 1.0, every component
  *  normalized to [0,1]) — cheap insurance against a future weights change
  *  breaking that invariant and printing something outside 7-9. */
-// Matches Tailwind's `lg:` breakpoint (1024px) — the width the results grid
-// switches from stacked to a 268px rail + results column (design/HANDOFF.md
-// §3). Defaults to false (today's floating-agent behavior) until the effect
-// confirms a wide viewport, so SSR/first paint never assumes desktop.
-function useIsDesktopRail(): boolean {
-  const [isDesktop, setIsDesktop] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(min-width: 1024px)");
-    const update = () => setIsDesktop(mql.matches);
-    update();
-    mql.addEventListener("change", update);
-    return () => mql.removeEventListener("change", update);
-  }, []);
-  return isDesktop;
-}
-
 /** Derived from speed_hours ONLY — deliberately not delivery_minutes. See
  *  the long-form rationale on this same logic in ProviderRow: speed_hours
  *  is the only field the scoring/sort engine reads, so the printed label
@@ -573,11 +557,6 @@ export function ComparatorSection({
       fastestName: fastestRow.name,
     };
   }, [result]);
-  // Rail (design/HANDOFF.md §3) only replaces the floating agent once
-  // there's a result to show a rail next to, and only at ≥lg — below that,
-  // and before any result, the agent keeps its existing floating behavior.
-  const isDesktopRail = useIsDesktopRail();
-  const showDockedAgent = isDesktopRail && Boolean(result) && !embedded;
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -1836,14 +1815,16 @@ export function ComparatorSection({
         </div>
 
         {/* AI Agent — the floating tab/panel (collapsed edge tab, or once
-            expanded), everywhere on the site consistently (2026-08-31
-            feedback — "que en todo el sitio quede como pestaña": previously
-            swapped for a small trigger portaled into TodaysRoutesSection's
-            header row before a result existed on desktop; removed so this
-            is always the same fixed tab regardless of page/state). Hidden
-            once docked in the results rail instead (showDockedAgent) or in
-            embed mode entirely: out of place inside a third-party iframe. */}
-        {!embedded && !showDockedAgent && (
+            expanded), always, everywhere on the site (2026-08-31 feedback,
+            twice now: first it swapped for a small trigger portaled into
+            TodaysRoutesSection's header row pre-search, then for a docked
+            copy of itself in the results rail — both removed. It never
+            disappears automatically anymore; only collapses when the user
+            clicks minimize. The rail's own dark filter panel, FiltersCard,
+            is a separate, unrelated component — not this agent, see its
+            own comment). Hidden only in embed mode: out of place inside a
+            third-party iframe. */}
+        {!embedded && (
           <FloatingAgent
             collapsed={aiCollapsed}
             onToggle={handleAgentToggle}
@@ -1950,6 +1931,10 @@ export function ComparatorSection({
                   keeps the existing inline filter row + floating agent
                   (rendered elsewhere), unchanged. */}
               <aside className="hidden lg:flex lg:flex-col lg:gap-[13px]">
+                {/* 2026-08-31 feedback — this is the rail's "smart filter"
+                    (Kayak-style: dark, but a filter panel, not the chat
+                    agent — that one never docks here anymore, see the
+                    FloatingAgent render site's own comment). */}
                 <FiltersCard
                   t={t}
                   deliveryMethod={deliveryMethod}
@@ -1967,72 +1952,21 @@ export function ComparatorSection({
                       : undefined
                   }
                 />
-                {showDockedAgent && (
-                  // 2026-08-30 feedback (second round) — "el agente ai de
-                  // business puede ser el mismo que se usa en individual...
-                  // ya está incluido el modo business": FloatingAgent's own
-                  // conversation logic already handles segment === "business"
-                  // (businessStage etc.), so it stays, unchanged, for both
-                  // segments — same correction as the results row: the
-                  // business panel below is an ADDITION, not a replacement.
-                  <FloatingAgent
-                    docked
-                    collapsed={aiCollapsed}
-                    onToggle={handleAgentToggle}
-                    hasNewResult={hasNewResult}
-                    amount={amount}
-                    lang={lang}
+                {/* 2026-08-31 feedback — "sacar la imagen y el cuadro de set
+                    alert [en business], porque ya queda el de email our
+                    business desk": BusinessContactCard (now below the
+                    results, not here) already covers that ground for
+                    business; retail keeps it, unchanged. */}
+                {segment !== "business" && (
+                  <RateAlertCard
                     t={t}
-                    aiLoading={aiLoading}
-                    chat={chat}
-                    result={result}
-                    chatInput={chatInput}
-                    setChatInput={setChatInput}
-                    sendChat={sendChat}
-                    chatMutPending={chatMut.isPending}
-                    comparePending={compareMut.isPending}
-                    onSuggestedCompare={runSuggestedCompare}
-                    chatBottomRef={chatBottomRef}
-                    openPreferredRate={openPreferredRate}
-                    segment={segment}
-                    businessStage={businessStage}
-                    savingBusinessLead={savingBusinessLead}
-                    confirmBusinessLead={confirmBusinessLead}
-                    setBusinessStage={setBusinessStage}
-                    setChat={setChat}
-                    onWizardAction={handleWizardAction}
+                    from={from}
+                    to={to}
+                    amount={amount}
+                    sendingCountry={sendingCountry}
+                    receivingCountry={receivingCountry}
                   />
                 )}
-                {showDockedAgent && segment === "business" && (
-                  // design/Mangomundi 4 - Final.dc.html line 532-541 — the
-                  // "Your request" summary + contact card, additional to
-                  // the agent above (not instead of it — see this block's
-                  // own 2026-08-30 comment).
-                  <div className="mt-3 flex flex-col gap-3">
-                    <BusinessRequestPanel
-                      amount={amount}
-                      from={from}
-                      to={to}
-                      totalBrokers={result?.rows.length ?? 0}
-                      requestedSlugs={requestedSlugs}
-                      contractTypeLabel={t(`comparator.contractType.${contractType}`)}
-                      frequencyLabel={t(
-                        `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
-                      )}
-                      status={requestPanelStatus}
-                      onSend={sendBusinessRequest}
-                    />
-                    <BusinessContactCard />
-                  </div>
-                )}
-                <RateAlertCard
-                  t={t}
-                  from={from}
-                  to={to}
-                  amount={amount}
-                  sendingCountry={sendingCountry}
-                  receivingCountry={receivingCountry}
-                />
                 <TrustpilotCard />
               </aside>
 
@@ -2317,6 +2251,36 @@ export function ComparatorSection({
                   onToggleRequested={toggleRequestedSlug}
                 />
 
+                {/* 2026-08-31 feedback — moved out of the rail (it lived
+                    docked next to the agent there) to below "Your
+                    results"/the 3 big tabs and the results list itself:
+                    design/Mangomundi 4 - Final.dc.html line 532-541 — the
+                    "Your request" summary + contact card. No longer tied to
+                    the desktop-rail breakpoint either, since it's now
+                    ordinary content in this column, not rail furniture. */}
+                {segment === "business" && result && (
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
+                    <div className="flex-1">
+                      <BusinessRequestPanel
+                        amount={amount}
+                        from={from}
+                        to={to}
+                        totalBrokers={result?.rows.length ?? 0}
+                        requestedSlugs={requestedSlugs}
+                        contractTypeLabel={t(`comparator.contractType.${contractType}`)}
+                        frequencyLabel={t(
+                          `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
+                        )}
+                        status={requestPanelStatus}
+                        onSend={sendBusinessRequest}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <BusinessContactCard />
+                    </div>
+                  </div>
+                )}
+
                 {/* Stable business upsell (design/HANDOFF.md §3 + decision
                   29-ago-2026): always rendered once there's a result, never
                   popping in/out as the typed amount crosses the threshold —
@@ -2371,10 +2335,14 @@ export function ComparatorSection({
 }
 
 // ===== Left rail (desktop, ≥lg only) — design/HANDOFF.md §3 =====
-// Filters → AI Agent (docked) → Rate alert → Trustpilot, stacked in a 268px
-// column. Below lg the page keeps today's existing layout (inline filter
-// chips further up + the floating agent) unchanged — this rail doesn't
-// replace that, it's additive at the breakpoint where there's room for it.
+// FiltersCard ("smart filter", 2026-08-31) → Rate alert (retail only) →
+// Trustpilot, stacked in a 268px column. The AI agent never docks here
+// anymore — it's always the floating tab (see its own render site's
+// comment) — and BusinessRequestPanel/BusinessContactCard moved to the
+// results column. Below lg the page keeps today's existing layout (inline
+// filter chips further up + the floating agent) unchanged — this rail
+// doesn't replace that, it's additive at the breakpoint where there's room
+// for it.
 
 /** Vertical Filters card: the same delivery-method/exclusive/rank-by state
  *  the inline filter row above already drives, re-skinned into the rail's
@@ -2423,26 +2391,32 @@ function FiltersCard({
   };
 }) {
   const criteriaCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
+  // 2026-08-31 feedback — "un agente de Smart filter... con el color
+  // oscuro, como kayak.com": this card (same filters as always — rank by,
+  // exclusive offers, payout method — nothing chat-related) went dark to
+  // read as the rail's own AI-flavored panel, matching FloatingAgent's own
+  // #241C16/mango palette instead of the rest of the (light) site.
   const optionRowClass = (active: boolean) =>
-    `flex h-[38px] items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+    `flex h-[38px] items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
       active
-        ? "border-[1.5px] border-[#241C16] bg-[#F5EFE8] font-bold text-[#241C16]"
-        : "border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#241C16]/40"
+        ? "border-[1.5px] border-[#FF8A6B] bg-white/[.14] font-bold text-white"
+        : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-white/30"
     }`;
 
   return (
-    <div className="rounded-[18px] border border-border bg-card px-[17px] py-4">
+    <div
+      style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
+      className="rounded-[18px] px-[17px] py-4"
+    >
       <div className="flex items-center justify-between">
-        <h4 className="text-[15px] font-extrabold text-foreground">
-          {t("comparator.filters.title")}
-        </h4>
+        <h4 className="text-[15px] font-extrabold text-white">{t("comparator.filters.title")}</h4>
         <button
           type="button"
           onClick={() => {
             setDeliveryMethod(null);
             setShowOnlyExclusive(false);
           }}
-          className="text-[12px] font-bold text-[#C2410C] hover:underline"
+          className="text-[12px] font-bold text-[#FF8A6B] hover:underline"
         >
           {t("comparator.filters.clear").replace("{n}", String(criteriaCount))}
         </button>
@@ -2450,7 +2424,7 @@ function FiltersCard({
 
       {businessFilters && (
         <div className="mt-[15px]">
-          <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
+          <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
             {t("comparator.field.contractType")}
           </div>
           <div className="mt-[9px] flex gap-[6px]">
@@ -2466,7 +2440,7 @@ function FiltersCard({
               </button>
             ))}
           </div>
-          <div className="mt-[13px] text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
+          <div className="mt-[13px] text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
             {t("comparator.field.frequency")}
           </div>
           <div className="mt-[9px] flex flex-col gap-[6px]">
@@ -2486,9 +2460,9 @@ function FiltersCard({
       )}
 
       <div
-        className={businessFilters ? "mt-[15px] border-t border-[#F2EBE3] pt-[13px]" : "mt-[15px]"}
+        className={businessFilters ? "mt-[15px] border-t border-white/10 pt-[13px]" : "mt-[15px]"}
       >
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
+        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
           {t("comparator.filters.payoutMethod")}
         </div>
         <div className="mt-[9px] flex flex-col gap-[6px]">
@@ -2504,7 +2478,7 @@ function FiltersCard({
               >
                 <span aria-hidden>{isActive ? "☑" : "☐"}</span>
                 <span className="truncate">{t(labelKey)}</span>
-                <span className="ml-auto shrink-0 text-[11.5px] font-semibold text-[#8A7C6E] tabular-nums">
+                <span className="ml-auto shrink-0 text-[11.5px] font-semibold text-white/50 tabular-nums">
                   {deliveryCounts[key]}
                 </span>
               </button>
@@ -2513,18 +2487,18 @@ function FiltersCard({
         </div>
       </div>
 
-      <div className="mt-[15px] border-t border-[#F2EBE3] pt-[13px]">
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
+      <div className="mt-[15px] border-t border-white/10 pt-[13px]">
+        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
           {t("comparator.filters.exclusiveOffers")}
         </div>
         <button
           type="button"
           onClick={() => setShowOnlyExclusive((prev) => !prev)}
           aria-pressed={showOnlyExclusive}
-          className={`mt-[9px] flex h-[38px] w-full items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+          className={`mt-[9px] flex h-[38px] w-full items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
             showOnlyExclusive
-              ? "border-[1.5px] border-[#EE5B3E] bg-[#FDE9E4] text-[#C2410C]"
-              : "border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#EE5B3E]/40"
+              ? "border-[1.5px] border-[#EE5B3E] bg-[#EE5B3E]/20 text-[#FF8A6B]"
+              : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-[#EE5B3E]/50"
           }`}
         >
           <span aria-hidden>{showOnlyExclusive ? "☑" : "☐"}</span>
@@ -2535,8 +2509,8 @@ function FiltersCard({
         </button>
       </div>
 
-      <div className="mt-[15px] border-t border-[#F2EBE3] pt-[13px]">
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-muted-foreground">
+      <div className="mt-[15px] border-t border-white/10 pt-[13px]">
+        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
           {t("comparator.filters.rankBy")}
         </div>
         <div className="mt-[9px] flex flex-wrap gap-[7px]">
@@ -2546,17 +2520,17 @@ function FiltersCard({
               type="button"
               onClick={() => setSortBy(key)}
               aria-pressed={sortBy === key}
-              className={`inline-flex h-9 items-center rounded-[10px] border px-3.5 text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+              className={`inline-flex h-9 items-center rounded-[10px] border px-3.5 text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
                 sortBy === key
-                  ? "border-[1.5px] border-[#241C16] bg-[#F5EFE8] font-bold text-[#241C16]"
-                  : "border-[#E5DCD1] bg-white font-semibold text-[#5C5147] hover:border-[#241C16]/40"
+                  ? "border-[1.5px] border-[#FF8A6B] bg-white/[.14] font-bold text-white"
+                  : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-white/30"
               }`}
             >
               {t(sortLabelKey(key))}
             </button>
           ))}
         </div>
-        <p className="mt-2 text-[11px] leading-[1.5] text-[#8A7C6E]">
+        <p className="mt-2 text-[11px] leading-[1.5] text-white/50">
           {t("comparator.filters.rankByHint")}
         </p>
       </div>
@@ -2685,8 +2659,13 @@ function RateAlertCard({
  *  uno hecho a medida" — the actual Trustpilot embed (TrustBox.tsx, same
  *  widget ContactSection uses), not a look-alike link built here. */
 function TrustpilotCard() {
+  // 2026-08-31 feedback — "queda descentrado del contenido de adentro":
+  // Trustpilot's own widget (once the bootstrap script upgrades it) isn't
+  // internally centered — it's a left-aligned block by default. flex+center
+  // here centers whatever it renders inside this card, rather than trying
+  // to fight Trustpilot's own markup.
   return (
-    <div className="rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
+    <div className="flex items-center justify-center rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
       <TrustBox />
     </div>
   );
@@ -2724,10 +2703,6 @@ function FieldLight({
 interface FloatingAgentProps {
   collapsed: boolean;
   onToggle: (next: boolean) => void;
-  /** Rail mode (design/HANDOFF.md §3, ≥lg with a result): always the
-   *  expanded panel, in-flow instead of fixed to the viewport edge, no
-   *  minimize button. `collapsed` is ignored while this is true. */
-  docked?: boolean;
   hasNewResult: boolean;
   amount: number;
   lang: string;
@@ -2755,7 +2730,6 @@ interface FloatingAgentProps {
 function FloatingAgent(p: FloatingAgentProps) {
   const {
     collapsed,
-    docked = false,
     onToggle,
     hasNewResult,
     amount,
@@ -2784,11 +2758,9 @@ function FloatingAgent(p: FloatingAgentProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const panelLabelId = "ai-agent-title";
 
-  // Escape closes; auto-focus composer on open. Docked mode has no
-  // collapsed state to escape out of (there's no toggle button to return
-  // focus to), so this whole effect is a no-op there.
+  // Escape closes; auto-focus the composer on open.
   useEffect(() => {
-    if (docked || collapsed) return;
+    if (collapsed) return;
     // 2026-08-31 feedback — "eliminar los movimientos automáticos... por
     // ejemplo en el agente": this focus alone was enough to make the
     // browser auto-scroll the page toward the composer whenever the panel
@@ -2801,48 +2773,7 @@ function FloatingAgent(p: FloatingAgentProps) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [docked, collapsed, onToggle]);
-
-  // 2026-08-31 feedback — "en los lugares verticales que lo pusimos va a
-  // quedar como un smart filter como el que tiene kayak.com... con la
-  // paleta de mangomundi": docked mode (the results rail, showDockedAgent)
-  // drops the dark floating-chat chrome for a light card matching its rail
-  // siblings (FiltersCard/TrustpilotCard) — same content/logic below,
-  // colors swapped through this one table instead of duplicating every
-  // branch. The floating tab/panel keeps its original dark look.
-  const theme = docked
-    ? {
-        panelStyle: undefined as React.CSSProperties | undefined,
-        panelClass: "border border-border bg-card text-foreground",
-        border: "border-border",
-        headerLabel: "text-muted-foreground",
-        minimizeHover: "",
-        scroll: "",
-        loadingText: "text-muted-foreground",
-        bubble: "border border-border bg-muted text-foreground",
-        bubbleUser: "bg-[#F5EFE8] text-foreground",
-        sectionLabel: "text-muted-foreground",
-        composerWrap: "border border-border bg-muted",
-        composerText: "text-foreground",
-        composerPlaceholder: "placeholder:text-muted-foreground",
-        trustLine: "text-muted-foreground",
-      }
-    : {
-        panelStyle: { backgroundColor: "#241C16", color: "#F1EBE4" } as React.CSSProperties,
-        panelClass: "",
-        border: "border-white/10",
-        headerLabel: "text-white/60",
-        minimizeHover: "hover:bg-white/10 hover:text-white",
-        scroll: "thin-scrollbar",
-        loadingText: "text-[#A79C92]",
-        bubble: "border border-white/10 bg-white/[.06] text-[#F1EBE4]",
-        bubbleUser: "bg-white/[.15] text-[#F1EBE4]",
-        sectionLabel: "text-white/50",
-        composerWrap: "bg-white",
-        composerText: "text-[#241C16]",
-        composerPlaceholder: "placeholder:text-[#9C9089]",
-        trustLine: "text-[#A79C92]",
-      };
+  }, [collapsed, onToggle]);
 
   return (
     // Docked to the side edge, vertically centered — Kayak's pattern for a
@@ -2850,11 +2781,15 @@ function FloatingAgent(p: FloatingAgentProps) {
     // that sits on top of content (on mobile it used to overlap the last
     // result row's CTA). Collapsed, it's a slim edge tab rather than a
     // floating circle, so it reads as part of the page's furniture, not an
-    // overlay competing with whatever's underneath it. `docked` (the rail,
-    // ≥lg with a result — design/HANDOFF.md §3) drops all of that: in-flow,
-    // full width of its rail column, always the expanded panel.
-    <div className={docked ? "w-full" : "fixed right-0 top-1/2 z-[60] -translate-y-1/2 sm:right-0"}>
-      {!docked && collapsed ? (
+    // overlay competing with whatever's underneath it. 2026-08-31 feedback
+    // — "siempre a la derecha... solo se minimiza cuando yo lo minimizo":
+    // always this, everywhere, in both states — no more separate "docked"
+    // in-rail variant (that used to also drop the dark chat chrome for a
+    // light rail-matching one; removed rather than left dead, see
+    // FiltersCard for what actually lives in the rail's "smart filter"
+    // slot now).
+    <div className="fixed right-0 top-1/2 z-[60] -translate-y-1/2 sm:right-0">
+      {collapsed ? (
         <button
           ref={toggleBtnRef}
           type="button"
@@ -2885,30 +2820,15 @@ function FloatingAgent(p: FloatingAgentProps) {
           role="dialog"
           aria-modal="false"
           aria-labelledby={panelLabelId}
-          style={theme.panelStyle}
-          className={
-            docked
-              ? // design/AJUSTES-2.md §6 — the rail's own card radius (mockup
-                // line 321), 18px like every other rail card. No fixed
-                // height/overflow here anymore (2026-08-31 feedback — "sin
-                // scroll"): it just flows in the rail column like its
-                // FiltersCard/TrustpilotCard siblings, however tall its
-                // content actually is.
-                `flex w-full flex-col rounded-[18px] ${theme.panelClass}`
-              : "flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl"
-          }
+          style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
+          className="flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl"
         >
-          <div
-            className={`flex shrink-0 items-center justify-between gap-3 border-b px-4 py-3 ${theme.border}`}
-          >
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
             <span
               id={panelLabelId}
-              className={`flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider ${theme.headerLabel}`}
+              className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60"
             >
-              <Sparkle
-                className={`h-3.5 w-3.5 shrink-0 ${docked ? "text-brand-cta" : "text-[#FF8A6B]"}`}
-                aria-hidden
-              />
+              <Sparkle className="h-3.5 w-3.5 shrink-0 text-[#FF8A6B]" aria-hidden />
               <span className="truncate">{t("comparator.copilot.agent")}</span>
             </span>
             <div className="flex shrink-0 items-center gap-2">
@@ -2918,32 +2838,22 @@ function FloatingAgent(p: FloatingAgentProps) {
               >
                 ● {lang.toUpperCase()}
               </span>
-              {!docked && (
-                <button
-                  type="button"
-                  onClick={() => onToggle(true)}
-                  aria-label={t("agent.minimize")}
-                  className={`rounded-md p-1 text-white/60 transition focus:outline-none focus:ring-2 focus:ring-white/30 ${theme.minimizeHover}`}
-                >
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                    <path
-                      d="M3 7h8"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => onToggle(true)}
+                aria-label={t("agent.minimize")}
+                className="rounded-md p-1 text-white/60 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
+                  <path d="M3 7h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+              </button>
             </div>
           </div>
 
-          <div
-            className={`flex-1 space-y-3 p-4 ${docked ? "" : `overflow-y-auto ${theme.scroll}`}`}
-            aria-live="polite"
-          >
+          <div className="flex-1 space-y-3 overflow-y-auto p-4 thin-scrollbar" aria-live="polite">
             {aiLoading && (
-              <div className={`flex items-center gap-2 text-sm ${theme.loadingText}`}>
+              <div className="flex items-center gap-2 text-sm text-[#A79C92]">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t("fx.analyzing")}
               </div>
             )}
@@ -2961,29 +2871,23 @@ function FloatingAgent(p: FloatingAgentProps) {
             {chat.length === 0 && !aiLoading && (
               <>
                 {segment === "business" && businessStage !== "done" && result ? (
-                  <div className={`rounded-xl p-3 text-sm leading-relaxed ${theme.bubble}`}>
+                  <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
                     <ReactMarkdown>{t("comparator.copilot.business.intro")}</ReactMarkdown>
                   </div>
                 ) : (
                   <>
                     {segment === "retail" && result && amount >= B2B_UPSELL_MIN_AMOUNT && (
-                      <div className={`rounded-xl p-3 text-sm leading-relaxed ${theme.bubble}`}>
+                      <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
                         <ReactMarkdown>{t("comparator.copilot.b2bUpsell")}</ReactMarkdown>
                       </div>
                     )}
-                    <div className={`rounded-xl p-3 text-sm leading-relaxed ${theme.bubble}`}>
+                    <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
                       <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
                     </div>
-                    <div
-                      className={`text-[10px] font-semibold uppercase tracking-wider ${theme.sectionLabel}`}
-                    >
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">
                       {t("wizard.quickActions")}
                     </div>
-                    <AiCopilot
-                      onAction={onWizardAction}
-                      disabled={chatMutPending || aiLoading}
-                      docked={docked}
-                    />
+                    <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
                   </>
                 )}
               </>
@@ -2995,13 +2899,13 @@ function FloatingAgent(p: FloatingAgentProps) {
                   <div
                     key={i}
                     className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
-                      m.role === "user" ? `ml-6 ${theme.bubbleUser}` : `mr-6 ${theme.bubble}`
+                      m.role === "user"
+                        ? "ml-6 bg-white/[.15] text-[#F1EBE4]"
+                        : "mr-6 border border-white/10 bg-white/[.06] text-[#F1EBE4]"
                     }`}
                   >
                     {m.role === "assistant" ? (
-                      <div
-                        className={`prose prose-sm max-w-none prose-p:my-1 ${docked ? "" : "prose-invert"}`}
-                      >
+                      <div className="prose prose-sm prose-invert max-w-none prose-p:my-1">
                         <ReactMarkdown>{m.content}</ReactMarkdown>
                       </div>
                     ) : (
@@ -3036,9 +2940,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                   </div>
                 ))}
                 {chatMutPending && (
-                  <div
-                    className={`mr-6 flex items-center gap-2 rounded-md px-3 py-2 text-sm ${theme.bubble}`}
-                  >
+                  <div className="mr-6 flex items-center gap-2 rounded-md border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-[#A79C92]">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />{" "}
                     {t("comparator.copilot.analyzing")}
                   </div>
@@ -3051,21 +2953,15 @@ function FloatingAgent(p: FloatingAgentProps) {
                 the whole product can be explored without free-typing/AI. */}
             {chat.length > 0 && !aiLoading && (
               <div className="pt-1">
-                <div
-                  className={`mb-1.5 text-[10px] font-semibold uppercase tracking-wider ${theme.sectionLabel}`}
-                >
+                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/50">
                   {t("wizard.moreQuestions")}
                 </div>
-                <AiCopilot
-                  onAction={onWizardAction}
-                  disabled={chatMutPending || aiLoading}
-                  docked={docked}
-                />
+                <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
               </div>
             )}
           </div>
 
-          <div className={`shrink-0 border-t p-3 ${theme.border}`}>
+          <div className="shrink-0 border-t border-white/10 p-3">
             {segment === "business" && businessStage === "consent" && (
               <div className="mb-3 flex flex-wrap gap-2">
                 <Button
@@ -3091,21 +2987,17 @@ function FloatingAgent(p: FloatingAgentProps) {
                       { role: "assistant", content: t("comparator.copilot.business.no") },
                     ]);
                   }}
-                  className={
-                    docked
-                      ? ""
-                      : "border-white/20 bg-transparent text-[#F1EBE4] hover:bg-white/10 hover:text-[#F1EBE4]"
-                  }
+                  className="border-white/20 bg-transparent text-[#F1EBE4] hover:bg-white/10 hover:text-[#F1EBE4]"
                 >
                   {t("comparator.copilot.business.review")}
                 </Button>
               </div>
             )}
-            {/* Composer (design/AJUSTES-1.md §D) — a white/light pill on the
-                panel, matching the mockup, rather than the site's usual
-                bordered input field. 2026-08-31 feedback — "que el espacio
-                para escribir sea mas grande": a 2-row textarea (was a
-                single-line 42px input) that grows the panel instead of
+            {/* Composer (design/AJUSTES-1.md §D) — a white pill on the dark
+                panel, matching the mockup exactly, rather than the site's
+                usual bordered input field. 2026-08-31 feedback — "que el
+                espacio para escribir sea mas grande": a 2-row textarea (was
+                a single-line 42px input) that grows the panel instead of
                 cramming everything into one line; Enter still sends
                 (Shift+Enter for a literal newline), same as before. */}
             <form
@@ -3113,7 +3005,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 e.preventDefault();
                 sendChat(chatInput);
               }}
-              className={`flex items-end gap-2 rounded-[11px] py-1.5 pl-3 pr-1.5 ${theme.composerWrap}`}
+              className="flex items-end gap-2 rounded-[11px] bg-white py-1.5 pl-3 pr-1.5"
             >
               <label htmlFor="ai-agent-composer" className="sr-only">
                 {t("comparator.copilot.placeholder")}
@@ -3132,7 +3024,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 }}
                 placeholder={t("comparator.copilot.placeholder")}
                 aria-label={t("comparator.copilot.placeholder")}
-                className={`min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium outline-none thin-scrollbar ${theme.composerText} ${theme.composerPlaceholder}`}
+                className="min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium text-[#241C16] outline-none placeholder:text-[#9C9089] thin-scrollbar"
                 disabled={chatMutPending}
               />
               <button
@@ -3144,7 +3036,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 <Send className="h-3.5 w-3.5" aria-hidden />
               </button>
             </form>
-            <p className={`mt-2 text-[11px] leading-relaxed ${theme.trustLine}`}>
+            <p className="mt-2 text-[11px] leading-relaxed text-[#A79C92]">
               {t("comparator.copilot.trustLine")}
             </p>
           </div>
@@ -3155,10 +3047,11 @@ function FloatingAgent(p: FloatingAgentProps) {
 }
 
 // ===== Business "Your request" panel =====
-// design/Mangomundi 4 - Final.dc.html (line 532-541) — replaces FloatingAgent
-// in the docked rail slot when segment === "business" (see showDockedAgent's
-// call site): a running summary of the request being built from the broker
-// table's "Add to request" toggles, not a chat wizard. Email + consent are
+// design/Mangomundi 4 - Final.dc.html (line 532-541) — lives in the results
+// column now, below the results list (2026-08-31 feedback; used to dock in
+// the rail next to the agent): a running summary of the request being built
+// from the broker table's "Add to request" toggles, not a chat wizard. Email
+// and consent are
 // collected inline once "Send request" is pressed, rather than up front —
 // nothing here blocks browsing/selecting brokers on providing an email
 // first, unlike the old chat flow.
@@ -3475,14 +3368,6 @@ function ResultsBlock({
 
   return (
     <div className="min-w-0">
-      {/* Neutrality declared once, here, above the list (design/AJUSTES-1.md
-          §C4) — not per-row anymore. The old "Sponsored offer" corner badge
-          on every promoted row did this six times over with color; ranking
-          disclosure only needs saying once. */}
-      <p className="mb-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-[11px] leading-relaxed text-muted-foreground">
-        <span className="font-semibold text-foreground">⚖︎ </span>
-        {tNeutrality}
-      </p>
       {/* No shared header row (design/AJUSTES-1.md §C1 — removed on
           purpose): each row now carries its own per-metric micro-label
           above its value (see ProviderRow), so a card reads on its own
@@ -3540,12 +3425,22 @@ function ResultsBlock({
         </button>
       )}
 
-      <div className="mt-4 rounded-xl border border-border bg-card/50 px-4 py-3 text-[11px] text-muted-foreground">
-        {tRatesSource}{" "}
-        <span className="font-semibold text-foreground">
-          {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
-          <span className="tabular-nums">{updatedTime}</span>
-        </span>
+      {/* 2026-08-31 feedback — the neutrality disclaimer used to sit right
+          above the list, right under the 3 big tabs; moved down here to
+          join the other small print instead of doubling up on fine-print
+          real estate in the busiest part of the page. */}
+      <div className="mt-4 rounded-xl border border-border bg-card/50 px-4 py-3 text-[11px] leading-relaxed text-muted-foreground">
+        <p>
+          {tRatesSource}{" "}
+          <span className="font-semibold text-foreground">
+            {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
+            <span className="tabular-nums">{updatedTime}</span>
+          </span>
+        </p>
+        <p className="mt-1">
+          <span className="font-semibold text-foreground">⚖︎ </span>
+          {tNeutrality}
+        </p>
       </div>
       {/* design/Mangomundi 4 - Final.dc.html line 529 — the broker table's
           own disclosed methodology, not the retail footer copy above. */}

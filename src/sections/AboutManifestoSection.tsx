@@ -75,12 +75,10 @@ export function AboutManifestoSection() {
                 {t("home.about.cta.aboutUs")}
               </Link>
               {/* 2026-08-31 feedback — moved here from TodaysRoutesSection's
-                  header row, next to the About us CTA. Wrapped in a solid
-                  white pill (rather than sitting directly on this band's
-                  dark background) since Trustpilot's own widget theme is
-                  white-on-transparent, same idea as the stat tiles' own
-                  bg-white/8 treatment just for legibility, not tinted. */}
-              <div className="w-[150px] shrink-0 rounded-xl bg-white px-2 py-1.5">
+                  header row, next to the About us CTA. No custom card
+                  around it (an earlier pass wrapped it in a white pill) —
+                  Trustpilot's own widget design, unmodified. */}
+              <div className="shrink-0">
                 <TrustBox />
               </div>
             </div>

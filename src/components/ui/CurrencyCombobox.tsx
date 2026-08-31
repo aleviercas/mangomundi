@@ -7,9 +7,13 @@ import { CURRENCIES } from "@/lib/currencies";
 // on CountryCombobox only.
 const OPTIONS = CURRENCIES.map((c) => ({
   value: c.code,
-  label: `${c.code} — ${c.name}`,
-  // Lets compactLabel (below) show just the code — same pattern as
-  // CountryCombobox's own secondary/compactLabel pair.
+  // 2026-08-31 feedback — "por qué aparecen los símbolos dos veces": label
+  // used to be `"${code} — ${name}"` *and* secondary was the code again, so
+  // the open dropdown list showed e.g. "USD — US Dollar ... USD" twice in
+  // the same row. Name-only label + secondary=code reads as "US Dollar ...
+  // USD" instead — code appears once. secondary alone still drives the
+  // compact single-code trigger (compactLabel below), unchanged.
+  label: c.name,
   secondary: c.code,
   keywords: [c.code, c.name],
 }));

@@ -24,6 +24,18 @@ declare global {
  * (see BlogSection's skeleton loader for the same concern with different
  * async content).
  *
+ * 2026-08-31 feedback — "queda descentrado del contenido de adentro" (the
+ * rail's TrustpilotCard): `data-style-width="100%"` stretches the widget's
+ * iframe to the full width of whatever card it's in, but the actual
+ * logo+stars content Trustpilot renders inside it is a fixed, narrower
+ * width, left-anchored by their own internal layout — against a wide card
+ * that reads as sitting off to the side rather than centered. `"auto"`
+ * (Trustpilot's own documented alternative) sizes the widget to its real
+ * content instead, so a flex/justify-center wrapper around it (both call
+ * sites now do this) actually centers something narrower than the card.
+ * Not verified against the live widget in this sandbox — no network path
+ * to trustpilot.com here to confirm the rendered result.
+ *
  * 2026-08-31 feedback — "no se ve el original, solo la letra Trustpilot sin
  * formato": Trustpilot's bootstrap script only scans the DOM for
  * `.trustpilot-widget` elements once, right when it finishes loading. In an
@@ -67,7 +79,7 @@ export function TrustBox() {
       data-template-id="56278e9abfbbba0bdcd568bc"
       data-businessunit-id="6a7a14b6f29ac72f7bd2792e"
       data-style-height="52px"
-      data-style-width="100%"
+      data-style-width="auto"
       data-token="ef14895d-6018-44c4-9b24-4bb39ed6b2e5"
     >
       <a

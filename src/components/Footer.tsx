@@ -81,10 +81,14 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-5 sm:px-[30px]">
         <div className="grid gap-[26px] md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link to="/" className="inline-flex items-center">
+            <Link
+              to="/"
+              className="inline-flex items-center"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            >
               <Wordmark className="text-[21px]" tone="light" icon={false} />
             </Link>
-            <p className="mt-2.5 max-w-[280px] text-[12.5px] leading-[1.6] text-[#8A7C6E]">
+            <p className="mt-2.5 max-w-[280px] whitespace-pre-line text-[12.5px] leading-[1.6] text-[#8A7C6E]">
               {t("footer.tagline")}
             </p>
             <div className="mt-4 flex items-center gap-2.5">

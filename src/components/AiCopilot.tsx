@@ -80,11 +80,6 @@ interface AiCopilotProps {
   onAction: (action: WizardAction) => void;
   disabled?: boolean;
   className?: string;
-  /** 2026-08-31 feedback — the docked "smart filter" rail placement
-   *  (FloatingAgent's `docked` mode) went light to match its rail
-   *  siblings; this switches these buttons off the dark-panel-only
-   *  palette the doc comment below used to promise. */
-  docked?: boolean;
 }
 
 // design/Mangomundi 4 - Final.dc.html (line 335-338) — the docked agent
@@ -105,16 +100,16 @@ const COLLAPSED_ACTION_COUNT = 4;
  */
 /**
  * Suggested-question chips (design/AJUSTES-1.md §D) — one per line, full
- * width, arrow on the right. Rendered inside FloatingAgent, either its
- * dark #241C16 floating panel (default colors below) or the light docked
- * "smart filter" rail card (`docked`).
+ * width, arrow on the right. Only ever rendered inside FloatingAgent's
+ * dark #241C16 panel (its only consumer — it no longer has a light "docked"
+ * mode, see FloatingAgent's own comment), so the colors here are that
+ * panel's literal palette, not a general-purpose light/dark variant.
  */
 export function AiCopilot({
   actions = DEFAULT_WIZARD_ACTIONS,
   onAction,
   disabled = false,
   className = "",
-  docked = false,
 }: AiCopilotProps) {
   const { t } = useI18n();
   const [expanded, setExpanded] = useState(false);
@@ -132,14 +127,10 @@ export function AiCopilot({
           type="button"
           onClick={() => onAction(a)}
           disabled={disabled}
-          className={
-            docked
-              ? "flex w-full items-center justify-between gap-2 rounded-[10px] border border-border bg-card px-[11px] py-[9px] text-left text-[12px] font-semibold text-foreground transition hover:bg-muted disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring"
-              : "flex w-full items-center justify-between gap-2 rounded-[10px] border border-white/[.12] bg-white/[.07] px-[11px] py-[9px] text-left text-[12px] font-semibold text-[#F1EBE4] transition hover:bg-white/[.1] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
-          }
+          className="flex w-full items-center justify-between gap-2 rounded-[10px] border border-white/[.12] bg-white/[.07] px-[11px] py-[9px] text-left text-[12px] font-semibold text-[#F1EBE4] transition hover:bg-white/[.1] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
         >
           <span className="truncate">{t(a.label)}</span>
-          <span className={`shrink-0 ${docked ? "text-brand-cta" : "text-[#FF8A6B]"}`} aria-hidden>
+          <span className="shrink-0 text-[#FF8A6B]" aria-hidden>
             →
           </span>
         </button>
@@ -148,11 +139,7 @@ export function AiCopilot({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className={
-            docked
-              ? "w-full rounded-[10px] px-[11px] py-[7px] text-center text-[11.5px] font-semibold text-muted-foreground transition hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              : "w-full rounded-[10px] px-[11px] py-[7px] text-center text-[11.5px] font-semibold text-[#F1EBE4]/70 transition hover:text-[#F1EBE4] focus:outline-none focus:ring-2 focus:ring-white/30"
-          }
+          className="w-full rounded-[10px] px-[11px] py-[7px] text-center text-[11.5px] font-semibold text-[#F1EBE4]/70 transition hover:text-[#F1EBE4] focus:outline-none focus:ring-2 focus:ring-white/30"
         >
           {t("wizard.moreOptions")}
         </button>

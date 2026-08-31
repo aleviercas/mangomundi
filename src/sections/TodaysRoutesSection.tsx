@@ -55,7 +55,11 @@ export function TodaysRoutesSection() {
           <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground sm:text-[22px]">
             {t("todaysRoutes.title")}
           </h2>
-          <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
+          {/* 2026-08-31 feedback — was wrapping onto 2 lines for no reason:
+              max-w-2xl (672px) is narrower than the full sentence needs at
+              this size, now that this header row no longer shares space
+              with the agent trigger portal (removed this round). */}
+          <p className="mt-1 max-w-3xl text-[13px] leading-relaxed text-muted-foreground lg:whitespace-nowrap">
             {t("todaysRoutes.subtitle")}
           </p>
         </div>

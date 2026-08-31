@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import type { ComparisonResult } from "@/lib/fx.functions";
 import { Wordmark } from "@/components/Wordmark";
@@ -78,29 +77,6 @@ export function EmbedComparator({
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const freshness = useRatesFreshness(result?.fetched_at ?? null);
 
-  // Down-chevron scroll affordance: shown while there's more content below the
-  // fold of the internal scroll region (e.g. a long results list).
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [showScrollHint, setShowScrollHint] = useState(false);
-  const updateHint = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-    setShowScrollHint(el.scrollHeight - el.scrollTop - el.clientHeight > 24);
-  };
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const id = requestAnimationFrame(updateHint);
-    // Content grows/shrinks inside ComparatorSection (results landing, the
-    // advanced fold-out) without this component re-rendering — watch the DOM.
-    const mo = new MutationObserver(() => requestAnimationFrame(updateHint));
-    mo.observe(el, { childList: true, subtree: true });
-    return () => {
-      cancelAnimationFrame(id);
-      mo.disconnect();
-    };
-  }, []);
-
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-[#fcfcfc]">
       {/* design/Mangomundi 4 - Final.dc.html (line 726-729) — the widget's
@@ -114,21 +90,16 @@ export function EmbedComparator({
         )}
       </div>
 
-      <div
-        ref={scrollRef}
-        onScroll={updateHint}
-        className="min-h-0 flex-1 overflow-y-auto px-3 py-3 sm:px-4"
-      >
+      {/* 2026-08-31 feedback — "el widget sacarle el scroll, dijimos que iba
+          sin scroll" (design/Mangomundi 4 - Final.dc.html line 728 labels
+          the widget mockup itself "Widget · sin scroll"): no overflow-y-auto
+          here anymore, and no scroll-hint chevron — this content is meant
+          to fit the fixed 360×540 frame outright (smaller type throughout
+          the embedded search row and CompactResultsList, see their own
+          comments), not scroll to reveal what doesn't fit. */}
+      <div className="min-h-0 flex-1 overflow-hidden px-3 py-3 sm:px-4">
         <ComparatorSection embedded initialQuery={initialQuery} onResult={setResult} />
       </div>
-
-      {showScrollHint && (
-        <div className="pointer-events-none absolute inset-x-0 bottom-9 flex justify-center">
-          <span className="animate-bounce rounded-full bg-foreground/70 p-1 text-background shadow-md">
-            <ChevronDown className="h-3 w-3" />
-          </span>
-        </div>
-      )}
 
       {/* Attribution — required on the free embed; links back to the site. */}
       <a

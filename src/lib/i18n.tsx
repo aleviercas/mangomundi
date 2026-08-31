@@ -613,7 +613,12 @@ export const DICTS: Record<Lang, Dict> = {
     // Second feedback round: drop "We never move your money." — the site
     // says that elsewhere already (comparator step 3, the mockup's own
     // "3 steps" copy), redundant in the footer tagline specifically.
-    "footer.tagline": "Neutral decision engine for international transfers.",
+    // 2026-08-31 feedback — two lines: "Neutral decision engine" /
+    // "for international transfers." A literal "\n" (rendered with
+    // whitespace-pre-line in Footer.tsx) rather than a new key, so other
+    // languages that keep the old single-line text are unaffected — only
+    // EN gets a forced break unless a future translation adds its own.
+    "footer.tagline": "Neutral decision engine\nfor international transfers.",
     // 2026-08-30 feedback (fifth round) — replaces fx.disclaimer +
     // fx.trademarks (both removed from below the results list) with one
     // concise line at the very bottom of the footer, alongside the other
@@ -2026,8 +2031,11 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
     // UI_KEYS is merged over DICTS (see the merge loop below), so this is
     // the value that actually renders for EN — the DICTS.en copy above
     // (same key) is shadowed. Kept in sync rather than removed, since the
-    // shadowing itself is pre-existing and out of scope here.
-    "footer.tagline": "Neutral decision engine for international transfers.",
+    // shadowing itself is pre-existing and out of scope here. 2026-08-31
+    // feedback — two lines via a literal "\n" (Footer.tsx renders this with
+    // whitespace-pre-line); this is the copy that was actually shadowing
+    // the DICTS.en edit and not showing up.
+    "footer.tagline": "Neutral decision engine\nfor international transfers.",
     "footer.copyright": "All rights reserved.",
     "footer.disclaimerLabel": "disclaimer",
     "common.close": "Close",
