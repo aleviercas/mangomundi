@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { ContactSection } from "@/sections/ContactSection";
+import { BrandMark } from "@/components/Wordmark";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
@@ -122,10 +123,18 @@ function AboutPage() {
       <section className="mx-auto max-w-3xl px-5 pb-16 sm:px-8">
         <div className="rounded-2xl border border-border bg-card p-8 text-center">
           <p className="text-sm text-muted-foreground">{t("blog.cta.prompt")}</p>
+          {/* 2026-09-03 feedback — "ponerle el icono como en el botón de go to
+              compare del blog y mantener la paleta": blog_.$slug.tsx's own
+              CTA carries the mangomundi "m" mark (BrandMark) next to its
+              label; this one didn't. Adds the same mark, `tone="light"`
+              (white ink) since this button's own bg-color stays btn-cta's
+              solid mango — not blog's bg-primary — so the icon needs the
+              light variant for contrast here too, same as it does there. */}
           <Link
             to="/"
             className="btn-cta mt-3 inline-flex h-11 items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold"
           >
+            <BrandMark tone="light" />
             {t("blog.cta.button")}
           </Link>
         </div>
