@@ -3349,15 +3349,23 @@ function BusinessRequestPanel({
   // new Currency stat below it) — Volume/Currency/Contract/Brokers keep
   // the currency-level detail Route used to carry.
   return (
-    <div className="rounded-[18px] border-[1.5px] border-[#241C16] bg-[#241C16] p-4">
+    <div className="rounded-[18px] border-[1.5px] border-[#241C16] bg-[#241C16] p-5 sm:p-6">
       <h4 className="font-heading text-[15px] font-extrabold text-white">
         {t("comparator.business.request.title")}
       </h4>
-      <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-white/70">
+      <p className="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-white/70">
         {t("comparator.business.request.explainer")}
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3 border-t border-white/15 pt-4">
+      {/* 2026-09-02 feedback — "queda todo aplastado, organizarla mejor":
+          this was a `flex flex-wrap` row — items only break to a new line
+          where they individually run out of room, so at in-between widths
+          the five stats bunched unevenly instead of lining up. A real grid
+          gives each stat its own column (2 on mobile, 5 from sm up), so
+          they stay aligned at every width instead of reflowing ad hoc —
+          and the action button/form below is now its own block, no longer
+          sharing this flex row (see that block's own comment). */}
+      <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/15 pt-5 sm:grid-cols-5">
         <div>
           <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
             {t("comparator.business.request.volume")}
@@ -3400,61 +3408,62 @@ function BusinessRequestPanel({
             {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
           </div>
         </div>
-
-        {expanded ? (
-          <form
-            className="flex w-full basis-full flex-col gap-2 sm:flex-row sm:items-center"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSend(email);
-            }}
-          >
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t("comparator.business.request.emailPlaceholder")}
-              className="h-11 flex-1 rounded-lg border border-white/20 bg-white/[.07] px-3 text-sm text-white placeholder:text-white/40"
-            />
-            <button
-              type="submit"
-              disabled={status === "sending"}
-              className="btn-cta flex h-11 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:opacity-60"
-            >
-              {status === "sending"
-                ? t("comparator.business.request.sending")
-                : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-            </button>
-            {status === "error" && (
-              <p className="text-xs text-[#FF8A6B] sm:basis-full">
-                {t("comparator.business.request.error")}
-              </p>
-            )}
-          </form>
-        ) : (
-          <>
-            {/* Forces the flex-wrap row to break here unconditionally —
-                zero height, so it's invisible, but its basis-full pushes
-                the button to a brand new line every time regardless of
-                whether the stats above would technically leave room next
-                to it. That "always its own line" is what makes the
-                button's position stop depending on viewport width or
-                stat-text length (see this function's own comment above
-                for the full "moving to the center" diagnosis). */}
-            <div className="basis-full" aria-hidden />
-            <button
-              type="button"
-              disabled={selectedCount === 0}
-              onClick={() => setExpanded(true)}
-              className="btn-cta flex h-10 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-            </button>
-          </>
-        )}
       </div>
-      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
+
+      {/* 2026-09-02 feedback — "que el botón de send quede a la derecha":
+          now its own block below the stats grid instead of fighting for
+          room inside that flex-wrap row (see the W10 history this used to
+          carry, now removed along with the flex-wrap it was working
+          around) — `justify-end` reliably pins it to the right at every
+          width, the same determinism W10 wanted, just anchored right
+          instead of left this time. */}
+      {expanded ? (
+        <form
+          className="mt-5 flex w-full flex-col gap-2 border-t border-white/15 pt-5 sm:flex-row sm:items-center sm:justify-end"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSend(email);
+          }}
+        >
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("comparator.business.request.emailPlaceholder")}
+            className="h-11 rounded-lg border border-white/20 bg-white/[.07] px-3 text-sm text-white placeholder:text-white/40 sm:w-72"
+          />
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="btn-cta flex h-11 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:opacity-60"
+          >
+            {status === "sending"
+              ? t("comparator.business.request.sending")
+              : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+          </button>
+          {status === "error" && (
+            <p className="text-xs text-[#FF8A6B] sm:basis-full sm:text-right">
+              {t("comparator.business.request.error")}
+            </p>
+          )}
+        </form>
+      ) : (
+        <div className="mt-5 flex justify-end border-t border-white/15 pt-5">
+          <button
+            type="button"
+            disabled={selectedCount === 0}
+            onClick={() => setExpanded(true)}
+            className="btn-cta flex h-10 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+          </button>
+        </div>
+      )}
+      {/* Was text-muted-foreground — a light-mode gray (#6b5f55) with
+          barely-there contrast against this card's near-black background.
+          text-white/50 matches the stat labels above it. */}
+      <p className="mt-3 text-[11px] leading-relaxed text-white/50">
         {t("comparator.business.request.disclaimer")}
       </p>
     </div>
@@ -4236,10 +4245,26 @@ function BusinessRowExtra({
   ];
 
   return (
-    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-4">
-        {metrics.map((m) => (
-          <div key={m.labelKey} className="min-w-0">
+    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3">
+      {/* 2026-09-02 feedback — "queda todo aplastado lo que es spread
+          minimum settlement y contracts": this grid used to share its row
+          with the saved-amount + Add-to-request cluster (`sm:flex-row
+          sm:justify-between` on the outer wrapper), so on any width above
+          mobile the metrics only got whatever leftover space that
+          shrink-0 cluster didn't need — settlement_terms/contract_type are
+          full sentences (see providers.contract_type, e.g. "Spot, Forward
+          (min contract value ~£10,000/€15,000)"), so `truncate` cut them
+          to a few words with "…". Now the grid always gets the card's
+          full width (the saved/button row moved below, its own block),
+          and Settlement/Contracts get a wider share of that width — a
+          12-column track where Spread/Minimum (short values like "0.35%",
+          "10 EUR") take 2 columns each and Settlement/Contracts (the ones
+          that actually need the room) take 4 each. `truncate` dropped for
+          `leading-snug` so the real value wraps to as many lines as it
+          needs instead of being cut off. */}
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-12">
+        {metrics.map((m, i) => (
+          <div key={m.labelKey} className={`min-w-0 ${i >= 2 ? "sm:col-span-4" : "sm:col-span-2"}`}>
             <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t(m.labelKey)}
               {/* 2026-09-02 feedback — real value where findable, otherwise
@@ -4254,15 +4279,15 @@ function BusinessRowExtra({
                 </span>
               )}
             </div>
-            <div className="mt-0.5 truncate text-[13px] font-semibold tabular-nums text-foreground">
+            <div className="mt-0.5 text-[13px] font-semibold leading-snug tabular-nums text-foreground">
               {m.value}
             </div>
           </div>
         ))}
       </div>
-      <div className="flex shrink-0 items-center gap-3">
+      <div className="flex items-center gap-3">
         {savedVsRetail != null && savedVsRetail > 0 && (
-          <div className="text-right">
+          <div>
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t("comparator.business.estOn").replace(
                 "{amount}",
@@ -4287,12 +4312,15 @@ function BusinessRowExtra({
             "saved" figure next to it sideways too. Fixed width sized to
             fit the longer label ("Add to request") so the button's own
             footprint never changes — nothing around it has a reason to
-            move anymore. */}
+            move anymore. `ml-auto` (instead of relying on a parent
+            `justify-between`, which needs two children to have any effect)
+            keeps it pinned to the row's right edge whether or not the
+            saved-amount figure is present next to it. */}
         <button
           type="button"
           onClick={onToggleRequested}
           aria-pressed={requested}
-          className={`flex h-9 w-[118px] shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
+          className={`ml-auto flex h-9 w-[118px] shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
             requested
               ? "border-[1.5px] border-foreground bg-card text-foreground"
               : "border-[1.5px] border-input bg-card text-foreground hover:border-foreground/40"
