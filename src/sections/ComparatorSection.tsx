@@ -10,6 +10,7 @@ import {
   Banknote,
   Briefcase,
   Building2,
+  Check,
   ChevronDown,
   Clock,
   Coins,
@@ -4353,27 +4354,20 @@ function BusinessRowExtra({
   ];
 
   return (
-    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3">
-      {/* 2026-09-02 feedback — "queda todo aplastado lo que es spread
-          minimum settlement y contracts": this grid used to share its row
-          with the saved-amount + Add-to-request cluster (`sm:flex-row
-          sm:justify-between` on the outer wrapper), so on any width above
-          mobile the metrics only got whatever leftover space that
-          shrink-0 cluster didn't need — settlement_terms/contract_type are
-          full sentences (see providers.contract_type, e.g. "Spot, Forward
-          (min contract value ~£10,000/€15,000)"), so `truncate` cut them
-          to a few words with "…". Now the grid always gets the card's
-          full width (the saved/button row moved below, its own block),
-          and Settlement/Contracts get a wider share of that width — a
-          12-column track where Spread/Minimum (short values like "0.35%",
-          "10 EUR") take 2 columns each and Settlement/Contracts (the ones
-          that actually need the room) take 4 each. `truncate` dropped for
-          `leading-snug` so the real value wraps to as many lines as it
-          needs instead of being cut off. */}
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2.5 sm:grid-cols-12">
-        {metrics.map((m, i) => (
-          <div key={m.labelKey} className={`min-w-0 ${i >= 2 ? "sm:col-span-4" : "sm:col-span-2"}`}>
-            <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      {/* 2026-09-03 feedback — "poner en una misma columna los datos de
+          spread minimum settlement contracts, alineada del lado izquierdo":
+          was a 12-column grid spreading the four metrics across the card's
+          full width (see git history for that version's own rationale,
+          still valid re: not truncating Settlement/Contracts' full-sentence
+          values). Now a single stacked column instead — each label+value
+          pair gets the whole row's width to itself, left-aligned, so
+          Settlement/Contracts still wrap freely without needing a wide
+          multi-column track to do it. */}
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        {metrics.map((m) => (
+          <div key={m.labelKey} className="flex flex-wrap items-baseline gap-x-2">
+            <div className="flex shrink-0 items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t(m.labelKey)}
               {/* 2026-09-02 feedback — real value where findable, otherwise
                   a logical estimate (never blank, never presented as
@@ -4387,15 +4381,33 @@ function BusinessRowExtra({
                 </span>
               )}
             </div>
-            <div className="mt-0.5 text-[13px] font-semibold leading-snug tabular-nums text-foreground">
+            <div className="min-w-0 text-[13px] font-semibold leading-snug tabular-nums text-foreground">
               {m.value}
             </div>
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-3">
+      {/* 2026-09-03 feedback — "dejar el botón de add request del lado
+          derecho a la misma altura": moved out of its own row below the
+          metrics into this column, sitting beside them instead (the outer
+          wrapper's `sm:items-center` centers it against the metrics
+          column's full height, "misma altura" no matter how many lines
+          Settlement/Contracts wrap to). Also — "ponerle otro color de
+          acuerdo a la paleta pero que no sea blanco": was `bg-card`
+          (the same off-white as every other outlined control on the row,
+          i.e. read as "no action taken" rather than its own button); now
+          solid Verde (--success, the palette's other brand color besides
+          Mango — already used for "confirmed/live/saved" states, which
+          fits "confirm this provider for the request" here). The featured
+          row's "Go to {name}" CTA already owns solid Mango, so Add to
+          request needed a different color to stay visually distinct from
+          it, not a competing use of the same one. "Added" flips to an
+          outlined light-fill treatment (never back to white/card) with a
+          check icon, so the confirmed state still reads as its own thing
+          rather than just a darker button. */}
+      <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
         {savedVsRetail != null && savedVsRetail > 0 && (
-          <div>
+          <div className="sm:text-right">
             <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t("comparator.business.estOn").replace(
                 "{amount}",
@@ -4413,27 +4425,20 @@ function BusinessRowExtra({
         {/* 2026-09-02 feedback — "cuando hago click en un proveedor para
             ponerlo en add to request se mueve todo el texto porque el
             botón cambia de tamaño": "Add to request" (14 chars) vs.
-            "Added" (5 chars) — content-sized width, no explicit width
-            here before, so toggling shrank the button and, since this
-            sits in a `shrink-0` cluster anchored to the row's right edge
-            via the outer `justify-between`, that shrink dragged the
-            "saved" figure next to it sideways too. Fixed width sized to
-            fit the longer label ("Add to request") so the button's own
-            footprint never changes — nothing around it has a reason to
-            move anymore. `ml-auto` (instead of relying on a parent
-            `justify-between`, which needs two children to have any effect)
-            keeps it pinned to the row's right edge whether or not the
-            saved-amount figure is present next to it. */}
+            "Added" (5 chars) — fixed width sized to fit the longer label
+            (plus the check icon's own state) so toggling never changes
+            the button's footprint. */}
         <button
           type="button"
           onClick={onToggleRequested}
           aria-pressed={requested}
-          className={`ml-auto flex h-9 w-[118px] shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
+          className={`flex h-9 w-[140px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
             requested
-              ? "border-[1.5px] border-foreground bg-card text-foreground"
-              : "border-[1.5px] border-input bg-card text-foreground hover:border-foreground/40"
+              ? "border-[1.5px] border-success bg-success/10 text-success"
+              : "bg-success text-success-foreground hover:bg-success/90"
           }`}
         >
+          {requested && <Check className="h-3.5 w-3.5" />}
           {requested ? t("comparator.business.added") : t("comparator.business.addToRequest")}
         </button>
       </div>
