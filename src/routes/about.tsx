@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import ReactMarkdown from "react-markdown";
 import { z } from "zod";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
@@ -111,6 +111,26 @@ function AboutPage() {
           <ReactMarkdown>{t("home.about.problem.body")}</ReactMarkdown>
         </div>
       </section>
+
+      {/* 2026-09-02 feedback — "mejorar aun mas la parte de about us": the page
+          ended right after the mission/vision/problem paragraphs with nothing
+          for the reader to actually do next, unlike every other content page
+          on the site (a blog post ends with a "go to compare" card, see
+          blog_.$slug.tsx). Reuses that exact card treatment and its already-
+          translated blog.cta.* copy — same real destination (the comparator),
+          not a new claim, so no new i18n keys/translations needed. */}
+      <section className="mx-auto max-w-3xl px-5 pb-16 sm:px-8">
+        <div className="rounded-2xl border border-border bg-card p-8 text-center">
+          <p className="text-sm text-muted-foreground">{t("blog.cta.prompt")}</p>
+          <Link
+            to="/"
+            className="btn-cta mt-3 inline-flex h-11 items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold"
+          >
+            {t("blog.cta.button")}
+          </Link>
+        </div>
+      </section>
+
       <ContactSection />
     </main>
   );
