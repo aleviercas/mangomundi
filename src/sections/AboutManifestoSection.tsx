@@ -72,39 +72,33 @@ export function AboutManifestoSection() {
               {t("home.about.subtitle")}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3.5">
+              {/* 2026-08-31 feedback — moved here from TodaysRoutesSection's
+                  header row, next to a "About us" CTA. Two rounds of trying
+                  to size the WIDGET to match the button (h-11 wrapper: too
+                  short, capped its real 52px content; then no wrapper at
+                  all: still read as taller/misaligned, per 2026-09-02
+                  feedback) — both assumed the button's height was fixed and
+                  the widget had to conform to it. Flipped: the widget's
+                  data-style-height="52px" (see TrustBox's own comment) is
+                  the one dimension Trustpilot's script actually enforces
+                  and that this codebase can't safely shrink without
+                  clipping (TrustpilotCard's rail instance hit the same
+                  wall). So the BUTTON now matches the widget's real height
+                  instead — h-[52px], not h-11 — two same-height boxes in
+                  an items-center row line up exactly, no rounding, no
+                  guessing which side over/underhangs. Not re-verified
+                  against the live widget here — this sandbox has no
+                  network path to trustpilot.com and `/` 500s server-side on
+                  the Supabase-backed loader other sections on this page
+                  need, so a real screenshot isn't possible from here; if
+                  this still looks off in production, a screenshot is the
+                  next real signal. */}
               <Link
                 to="/about"
-                className="inline-flex h-11 items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
+                className="inline-flex h-[52px] items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
               >
                 {t("home.about.cta.aboutUs")}
               </Link>
-              {/* 2026-08-31 feedback — moved here from TodaysRoutesSection's
-                  header row, next to the About us CTA. No custom card
-                  around it (an earlier pass wrapped it in a white pill) —
-                  Trustpilot's own widget design, unmodified.
-                  2026-08-31 feedback (again) — "sigue desalineado respecto
-                  al botón de about us": `items-center` on the row alone
-                  wasn't enough, so a `h-11` (44px, matching the button)
-                  wrapper was added around TrustBox — but its real rendered
-                  height is 52px (data-style-height, see TrustBox's own
-                  comment): the box declares one height and is then capped
-                  8px shorter than that. TrustpilotCard hit the same
-                  mismatch in the rail and reverted a similar height cap for
-                  the same reason (either clips the widget with
-                  overflow-hidden, or leaves the wrapper's own box shorter
-                  than what actually gets painted). 2026-09-02 feedback says
-                  it's still misaligned, higher than the button, with a
-                  fixed h-11 in place — dropping it removes that known-bad
-                  mismatch and lets the row's own `items-center` (line 74)
-                  size against the widget's real 52px, same approach
-                  TrustpilotCard uses successfully ("comfortable padding
-                  instead of a hard height"). Not re-verified against the
-                  live widget here — this sandbox has no network path to
-                  trustpilot.com (confirmed again this round) and `/` 500s
-                  server-side on the Supabase-backed loader other sections
-                  on this same page need, so a real screenshot isn't
-                  possible from here; if this still looks off in
-                  production, a screenshot is the next real signal. */}
               <div className="flex shrink-0 items-center">
                 <TrustBox />
               </div>

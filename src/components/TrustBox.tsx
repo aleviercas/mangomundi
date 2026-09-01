@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { Star } from "lucide-react";
 
 declare global {
   interface Window {
@@ -63,7 +64,22 @@ declare global {
  * iframe boundary itself, not something fixable from our CSS. Restored to
  * 52px; the rail card that looked "too tall" next to a button now just
  * gives the widget the room it actually needs instead of fighting it (see
- * TrustpilotCard's own updated comment in ComparatorSection.tsx). */
+ * TrustpilotCard's own updated comment in ComparatorSection.tsx).
+ *
+ * 2026-09-02 feedback — "el botón de trustpilot del rail está mal": every
+ * fix so far assumed the widget was actually converting to Trustpilot's
+ * real logo+stars iframe and only its BOX needed adjusting. But the one
+ * state this sandbox can always render and verify is the fallback —
+ * before the bootstrap script runs (this sandbox has no network path to
+ * trustpilot.com at all, so it never runs here) — and that fallback was a
+ * completely unstyled `<a>Trustpilot</a>`: default blue underlined link
+ * text in a padded box. That reads as broken regardless of alignment. A
+ * real production pageview can hit this same state too (slow network, an
+ * ad/tracker blocker, the one-time DOM-scan timing issue described
+ * above) — this fallback was never given real button styling for that
+ * case. Styled as a small badge (star icon + label, bordered pill,
+ * Trustpilot's own brand green) so it reads as an intentional link even
+ * when their script never takes over. */
 export function TrustBox() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -101,7 +117,9 @@ export function TrustBox() {
         href="https://www.trustpilot.com/review/mangomundi.com"
         target="_blank"
         rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 rounded-md border border-[#00b67a]/30 bg-[#00b67a]/[.08] px-2.5 py-1.5 text-[13px] font-bold text-[#00b67a] no-underline transition hover:bg-[#00b67a]/[.14]"
       >
+        <Star className="h-3.5 w-3.5 fill-current" aria-hidden />
         Trustpilot
       </a>
     </div>
