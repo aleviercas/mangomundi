@@ -3402,11 +3402,11 @@ function BusinessRequestPanel({
 
   if (status === "sent") {
     return (
-      <div className="rounded-[18px] border-[1.5px] border-[#241C16] bg-[#241C16] p-4">
-        <h4 className="font-heading text-[15px] font-extrabold text-white">
+      <div className="rounded-[18px] border border-border bg-card p-4">
+        <h4 className="font-heading text-[15px] font-extrabold text-foreground">
           {t("comparator.business.request.title")}
         </h4>
-        <p className="mt-3 text-sm leading-relaxed text-white/90">
+        <p className="mt-2 text-sm leading-relaxed text-foreground">
           {t("comparator.business.request.sent")}
         </p>
       </div>
@@ -3422,24 +3422,30 @@ function BusinessRequestPanel({
   // sometimes wrapped to its own line — which read as "randomly drifting"
   // rather than anchored anywhere. Fixed for good this time: the button
   // (and the email form once expanded) ALWAYS renders on its own row,
-  // ALWAYS left-aligned (`basis-full` forces the flex-wrap break every
-  // time, regardless of whether the stats would technically leave room),
-  // no viewport- or text-length-dependent branching left to get wrong.
+  // ALWAYS right-aligned (`justify-end`, see the Y2 history), no
+  // viewport- or text-length-dependent branching left to get wrong.
   //
-  // Also darker background (`#241C16`, the same dark token FiltersCard's
-  // own comment already established as "the rail's AI-flavored action
-  // panel" color) so this reads as an action panel, not just another
-  // white info card — same request as the rail's own dark treatment.
+  // 2026-09-02 feedback (second round) — "el your request ponela en clara
+  // en lugar de oscuro... queda mucho espacio vacio": the dark treatment
+  // (#241C16, same token FiltersCard's rail panel uses) read as heavier
+  // than the rest of this page, and its own generous spacing (p-5/p-6,
+  // mt-5/pt-5 between every section) was tuned for standing out as a
+  // distinct dark action panel rather than for density — dropping the
+  // dark background without also tightening that spacing would've just
+  // left a light card with the same amount of air. Back to the light
+  // card language every other panel on this page already uses
+  // (border-border/bg-card/text-foreground), with every one of those
+  // paddings and inter-section gaps pulled in (p-4, mt-3/pt-3, gap-y-3).
   //
-  // Route now shows countries (was currencies only, redundant with the
-  // new Currency stat below it) — Volume/Currency/Contract/Brokers keep
-  // the currency-level detail Route used to carry.
+  // Route shows countries (was currencies only, redundant with the
+  // Currency stat below it) — Volume/Currency/Contract/Brokers keep the
+  // currency-level detail Route used to carry.
   return (
-    <div className="rounded-[18px] border-[1.5px] border-[#241C16] bg-[#241C16] p-5 sm:p-6">
-      <h4 className="font-heading text-[15px] font-extrabold text-white">
+    <div className="rounded-[18px] border border-border bg-card p-4">
+      <h4 className="font-heading text-[15px] font-extrabold text-foreground">
         {t("comparator.business.request.title")}
       </h4>
-      <p className="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-white/70">
+      <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
         {t("comparator.business.request.explainer")}
       </p>
 
@@ -3451,46 +3457,46 @@ function BusinessRequestPanel({
           they stay aligned at every width instead of reflowing ad hoc —
           and the action button/form below is now its own block, no longer
           sharing this flex row (see that block's own comment). */}
-      <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4 border-t border-white/15 pt-5 sm:grid-cols-5">
+      <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-border pt-3 sm:grid-cols-5">
         <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.volume")}
           </div>
-          <div className="mt-1 text-sm font-bold tabular-nums text-white">
+          <div className="mt-1 text-sm font-bold tabular-nums text-foreground">
             {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
           </div>
         </div>
         <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.route")}
           </div>
-          <div className="mt-1 flex items-center gap-1.5 text-sm font-bold text-white">
+          <div className="mt-1 flex items-center gap-1.5 text-sm font-bold text-foreground">
             <FlagIcon country={sendingCountry} /> {sendingCountryName}
-            <span className="text-white/40">→</span>
+            <span className="text-muted-foreground">→</span>
             {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
           </div>
         </div>
         <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.currency")}
           </div>
-          <div className="mt-1 text-sm font-bold tabular-nums text-white">
+          <div className="mt-1 text-sm font-bold tabular-nums text-foreground">
             {from} → {to}
           </div>
         </div>
         <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.contract")}
           </div>
-          <div className="mt-1 text-sm font-bold text-white">
+          <div className="mt-1 text-sm font-bold text-foreground">
             {contractTypeLabel} · {frequencyLabel}
           </div>
         </div>
         <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.brokersSelected")}
           </div>
-          <div className="mt-1 text-sm font-bold tabular-nums text-white">
+          <div className="mt-1 text-sm font-bold tabular-nums text-foreground">
             {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
           </div>
         </div>
@@ -3505,7 +3511,7 @@ function BusinessRequestPanel({
           instead of left this time. */}
       {expanded ? (
         <form
-          className="mt-5 flex w-full flex-col gap-2 border-t border-white/15 pt-5 sm:flex-row sm:items-center sm:justify-end"
+          className="mt-3 flex w-full flex-col gap-2 border-t border-border pt-3 sm:flex-row sm:items-center sm:justify-end"
           onSubmit={(e) => {
             e.preventDefault();
             onSend(email);
@@ -3517,7 +3523,7 @@ function BusinessRequestPanel({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("comparator.business.request.emailPlaceholder")}
-            className="h-11 rounded-lg border border-white/20 bg-white/[.07] px-3 text-sm text-white placeholder:text-white/40 sm:w-72"
+            className="h-11 rounded-lg border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground sm:w-72"
           />
           <button
             type="submit"
@@ -3529,13 +3535,13 @@ function BusinessRequestPanel({
               : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
           </button>
           {status === "error" && (
-            <p className="text-xs text-[#FF8A6B] sm:basis-full sm:text-right">
+            <p className="text-xs text-destructive sm:basis-full sm:text-right">
               {t("comparator.business.request.error")}
             </p>
           )}
         </form>
       ) : (
-        <div className="mt-5 flex justify-end border-t border-white/15 pt-5">
+        <div className="mt-3 flex justify-end border-t border-border pt-3">
           <button
             type="button"
             disabled={selectedCount === 0}
@@ -3546,10 +3552,7 @@ function BusinessRequestPanel({
           </button>
         </div>
       )}
-      {/* Was text-muted-foreground — a light-mode gray (#6b5f55) with
-          barely-there contrast against this card's near-black background.
-          text-white/50 matches the stat labels above it. */}
-      <p className="mt-3 text-[11px] leading-relaxed text-white/50">
+      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
         {t("comparator.business.request.disclaimer")}
       </p>
     </div>
