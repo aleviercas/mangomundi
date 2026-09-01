@@ -31,7 +31,7 @@ export function BusinessSection() {
         />
       </div>
       <div>
-        <p className="text-eyebrow font-bold uppercase text-accent">{t("nav.business")}</p>
+        <p className="text-eyebrow font-bold uppercase text-accent-text">{t("nav.business")}</p>
         <h2 className="mt-2.5 font-heading text-[24px] font-extrabold leading-[1.18] tracking-[-0.025em] text-foreground">
           {t("home.contact.title")}
         </h2>

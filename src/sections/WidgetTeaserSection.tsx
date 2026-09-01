@@ -14,7 +14,9 @@ export function WidgetTeaserSection() {
   return (
     <div className="flex flex-col justify-between rounded-[20px] border border-border p-5">
       <div>
-        <p className="text-eyebrow font-bold uppercase text-accent">{t("home.widget.eyebrow")}</p>
+        <p className="text-eyebrow font-bold uppercase text-accent-text">
+          {t("home.widget.eyebrow")}
+        </p>
         <h2 className="mt-2.5 font-heading text-[22px] font-extrabold leading-[1.2] tracking-[-0.025em] text-foreground">
           {t("home.widget.card.title")}
         </h2>

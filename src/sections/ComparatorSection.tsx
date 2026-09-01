@@ -1536,7 +1536,7 @@ export function ComparatorSection({
                 }`}
               >
                 <div className="min-h-0">
-                  <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
+                  <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent-text">
                     {t("search.sameCountry")}
                   </div>
                 </div>
@@ -2193,7 +2193,7 @@ export function ComparatorSection({
                       rate alert, Your request, "Rather talk to someone?")
                       move to h3 for the same reason, so nothing skips from
                       here either. */}
-                  <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
+                  <h2 className="text-eyebrow font-bold uppercase text-accent-text">
                     {t("comparator.results")}
                   </h2>
                   {/* 2026-09-02 feedback — "el resultado de mid market rate
@@ -2378,8 +2378,8 @@ export function ComparatorSection({
                           aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
                           className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                             MORE_SORT_CHIPS.includes(sortBy)
-                              ? "text-brand-cta"
-                              : "text-foreground hover:text-brand-cta"
+                              ? "text-accent-text"
+                              : "text-foreground hover:text-accent-text"
                           }`}
                         >
                           {(() => {
@@ -2461,7 +2461,7 @@ export function ComparatorSection({
                       className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                         showOnlyExclusive
                           ? "border-transparent bg-accent text-accent-foreground"
-                          : "border-accent/40 bg-accent/10 text-accent hover:border-accent/70"
+                          : "border-accent/40 bg-accent/10 text-accent-text hover:border-accent/70"
                       }`}
                     >
                       <Sparkle className="h-3.5 w-3.5" />
@@ -2608,7 +2608,7 @@ export function ComparatorSection({
                       className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
                         amount >= B2B_UPSELL_MIN_AMOUNT
                           ? "bg-foreground text-background hover:bg-foreground/90"
-                          : "text-brand-cta hover:text-brand-cta-hover"
+                          : "text-accent-text hover:text-brand-cta-hover"
                       }`}
                     >
                       {t("comparator.b2bBanner.cta")}
@@ -4047,7 +4047,7 @@ function ProviderRow({
   const footerParts = [
     priceStamp,
     row.promo_text && (
-      <span key="promo" className="inline-flex items-center gap-1 font-medium text-accent">
+      <span key="promo" className="inline-flex items-center gap-1 font-medium text-accent-text">
         <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
         {row.promo_text}
       </span>
@@ -4378,7 +4378,7 @@ function BusinessRowExtra({
               {m.estimated && (
                 <span
                   title={t("comparator.business.metric.estimatedTooltip")}
-                  className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-[9px] font-bold normal-case tracking-normal text-accent"
+                  className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-[9px] font-bold normal-case tracking-normal text-accent-text"
                 >
                   {t("comparator.business.metric.estimated")}
                 </span>

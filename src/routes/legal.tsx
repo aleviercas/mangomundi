@@ -100,7 +100,7 @@ function LegalPage() {
             <div className="mt-8 space-y-6">
               {s.body.map((b) => (
                 <div key={b.h}>
-                  <h3 className="text-eyebrow font-bold uppercase text-brand-cta">{b.h}</h3>
+                  <h3 className="text-eyebrow font-bold uppercase text-accent-text">{b.h}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-foreground">{b.p}</p>
                 </div>
               ))}

@@ -81,14 +81,16 @@ function WidgetPage() {
             what actually lets overflow-x-auto contain the snippet instead
             of pushing the whole page wider. */}
         <div className="min-w-0">
-          <p className="text-eyebrow font-bold uppercase text-accent">{t("home.widget.eyebrow")}</p>
+          <p className="text-eyebrow font-bold uppercase text-accent-text">
+            {t("home.widget.eyebrow")}
+          </p>
           <h1 className="mt-3 font-heading text-4xl font-extrabold tracking-tight text-foreground sm:text-h1">
             {t("home.widget.title")}
           </h1>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             {t("home.widget.body")}
           </p>
-          <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent">
+          <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-accent/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-accent-text">
             {t("home.widget.badge")}
           </span>
 
@@ -144,7 +146,7 @@ function WidgetPage() {
               no longer has room for. */}
           <div className="mt-10 space-y-6 border-t border-border pt-8">
             <div>
-              <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
+              <h2 className="text-eyebrow font-bold uppercase text-accent-text">
                 {t("widget.page.how.label")}
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-foreground">
@@ -152,7 +154,7 @@ function WidgetPage() {
               </p>
             </div>
             <div>
-              <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
+              <h2 className="text-eyebrow font-bold uppercase text-accent-text">
                 {t("widget.page.who.label")}
               </h2>
               <p className="mt-2 text-sm leading-relaxed text-foreground">

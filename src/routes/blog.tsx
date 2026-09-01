@@ -74,7 +74,7 @@ function BlogIndexPage() {
             level with the h1 instead put it visibly lower than intended;
             it belongs in this row instead. */}
         <div className="flex items-center justify-between gap-4">
-          <p className="text-eyebrow font-bold uppercase text-brand-cta">
+          <p className="text-eyebrow font-bold uppercase text-accent-text">
             {t("home.blog.eyebrow")}
           </p>
           <Link to="/" aria-label="mangomundi home" className="shrink-0">
@@ -149,7 +149,7 @@ function BlogIndexPage() {
                     {post.excerpt}
                   </p>
                 )}
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-cta">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-accent-text">
                   {t("home.blog.readMore")} <ArrowRight className="h-4 w-4" />
                 </span>
               </div>

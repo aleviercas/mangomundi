@@ -36,6 +36,10 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  /* AA-safe darker sibling for small accent-colored TEXT — see --accent-text's
+     own comment. Not a replacement for --color-accent/--color-brand-cta,
+     which stay the vibrant mango for buttons/icons/large text. */
+  --color-accent-text: var(--accent-text);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -133,6 +137,18 @@
   --muted-foreground: #6b5f55;
   --accent: #ee5b3e;
   --accent-foreground: #ffffff;
+  /* X8 audit — #ee5b3e (mango) measures 3.2-3.4:1 against this page's
+     light backgrounds (white/cream/muted), enough for large text and
+     non-text UI (WCAG's 3:1 floor for those) but short of the 4.5:1 AA
+     needs for normal-size text — and the site's dominant "eyebrow" label
+     pattern (small bold uppercase, e.g. "YOUR RESULTS") is exactly that:
+     normal-size text. This is the same hue, darkened (HSL lightness
+     58.8%→45.8%) until it clears 4.5:1 on white/cream AND on --muted
+     (the worst case, badges sitting on accent/10 tinted chips) with a
+     small margin: 5.18:1 white, 4.89:1 cream, 4.54:1 muted. Buttons,
+     icons, and large headline text keep --accent/--color-brand-cta
+     unchanged — those already pass at the original color. */
+  --accent-text: #cd3112;
   --destructive: oklch(0.55 0.22 20);
   --destructive-foreground: oklch(1 0 0);
   --border: #ebe3d9;
