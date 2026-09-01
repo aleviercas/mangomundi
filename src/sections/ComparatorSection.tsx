@@ -504,6 +504,12 @@ export function ComparatorSection({
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
+  // 2026-09-02 feedback — "el auto scroll te saca de la respuesta": stays
+  // true when the reader is at (or near) the bottom of the chat pane; set
+  // by FloatingAgent's own onScroll below. Read at effect time, before any
+  // new content is appended, so it reflects where the reader actually was —
+  // not where the pane ends up after growing.
+  const chatNearBottomRef = useRef(true);
   const [sortBy, setSortBy] = useState<SortKey>("overall");
   /** Opt-in requirement filters — distinct from sortBy. Sorting never hides
    *  a provider (that's the whole point of the multi-criteria engine); these
@@ -1173,8 +1179,23 @@ export function ComparatorSection({
     onQueryChange,
   ]);
 
+  // 2026-09-02 feedback — "el auto scroll te saca de la respuesta, mejor
+  // que no se mueva cuando responde, sino no se entiende que es un chat,
+  // que tenga el comportamiento de acuerdo a las mejores prácticas": this
+  // used to call scrollIntoView() with no `block`, which defaults to
+  // "start" — for a zero-height marker sitting right after the newest
+  // message, that aligns the marker's (empty) position to the TOP of the
+  // pane, scrolling the entire new response up out of view instead of
+  // revealing it. `block: "end"` is the actual "stick to bottom" chat
+  // pattern (ChatGPT/Slack/etc.): the pane scrolls just far enough that
+  // the new message's bottom edge lands at the pane's bottom edge, so
+  // reading starts at its top and the chat still visibly advances. Also
+  // skipped entirely when the reader has scrolled up to reread earlier
+  // history — best practice is to leave their position alone rather than
+  // yank them back down mid-read.
   useEffect(() => {
-    chatBottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!chatNearBottomRef.current) return;
+    chatBottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [chat, chatMut.isPending]);
 
   // NOTE: previously auto-scrolled the page to "Your Results" whenever a
@@ -1980,6 +2001,7 @@ export function ComparatorSection({
             comparePending={compareMut.isPending}
             onSuggestedCompare={runSuggestedCompare}
             chatBottomRef={chatBottomRef}
+            chatNearBottomRef={chatNearBottomRef}
             openPreferredRate={openPreferredRate}
             segment={segment}
             businessStage={businessStage}
@@ -2902,6 +2924,7 @@ interface FloatingAgentProps {
   comparePending: boolean;
   onSuggestedCompare: (from: string, to: string, fromCountry?: string, toCountry?: string) => void;
   chatBottomRef: React.RefObject<HTMLDivElement | null>;
+  chatNearBottomRef: React.RefObject<boolean>;
   openPreferredRate: (slug: string, url: string, name?: string) => void;
   segment: Segment;
   businessStage: BusinessStage;
@@ -2930,6 +2953,7 @@ function FloatingAgent(p: FloatingAgentProps) {
     comparePending,
     onSuggestedCompare,
     chatBottomRef,
+    chatNearBottomRef,
     openPreferredRate,
     segment,
     businessStage,
@@ -3036,7 +3060,19 @@ function FloatingAgent(p: FloatingAgentProps) {
             </div>
           </div>
 
-          <div className="flex-1 space-y-3 overflow-y-auto p-4 thin-scrollbar" aria-live="polite">
+          <div
+            className="flex-1 space-y-3 overflow-y-auto p-4 thin-scrollbar"
+            aria-live="polite"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              // 2026-09-02 feedback — best-practice chat auto-scroll: only
+              // treat the reader as "following along" (and therefore worth
+              // auto-scrolling on the next message) while they're within a
+              // small threshold of the bottom. Scrolled up to reread
+              // earlier history → leave their position alone.
+              chatNearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 64;
+            }}
+          >
             {aiLoading && (
               <div className="flex items-center gap-2 text-sm text-[#A79C92]">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t("fx.analyzing")}
