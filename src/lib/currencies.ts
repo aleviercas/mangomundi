@@ -125,3 +125,33 @@ export const CURRENCIES: CurrencyInfo[] = [
 export const CURRENCY_BY_CODE: Record<string, CurrencyInfo> = Object.fromEntries(
   CURRENCIES.map((c) => [c.code, c]),
 );
+
+/** 2026-09-01 feedback — the widget's compact currency picker should show
+ *  "solo el símbolo de la moneda" (£, $, €) when closed, not the 3-letter
+ *  ISO code it showed before. No hand-typed symbol table here — for ~170
+ *  currencies that risks getting an obscure one wrong (someone's real
+ *  currency shown with the wrong glyph, or a fabricated one for a code
+ *  that doesn't have a common single-character symbol). `Intl.NumberFormat`
+ *  with `currencyDisplay: "narrowSymbol"` pulls the actual glyph from the
+ *  browser/runtime's own CLDR data instead — the same standard source
+ *  every OS and spreadsheet app uses, not something invented here. Falls
+ *  back to the code itself only if a code isn't recognized (defensive,
+ *  never fabricates a symbol). Memoized since CURRENCIES is static. */
+const symbolCache = new Map<string, string>();
+export function currencySymbol(code: string): string {
+  const cached = symbolCache.get(code);
+  if (cached) return cached;
+  let symbol = code;
+  try {
+    const parts = new Intl.NumberFormat("en", {
+      style: "currency",
+      currency: code,
+      currencyDisplay: "narrowSymbol",
+    }).formatToParts(0);
+    symbol = parts.find((p) => p.type === "currency")?.value ?? code;
+  } catch {
+    symbol = code;
+  }
+  symbolCache.set(code, symbol);
+  return symbol;
+}

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import ReactMarkdown from "react-markdown";
 import { z } from "zod";
 import { getRouteSeo, useI18n } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
@@ -87,32 +88,19 @@ function AboutPage() {
         </div>
       </section>
 
+      {/* 2026-09-01 feedback — "en lugar de misión/visión/problema con
+          subtítulos, escribirlo como storytelling fluido, con negritas,
+          como marcas modernas": tres bloques con eyebrow label arriba
+          (Mission/Vision/Problem) reemplazados por tres párrafos conectados,
+          sin etiqueta, `**bold**` vía ReactMarkdown (mismo tratamiento que
+          comparator.rankingExplainer) para que las negritas floten
+          correctamente en los 20 idiomas en vez de fijar la posición de la
+          palabra en inglés. */}
       <section className="mx-auto max-w-3xl px-5 pb-16 pt-12 sm:px-8">
-        <div className="space-y-10">
-          <div>
-            <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
-              {t("home.about.mission.label")}
-            </h2>
-            <p className="mt-3 text-base leading-relaxed text-foreground">
-              {t("home.about.mission.body")}
-            </p>
-          </div>
-          <div>
-            <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
-              {t("home.about.vision.label")}
-            </h2>
-            <p className="mt-3 text-base leading-relaxed text-foreground">
-              {t("home.about.vision.body")}
-            </p>
-          </div>
-          <div>
-            <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
-              {t("home.about.problem.label")}
-            </h2>
-            <p className="mt-3 text-base leading-relaxed text-foreground">
-              {t("home.about.problem.body")}
-            </p>
-          </div>
+        <div className="space-y-5 text-base leading-relaxed text-foreground [&_p]:m-0 [&_strong]:font-bold [&_strong]:text-foreground">
+          <ReactMarkdown>{t("home.about.mission.body")}</ReactMarkdown>
+          <ReactMarkdown>{t("home.about.vision.body")}</ReactMarkdown>
+          <ReactMarkdown>{t("home.about.problem.body")}</ReactMarkdown>
         </div>
       </section>
       <ContactSection />

@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
   ArrowLeftRight,
-  ArrowUpDown,
+  ArrowDownWideNarrow,
   Banknote,
   Briefcase,
   Building2,
@@ -54,6 +54,7 @@ import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { SITE_URL } from "@/config/site";
 import { captureBusinessLead, captureEnterpriseLead } from "@/lib/agent.functions";
@@ -327,6 +328,18 @@ export function ComparatorSection({
   }) => void;
 }) {
   const { t, lang } = useI18n();
+  // 2026-09-01 feedback — "reorganizar mobile para que se vea bien antes y
+  // después de buscar": at narrow widths the origin group (amount+currency+
+  // country in one bordered box, design/AJUSTES-3.md §T5) truncated the
+  // country name to "U.." — real screenshot at 390px confirmed it, not a
+  // guess. Same fix as the widget's own icon-only trigger (Combobox's
+  // `triggerIconOnly`, see CountryCombobox/CurrencyCombobox below): below
+  // md (768px, matching every other mobile breakpoint already in this
+  // file) the country segment shows only its flag — the currency segment
+  // right next to it already names the currency — full country name comes
+  // back once the dropdown opens or the viewport is wide enough to show it
+  // inline without truncating.
+  const isMobile = useIsMobile();
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
   const [from, setFrom] = useState(initialQuery?.from ?? "GBP");
   const [to, setTo] = useState(initialQuery?.to ?? "USD");
@@ -1473,7 +1486,7 @@ export function ComparatorSection({
                 frame instead of showing a tablist with nothing to switch. */}
             {!embedded && (
               <div
-                className={`flex items-center gap-3 border-b border-border ${
+                className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-border ${
                   compact ? "px-4 py-3.5 sm:px-[30px]" : "px-4 py-1.5 sm:px-5"
                 }`}
               >
@@ -1528,7 +1541,17 @@ export function ComparatorSection({
                     ref={resultsRef}
                     className="ml-auto flex shrink-0 scroll-mt-24 items-baseline gap-2.5"
                   >
-                    <span className="font-heading text-[18px] font-extrabold tracking-tight tabular-nums text-foreground">
+                    {/* 2026-09-01 feedback — "reorganizar mobile": at 18px
+                        fixed, this line + the segment toggle to its left
+                        (both `shrink-0`) overflowed the row's own
+                        `overflow-hidden` card wrapper at 390px — no
+                        scrollbar, the trailing digits/currency just got
+                        silently clipped off-screen (confirmed via
+                        screenshot, not a guess). Smaller on mobile, back to
+                        the original size at sm+; `flex-wrap` on the row
+                        itself (see its own className) is the safety net
+                        for anything narrower still. */}
+                    <span className="font-heading text-[14px] font-extrabold tracking-tight tabular-nums text-foreground sm:text-[18px]">
                       1 {from} ={" "}
                       {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
                       {to}
@@ -1582,11 +1605,25 @@ export function ComparatorSection({
                 // country+currency+Compare sharing a second one — frees
                 // roughly 150px of the frame for real results or (see
                 // EmbedComparator's own example-corridor block) a preview
-                // when there's no result yet. Country pickers keep
-                // `compactLabel` (flag + currency code) rather than the
-                // full name — the adjacent currency picker already shows
-                // that same code again, a small accepted redundancy for
-                // fitting a real country selector on one line at 360px.
+                // when there's no result yet.
+                //
+                // 2026-09-01 feedback (second round) — "en el país se está
+                // mostrando el código de moneda, está de más, el país debe
+                // mostrar solo la banderita cuando está seleccionado, pero
+                // el nombre del país al abrir el selector; la moneda debe
+                // mostrar solo el símbolo cuando está seleccionada, el
+                // nombre completo al abrir": the country picker used to
+                // keep `compactLabel` (flag + currency code) instead of the
+                // full name, reasoning that the redundancy with the
+                // adjacent currency picker (which shows that same code)
+                // was an acceptable tradeoff for fitting on one line at
+                // 360px — wrong call, it read as a mistake, not a
+                // tradeoff. `triggerIconOnly` (Combobox's own new mode)
+                // fixes both pickers at once: closed trigger shows only
+                // `leading` (flag for country, currency symbol for
+                // currency — see CurrencyCombobox's own `leading`), full
+                // name/code still shows in the open dropdown list exactly
+                // as before (unaffected — only the closed trigger changes).
                 <div className="space-y-[7px]">
                   <div className="flex h-[38px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
                     <CountryCombobox
@@ -1596,7 +1633,7 @@ export function ComparatorSection({
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.sourceCountry")}
-                      compactLabel
+                      triggerIconOnly
                       triggerClassName="h-full w-auto shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                     />
                     <input
@@ -1616,7 +1653,7 @@ export function ComparatorSection({
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.sourceCurrency")}
-                      compactLabel
+                      triggerIconOnly
                       triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
                     />
                   </div>
@@ -1646,7 +1683,7 @@ export function ComparatorSection({
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCountry")}
-                        compactLabel
+                        triggerIconOnly
                         triggerClassName="h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                       />
                       <CurrencyCombobox
@@ -1656,7 +1693,7 @@ export function ComparatorSection({
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCurrency")}
-                        compactLabel
+                        triggerIconOnly
                         triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
                       />
                     </div>
@@ -1752,9 +1789,10 @@ export function ComparatorSection({
                           // plain country picker drops the redundant
                           // currency-code readout.
                           hideSecondary
-                          triggerClassName={`h-full flex-1 shrink-0 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                          triggerIconOnly={isMobile}
+                          triggerClassName={`h-full flex-1 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
                             compact ? "text-[14px]" : "text-[14.5px]"
-                          }`}
+                          } ${isMobile ? "shrink-0 justify-center" : "shrink-0"}`}
                         />
                       </div>
                     </FieldLight>
@@ -1806,9 +1844,10 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCountry")}
                           hideSecondary
+                          triggerIconOnly={isMobile}
                           triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
                             compact ? "text-[14px]" : "text-[14.5px]"
-                          }`}
+                          } ${isMobile ? "justify-center" : ""}`}
                         />
                         <CurrencyCombobox
                           value={to}
@@ -2163,38 +2202,49 @@ export function ComparatorSection({
 
                     {/* Sort — trust/fee/exchange-rate, an alternate to the
                     3 big tabs' own sort criteria, not a filter (nothing
-                    here narrows the row set). 2026-09-01 feedback —
-                    "en realidad es sort, no filter, poner un ícono de sort
-                    clásico y más chiquito": renamed from "More filters" to
-                    "Sort", a classic two-way-arrow sort glyph (ArrowUpDown)
-                    instead of the generic Gauge icon, and shrunk from a
-                    124px/2-line tile down to a normal compact pill —
-                    matching the delivery-method chips' own h-9/rounded-full
-                    sizing rather than mimicking the big tabs' size.
-                    Selecting one of these already visually replaces the 3
+                    here narrows the row set). 2026-09-01 feedback (first
+                    round) — "en realidad es sort, no filter, poner un
+                    ícono de sort clásico y más chiquito": renamed from
+                    "More filters" to "Sort", shrunk from a 124px/2-line
+                    tile to a compact pill. 2026-09-01 feedback (second
+                    round) — "el sort no es coherente con el alto de los
+                    botones grandes, sacale el recuadro de píldora... o el
+                    ícono clásico de sort (3 líneas con flechita)": a 36px
+                    pill vertically centered next to 78px-tall tabs
+                    (`sm:items-center` on the shared row) just floated in
+                    the middle of a much taller row — no box height reads
+                    as "coherent" next to tiles that size without becoming
+                    a 4th tile itself, which would misrepresent it as a
+                    4th sort *criterion* alongside Recommended/Receive
+                    more/Fastest instead of the escape hatch it actually
+                    is. Simplest fix that matches what was asked: drop the
+                    border/background entirely (plain text+icon control,
+                    no pill) and switch to `ArrowDownWideNarrow` — lucide's
+                    "3 bars + arrow" glyph, the actual classic sort icon
+                    (vs. the two-way ArrowUpDown used before). Active state
+                    now reads via color/weight instead of a filled pill.
+                    Selecting one of these still visually replaces the 3
                     tabs' selection for free: `isActive` on every tab is
                     `sortBy === tab.key`, and a sort criterion from this
                     menu (e.g. "most_trusted") never equals any of the 3
                     tabs' keys, so all three lose their highlighted
-                    border/shadow the moment one of these is picked — this
-                    pill picks up the highlight instead (aria-pressed via
-                    MORE_SORT_CHIPS.includes(sortBy)). */}
+                    border/shadow the moment one of these is picked. */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
                           type="button"
                           aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
-                          className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                          className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                             MORE_SORT_CHIPS.includes(sortBy)
-                              ? "border-foreground bg-foreground text-background"
-                              : "border-input bg-card text-foreground hover:border-foreground/30"
+                              ? "text-brand-cta"
+                              : "text-foreground hover:text-brand-cta"
                           }`}
                         >
                           {(() => {
                             const Icon = MORE_SORT_CHIPS.includes(sortBy)
                               ? sortIcon(sortBy)
-                              : ArrowUpDown;
-                            return <Icon className="h-3 w-3" />;
+                              : ArrowDownWideNarrow;
+                            return <Icon className="h-3.5 w-3.5" />;
                           })()}
                           {MORE_SORT_CHIPS.includes(sortBy)
                             ? t(sortLabelKey(sortBy))
@@ -2754,13 +2804,16 @@ function TrustpilotCard() {
   //
   // 2026-09-01 feedback, now with a real screenshot — the box was roughly
   // double the height of "Set a rate alert" right above it (RateAlertCard's
-  // own submit button is h-10/40px): 14px top+bottom padding here on top
-  // of the widget's own 52px (see TrustBox.tsx's own comment on shrinking
-  // that to 36px) added up to way more than a matching rail card should.
-  // Fixed height + tighter padding brings this in line with the button
-  // above it instead of towering over it.
+  // own submit button is h-10/40px). Tried forcing a fixed `h-10` +
+  // `overflow-hidden` here and shrinking the widget itself to 36px to
+  // match — WRONG FIX, reverted the same day: `overflow-hidden` on a box
+  // shorter than what Trustpilot's iframe actually renders just clips the
+  // widget's own logo/stars content (see TrustBox.tsx's own comment).
+  // Trustpilot needs its real 52px; this card now gives it comfortable
+  // padding instead of a hard height, so it's taller than the button
+  // above it, but nothing gets cropped.
   return (
-    <div className="flex h-10 items-center justify-center overflow-hidden rounded-[18px] border border-border bg-secondary px-3 [&_.trustpilot-widget]:mx-auto">
+    <div className="flex items-center justify-center rounded-[18px] border border-border bg-secondary px-3 py-2.5 [&_.trustpilot-widget]:mx-auto">
       <TrustBox />
     </div>
   );

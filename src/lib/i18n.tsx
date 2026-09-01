@@ -467,15 +467,22 @@ export const DICTS: Record<Lang, Dict> = {
     "home.about.title": "Financial intelligence for every currency decision",
     "home.about.subtitle":
       "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
-    "home.about.mission.label": "Mission",
+    // 2026-09-01 feedback — "en lugar de misión/visión/problema, escribirlo
+    // como storytelling fluido, sin subtítulos, con negritas, como párrafos
+    // separados que digan por ejemplo 'our mission is...'": these three
+    // used to render as three labeled blocks (design/AJUSTES-3.md §B's
+    // original structure). Same three ideas, now three connected
+    // paragraphs — each still its own key/`<p>` so the page keeps its
+    // spacing rhythm, just without the eyebrow labels above them. `**bold**`
+    // spans render via ReactMarkdown (same treatment as
+    // comparator.rankingExplainer) so they translate correctly across all
+    // 20 locales instead of hardcoding word position.
     "home.about.mission.body":
-      "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
-    "home.about.vision.label": "Vision",
+      "**Our mission is simple:** give every transfer — a family sending money home, a business settling an invoice abroad — access to the best possible exchange rate, powered by neutral, AI-driven intelligence that closes the information gap and strips out hidden costs.",
     "home.about.vision.body":
-      "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
-    "home.about.problem.label": "Problem",
+      "We're working toward a world where **every cross-border payment** runs through a transparent, equitable decision layer, whether it's a family remittance or a multinational treasury operation — never a maze of confusing rates and hidden margins.",
     "home.about.problem.body":
-      "A two-sided inefficiency. On one side, retail clients and businesses face a frustrating maze regarding best rates. On the other, financial institutions struggle with high acquisition costs and fragmented channels.",
+      "Because today, the market fails on both sides. **Retail clients and businesses** struggle through a frustrating maze just to find the best rate, while **financial institutions** absorb high acquisition costs through fragmented channels. mangomundi exists to fix both at once.",
     // design/AJUSTES-2.md §5 — the dark band's CTA button. "Read our
     // method"/home.about.cta.method removed 2026-08-30 (see
     // AboutManifestoSection.tsx's own comment) — only "About us" remains.
@@ -894,15 +901,12 @@ export const DICTS: Record<Lang, Dict> = {
     "home.about.title": "Inteligencia financiera para cada decisión de divisas",
     "home.about.subtitle":
       "Un motor de decisión neutral: conectamos flujos retail y corporativos con la mejor ruta transfronteriza o el mejor operador local de cambio, sin sesgos ni márgenes ocultos.",
-    "home.about.mission.label": "Misión",
     "home.about.mission.body":
-      "Facilitar el acceso a las mejores decisiones de cambio mediante inteligencia neutral impulsada por IA, eliminando la asimetría de información y los costos ocultos de los pagos globales.",
-    "home.about.vision.label": "Visión",
+      "**Nuestra misión es simple:** darle a cada transferencia —una familia que envía dinero a casa, una empresa que paga una factura al exterior— acceso a la mejor tasa de cambio posible, con inteligencia neutral impulsada por IA que cierra la brecha de información y elimina los costos ocultos.",
     "home.about.vision.body":
-      "Un mundo donde cada pago local o transfronterizo, desde una remesa familiar hasta una operación de tesorería multinacional, transite por una capa de decisión transparente y equitativa.",
-    "home.about.problem.label": "Problema",
+      "Trabajamos hacia un mundo donde **cada pago transfronterizo** transite por una capa de decisión transparente y equitativa, sea una remesa familiar o una operación de tesorería multinacional — nunca un laberinto de tasas confusas y márgenes ocultos.",
     "home.about.problem.body":
-      "Una ineficiencia de doble cara. Por un lado, clientes retail y empresas enfrentan un laberinto frustrante para encontrar las mejores tasas. Por el otro, las instituciones financieras enfrentan altos costos de adquisición y canales fragmentados.",
+      "Porque hoy el mercado falla de los dos lados. **Clientes retail y empresas** se pierden en un laberinto frustrante solo para encontrar la mejor tasa, mientras las **instituciones financieras** absorben altos costos de adquisición por canales fragmentados. mangomundi existe para resolver los dos problemas a la vez.",
     // Home — Cobertura de mercado
     "home.stats.eyebrow": "Cobertura de mercado",
     "home.stats.title": "Una vista completa del mercado global de divisas",

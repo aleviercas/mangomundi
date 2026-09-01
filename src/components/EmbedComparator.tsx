@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Sparkle } from "lucide-react";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import type { ComparisonResult } from "@/lib/fx.functions";
+import type { ExclusiveCorridor } from "@/lib/fx.functions";
 import { Wordmark } from "@/components/Wordmark";
 import { defaultCounterCurrency, primaryCountryForCurrency } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
@@ -31,18 +32,28 @@ function useRatesFreshness(fetchedAt: string | null): string | null {
     : t("widget.header.ratesMinAgo").replace("{n}", String(minutes));
 }
 
-/** 2026-09-01 feedback — "antes de seleccionar pueden aparecer ejemplos de
- *  todays rates para que no aparezca vacío": the compressed 2-line form
- *  (see ComparatorSection's own `embedded` branch comment) frees real
- *  vertical room in the fixed 360×540 frame — this fills it with a real
- *  example instead of leaving that space blank pre-search. Reuses the
- *  exact same data TodaysRoutesSection shows on the home page
+/** 2026-09-01 feedback (first round) — "antes de seleccionar pueden aparecer
+ *  ejemplos de todays rates para que no aparezca vacío": the compressed
+ *  2-line form (see ComparatorSection's own `embedded` branch comment)
+ *  frees real vertical room in the fixed 360×540 frame — this fills it
+ *  with a real example instead of leaving that space blank pre-search.
+ *  Reuses the exact same data TodaysRoutesSection shows on the home page
  *  (getExclusiveCorridors — a real has_exclusive_deal winner, never
  *  invented), just one card instead of four, and labeled "Example rate"
  *  rather than reusing todaysRoutes.title's copy, so it never reads as
  *  this widget's own live result before a real search has run. Hidden
- *  once a result exists — same gate as everything else pre-search here. */
-function WidgetExample() {
+ *  once a result exists — same gate as everything else pre-search here.
+ *
+ *  2026-09-01 feedback (second round) — "que se pueda hacer click": this
+ *  used to be a static, unclickable card. `onSelect` (wired below to
+ *  EmbedComparator's own `exampleQuery` state) mirrors TodaysRoutesSection's
+ *  own click-to-run behavior on the home page (design/AJUSTES §, "al hacer
+ *  click debería mandarte a ese resultado") — but that one does a real page
+ *  navigation to `/send/$corridor`, which would break out of an embedded
+ *  iframe on a third-party site. This stays inside the widget's own React
+ *  tree instead: clicking loads the example's real corridor into the
+ *  search row and runs it immediately, same as picking it by hand. */
+function WidgetExample({ onSelect }: { onSelect: (example: ExclusiveCorridor) => void }) {
   const { t } = useI18n();
   const { data: corridors } = useExclusiveCorridors();
   const example = corridors?.[0];
@@ -50,7 +61,11 @@ function WidgetExample() {
   const fromCountry = primaryCountryForCurrency(example.from);
   const toCountry = primaryCountryForCurrency(example.to);
   return (
-    <div className="mt-2.5 rounded-[14px] border border-border bg-card p-3">
+    <button
+      type="button"
+      onClick={() => onSelect(example)}
+      className="mt-2.5 w-full rounded-[14px] border border-border bg-card p-3 text-left transition hover:border-foreground/25 hover:shadow-[0_10px_24px_-18px_rgba(36,28,22,.4)]"
+    >
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 text-[12px] font-bold text-foreground">
           {fromCountry && <FlagIcon country={fromCountry} />}
@@ -82,7 +97,7 @@ function WidgetExample() {
           <span className="text-[10px] font-semibold text-muted-foreground">{example.to}</span>
         </span>
       </div>
-    </div>
+    </button>
   );
 }
 
@@ -122,7 +137,7 @@ export function EmbedComparator({
   // currency is picked so it never starts equal to the origin one (that
   // used to trigger the same-currency warning immediately on load).
   const from = initialCurrency ?? geoCurrency;
-  const initialQuery: ComparatorQuery = {
+  const defaultQuery: ComparatorQuery = {
     origin: geoCountry,
     destination: previewDestination?.country ?? "",
     segment: "retail",
@@ -134,6 +149,30 @@ export function EmbedComparator({
 
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const freshness = useRatesFreshness(result?.fetched_at ?? null);
+
+  // 2026-09-01 feedback (second round) — WidgetExample's card needs to be
+  // clickable and actually run that corridor, not just decorate the empty
+  // state. ComparatorSection only reads `initialQuery` once, via useState
+  // initializers (see its own origin/from/to/segment state) — there's no
+  // effect syncing it on prop change — so swapping the query object alone
+  // wouldn't do anything after first mount. `remountKey` forces a real
+  // remount, which is what actually picks up the new values and (via
+  // `autoRun: true`) fires the comparison immediately, same as clicking
+  // "Compare" by hand would.
+  const [exampleQuery, setExampleQuery] = useState<ComparatorQuery | null>(null);
+  const [remountKey, setRemountKey] = useState(0);
+  const handleSelectExample = (example: ExclusiveCorridor) => {
+    setExampleQuery({
+      origin: primaryCountryForCurrency(example.from) ?? geoCountry,
+      destination: primaryCountryForCurrency(example.to) ?? "",
+      segment: "retail",
+      from: example.from,
+      to: example.to,
+      amount: example.amount,
+      autoRun: true,
+    });
+    setRemountKey((k) => k + 1);
+  };
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden bg-[#fcfcfc]">
@@ -156,8 +195,13 @@ export function EmbedComparator({
           the embedded search row and CompactResultsList, see their own
           comments), not scroll to reveal what doesn't fit. */}
       <div className="min-h-0 flex-1 overflow-hidden px-3 py-3 sm:px-4">
-        <ComparatorSection embedded initialQuery={initialQuery} onResult={setResult} />
-        {!result && <WidgetExample />}
+        <ComparatorSection
+          key={remountKey}
+          embedded
+          initialQuery={exampleQuery ?? defaultQuery}
+          onResult={setResult}
+        />
+        {!result && <WidgetExample onSelect={handleSelectExample} />}
       </div>
 
       {/* Attribution — required on the free embed; links back to the site. */}

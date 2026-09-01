@@ -20,18 +20,23 @@
 > contexto y forkearías el trabajo en curso. **PR abierto: #10** (no se
 > mergea solo — se dejó abierto a propósito para que cada push a la rama
 > re-dispare el preview de Vercel; ver la nota del handoff de la ronda 11
-> sobre por qué). El handoff del último round cerrado (fondo del home
-> alternado, flecha de swap pixel-exacta, banderas con `preload`+baja
-> prioridad en vez de `prefetch`, "More filters"→"Sort" con deselección
-> real de los 3 tabs grandes, Trustpilot del rail y de `/about` arreglados
-> de verdad, widget comprimido a 2 líneas + ejemplo real pre-resultado,
-> **causa raíz real del espacio en blanco de `/business`/`/about`**
-> encontrada y corregida (`__root.tsx` forzaba `min-h-screen` sitewide,
-> empujando el footer al fondo del viewport en páginas cortas), datos de
-> `minimum`/`settlement`/`contract_type` investigados y cargados para 7/8
-> brokers de business, panel "Your request" sin hueco muerto) está en
-> `docs/handoff/handoff-2026-09-01-undecimo-round-fondo-sort-widget-business-datos.md`
+> sobre por qué). **Hay una sesión de Cowork corriendo en paralelo**
+> (`session_01HYZCZBYwtRKVrfN6k79kTW`, con acceso de red real) investigando
+> los datos oficiales de los 8 brokers de business para U9 — retomarla
+> antes de re-investigar desde cero. El handoff del último round cerrado
+> (2 bugs reales de mobile encontrados y arreglados con capturas —
+> truncamiento de país a "U.." y el "1 GBP = X USD" cortado sin scroll en
+> el header del comparador—, ícono de Sort sin recuadro con el glyph
+> clásico, `triggerIconOnly` nuevo en el Combobox base para que el widget
+> muestre solo bandera/símbolo cerrado y nombre completo abierto, ejemplo
+> del widget ahora clickeable, Mission/Vision/Problem de `/about`
+> reescrito como storytelling sin subtítulos, **causa real del Trustpilot
+> "cortado"** encontrada (36px le cortaba contenido real al iframe propio
+> de Trustpilot, no un problema de nuestro CSS — revertido a 52px), botón
+> de email de `/business` ya no desperdicia el espacio en blanco) está en
+> `docs/handoff/handoff-2026-09-01-duodecimo-round-mobile-sort-widget-about-business.md`
 > — a su vez continúa
+> `docs/handoff/handoff-2026-09-01-undecimo-round-fondo-sort-widget-business-datos.md`,
 > `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md`,
 > `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md`,
 > `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md`,

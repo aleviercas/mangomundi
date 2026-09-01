@@ -48,6 +48,20 @@ export interface ComboboxProps {
    *  Off by default — CountryCombobox callers that don't have a separate
    *  currency field still want the readout. */
   hideSecondary?: boolean;
+  /** 2026-09-01 feedback — "en el widget el país debe mostrar solo la
+   *  banderita cuando ya está seleccionado, pero al abrir el selector que
+   *  diga el nombre del país; lo mismo con la moneda, solo el símbolo
+   *  cerrado, nombre completo abierto": neither `compactLabel` nor
+   *  `hideSecondary` alone (or combined) produces a true icon-only closed
+   *  trigger — `compactLabel` swaps the name for `secondary`, and
+   *  `compactLabel`+`hideSecondary` together paradoxically leaves nothing
+   *  to hide so the name comes back. This is the actual icon-only mode:
+   *  only `leading` (flag/symbol) shows in the closed trigger, full
+   *  `label`/`secondary` still show in the open dropdown list below
+   *  (unaffected — that part already worked, only the trigger was wrong).
+   *  Falls back to the placeholder text when nothing is selected yet,
+   *  since there's no icon to show in that case. */
+  triggerIconOnly?: boolean;
 }
 
 /**
@@ -69,6 +83,7 @@ export function Combobox({
   ariaLabel,
   compactLabel = false,
   hideSecondary = false,
+  triggerIconOnly = false,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const selected = React.useMemo(() => options.find((o) => o.value === value), [options, value]);
@@ -91,11 +106,12 @@ export function Combobox({
             {selected?.leading && (
               <span className="shrink-0 text-base leading-none">{selected.leading}</span>
             )}
-            {!(compactLabel && selected?.secondary && !hideSecondary) && (
-              <span className={cn("truncate", !selected && "text-muted-foreground")}>
-                {selected ? selected.label : placeholder}
-              </span>
-            )}
+            {(!triggerIconOnly || !selected) &&
+              !(compactLabel && selected?.secondary && !hideSecondary) && (
+                <span className={cn("truncate", !selected && "text-muted-foreground")}>
+                  {selected ? selected.label : placeholder}
+                </span>
+              )}
             {/* Currency code alongside the country name — was only visible
                 inside the open dropdown list before, never on the closed
                 trigger, so "what currency am I actually sending/receiving"
@@ -105,8 +121,9 @@ export function Combobox({
                 entirely instead (see its own doc comment) — this is then
                 the only text left in the trigger. hideSecondary drops this
                 readout altogether, for callers with their own separate
-                currency field. */}
-            {selected?.secondary && !hideSecondary && (
+                currency field. triggerIconOnly drops it too — see its own
+                doc comment, that mode shows nothing but `leading`. */}
+            {!triggerIconOnly && selected?.secondary && !hideSecondary && (
               <span className="shrink-0 text-xs font-semibold text-muted-foreground">
                 {selected.secondary}
               </span>

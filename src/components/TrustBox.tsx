@@ -53,11 +53,17 @@ declare global {
  * first time — "el botón de trustpilot del rail sigue quedando raro": at
  * 52px tall plus the rail card's own 14px top/bottom padding, the
  * rendered box came out roughly double the height of "Set a rate alert"
- * right above it (a 40px/h-10 button) — a real size mismatch, not an
- * alignment one. Dropped to 36px, closer to that button's height; both
- * call sites (this rail card, /about's ContactSection) already wrap this
- * in their own centering box, so a shorter widget just centers more
- * comfortably rather than needing anything else adjusted. */
+ * right above it (a 40px/h-10 button). Dropped to 36px to match — WRONG
+ * FIX, reverted the same day once the next round reported the /about
+ * instance now looking "cortado abajo" (cut off at the bottom): unlike a
+ * regular DOM box, this attribute sets the height of Trustpilot's OWN
+ * iframe, which their script uses to lay out its actual logo+stars+text
+ * content — squeezing that below what it needs (Trustpilot's own docs and
+ * examples for this widget size use 52px) clips their content at the
+ * iframe boundary itself, not something fixable from our CSS. Restored to
+ * 52px; the rail card that looked "too tall" next to a button now just
+ * gives the widget the room it actually needs instead of fighting it (see
+ * TrustpilotCard's own updated comment in ComparatorSection.tsx). */
 export function TrustBox() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -87,7 +93,7 @@ export function TrustBox() {
       data-locale="en-US"
       data-template-id="56278e9abfbbba0bdcd568bc"
       data-businessunit-id="6a7a14b6f29ac72f7bd2792e"
-      data-style-height="36px"
+      data-style-height="52px"
       data-style-width="auto"
       data-token="ef14895d-6018-44c4-9b24-4bb39ed6b2e5"
     >

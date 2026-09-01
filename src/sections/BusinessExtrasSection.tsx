@@ -11,16 +11,32 @@ import { useI18n } from "@/lib/i18n";
  *  "Institutional & Partnership Inquiries" section text the user supplied
  *  verbatim, from the site's previous design.
  *
- *  2026-09-01 feedback — "mejorar la distribución de los cuadros y la
- *  imagen": the previous layout floated a loose text column next to a
- *  boxed 300×340 photo with no shared frame, reading thinner than the rest
- *  of the page. Rebuilt on the SAME bordered-panel pattern
+ *  2026-09-01 feedback (first round) — "mejorar la distribución de los
+ *  cuadros y la imagen": the previous layout floated a loose text column
+ *  next to a boxed 300×340 photo with no shared frame, reading thinner
+ *  than the rest of the page. Rebuilt on the SAME bordered-panel pattern
  *  BusinessSection.tsx already uses one section up (`rounded-[20px] border
  *  border-border p-5`, photo in a fixed left column stretching the full
  *  panel height) — one visual language for "business panel with a photo"
  *  across the page instead of two different ones, and the photo now
  *  anchors the whole panel's height instead of sitting at its own
- *  arbitrary size. */
+ *  arbitrary size.
+ *
+ *  2026-09-01 feedback (second round) — "el botón de email our business
+ *  desk se puede poner a la derecha para ocupar el espacio en blanco,
+ *  comprimir un poco las cards, los iconos ocupan mucho lugar": the header
+ *  row used `items-end justify-between` on a `flex-wrap` container with a
+ *  `max-w-2xl` subtitle — wide enough that the row always wrapped in
+ *  practice (confirmed via screenshot: title+subtitle on one line, the
+ *  button dropped to its own line below, leaving the whole right two
+ *  thirds of that row empty instead of holding the button). Switched to
+ *  `flex-col` (mobile, stacked) / `sm:flex-row sm:items-center` (button
+ *  pinned to the panel's right edge, vertically centered against the
+ *  title block) with no wrap — the title block keeps `min-w-0` so long
+ *  copy wraps its own text instead of forcing the row to overflow or
+ *  collapse. Cards tightened too: smaller icon chip (9→8) and less
+ *  padding (p-6→p-5, mt-5→mt-4) so the icon doesn't eat as much of each
+ *  card's own vertical rhythm. */
 export function BusinessExtrasSection() {
   const { t } = useI18n();
   const cards = [
@@ -54,12 +70,12 @@ export function BusinessExtrasSection() {
           </div>
 
           <div>
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0 sm:max-w-md">
                 <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground">
                   {t("business.extras.title")}
                 </h2>
-                <p className="mt-2 max-w-2xl text-[14px] leading-relaxed text-[#6B5F55]">
+                <p className="mt-2 text-[14px] leading-relaxed text-[#6B5F55]">
                   {t("business.extras.subtitle")}
                 </p>
               </div>
@@ -67,18 +83,18 @@ export function BusinessExtrasSection() {
                   la paleta": was a plain neutral border/bg-card button. */}
               <a
                 href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
-                className="btn-cta inline-flex shrink-0 items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold"
+                className="btn-cta inline-flex shrink-0 items-center gap-1.5 self-start rounded-md px-4 py-2 text-sm font-semibold sm:self-center"
               >
                 {t("business.extras.cta")}
               </a>
             </div>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {cards.map((c) => (
-                <div key={c.title} className="rounded-[18px] border border-[#EBE3D9] bg-white p-6">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F5EFE8] text-accent">
-                    <c.icon className="h-4.5 w-4.5" aria-hidden />
+                <div key={c.title} className="rounded-[18px] border border-[#EBE3D9] bg-white p-5">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F5EFE8] text-accent">
+                    <c.icon className="h-4 w-4" aria-hidden />
                   </div>
-                  <h3 className="mt-3 text-[16.5px] font-extrabold text-foreground">{c.title}</h3>
+                  <h3 className="mt-2.5 text-[16.5px] font-extrabold text-foreground">{c.title}</h3>
                   <p className="mt-2 text-[14px] leading-relaxed text-[#6B5F55]">{c.body}</p>
                 </div>
               ))}
