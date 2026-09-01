@@ -166,15 +166,21 @@ function WidgetPage() {
         <div className="lg:pt-2">
           <div className="mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
             <div className="h-[540px]">
-              {/* design/AJUSTES-1.md §H — a real result, not the empty
-                  "Select…" state: this is the widget's own demo, so it
-                  should show what embedding it actually gets you. Same
-                  USD→MXN pair TodaysRoutesSection's candidate list already
-                  checks, not a new one-off example. */}
-              <EmbedComparator
-                initialCurrency="USD"
-                previewDestination={{ country: "MX", currency: "MXN" }}
-              />
+              {/* 2026-09-02 feedback — "el widget sigue mostrando una
+                  búsqueda por default, queremos mostrar todays rates":
+                  design/AJUSTES-1.md §H previously auto-ran a real USD→MXN
+                  comparison here on the theory that "this is the widget's
+                  own demo, so it should show what embedding it actually
+                  gets you" — but a real embedder never gets an auto-run
+                  result on load (previewDestination is set ONLY here, never
+                  by the actual /embed route), so the demo was showing
+                  something a real integration never shows. Dropped
+                  entirely: this preview now renders exactly what /embed
+                  renders — the compact 2-line form plus WidgetExamples'
+                  real today's-rates corridors (see EmbedComparator's own
+                  comment), the actual default a person embedding this
+                  widget gets. */}
+              <EmbedComparator initialCurrency="USD" />
             </div>
           </div>
         </div>
