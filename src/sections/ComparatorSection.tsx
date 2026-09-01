@@ -1761,7 +1761,21 @@ export function ComparatorSection({
                           placeholder="1000"
                           onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                           aria-label={t("comparator.field.amount")}
-                          className={`min-w-0 flex-[1.4] bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                          // 2026-09-01 feedback — "hay cambios que no se
+                          // hicieron": the mobile fix for the truncated
+                          // country name (triggerIconOnly) only covered
+                          // <768px — measured live at 1280px desktop, the
+                          // country segment (flex-1) was still only
+                          // 186.64px wide against the amount input's
+                          // flex-[1.4], not enough to fit "United Kingdom"
+                          // (confirmed via getBoundingClientRect + a real
+                          // screenshot, not assumed). This box only ever
+                          // holds a handful of digits at 25px, nowhere
+                          // near as space-hungry as a country name at
+                          // 14.5px — flex-1 (was 1.4) gives the country
+                          // segment its fair half instead of the smaller
+                          // share, without needing another isMobile branch.
+                          className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
                             compact ? "text-[21px]" : "text-[25px]"
                           }`}
                         />
@@ -3909,7 +3923,17 @@ function ProviderRow({
               className="shrink-0 rounded-sm border border-border bg-white transition-transform duration-200 ease-out group-hover:scale-110"
             />
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5">
+              {/* 2026-09-01 feedback — "hay cambios que no se hicieron":
+                  found via audit, not reported directly — the featured
+                  row's name+badge shared one line in a fixed 224px
+                  column; even "Provider 1" (10 chars) truncated to
+                  "Provid..." fighting the "BEST OVERALL" badge for room
+                  (confirmed on screenshot, not assumed). `flex-wrap`
+                  drops the badge to its own line instead of truncating
+                  the name — the name is the identifying info, the badge
+                  is a bonus tag, so wrapping preserves the one that
+                  matters. Non-featured rows (no badge) are unaffected. */}
+              <div className="flex flex-wrap items-center gap-1.5">
                 <span className="truncate text-[15px] font-bold text-foreground">{row.name}</span>
                 {/* design/AJUSTES-2.md §3 — the featured row's "why this
                     won" tag, matching the active sort criterion literally
@@ -3969,7 +3993,14 @@ function ProviderRow({
           </div>
           <div className="min-w-0">
             <div className={METRIC_LABEL}>{t("comparator.row.labelPayout")}</div>
-            <div className="mt-0.5 truncate text-[14.5px] font-semibold text-foreground">
+            {/* 2026-09-01 feedback — "hay cambios que no se hicieron":
+                found via audit — a provider supporting 2+ delivery
+                methods (e.g. "Bank transfer · Card") truncated to
+                "Bank · Ca..." in this equal-width 1/4 metric column,
+                confirmed on screenshot. Joined method names wrap onto a
+                2nd line just fine (no single word is long enough to
+                break awkwardly) instead of hiding real information. */}
+            <div className="mt-0.5 text-[14.5px] font-semibold leading-snug text-foreground">
               {payoutText}
             </div>
           </div>

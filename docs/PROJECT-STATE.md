@@ -20,27 +20,37 @@
 > contexto y forkearías el trabajo en curso. **PR abierto: #10** (no se
 > mergea solo — se dejó abierto a propósito para que cada push a la rama
 > re-dispare el preview de Vercel; ver la nota del handoff de la ronda 11
-> sobre por qué). **Los datos de proveedores de U9 ya están verificados
+> sobre por qué). El handoff de la ronda 13 (`decimotercero`) es el más
+> reciente: fix del flash de tipografía al abrir la página (`font-display:
+> swap` → `optional` en `__root.tsx`) y 3 truncados de texto reales
+> encontrados por auditoría propia (no reportados con detalle por
+> Alejandro — pidió revisar pantalla por pantalla): país de origen
+> truncado incluso en desktop (el fix de mobile de la ronda 12 no cubría
+> >768px), nombre del proveedor destacado cortado por el badge "BEST
+> OVERALL", métodos de pago truncados en la columna PAYOUT. Los tres
+> verificados con medición real de Playwright (`getBoundingClientRect`),
+> no supuestos. **Los datos de proveedores de U9 ya están verificados
 > con fuentes primarias** (sesión de Cowork `session_01HYZCZBYwtRKVrfN6k79kTW`
 > — quedó bloqueada pidiendo permiso de push al repo sin forma de
 > resolverlo por código entre sesiones, así que Alejandro pegó los
 > hallazgos directamente en el chat; esa sesión ya cumplió su propósito,
 > no hace falta retomarla). Corrigió 2 valores que la ronda anterior había
 > cargado sin fuente firme (Moneycorp y Payoneer, ver el handoff de la
-> ronda 12 para el detalle completo con URLs y citas). El handoff del
-> último round cerrado
+> ronda 12 para el detalle completo con URLs y citas). El handoff completo
+> de la ronda 13 está en
+> `docs/handoff/handoff-2026-09-01-decimotercero-round-fuentes-flash-y-truncados-reales.md`
+> — a su vez continúa
+> `docs/handoff/handoff-2026-09-01-duodecimo-round-mobile-sort-widget-about-business.md`
 > (2 bugs reales de mobile encontrados y arreglados con capturas —
 > truncamiento de país a "U.." y el "1 GBP = X USD" cortado sin scroll en
 > el header del comparador—, ícono de Sort sin recuadro con el glyph
 > clásico, `triggerIconOnly` nuevo en el Combobox base para que el widget
 > muestre solo bandera/símbolo cerrado y nombre completo abierto, ejemplo
 > del widget ahora clickeable, Mission/Vision/Problem de `/about`
-> reescrito como storytelling sin subtítulos, **causa real del Trustpilot
-> "cortado"** encontrada (36px le cortaba contenido real al iframe propio
-> de Trustpilot, no un problema de nuestro CSS — revertido a 52px), botón
-> de email de `/business` ya no desperdicia el espacio en blanco) está en
-> `docs/handoff/handoff-2026-09-01-duodecimo-round-mobile-sort-widget-about-business.md`
-> — a su vez continúa
+> reescrito como storytelling sin subtítulos, causa real del Trustpilot
+> "cortado" encontrada — 36px le cortaba contenido real al iframe propio
+> de Trustpilot, revertido a 52px —, botón de email de `/business` ya no
+> desperdicia el espacio en blanco),
 > `docs/handoff/handoff-2026-09-01-undecimo-round-fondo-sort-widget-business-datos.md`,
 > `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md`,
 > `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md`,

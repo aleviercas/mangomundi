@@ -131,7 +131,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           // ital,wght@0,700;1,700: the brand wordmark/icon only
           // (design/HANDOFF.md §1) — 700 upright for the straight "m"s, 700
           // italic for the "ango"/"undi" tails.
-          href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=swap",
+          //
+          // 2026-09-01 feedback — "el título está en negrita y después
+          // cambia la letra": `display=swap` renders the page with the
+          // fallback stack (`ui-sans-serif, system-ui, sans-serif` —
+          // styles.css's own --font-heading) immediately, then visibly
+          // swaps to Bricolage Grotesque the moment it finishes
+          // downloading — exactly the jump reported, most noticeable on
+          // the big bold h1/h2 titles. `display=optional` fixes it at the
+          // font-loading level: the browser gives the webfont a very
+          // short window (~100ms) to be ready (near-instant on repeat
+          // visits, since it's cached) and uses the fallback with no
+          // later swap otherwise — so the title never visibly changes
+          // after first paint, at the cost of an occasional slow first
+          // visit rendering in the fallback font instead of waiting for
+          // Bricolage. Applies to all 3 families requested in this one
+          // stylesheet (Bricolage/Manrope/Rubik) since `display` is a
+          // per-request query param here, not settable per-family.
+          href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=optional",
         },
         // 2026-08-31 feedback (twice), still reported 2026-09-01 after
         // switching from a JS idle-callback warm-up to `<link
