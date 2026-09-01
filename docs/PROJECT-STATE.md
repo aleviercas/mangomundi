@@ -8,7 +8,7 @@
 > este archivo es el índice y el resumen ejecutivo, se actualiza cada vez que
 > se cierra un sprint o se toma una decisión de arquitectura importante.
 
-> **🔴 Rama activa (1-sep-2026):** el trabajo del rediseño en curso vive en
+> **🔴 Rama activa (2-sep-2026):** el trabajo del rediseño en curso vive en
 > `claude/coordinar-trabajo-simultaneo-y85idz` (contiene, sin cambios, todos
 > los commits que antes estaban en `claude/reorganizar-entrega-rediseno-za6gmc`
 > — esa rama quedó congelada como snapshot en `237ffbe`, confirmado sin
@@ -20,26 +20,32 @@
 > contexto y forkearías el trabajo en curso. **PR abierto: #10** (no se
 > mergea solo — se dejó abierto a propósito para que cada push a la rama
 > re-dispare el preview de Vercel; ver la nota del handoff de la ronda 11
-> sobre por qué). El handoff de la ronda 13 (`decimotercero`) es el más
-> reciente: fix del flash de tipografía al abrir la página (`font-display:
-> swap` → `optional` en `__root.tsx`) y 3 truncados de texto reales
-> encontrados por auditoría propia (no reportados con detalle por
-> Alejandro — pidió revisar pantalla por pantalla): país de origen
-> truncado incluso en desktop (el fix de mobile de la ronda 12 no cubría
-> >768px), nombre del proveedor destacado cortado por el badge "BEST
-> OVERALL", métodos de pago truncados en la columna PAYOUT. Los tres
-> verificados con medición real de Playwright (`getBoundingClientRect`),
-> no supuestos. **Los datos de proveedores de U9 ya están verificados
-> con fuentes primarias** (sesión de Cowork `session_01HYZCZBYwtRKVrfN6k79kTW`
-> — quedó bloqueada pidiendo permiso de push al repo sin forma de
-> resolverlo por código entre sesiones, así que Alejandro pegó los
-> hallazgos directamente en el chat; esa sesión ya cumplió su propósito,
-> no hace falta retomarla). Corrigió 2 valores que la ronda anterior había
-> cargado sin fuente firme (Moneycorp y Payoneer, ver el handoff de la
-> ronda 12 para el detalle completo con URLs y citas). El handoff completo
-> de la ronda 13 está en
-> `docs/handoff/handoff-2026-09-01-decimotercero-round-fuentes-flash-y-truncados-reales.md`
+> sobre por qué). El handoff de la ronda 14 (`decimocuarto`) es el más
+> reciente: batch de 13 puntos (W1-W13) — workflow de email de business
+> request (mail de confirmación va como borrador a la dirección interna,
+> **no directo al cliente**, corrección explícita de Alejandro a mitad de
+> la ronda), fix real del auto-scroll del wizard AI (`scrollIntoView` sin
+> `block` alineaba mal, sacaba la respuesta de vista — ahora `block: "end"`
+> + se salta si el usuario scrolleó hacia arriba a releer), botón de
+> "Send request" forzado siempre a su propia línea (spacer `basis-full`
+> invisible), widget sin símbolo de moneda y con varios ejemplos de
+> corridor (no uno solo), 2 bugs de CSS reales encontrados midiendo (no a
+> ojo): `space-y-9` en `/about` no hacía nada porque `[&_p]:m-0` anulaba
+> el margin-top del que depende (cambiado a `gap-9`), y el aviso de
+> "same-country route" en el comparador saltaba 42px instantáneo (ahora
+> anima con `grid-template-rows`). **Los datos de business que faltaban
+> (CAB Payments y 7 más) ya están completos** — reemplaza la nota vieja de
+> "CAB Payments queda en null, no es un pendiente": ahora tiene una
+> estimación lógica etiquetada "Est." en la UI (`providers.
+> min_amount_estimated` / `settlement_terms_estimated` /
+> `contract_type_estimated`, ver el handoff de la ronda 14 para el detalle
+> de fuentes y metodología de estimación). Auditoría de mobile más
+> exhaustiva que la de la ronda 12 encontró y arregló un overflow
+> horizontal real en `/widget` a 375px (`min-w-0` faltante en un grid
+> item). El handoff completo de la ronda 14 está en
+> `docs/handoff/handoff-2026-09-02-decimocuarto-round-workflow-scroll-espaciado-datos-mobile.md`
 > — a su vez continúa
+> `docs/handoff/handoff-2026-09-01-decimotercero-round-fuentes-flash-y-truncados-reales.md`,
 > `docs/handoff/handoff-2026-09-01-duodecimo-round-mobile-sort-widget-about-business.md`
 > (2 bugs reales de mobile encontrados y arreglados con capturas —
 > truncamiento de país a "U.." y el "1 GBP = X USD" cortado sin scroll en
@@ -77,8 +83,12 @@
 > ronda 12** contra fuentes oficiales (help centers y PDFs legales de cada
 > broker) vía la sesión de Cowork mencionada arriba — reemplazan los
 > valores de segundo nivel que la ronda 11 había cargado sin poder abrir
-> las webs oficiales. CAB Payments sigue en `null` (banco mayorista B2B,
-> no publica esos datos) — no es un pendiente, es la respuesta real.
+> las webs oficiales. **Actualizado en la ronda 14:** CAB Payments (y 7
+> proveedores de business más) ya NO están en `null` — Alejandro pidió
+> explícitamente completar todo lo que falte con una estimación lógica
+> etiquetada, en vez de dejarlo vacío. Ver el handoff de la ronda 14 para
+> la metodología (mediana entre pares del mismo `provider_type` con dato
+> real) y las columnas `*_estimated` que distinguen dato real de estimado.
 
 ## 1. Qué es mangomundi
 
