@@ -8,7 +8,7 @@
 > este archivo es el índice y el resumen ejecutivo, se actualiza cada vez que
 > se cierra un sprint o se toma una decisión de arquitectura importante.
 
-> **🔴 Rama activa (31-ago-2026):** el trabajo del rediseño en curso vive en
+> **🔴 Rama activa (1-sep-2026):** el trabajo del rediseño en curso vive en
 > `claude/coordinar-trabajo-simultaneo-y85idz` (contiene, sin cambios, todos
 > los commits que antes estaban en `claude/reorganizar-entrega-rediseno-za6gmc`
 > — esa rama quedó congelada como snapshot en `237ffbe`, confirmado sin
@@ -18,19 +18,28 @@
 > `git fetch origin claude/coordinar-trabajo-simultaneo-y85idz` y trabajá
 > sobre esa rama, no crees una rama nueva desde `main` — perderías todo este
 > contexto y forkearías el trabajo en curso. El handoff del último round
-> cerrado (agente SIEMPRE flotante/oscuro — corrige una interpretación
-> equivocada del round anterior —, el rail vertical es FiltersCard oscuro
-> "smart filter" sin relación con el chat, widget sin scroll, varios fixes
-> puntuales) está en
-> `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md`
+> cerrado (widget rediseñado con país+moneda+monto de cada lado sin scroll
+> — verificado de verdad con Playwright, `/business` sin el vacío de
+> sticky-footer, espaciado sitewide comprimido vs. el mockup, fix del
+> Trustpilot del rail) está en
+> `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md`
 > — a su vez continúa
+> `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md`,
 > `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md`
 > y `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md`.
 > **Importante para la próxima sesión:** este sandbox no puede alcanzar
 > `*.supabase.co` ni `trustpilot.com` por la política de red de salida
-> (403 del proxy, no es un problema de credenciales) — ningún estado con
-> resultado real (`result`) se pudo verificar visualmente en el octavo
-> round, solo por lectura de código. Confirmar contra el preview real.
+> (403 del proxy, no es un problema de credenciales — el
+> `SUPABASE_SERVICE_ROLE_KEY` que Alejandro ya cargó en el environment no
+> lo soluciona, el bloqueo es de red, no de autenticación). Esto se
+> resuelve en la configuración del entorno/organización de Claude Code, no
+> desde una sesión. Mientras tanto, un estado con `result` real solo puede
+> verificarse simulando el dato (`window.__FAKE_RESULT_FOR_SCREENSHOT__`
+> inyectado con Playwright, revertido antes de commitear — ver el handoff
+> del noveno round) contra rutas que no llamen a Supabase en su loader
+> (`/business` sirve, `/` y `/blog` no). El widget de Trustpilot real
+> (con el script de `trustpilot.com` cargado) sigue sin poder verse en
+> este sandbox bajo ninguna técnica — confirmar contra el preview real.
 
 ## 1. Qué es mangomundi
 
@@ -535,6 +544,7 @@ marketing genérico sin cifra concreta en ninguna página oficial revisada.
 | Handoff: sexto round de ajustes de diseño — buscador en una línea, agente junto a Today's routes, Trustpilot real (31-ago) | `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md` |
 | Handoff: séptimo round — nav/footer reestructurados, fix de banderas, agente rediseñado (docked claro sin scroll) (31-ago) | `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md` |
 | Handoff: octavo round — agente siempre flotante/oscuro (corrige el séptimo), rail = FiltersCard oscuro, widget sin scroll (31-ago) | `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md` |
+| Handoff: noveno round — widget con país+moneda+monto verificado sin scroll, `/business` sin vacío de sticky-footer, espaciado sitewide, fix Trustpilot del rail (1-sep) | `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md` |
 
 ## 10. Cómo continuar
 

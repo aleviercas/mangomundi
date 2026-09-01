@@ -6,8 +6,13 @@ import { TrustBox } from "@/components/TrustBox";
  *  lives in BusinessSection. */
 export function ContactSection() {
   const { t } = useI18n();
+  // 2026-08-31 feedback — "los espacios en general deberían estar más
+  // compactos" vs. design/Mangomundi 4 - Final.dc.html: every other content
+  // band on the site matches the mockup's ~38–46px sections (see
+  // HowItWorksSection/AboutManifestoSection/BusinessWidgetRow's own
+  // comments); this one was still at the old py-14 sm:py-20 (56–80px).
   return (
-    <section id="contact" className="scroll-mt-24 py-14 sm:py-20">
+    <section id="contact" className="scroll-mt-24 py-9 sm:py-12">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 text-center">
         <p className="text-eyebrow font-bold uppercase text-accent">{t("home.contact.eyebrow")}</p>
         <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">

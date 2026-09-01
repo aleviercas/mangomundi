@@ -1442,77 +1442,83 @@ export function ComparatorSection({
                 the chat to the business-lead wizard. That decision needs to
                 happen BEFORE the search runs, not as a post-results filter
                 — so it stays here. */}
-            <div
-              className={`flex items-center gap-3 border-b border-border ${
-                embedded
-                  ? "px-3 py-1.5"
-                  : compact
-                    ? "px-4 py-3.5 sm:px-[30px]"
-                    : "px-4 py-1.5 sm:px-5"
-              }`}
-            >
-              <div className="flex shrink-0 items-center gap-2.5">
-                <div
-                  role="tablist"
-                  aria-label={t("search.segment")}
-                  className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-muted p-1"
-                >
-                  {(["retail", "business"] as Segment[]).map((s) => (
-                    <button
-                      key={s}
-                      role="tab"
-                      aria-selected={segment === s}
-                      onClick={() => handleSegmentChange(s)}
-                      className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
-                        segment === s
-                          ? "bg-card text-foreground shadow-sm"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {t(`comparator.segment.${s}`)}
-                    </button>
-                  ))}
+            {/* 2026-08-31 feedback — "el widget debería ser solo para
+                retail": the segment tablist below decides which SERVER
+                query runs (see its own comment) and hands off to the
+                business-lead wizard on "Business" — neither makes sense
+                inside a third-party embed, which only ever queries retail
+                (EmbedComparator hardcodes `segment: "retail"`). Hiding the
+                whole row also buys back its ~34px in the fixed 360×540
+                frame instead of showing a tablist with nothing to switch. */}
+            {!embedded && (
+              <div
+                className={`flex items-center gap-3 border-b border-border ${
+                  compact ? "px-4 py-3.5 sm:px-[30px]" : "px-4 py-1.5 sm:px-5"
+                }`}
+              >
+                <div className="flex shrink-0 items-center gap-2.5">
+                  <div
+                    role="tablist"
+                    aria-label={t("search.segment")}
+                    className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-muted p-1"
+                  >
+                    {(["retail", "business"] as Segment[]).map((s) => (
+                      <button
+                        key={s}
+                        role="tab"
+                        aria-selected={segment === s}
+                        onClick={() => handleSegmentChange(s)}
+                        className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
+                          segment === s
+                            ? "bg-card text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        {t(`comparator.segment.${s}`)}
+                      </button>
+                    ))}
+                  </div>
+                  {/* design/AJUSTES-1.md §B originally rendered this inert
+                      (no href, since /exchange doesn't exist — redesign
+                      decision #5, "no está diseñada"). design/AJUSTES-3.md §B
+                      revises that: an inert-but-visible link still reads as
+                      broken, and the rule for an unbuilt destination is to
+                      hide it, not fake it ("un enlace muerto cuesta más
+                      credibilidad que una función que todavía no anunciás").
+                      So it's gone from here entirely now — not moved into
+                      CurrencyPillRow's with-results row either, even though
+                      §A's own mockup literally places it there, because §B
+                      addresses this exact link by name and its rule is the
+                      more recent, more specific one. Re-add once /exchange
+                      is real; home.hero.localExchangeLink is kept in i18n.tsx
+                      for that. */}
                 </div>
-                {/* design/AJUSTES-1.md §B originally rendered this inert
-                    (no href, since /exchange doesn't exist — redesign
-                    decision #5, "no está diseñada"). design/AJUSTES-3.md §B
-                    revises that: an inert-but-visible link still reads as
-                    broken, and the rule for an unbuilt destination is to
-                    hide it, not fake it ("un enlace muerto cuesta más
-                    credibilidad que una función que todavía no anunciás").
-                    So it's gone from here entirely now — not moved into
-                    CurrencyPillRow's with-results row either, even though
-                    §A's own mockup literally places it there, because §B
-                    addresses this exact link by name and its rule is the
-                    more recent, more specific one. Re-add once /exchange
-                    is real; home.hero.localExchangeLink is kept in i18n.tsx
-                    for that. */}
+                {/* Mid-market exchange rate — moved into this header row when
+                    compact (design/AJUSTES-2.md §2), replacing the standalone
+                    bordered box that used to sit below the fields. No "+X%"
+                    figure next to it: the mockup shows one, but that would be
+                    a rate-of-change number this app doesn't track anywhere
+                    (market_rate has no stored history to diff against) — not
+                    invented for this row. resultsRef/scroll-mt-24 (previously
+                    on the removed box) move here — see the ref's own comment
+                    a few hundred lines up for why it exists. */}
+                {compact && result && (
+                  <div
+                    ref={resultsRef}
+                    className="ml-auto flex shrink-0 scroll-mt-24 items-baseline gap-2.5"
+                  >
+                    <span className="font-heading text-[18px] font-extrabold tracking-tight tabular-nums text-foreground">
+                      1 {from} ={" "}
+                      {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+                      {to}
+                    </span>
+                    <span className="hidden text-xs sm:inline" style={{ color: "#8A7C6E" }}>
+                      {t("comparator.midMarketRate")}
+                    </span>
+                  </div>
+                )}
               </div>
-              {/* Mid-market exchange rate — moved into this header row when
-                  compact (design/AJUSTES-2.md §2), replacing the standalone
-                  bordered box that used to sit below the fields. No "+X%"
-                  figure next to it: the mockup shows one, but that would be
-                  a rate-of-change number this app doesn't track anywhere
-                  (market_rate has no stored history to diff against) — not
-                  invented for this row. resultsRef/scroll-mt-24 (previously
-                  on the removed box) move here — see the ref's own comment
-                  a few hundred lines up for why it exists. */}
-              {compact && result && (
-                <div
-                  ref={resultsRef}
-                  className="ml-auto flex shrink-0 scroll-mt-24 items-baseline gap-2.5"
-                >
-                  <span className="font-heading text-[18px] font-extrabold tracking-tight tabular-nums text-foreground">
-                    1 {from} ={" "}
-                    {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
-                    {to}
-                  </span>
-                  <span className="hidden text-xs sm:inline" style={{ color: "#8A7C6E" }}>
-                    {t("comparator.midMarketRate")}
-                  </span>
-                </div>
-              )}
-            </div>
+            )}
 
             {/* Form body. @container lets the rows adapt to the CARD's width, not
               the viewport: 3/4 columns when the card is full-width (no results
@@ -1542,97 +1548,125 @@ export function ComparatorSection({
                   result exists (58px→52px, "Compare"→"Update"); the compact
                   fields also swap to #FDFBF9 instead of white. */}
               {embedded ? (
-                // design/Mangomundi 4 - Final.dc.html line 726-786 ("Widget ·
-                // sin scroll") — the widget's own compact row is literal to
-                // the mockup: amount + currency-flag pill, swap, currency-flag
-                // box, nothing else. No separate country row and no currency
-                // override here — one more control would break "sin scroll"
-                // in a fixed ~360px container. CountryCombobox + compactLabel
-                // already renders flag + currency code only (no country
-                // name), which is exactly what the mockup shows.
-                <div className="grid grid-cols-1 items-stretch gap-[7px] @[260px]:grid-cols-[minmax(0,1fr)_34px_96px]">
-                  <div className="min-w-0">
-                    <FieldLight label={t("comparator.field.amount")} hideLabel>
-                      <div className="flex h-[42px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          min={1}
-                          value={amount || ""}
-                          placeholder="1000"
-                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                          aria-label={t("comparator.field.amount")}
-                          className="min-w-0 flex-1 bg-transparent px-2.5 text-[16px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                        />
-                        <CountryCombobox
-                          value={sendingCountry}
-                          onChange={handleSendingCountryChange}
-                          placeholder={t("comparator.combobox.placeholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCurrency")}
-                          compactLabel
-                          triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0"
-                        />
-                      </div>
-                    </FieldLight>
-                  </div>
+                // 2026-08-31 feedback (third time on this file) — the widget
+                // used to be literal to design/Mangomundi 4 - Final.dc.html's
+                // (line 726-786) compact mockup: amount+currency pill, swap,
+                // a SECOND currency pill for "to" — no country picker at
+                // all, both pills were actually CountryCombobox in disguise
+                // (compactLabel hides the name, so a country picker LOOKS
+                // like a bare currency pill). Explicit ask this round: "se
+                // debe poder elegir país de origen y destino y monedas igual
+                // que en el comparador y monto" — real country pickers AND
+                // an independent currency override on each side, same five
+                // fields as the full (non-embedded) row below, just stacked
+                // instead of side-by-side (a 360px frame can't fit six
+                // columns) and shorter (34–38px vs. 58px) to still clear
+                // "sin scroll" in the fixed frame. No segment tablist here
+                // (see the header above) — the widget is retail-only.
+                <div className="space-y-[7px]">
+                  <FieldLight label={t("comparator.field.amount")} hideLabel>
+                    <div className="flex h-[40px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        min={1}
+                        value={amount || ""}
+                        placeholder="1000"
+                        onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                        aria-label={t("comparator.field.amount")}
+                        className="min-w-0 flex-1 bg-transparent px-2.5 text-[15px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                      />
+                      <CurrencyCombobox
+                        value={from}
+                        onChange={handlePickFromCurrency}
+                        placeholder={t("comparator.field.sourceCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.sourceCurrency")}
+                        compactLabel
+                        triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                      />
+                    </div>
+                  </FieldLight>
 
-                  <div className="flex items-center justify-center py-0.5">
+                  <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
+                    <CountryCombobox
+                      value={sendingCountry}
+                      onChange={handleSendingCountryChange}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCountry")}
+                      hideSecondary
+                      triggerClassName="h-[34px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-2.5 text-[12px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                    />
+                  </FieldLight>
+
+                  <div className="flex items-center justify-center">
                     <button
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      className="flex h-[42px] w-[34px] shrink-0 items-center justify-center rounded-[9px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                      className="flex h-[24px] w-[32px] shrink-0 items-center justify-center rounded-[7px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                       style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                     >
-                      <ArrowLeftRight strokeWidth={2.2} className="h-[14px] w-[14px]" />
+                      <ArrowLeftRight strokeWidth={2.2} className="h-[12px] w-[12px] rotate-90" />
                     </button>
                   </div>
 
-                  <div className="min-w-0">
-                    <FieldLight label={t("comparator.field.youReceive")} hideLabel>
+                  <div className="grid grid-cols-[minmax(0,1fr)_82px] gap-[7px]">
+                    <FieldLight label={t("comparator.field.targetCountry")} hideLabel>
                       <CountryCombobox
                         value={receivingCountry}
                         onChange={handleReceivingCountryChange}
                         placeholder={t("comparator.combobox.placeholder")}
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCountry")}
+                        hideSecondary
+                        triggerClassName={`h-[34px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-2.5 text-[12px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
+                      />
+                    </FieldLight>
+                    <FieldLight label={t("comparator.field.targetCurrency")} hideLabel>
+                      <CurrencyCombobox
+                        value={to}
+                        onChange={handlePickToCurrency}
+                        placeholder={t("comparator.field.targetCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCurrency")}
                         compactLabel
-                        triggerClassName={`h-[42px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-3.5 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
+                        triggerClassName="h-[34px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-2 text-[12px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                       />
                     </FieldLight>
                   </div>
 
-                  <div className="flex flex-col justify-end @[260px]:col-span-3">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
-                          setValidationError(t("fx.validation"));
-                          return;
-                        }
-                        setValidationError(null);
-                        compareMut.mutate(undefined);
-                      }}
-                      disabled={
-                        compareMut.isPending ||
-                        !receivingCountry ||
-                        sameCorridorBlocked ||
-                        amount <= 0
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                        setValidationError(t("fx.validation"));
+                        return;
                       }
-                      className="btn-cta inline-flex h-[42px] w-full items-center justify-center rounded-[9px] px-4 text-[14px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
-                    >
-                      {compareMut.isPending ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <span className="truncate">
-                          {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
-                        </span>
-                      )}
-                    </button>
-                  </div>
+                      setValidationError(null);
+                      compareMut.mutate(undefined);
+                    }}
+                    disabled={
+                      compareMut.isPending ||
+                      !receivingCountry ||
+                      sameCorridorBlocked ||
+                      amount <= 0
+                    }
+                    className="btn-cta inline-flex h-[38px] w-full items-center justify-center rounded-[9px] px-4 text-[13.5px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    {compareMut.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <span className="truncate">
+                        {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                      </span>
+                    )}
+                  </button>
                 </div>
               ) : (
                 // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
@@ -1952,12 +1986,14 @@ export function ComparatorSection({
                       : undefined
                   }
                 />
-                {/* 2026-08-31 feedback — "sacar la imagen y el cuadro de set
-                    alert [en business], porque ya queda el de email our
-                    business desk": BusinessContactCard (now below the
-                    results, not here) already covers that ground for
-                    business; retail keeps it, unchanged. */}
-                {segment !== "business" && (
+                {/* 2026-08-31 feedback — "el cuadro de rather talk to
+                    someone debe estar en el menú vertical... debajo de los
+                    filtros": back in the rail (was below the results for
+                    one round) — business only, same as RateAlertCard is
+                    retail-only right below (never both at once). */}
+                {segment === "business" ? (
+                  <BusinessContactCard />
+                ) : (
                   <RateAlertCard
                     t={t}
                     from={from}
@@ -2233,6 +2269,30 @@ export function ComparatorSection({
                     </div>
                   </DialogContent>
                 </Dialog>
+                {/* 2026-08-31 feedback — "el cuadro de request en business
+                    debe estar arriba de los resultados, no abajo, y debe
+                    tener todo el ancho": moved above ResultsBlock (was
+                    below), full width of this column now that
+                    BusinessContactCard went back to the rail instead of
+                    sharing this row with it. */}
+                {segment === "business" && result && (
+                  <div className="mb-4">
+                    <BusinessRequestPanel
+                      amount={amount}
+                      from={from}
+                      to={to}
+                      totalBrokers={result?.rows.length ?? 0}
+                      requestedSlugs={requestedSlugs}
+                      contractTypeLabel={t(`comparator.contractType.${contractType}`)}
+                      frequencyLabel={t(
+                        `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
+                      )}
+                      status={requestPanelStatus}
+                      onSend={sendBusinessRequest}
+                    />
+                  </div>
+                )}
+
                 <ResultsBlock
                   result={result}
                   amount={amount}
@@ -2250,36 +2310,6 @@ export function ComparatorSection({
                   requestedSlugs={requestedSlugs}
                   onToggleRequested={toggleRequestedSlug}
                 />
-
-                {/* 2026-08-31 feedback — moved out of the rail (it lived
-                    docked next to the agent there) to below "Your
-                    results"/the 3 big tabs and the results list itself:
-                    design/Mangomundi 4 - Final.dc.html line 532-541 — the
-                    "Your request" summary + contact card. No longer tied to
-                    the desktop-rail breakpoint either, since it's now
-                    ordinary content in this column, not rail furniture. */}
-                {segment === "business" && result && (
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-start">
-                    <div className="flex-1">
-                      <BusinessRequestPanel
-                        amount={amount}
-                        from={from}
-                        to={to}
-                        totalBrokers={result?.rows.length ?? 0}
-                        requestedSlugs={requestedSlugs}
-                        contractTypeLabel={t(`comparator.contractType.${contractType}`)}
-                        frequencyLabel={t(
-                          `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
-                        )}
-                        status={requestPanelStatus}
-                        onSend={sendBusinessRequest}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <BusinessContactCard />
-                    </div>
-                  </div>
-                )}
 
                 {/* Stable business upsell (design/HANDOFF.md §3 + decision
                   29-ago-2026): always rendered once there's a result, never
@@ -2335,11 +2365,13 @@ export function ComparatorSection({
 }
 
 // ===== Left rail (desktop, ≥lg only) — design/HANDOFF.md §3 =====
-// FiltersCard ("smart filter", 2026-08-31) → Rate alert (retail only) →
-// Trustpilot, stacked in a 268px column. The AI agent never docks here
-// anymore — it's always the floating tab (see its own render site's
-// comment) — and BusinessRequestPanel/BusinessContactCard moved to the
-// results column. Below lg the page keeps today's existing layout (inline
+// FiltersCard ("smart filter", 2026-08-31) → Rate alert (retail) or
+// BusinessContactCard (business, "talk to someone") → Trustpilot, stacked
+// in a 268px column. The AI agent never docks here anymore — it's always
+// the floating tab (see its own render site's comment). BusinessRequestPanel
+// lives in the results column instead, above ResultsBlock, full width — it's
+// a running summary of what's being built for the request, not rail
+// furniture. Below lg the page keeps today's existing layout (inline
 // filter chips further up + the floating agent) unchanged — this rail
 // doesn't replace that, it's additive at the breakpoint where there's room
 // for it.
@@ -2659,13 +2691,23 @@ function RateAlertCard({
  *  uno hecho a medida" — the actual Trustpilot embed (TrustBox.tsx, same
  *  widget ContactSection uses), not a look-alike link built here. */
 function TrustpilotCard() {
-  // 2026-08-31 feedback — "queda descentrado del contenido de adentro":
-  // Trustpilot's own widget (once the bootstrap script upgrades it) isn't
-  // internally centered — it's a left-aligned block by default. flex+center
-  // here centers whatever it renders inside this card, rather than trying
-  // to fight Trustpilot's own markup.
+  // 2026-08-31 feedback (still reported after the first round of "flex +
+  // justify-center" — that fix helped the About section, next to a button
+  // in a `w-fit` row, but this card is a fixed 268px rail item: once
+  // Trustpilot's bootstrap script upgrades .trustpilot-widget, it sets its
+  // OWN inline width/display on that div (not on any wrapper of ours), and
+  // a block-level child sitting inside a wider flex parent doesn't
+  // necessarily honor the parent's `justify-center` the way a true flex
+  // item would if the script also touches its display/position. `mx-auto`
+  // targeted straight at `.trustpilot-widget` centers that specific div by
+  // its own margins regardless of what width/display the script gives it —
+  // doesn't depend on this wrapper's flex context at all, so it can't be
+  // undone by whatever the script decides to set. Still unverified against
+  // the live widget (no network path to trustpilot.com in this sandbox to
+  // confirm the rendered result) — if this still looks off in production,
+  // screenshot it; there's nothing left to reason about blind.
   return (
-    <div className="flex items-center justify-center rounded-[18px] border border-border bg-secondary px-[15px] py-[14px]">
+    <div className="flex items-center justify-center rounded-[18px] border border-border bg-secondary px-[15px] py-[14px] [&_.trustpilot-widget]:mx-auto">
       <TrustBox />
     </div>
   );
@@ -3098,49 +3140,64 @@ function BusinessRequestPanel({
     );
   }
 
+  // 2026-08-31 feedback — moved from a 268px rail card to full width above
+  // the results: the 4 stats read as a horizontal row now (a grid, like the
+  // "150+/100+/50+" stat tiles elsewhere) instead of a narrow stacked list
+  // that would look sparse stretched across the whole column. New explainer
+  // line up top says what selecting brokers below actually does, now that
+  // this is the first thing seen instead of a rail card next to an agent
+  // that used to explain the flow.
   return (
     <div className="rounded-[18px] border-[1.5px] border-foreground bg-card p-4">
-      <h4 className="font-heading text-[15px] font-extrabold text-foreground">
-        {t("comparator.business.request.title")}
-      </h4>
-      <div className="mt-3 flex flex-col gap-2">
-        <div className="flex items-baseline justify-between gap-2.5">
-          <span className="text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+            {t("comparator.business.request.title")}
+          </h4>
+          <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
+            {t("comparator.business.request.explainer")}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border pt-3.5 sm:grid-cols-4">
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.volume")}
-          </span>
-          <span className="text-[13px] font-bold tabular-nums text-foreground">
+          </div>
+          <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
             {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
-          </span>
+          </div>
         </div>
-        <div className="flex items-baseline justify-between gap-2.5">
-          <span className="text-xs text-muted-foreground">
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.route")}
-          </span>
-          <span className="text-[13px] font-bold text-foreground">
+          </div>
+          <div className="mt-0.5 text-sm font-bold text-foreground">
             {from} → {to}
-          </span>
+          </div>
         </div>
-        <div className="flex items-baseline justify-between gap-2.5">
-          <span className="text-xs text-muted-foreground">
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.contract")}
-          </span>
-          <span className="text-[13px] font-bold text-foreground">
+          </div>
+          <div className="mt-0.5 text-sm font-bold text-foreground">
             {contractTypeLabel} · {frequencyLabel}
-          </span>
+          </div>
         </div>
-        <div className="flex items-baseline justify-between gap-2.5">
-          <span className="text-xs text-muted-foreground">
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.business.request.brokersSelected")}
-          </span>
-          <span className="text-[13px] font-bold tabular-nums text-foreground">
+          </div>
+          <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
             {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
-          </span>
+          </div>
         </div>
       </div>
 
       {expanded ? (
         <form
-          className="mt-3 flex flex-col gap-2"
+          className="mt-3.5 flex flex-col gap-2 border-t border-border pt-3.5 sm:flex-row sm:items-center"
           onSubmit={(e) => {
             e.preventDefault();
             onSend(email);
@@ -3152,19 +3209,21 @@ function BusinessRequestPanel({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("comparator.business.request.emailPlaceholder")}
-            className="h-10 rounded-lg border border-input bg-card px-3 text-sm text-foreground"
+            className="h-11 flex-1 rounded-lg border border-input bg-card px-3 text-sm text-foreground"
           />
           <button
             type="submit"
             disabled={status === "sending"}
-            className="btn-cta flex h-11 items-center justify-center rounded-xl text-sm font-bold disabled:opacity-60"
+            className="btn-cta flex h-11 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:opacity-60"
           >
             {status === "sending"
               ? t("comparator.business.request.sending")
               : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
           </button>
           {status === "error" && (
-            <p className="text-xs text-destructive">{t("comparator.business.request.error")}</p>
+            <p className="text-xs text-destructive sm:basis-full">
+              {t("comparator.business.request.error")}
+            </p>
           )}
         </form>
       ) : (
@@ -3172,7 +3231,7 @@ function BusinessRequestPanel({
           type="button"
           disabled={selectedCount === 0}
           onClick={() => setExpanded(true)}
-          className="btn-cta mt-3 flex h-11 w-full items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+          className="btn-cta mt-3.5 flex h-11 w-full items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-6"
         >
           {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
         </button>
@@ -3209,9 +3268,13 @@ function BusinessContactCard() {
         <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
           {t("comparator.business.contactCard.body")}
         </p>
+        {/* 2026-08-31 feedback — "el botón de acción de enviar un email
+            respete la paleta": was a plain ink-bordered button, now the
+            brand's own btn-cta (mango), same as BusinessExtrasSection's
+            matching email CTA below. */}
         <a
           href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
-          className="mt-2.5 flex h-10 items-center justify-center rounded-xl border-[1.5px] border-foreground text-[13px] font-bold text-foreground"
+          className="btn-cta mt-2.5 flex h-10 items-center justify-center rounded-xl text-[13px] font-bold"
         >
           {t("business.extras.cta")}
         </a>

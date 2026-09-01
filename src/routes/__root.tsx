@@ -8,12 +8,11 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
-import { prefetchAllFlags } from "@/components/ui/FlagIcon";
+import { ALL_FLAG_URLS } from "@/components/ui/FlagIcon";
 
 import { SITE_URL, GA4_MEASUREMENT_ID, GTM_CONTAINER_ID } from "@/config/site";
 import appCss from "../styles.css?url";
@@ -134,6 +133,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           // italic for the "ango"/"undi" tails.
           href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=swap",
         },
+        // 2026-08-31 feedback (twice) — country dropdown flags "tienen un
+        // delay" the first time the list opens. Real prefetch hints, found
+        // by the browser's preload scanner while it's still parsing this
+        // HTML (before any JS runs) — see FlagIcon.tsx's own comment for
+        // why this replaced an earlier JS-based idle-time attempt.
+        ...ALL_FLAG_URLS.map((href) => ({ rel: "prefetch", href, as: "image" }) as const),
       ],
     };
   },
@@ -243,19 +248,6 @@ function RootShell({ children }: { children: React.ReactNode }) {
 function LangKeyedShell() {
   const { lang } = useI18n();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-
-  // 2026-08-31 feedback — country dropdown flags "tienen un delay" the
-  // first time the list opens (see prefetchAllFlags' own comment). Warms
-  // the cache once the page is idle, well after anything actually visible
-  // has had a chance to load — this is every route including /embed.
-  useEffect(() => {
-    if (typeof window.requestIdleCallback === "function") {
-      const id = window.requestIdleCallback(prefetchAllFlags);
-      return () => window.cancelIdleCallback(id);
-    }
-    const id = window.setTimeout(prefetchAllFlags);
-    return () => window.clearTimeout(id);
-  }, []);
 
   // The embeddable widget (/embed) renders bare — no site chrome — so it drops
   // cleanly into a third-party iframe. All providers still wrap it (above).

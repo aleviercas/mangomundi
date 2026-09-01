@@ -35,7 +35,11 @@ export function AboutManifestoSection() {
   return (
     <section
       id="about"
-      className="scroll-mt-24 relative overflow-hidden bg-[#120E0B] py-14 sm:py-20"
+      // 2026-08-31 feedback — "los espacios en general deberían estar más
+      // compactos" vs. design/Mangomundi 4 - Final.dc.html: this band is
+      // `padding:46px 30px` there (mockup line 169); py-14 sm:py-20 ran
+      // 10–34px looser on top of that.
+      className="scroll-mt-24 relative overflow-hidden bg-[#120E0B] py-10 sm:py-14"
     >
       <div
         className="absolute inset-0"
@@ -77,8 +81,18 @@ export function AboutManifestoSection() {
               {/* 2026-08-31 feedback — moved here from TodaysRoutesSection's
                   header row, next to the About us CTA. No custom card
                   around it (an earlier pass wrapped it in a white pill) —
-                  Trustpilot's own widget design, unmodified. */}
-              <div className="shrink-0">
+                  Trustpilot's own widget design, unmodified.
+                  2026-08-31 feedback (again) — "sigue desalineado respecto
+                  al botón de about us": `items-center` on the row alone
+                  wasn't enough to fix this — `data-style-height="52px"` is
+                  a Trustpilot-only attribute, not real CSS, so before (or
+                  without, in a sandbox that can't reach trustpilot.com)
+                  their script runs, this box has no actual height of its
+                  own and sinks to the fallback link's natural (bottom-
+                  anchored) line box instead of the row's centerline. Giving
+                  it the CTA button's own h-11 + flex centering forces the
+                  match regardless of what's rendered inside. */}
+              <div className="flex h-11 shrink-0 items-center">
                 <TrustBox />
               </div>
             </div>

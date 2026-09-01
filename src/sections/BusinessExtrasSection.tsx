@@ -31,7 +31,7 @@ export function BusinessExtrasSection() {
     },
   ];
   return (
-    <section className="py-10 sm:py-14">
+    <section className="py-7 sm:py-10">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid gap-6 lg:grid-cols-[1fr_300px] lg:items-start">
           <div>
@@ -44,9 +44,11 @@ export function BusinessExtrasSection() {
                   {t("business.extras.subtitle")}
                 </p>
               </div>
+              {/* 2026-08-31 feedback — "el botón de enviar un email respete
+                  la paleta": was a plain neutral border/bg-card button. */}
               <a
                 href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
-                className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-input bg-card px-4 py-2 text-sm font-semibold text-foreground hover:border-foreground/30"
+                className="btn-cta inline-flex shrink-0 items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold"
               >
                 {t("business.extras.cta")}
               </a>

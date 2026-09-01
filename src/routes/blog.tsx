@@ -48,18 +48,23 @@ function BlogIndexPage() {
   return (
     <div className="min-h-screen bg-background py-16 sm:py-20">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <p className="text-eyebrow font-bold uppercase text-brand-cta">{t("home.blog.eyebrow")}</p>
-        <div className="mt-3 flex items-center justify-between gap-4">
-          <h1 className="font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-h1">
-            {t("home.blog.title")}
-          </h1>
-          {/* 2026-08-31 feedback — moved to the right, level with the "Blog"
-              title (was stacked above the eyebrow, on the left). Same brand
-              mark the post pages/widget badge use. */}
+        {/* 2026-08-31 feedback (twice now) — "a la altura de Blog": that
+            means the eyebrow line, which literally reads "Blog"
+            (home.blog.eyebrow) — not the long h1 sentence below it
+            (home.blog.title, "Insights on global FX..."). Putting the icon
+            level with the h1 instead put it visibly lower than intended;
+            it belongs in this row instead. */}
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-eyebrow font-bold uppercase text-brand-cta">
+            {t("home.blog.eyebrow")}
+          </p>
           <Link to="/" aria-label="mangomundi home" className="shrink-0">
             <BrandMark />
           </Link>
         </div>
+        <h1 className="mt-3 font-heading text-3xl font-extrabold tracking-tight text-foreground sm:text-h1">
+          {t("home.blog.title")}
+        </h1>
 
         {isLoading && (
           <div className="mt-16 flex justify-center">

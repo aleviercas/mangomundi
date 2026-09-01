@@ -577,6 +577,12 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.business.methodology":
       "Savings estimated against the retail best on the same route. Indicative only: brokers price by volume, frequency and settlement date, which is why this screen ends in a quote instead of a rate.",
     "comparator.business.request.title": "Your request",
+    // 2026-08-31 feedback — the panel moved above the results, full width;
+    // explains what selecting providers below actually does now that it's
+    // the first thing seen, not a rail card next to an agent that already
+    // explained the flow.
+    "comparator.business.request.explainer":
+      "Want a custom quote instead of shopping rates one by one? Select the brokers below you'd like to hear from — we'll send one request and try to get you negotiated rates for this volume.",
     "comparator.business.request.volume": "Volume",
     "comparator.business.request.route": "Route",
     "comparator.business.request.contract": "Contract",
@@ -618,7 +624,7 @@ export const DICTS: Record<Lang, Dict> = {
     // whitespace-pre-line in Footer.tsx) rather than a new key, so other
     // languages that keep the old single-line text are unaffected — only
     // EN gets a forced break unless a future translation adds its own.
-    "footer.tagline": "Neutral decision engine\nfor international transfers.",
+    "footer.tagline": "Neutral decision engine for\ninternational transfers.",
     // 2026-08-30 feedback (fifth round) — replaces fx.disclaimer +
     // fx.trademarks (both removed from below the results list) with one
     // concise line at the very bottom of the footer, alongside the other
@@ -2035,7 +2041,7 @@ const UI_KEYS: Partial<Record<Lang, Dict>> = {
     // feedback — two lines via a literal "\n" (Footer.tsx renders this with
     // whitespace-pre-line); this is the copy that was actually shadowing
     // the DICTS.en edit and not showing up.
-    "footer.tagline": "Neutral decision engine\nfor international transfers.",
+    "footer.tagline": "Neutral decision engine for\ninternational transfers.",
     "footer.copyright": "All rights reserved.",
     "footer.disclaimerLabel": "disclaimer",
     "common.close": "Close",

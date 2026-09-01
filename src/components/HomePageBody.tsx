@@ -92,8 +92,24 @@ export function HomePageBody({
           of hideMarketingSections — /business hides the retail stack
           unconditionally while still wanting its own content gated on
           whether a search has actually run (see businessExtras' own doc
-          comment above). */}
-      {!hasResult && businessExtras && <BusinessExtrasSection />}
+          comment above).
+          2026-08-31 feedback — "no queden tantos espacios en blanco":
+          /business used to end right after BusinessExtrasSection's two
+          cards, well short of a typical viewport, so the header/footer's
+          own sticky-footer layout (__root.tsx's `flex min-h-screen
+          flex-col`) stretched the empty gap between them to fill
+          whatever was left of the screen. AboutManifestoSection's
+          neutrality band was written generically ("we don't sell
+          currency, we tell you who sells it best" + the real
+          countries/currencies/providers stats) — nothing retail-specific
+          in it — so it's real content that belongs here too, not a
+          padding hack to fake a taller page. */}
+      {!hasResult && businessExtras && (
+        <>
+          <AboutManifestoSection />
+          <BusinessExtrasSection />
+        </>
+      )}
     </>
   );
 }

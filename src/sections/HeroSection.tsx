@@ -34,26 +34,6 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
           >
             {t("home.hero.tagline")}
           </p>
-          {/* Trust bar — same 3 numbers as the stat tiles inside the dark
-              "about" band further down the page (value strings +
-              home.stats.* labels, no new copy), just surfaced here too: a
-              Skyscanner/Kayak-style search page shows a credibility signal
-              right next to the search box, not several scrolls away. Plain
-              text, no icons, so the two read as the same voice. */}
-          <div className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-x-2 gap-y-1.5 text-sm text-muted-foreground sm:mt-6">
-            {[
-              { value: "150+", label: t("home.stats.countries") },
-              { value: "100+", label: t("home.stats.currencies") },
-              { value: "50+", label: t("home.stats.providers") },
-            ].map((s, i, arr) => (
-              <span key={s.label} className="inline-flex items-center gap-2">
-                <span>
-                  <span className="font-bold text-foreground">{s.value}</span> {s.label}
-                </span>
-                {i < arr.length - 1 && <span className="text-border">·</span>}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </section>

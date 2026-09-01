@@ -20,7 +20,11 @@ export function HowItWorksSection() {
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-24 border-t border-border bg-card py-14 sm:py-20"
+      // 2026-08-31 feedback — "los espacios en general deberían estar más
+      // compactos" vs. design/Mangomundi 4 - Final.dc.html: this band is
+      // `padding:38px 30px` there (mockup line 146); py-14 sm:py-20 (56–80px)
+      // ran noticeably looser than that on every breakpoint.
+      className="scroll-mt-24 border-t border-border bg-card py-9 sm:py-12"
     >
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-center gap-11 lg:grid-cols-[1fr_470px]">
