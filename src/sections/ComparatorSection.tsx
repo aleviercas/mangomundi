@@ -1664,19 +1664,34 @@ export function ComparatorSection({
                     />
                   </div>
 
+                  {/* 2026-09-02 feedback — "en el segundo renglón hay que
+                      achicar el cuadro selector de país para que tenga el
+                      mismo tamaño que el de país de arriba... entonces se
+                      puede agrandar el botón de comparar y el de la
+                      flechita un poco también": the target-country trigger
+                      used to be `flex-1` inside its box (no amount input
+                      here to soak up that flex-1, unlike line 1), so it
+                      stretched to ~112px of mostly blank space next to the
+                      flag — confirmed via a real bounding-box measurement
+                      (111.75px vs line 1's matching 59.19px trigger). Now
+                      `w-auto shrink-0`, same as every other icon-only
+                      trigger, so the box hugs its content; the swap button
+                      grows a touch (32→38px) and Compare (fixed 74px→flex-1)
+                      picks up the freed width instead of leaving it as
+                      dead space inside the country/currency box. */}
                   <div className="flex items-stretch gap-[6px]">
                     <button
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      className="flex h-[38px] w-[32px] shrink-0 items-center justify-center rounded-[9px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                      className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[9px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                       style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                     >
-                      <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
+                      <ArrowLeftRight strokeWidth={2.2} className="h-[15px] w-[15px]" />
                     </button>
 
                     <div
-                      className={`flex h-[38px] min-w-0 flex-1 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                      className={`flex h-[38px] w-auto shrink-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
                         sameCorridorBlocked
                           ? "border-brand-cta ring-2 ring-brand-cta/60"
                           : "border-input"
@@ -1690,7 +1705,7 @@ export function ComparatorSection({
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCountry")}
                         triggerIconOnly
-                        triggerClassName="h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                        triggerClassName="h-full w-auto shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                       />
                       <CurrencyCombobox
                         value={to}
@@ -1720,7 +1735,7 @@ export function ComparatorSection({
                         sameCorridorBlocked ||
                         amount <= 0
                       }
-                      className="btn-cta flex h-[38px] w-[74px] shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[12px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="btn-cta flex h-[38px] min-w-0 flex-1 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       {compareMut.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
