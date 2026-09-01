@@ -4206,11 +4206,22 @@ function BusinessRowExtra({
             </div>
           </div>
         )}
+        {/* 2026-09-02 feedback — "cuando hago click en un proveedor para
+            ponerlo en add to request se mueve todo el texto porque el
+            botón cambia de tamaño": "Add to request" (14 chars) vs.
+            "Added" (5 chars) — content-sized width, no explicit width
+            here before, so toggling shrank the button and, since this
+            sits in a `shrink-0` cluster anchored to the row's right edge
+            via the outer `justify-between`, that shrink dragged the
+            "saved" figure next to it sideways too. Fixed width sized to
+            fit the longer label ("Add to request") so the button's own
+            footprint never changes — nothing around it has a reason to
+            move anymore. */}
         <button
           type="button"
           onClick={onToggleRequested}
           aria-pressed={requested}
-          className={`flex h-9 shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
+          className={`flex h-9 w-[118px] shrink-0 items-center justify-center whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
             requested
               ? "border-[1.5px] border-foreground bg-card text-foreground"
               : "border-[1.5px] border-input bg-card text-foreground hover:border-foreground/40"
