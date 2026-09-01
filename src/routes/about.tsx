@@ -97,7 +97,15 @@ function AboutPage() {
           correctamente en los 20 idiomas en vez de fijar la posición de la
           palabra en inglés. */}
       <section className="mx-auto max-w-3xl px-5 pb-16 pt-12 sm:px-8">
-        <div className="space-y-5 text-base leading-relaxed text-foreground [&_p]:m-0 [&_strong]:font-bold [&_strong]:text-foreground">
+        {/* 2026-09-02 feedback — "el about us quedó muy comprimido": the
+            three ideas (mission/vision/problem) read as one dense block.
+            `space-y-*` (margin-top on children) silently loses to `[&_p]:m-0`
+            below — ReactMarkdown renders each block as a bare `<p>` with no
+            wrapper, so that reset zeroes the exact margin space-y depends
+            on (confirmed: 0px measured gap with space-y-9 in place). `gap-9`
+            on a flex column doesn't touch margin at all, so it isn't caught
+            by that reset. */}
+        <div className="flex flex-col gap-9 text-base leading-relaxed text-foreground [&_p]:m-0 [&_strong]:font-bold [&_strong]:text-foreground">
           <ReactMarkdown>{t("home.about.mission.body")}</ReactMarkdown>
           <ReactMarkdown>{t("home.about.vision.body")}</ReactMarkdown>
           <ReactMarkdown>{t("home.about.problem.body")}</ReactMarkdown>
