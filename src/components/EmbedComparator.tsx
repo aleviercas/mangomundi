@@ -36,68 +36,76 @@ function useRatesFreshness(fetchedAt: string | null): string | null {
  *  ejemplos de todays rates para que no aparezca vacío": the compressed
  *  2-line form (see ComparatorSection's own `embedded` branch comment)
  *  frees real vertical room in the fixed 360×540 frame — this fills it
- *  with a real example instead of leaving that space blank pre-search.
+ *  with real examples instead of leaving that space blank pre-search.
  *  Reuses the exact same data TodaysRoutesSection shows on the home page
- *  (getExclusiveCorridors — a real has_exclusive_deal winner, never
- *  invented), just one card instead of four, and labeled "Example rate"
- *  rather than reusing todaysRoutes.title's copy, so it never reads as
- *  this widget's own live result before a real search has run. Hidden
- *  once a result exists — same gate as everything else pre-search here.
+ *  (getExclusiveCorridors — real has_exclusive_deal winners, never
+ *  invented), labeled "Example rates" rather than reusing todaysRoutes
+ *  .title's copy, so it never reads as this widget's own live result
+ *  before a real search has run. Hidden once a result exists — same gate
+ *  as everything else pre-search here.
  *
- *  2026-09-01 feedback (second round) — "que se pueda hacer click": this
- *  used to be a static, unclickable card. `onSelect` (wired below to
- *  EmbedComparator's own `exampleQuery` state) mirrors TodaysRoutesSection's
- *  own click-to-run behavior on the home page (design/AJUSTES §, "al hacer
- *  click debería mandarte a ese resultado") — but that one does a real page
- *  navigation to `/send/$corridor`, which would break out of an embedded
- *  iframe on a third-party site. This stays inside the widget's own React
- *  tree instead: clicking loads the example's real corridor into the
- *  search row and runs it immediately, same as picking it by hand. */
-function WidgetExample({ onSelect }: { onSelect: (example: ExclusiveCorridor) => void }) {
+ *  2026-09-01 feedback (second round) — "que se pueda hacer click": each
+ *  row is clickable. `onSelect` (wired below to EmbedComparator's own
+ *  `exampleQuery` state) mirrors TodaysRoutesSection's own click-to-run
+ *  behavior on the home page (design/AJUSTES §, "al hacer click debería
+ *  mandarte a ese resultado") — but that one does a real page navigation
+ *  to `/send/$corridor`, which would break out of an embedded iframe on a
+ *  third-party site. This stays inside the widget's own React tree
+ *  instead: clicking loads the example's real corridor into the search
+ *  row and runs it immediately, same as picking it by hand.
+ *
+ *  2026-09-02 feedback — "queda mucho espacio en blanco... tienen que
+ *  aparecer varias monedas como ejemplos no solo una": was `corridors[0]`
+ *  only, a single card. Now shows up to 3 real corridors (still real
+ *  getExclusiveCorridors data, never invented) as compact rows in one
+ *  bordered list instead of one large card, using the same vertical
+ *  budget more efficiently. */
+const MAX_WIDGET_EXAMPLES = 5;
+
+function WidgetExamples({
+  examples,
+  onSelect,
+}: {
+  examples: ExclusiveCorridor[];
+  onSelect: (example: ExclusiveCorridor) => void;
+}) {
   const { t } = useI18n();
-  const { data: corridors } = useExclusiveCorridors();
-  const example = corridors?.[0];
-  if (!example) return null;
-  const fromCountry = primaryCountryForCurrency(example.from);
-  const toCountry = primaryCountryForCurrency(example.to);
+  if (!examples.length) return null;
   return (
-    <button
-      type="button"
-      onClick={() => onSelect(example)}
-      className="mt-2.5 w-full rounded-[14px] border border-border bg-card p-3 text-left transition hover:border-foreground/25 hover:shadow-[0_10px_24px_-18px_rgba(36,28,22,.4)]"
-    >
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1.5 text-[12px] font-bold text-foreground">
-          {fromCountry && <FlagIcon country={fromCountry} />}
-          {example.from}
-          <span className="text-muted-foreground">→</span>
-          {toCountry && <FlagIcon country={toCountry} />}
-          {example.to}
-        </div>
-        <div
-          className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
-          style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
-        >
-          <Sparkle className="h-2.5 w-2.5" />
-          {t("widget.examples.exclusiveRate")}
-        </div>
-      </div>
-      <div className="mt-2 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+    <div className="mt-2.5 overflow-hidden rounded-[14px] border border-border bg-card">
+      <div className="flex items-center gap-1 border-b border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+        <Sparkle className="h-2.5 w-2.5 text-brand-cta" />
         {t("widget.examples.title")}
       </div>
-      <div className="mt-1 flex items-baseline justify-between">
-        <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
-          {t("widget.examples.bestOf")
-            .replace("{n}", String(example.providerCount))
-            .replace("{amount}", example.amount.toLocaleString())
-            .replace("{from}", example.from)}
-        </span>
-        <span className="font-heading text-[18px] font-extrabold tabular-nums text-foreground">
-          {Math.round(example.bestReceived).toLocaleString()}{" "}
-          <span className="text-[10px] font-semibold text-muted-foreground">{example.to}</span>
-        </span>
+      <div className="divide-y divide-border">
+        {examples.map((example) => {
+          const fromCountry = primaryCountryForCurrency(example.from);
+          const toCountry = primaryCountryForCurrency(example.to);
+          return (
+            <button
+              key={`${example.from}-${example.to}`}
+              type="button"
+              onClick={() => onSelect(example)}
+              className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left transition hover:bg-muted/50"
+            >
+              <span className="flex items-center gap-1 text-[11px] font-bold text-foreground">
+                {fromCountry && <FlagIcon country={fromCountry} />}
+                {example.from}
+                <span className="text-muted-foreground">→</span>
+                {toCountry && <FlagIcon country={toCountry} />}
+                {example.to}
+              </span>
+              <span className="font-heading text-[13.5px] font-extrabold tabular-nums text-foreground">
+                {Math.round(example.bestReceived).toLocaleString()}
+                <span className="ml-1 text-[10px] font-semibold text-muted-foreground">
+                  {example.to}
+                </span>
+              </span>
+            </button>
+          );
+        })}
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -149,8 +157,10 @@ export function EmbedComparator({
 
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const freshness = useRatesFreshness(result?.fetched_at ?? null);
+  const { data: exampleCorridors } = useExclusiveCorridors();
+  const examples = exampleCorridors?.slice(0, MAX_WIDGET_EXAMPLES) ?? [];
 
-  // 2026-09-01 feedback (second round) — WidgetExample's card needs to be
+  // 2026-09-01 feedback (second round) — WidgetExamples' rows need to be
   // clickable and actually run that corridor, not just decorate the empty
   // state. ComparatorSection only reads `initialQuery` once, via useState
   // initializers (see its own origin/from/to/segment state) — there's no
@@ -201,7 +211,7 @@ export function EmbedComparator({
           initialQuery={exampleQuery ?? defaultQuery}
           onResult={setResult}
         />
-        {!result && <WidgetExample onSelect={handleSelectExample} />}
+        {!result && <WidgetExamples examples={examples} onSelect={handleSelectExample} />}
       </div>
 
       {/* Attribution — required on the free embed; links back to the site. */}

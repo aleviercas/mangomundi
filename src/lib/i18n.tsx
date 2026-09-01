@@ -624,7 +624,11 @@ export const DICTS: Record<Lang, Dict> = {
     // (from the same getExclusiveCorridors data TodaysRoutesSection uses),
     // shown only while the widget has no result of its own yet — "example"
     // in the label so it never reads as this widget's own live result.
-    "widget.examples.title": "Example rate",
+    // 2026-09-02 feedback — "queda mucho espacio en blanco, tienen que
+    // aparecer varias monedas como ejemplos no solo una": WidgetExample
+    // (now WidgetExamples, plural) shows up to 3 real corridors instead of
+    // just corridors[0], so the copy moves from singular to plural too.
+    "widget.examples.title": "Example rates",
     "widget.examples.exclusiveRate": "Exclusive rate",
     "widget.examples.bestOf": "Best of {n} · {amount} {from}",
     // The invitation block above viewAll (design/HANDOFF.md §5) — {n} is
