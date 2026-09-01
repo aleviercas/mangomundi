@@ -132,6 +132,7 @@
   "comparator.business.request.brokersSelected": "Brokers selected",
   "comparator.business.request.contract": "Contract",
   "comparator.business.request.cta": "Send request to {n} brokers",
+  "comparator.business.request.currency": "Currency",
   "comparator.business.request.disclaimer": "One email with your requirements. No broker gets your contact details until you reply to their quote.",
   "comparator.business.request.emailPlaceholder": "you@company.com",
   "comparator.business.request.error": "Something went wrong. Please try again.",

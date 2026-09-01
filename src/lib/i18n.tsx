@@ -592,6 +592,11 @@ export const DICTS: Record<Lang, Dict> = {
       "Want a custom quote instead of shopping rates one by one? Select the brokers below you'd like to hear from — we'll send one request and try to get you negotiated rates for this volume.",
     "comparator.business.request.volume": "Volume",
     "comparator.business.request.route": "Route",
+    // 2026-09-02 feedback — "route tiene que ser los países, hay que
+    // agregar las currencies": Route used to show the currency pair
+    // (e.g. "GBP → USD") — now shows the country pair, this is the
+    // currency pair as its own stat instead of being dropped.
+    "comparator.business.request.currency": "Currency",
     "comparator.business.request.contract": "Contract",
     "comparator.business.request.brokersSelected": "Brokers selected",
     "comparator.business.request.of": "of",

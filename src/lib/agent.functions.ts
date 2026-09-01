@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { sendLeadNotificationEmail, sendClientConfirmationEmail } from "./email";
+import { sendLeadNotificationEmail } from "./email";
 
 const LeadInput = z.object({
   email: z.string().email().max(255),
@@ -115,31 +115,49 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
 
 /** 2026-09-02 feedback — "una vez que me llega el mail hay que contestarle
  *  con un mail al cliente que recibimos el pedido y que responderemos a la
- *  brevedad": EN/ES only (the site is 20-language wide, but this is a
- *  transactional email sent from a server function with no access to the
- *  React i18n context — full parity would mean hand-writing 20 email
- *  templates for a first version of a feature explicitly scoped as
- *  "el mail automático" plus "el plan" for the rest, not a full rollout).
- *  Falls back to English for any other locale. */
-function clientConfirmationCopy(locale: string, requestId: string, from: string, to: string) {
-  if (locale.toLowerCase().startsWith("es")) {
-    return {
-      subject: `Recibimos tu pedido — ${requestId}`,
-      html: `
-        <p>Hola,</p>
-        <p>Recibimos tu pedido de cotización FX (${from} → ${to}) — referencia <strong>${requestId}</strong>.</p>
-        <p>Nuestro equipo lo va a revisar y te va a responder a la brevedad con las opciones de los brokers que elegiste.</p>
-        <p>Gracias,<br/>El equipo de mangomundi</p>
-      `,
-    };
-  }
+ *  brevedad" — then, same day, corrected: "mejor que el mail automático no
+ *  se lo mande al cliente directamente sino que me lo mandas a mi para
+ *  enviarselo al cliente asi no es automatico y yo lo veo antes". So this
+ *  is NOT sent to the customer — it's the drafted client-facing copy,
+ *  delivered to the internal notification address (same recipient as the
+ *  lead notification below) for Alejandro to review and forward himself.
+ *  EN/ES only (the site is 20-language wide, but this is a transactional
+ *  email with no access to the React i18n context — full parity would
+ *  mean hand-writing 20 templates for a first version of a feature
+ *  explicitly scoped as "el mail automático" plus "el plan" for the rest,
+ *  not a full rollout). Falls back to English for any other locale. */
+function clientConfirmationDraft(
+  locale: string,
+  requestId: string,
+  from: string,
+  to: string,
+  clientEmail: string,
+) {
+  const body = locale.toLowerCase().startsWith("es")
+    ? {
+        subject: `[Borrador — reenviar a ${clientEmail}] Recibimos tu pedido — ${requestId}`,
+        clientHtml: `
+          <p>Hola,</p>
+          <p>Recibimos tu pedido de cotización FX (${from} → ${to}) — referencia <strong>${requestId}</strong>.</p>
+          <p>Nuestro equipo lo va a revisar y te va a responder a la brevedad con las opciones de los brokers que elegiste.</p>
+          <p>Gracias,<br/>El equipo de mangomundi</p>
+        `,
+      }
+    : {
+        subject: `[Draft — forward to ${clientEmail}] We received your request — ${requestId}`,
+        clientHtml: `
+          <p>Hi,</p>
+          <p>We've received your FX quote request (${from} → ${to}) — reference <strong>${requestId}</strong>.</p>
+          <p>Our team will review it and get back to you shortly with quotes from the brokers you selected.</p>
+          <p>Thanks,<br/>The mangomundi team</p>
+        `,
+      };
   return {
-    subject: `We received your request — ${requestId}`,
+    subject: body.subject,
     html: `
-      <p>Hi,</p>
-      <p>We've received your FX quote request (${from} → ${to}) — reference <strong>${requestId}</strong>.</p>
-      <p>Our team will review it and get back to you shortly with quotes from the brokers you selected.</p>
-      <p>Thanks,<br/>The mangomundi team</p>
+      <p style="color:#888">This is a draft — not sent to the customer. Copy/forward the section below to <strong>${clientEmail}</strong>.</p>
+      <hr/>
+      ${body.clientHtml}
     `,
   };
 }
@@ -224,20 +242,21 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
         <p><strong>Consent recorded at:</strong> ${consentAt}</p>
       `,
     });
-    // Client-facing confirmation — the other leg of "una vez que me llega
-    // el mail hay que contestarle con un mail al cliente que recibimos el
-    // pedido". Same best-effort contract: never blocks the response, the
+    // Client-confirmation DRAFT — see clientConfirmationDraft's own comment:
+    // goes to the internal address (same as the lead notification above),
+    // never straight to the customer. Alejandro reviews and forwards it
+    // himself. Same best-effort contract: never blocks the response, the
     // lead is already saved above regardless of whether this send succeeds.
-    const clientCopy = clientConfirmationCopy(
+    const draft = clientConfirmationDraft(
       data.locale,
       requestId,
       data.fromCurrency,
       data.toCurrency,
+      data.email,
     );
-    const clientEmailQueued = await sendClientConfirmationEmail({
-      to: data.email,
-      subject: clientCopy.subject,
-      html: clientCopy.html,
+    const clientEmailQueued = await sendLeadNotificationEmail({
+      subject: draft.subject,
+      html: draft.html,
     });
     return { ok: true, requestId, emailQueued, clientEmailQueued };
   });

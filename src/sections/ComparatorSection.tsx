@@ -47,8 +47,14 @@ import {
   type ComparisonResult,
 } from "@/lib/fx.functions";
 import { useI18n } from "@/lib/i18n";
-import { localCurrency, primaryCountryForCurrency, resolveRouteCode } from "@/lib/countries";
+import {
+  localCurrency,
+  primaryCountryForCurrency,
+  resolveRouteCode,
+  COUNTRY_BY_CODE,
+} from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
+import { FlagIcon } from "@/components/ui/FlagIcon";
 import { TrustBox } from "@/components/TrustBox";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
@@ -2413,6 +2419,8 @@ export function ComparatorSection({
                       amount={amount}
                       from={from}
                       to={to}
+                      sendingCountry={sendingCountry}
+                      receivingCountry={receivingCountry}
                       totalBrokers={result?.rows.length ?? 0}
                       requestedSlugs={requestedSlugs}
                       contractTypeLabel={t(`comparator.contractType.${contractType}`)}
@@ -3221,6 +3229,8 @@ function BusinessRequestPanel({
   amount,
   from,
   to,
+  sendingCountry,
+  receivingCountry,
   totalBrokers,
   requestedSlugs,
   contractTypeLabel,
@@ -3231,6 +3241,8 @@ function BusinessRequestPanel({
   amount: number;
   from: string;
   to: string;
+  sendingCountry: string;
+  receivingCountry: string;
   totalBrokers: number;
   requestedSlugs: Set<string>;
   /** Read-only here — the actual controls are the existing "Contract type"/
@@ -3246,87 +3258,101 @@ function BusinessRequestPanel({
   const [expanded, setExpanded] = useState(false);
   const [email, setEmail] = useState("");
   const selectedCount = requestedSlugs.size;
+  const sendingCountryName = COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry;
+  const receivingCountryName = receivingCountry
+    ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry)
+    : "—";
 
   if (status === "sent") {
     return (
-      <div className="rounded-[18px] border-[1.5px] border-foreground bg-card p-4">
-        <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+      <div className="rounded-[18px] border-[1.5px] border-[#241C16] bg-[#241C16] p-4">
+        <h4 className="font-heading text-[15px] font-extrabold text-white">
           {t("comparator.business.request.title")}
         </h4>
-        <p className="mt-3 text-sm leading-relaxed text-foreground">
+        <p className="mt-3 text-sm leading-relaxed text-white/90">
           {t("comparator.business.request.sent")}
         </p>
       </div>
     );
   }
 
-  // 2026-09-01 feedback — "comprimir y rediseñar el cuadro de your request
-  // para que no quede tan largo, poner el botón a la derecha": this used to
-  // be 3 stacked rows (title+explainer, a 4-col stat GRID spanning the
-  // full width, then the CTA on its own full-width line below that) —
-  // three separate border-t bands of vertical space for what's really one
-  // decision. The stats are now a compact inline cluster (gap-x, not a
-  // grid forcing 1/4 width each) sharing ONE row with the button on the
-  // right, so the button no longer needs its own line at all — only the
-  // email form (needs room for a text input) drops to its own row, and
-  // only once "Send request" is actually clicked.
+  // 2026-09-02 feedback — "el botón se está moviendo para el centro" /
+  // "cuando está inactivo queda en el medio": the previous version flowed
+  // the button inline right after the stats cluster when there was room,
+  // reasoning that this avoided the dead-space `justify-between` used to
+  // leave. In practice this made the button's position depend on viewport
+  // width and stat-text length — sometimes flush after the stats,
+  // sometimes wrapped to its own line — which read as "randomly drifting"
+  // rather than anchored anywhere. Fixed for good this time: the button
+  // (and the email form once expanded) ALWAYS renders on its own row,
+  // ALWAYS left-aligned (`basis-full` forces the flex-wrap break every
+  // time, regardless of whether the stats would technically leave room),
+  // no viewport- or text-length-dependent branching left to get wrong.
+  //
+  // Also darker background (`#241C16`, the same dark token FiltersCard's
+  // own comment already established as "the rail's AI-flavored action
+  // panel" color) so this reads as an action panel, not just another
+  // white info card — same request as the rail's own dark treatment.
+  //
+  // Route now shows countries (was currencies only, redundant with the
+  // new Currency stat below it) — Volume/Currency/Contract/Brokers keep
+  // the currency-level detail Route used to carry.
   return (
-    <div className="rounded-[18px] border-[1.5px] border-foreground bg-card p-3.5">
-      <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+    <div className="rounded-[18px] border-[1.5px] border-[#241C16] bg-[#241C16] p-4">
+      <h4 className="font-heading text-[15px] font-extrabold text-white">
         {t("comparator.business.request.title")}
       </h4>
-      <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
+      <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-white/70">
         {t("comparator.business.request.explainer")}
       </p>
 
-      {/* 2026-09-01 feedback — "queda espacio en blanco desaprovechado":
-          `justify-between` used to pin the CTA to the row's far-right edge,
-          which on any screen wider than the 4 stats + button's combined
-          width left a dead gap between them (visible in the live
-          screenshot — stats end well before the button starts). Just
-          flowing the button right after the stats with the same gap-x-5
-          the stats already use removes that gap; any leftover space now
-          falls after the button, which reads as normal card padding
-          instead of a void in the middle of the row. */}
-      <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-border pt-3">
-        <div className="flex flex-wrap gap-x-5 gap-y-2">
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-              {t("comparator.business.request.volume")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
-              {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
-            </div>
+      <div className="mt-4 flex flex-wrap gap-x-6 gap-y-3 border-t border-white/15 pt-4">
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+            {t("comparator.business.request.volume")}
           </div>
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-              {t("comparator.business.request.route")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold text-foreground">
-              {from} → {to}
-            </div>
+          <div className="mt-1 text-sm font-bold tabular-nums text-white">
+            {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
           </div>
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-              {t("comparator.business.request.contract")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold text-foreground">
-              {contractTypeLabel} · {frequencyLabel}
-            </div>
+        </div>
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+            {t("comparator.business.request.route")}
           </div>
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-              {t("comparator.business.request.brokersSelected")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
-              {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
-            </div>
+          <div className="mt-1 flex items-center gap-1.5 text-sm font-bold text-white">
+            <FlagIcon country={sendingCountry} /> {sendingCountryName}
+            <span className="text-white/40">→</span>
+            {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+          </div>
+        </div>
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+            {t("comparator.business.request.currency")}
+          </div>
+          <div className="mt-1 text-sm font-bold tabular-nums text-white">
+            {from} → {to}
+          </div>
+        </div>
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+            {t("comparator.business.request.contract")}
+          </div>
+          <div className="mt-1 text-sm font-bold text-white">
+            {contractTypeLabel} · {frequencyLabel}
+          </div>
+        </div>
+        <div>
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+            {t("comparator.business.request.brokersSelected")}
+          </div>
+          <div className="mt-1 text-sm font-bold tabular-nums text-white">
+            {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
           </div>
         </div>
 
         {expanded ? (
           <form
-            className="flex w-full flex-col gap-2 sm:flex-row sm:items-center"
+            className="flex w-full basis-full flex-col gap-2 sm:flex-row sm:items-center"
             onSubmit={(e) => {
               e.preventDefault();
               onSend(email);
@@ -3338,7 +3364,7 @@ function BusinessRequestPanel({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("comparator.business.request.emailPlaceholder")}
-              className="h-11 flex-1 rounded-lg border border-input bg-card px-3 text-sm text-foreground"
+              className="h-11 flex-1 rounded-lg border border-white/20 bg-white/[.07] px-3 text-sm text-white placeholder:text-white/40"
             />
             <button
               type="submit"
@@ -3350,20 +3376,31 @@ function BusinessRequestPanel({
                 : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
             </button>
             {status === "error" && (
-              <p className="text-xs text-destructive sm:basis-full">
+              <p className="text-xs text-[#FF8A6B] sm:basis-full">
                 {t("comparator.business.request.error")}
               </p>
             )}
           </form>
         ) : (
-          <button
-            type="button"
-            disabled={selectedCount === 0}
-            onClick={() => setExpanded(true)}
-            className="btn-cta flex h-10 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-          </button>
+          <>
+            {/* Forces the flex-wrap row to break here unconditionally —
+                zero height, so it's invisible, but its basis-full pushes
+                the button to a brand new line every time regardless of
+                whether the stats above would technically leave room next
+                to it. That "always its own line" is what makes the
+                button's position stop depending on viewport width or
+                stat-text length (see this function's own comment above
+                for the full "moving to the center" diagnosis). */}
+            <div className="basis-full" aria-hidden />
+            <button
+              type="button"
+              disabled={selectedCount === 0}
+              onClick={() => setExpanded(true)}
+              className="btn-cta flex h-10 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+            </button>
+          </>
         )}
       </div>
       <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">

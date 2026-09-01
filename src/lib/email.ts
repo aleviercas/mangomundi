@@ -54,21 +54,3 @@ export async function sendLeadNotificationEmail(params: {
   const to = process.env.LEAD_NOTIFICATION_EMAIL || "mangomundi@gmail.com";
   return sendEmail({ to, ...params });
 }
-
-/** 2026-09-02 feedback — "una vez que me llega el mail hay que contestarle
- *  con un mail al cliente que recibimos el pedido y que responderemos a la
- *  brevedad": the client-facing half of captureBusinessLead's own email —
- *  sendLeadNotificationEmail above already covers "el mail para mí con el
- *  pedido" (the internal team notification), this is the missing outbound
- *  leg back to the customer who submitted the request. Same best-effort
- *  contract as the internal one: the lead is already persisted in Supabase
- *  before this runs, so a failed send here must never throw or block the
- *  caller — captureBusinessLead's own return already reports whether this
- *  queued so the UI can decide whether to mention it. */
-export async function sendClientConfirmationEmail(params: {
-  to: string;
-  subject: string;
-  html: string;
-}): Promise<boolean> {
-  return sendEmail(params);
-}
