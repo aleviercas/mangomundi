@@ -4229,7 +4229,7 @@ function BusinessRowExtra({
   onToggleRequested: () => void;
 }) {
   const { t } = useI18n();
-  const metrics: Array<{ labelKey: string; value: string }> = [
+  const metrics: Array<{ labelKey: string; value: string; estimated?: boolean }> = [
     {
       labelKey: "comparator.business.metric.spread",
       value: `${row.spread_applied.toFixed(2)}%`,
@@ -4240,9 +4240,18 @@ function BusinessRowExtra({
         row.min_amount != null
           ? `${row.min_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${quote}`
           : "—",
+      estimated: row.min_amount != null && row.min_amount_estimated,
     },
-    { labelKey: "comparator.business.metric.settlement", value: row.settlement_terms ?? "—" },
-    { labelKey: "comparator.business.metric.contracts", value: row.contract_type ?? "—" },
+    {
+      labelKey: "comparator.business.metric.settlement",
+      value: row.settlement_terms ?? "—",
+      estimated: row.settlement_terms != null && row.settlement_terms_estimated,
+    },
+    {
+      labelKey: "comparator.business.metric.contracts",
+      value: row.contract_type ?? "—",
+      estimated: row.contract_type != null && row.contract_type_estimated,
+    },
   ];
 
   return (
@@ -4250,8 +4259,19 @@ function BusinessRowExtra({
       <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-4">
         {metrics.map((m) => (
           <div key={m.labelKey} className="min-w-0">
-            <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+            <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
               {t(m.labelKey)}
+              {/* 2026-09-02 feedback — real value where findable, otherwise
+                  a logical estimate (never blank, never presented as
+                  verified) — see this component's own metrics comment. */}
+              {m.estimated && (
+                <span
+                  title={t("comparator.business.metric.estimatedTooltip")}
+                  className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-[9px] font-bold normal-case tracking-normal text-accent"
+                >
+                  {t("comparator.business.metric.estimated")}
+                </span>
+              )}
             </div>
             <div className="mt-0.5 truncate text-[13px] font-semibold tabular-nums text-foreground">
               {m.value}

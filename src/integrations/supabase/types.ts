@@ -386,6 +386,7 @@ export type Database = {
           card_payout_available: boolean | null;
           cash_pickup_available: boolean | null;
           contract_type: string | null;
+          contract_type_estimated: boolean;
           countries_covered: number | null;
           created_at: string;
           delivery_minutes: number | null;
@@ -399,6 +400,7 @@ export type Database = {
           logo_emoji: string | null;
           max_amount: number | null;
           min_amount: number | null;
+          min_amount_estimated: boolean;
           mobile_app_rating: number | null;
           name: string;
           notes: string | null;
@@ -409,6 +411,7 @@ export type Database = {
           review_count: number | null;
           segment: string;
           settlement_terms: string | null;
+          settlement_terms_estimated: boolean;
           slug: string;
           speed_hours: number;
           sponsored: boolean;
@@ -433,6 +436,7 @@ export type Database = {
           card_payout_available?: boolean | null;
           cash_pickup_available?: boolean | null;
           contract_type?: string | null;
+          contract_type_estimated?: boolean;
           countries_covered?: number | null;
           created_at?: string;
           delivery_minutes?: number | null;
@@ -446,6 +450,7 @@ export type Database = {
           logo_emoji?: string | null;
           max_amount?: number | null;
           min_amount?: number | null;
+          min_amount_estimated?: boolean;
           mobile_app_rating?: number | null;
           name: string;
           notes?: string | null;
@@ -456,6 +461,7 @@ export type Database = {
           review_count?: number | null;
           segment?: string;
           settlement_terms?: string | null;
+          settlement_terms_estimated?: boolean;
           slug: string;
           speed_hours?: number;
           sponsored?: boolean;
@@ -480,6 +486,7 @@ export type Database = {
           card_payout_available?: boolean | null;
           cash_pickup_available?: boolean | null;
           contract_type?: string | null;
+          contract_type_estimated?: boolean;
           countries_covered?: number | null;
           created_at?: string;
           delivery_minutes?: number | null;
@@ -493,6 +500,7 @@ export type Database = {
           logo_emoji?: string | null;
           max_amount?: number | null;
           min_amount?: number | null;
+          min_amount_estimated?: boolean;
           mobile_app_rating?: number | null;
           name?: string;
           notes?: string | null;
@@ -503,6 +511,7 @@ export type Database = {
           review_count?: number | null;
           segment?: string;
           settlement_terms?: string | null;
+          settlement_terms_estimated?: boolean;
           slug?: string;
           speed_hours?: number;
           sponsored?: boolean;

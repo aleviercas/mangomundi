@@ -576,6 +576,16 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.business.metric.minimum": "Minimum",
     "comparator.business.metric.settlement": "Settlement",
     "comparator.business.metric.contracts": "Contracts",
+    // 2026-09-02 feedback — "los proveedores que no tienen valores completar
+    // con el estimado aclarar que es estimado": min_amount/settlement_terms/
+    // contract_type now always have a value (real, sourced where findable —
+    // otherwise a logical estimate: median of same provider_type peers with
+    // real data — see the add_business_terms_estimated_flags migration).
+    // "Est." badges the metric when it's the latter, so it never reads as a
+    // verified fact; the tooltip explains why.
+    "comparator.business.metric.estimated": "Est.",
+    "comparator.business.metric.estimatedTooltip":
+      "Estimated — no public source found for this provider; based on similar providers, not a confirmed figure.",
     "comparator.business.exclusiveTag": "Exclusive",
     "comparator.business.estOn": "Est. on {amount}",
     "comparator.business.saved": "saved",

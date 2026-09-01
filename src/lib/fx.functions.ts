@@ -110,6 +110,15 @@ export interface Provider {
    *  column comment; the UI must not fabricate a value when these are null. */
   settlement_terms?: string | null;
   contract_type?: string | null;
+  /** 2026-09-02 feedback — "completar con el estimado aclarar que es
+   *  estimado": true when the matching field above is a logical estimate
+   *  (median of same provider_type peers with real sourced data) rather
+   *  than a real, sourced figure — see the add_business_terms_estimated_
+   *  flags migration. The UI must show "Est." when true, never present an
+   *  estimate as a verified fact. */
+  min_amount_estimated?: boolean | null;
+  settlement_terms_estimated?: boolean | null;
+  contract_type_estimated?: boolean | null;
 }
 
 export interface ComparisonRow {
@@ -182,6 +191,12 @@ export interface ComparisonRow {
   min_amount: number | null;
   settlement_terms: string | null;
   contract_type: string | null;
+  /** See ProviderInput's own comment — true means the matching field above
+   *  is a logical estimate, not a sourced figure. Always false/null when
+   *  the field itself is null (nothing to label as estimated). */
+  min_amount_estimated: boolean;
+  settlement_terms_estimated: boolean;
+  contract_type_estimated: boolean;
 }
 
 export interface ComparisonResult {
@@ -836,6 +851,12 @@ export const compareProviders = createServerFn({ method: "POST" })
             corridorRate?.min_amount ?? (p.min_amount != null ? Number(p.min_amount) : null),
           settlement_terms: p.settlement_terms ?? null,
           contract_type: p.contract_type ?? null,
+          // A corridor-specific min_amount is real per-route data, not the
+          // provider-level estimate — only flag as estimated when the
+          // corridor override isn't the one actually being shown.
+          min_amount_estimated: corridorRate?.min_amount == null && Boolean(p.min_amount_estimated),
+          settlement_terms_estimated: Boolean(p.settlement_terms_estimated),
+          contract_type_estimated: Boolean(p.contract_type_estimated),
         };
       });
       rows.sort((a, b) => b.received - a.received);

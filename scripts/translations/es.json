@@ -122,6 +122,8 @@
   "comparator.business.exclusiveTag": "Exclusive",
   "comparator.business.methodology": "Savings estimated against the retail best on the same route. Indicative only: brokers price by volume, frequency and settlement date, which is why this screen ends in a quote instead of a rate.",
   "comparator.business.metric.contracts": "Contracts",
+  "comparator.business.metric.estimated": "Est.",
+  "comparator.business.metric.estimatedTooltip": "Estimated — no public source found for this provider; based on similar providers, not a confirmed figure.",
   "comparator.business.metric.minimum": "Minimum",
   "comparator.business.metric.settlement": "Settlement",
   "comparator.business.metric.spread": "Spread",
