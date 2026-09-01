@@ -1554,40 +1554,6 @@ export function ComparatorSection({
                       is real; home.hero.localExchangeLink is kept in i18n.tsx
                       for that. */}
                 </div>
-                {/* Mid-market exchange rate — moved into this header row when
-                    compact (design/AJUSTES-2.md §2), replacing the standalone
-                    bordered box that used to sit below the fields. No "+X%"
-                    figure next to it: the mockup shows one, but that would be
-                    a rate-of-change number this app doesn't track anywhere
-                    (market_rate has no stored history to diff against) — not
-                    invented for this row. resultsRef/scroll-mt-24 (previously
-                    on the removed box) move here — see the ref's own comment
-                    a few hundred lines up for why it exists. */}
-                {compact && result && (
-                  <div
-                    ref={resultsRef}
-                    className="ml-auto flex shrink-0 scroll-mt-24 items-baseline gap-2.5"
-                  >
-                    {/* 2026-09-01 feedback — "reorganizar mobile": at 18px
-                        fixed, this line + the segment toggle to its left
-                        (both `shrink-0`) overflowed the row's own
-                        `overflow-hidden` card wrapper at 390px — no
-                        scrollbar, the trailing digits/currency just got
-                        silently clipped off-screen (confirmed via
-                        screenshot, not a guess). Smaller on mobile, back to
-                        the original size at sm+; `flex-wrap` on the row
-                        itself (see its own className) is the safety net
-                        for anything narrower still. */}
-                    <span className="font-heading text-[14px] font-extrabold tracking-tight tabular-nums text-foreground sm:text-[18px]">
-                      1 {from} ={" "}
-                      {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
-                      {to}
-                    </span>
-                    <span className="hidden text-xs sm:inline" style={{ color: "#8A7C6E" }}>
-                      {t("comparator.midMarketRate")}
-                    </span>
-                  </div>
-                )}
               </div>
             )}
 
@@ -2153,6 +2119,29 @@ export function ComparatorSection({
                   <h3 className="text-eyebrow font-bold uppercase text-brand-cta">
                     {t("comparator.results")}
                   </h3>
+                  {/* 2026-09-02 feedback — "el resultado de mid market rate
+                      ponelo en el mismo renglón que your results, abajo del
+                      comparador y afuera del box, a la derecha": was inside
+                      the comparator card's own header row (design/AJUSTES-2.md
+                      §2's original placement) — moved here instead, same row
+                      as "Your results", outside the card. resultsRef/
+                      scroll-mt-24 (the auto-scroll target after a compare —
+                      see its own comment near the ref's declaration) moves
+                      with it; `justify-between` on this row already existed
+                      for exactly this second element. */}
+                  <div
+                    ref={resultsRef}
+                    className="flex shrink-0 scroll-mt-24 items-baseline gap-2.5"
+                  >
+                    <span className="font-heading text-[14px] font-extrabold tracking-tight tabular-nums text-foreground sm:text-[18px]">
+                      1 {from} ={" "}
+                      {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+                      {to}
+                    </span>
+                    <span className="hidden text-xs sm:inline" style={{ color: "#8A7C6E" }}>
+                      {t("comparator.midMarketRate")}
+                    </span>
+                  </div>
                 </div>
                 <div className="mb-2.5 flex flex-col gap-3">
                   {/* Sort chips row stays visible at every width (the 3 main
