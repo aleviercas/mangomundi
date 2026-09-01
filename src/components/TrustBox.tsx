@@ -48,7 +48,16 @@ declare global {
  * manually — done here with a bounded retry since the bootstrap script
  * (loaded `async`, elsewhere in the document) may not have finished
  * executing yet when this effect first runs.
- */
+ *
+ * 2026-09-01 feedback, with a real screenshot of the live widget for the
+ * first time — "el botón de trustpilot del rail sigue quedando raro": at
+ * 52px tall plus the rail card's own 14px top/bottom padding, the
+ * rendered box came out roughly double the height of "Set a rate alert"
+ * right above it (a 40px/h-10 button) — a real size mismatch, not an
+ * alignment one. Dropped to 36px, closer to that button's height; both
+ * call sites (this rail card, /about's ContactSection) already wrap this
+ * in their own centering box, so a shorter widget just centers more
+ * comfortably rather than needing anything else adjusted. */
 export function TrustBox() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -78,7 +87,7 @@ export function TrustBox() {
       data-locale="en-US"
       data-template-id="56278e9abfbbba0bdcd568bc"
       data-businessunit-id="6a7a14b6f29ac72f7bd2792e"
-      data-style-height="52px"
+      data-style-height="36px"
       data-style-width="auto"
       data-token="ef14895d-6018-44c4-9b24-4bb39ed6b2e5"
     >

@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { Sparkle } from "lucide-react";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import type { ComparisonResult } from "@/lib/fx.functions";
 import { Wordmark } from "@/components/Wordmark";
-import { defaultCounterCurrency } from "@/lib/countries";
+import { defaultCounterCurrency, primaryCountryForCurrency } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
+import { useExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
+import { FlagIcon } from "@/components/ui/FlagIcon";
 
 /** design/Mangomundi 4 - Final.dc.html (line 727-729) — "rates 2 min ago" in
  *  the widget's own header bar. Computed from the ONE comparison this
@@ -26,6 +29,61 @@ function useRatesFreshness(fetchedAt: string | null): string | null {
   return minutes < 1
     ? t("widget.header.ratesJustNow")
     : t("widget.header.ratesMinAgo").replace("{n}", String(minutes));
+}
+
+/** 2026-09-01 feedback — "antes de seleccionar pueden aparecer ejemplos de
+ *  todays rates para que no aparezca vacío": the compressed 2-line form
+ *  (see ComparatorSection's own `embedded` branch comment) frees real
+ *  vertical room in the fixed 360×540 frame — this fills it with a real
+ *  example instead of leaving that space blank pre-search. Reuses the
+ *  exact same data TodaysRoutesSection shows on the home page
+ *  (getExclusiveCorridors — a real has_exclusive_deal winner, never
+ *  invented), just one card instead of four, and labeled "Example rate"
+ *  rather than reusing todaysRoutes.title's copy, so it never reads as
+ *  this widget's own live result before a real search has run. Hidden
+ *  once a result exists — same gate as everything else pre-search here. */
+function WidgetExample() {
+  const { t } = useI18n();
+  const { data: corridors } = useExclusiveCorridors();
+  const example = corridors?.[0];
+  if (!example) return null;
+  const fromCountry = primaryCountryForCurrency(example.from);
+  const toCountry = primaryCountryForCurrency(example.to);
+  return (
+    <div className="mt-2.5 rounded-[14px] border border-border bg-card p-3">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-1.5 text-[12px] font-bold text-foreground">
+          {fromCountry && <FlagIcon country={fromCountry} />}
+          {example.from}
+          <span className="text-muted-foreground">→</span>
+          {toCountry && <FlagIcon country={toCountry} />}
+          {example.to}
+        </div>
+        <div
+          className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+          style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
+        >
+          <Sparkle className="h-2.5 w-2.5" />
+          {t("widget.examples.exclusiveRate")}
+        </div>
+      </div>
+      <div className="mt-2 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+        {t("widget.examples.title")}
+      </div>
+      <div className="mt-1 flex items-baseline justify-between">
+        <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">
+          {t("widget.examples.bestOf")
+            .replace("{n}", String(example.providerCount))
+            .replace("{amount}", example.amount.toLocaleString())
+            .replace("{from}", example.from)}
+        </span>
+        <span className="font-heading text-[18px] font-extrabold tabular-nums text-foreground">
+          {Math.round(example.bestReceived).toLocaleString()}{" "}
+          <span className="text-[10px] font-semibold text-muted-foreground">{example.to}</span>
+        </span>
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -99,6 +157,7 @@ export function EmbedComparator({
           comments), not scroll to reveal what doesn't fit. */}
       <div className="min-h-0 flex-1 overflow-hidden px-3 py-3 sm:px-4">
         <ComparatorSection embedded initialQuery={initialQuery} onResult={setResult} />
+        {!result && <WidgetExample />}
       </div>
 
       {/* Attribution — required on the free embed; links back to the site. */}

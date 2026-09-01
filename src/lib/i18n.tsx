@@ -607,6 +607,14 @@ export const DICTS: Record<Lang, Dict> = {
     // comment on useRatesFreshness there, not the dropped todaysRoutes claim.
     "widget.header.ratesJustNow": "rates just now",
     "widget.header.ratesMinAgo": "rates {n} min ago",
+    // 2026-09-01 feedback — "antes de seleccionar pueden aparecer ejemplos
+    // de todays rates para que no aparezca vacío": a real example corridor
+    // (from the same getExclusiveCorridors data TodaysRoutesSection uses),
+    // shown only while the widget has no result of its own yet — "example"
+    // in the label so it never reads as this widget's own live result.
+    "widget.examples.title": "Example rate",
+    "widget.examples.exclusiveRate": "Exclusive rate",
+    "widget.examples.bestOf": "Best of {n} · {amount} {from}",
     // The invitation block above viewAll (design/HANDOFF.md §5) — {n} is
     // the real remaining-provider count for THIS corridor (total minus the
     // winner and compact rows already shown), never the whole catalog.
@@ -2842,7 +2850,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.overall": "Smart",
     "comparator.sort.recipientGetsMost": "Receive",
     "comparator.sort.bestExchangeRate": "Rate",
-    "comparator.sort.more": "More filters",
+    "comparator.sort.more": "Sort",
     "comparator.sort.mostTrusted": "Trust",
     "comparator.sort.bestBusiness": "Best for business",
     "comparator.sort.cashPickup": "Cash pickup",

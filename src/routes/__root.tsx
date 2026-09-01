@@ -133,12 +133,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           // italic for the "ango"/"undi" tails.
           href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=swap",
         },
-        // 2026-08-31 feedback (twice) — country dropdown flags "tienen un
-        // delay" the first time the list opens. Real prefetch hints, found
-        // by the browser's preload scanner while it's still parsing this
-        // HTML (before any JS runs) — see FlagIcon.tsx's own comment for
-        // why this replaced an earlier JS-based idle-time attempt.
-        ...ALL_FLAG_URLS.map((href) => ({ rel: "prefetch", href, as: "image" }) as const),
+        // 2026-08-31 feedback (twice), still reported 2026-09-01 after
+        // switching from a JS idle-callback warm-up to `<link
+        // rel="prefetch">` — the flags kept popping in late regardless.
+        // `prefetch`'s own spec behavior is the reason: browsers treat it
+        // as "fetch this only once the page is otherwise idle" (often
+        // deferred past onload, sometimes past several seconds of network
+        // quiet), not "fetch this soon at low priority" — a real person
+        // opening the country dropdown within the first second or two of
+        // landing can easily open it before a single prefetch has fired.
+        // `preload` + `fetchPriority: "low"` is the fix for that specific
+        // gap: still discovered by the preload scanner while parsing this
+        // HTML (same as before), but scheduled as a normal load-time fetch
+        // instead of being deferred to idle — just at the bottom of the
+        // priority queue, so critical resources (fonts, hero, JS/CSS) still
+        // win the bandwidth first. ~270 SVGs / ~2.7MB total is real weight
+        // to add to page load even at low priority, which is exactly why
+        // this couldn't just be `preload` at default/high priority instead.
+        ...ALL_FLAG_URLS.map(
+          (href) => ({ rel: "preload", href, as: "image", fetchPriority: "low" }) as const,
+        ),
       ],
     };
   },
@@ -259,10 +273,22 @@ function LangKeyedShell() {
     );
   }
 
+  // 2026-09-01 feedback — "la sección de business sigue quedando mucho
+  // espacio en blanco": this container used to force `min-h-screen` +
+  // `flex-col` so a short page's <Footer> still landed at the bottom of
+  // the viewport instead of right after the content. That's exactly what
+  // was producing the huge empty cream gap the user kept flagging on
+  // `/business` (and `/about`) — real content there is shorter than a
+  // typical viewport, so the footer got pushed ~250-300px down to sit at
+  // the viewport edge. Dropping the forced min-height lets the footer sit
+  // directly under whatever content each page actually has, which is the
+  // normal pattern for a marketing site (the footer isn't meant to be
+  // glued to the viewport bottom, just to end the page). Long pages (home)
+  // are unaffected since their content already exceeds any viewport height.
   return (
-    <div key={lang} className="relative z-10 flex min-h-screen flex-col">
+    <div key={lang} className="relative z-10 flex flex-col">
       <Header />
-      <main className="flex-1 pt-[66px]">
+      <main className="pt-[66px]">
         <Outlet />
       </main>
       <Footer />
@@ -286,7 +312,7 @@ function RootComponent() {
               section that relies on inheriting the page background instead
               of setting its own (TodaysRoutesSection among them) rendered
               paler than the mockup everywhere at once. */}
-          <div className="min-h-screen bg-background">
+          <div className="bg-background">
             <LangKeyedShell />
           </div>
           <SpeedInsights />

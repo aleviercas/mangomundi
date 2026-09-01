@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
   ArrowLeftRight,
+  ArrowUpDown,
   Banknote,
   Briefcase,
   Building2,
@@ -1418,7 +1419,19 @@ export function ComparatorSection({
     <SectionTag
       id={embedded ? undefined : "comparator"}
       key={lang}
-      className={embedded ? "min-w-0" : "scroll-mt-24 pb-8 sm:pb-12"}
+      // 2026-09-01 feedback — "el primer fondo del comparador es igual que
+      // el de todays routes": before a result exists, this section (search
+      // card + agent trigger) sits directly above TodaysRoutesSection,
+      // which has no background of its own and shows the page's cream
+      // `--background` through — the same shade this section inherited
+      // too, so the two blended into one band. The mockup's hero+
+      // comparator area is explicit white (see HeroSection's own comment)
+      // — matched here, but ONLY pre-result: once a result exists,
+      // TodaysRoutesSection is hidden (no adjacency to worry about) and
+      // the mockup's own "with results" screen keeps the cream page
+      // background behind the rail/results, with individual white CARDS
+      // floating on it rather than a white section wrapper.
+      className={embedded ? "min-w-0" : `scroll-mt-24 pb-8 sm:pb-12 ${!result ? "bg-card" : ""}`}
     >
       <div className={embedded ? "min-w-0" : "mx-auto max-w-7xl px-5 sm:px-8"}>
         {/* THE comparator box — the single entry point. Basic row always
@@ -1556,48 +1569,26 @@ export function ComparatorSection({
                   result exists (58px→52px, "Compare"→"Update"); the compact
                   fields also swap to #FDFBF9 instead of white. */}
               {embedded ? (
-                // 2026-08-31 feedback (third time on this file) — the widget
-                // used to be literal to design/Mangomundi 4 - Final.dc.html's
-                // (line 726-786) compact mockup: amount+currency pill, swap,
-                // a SECOND currency pill for "to" — no country picker at
-                // all, both pills were actually CountryCombobox in disguise
-                // (compactLabel hides the name, so a country picker LOOKS
-                // like a bare currency pill). Explicit ask this round: "se
-                // debe poder elegir país de origen y destino y monedas igual
-                // que en el comparador y monto" — real country pickers AND
-                // an independent currency override on each side, same five
-                // fields as the full (non-embedded) row below, just stacked
-                // instead of side-by-side (a 360px frame can't fit six
-                // columns) and shorter (34–38px vs. 58px) to still clear
-                // "sin scroll" in the fixed frame. No segment tablist here
-                // (see the header above) — the widget is retail-only.
+                // 2026-09-01 feedback — "el menú de selección debe
+                // comprimirse: la banderita de país en la misma línea que
+                // el monto y la moneda, y abajo en la otra línea la
+                // flechita con el país de destino, la moneda y el botón de
+                // comparar, así abajo queda lugar para los resultados":
+                // the previous version (5 stacked rows: amount+currency,
+                // country, swap, country+currency, CTA) still ate most of
+                // the fixed 540px frame before any result could show.
+                // Compressed to exactly 2 lines — origin flag+amount+
+                // currency sharing one bordered box, then swap+destination
+                // country+currency+Compare sharing a second one — frees
+                // roughly 150px of the frame for real results or (see
+                // EmbedComparator's own example-corridor block) a preview
+                // when there's no result yet. Country pickers keep
+                // `compactLabel` (flag + currency code) rather than the
+                // full name — the adjacent currency picker already shows
+                // that same code again, a small accepted redundancy for
+                // fitting a real country selector on one line at 360px.
                 <div className="space-y-[7px]">
-                  <FieldLight label={t("comparator.field.amount")} hideLabel>
-                    <div className="flex h-[40px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
-                      <input
-                        type="number"
-                        inputMode="decimal"
-                        min={1}
-                        value={amount || ""}
-                        placeholder="1000"
-                        onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                        aria-label={t("comparator.field.amount")}
-                        className="min-w-0 flex-1 bg-transparent px-2.5 text-[15px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                      />
-                      <CurrencyCombobox
-                        value={from}
-                        onChange={handlePickFromCurrency}
-                        placeholder={t("comparator.field.sourceCurrency")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.sourceCurrency")}
-                        compactLabel
-                        triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
-                      />
-                    </div>
-                  </FieldLight>
-
-                  <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
+                  <div className="flex h-[38px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
                     <CountryCombobox
                       value={sendingCountry}
                       onChange={handleSendingCountryChange}
@@ -1605,25 +1596,49 @@ export function ComparatorSection({
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.sourceCountry")}
-                      hideSecondary
-                      triggerClassName="h-[34px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-2.5 text-[12px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                      compactLabel
+                      triggerClassName="h-full w-auto shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                     />
-                  </FieldLight>
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={1}
+                      value={amount || ""}
+                      placeholder="1000"
+                      onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                      aria-label={t("comparator.field.amount")}
+                      className="min-w-0 flex-1 border-l border-border bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    />
+                    <CurrencyCombobox
+                      value={from}
+                      onChange={handlePickFromCurrency}
+                      placeholder={t("comparator.field.sourceCurrency")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCurrency")}
+                      compactLabel
+                      triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                    />
+                  </div>
 
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-stretch gap-[6px]">
                     <button
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      className="flex h-[24px] w-[32px] shrink-0 items-center justify-center rounded-[7px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                      className="flex h-[38px] w-[32px] shrink-0 items-center justify-center rounded-[9px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                       style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                     >
-                      <ArrowLeftRight strokeWidth={2.2} className="h-[12px] w-[12px] rotate-90" />
+                      <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
                     </button>
-                  </div>
 
-                  <div className="grid grid-cols-[minmax(0,1fr)_82px] gap-[7px]">
-                    <FieldLight label={t("comparator.field.targetCountry")} hideLabel>
+                    <div
+                      className={`flex h-[38px] min-w-0 flex-1 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                        sameCorridorBlocked
+                          ? "border-brand-cta ring-2 ring-brand-cta/60"
+                          : "border-input"
+                      }`}
+                    >
                       <CountryCombobox
                         value={receivingCountry}
                         onChange={handleReceivingCountryChange}
@@ -1631,11 +1646,9 @@ export function ComparatorSection({
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCountry")}
-                        hideSecondary
-                        triggerClassName={`h-[34px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-2.5 text-[12px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
+                        compactLabel
+                        triggerClassName="h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                       />
-                    </FieldLight>
-                    <FieldLight label={t("comparator.field.targetCurrency")} hideLabel>
                       <CurrencyCombobox
                         value={to}
                         onChange={handlePickToCurrency}
@@ -1644,37 +1657,37 @@ export function ComparatorSection({
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCurrency")}
                         compactLabel
-                        triggerClassName="h-[34px] w-full rounded-[9px] border-[1.5px] border-input bg-white px-2 text-[12px] font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                        triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
                       />
-                    </FieldLight>
-                  </div>
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
-                        setValidationError(t("fx.validation"));
-                        return;
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                          setValidationError(t("fx.validation"));
+                          return;
+                        }
+                        setValidationError(null);
+                        compareMut.mutate(undefined);
+                      }}
+                      disabled={
+                        compareMut.isPending ||
+                        !receivingCountry ||
+                        sameCorridorBlocked ||
+                        amount <= 0
                       }
-                      setValidationError(null);
-                      compareMut.mutate(undefined);
-                    }}
-                    disabled={
-                      compareMut.isPending ||
-                      !receivingCountry ||
-                      sameCorridorBlocked ||
-                      amount <= 0
-                    }
-                    className="btn-cta inline-flex h-[38px] w-full items-center justify-center rounded-[9px] px-4 text-[13.5px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
-                  >
-                    {compareMut.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ) : (
-                      <span className="truncate">
-                        {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
-                      </span>
-                    )}
-                  </button>
+                      className="btn-cta flex h-[38px] w-[74px] shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[12px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      {compareMut.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <span className="truncate">
+                          {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                        </span>
+                      )}
+                    </button>
+                  </div>
                 </div>
               ) : (
                 // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
@@ -1748,8 +1761,20 @@ export function ComparatorSection({
                   </div>
 
                   {/* Swap — click to flip FROM/TO, country and currency
-                      together. Rotated 90° when the row stacks vertically. */}
-                  <div className="flex items-center justify-center py-0.5 @4xl:flex-col @4xl:justify-end @4xl:pb-1">
+                      together. Rotated 90° when the row stacks vertically.
+                      2026-09-01 feedback — "la flechita del comparador
+                      quedó desalineada": measured with Playwright at
+                      exactly 4px too high — this cell has no label above
+                      it (unlike the origin/destination groups, which do,
+                      via FieldLight), so `items-stretch` on the parent
+                      grid stretches it to match their taller label+box
+                      height, and `pb-1` (4px) then pushed the button up
+                      from the bottom of that stretched cell instead of
+                      flush with it. `py-0.5` (needed for breathing room
+                      when stacked below @4xl) has the same effect on its
+                      own at 2px — cleared at @4xl too so nothing is left
+                      pushing the button off the boxes' shared bottom edge. */}
+                  <div className="flex items-center justify-center py-0.5 @4xl:flex-col @4xl:justify-end @4xl:py-0">
                     <button
                       type="button"
                       onClick={handleSwap}
@@ -2058,8 +2083,14 @@ export function ComparatorSection({
                   see FiltersCard's own comment on why that duplication is
                   now gone). One control now: this dropdown, moved out of
                   the `lg:hidden` cluster below and placed directly next to
-                  the 3 tabs, visible at every width. */}
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                  the 3 tabs, visible at every width.
+                  2026-09-01 feedback — "en realidad es sort, no filter":
+                  renamed the trigger and dropped `sm:items-stretch` (which
+                  forced this control to match the tabs' full 78px height,
+                  reading as a would-be 4th tab) for `sm:items-center`, so
+                  the compact pill sits at a normal control size next to
+                  them instead of pretending to be one. */}
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                     <div className="grid flex-1 grid-cols-1 gap-2 sm:grid-cols-3">
                       {(
                         [
@@ -2130,16 +2161,30 @@ export function ComparatorSection({
                       })}
                     </div>
 
-                    {/* "More filters" (trust, fee, exchange rate) — see the
-                    comment above this row's wrapper for why this moved out
-                    from a `lg:hidden` dropdown-only-below-the-rail into
-                    always being right here, next to Fastest. */}
+                    {/* Sort — trust/fee/exchange-rate, an alternate to the
+                    3 big tabs' own sort criteria, not a filter (nothing
+                    here narrows the row set). 2026-09-01 feedback —
+                    "en realidad es sort, no filter, poner un ícono de sort
+                    clásico y más chiquito": renamed from "More filters" to
+                    "Sort", a classic two-way-arrow sort glyph (ArrowUpDown)
+                    instead of the generic Gauge icon, and shrunk from a
+                    124px/2-line tile down to a normal compact pill —
+                    matching the delivery-method chips' own h-9/rounded-full
+                    sizing rather than mimicking the big tabs' size.
+                    Selecting one of these already visually replaces the 3
+                    tabs' selection for free: `isActive` on every tab is
+                    `sortBy === tab.key`, and a sort criterion from this
+                    menu (e.g. "most_trusted") never equals any of the 3
+                    tabs' keys, so all three lose their highlighted
+                    border/shadow the moment one of these is picked — this
+                    pill picks up the highlight instead (aria-pressed via
+                    MORE_SORT_CHIPS.includes(sortBy)). */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
                           type="button"
                           aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
-                          className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border px-3.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 sm:w-[124px] sm:flex-col sm:gap-1 ${
+                          className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                             MORE_SORT_CHIPS.includes(sortBy)
                               ? "border-foreground bg-foreground text-background"
                               : "border-input bg-card text-foreground hover:border-foreground/30"
@@ -2148,15 +2193,13 @@ export function ComparatorSection({
                           {(() => {
                             const Icon = MORE_SORT_CHIPS.includes(sortBy)
                               ? sortIcon(sortBy)
-                              : Gauge;
-                            return <Icon className="h-3.5 w-3.5" />;
+                              : ArrowUpDown;
+                            return <Icon className="h-3 w-3" />;
                           })()}
-                          <span className="flex items-center gap-1">
-                            {MORE_SORT_CHIPS.includes(sortBy)
-                              ? t(sortLabelKey(sortBy))
-                              : t("comparator.sort.more")}
-                            <ChevronDown className="h-3.5 w-3.5" />
-                          </span>
+                          {MORE_SORT_CHIPS.includes(sortBy)
+                            ? t(sortLabelKey(sortBy))
+                            : t("comparator.sort.more")}
+                          <ChevronDown className="h-3 w-3" />
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
@@ -2708,8 +2751,16 @@ function TrustpilotCard() {
   // the live widget (no network path to trustpilot.com in this sandbox to
   // confirm the rendered result) — if this still looks off in production,
   // screenshot it; there's nothing left to reason about blind.
+  //
+  // 2026-09-01 feedback, now with a real screenshot — the box was roughly
+  // double the height of "Set a rate alert" right above it (RateAlertCard's
+  // own submit button is h-10/40px): 14px top+bottom padding here on top
+  // of the widget's own 52px (see TrustBox.tsx's own comment on shrinking
+  // that to 36px) added up to way more than a matching rail card should.
+  // Fixed height + tighter padding brings this in line with the button
+  // above it instead of towering over it.
   return (
-    <div className="flex items-center justify-center rounded-[18px] border border-border bg-secondary px-[15px] py-[14px] [&_.trustpilot-widget]:mx-auto">
+    <div className="flex h-10 items-center justify-center overflow-hidden rounded-[18px] border border-border bg-secondary px-3 [&_.trustpilot-widget]:mx-auto">
       <TrustBox />
     </div>
   );
@@ -3161,7 +3212,16 @@ function BusinessRequestPanel({
         {t("comparator.business.request.explainer")}
       </p>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-5 gap-y-3 border-t border-border pt-3">
+      {/* 2026-09-01 feedback — "queda espacio en blanco desaprovechado":
+          `justify-between` used to pin the CTA to the row's far-right edge,
+          which on any screen wider than the 4 stats + button's combined
+          width left a dead gap between them (visible in the live
+          screenshot — stats end well before the button starts). Just
+          flowing the button right after the stats with the same gap-x-5
+          the stats already use removes that gap; any leftover space now
+          falls after the button, which reads as normal card padding
+          instead of a void in the middle of the row. */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-3 border-t border-border pt-3">
         <div className="flex flex-wrap gap-x-5 gap-y-2">
           <div>
             <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">

@@ -15,7 +15,19 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
   const { t } = useI18n();
   return (
     <section
-      className={`relative grid overflow-hidden transition-[grid-template-rows,padding] duration-300 ease-out ${
+      // 2026-09-01 feedback — "el primer fondo del comparador es igual que
+      // el de todays routes... deberían alternarse los colores": this
+      // section had no background of its own, so it (and the comparator
+      // card right below it) inherited the page's cream `--background`
+      // token — the exact same shade Today's Routes also shows through
+      // with (that section has no background either, by design). The
+      // mockup's hero+comparator band is explicit white (design/Mangomundi
+      // 4 - Final.dc.html line 68), one step lighter than the page cream —
+      // giving it back here, plus on ComparatorSection's own wrapper (see
+      // its own comment), creates the white → cream → white → dark rhythm
+      // the mockup actually has instead of two adjacent bands reading as
+      // one.
+      className={`relative grid overflow-hidden bg-card transition-[grid-template-rows,padding] duration-300 ease-out ${
         compact ? "grid-rows-[0fr] py-0" : "grid-rows-[1fr] pt-8 pb-8 sm:pt-14 sm:pb-10"
       }`}
       aria-hidden={compact}

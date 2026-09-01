@@ -41,14 +41,20 @@ export function ContactSection() {
             light surface. A narrow max-width keeps it from stretching
             edge-to-edge on wide screens the way the rest of this
             (text-centered, narrow) section doesn't either.
-            2026-09-01 feedback — "el trustpilot está desalineado": this
-            section's `text-center` only centers inline content — once
-            Trustpilot's script upgrades `.trustpilot-widget` it may not
-            stay inline, so `text-align` alone stops centering it. Same fix
-            as the rail's TrustpilotCard (see its own comment): `mx-auto`
-            targeted straight at that div centers it by its own margins,
-            independent of whatever display/width the script gives it. */}
-        <div className="mx-auto mt-10 max-w-md [&_.trustpilot-widget]:mx-auto">
+            2026-09-01 feedback, still desalineado after the `mx-auto`
+            attempt: `margin:auto` only centers a block box that has an
+            explicit width — if Trustpilot's script renders the widget as
+            inline-block instead (plausible for a small badge), margin:auto
+            on it does nothing, and text-align:center on an ancestor
+            (inherited from this section's own text-center, but easy to
+            lose track of through two nested divs) is the actual thing
+            that would center it. Real flex+justify-center — the same
+            mechanism AboutManifestoSection's own Trustpilot instance
+            already uses successfully next to its "About us" button —
+            centers a child regardless of its display type or whether it
+            has an explicit width, so it doesn't depend on guessing which
+            of those apply here. */}
+        <div className="mt-10 flex justify-center">
           <TrustBox />
         </div>
       </div>

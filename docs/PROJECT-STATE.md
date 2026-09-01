@@ -17,24 +17,33 @@
 > Claude que arranca a seguir este trabajo: hacé
 > `git fetch origin claude/coordinar-trabajo-simultaneo-y85idz` y trabajá
 > sobre esa rama, no crees una rama nueva desde `main` — perderías todo este
-> contexto y forkearías el trabajo en curso. El handoff del último round
-> cerrado (bug real de color de fondo sitewide corregido — `__root.tsx`
-> tenía un hex hardcodeado en vez del token `--background` —, píldoras del
-> comparador agrupadas por origen/destino, "Rank by" unificado en un solo
-> "More filters" al lado de Fastest, panel "Your request" comprimido,
-> `/about` con imagen de fondo real, bug de contenido cortado en el widget
-> encontrado y arreglado) está en
-> `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md`
+> contexto y forkearías el trabajo en curso. **PR abierto: #10** (no se
+> mergea solo — se dejó abierto a propósito para que cada push a la rama
+> re-dispare el preview de Vercel; ver la nota del handoff de la ronda 11
+> sobre por qué). El handoff del último round cerrado (fondo del home
+> alternado, flecha de swap pixel-exacta, banderas con `preload`+baja
+> prioridad en vez de `prefetch`, "More filters"→"Sort" con deselección
+> real de los 3 tabs grandes, Trustpilot del rail y de `/about` arreglados
+> de verdad, widget comprimido a 2 líneas + ejemplo real pre-resultado,
+> **causa raíz real del espacio en blanco de `/business`/`/about`**
+> encontrada y corregida (`__root.tsx` forzaba `min-h-screen` sitewide,
+> empujando el footer al fondo del viewport en páginas cortas), datos de
+> `minimum`/`settlement`/`contract_type` investigados y cargados para 7/8
+> brokers de business, panel "Your request" sin hueco muerto) está en
+> `docs/handoff/handoff-2026-09-01-undecimo-round-fondo-sort-widget-business-datos.md`
 > — a su vez continúa
+> `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md`,
 > `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md`,
 > `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md`,
 > `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md`
 > y `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md`.
 > **Importante para la próxima sesión:** este sandbox no puede alcanzar
-> `*.supabase.co` ni `trustpilot.com` por la política de red de salida
-> (403 del proxy, no es un problema de credenciales — el
-> `SUPABASE_SERVICE_ROLE_KEY` que Alejandro ya cargó en el environment no
-> lo soluciona, el bloqueo es de red, no de autenticación). Esto se
+> `*.supabase.co`, `trustpilot.com` **ni dominios arbitrarios de
+> terceros** (confirmado en la ronda 11: `*.vercel.app` y las webs propias
+> de los brokers de FX también están bloqueadas) por la política de red de
+> salida (403/EGRESS_BLOCKED del proxy, no es un problema de credenciales —
+> el `SUPABASE_SERVICE_ROLE_KEY` que Alejandro ya cargó en el environment
+> no lo soluciona, el bloqueo es de red, no de autenticación). Esto se
 > resuelve en la configuración del entorno/organización de Claude Code, no
 > desde una sesión. Mientras tanto, un estado con `result` real solo puede
 > verificarse simulando el dato (`window.__FAKE_RESULT_FOR_SCREENSHOT__`
@@ -43,6 +52,11 @@
 > (`/business` sirve, `/` y `/blog` no). El widget de Trustpilot real
 > (con el script de `trustpilot.com` cargado) sigue sin poder verse en
 > este sandbox bajo ninguna técnica — confirmar contra el preview real.
+> **Los datos de proveedores de la ronda 11 (`min_amount`/
+> `settlement_terms`/`contract_type` de brokers de business) se cargaron
+> con fuentes de segundo nivel (búsquedas web, no se pudo verificar contra
+> la web oficial de cada broker por el mismo bloqueo de red) — pendiente
+> que el equipo los verifique antes de confiar en ellos comercialmente.**
 
 ## 1. Qué es mangomundi
 
