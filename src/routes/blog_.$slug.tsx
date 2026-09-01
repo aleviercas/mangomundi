@@ -377,8 +377,17 @@ function BlogPostPage() {
           coincidían solo a partir de sm. pt-28 (112px) unifica con el
           listado (arreglado junto con esto) y con el resto del sitio
           (/about, /widget usan el mismo valor para despejar el header
-          fijo de 66px, Header.tsx). */}
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pt-28 pb-24">
+          fijo de 66px, Header.tsx).
+          2026-09-03 feedback — same complaint again, still real above the
+          `sm` breakpoint that first fix didn't touch: this wrapper also had
+          `lg:px-8` (32px inset at ≥1024px) that blog.tsx's own listing
+          wrapper never had (`px-4 sm:px-6`, no lg: step) — both are
+          `mx-auto max-w-3xl`, so the box itself lands in the same spot on
+          both pages, but that extra inset shifted this page's actual
+          content (BrandMark included, at this row's right edge) inward
+          relative to the listing at any wide viewport. Dropped to match
+          `px-4 sm:px-6` exactly. */}
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-28 pb-24">
         <div className="mb-8 flex items-center justify-between">
           <Link
             to="/blog"
