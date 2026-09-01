@@ -27,8 +27,15 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
       // its own comment), creates the white → cream → white → dark rhythm
       // the mockup actually has instead of two adjacent bands reading as
       // one.
+      // 2026-09-02 feedback — "achicar un poco el espacio antes del título
+      // H1" y "reducir un poco el espacio entre el subtítulo... y el
+      // comparador": pt-8/sm:pt-14 → pt-6/sm:pt-10 (menos aire arriba del
+      // H1), pb-8/sm:pb-10 → pb-5/sm:pb-6 (el comparador queda más cerca
+      // del subtítulo) — junto con el header del comparador ahora más
+      // bajo (ver el comment de la card de ComparatorSection), la sección
+      // completa entra más holgada en una pantalla.
       className={`relative grid overflow-hidden bg-card transition-[grid-template-rows,padding] duration-300 ease-out ${
-        compact ? "grid-rows-[0fr] py-0" : "grid-rows-[1fr] pt-8 pb-8 sm:pt-14 sm:pb-10"
+        compact ? "grid-rows-[0fr] py-0" : "grid-rows-[1fr] pt-6 pb-5 sm:pt-10 sm:pb-6"
       }`}
       aria-hidden={compact}
     >

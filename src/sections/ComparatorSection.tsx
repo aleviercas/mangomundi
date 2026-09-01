@@ -1494,68 +1494,19 @@ export function ComparatorSection({
               slate-toned shadow (`rgba(15,23,42,...)`) that belongs to a
               blue palette, not this one. */}
           <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-[#FDFBF9] shadow-[0_14px_36px_-22px_rgba(60,40,30,0.4)]">
-            {/* Card header: brand + segment toggle. Tried moving this into
-                the post-results filter row (Personal/Empresa alongside
-                Size/Show only/Receive via) — reverted: unlike those
-                filters, which just narrow already-fetched rows client-side,
-                switching segment changes the SERVER query itself (a
-                different fetch, not a subset) and, going to Empresa, hands
-                the chat to the business-lead wizard. That decision needs to
-                happen BEFORE the search runs, not as a post-results filter
-                — so it stays here. */}
-            {/* 2026-08-31 feedback — "el widget debería ser solo para
-                retail": the segment tablist below decides which SERVER
-                query runs (see its own comment) and hands off to the
-                business-lead wizard on "Business" — neither makes sense
-                inside a third-party embed, which only ever queries retail
-                (EmbedComparator hardcodes `segment: "retail"`). Hiding the
-                whole row also buys back its ~34px in the fixed 360×540
-                frame instead of showing a tablist with nothing to switch. */}
-            {!embedded && (
-              <div
-                className={`flex flex-wrap items-center gap-x-3 gap-y-1.5 border-b border-border ${
-                  compact ? "px-4 py-3.5 sm:px-[30px]" : "px-4 py-1.5 sm:px-5"
-                }`}
-              >
-                <div className="flex shrink-0 items-center gap-2.5">
-                  <div
-                    role="tablist"
-                    aria-label={t("search.segment")}
-                    className="flex h-8 shrink-0 items-center gap-0.5 rounded-full bg-muted p-1"
-                  >
-                    {(["retail", "business"] as Segment[]).map((s) => (
-                      <button
-                        key={s}
-                        role="tab"
-                        aria-selected={segment === s}
-                        onClick={() => handleSegmentChange(s)}
-                        className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize transition ${
-                          segment === s
-                            ? "bg-card text-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground"
-                        }`}
-                      >
-                        {t(`comparator.segment.${s}`)}
-                      </button>
-                    ))}
-                  </div>
-                  {/* design/AJUSTES-1.md §B originally rendered this inert
-                      (no href, since /exchange doesn't exist — redesign
-                      decision #5, "no está diseñada"). design/AJUSTES-3.md §B
-                      revises that: an inert-but-visible link still reads as
-                      broken, and the rule for an unbuilt destination is to
-                      hide it, not fake it ("un enlace muerto cuesta más
-                      credibilidad que una función que todavía no anunciás").
-                      So it's gone from here entirely now — not moved into
-                      CurrencyPillRow's with-results row either, even though
-                      §A's own mockup literally places it there, because §B
-                      addresses this exact link by name and its rule is the
-                      more recent, more specific one. Re-add once /exchange
-                      is real; home.hero.localExchangeLink is kept in i18n.tsx
-                      for that. */}
-                </div>
-              </div>
-            )}
+            {/* 2026-09-02 feedback — "el box de compare se puede hacer menos
+                alto si se mueve la píldora de individual/business arriba de
+                compare y en la misma línea de send y receive... se puede
+                eliminar toda la pestaña de arriba": this used to be its own
+                bordered header row (~34-50px of chrome — role="tablist" +
+                the segment pill, nothing else) sitting above the form body.
+                Dropped entirely; the segment pill now shares the "Send"
+                field's own label line instead (see its `!embedded &&` block
+                a few lines into the form body below), so the card is
+                shorter by that whole row's height with no separate section
+                for it. design/AJUSTES-1.md §B's dead /exchange link (that
+                used to live in this removed row) was already gone per
+                AJUSTES-3.md §B — nothing left here worth keeping. */}
 
             {/* Form body. @container lets the rows adapt to the CARD's width, not
               the viewport: 3/4 columns when the card is full-width (no results
@@ -1774,7 +1725,48 @@ export function ComparatorSection({
                 // same fallback every other tier here already uses.
                 <div className="grid grid-cols-1 items-stretch gap-2.5 @4xl:grid-cols-[minmax(340px,1.7fr)_46px_minmax(260px,1.3fr)_176px]">
                   <div className="min-w-0">
-                    <FieldLight label={t("comparator.field.amount")}>
+                    {/* 2026-09-02 feedback — segment pill moved here from
+                        its own header row above the whole card (see this
+                        card's own opening comment) — "en la misma línea de
+                        send y receive". Custom label row instead of
+                        FieldLight (which only has room for a single text
+                        label) so "Send" and the pill share one line via
+                        justify-between; the box below is unchanged. No
+                        `!embedded` guard needed — this whole grid is
+                        already the non-embedded branch (see the `embedded ?
+                        ... : (this grid)` ternary a few hundred lines up),
+                        same reasoning the removed header row's own comment
+                        used to explain why the pill never showed there. */}
+                    <label className="block min-w-0">
+                      <span className="mb-1.5 flex items-center justify-between gap-2">
+                        <span
+                          className="truncate text-[11.5px] font-bold"
+                          style={{ color: "#6B5F55" }}
+                        >
+                          {t("comparator.field.amount")}
+                        </span>
+                        <div
+                          role="tablist"
+                          aria-label={t("search.segment")}
+                          className="flex h-6 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
+                        >
+                          {(["retail", "business"] as Segment[]).map((s) => (
+                            <button
+                              key={s}
+                              role="tab"
+                              aria-selected={segment === s}
+                              onClick={() => handleSegmentChange(s)}
+                              className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize transition ${
+                                segment === s
+                                  ? "bg-card text-foreground shadow-sm"
+                                  : "text-muted-foreground hover:text-foreground"
+                              }`}
+                            >
+                              {t(`comparator.segment.${s}`)}
+                            </button>
+                          ))}
+                        </div>
+                      </span>
                       <div
                         className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
                           compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
@@ -1836,7 +1828,7 @@ export function ComparatorSection({
                           } ${isMobile ? "shrink-0 justify-center" : "shrink-0"}`}
                         />
                       </div>
-                    </FieldLight>
+                    </label>
                   </div>
 
                   {/* Swap — click to flip FROM/TO, country and currency
