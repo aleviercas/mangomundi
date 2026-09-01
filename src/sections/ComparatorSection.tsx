@@ -1597,11 +1597,30 @@ export function ComparatorSection({
             <div
               className={`@container ${embedded ? "space-y-2 p-2.5" : "space-y-2 p-2.5 sm:p-3.5"}`}
             >
-              {sameCorridorBlocked && receivingCountry && (
-                <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
-                  {t("search.sameCountry")}
+              {/* 2026-09-02 feedback — "el comparador se mueve y parece
+                  raro" al elegir país/moneda: reproducido y medido (no a
+                  ojo) — elegir el mismo país en origen y destino inserta
+                  este aviso, la card crece ~42px al instante y todo lo de
+                  abajo (Institutional & Partnership Inquiries, footer)
+                  salta de golpe. La animación grid-rows (técnica estándar
+                  para animar hacia/desde height:auto sin JS ni medir el
+                  alto a mano) convierte ese salto instantáneo en una
+                  transición suave — sigue "moviendo" la página como
+                  cualquier mensaje de validación real, pero de forma
+                  predecible en vez de abrupta. El aviso queda siempre
+                  montado (nunca unmount) para que la transición tenga algo
+                  que animar en ambos sentidos. */}
+              <div
+                className={`grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out ${
+                  sameCorridorBlocked && receivingCountry ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+                }`}
+              >
+                <div className="min-h-0">
+                  <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
+                    {t("search.sameCountry")}
+                  </div>
                 </div>
-              )}
+              </div>
               {/* Search form — two shapes depending on `embedded`. Both are
                   country-first (not currency-first), matching how every real
                   MTO comparator does it (Remitly, WorldRemit, Western Union
