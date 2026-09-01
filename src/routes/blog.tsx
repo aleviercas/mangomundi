@@ -47,7 +47,14 @@ function BlogIndexPage() {
 
   return (
     <div className="min-h-screen bg-background py-16 sm:py-20">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+      {/* 2026-09-01 feedback — "el ancho de lectura es diferente que el de
+          la pagina principal del blog": this listing was max-w-5xl (1024px)
+          while the post page (blog_.$slug.tsx) is max-w-3xl (768px) — a
+          real inconsistency, the page visibly narrows on every click-
+          through. Matched to the post page's width, the narrower of the
+          two, since that's the one actually governed by reading-width
+          concerns (long-form prose). */}
+      <div className="mx-auto max-w-3xl px-4 sm:px-6">
         {/* 2026-08-31 feedback (twice now) — "a la altura de Blog": that
             means the eyebrow line, which literally reads "Blog"
             (home.blog.eyebrow) — not the long h1 sentence below it
@@ -97,7 +104,32 @@ function BlogIndexPage() {
                 />
               )}
               <div className="flex min-w-0 flex-1 flex-col">
-                <h2 className="font-heading text-h3 font-bold text-foreground group-hover:text-brand-cta">
+                {/* 2026-09-01 feedback — "agregales la fecha y si
+                    corresponden a business retail o a ambas": same badges +
+                    date the post page itself already renders
+                    (blog_.$slug.tsx), just missing from this listing. */}
+                <div className="flex flex-wrap items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground">
+                  {(post.audience === "business" || post.audience === "both") && (
+                    <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
+                      {t("blog.audience.business")}
+                    </span>
+                  )}
+                  {(post.audience === "retail" || post.audience === "both") && (
+                    <span className="rounded bg-primary/10 px-2 py-0.5 text-primary">
+                      {t("blog.audience.retail")}
+                    </span>
+                  )}
+                  {post.published_at && (
+                    <span>
+                      {new Date(post.published_at).toLocaleDateString(undefined, {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </span>
+                  )}
+                </div>
+                <h2 className="mt-1.5 font-heading text-h3 font-bold text-foreground group-hover:text-brand-cta">
                   {post.title}
                 </h2>
                 {post.excerpt && (

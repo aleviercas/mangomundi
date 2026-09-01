@@ -40,8 +40,15 @@ export function ContactSection() {
             the bootstrap script (see __root.tsx), which is designed for a
             light surface. A narrow max-width keeps it from stretching
             edge-to-edge on wide screens the way the rest of this
-            (text-centered, narrow) section doesn't either. */}
-        <div className="mx-auto mt-10 max-w-md">
+            (text-centered, narrow) section doesn't either.
+            2026-09-01 feedback — "el trustpilot está desalineado": this
+            section's `text-center` only centers inline content — once
+            Trustpilot's script upgrades `.trustpilot-widget` it may not
+            stay inline, so `text-align` alone stops centering it. Same fix
+            as the rail's TrustpilotCard (see its own comment): `mx-auto`
+            targeted straight at that div centers it by its own margins,
+            independent of whatever display/width the script gives it. */}
+        <div className="mx-auto mt-10 max-w-md [&_.trustpilot-widget]:mx-auto">
           <TrustBox />
         </div>
       </div>

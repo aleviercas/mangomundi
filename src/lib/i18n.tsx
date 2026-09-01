@@ -2842,7 +2842,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.overall": "Smart",
     "comparator.sort.recipientGetsMost": "Receive",
     "comparator.sort.bestExchangeRate": "Rate",
-    "comparator.sort.more": "More criteria",
+    "comparator.sort.more": "More filters",
     "comparator.sort.mostTrusted": "Trust",
     "comparator.sort.bestBusiness": "Best for business",
     "comparator.sort.cashPickup": "Cash pickup",

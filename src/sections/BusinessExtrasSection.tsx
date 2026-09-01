@@ -11,11 +11,16 @@ import { useI18n } from "@/lib/i18n";
  *  "Institutional & Partnership Inquiries" section text the user supplied
  *  verbatim, from the site's previous design.
  *
- *  Second round: plain white/border/text cards read flat next to the rest
- *  of the redesigned page — an icon per card (real distinction: Treasury
- *  vs. Partnerships, not decoration) and the same business-person photo the
- *  home teaser and this page's own quote form already use, so the section
- *  doesn't read as pure text next to everything else that's photo-anchored. */
+ *  2026-09-01 feedback — "mejorar la distribución de los cuadros y la
+ *  imagen": the previous layout floated a loose text column next to a
+ *  boxed 300×340 photo with no shared frame, reading thinner than the rest
+ *  of the page. Rebuilt on the SAME bordered-panel pattern
+ *  BusinessSection.tsx already uses one section up (`rounded-[20px] border
+ *  border-border p-5`, photo in a fixed left column stretching the full
+ *  panel height) — one visual language for "business panel with a photo"
+ *  across the page instead of two different ones, and the photo now
+ *  anchors the whole panel's height instead of sitting at its own
+ *  arbitrary size. */
 export function BusinessExtrasSection() {
   const { t } = useI18n();
   const cards = [
@@ -33,7 +38,21 @@ export function BusinessExtrasSection() {
   return (
     <section className="py-7 sm:py-10">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid gap-6 lg:grid-cols-[1fr_300px] lg:items-start">
+        <div className="grid items-stretch gap-6 rounded-[20px] border border-border p-5 lg:grid-cols-[300px_1fr] lg:p-6">
+          {/* Same photo the home teaser and quote-form card already use —
+              not a new asset, stretched to the panel's full height instead
+              of a fixed box so it reads as one anchor, not a thumbnail. */}
+          <div className="hidden overflow-hidden rounded-[14px] lg:block">
+            <img
+              src="/images/business-person.jpg"
+              alt=""
+              width={300}
+              height={400}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+
           <div>
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
@@ -64,20 +83,6 @@ export function BusinessExtrasSection() {
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Same photo the home teaser and quote-form card already use —
-              not a new asset, just anchoring this text section visually the
-              way the rest of the page is. */}
-          <div className="hidden overflow-hidden rounded-[18px] border border-[#EBE3D9] lg:block">
-            <img
-              src="/images/business-person.jpg"
-              alt=""
-              width={300}
-              height={340}
-              className="aspect-[3/3.4] w-full object-cover"
-              loading="lazy"
-            />
           </div>
         </div>
       </div>

@@ -18,12 +18,15 @@
 > `git fetch origin claude/coordinar-trabajo-simultaneo-y85idz` y trabajá
 > sobre esa rama, no crees una rama nueva desde `main` — perderías todo este
 > contexto y forkearías el trabajo en curso. El handoff del último round
-> cerrado (widget rediseñado con país+moneda+monto de cada lado sin scroll
-> — verificado de verdad con Playwright, `/business` sin el vacío de
-> sticky-footer, espaciado sitewide comprimido vs. el mockup, fix del
-> Trustpilot del rail) está en
-> `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md`
+> cerrado (bug real de color de fondo sitewide corregido — `__root.tsx`
+> tenía un hex hardcodeado en vez del token `--background` —, píldoras del
+> comparador agrupadas por origen/destino, "Rank by" unificado en un solo
+> "More filters" al lado de Fastest, panel "Your request" comprimido,
+> `/about` con imagen de fondo real, bug de contenido cortado en el widget
+> encontrado y arreglado) está en
+> `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md`
 > — a su vez continúa
+> `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md`,
 > `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md`,
 > `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md`
 > y `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md`.
@@ -545,6 +548,7 @@ marketing genérico sin cifra concreta en ninguna página oficial revisada.
 | Handoff: séptimo round — nav/footer reestructurados, fix de banderas, agente rediseñado (docked claro sin scroll) (31-ago) | `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md` |
 | Handoff: octavo round — agente siempre flotante/oscuro (corrige el séptimo), rail = FiltersCard oscuro, widget sin scroll (31-ago) | `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md` |
 | Handoff: noveno round — widget con país+moneda+monto verificado sin scroll, `/business` sin vacío de sticky-footer, espaciado sitewide, fix Trustpilot del rail (1-sep) | `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md` |
+| Handoff: décimo round — bug de color de fondo sitewide, píldoras agrupadas, "Rank by" unificado en "More filters", "Your request" comprimido, `/about` con imagen, bug de contenido cortado en el widget (1-sep) | `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md` |
 
 ## 10. Cómo continuar
 

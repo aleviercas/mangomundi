@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Link } from "@tanstack/react-router";
 import { Sparkle } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
@@ -65,8 +66,21 @@ export function TodaysRoutesSection() {
         </div>
 
         <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {/* 2026-09-01 feedback — "al hacer click debería mandarte a ese
+              resultado del comparador": these cards were plain <div>s with
+              no navigation at all. /send/$corridor already exists exactly
+              for this (a currency-currency or country-country slug that
+              auto-runs compareProviders on load, see its own route
+              comment) — every candidate corridor here comes from the same
+              1,000-unit amount that route defaults to, so no new query
+              params are needed, just the right slug. */}
           {shown.map((c) => (
-            <div key={`${c.from}-${c.to}`} className="rounded-2xl border border-border bg-card p-4">
+            <Link
+              key={`${c.from}-${c.to}`}
+              to="/send/$corridor"
+              params={{ corridor: `${c.from.toLowerCase()}-${c.to.toLowerCase()}` }}
+              className="block rounded-2xl border border-border bg-card p-4 transition hover:border-foreground/20 hover:shadow-[0_10px_24px_-16px_rgba(36,28,22,.35)]"
+            >
               <div className="flex items-center gap-2 text-[13.5px] font-bold text-foreground">
                 {c.fromCountry && <FlagIcon country={c.fromCountry} />}
                 {c.from}
@@ -107,7 +121,7 @@ export function TodaysRoutesSection() {
                   {t("todaysRoutes.gain").replace("{amount}", Math.round(c.gain).toLocaleString())}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -1431,8 +1431,16 @@ export function ComparatorSection({
             second page. */}
         <div className={`min-w-0 ${result && !embedded ? "sticky top-[66px] z-30" : ""}`}>
           {/* Decision card — light surface, same token language as the rest
-              of the site (no more dark-navy island). */}
-          <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.12)]">
+              of the site (no more dark-navy island).
+              2026-09-01 feedback — "los cuadros también en el comparador
+              tienen otros colores" vs. design/Mangomundi 4 - Final.dc.html
+              line 82: that card is `#FDFBF9` (a soft cream, one step off
+              pure white) with a warm-toned shadow
+              (`rgba(60,40,30,.4)`, matching the site's brown/mango
+              palette) — this was pure white (`bg-card`) with a cool
+              slate-toned shadow (`rgba(15,23,42,...)`) that belongs to a
+              blue palette, not this one. */}
+          <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-[#FDFBF9] shadow-[0_14px_36px_-22px_rgba(60,40,30,0.4)]">
             {/* Card header: brand + segment toggle. Tried moving this into
                 the post-results filter row (Personal/Empresa alongside
                 Size/Show only/Receive via) — reverted: unlike those
@@ -1673,13 +1681,21 @@ export function ComparatorSection({
                 // comparador... poder seleccionar pais de origen y destino y
                 // moneda de origen y destino y monto". 2026-08-30 feedback
                 // (sixth round) — "ponerlo todo en la misma linea": what was
-                // a country row + an amount/currency row is now one row —
-                // amount+currency FROM, country FROM, swap, country TO,
-                // currency TO, CTA — matching the "1000 GBP from United
-                // Kingdom, receive in United States USD" reading order.
+                // a country row + an amount/currency row is now one row.
+                // 2026-09-01 feedback — "se pueden agrupar las píldoras de
+                // selección de país monto y moneda de origen y por otra
+                // parte agrupar la de moneda y país de destino": amount +
+                // FROM currency + FROM country used to be 2 separate
+                // bordered boxes; TO country + TO currency likewise. Merged
+                // into ONE bordered box per side (same `border-l` divider
+                // pattern the amount+currency box already used internally
+                // for its own two segments — just extended to a third/
+                // second segment) so "everything about where it's coming
+                // from" and "everything about where it's going" each read
+                // as one visual unit, not four independent pills in a row.
                 // Below the wide breakpoint it still stacks to one column,
                 // same fallback every other tier here already uses.
-                <div className="grid grid-cols-1 items-stretch gap-2.5 @4xl:grid-cols-[minmax(200px,1.15fr)_minmax(150px,0.85fr)_46px_minmax(150px,0.85fr)_minmax(110px,0.65fr)_176px]">
+                <div className="grid grid-cols-1 items-stretch gap-2.5 @4xl:grid-cols-[minmax(340px,1.7fr)_46px_minmax(260px,1.3fr)_176px]">
                   <div className="min-w-0">
                     <FieldLight label={t("comparator.field.amount")}>
                       <div
@@ -1695,7 +1711,7 @@ export function ComparatorSection({
                           placeholder="1000"
                           onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                           aria-label={t("comparator.field.amount")}
-                          className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                          className={`min-w-0 flex-[1.4] bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
                             compact ? "text-[21px]" : "text-[25px]"
                           }`}
                         />
@@ -1711,31 +1727,23 @@ export function ComparatorSection({
                             compact ? "px-3.5 text-[14px]" : "px-3.5 text-[14.5px]"
                           }`}
                         />
+                        <CountryCombobox
+                          value={sendingCountry}
+                          onChange={handleSendingCountryChange}
+                          placeholder={t("comparator.combobox.placeholder")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.sourceCountry")}
+                          // 2026-08-30 feedback (sixth round) — the currency
+                          // segment to the left already covers it, so this
+                          // plain country picker drops the redundant
+                          // currency-code readout.
+                          hideSecondary
+                          triggerClassName={`h-full flex-1 shrink-0 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                            compact ? "text-[14px]" : "text-[14.5px]"
+                          }`}
+                        />
                       </div>
-                    </FieldLight>
-                  </div>
-
-                  <div className="min-w-0">
-                    <FieldLight label={t("comparator.field.sourceCountry")}>
-                      <CountryCombobox
-                        value={sendingCountry}
-                        onChange={handleSendingCountryChange}
-                        placeholder={t("comparator.combobox.placeholder")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.sourceCountry")}
-                        // 2026-08-30 feedback (sixth round) — "en el país se
-                        // podría sacar la moneda porque la moneda se
-                        // selecciona aparte": the currency field just to the
-                        // left already covers it, so this plain country
-                        // picker drops the redundant currency-code readout.
-                        hideSecondary
-                        triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                          compact
-                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
-                            : "h-[58px] rounded-md bg-card text-[14.5px]"
-                        }`}
-                      />
                     </FieldLight>
                   </div>
 
@@ -1759,40 +1767,37 @@ export function ComparatorSection({
                   </div>
 
                   <div className="min-w-0">
-                    <FieldLight label={t("comparator.field.targetCountry")}>
-                      <CountryCombobox
-                        value={receivingCountry}
-                        onChange={handleReceivingCountryChange}
-                        placeholder={t("comparator.combobox.placeholder")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.targetCountry")}
-                        hideSecondary
-                        triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                          compact
-                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
-                            : "h-[58px] rounded-md bg-card text-[14.5px]"
-                        } ${sameCorridorBlocked ? "ring-2 ring-brand-cta/60" : ""}`}
-                      />
-                    </FieldLight>
-                  </div>
-
-                  <div className="min-w-0">
                     <FieldLight label={t("comparator.field.youReceive")}>
-                      <CurrencyCombobox
-                        value={to}
-                        onChange={handlePickToCurrency}
-                        placeholder={t("comparator.field.targetCurrency")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.targetCurrency")}
-                        compactLabel
-                        triggerClassName={`w-full border-[1.5px] border-input px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                          compact
-                            ? "h-[52px] rounded-md bg-[#FDFBF9] text-[14px]"
-                            : "h-[58px] rounded-md bg-card text-[14.5px]"
-                        }`}
-                      />
+                      <div
+                        className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                          compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
+                        } ${sameCorridorBlocked ? "border-brand-cta ring-2 ring-brand-cta/60" : "border-input"}`}
+                      >
+                        <CountryCombobox
+                          value={receivingCountry}
+                          onChange={handleReceivingCountryChange}
+                          placeholder={t("comparator.combobox.placeholder")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.targetCountry")}
+                          hideSecondary
+                          triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                            compact ? "text-[14px]" : "text-[14.5px]"
+                          }`}
+                        />
+                        <CurrencyCombobox
+                          value={to}
+                          onChange={handlePickToCurrency}
+                          placeholder={t("comparator.field.targetCurrency")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.targetCurrency")}
+                          compactLabel
+                          triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                            compact ? "px-3.5 text-[14px]" : "px-3.5 text-[14.5px]"
+                          }`}
+                        />
+                      </div>
                     </FieldLight>
                   </div>
 
@@ -1953,7 +1958,6 @@ export function ComparatorSection({
               <CompactResultsList
                 result={result}
                 handleAffiliateClick={openPreferredRate}
-                tRecipient={t("fx.recipient")}
                 tCta={t("retail.cta")}
               />
             </div>
@@ -1978,8 +1982,6 @@ export function ComparatorSection({
                   showOnlyExclusive={showOnlyExclusive}
                   setShowOnlyExclusive={setShowOnlyExclusive}
                   exclusiveCount={exclusiveCount}
-                  sortBy={sortBy}
-                  setSortBy={setSortBy}
                   businessFilters={
                     segment === "business"
                       ? { contractType, setContractType, frequency, setFrequency }
@@ -2045,87 +2047,99 @@ export function ComparatorSection({
                   {/* Primary tabs (design/AJUSTES-1.md §C2) — 3 big buttons,
                   not 4 small pills. The headline figure is the point: a
                   sort tab that shows how much you gain by using it gets
-                  tapped; a pill that just says "Smart" doesn't. "More
-                  criteria" no longer lives here — its 3 groups live in the
-                  left rail (FiltersCard, ≥lg) and, below lg where the rail
-                  is hidden, in the secondary filters row underneath. */}
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-                    {(
-                      [
-                        {
-                          key: "overall" as SortKey,
-                          label: t("comparator.tab.recommended"),
-                          hint: t("comparator.tab.recommendedHint"),
-                          figure: tabSummary?.recommendedFigure ?? "—",
-                          sub: tabSummary
-                            ? `${tabSummary.quote} · ${tabSummary.recommendedName}`
-                            : "",
-                        },
-                        {
-                          key: "recipient_gets_most" as SortKey,
-                          label: t("comparator.tab.receiveMore"),
-                          hint: t("comparator.tab.receiveMoreHint"),
-                          figure: tabSummary?.receiveMoreFigure ?? "—",
-                          sub: tabSummary
-                            ? `${tabSummary.quote} · ${t("comparator.tab.receiveMoreSub")}`
-                            : "",
-                        },
-                        {
-                          key: "fastest" as SortKey,
-                          label: t("comparator.tab.fastest"),
-                          hint: t("comparator.tab.fastestHint"),
-                          figure: tabSummary?.fastestFigure ?? "—",
-                          sub: tabSummary?.fastestName ?? "",
-                        },
-                      ] as const
-                    ).map((tab) => {
-                      const isActive = sortBy === tab.key;
-                      return (
-                        <button
-                          key={tab.key}
-                          type="button"
-                          onClick={() => setSortBy(tab.key)}
-                          aria-pressed={isActive}
-                          className="flex min-h-[78px] flex-col justify-between rounded-xl px-3.5 py-2.5 text-left transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/40"
-                          style={{
-                            border: isActive ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
-                            boxShadow: isActive ? "0 4px 14px -6px rgba(238,91,62,.35)" : "none",
-                          }}
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="text-xs font-bold text-foreground">{tab.label}</span>
-                            <span className="whitespace-nowrap text-[11px] font-medium text-muted-foreground">
-                              {tab.hint}
-                            </span>
-                          </div>
-                          <div>
-                            <div className="font-heading text-[20px] font-extrabold leading-tight tabular-nums text-foreground">
-                              {tab.figure}
+                  tapped; a pill that just says "Smart" doesn't.
+                  2026-09-01 feedback — "el rank by trust fees rate... sacalo
+                  del cuadro vertical de filters y ponelo a la derecha
+                  arriba al lado de los 3 filtros grandes... al lado de
+                  fastest": those 3 extra criteria used to live in TWO
+                  places (this row's own "More criteria" dropdown, `lg:hidden`
+                  so it only showed below the rail's breakpoint, AND
+                  duplicated again inside the rail's FiltersCard for ≥lg —
+                  see FiltersCard's own comment on why that duplication is
+                  now gone). One control now: this dropdown, moved out of
+                  the `lg:hidden` cluster below and placed directly next to
+                  the 3 tabs, visible at every width. */}
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                    <div className="grid flex-1 grid-cols-1 gap-2 sm:grid-cols-3">
+                      {(
+                        [
+                          {
+                            key: "overall" as SortKey,
+                            label: t("comparator.tab.recommended"),
+                            hint: t("comparator.tab.recommendedHint"),
+                            figure: tabSummary?.recommendedFigure ?? "—",
+                            sub: tabSummary
+                              ? `${tabSummary.quote} · ${tabSummary.recommendedName}`
+                              : "",
+                          },
+                          {
+                            key: "recipient_gets_most" as SortKey,
+                            label: t("comparator.tab.receiveMore"),
+                            hint: t("comparator.tab.receiveMoreHint"),
+                            figure: tabSummary?.receiveMoreFigure ?? "—",
+                            sub: tabSummary
+                              ? `${tabSummary.quote} · ${t("comparator.tab.receiveMoreSub")}`
+                              : "",
+                          },
+                          {
+                            key: "fastest" as SortKey,
+                            label: t("comparator.tab.fastest"),
+                            hint: t("comparator.tab.fastestHint"),
+                            figure: tabSummary?.fastestFigure ?? "—",
+                            sub: tabSummary?.fastestName ?? "",
+                          },
+                        ] as const
+                      ).map((tab) => {
+                        const isActive = sortBy === tab.key;
+                        return (
+                          <button
+                            key={tab.key}
+                            type="button"
+                            onClick={() => setSortBy(tab.key)}
+                            aria-pressed={isActive}
+                            className="flex min-h-[78px] flex-col justify-between rounded-xl px-3.5 py-2.5 text-left transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/40"
+                            style={{
+                              border: isActive ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
+                              // 2026-09-01 feedback — "se resaltan con
+                              // sombras cuando se seleccionan": vs.
+                              // design/Mangomundi 4 - Final.dc.html line
+                              // 827-828 (the tab's own `t.shadow`), this was
+                              // a much weaker shadow — the mockup's actual
+                              // value, restored.
+                              boxShadow: isActive
+                                ? "0 14px 34px -22px rgba(238,91,62,.55)"
+                                : "none",
+                            }}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs font-bold text-foreground">{tab.label}</span>
+                              <span className="whitespace-nowrap text-[11px] font-medium text-muted-foreground">
+                                {tab.hint}
+                              </span>
                             </div>
-                            <div className="truncate text-[11px] font-medium text-muted-foreground">
-                              {tab.sub}
+                            <div>
+                              <div className="font-heading text-[20px] font-extrabold leading-tight tabular-nums text-foreground">
+                                {tab.figure}
+                              </div>
+                              <div className="truncate text-[11px] font-medium text-muted-foreground">
+                                {tab.sub}
+                              </div>
                             </div>
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                          </button>
+                        );
+                      })}
+                    </div>
 
-                  {/* Secondary filters — delivery method, exclusive-only, legend.
-                  Visually separate row (smaller chips) so it never competes
-                  with the primary tabs above for attention. */}
-                  <div className="flex flex-wrap items-center gap-2 lg:hidden">
-                    {/* "More criteria" (trust, fee, exchange rate) — moved out
-                    of the primary tab row (§C2: only 3 tabs there now). At
-                    ≥lg these 3 live in the rail's FiltersCard instead, so
-                    this dropdown only needs to exist below that breakpoint,
-                    same as the rest of this row. */}
+                    {/* "More filters" (trust, fee, exchange rate) — see the
+                    comment above this row's wrapper for why this moved out
+                    from a `lg:hidden` dropdown-only-below-the-rail into
+                    always being right here, next to Fastest. */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
                           type="button"
                           aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
-                          className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                          className={`inline-flex shrink-0 items-center justify-center gap-1.5 rounded-xl border px-3.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 sm:w-[124px] sm:flex-col sm:gap-1 ${
                             MORE_SORT_CHIPS.includes(sortBy)
                               ? "border-foreground bg-foreground text-background"
                               : "border-input bg-card text-foreground hover:border-foreground/30"
@@ -2137,13 +2151,15 @@ export function ComparatorSection({
                               : Gauge;
                             return <Icon className="h-3.5 w-3.5" />;
                           })()}
-                          {MORE_SORT_CHIPS.includes(sortBy)
-                            ? t(sortLabelKey(sortBy))
-                            : t("comparator.sort.more")}
-                          <ChevronDown className="h-3.5 w-3.5" />
+                          <span className="flex items-center gap-1">
+                            {MORE_SORT_CHIPS.includes(sortBy)
+                              ? t(sortLabelKey(sortBy))
+                              : t("comparator.sort.more")}
+                            <ChevronDown className="h-3.5 w-3.5" />
+                          </span>
                         </button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
+                      <DropdownMenuContent align="end">
                         <DropdownMenuRadioGroup
                           value={sortBy}
                           onValueChange={(v) => setSortBy(v as SortKey)}
@@ -2156,7 +2172,16 @@ export function ComparatorSection({
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
+                  </div>
 
+                  {/* Secondary filters — delivery method, exclusive-only, legend.
+                  Visually separate row (smaller chips) so it never competes
+                  with the primary tabs above for attention. Sort criteria no
+                  longer live in this row at all (moved above, see its own
+                  comment) — this cluster is delivery-method/exclusive/legend
+                  only now, still lg:hidden since those 3 stay in the rail's
+                  FiltersCard at that breakpoint. */}
+                  <div className="flex flex-wrap items-center gap-2 lg:hidden">
                     {/* Delivery method — single-select, mutually exclusive,
                     click the active one again to clear back to "all
                     methods". Its own bordered cluster (not plain pill
@@ -2395,8 +2420,6 @@ function FiltersCard({
   showOnlyExclusive,
   setShowOnlyExclusive,
   exclusiveCount,
-  sortBy,
-  setSortBy,
   businessFilters,
 }: {
   t: (k: string) => string;
@@ -2407,8 +2430,6 @@ function FiltersCard({
   showOnlyExclusive: boolean;
   setShowOnlyExclusive: (v: boolean | ((prev: boolean) => boolean)) => void;
   exclusiveCount: number;
-  sortBy: SortKey;
-  setSortBy: (k: SortKey) => void;
   /** 2026-08-30 feedback (fourth round) — Contract type/Frequency used to
    *  live in the main search row, which made them look like they affected
    *  the compare results (they never did — see the useState declarations'
@@ -2424,10 +2445,17 @@ function FiltersCard({
 }) {
   const criteriaCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
   // 2026-08-31 feedback — "un agente de Smart filter... con el color
-  // oscuro, como kayak.com": this card (same filters as always — rank by,
-  // exclusive offers, payout method — nothing chat-related) went dark to
-  // read as the rail's own AI-flavored panel, matching FloatingAgent's own
-  // #241C16/mango palette instead of the rest of the (light) site.
+  // oscuro, como kayak.com": this card (payout method, exclusive offers —
+  // nothing chat-related) went dark to read as the rail's own AI-flavored
+  // panel, matching FloatingAgent's own #241C16/mango palette instead of
+  // the rest of the (light) site.
+  // 2026-09-01 feedback — "el rank by trust fees rate... sacalo del cuadro
+  // vertical de filters": rank-by (trust/fees/rate) used to be a third
+  // section here, duplicating the same 3 criteria as a "More filters"
+  // dropdown that only showed up below the `lg` breakpoint where this rail
+  // is hidden. Removed from here entirely — that dropdown is now the ONE
+  // place those criteria live, always visible next to the 3 main sort tabs
+  // (see its own comment, right above the tab row).
   const optionRowClass = (active: boolean) =>
     `flex h-[38px] items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
       active
@@ -2539,32 +2567,6 @@ function FiltersCard({
             {exclusiveCount}
           </span>
         </button>
-      </div>
-
-      <div className="mt-[15px] border-t border-white/10 pt-[13px]">
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
-          {t("comparator.filters.rankBy")}
-        </div>
-        <div className="mt-[9px] flex flex-wrap gap-[7px]">
-          {MORE_SORT_CHIPS.map((key) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => setSortBy(key)}
-              aria-pressed={sortBy === key}
-              className={`inline-flex h-9 items-center rounded-[10px] border px-3.5 text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
-                sortBy === key
-                  ? "border-[1.5px] border-[#FF8A6B] bg-white/[.14] font-bold text-white"
-                  : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-white/30"
-              }`}
-            >
-              {t(sortLabelKey(key))}
-            </button>
-          ))}
-        </div>
-        <p className="mt-2 text-[11px] leading-[1.5] text-white/50">
-          {t("comparator.filters.rankByHint")}
-        </p>
       </div>
     </div>
   );
@@ -3140,103 +3142,104 @@ function BusinessRequestPanel({
     );
   }
 
-  // 2026-08-31 feedback — moved from a 268px rail card to full width above
-  // the results: the 4 stats read as a horizontal row now (a grid, like the
-  // "150+/100+/50+" stat tiles elsewhere) instead of a narrow stacked list
-  // that would look sparse stretched across the whole column. New explainer
-  // line up top says what selecting brokers below actually does, now that
-  // this is the first thing seen instead of a rail card next to an agent
-  // that used to explain the flow.
+  // 2026-09-01 feedback — "comprimir y rediseñar el cuadro de your request
+  // para que no quede tan largo, poner el botón a la derecha": this used to
+  // be 3 stacked rows (title+explainer, a 4-col stat GRID spanning the
+  // full width, then the CTA on its own full-width line below that) —
+  // three separate border-t bands of vertical space for what's really one
+  // decision. The stats are now a compact inline cluster (gap-x, not a
+  // grid forcing 1/4 width each) sharing ONE row with the button on the
+  // right, so the button no longer needs its own line at all — only the
+  // email form (needs room for a text input) drops to its own row, and
+  // only once "Send request" is actually clicked.
   return (
-    <div className="rounded-[18px] border-[1.5px] border-foreground bg-card p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h4 className="font-heading text-[15px] font-extrabold text-foreground">
-            {t("comparator.business.request.title")}
-          </h4>
-          <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
-            {t("comparator.business.request.explainer")}
-          </p>
-        </div>
-      </div>
+    <div className="rounded-[18px] border-[1.5px] border-foreground bg-card p-3.5">
+      <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+        {t("comparator.business.request.title")}
+      </h4>
+      <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
+        {t("comparator.business.request.explainer")}
+      </p>
 
-      <div className="mt-3.5 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-border pt-3.5 sm:grid-cols-4">
-        <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-            {t("comparator.business.request.volume")}
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-5 gap-y-3 border-t border-border pt-3">
+        <div className="flex flex-wrap gap-x-5 gap-y-2">
+          <div>
+            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t("comparator.business.request.volume")}
+            </div>
+            <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
+              {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+            </div>
           </div>
-          <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
-            {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+          <div>
+            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t("comparator.business.request.route")}
+            </div>
+            <div className="mt-0.5 text-sm font-bold text-foreground">
+              {from} → {to}
+            </div>
+          </div>
+          <div>
+            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t("comparator.business.request.contract")}
+            </div>
+            <div className="mt-0.5 text-sm font-bold text-foreground">
+              {contractTypeLabel} · {frequencyLabel}
+            </div>
+          </div>
+          <div>
+            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t("comparator.business.request.brokersSelected")}
+            </div>
+            <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
+              {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
+            </div>
           </div>
         </div>
-        <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-            {t("comparator.business.request.route")}
-          </div>
-          <div className="mt-0.5 text-sm font-bold text-foreground">
-            {from} → {to}
-          </div>
-        </div>
-        <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-            {t("comparator.business.request.contract")}
-          </div>
-          <div className="mt-0.5 text-sm font-bold text-foreground">
-            {contractTypeLabel} · {frequencyLabel}
-          </div>
-        </div>
-        <div>
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
-            {t("comparator.business.request.brokersSelected")}
-          </div>
-          <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
-            {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
-          </div>
-        </div>
-      </div>
 
-      {expanded ? (
-        <form
-          className="mt-3.5 flex flex-col gap-2 border-t border-border pt-3.5 sm:flex-row sm:items-center"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSend(email);
-          }}
-        >
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("comparator.business.request.emailPlaceholder")}
-            className="h-11 flex-1 rounded-lg border border-input bg-card px-3 text-sm text-foreground"
-          />
-          <button
-            type="submit"
-            disabled={status === "sending"}
-            className="btn-cta flex h-11 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:opacity-60"
+        {expanded ? (
+          <form
+            className="flex w-full flex-col gap-2 sm:flex-row sm:items-center"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSend(email);
+            }}
           >
-            {status === "sending"
-              ? t("comparator.business.request.sending")
-              : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("comparator.business.request.emailPlaceholder")}
+              className="h-11 flex-1 rounded-lg border border-input bg-card px-3 text-sm text-foreground"
+            />
+            <button
+              type="submit"
+              disabled={status === "sending"}
+              className="btn-cta flex h-11 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:opacity-60"
+            >
+              {status === "sending"
+                ? t("comparator.business.request.sending")
+                : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+            </button>
+            {status === "error" && (
+              <p className="text-xs text-destructive sm:basis-full">
+                {t("comparator.business.request.error")}
+              </p>
+            )}
+          </form>
+        ) : (
+          <button
+            type="button"
+            disabled={selectedCount === 0}
+            onClick={() => setExpanded(true)}
+            className="btn-cta flex h-10 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
           </button>
-          {status === "error" && (
-            <p className="text-xs text-destructive sm:basis-full">
-              {t("comparator.business.request.error")}
-            </p>
-          )}
-        </form>
-      ) : (
-        <button
-          type="button"
-          disabled={selectedCount === 0}
-          onClick={() => setExpanded(true)}
-          className="btn-cta mt-3.5 flex h-11 w-full items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:px-6"
-        >
-          {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-        </button>
-      )}
-      <p className="mt-2.5 text-[11px] leading-relaxed text-muted-foreground">
+        )}
+      </div>
+      <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
         {t("comparator.business.request.disclaimer")}
       </p>
     </div>
@@ -3770,7 +3773,12 @@ function ProviderRow({
       className="group relative overflow-hidden rounded-2xl bg-card p-4 transition-shadow duration-200 ease-out hover:shadow-md sm:px-[19px] sm:py-4"
       style={{
         border: featured ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
-        boxShadow: featured ? "0 14px 34px -22px rgba(238,91,62,.55)" : "none",
+        // 2026-09-01 feedback — "se resaltan con sombras cuando se
+        // seleccionan": this was using the 3-tab row's OWN shadow value
+        // (design/Mangomundi 4 - Final.dc.html line 828, `t.shadow`)
+        // instead of the result rows' own, slightly different one
+        // (line 846, `r.shadow`) — the two got cross-wired at some point.
+        boxShadow: featured ? "0 12px 28px -18px rgba(238,91,62,.6)" : "none",
       }}
     >
       {/* Desktop — single grid, columns match the ResultsBlock header
@@ -4052,12 +4060,10 @@ function BusinessRowExtra({
 function CompactResultsList({
   result,
   handleAffiliateClick,
-  tRecipient,
   tCta,
 }: {
   result: ComparisonResult;
   handleAffiliateClick: (slug: string, url: string, name?: string) => void;
-  tRecipient: string;
   tCta: string;
 }) {
   const { t } = useI18n();
@@ -4112,7 +4118,7 @@ function CompactResultsList({
               slug={winner.slug}
               size={28}
               rounded={false}
-              className="shrink-0 rounded-sm border border-border bg-white"
+              className="shrink-0 rounded-sm"
             />
             <div className="min-w-0 truncate text-[11px] tabular-nums text-muted-foreground">
               {winner.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ·{" "}
@@ -4154,7 +4160,7 @@ function CompactResultsList({
                     slug={row.slug}
                     size={20}
                     rounded={false}
-                    className="shrink-0 rounded-sm border border-border bg-white"
+                    className="shrink-0 rounded-sm"
                   />
                   <span className="truncate text-xs font-medium text-foreground">{row.name}</span>
                 </div>
@@ -4198,7 +4204,18 @@ function CompactResultsList({
           <ArrowRight className="h-3.5 w-3.5" />
         </a>
       </div>
-      <div className="mt-1 text-center text-[9px] text-muted-foreground">{tRecipient}</div>
+      {/* 2026-09-01 feedback — "como no tiene scroll hay algo abajo que no
+          se ve": a `{tRecipient}` caption used to render right here, one
+          more line below the invitation block. It was fx.recipient
+          ("Recipient gets") — a label meant to sit next to a figure
+          elsewhere, rendered alone with nothing to attach to, and not part
+          of design/Mangomundi 4 - Final.dc.html's widget mockup (line
+          726-786) at all. In the fixed 360×540 frame (overflow-hidden, no
+          scrollbar — EmbedComparator.tsx's own comment on why), that extra
+          line was exactly what pushed the bottom of this list (and
+          sometimes the "powered by" footer under it) past the visible
+          height with no way to see it had happened. Removed instead of
+          re-fit — it didn't belong here to begin with. */}
     </div>
   );
 }

@@ -278,7 +278,15 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider initialLang={initialLang}>
         <ComingSoonProvider>
-          <div className="min-h-screen bg-[#fcfcfc]">
+          {/* 2026-09-01 feedback — "revisar los colores... hay tonos del
+              fondo diferentes" vs. design/Mangomundi 4 - Final.dc.html: the
+              mockup's page background is #FBF8F4 (a warm cream, already
+              `--background` in styles.css) — this wrapper had its own
+              hardcoded #fcfcfc (near-white) instead of the token, so every
+              section that relies on inheriting the page background instead
+              of setting its own (TodaysRoutesSection among them) rendered
+              paler than the mockup everywhere at once. */}
+          <div className="min-h-screen bg-background">
             <LangKeyedShell />
           </div>
           <SpeedInsights />
