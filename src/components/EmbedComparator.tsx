@@ -59,8 +59,17 @@ function useRatesFreshness(fetchedAt: string | null): string | null {
  *  only, a single card. Now shows up to 3 real corridors (still real
  *  getExclusiveCorridors data, never invented) as compact rows in one
  *  bordered list instead of one large card, using the same vertical
- *  budget more efficiently. */
-const MAX_WIDGET_EXAMPLES = 5;
+ *  budget more efficiently.
+ *
+ *  2026-09-02 feedback (second round) — "el widget ahora quedo mejor pero
+ *  quedo espacio en blanco": 5 rows (at this list's own row height) still
+ *  left real gap under the fixed 540px frame's search form + examples —
+ *  raised the cap toward getExclusiveCorridors' actual candidate pool
+ *  (11 corridors, see fx.functions.ts's own EXCLUSIVE_CORRIDOR_CANDIDATES)
+ *  instead of inventing filler content; the outer frame's existing
+ *  `overflow-hidden` still clips gracefully on any route where fewer
+ *  corridors qualify. */
+const MAX_WIDGET_EXAMPLES = 8;
 
 function WidgetExamples({
   examples,
