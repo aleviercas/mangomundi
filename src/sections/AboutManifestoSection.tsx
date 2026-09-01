@@ -84,15 +84,28 @@ export function AboutManifestoSection() {
                   Trustpilot's own widget design, unmodified.
                   2026-08-31 feedback (again) — "sigue desalineado respecto
                   al botón de about us": `items-center` on the row alone
-                  wasn't enough to fix this — `data-style-height="52px"` is
-                  a Trustpilot-only attribute, not real CSS, so before (or
-                  without, in a sandbox that can't reach trustpilot.com)
-                  their script runs, this box has no actual height of its
-                  own and sinks to the fallback link's natural (bottom-
-                  anchored) line box instead of the row's centerline. Giving
-                  it the CTA button's own h-11 + flex centering forces the
-                  match regardless of what's rendered inside. */}
-              <div className="flex h-11 shrink-0 items-center">
+                  wasn't enough, so a `h-11` (44px, matching the button)
+                  wrapper was added around TrustBox — but its real rendered
+                  height is 52px (data-style-height, see TrustBox's own
+                  comment): the box declares one height and is then capped
+                  8px shorter than that. TrustpilotCard hit the same
+                  mismatch in the rail and reverted a similar height cap for
+                  the same reason (either clips the widget with
+                  overflow-hidden, or leaves the wrapper's own box shorter
+                  than what actually gets painted). 2026-09-02 feedback says
+                  it's still misaligned, higher than the button, with a
+                  fixed h-11 in place — dropping it removes that known-bad
+                  mismatch and lets the row's own `items-center` (line 74)
+                  size against the widget's real 52px, same approach
+                  TrustpilotCard uses successfully ("comfortable padding
+                  instead of a hard height"). Not re-verified against the
+                  live widget here — this sandbox has no network path to
+                  trustpilot.com (confirmed again this round) and `/` 500s
+                  server-side on the Supabase-backed loader other sections
+                  on this same page need, so a real screenshot isn't
+                  possible from here; if this still looks off in
+                  production, a screenshot is the next real signal. */}
+              <div className="flex shrink-0 items-center">
                 <TrustBox />
               </div>
             </div>
