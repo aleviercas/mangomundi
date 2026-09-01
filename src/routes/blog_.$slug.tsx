@@ -371,7 +371,14 @@ function BlogPostPage() {
 
   return (
     <article className="bg-background">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pt-20 pb-24">
+      {/* 2026-09-02 feedback — "el ícono se mueve o está en distinta
+          posición" vs. el listado de /blog: acá el padding-top era pt-20
+          (80px) fijo, el listado usaba py-16 sm:py-20 (64px en mobile) —
+          coincidían solo a partir de sm. pt-28 (112px) unifica con el
+          listado (arreglado junto con esto) y con el resto del sitio
+          (/about, /widget usan el mismo valor para despejar el header
+          fijo de 66px, Header.tsx). */}
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pt-28 pb-24">
         <div className="mb-8 flex items-center justify-between">
           <Link
             to="/blog"

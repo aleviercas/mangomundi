@@ -46,8 +46,20 @@ function BlogIndexPage() {
   const { data: posts, isLoading } = useQuery(listQuery(toBlogLocale(lang)));
 
   return (
-    <div className="min-h-screen bg-background py-16 sm:py-20">
-      {/* 2026-09-01 feedback — "el ancho de lectura es diferente que el de
+    <div className="min-h-screen bg-background pb-16 pt-28 sm:pb-20">
+      {/* 2026-09-02 feedback — "el ícono se mueve o está en distinta
+          posición" entre este listado y un post individual: este wrapper
+          usaba py-16 sm:py-20 (64px/80px de padding-top), mientras que
+          blog_.$slug.tsx usa pt-20 (80px) fijo — coinciden a partir de sm,
+          pero no en mobile (64px acá contra 80px allá), así que el ícono
+          (mismo BrandMark, misma fila) aterriza más arriba acá que en un
+          post. 64px además queda por debajo de los 66px del header fijo
+          (Header.tsx, h-[66px]) — un roce real, no solo estético. pt-28
+          (112px) es el mismo valor que ya usan /about y /widget para
+          despejar ese header — unifica este listado con el resto del
+          sitio Y con blog_.$slug.tsx (arreglado junto con esto) en vez de
+          inventar un tercer número.
+          2026-09-01 feedback — "el ancho de lectura es diferente que el de
           la pagina principal del blog": this listing was max-w-5xl (1024px)
           while the post page (blog_.$slug.tsx) is max-w-3xl (768px) — a
           real inconsistency, the page visibly narrows on every click-
