@@ -68,7 +68,19 @@ function WidgetPage() {
   return (
     <main className="mx-auto max-w-6xl px-5 pt-28 pb-20 sm:px-8">
       <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
-        <div>
+        {/* 2026-09-02 feedback — W13 mobile audit: measured a real 10px
+            horizontal overflow on /widget at 375px (docW 385 vs a 375
+            viewport, confirmed via scrollWidth). Root cause: the code
+            snippet's `<pre className="overflow-x-auto ...">` (unwrapped
+            `<script>` text) has a min-content width wider than the
+            viewport, and this grid item — like every grid/flex item by
+            default — has an implicit `min-width: auto`, so the browser
+            grows the COLUMN to fit that min-content instead of letting the
+            `<pre>` scroll internally. `min-w-0` overrides that default so
+            the item can shrink below its content's natural width, which is
+            what actually lets overflow-x-auto contain the snippet instead
+            of pushing the whole page wider. */}
+        <div className="min-w-0">
           <p className="text-eyebrow font-bold uppercase text-accent">{t("home.widget.eyebrow")}</p>
           <h1 className="mt-3 font-heading text-4xl font-extrabold tracking-tight text-foreground sm:text-h1">
             {t("home.widget.title")}
