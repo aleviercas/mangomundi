@@ -3367,6 +3367,35 @@ function FloatingAgent(p: FloatingAgentProps) {
   );
 }
 
+// A compact label/value pair, sized to its own content (no fixed column) —
+// used by BusinessRequestPanel's stats row so several of these can sit in
+// one wrapping flex row and a long value (e.g. a country pair) just wraps
+// to its own line as a whole unit instead of overflowing a fixed-width cell.
+function StatItem({
+  label,
+  labelExtra,
+  children,
+}: {
+  label: string;
+  /** Rendered right after the label (e.g. BusinessRowExtra's "estimated"
+   *  badge) — kept out of `children` so it stays on the label's own line
+   *  even when the value below wraps to several lines. */
+  labelExtra?: React.ReactNode;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="min-w-0">
+      <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+        {label}
+        {labelExtra}
+      </div>
+      <div className="mt-0.5 text-sm font-bold leading-snug tabular-nums text-foreground">
+        {children}
+      </div>
+    </div>
+  );
+}
+
 // ===== Business "Your request" panel =====
 // design/Mangomundi 4 - Final.dc.html (line 532-541) — lives in the results
 // column now, below the results list (2026-08-31 feedback; used to dock in
@@ -3416,164 +3445,141 @@ function BusinessRequestPanel({
 
   if (status === "sent") {
     return (
-      <div
-        className="rounded-[18px] border p-4"
-        style={{ backgroundColor: "#716B68", borderColor: "#716B68" }}
-      >
+      <div className="rounded-[18px] border border-border bg-card p-4">
         {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-        <h3 className="font-heading text-[15px] font-extrabold text-white">
+        <h3 className="font-heading text-[15px] font-extrabold text-foreground">
           {t("comparator.business.request.title")}
         </h3>
-        <p className="mt-2 text-sm leading-relaxed text-white">
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
           {t("comparator.business.request.sent")}
         </p>
       </div>
     );
   }
 
-  // 2026-09-02 feedback — "el botón se está moviendo para el centro" /
-  // "cuando está inactivo queda en el medio": the previous version flowed
-  // the button inline right after the stats cluster when there was room,
-  // reasoning that this avoided the dead-space `justify-between` used to
-  // leave. In practice this made the button's position depend on viewport
-  // width and stat-text length — sometimes flush after the stats,
-  // sometimes wrapped to its own line — which read as "randomly drifting"
-  // rather than anchored anywhere.
+  // 2026-09-03 feedback — third redesign of this panel: "cambiarle el
+  // color y reorganizar de nuevo todos los datos... así como lo pusimos
+  // en columna queda mal". Every dark treatment tried here (near-black,
+  // then the softened #716B68) kept reading as its own separate, heavier
+  // "mode" next to the plain bg-card results below it — and the stacked
+  // single-column layout (four label/value rows one under another) read
+  // as unnecessarily tall for what's four short facts. Dropping the
+  // custom dark background entirely: this is now styled exactly like
+  // every other card on the page (border-border, bg-card, foreground/
+  // muted-foreground text) rather than a fourth attempt at a bespoke
+  // dark tint — the safest way to stop it clashing is to stop giving it
+  // its own look. The four facts move from a stacked column into a
+  // single wrapping row of compact label/value pairs (StatItem below) —
+  // no grid, no fixed-width cells, so a long country pair just wraps to
+  // the next line as its own unit instead of overflowing a column
+  // (the original overlap bug's actual cause).
   //
-  // 2026-09-02 feedback (third round) — "volver a ponerlo mas oscuro pero
-  // no tanto, pero respetando la paleta... el campo route se sobrepone
-  // con el de currency": Z3's light-card version fixed the earlier
-  // near-black (#241C16) reading as heavier than the page, but went all
-  // the way to bg-card — this round wants dark back, just not THAT dark.
-  // #716B68 is #241C16 (this palette's "Tinta") mixed 65/35 with white:
-  // same hue family, not a foreign color, and still clears 4.5:1 AA for
-  // solid white text (checked: 5.24:1) — opacity-based white (white/50
-  // etc, what every other dark panel on this site uses for de-emphasis)
-  // does NOT clear AA against this lighter bg (checked down to white/80:
-  // 4.03:1, still short), so hierarchy here comes from size/weight
-  // instead of dimmed color — every text color below is solid white.
+  // "Eliminar esto porque ocupa lugar... ponerlo en el subtitulo de your
+  // request más conciso": the old explainer paragraph (a full sentence
+  // about what selecting brokers does) AND the disclaimer paragraph below
+  // the stats both took their own line; dropped the explainer and
+  // promoted the disclaimer's own already-existing copy ("One email with
+  // your requirements...") to be the one subtitle under the title —
+  // shorter, and says the one thing that actually matters (privacy),
+  // instead of two paragraphs saying it twice.
   //
-  // The overlap bug: Route and Currency were two of five equal-width
-  // `grid-cols-5` cells with no `min-w-0` — a real sending/receiving
-  // country pair (e.g. "United Kingdom → United Arab Emirates") is wider
-  // than a 1/5 column, and a grid cell's default `min-width: auto` means
-  // the browser won't shrink the text to fit, so it visually bled into
-  // Currency's cell next to it. Restructured into two blocks instead of
-  // one 5-column grid: Volume/Route/Currency/Contract stack as full-width
-  // rows in a left column (nothing to their right to overlap into
-  // anymore), Brokers Selected + the Send button move to their own
-  // right-aligned column — same "always its own place, never drifting"
-  // goal as the button fix above, just reorganized around the real
-  // country-name overflow this round found.
+  // The Send button keeps its own bottom row, right-aligned via
+  // `justify-end` on a row of its own — same "anchored, never drifting"
+  // fix as before (see git history), now independent of how many lines
+  // the stats row above it wraps to.
   return (
-    <div
-      className="rounded-[18px] border p-4"
-      style={{ backgroundColor: "#716B68", borderColor: "#716B68" }}
-    >
-      {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-      <h3 className="font-heading text-[15px] font-extrabold text-white">
-        {t("comparator.business.request.title")}
-      </h3>
-      <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-white">
-        {t("comparator.business.request.explainer")}
-      </p>
-
-      <div className="mt-3 flex flex-col gap-3 border-t border-white/20 pt-3 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-        <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white">
-              {t("comparator.business.request.volume")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
-              {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
-            </div>
-          </div>
-          <div className="min-w-0">
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white">
-              {t("comparator.business.request.route")}
-            </div>
-            <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-sm font-bold text-white">
-              <FlagIcon country={sendingCountry} /> {sendingCountryName}
-              <span>→</span>
-              {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white">
-              {t("comparator.business.request.currency")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
-              {from} → {to}
-            </div>
-          </div>
-          <div>
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white">
-              {t("comparator.business.request.contract")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold text-white">
-              {contractTypeLabel} · {frequencyLabel}
-            </div>
-          </div>
+    <div className="rounded-[18px] border border-border bg-card p-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+          <h3 className="font-heading text-[15px] font-extrabold text-foreground">
+            {t("comparator.business.request.title")}
+          </h3>
+          <p className="mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
+            {t("comparator.business.request.disclaimer")}
+          </p>
         </div>
-
-        {/* Brokers Selected + the Send action share this right-aligned
-            column — "el de brokers selected lo dejamos arriba del botón
-            también a la derecha". */}
-        <div className="flex shrink-0 flex-col items-end gap-2.5 sm:w-[190px]">
-          <div className="text-right">
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white">
-              {t("comparator.business.request.brokersSelected")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
-              {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
-            </div>
+        <div className="shrink-0 text-right">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+            {t("comparator.business.request.brokersSelected")}
           </div>
-          {expanded ? (
-            <form
-              className="flex w-full flex-col gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                onSend(email);
-              }}
-            >
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("comparator.business.request.emailPlaceholder")}
-                className="h-11 w-full rounded-lg border border-white/25 bg-white/10 px-3 text-sm text-white placeholder:text-white/70"
-              />
-              <button
-                type="submit"
-                disabled={status === "sending"}
-                className="btn-cta flex h-11 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:opacity-60"
-              >
-                {status === "sending"
-                  ? t("comparator.business.request.sending")
-                  : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-              </button>
-              {status === "error" && (
-                <p className="text-right text-xs text-[#FFD9CE]">
-                  {t("comparator.business.request.error")}
-                </p>
-              )}
-            </form>
-          ) : (
-            <button
-              type="button"
-              disabled={selectedCount === 0}
-              onClick={() => setExpanded(true)}
-              className="btn-cta flex h-10 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-            </button>
-          )}
+          <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
+            {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
+          </div>
         </div>
       </div>
-      <p className="mt-3 border-t border-white/20 pt-3 text-[11px] leading-relaxed text-white">
-        {t("comparator.business.request.disclaimer")}
-      </p>
+
+      <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-border pt-3">
+        <StatItem label={t("comparator.business.request.volume")}>
+          {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+        </StatItem>
+        <StatItem label={t("comparator.business.request.route")}>
+          <span className="inline-flex flex-wrap items-center gap-1.5">
+            <FlagIcon country={sendingCountry} /> {sendingCountryName}
+            <span>→</span>
+            {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+          </span>
+        </StatItem>
+        <StatItem label={t("comparator.business.request.currency")}>
+          {from} → {to}
+        </StatItem>
+        <StatItem label={t("comparator.business.request.contract")}>
+          {contractTypeLabel} · {frequencyLabel}
+        </StatItem>
+      </div>
+
+      {/* `justify-end` is what actually keeps this anchored right regardless
+          of content — the earlier "el botón se mueve al centro" fix (see
+          git history) — so the button itself doesn't need a fixed width
+          for that. It briefly had one anyway (w-[190px]) and .btn-cta's
+          own `white-space: nowrap` made "Send request to 1 broker" wider
+          than that box, so the text visibly overflowed past its own
+          rounded corners. Sized to content (px-5) instead — safe at any
+          broker count since `justify-end` alone already guarantees the
+          position. */}
+      <div className="mt-3 flex justify-end">
+        {expanded ? (
+          <form
+            className="flex w-full flex-col gap-2 sm:w-[280px]"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSend(email);
+            }}
+          >
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("comparator.business.request.emailPlaceholder")}
+              className="h-11 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground"
+            />
+            <button
+              type="submit"
+              disabled={status === "sending"}
+              className="btn-cta flex h-11 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:opacity-60"
+            >
+              {status === "sending"
+                ? t("comparator.business.request.sending")
+                : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+            </button>
+            {status === "error" && (
+              <p className="text-right text-xs text-destructive">
+                {t("comparator.business.request.error")}
+              </p>
+            )}
+          </form>
+        ) : (
+          <button
+            type="button"
+            disabled={selectedCount === 0}
+            onClick={() => setExpanded(true)}
+            className="btn-cta flex h-10 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -4355,56 +4361,53 @@ function BusinessRowExtra({
 
   return (
     <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      {/* 2026-09-03 feedback — "poner en una misma columna los datos de
-          spread minimum settlement contracts, alineada del lado izquierdo":
-          was a 12-column grid spreading the four metrics across the card's
-          full width (see git history for that version's own rationale,
-          still valid re: not truncating Settlement/Contracts' full-sentence
-          values). Now a single stacked column instead — each label+value
-          pair gets the whole row's width to itself, left-aligned, so
-          Settlement/Contracts still wrap freely without needing a wide
-          multi-column track to do it. */}
-      <div className="flex min-w-0 flex-1 flex-col gap-2">
+      {/* 2026-09-03 feedback (second round) — "lo mismo ocurre en los datos
+          en cada proveedor... la posición en columna quedó bastante mal":
+          same fix as BusinessRequestPanel's own stats — reuses the same
+          StatItem component instead of a bespoke stacked column, so these
+          four metrics sit as compact side-by-side chips in one wrapping
+          row (each sized to its own content) rather than a tall single
+          column of full sentences. Settlement/Contracts' full-sentence
+          values (e.g. "Spot, Forward (min contract value ~£10,000)") still
+          wrap freely — flex-wrap on the row, not a fixed-width grid cell,
+          so a long value just takes its own line instead of overflowing. */}
+      <div className="flex min-w-0 flex-1 flex-wrap items-start gap-x-5 gap-y-2">
         {metrics.map((m) => (
-          <div key={m.labelKey} className="flex flex-wrap items-baseline gap-x-2">
-            <div className="flex shrink-0 items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-              {t(m.labelKey)}
-              {/* 2026-09-02 feedback — real value where findable, otherwise
-                  a logical estimate (never blank, never presented as
-                  verified) — see this component's own metrics comment. */}
-              {m.estimated && (
+          <StatItem
+            key={m.labelKey}
+            label={t(m.labelKey)}
+            labelExtra={
+              // 2026-09-02 feedback — real value where findable, otherwise
+              // a logical estimate (never blank, never presented as
+              // verified) — see this component's own metrics comment.
+              m.estimated ? (
                 <span
                   title={t("comparator.business.metric.estimatedTooltip")}
                   className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-[9px] font-bold normal-case tracking-normal text-accent-text"
                 >
                   {t("comparator.business.metric.estimated")}
                 </span>
-              )}
-            </div>
-            <div className="min-w-0 text-[13px] font-semibold leading-snug tabular-nums text-foreground">
-              {m.value}
-            </div>
-          </div>
+              ) : undefined
+            }
+          >
+            {m.value}
+          </StatItem>
         ))}
       </div>
       {/* 2026-09-03 feedback — "dejar el botón de add request del lado
-          derecho a la misma altura": moved out of its own row below the
-          metrics into this column, sitting beside them instead (the outer
-          wrapper's `sm:items-center` centers it against the metrics
-          column's full height, "misma altura" no matter how many lines
-          Settlement/Contracts wrap to). Also — "ponerle otro color de
-          acuerdo a la paleta pero que no sea blanco": was `bg-card`
-          (the same off-white as every other outlined control on the row,
-          i.e. read as "no action taken" rather than its own button); now
-          solid Verde (--success, the palette's other brand color besides
-          Mango — already used for "confirmed/live/saved" states, which
-          fits "confirm this provider for the request" here). The featured
-          row's "Go to {name}" CTA already owns solid Mango, so Add to
-          request needed a different color to stay visually distinct from
-          it, not a competing use of the same one. "Added" flips to an
-          outlined light-fill treatment (never back to white/card) with a
-          check icon, so the confirmed state still reads as its own thing
-          rather than just a darker button. */}
+          derecho a la misma altura": sits beside the stats row (the outer
+          wrapper's `sm:items-center` centers it against that row's full
+          height, "misma altura" no matter how many lines Settlement/
+          Contracts wrap to).
+          2026-09-03 feedback (second round) — "los botones de add to
+          request en verde quedan fuera de la paleta, deberían estar en
+          negro": Verde read as an odd, unexpected color for this action —
+          switched to solid Tinta (--primary, this palette's black),
+          the same color blog_.$slug.tsx's own "Go to compare" CTA already
+          uses, rather than introducing another new hue. "Added" flips to
+          an outlined light-fill treatment (never back to white/card) with
+          a check icon, so the confirmed state still reads as its own
+          thing rather than just a darker button. */}
       <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
         {savedVsRetail != null && savedVsRetail > 0 && (
           <div className="sm:text-right">
@@ -4434,8 +4437,8 @@ function BusinessRowExtra({
           aria-pressed={requested}
           className={`flex h-9 w-[140px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
             requested
-              ? "border-[1.5px] border-success bg-success/10 text-success"
-              : "bg-success text-success-foreground hover:bg-success/90"
+              ? "border-[1.5px] border-primary/40 bg-primary/5 text-primary"
+              : "bg-primary text-primary-foreground hover:bg-primary/90"
           }`}
         >
           {requested && <Check className="h-3.5 w-3.5" />}
