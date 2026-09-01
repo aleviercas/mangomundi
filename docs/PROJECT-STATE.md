@@ -20,10 +20,15 @@
 > contexto y forkearías el trabajo en curso. **PR abierto: #10** (no se
 > mergea solo — se dejó abierto a propósito para que cada push a la rama
 > re-dispare el preview de Vercel; ver la nota del handoff de la ronda 11
-> sobre por qué). **Hay una sesión de Cowork corriendo en paralelo**
-> (`session_01HYZCZBYwtRKVrfN6k79kTW`, con acceso de red real) investigando
-> los datos oficiales de los 8 brokers de business para U9 — retomarla
-> antes de re-investigar desde cero. El handoff del último round cerrado
+> sobre por qué). **Los datos de proveedores de U9 ya están verificados
+> con fuentes primarias** (sesión de Cowork `session_01HYZCZBYwtRKVrfN6k79kTW`
+> — quedó bloqueada pidiendo permiso de push al repo sin forma de
+> resolverlo por código entre sesiones, así que Alejandro pegó los
+> hallazgos directamente en el chat; esa sesión ya cumplió su propósito,
+> no hace falta retomarla). Corrigió 2 valores que la ronda anterior había
+> cargado sin fuente firme (Moneycorp y Payoneer, ver el handoff de la
+> ronda 12 para el detalle completo con URLs y citas). El handoff del
+> último round cerrado
 > (2 bugs reales de mobile encontrados y arreglados con capturas —
 > truncamiento de país a "U.." y el "1 GBP = X USD" cortado sin scroll en
 > el header del comparador—, ícono de Sort sin recuadro con el glyph
@@ -57,11 +62,13 @@
 > (`/business` sirve, `/` y `/blog` no). El widget de Trustpilot real
 > (con el script de `trustpilot.com` cargado) sigue sin poder verse en
 > este sandbox bajo ninguna técnica — confirmar contra el preview real.
-> **Los datos de proveedores de la ronda 11 (`min_amount`/
-> `settlement_terms`/`contract_type` de brokers de business) se cargaron
-> con fuentes de segundo nivel (búsquedas web, no se pudo verificar contra
-> la web oficial de cada broker por el mismo bloqueo de red) — pendiente
-> que el equipo los verifique antes de confiar en ellos comercialmente.**
+> **Los datos de proveedores (`min_amount`/`settlement_terms`/
+> `contract_type` de brokers de business) quedaron verificados en la
+> ronda 12** contra fuentes oficiales (help centers y PDFs legales de cada
+> broker) vía la sesión de Cowork mencionada arriba — reemplazan los
+> valores de segundo nivel que la ronda 11 había cargado sin poder abrir
+> las webs oficiales. CAB Payments sigue en `null` (banco mayorista B2B,
+> no publica esos datos) — no es un pendiente, es la respuesta real.
 
 ## 1. Qué es mangomundi
 

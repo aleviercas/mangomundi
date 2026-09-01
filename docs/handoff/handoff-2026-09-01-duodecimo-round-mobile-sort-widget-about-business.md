@@ -3,15 +3,41 @@
 Continúa `docs/handoff/handoff-2026-09-01-undecimo-round-fondo-sort-widget-business-datos.md`.
 Rama: `claude/coordinar-trabajo-simultaneo-y85idz`. PR abierto: #10.
 
-## Investigación de datos de proveedores (U9) con Cowork
+## Investigación de datos de proveedores (U9) con Cowork — completada
 
 Se lanzó una sesión de Cowork (`session_01HYZCZBYwtRKVrfN6k79kTW`, entorno
 con acceso de red real) para verificar contra las webs oficiales de cada
-broker los valores de `minimum`/`settlement`/`contract_type` cargados la
-ronda anterior con fuentes de segundo nivel. **Sigue en curso** al cierre de
-esta ronda — cuando responda, hay que tomar sus hallazgos verificados y
-actualizar la tabla `providers` en Supabase reemplazando los valores
-provisorios.
+broker los valores de `minimum`/`settlement`/`contract_type` cargados en la
+ronda anterior con fuentes de segundo nivel. La sesión terminó la
+investigación pero quedó bloqueada pidiendo permiso para conectar el repo
+con push (no había ningún mecanismo de mensajería entre esta sesión y esa
+para resolverlo por código — `SendMessage`/`ListAgents` no alcanzan sesiones
+de Claude Code Remote, y no hay un tool de "leer transcript" ni "responder
+pregunta pendiente" de otra sesión disponible acá). Alejandro pegó los
+hallazgos directamente en el chat en vez de forzar la conexión del repo —
+esa fue la vía real de entrega, no el commit planeado originalmente.
+
+**Fuentes reales confirmadas** (mejora sensible sobre la ronda anterior,
+que eran búsquedas de segundo nivel sin abrir la página oficial):
+
+| Proveedor | Minimum | Settlement | Contracts | Fuente |
+|---|---|---|---|---|
+| Currencies Direct | £10 online (era £100, corregido) | 1-2 días hábiles | Spot, Forward (24m) | help.currenciesdirect.com (oficial) |
+| Moneycorp | **sin cifra confirmada — antes se había puesto 50 sin fuente firme, corregido a null** | **sin cifra confirmada, corregido a null** | Spot, Forward (2 años), Options | moneycorp.com/business-faqs (oficial) |
+| OFX | US$150 (confirmado) | 1-2 días (mayores), 1-3 (exóticas) | Spot, Forward (12m) | ofx.com/faqs (oficial) |
+| TorFX | £100 (confirmado) | depósito al día hábil siguiente al deal date | Spot, Forward (24m) | torfx.com/business (oficial) |
+| Convera | sin mínimo general (confirmado) | Spot T+2 (T+1 CAD/MXN) | Spot, Forward (mín. £10k/€15k) | PDFs legales oficiales de Convera |
+| Airwallex | 0 / sin mínimo (confirmado) | mismo día a varios días | **Spot, Forward (G10, 2-180 días) — nuevo, antes null** | airwallex.com (oficial) |
+| Payoneer | **sin cifra confirmada — el $0.5 anterior era el mínimo de payout, no de transferencia de negocio; corregido a null** | mismo día a 3-5 días | **Spot únicamente (confirmado, antes null)** | payoneer.custhelp.com (oficial) |
+| CAB Payments | sin datos públicos (confirmado que no existen — banco mayorista B2B sin páginas de producto retail) | — | — | — |
+
+Todos los valores ya están actualizados en Supabase (tabla `providers`,
+project_id `ttqalbexpquzobrdyvgx`). **Dos correcciones importantes**:
+Moneycorp y Payoneer tenían cifras cargadas la ronda pasada que esta
+investigación con fuentes primarias NO pudo confirmar — se sacaron
+(`null`) en vez de dejar un número sin respaldo real. La sesión de Cowork
+quedó archivable; no hace falta retomarla, ya cumplió su propósito por la
+vía del chat directo.
 
 ## Feedback de esta ronda (6 puntos)
 
