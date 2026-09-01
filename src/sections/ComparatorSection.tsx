@@ -1726,8 +1726,24 @@ export function ComparatorSection({
                 // as one visual unit, not four independent pills in a row.
                 // Below the wide breakpoint it still stacks to one column,
                 // same fallback every other tier here already uses.
-                <div className="grid grid-cols-1 items-stretch gap-2.5 @4xl:grid-cols-[minmax(340px,1.7fr)_46px_minmax(260px,1.3fr)_176px]">
-                  <div className="min-w-0">
+                // 2026-09-02 feedback (Z2) — "en mobile ordenar mejor las
+                // ventanas de comparar como hicimos en el widget para que
+                // quede los selectores en dos líneas": below @4xl this was
+                // `grid-cols-1`, so Send/swap/Receive/Compare each became
+                // their own full-width row — 4 stacked rows instead of the
+                // 2-line shape the embedded widget already uses for the
+                // same fields (see the `embedded ?` branch above). Same
+                // idea here, without duplicating the field markup: `flex
+                // flex-wrap` + `basis-full` on Send forces it alone onto
+                // line 1 (the same forced-break trick BusinessRequestPanel
+                // used to use for its own button, W10/Y2 history), and
+                // swap/Receive/Compare — none of which carry `basis-full`
+                // — flow together onto line 2, sized the same way the
+                // widget's own line 2 already is (Receive content-sized,
+                // Compare `flex-1` soaking up the rest). @4xl still swaps
+                // this to the original one-line 4-column grid.
+                <div className="flex flex-wrap items-stretch gap-2 @4xl:grid @4xl:gap-2.5 @4xl:grid-cols-[minmax(340px,1.7fr)_46px_minmax(260px,1.3fr)_176px]">
+                  <div className="min-w-0 basis-full @4xl:basis-auto">
                     <FieldLight label={t("comparator.field.amount")}>
                       <div
                         className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
@@ -1794,37 +1810,72 @@ export function ComparatorSection({
                   </div>
 
                   {/* Swap — click to flip FROM/TO, country and currency
-                      together. Rotated 90° when the row stacks vertically.
+                      together.
                       2026-09-01 feedback — "la flechita del comparador
                       quedó desalineada": measured with Playwright at
                       exactly 4px too high — this cell has no label above
                       it (unlike the origin/destination groups, which do,
                       via FieldLight), so `items-stretch` on the parent
-                      grid stretches it to match their taller label+box
-                      height, and `pb-1` (4px) then pushed the button up
-                      from the bottom of that stretched cell instead of
-                      flush with it. `py-0.5` (needed for breathing room
-                      when stacked below @4xl) has the same effect on its
-                      own at 2px — cleared at @4xl too so nothing is left
-                      pushing the button off the boxes' shared bottom edge. */}
-                  <div className="flex items-center justify-center py-0.5 @4xl:flex-col @4xl:justify-end @4xl:py-0">
+                      stretches it to match their taller label+box height.
+                      `flex-col justify-end` bottom-aligns it flush with
+                      that shared bottom edge, same trick FieldLight itself
+                      now uses (see its own comment, Z1) — this used to be
+                      conditional on @4xl (a horizontal-vs-vertical-stack
+                      distinction from when swap sat between two FULL-WIDTH
+                      stacked rows below @4xl, needing a 90°-rotated icon to
+                      read as "flip up/down" instead of left/right), but Z2
+                      put swap on the same horizontal line as Receive/
+                      Compare at every width now, so the rotation and the
+                      @4xl-only alignment are both always-on unconditionally. */}
+                  <div className="flex flex-col justify-end">
                     <button
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      className={`flex shrink-0 items-center justify-center transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                        compact ? "h-[52px] w-[44px] rounded-md" : "h-[58px] w-[46px] rounded-md"
+                      // 2026-09-02 feedback (Z2) — w-[38/40px] below @4xl
+                      // (was the same 44/46px as the @4xl grid track uses,
+                      // sized for its own standalone row) — a few more
+                      // pixels back for Receive/Compare on line 2; @4xl
+                      // restores 44/46px to match that grid's fixed
+                      // 46px column.
+                      className={`flex shrink-0 items-center justify-center rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
+                        compact
+                          ? "h-[52px] w-[38px] @4xl:w-[44px]"
+                          : "h-[58px] w-[40px] @4xl:w-[46px]"
                       }`}
                       style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                     >
                       <ArrowLeftRight
                         strokeWidth={2.2}
-                        className={`rotate-90 @4xl:rotate-0 ${compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}`}
+                        className={compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}
                       />
                     </button>
                   </div>
 
-                  <div className="min-w-0">
+                  {/* 2026-09-02 feedback (Z2) — content-sized on line 2,
+                      same as the widget's own Receive box on its line 2 —
+                      this field only ever holds two icon-only pickers
+                      (country `triggerIconOnly` on mobile, currency always
+                      `compactLabel`). BEFORE a country is picked though,
+                      the empty trigger falls back to its full text
+                      placeholder even with `triggerIconOnly` set (no flag
+                      to show yet) — 194px of "Select…" + "USD" wide,
+                      measured, enough to either truncate Compare down to
+                      "C." (uncapped) or, tried next, wrap Compare onto a
+                      3rd line entirely (plain `shrink`: the trigger's own
+                      internal `flex-1`/`shrink-0` resist shrinking below
+                      their min-content, so the box wouldn't actually give
+                      up enough room for Compare's own `min-w-[108px]`
+                      floor to fit beside it). `max-w-[150px]` is a hard
+                      cap instead — independent of shrink/content — chosen
+                      so swap(46) + gap + this(150) + Compare's floor(108)
+                      total under the ~328px line-2 budget measured at
+                      390px, no wrap. The `truncate` class already on the
+                      trigger's own label span (Combobox.tsx) handles the
+                      resulting clip. `min-w-0` still guards the @4xl grid
+                      track against overflow from a long unabbreviated
+                      country name there. */}
+                  <div className="min-w-0 w-auto max-w-[120px] shrink-0 @4xl:max-w-none">
                     <FieldLight label={t("comparator.field.youReceive")}>
                       <div
                         className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
@@ -1840,8 +1891,18 @@ export function ComparatorSection({
                           ariaLabel={t("comparator.field.targetCountry")}
                           hideSecondary
                           triggerIconOnly={isMobile}
-                          triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
-                            compact ? "text-[14px]" : "text-[14.5px]"
+                          // 2026-09-02 feedback (Z2) — smaller padding/font
+                          // here (px-2/12.5px vs the usual px-3.5/14-14.5px)
+                          // only below @4xl, where this box now shares line
+                          // 2 with swap+Compare instead of owning its own
+                          // full-width row — the same "shrink the type, not
+                          // just the box" approach the widget's own compact
+                          // tier already uses (see its own 12px/px-2
+                          // comment a few hundred lines up), needed here
+                          // specifically for the pre-selection "Select…"
+                          // placeholder (see this field's wrapper comment).
+                          triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
+                            compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
                           } ${isMobile ? "justify-center" : ""}`}
                         />
                         <CurrencyCombobox
@@ -1852,15 +1913,25 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCurrency")}
                           compactLabel
-                          triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
-                            compact ? "px-3.5 text-[14px]" : "px-3.5 text-[14.5px]"
+                          triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0 @4xl:px-3.5 ${
+                            compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
                           }`}
                         />
                       </div>
                     </FieldLight>
                   </div>
 
-                  <div className="min-w-0">
+                  {/* 2026-09-02 feedback (Z2) — `flex-1` (was `min-w-0`
+                      alone, back when this was its own standalone
+                      grid-cols-1 row) so Compare soaks up whatever width
+                      Receive's now content-sized box leaves on line 2 —
+                      same ratio as the widget's own line 2 (Receive
+                      content-sized, CTA `flex-1`). `min-w-[108px]` is the
+                      floor under that shrink (paired with Receive's own
+                      `shrink`, see its comment) — 108px measured as enough
+                      for "Compare"/"Update" at this button's text-[15px]
+                      without the `truncate` span kicking in. */}
+                  <div className="min-w-[92px] flex-1">
                     {/* 2026-09-02 feedback (second round) — "el individual
                         business tiene que estar arriba del botón de
                         comparar no arriba del send": the segment pill
@@ -1911,10 +1982,17 @@ export function ComparatorSection({
                         sameCorridorBlocked ||
                         amount <= 0
                       }
-                      className={`btn-cta inline-flex w-full items-center justify-center text-[15px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:w-[176px] ${
+                      // 2026-09-02 feedback (Z2) — px-3/13px below @4xl
+                      // (was px-6/15px unconditionally, sized for owning
+                      // its own full-width row) — smaller padding/font so
+                      // "Compare"/"Update" fits its `min-w-[108px]` floor
+                      // on line 2 without the `truncate` span cutting in;
+                      // @4xl restores the original size for the one-line
+                      // desktop layout.
+                      className={`btn-cta inline-flex w-full items-center justify-center px-3 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:w-[176px] @4xl:px-6 @4xl:text-[15px] ${
                         compact
-                          ? "h-[52px] rounded-md px-6"
-                          : "h-[58px] rounded-md px-6 shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
+                          ? "h-[52px] rounded-md"
+                          : "h-[58px] rounded-md shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
                       }`}
                     >
                       {compareMut.isPending ? (
