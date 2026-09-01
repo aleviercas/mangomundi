@@ -2182,9 +2182,20 @@ export function ComparatorSection({
 
               <div className="min-w-0">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                  <h3 className="text-eyebrow font-bold uppercase text-brand-cta">
+                  {/* 2026-09-02 feedback (X8 audit) — was h3, but every
+                      marketing section that carries an h2 (Today's routes,
+                      How it works, About manifesto, Blog…) is hidden the
+                      moment a result exists (see HomePageBody's own
+                      `!hasResult` gates) — so on the actual results page
+                      the heading order was h1 straight to h3, skipping a
+                      level. h2 (same classes, so no visual change) closes
+                      that gap; the h4s below it in this same view (Filters,
+                      rate alert, Your request, "Rather talk to someone?")
+                      move to h3 for the same reason, so nothing skips from
+                      here either. */}
+                  <h2 className="text-eyebrow font-bold uppercase text-brand-cta">
                     {t("comparator.results")}
-                  </h3>
+                  </h2>
                   {/* 2026-09-02 feedback — "el resultado de mid market rate
                       ponelo en el mismo renglón que your results, abajo del
                       comparador y afuera del box, a la derecha": was inside
@@ -2695,7 +2706,8 @@ function FiltersCard({
       className="rounded-[18px] px-[17px] py-4"
     >
       <div className="flex items-center justify-between">
-        <h4 className="text-[15px] font-extrabold text-white">{t("comparator.filters.title")}</h4>
+        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+        <h3 className="text-[15px] font-extrabold text-white">{t("comparator.filters.title")}</h3>
         <button
           type="button"
           onClick={() => {
@@ -2867,9 +2879,10 @@ function RateAlertCard({
         aria-hidden
       />
       <div className="px-[15px] pb-[15px] pt-[13px]">
-        <h4 className="text-[14.5px] font-extrabold text-foreground">
+        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+        <h3 className="text-[14.5px] font-extrabold text-foreground">
           {t("comparator.rateAlert.title").replace("{from}", from).replace("{to}", to)}
-        </h4>
+        </h3>
         <p className="mt-1.5 text-xs leading-[1.55] text-muted-foreground">
           {t("comparator.rateAlert.body")}
         </p>
@@ -3403,9 +3416,10 @@ function BusinessRequestPanel({
   if (status === "sent") {
     return (
       <div className="rounded-[18px] border border-border bg-card p-4">
-        <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+        <h3 className="font-heading text-[15px] font-extrabold text-foreground">
           {t("comparator.business.request.title")}
-        </h4>
+        </h3>
         <p className="mt-2 text-sm leading-relaxed text-foreground">
           {t("comparator.business.request.sent")}
         </p>
@@ -3442,9 +3456,10 @@ function BusinessRequestPanel({
   // currency-level detail Route used to carry.
   return (
     <div className="rounded-[18px] border border-border bg-card p-4">
-      <h4 className="font-heading text-[15px] font-extrabold text-foreground">
+      {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+      <h3 className="font-heading text-[15px] font-extrabold text-foreground">
         {t("comparator.business.request.title")}
-      </h4>
+      </h3>
       <p className="mt-1 max-w-2xl text-[13px] leading-relaxed text-muted-foreground">
         {t("comparator.business.request.explainer")}
       </p>
@@ -3578,9 +3593,10 @@ function BusinessContactCard() {
         loading="lazy"
       />
       <div className="p-4">
-        <h4 className="text-[14.5px] font-extrabold text-foreground">
+        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+        <h3 className="text-[14.5px] font-extrabold text-foreground">
           {t("comparator.business.contactCard.title")}
-        </h4>
+        </h3>
         <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
           {t("comparator.business.contactCard.body")}
         </p>
