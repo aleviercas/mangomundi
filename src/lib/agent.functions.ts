@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { sendLeadNotificationEmail } from "./email";
+import { sendLeadNotificationEmail, sendClientConfirmationEmail } from "./email";
 
 const LeadInput = z.object({
   email: z.string().email().max(255),
@@ -113,6 +113,37 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** 2026-09-02 feedback — "una vez que me llega el mail hay que contestarle
+ *  con un mail al cliente que recibimos el pedido y que responderemos a la
+ *  brevedad": EN/ES only (the site is 20-language wide, but this is a
+ *  transactional email sent from a server function with no access to the
+ *  React i18n context — full parity would mean hand-writing 20 email
+ *  templates for a first version of a feature explicitly scoped as
+ *  "el mail automático" plus "el plan" for the rest, not a full rollout).
+ *  Falls back to English for any other locale. */
+function clientConfirmationCopy(locale: string, requestId: string, from: string, to: string) {
+  if (locale.toLowerCase().startsWith("es")) {
+    return {
+      subject: `Recibimos tu pedido — ${requestId}`,
+      html: `
+        <p>Hola,</p>
+        <p>Recibimos tu pedido de cotización FX (${from} → ${to}) — referencia <strong>${requestId}</strong>.</p>
+        <p>Nuestro equipo lo va a revisar y te va a responder a la brevedad con las opciones de los brokers que elegiste.</p>
+        <p>Gracias,<br/>El equipo de mangomundi</p>
+      `,
+    };
+  }
+  return {
+    subject: `We received your request — ${requestId}`,
+    html: `
+      <p>Hi,</p>
+      <p>We've received your FX quote request (${from} → ${to}) — reference <strong>${requestId}</strong>.</p>
+      <p>Our team will review it and get back to you shortly with quotes from the brokers you selected.</p>
+      <p>Thanks,<br/>The mangomundi team</p>
+    `,
+  };
+}
+
 export const captureBusinessLead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => BusinessLeadInput.parse(input))
   .handler(async ({ data }) => {
@@ -193,7 +224,22 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
         <p><strong>Consent recorded at:</strong> ${consentAt}</p>
       `,
     });
-    return { ok: true, requestId, emailQueued };
+    // Client-facing confirmation — the other leg of "una vez que me llega
+    // el mail hay que contestarle con un mail al cliente que recibimos el
+    // pedido". Same best-effort contract: never blocks the response, the
+    // lead is already saved above regardless of whether this send succeeds.
+    const clientCopy = clientConfirmationCopy(
+      data.locale,
+      requestId,
+      data.fromCurrency,
+      data.toCurrency,
+    );
+    const clientEmailQueued = await sendClientConfirmationEmail({
+      to: data.email,
+      subject: clientCopy.subject,
+      html: clientCopy.html,
+    });
+    return { ok: true, requestId, emailQueued, clientEmailQueued };
   });
 
 export const captureGeneralInquiry = createServerFn({ method: "POST" })

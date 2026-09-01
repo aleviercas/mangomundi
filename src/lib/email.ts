@@ -21,15 +21,11 @@
  */
 const RESEND_API_URL = "https://api.resend.com/emails";
 
-export async function sendLeadNotificationEmail(params: {
-  subject: string;
-  html: string;
-}): Promise<boolean> {
+async function sendEmail(params: { to: string; subject: string; html: string }): Promise<boolean> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) return false;
 
   const from = process.env.RESEND_FROM_EMAIL || "mangomundi <onboarding@resend.dev>";
-  const to = process.env.LEAD_NOTIFICATION_EMAIL || "mangomundi@gmail.com";
 
   try {
     const res = await fetch(RESEND_API_URL, {
@@ -38,7 +34,7 @@ export async function sendLeadNotificationEmail(params: {
         Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ from, to: [to], subject: params.subject, html: params.html }),
+      body: JSON.stringify({ from, to: [params.to], subject: params.subject, html: params.html }),
     });
     if (!res.ok) {
       console.error("[email] resend send failed", res.status, await res.text().catch(() => ""));
@@ -49,4 +45,30 @@ export async function sendLeadNotificationEmail(params: {
     console.error("[email] resend send error", err);
     return false;
   }
+}
+
+export async function sendLeadNotificationEmail(params: {
+  subject: string;
+  html: string;
+}): Promise<boolean> {
+  const to = process.env.LEAD_NOTIFICATION_EMAIL || "mangomundi@gmail.com";
+  return sendEmail({ to, ...params });
+}
+
+/** 2026-09-02 feedback — "una vez que me llega el mail hay que contestarle
+ *  con un mail al cliente que recibimos el pedido y que responderemos a la
+ *  brevedad": the client-facing half of captureBusinessLead's own email —
+ *  sendLeadNotificationEmail above already covers "el mail para mí con el
+ *  pedido" (the internal team notification), this is the missing outbound
+ *  leg back to the customer who submitted the request. Same best-effort
+ *  contract as the internal one: the lead is already persisted in Supabase
+ *  before this runs, so a failed send here must never throw or block the
+ *  caller — captureBusinessLead's own return already reports whether this
+ *  queued so the UI can decide whether to mention it. */
+export async function sendClientConfirmationEmail(params: {
+  to: string;
+  subject: string;
+  html: string;
+}): Promise<boolean> {
+  return sendEmail(params);
 }
