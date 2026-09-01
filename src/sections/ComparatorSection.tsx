@@ -1659,7 +1659,7 @@ export function ComparatorSection({
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.sourceCurrency")}
-                      triggerIconOnly
+                      compactLabel
                       triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
                     />
                   </div>
@@ -1699,7 +1699,7 @@ export function ComparatorSection({
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCurrency")}
-                        triggerIconOnly
+                        compactLabel
                         triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
                       />
                     </div>

@@ -1,12 +1,16 @@
 import { Combobox } from "@/components/ui/Combobox";
-import { CURRENCIES, currencySymbol } from "@/lib/currencies";
+import { CURRENCIES } from "@/lib/currencies";
 
 // 2026-08-31 feedback — no flag here: the currency picker sits right next to
 // a country picker that already shows one, and a flag on a *currency* is
 // misleading anyway (one currency, many countries, e.g. EUR/USD). Flags stay
-// on CountryCombobox only. `leading` below is the currency's own symbol
-// (£, $, €…) instead — added 2026-09-01 for the widget's icon-only trigger
-// (see `triggerIconOnly`), not a flag.
+// on CountryCombobox only.
+//
+// 2026-09-01 feedback (briefly) — added a `leading` currency symbol (£, $,
+// €…) for the widget's compact trigger. 2026-09-02 feedback reverted it:
+// "quitar los símbolos que agregaste en las monedas, solo dejar el nombre
+// de la moneda y la abreviación con letras" — no symbol anywhere, name +
+// code letters only (label/secondary below), same as every other caller.
 const OPTIONS = CURRENCIES.map((c) => ({
   value: c.code,
   // 2026-08-31 feedback — "por qué aparecen los símbolos dos veces": label
@@ -17,7 +21,6 @@ const OPTIONS = CURRENCIES.map((c) => ({
   // compact single-code trigger (compactLabel below), unchanged.
   label: c.name,
   secondary: c.code,
-  leading: currencySymbol(c.code),
   keywords: [c.code, c.name],
 }));
 
@@ -30,7 +33,6 @@ export function CurrencyCombobox({
   ariaLabel,
   triggerClassName,
   compactLabel,
-  triggerIconOnly,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -44,9 +46,6 @@ export function CurrencyCombobox({
    *  the embedded widget's tight row, same as CountryCombobox's own
    *  compactLabel. */
   compactLabel?: boolean;
-  /** See Combobox's own doc comment — closed trigger shows only the
-   *  currency symbol (£, $, €…), full name still shows once opened. */
-  triggerIconOnly?: boolean;
 }) {
   return (
     <Combobox
@@ -59,7 +58,6 @@ export function CurrencyCombobox({
       ariaLabel={ariaLabel}
       triggerClassName={triggerClassName}
       compactLabel={compactLabel}
-      triggerIconOnly={triggerIconOnly}
     />
   );
 }
