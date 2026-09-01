@@ -1500,13 +1500,16 @@ export function ComparatorSection({
                 eliminar toda la pestaña de arriba": this used to be its own
                 bordered header row (~34-50px of chrome — role="tablist" +
                 the segment pill, nothing else) sitting above the form body.
-                Dropped entirely; the segment pill now shares the "Send"
-                field's own label line instead (see its `!embedded &&` block
-                a few lines into the form body below), so the card is
-                shorter by that whole row's height with no separate section
-                for it. design/AJUSTES-1.md §B's dead /exchange link (that
-                used to live in this removed row) was already gone per
-                AJUSTES-3.md §B — nothing left here worth keeping. */}
+                Dropped entirely, saving the card that whole row's height.
+                design/AJUSTES-1.md §B's dead /exchange link (that used to
+                live in this removed row) was already gone per AJUSTES-3.md
+                §B — nothing left here worth keeping.
+                2026-09-02 feedback (second round) — "el individual business
+                tiene que estar arriba del botón de comparar no arriba del
+                send": the pill's first home (the Send field's own label
+                line) turned out to be the wrong one — it now sits above
+                the Compare button instead, in that button's own column of
+                this grid (a few hundred lines into the form body below). */}
 
             {/* Form body. @container lets the rows adapt to the CARD's width, not
               the viewport: 3/4 columns when the card is full-width (no results
@@ -1725,48 +1728,7 @@ export function ComparatorSection({
                 // same fallback every other tier here already uses.
                 <div className="grid grid-cols-1 items-stretch gap-2.5 @4xl:grid-cols-[minmax(340px,1.7fr)_46px_minmax(260px,1.3fr)_176px]">
                   <div className="min-w-0">
-                    {/* 2026-09-02 feedback — segment pill moved here from
-                        its own header row above the whole card (see this
-                        card's own opening comment) — "en la misma línea de
-                        send y receive". Custom label row instead of
-                        FieldLight (which only has room for a single text
-                        label) so "Send" and the pill share one line via
-                        justify-between; the box below is unchanged. No
-                        `!embedded` guard needed — this whole grid is
-                        already the non-embedded branch (see the `embedded ?
-                        ... : (this grid)` ternary a few hundred lines up),
-                        same reasoning the removed header row's own comment
-                        used to explain why the pill never showed there. */}
-                    <label className="block min-w-0">
-                      <span className="mb-1.5 flex items-center justify-between gap-2">
-                        <span
-                          className="truncate text-[11.5px] font-bold"
-                          style={{ color: "#6B5F55" }}
-                        >
-                          {t("comparator.field.amount")}
-                        </span>
-                        <div
-                          role="tablist"
-                          aria-label={t("search.segment")}
-                          className="flex h-6 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
-                        >
-                          {(["retail", "business"] as Segment[]).map((s) => (
-                            <button
-                              key={s}
-                              role="tab"
-                              aria-selected={segment === s}
-                              onClick={() => handleSegmentChange(s)}
-                              className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize transition ${
-                                segment === s
-                                  ? "bg-card text-foreground shadow-sm"
-                                  : "text-muted-foreground hover:text-foreground"
-                              }`}
-                            >
-                              {t(`comparator.segment.${s}`)}
-                            </button>
-                          ))}
-                        </div>
-                      </span>
+                    <FieldLight label={t("comparator.field.amount")}>
                       <div
                         className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
                           compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
@@ -1828,7 +1790,7 @@ export function ComparatorSection({
                           } ${isMobile ? "shrink-0 justify-center" : "shrink-0"}`}
                         />
                       </div>
-                    </label>
+                    </FieldLight>
                   </div>
 
                   {/* Swap — click to flip FROM/TO, country and currency
@@ -1898,7 +1860,41 @@ export function ComparatorSection({
                     </FieldLight>
                   </div>
 
-                  <div className="flex flex-col justify-end">
+                  <div className="min-w-0">
+                    {/* 2026-09-02 feedback (second round) — "el individual
+                        business tiene que estar arriba del botón de
+                        comparar no arriba del send": the segment pill
+                        (added to the Send field's own label row in the
+                        previous round) moves here instead — Send goes back
+                        to a plain FieldLight label. Same `mb-1.5` rhythm
+                        FieldLight's own label uses, so the button below
+                        still lines up with the Send/Receive boxes on its
+                        left; `justify-end` right-aligns the pill over the
+                        button instead of the space-between it had over
+                        "Send". */}
+                    <div className="mb-1.5 flex items-center justify-end">
+                      <div
+                        role="tablist"
+                        aria-label={t("search.segment")}
+                        className="flex h-6 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
+                      >
+                        {(["retail", "business"] as Segment[]).map((s) => (
+                          <button
+                            key={s}
+                            role="tab"
+                            aria-selected={segment === s}
+                            onClick={() => handleSegmentChange(s)}
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize transition ${
+                              segment === s
+                                ? "bg-card text-foreground shadow-sm"
+                                : "text-muted-foreground hover:text-foreground"
+                            }`}
+                          >
+                            {t(`comparator.segment.${s}`)}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                     <button
                       type="button"
                       onClick={() => {
@@ -2897,7 +2893,19 @@ function FieldLight({
 }) {
   if (hideLabel) return <div className="min-w-0">{children}</div>;
   return (
-    <label className="block min-w-0">
+    // 2026-09-02 feedback (Z1) — measured a 6.75px gap between this field's
+    // box and the Compare button's (Playwright getBoundingClientRect: this
+    // box's top at 264.27 vs Compare's at 271.02, same grid row). Root
+    // cause: the grid's `items-stretch` makes every column the same total
+    // height, but a plain `block` label doesn't push its content down to
+    // fill that extra height — only the field's OWN label-text height
+    // decides where the box starts, so a taller sibling column (Compare's
+    // now has a segment-pill label, 30px, vs this field's ~23px text line)
+    // leaves the box sitting higher than it should. `flex flex-col
+    // justify-end` bottom-aligns the box instead — same trick the swap
+    // button already uses for the same reason — so the box's position
+    // depends on the ROW's height, not this field's own label height.
+    <label className="flex h-full min-w-0 flex-col justify-end">
       <span className="mb-1.5 block truncate text-[11.5px] font-bold" style={{ color: "#6B5F55" }}>
         {label}
       </span>
