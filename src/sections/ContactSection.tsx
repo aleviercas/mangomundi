@@ -12,23 +12,30 @@ export function ContactSection() {
   // HowItWorksSection/AboutManifestoSection/BusinessWidgetRow's own
   // comments); this one was still at the old py-14 sm:py-20 (56–80px).
   return (
-    // 2026-09-04 feedback — "la sección de contact quedó con mucho aire":
-    // asymmetric now (less top, same bottom) since the "Go to compare" card
-    // right above (about.tsx, its own pb-* trimmed too) already carries
-    // its own bottom padding — this section's old symmetric py-9/py-12
-    // stacked on top of that for a much bigger gap than either alone.
-    <section id="contact" className="scroll-mt-24 pb-9 pt-4 sm:pb-12 sm:pt-6">
+    // 2026-09-04 feedback (round 2) — "sigue habiendo mucho aire en el
+    // contact y get in touch": two things were adding up. First, this
+    // section's own internal stack (title/body/button/Trustpilot) used
+    // mt-4/mt-4/mt-8/mt-10, four generous gaps in a row for what's a
+    // one-line title, one-line body, one button and one badge — tightened
+    // throughout below. Second, this section's own pt-4/sm:pt-6 stacked on
+    // TOP of the "Go to compare" card right above (about.tsx) already
+    // carrying its own pb-8/sm:pb-10 — two separate paddings adding up to
+    // 48-64px of dead space between them, neither one alone looking
+    // excessive but the sum reading as "mucho aire". Dropped this
+    // section's own top padding entirely; the card's bottom padding is
+    // now the only gap.
+    <section id="contact" className="scroll-mt-24 pb-9 sm:pb-12">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 text-center">
         <p className="text-eyebrow font-bold uppercase text-accent-text">
           {t("home.contact.eyebrow")}
         </p>
-        <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
+        <h2 className="mt-3 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
           {t("home.contact.simple.title")}
         </h2>
-        <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-muted-foreground">
           {t("home.contact.simple.body")}
         </p>
-        <div className="mt-8">
+        <div className="mt-5">
           {/* .btn-cta, not a bespoke bg-slate-900 black button — this is the
               one and only action of this section (send an email), the same
               functional role CTASection's button plays for the comparator.
@@ -61,7 +68,7 @@ export function ContactSection() {
             centers a child regardless of its display type or whether it
             has an explicit width, so it doesn't depend on guessing which
             of those apply here. */}
-        <div className="mt-10 flex justify-center">
+        <div className="mt-6 flex justify-center">
           <TrustBox />
         </div>
       </div>
