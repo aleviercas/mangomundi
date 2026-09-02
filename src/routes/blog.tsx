@@ -80,7 +80,7 @@ function BlogIndexPage() {
           <p className="text-eyebrow font-bold uppercase text-accent-text">
             {t("home.blog.eyebrow")}
           </p>
-          <Link to="/" aria-label="mangomundi home" className="shrink-0">
+          <Link to="/" aria-label={t("header.homeAriaLabel")} className="shrink-0">
             <BrandMark />
           </Link>
         </div>

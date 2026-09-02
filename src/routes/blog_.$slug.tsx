@@ -406,7 +406,7 @@ function BlogPostPage() {
           {/* 2026-08-30 feedback (fourth round) — a small brand mark on every
               post, same icon the widget badge uses (BrandMark, Wordmark.tsx),
               not the full wordmark — this is a watermark, not navigation. */}
-          <Link to="/" aria-label="mangomundi home">
+          <Link to="/" aria-label={t("header.homeAriaLabel")}>
             <BrandMark />
           </Link>
         </div>

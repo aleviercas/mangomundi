@@ -17,7 +17,7 @@ export function LangSwitcher({
    *  panel underneath is identical either way. */
   variant?: "default" | "pill";
 }) {
-  const { lang, setLang } = useI18n();
+  const { lang, setLang, t } = useI18n();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +55,7 @@ export function LangSwitcher({
         <button
           onClick={() => setOpen((o) => !o)}
           className="inline-flex items-center gap-1.5 rounded-full border border-input px-3 py-1.5 text-[13px] text-foreground transition hover:border-foreground/40"
-          aria-label="Change language"
+          aria-label={t("langSwitcher.changeLanguage")}
           aria-expanded={open}
         >
           <FlagIcon country={current.flag} />
@@ -65,7 +65,7 @@ export function LangSwitcher({
         <button
           onClick={() => setOpen((o) => !o)}
           className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-background/60 px-2.5 py-1.5 text-xs font-mono font-medium text-muted-foreground transition hover:border-primary/40 hover:bg-surface-elevated hover:text-primary"
-          aria-label="Change language"
+          aria-label={t("langSwitcher.changeLanguage")}
           aria-expanded={open}
         >
           <Globe className="h-3.5 w-3.5" />
@@ -83,7 +83,7 @@ export function LangSwitcher({
             }`}
           >
             <div className="border-b border-border/60 px-3 py-1.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-              Language
+              {t("langSwitcher.language")}
             </div>
             <div className="border-b border-border/60 px-2 py-1.5">
               <div className="flex items-center gap-1.5 rounded-md border border-border/60 bg-background/60 px-2 py-1">
@@ -92,16 +92,16 @@ export function LangSwitcher({
                   ref={inputRef}
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search…"
+                  placeholder={t("langSwitcher.searchPlaceholder")}
                   className="w-full bg-transparent text-xs text-foreground outline-none placeholder:text-muted-foreground"
-                  aria-label="Search languages"
+                  aria-label={t("langSwitcher.searchAriaLabel")}
                 />
               </div>
             </div>
             <div className="max-h-[300px] overflow-y-auto">
               {filtered.length === 0 && (
                 <div className="px-3 py-3 text-center text-xs text-muted-foreground">
-                  No matches
+                  {t("langSwitcher.noMatches")}
                 </div>
               )}
               {filtered.map((l) => {

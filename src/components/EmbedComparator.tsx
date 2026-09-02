@@ -263,7 +263,7 @@ export function EmbedComparator({
         rel="noopener noreferrer"
         className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
-        powered by <Wordmark className="text-xs" compact icon={false} />
+        {t("embed.poweredBy")} <Wordmark className="text-xs" compact icon={false} />
       </a>
     </div>
   );

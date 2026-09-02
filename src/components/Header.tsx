@@ -26,7 +26,7 @@ export function Header() {
             scroll caused by focus() elsewhere (comparator/agent), not this. */}
         <Link
           to="/"
-          aria-label="mangomundi home"
+          aria-label={t("header.homeAriaLabel")}
           className="flex items-center"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
         >
@@ -39,7 +39,10 @@ export function Header() {
         </Link>
 
         {/* Desktop nav — right-aligned (logo left). */}
-        <nav className="hidden items-center gap-[26px] md:flex" aria-label="Main">
+        <nav
+          className="hidden items-center gap-[26px] md:flex"
+          aria-label={t("header.mainAriaLabel")}
+        >
           {HEADER_NAV.map((item) => (
             <Link
               key={item.labelKey}
@@ -58,7 +61,7 @@ export function Header() {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          aria-label="Menu"
+          aria-label={t("header.menuAriaLabel")}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-foreground hover:bg-muted md:hidden"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -69,7 +72,7 @@ export function Header() {
       {open && (
         <nav
           className="border-t border-border bg-card/95 px-5 py-3 backdrop-blur-xl md:hidden"
-          aria-label="Main"
+          aria-label={t("header.mainAriaLabel")}
         >
           <ul className="space-y-1">
             {HEADER_NAV.map((item) => (

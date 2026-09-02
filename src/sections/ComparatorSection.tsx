@@ -2155,7 +2155,7 @@ export function ComparatorSection({
         {/* Errors (non-missing-corridor) */}
         {compareMut.isError && !missingCorridor && (
           <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-            {(compareMut.error as Error)?.message ?? "Couldn't load rates."}
+            {(compareMut.error as Error)?.message ?? t("comparator.row.genericError")}
           </div>
         )}
 
@@ -3220,7 +3220,10 @@ function FloatingAgent(p: FloatingAgentProps) {
             <div className="flex shrink-0 items-center gap-2">
               <span
                 className="text-[10px] font-medium uppercase tracking-wider text-success"
-                aria-label={`Language ${lang.toUpperCase()}`}
+                aria-label={t("comparator.agent.languageAriaLabel").replace(
+                  "{lang}",
+                  lang.toUpperCase(),
+                )}
               >
                 ● {lang.toUpperCase()}
               </span>
@@ -4338,7 +4341,8 @@ function ProviderRow({
               <div className="text-[10px] leading-snug text-muted-foreground">
                 {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
                 {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
-                {row.spread_applied > 0 && ` · ${row.spread_applied.toFixed(2)}% spread`}
+                {row.spread_applied > 0 &&
+                  ` · ${row.spread_applied.toFixed(2)}% ${t("comparator.row.spreadWord")}`}
               </div>
             )}
           </div>

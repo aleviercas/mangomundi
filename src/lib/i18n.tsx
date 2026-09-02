@@ -752,6 +752,50 @@ export const DICTS: Record<Lang, Dict> = {
     "legal.privacy.h4": "04 — Your rights",
     "legal.privacy.p4":
       "You can request access, correction, or deletion of your personal data by writing to hello@mangomundi.com.",
+    // 2026-09-03 audit — ComingSoonModal used to be hardcoded Spanish
+    // regardless of the visitor's language; routed through t() here.
+    "comingSoon.titleB2b": "Copilot B2B — priority access",
+    "comingSoon.titleEnterprise": "Enterprise Beta — priority access",
+    "comingSoon.descriptionB2b":
+      "We noticed you're operating at corporate volumes. Leave your work email to enable your Copilot B2B with priority.",
+    "comingSoon.descriptionEnterprise":
+      "This automation is in closed beta. Leave your work email and we'll assign you a slot.",
+    "comingSoon.successMessage":
+      "We're rolling out this automation in closed beta. You've been given priority access.",
+    "comingSoon.successModule": "Module: {module}",
+    "comingSoon.emailPlaceholder": "name@company.com",
+    "comingSoon.consent":
+      "I agree that mangomundi stores my email to contact me about this priority access (GDPR).",
+    "comingSoon.submit": "Request priority access",
+    "comingSoon.disclaimer": "No spam. We'll only write when your slot opens up.",
+    // 2026-09-03 audit — LangSwitcher's own chrome (aria-labels, search
+    // placeholder, empty state) was hardcoded English.
+    "langSwitcher.changeLanguage": "Change language",
+    "langSwitcher.language": "Language",
+    "langSwitcher.searchPlaceholder": "Search…",
+    "langSwitcher.searchAriaLabel": "Search languages",
+    "langSwitcher.noMatches": "No matches",
+    // 2026-09-03 audit — Header's landmark/toggle aria-labels (shared by
+    // blog.tsx and blog_.$slug.tsx's own copies of the same logo link).
+    "header.homeAriaLabel": "mangomundi home",
+    "header.mainAriaLabel": "Main",
+    "header.menuAriaLabel": "Menu",
+    // 2026-09-03 audit — the root route's crash boundary (ErrorComponent)
+    // was hardcoded English, unlike its sibling NotFoundComponent.
+    "errorBoundary.title": "This page didn't load",
+    "errorBoundary.description":
+      "Something went wrong on our end. You can try refreshing or head back home.",
+    "errorBoundary.tryAgain": "Try again",
+    "errorBoundary.goHome": "Go home",
+    // 2026-09-03 audit — generic fallbacks shown only when a server error
+    // carries no message of its own; previously hardcoded English.
+    "comparator.row.genericError": "Couldn't load rates.",
+    "preferredRateModal.genericError": "Something went wrong. Please try again.",
+    // 2026-09-03 audit — the widget's required affiliate-disclosure link
+    // ("powered by mangomundi") had its "powered by" half hardcoded.
+    "embed.poweredBy": "powered by",
+    "comparator.agent.languageAriaLabel": "Language {lang}",
+    "comparator.row.spreadWord": "spread",
   },
   es: {
     "nav.home": "Inicio",
@@ -1049,6 +1093,38 @@ export const DICTS: Record<Lang, Dict> = {
     "legal.privacy.h4": "04 — Tus derechos",
     "legal.privacy.p4":
       "Podés solicitar acceso, corrección o eliminación de tus datos personales escribiendo a hello@mangomundi.com.",
+    "comingSoon.titleB2b": "Copilot B2B — Acceso prioritario",
+    "comingSoon.titleEnterprise": "Enterprise Beta — Acceso prioritario",
+    "comingSoon.descriptionB2b":
+      "Detectamos que operás con volúmenes corporativos. Dejá tu email institucional para habilitar tu Copilot B2B con prioridad.",
+    "comingSoon.descriptionEnterprise":
+      "Esta automatización está en fase beta cerrada. Dejá tu email corporativo y te asignamos un slot.",
+    "comingSoon.successMessage":
+      "Estamos desplegando esta automatización en fase beta cerrada. Te hemos asignado acceso prioritario.",
+    "comingSoon.successModule": "Módulo: {module}",
+    "comingSoon.emailPlaceholder": "nombre@empresa.com",
+    "comingSoon.consent":
+      "Acepto que mangomundi almacene mi email para contactarme sobre este acceso prioritario (GDPR).",
+    "comingSoon.submit": "Solicitar acceso prioritario",
+    "comingSoon.disclaimer": "Sin spam. Sólo te escribimos cuando se abre tu slot.",
+    "langSwitcher.changeLanguage": "Cambiar idioma",
+    "langSwitcher.language": "Idioma",
+    "langSwitcher.searchPlaceholder": "Buscar…",
+    "langSwitcher.searchAriaLabel": "Buscar idiomas",
+    "langSwitcher.noMatches": "Sin resultados",
+    "header.homeAriaLabel": "Inicio de mangomundi",
+    "header.mainAriaLabel": "Principal",
+    "header.menuAriaLabel": "Menú",
+    "errorBoundary.title": "Esta página no cargó",
+    "errorBoundary.description":
+      "Algo salió mal de nuestro lado. Podés intentar de nuevo o volver al inicio.",
+    "errorBoundary.tryAgain": "Intentar de nuevo",
+    "errorBoundary.goHome": "Ir al inicio",
+    "comparator.row.genericError": "No se pudieron cargar las tarifas.",
+    "preferredRateModal.genericError": "Algo salió mal. Intentá de nuevo.",
+    "embed.poweredBy": "con tecnología de",
+    "comparator.agent.languageAriaLabel": "Idioma {lang}",
+    "comparator.row.spreadWord": "spread",
   },
   pt: {
     "nav.home": "Início",
@@ -1220,6 +1296,38 @@ export const DICTS: Record<Lang, Dict> = {
     "home.dual.corporate.body":
       "Gerencie exposição corporativa multimoeda, execute pagamentos em massa e proteja o risco cambial com nosso Terminal RFQ interativo e relatórios de dados transparentes.",
     "compare.calculating": "Calculando rotas ótimas…",
+    "comingSoon.titleB2b": "Copilot B2B — Acesso prioritário",
+    "comingSoon.titleEnterprise": "Enterprise Beta — Acesso prioritário",
+    "comingSoon.descriptionB2b":
+      "Detectamos que você opera com volumes corporativos. Deixe seu email institucional para habilitar seu Copilot B2B com prioridade.",
+    "comingSoon.descriptionEnterprise":
+      "Esta automação está em fase beta fechada. Deixe seu email corporativo e reservaremos um slot para você.",
+    "comingSoon.successMessage":
+      "Estamos implantando esta automação em fase beta fechada. Você recebeu acesso prioritário.",
+    "comingSoon.successModule": "Módulo: {module}",
+    "comingSoon.emailPlaceholder": "nome@empresa.com",
+    "comingSoon.consent":
+      "Concordo que a mangomundi armazene meu email para me contatar sobre este acesso prioritário (GDPR).",
+    "comingSoon.submit": "Solicitar acesso prioritário",
+    "comingSoon.disclaimer": "Sem spam. Só escrevemos quando seu slot abrir.",
+    "langSwitcher.changeLanguage": "Mudar idioma",
+    "langSwitcher.language": "Idioma",
+    "langSwitcher.searchPlaceholder": "Buscar…",
+    "langSwitcher.searchAriaLabel": "Buscar idiomas",
+    "langSwitcher.noMatches": "Nenhum resultado",
+    "header.homeAriaLabel": "Início da mangomundi",
+    "header.mainAriaLabel": "Principal",
+    "header.menuAriaLabel": "Menu",
+    "errorBoundary.title": "Esta página não carregou",
+    "errorBoundary.description":
+      "Algo deu errado do nosso lado. Você pode tentar novamente ou voltar ao início.",
+    "errorBoundary.tryAgain": "Tentar novamente",
+    "errorBoundary.goHome": "Ir para o início",
+    "comparator.row.genericError": "Não foi possível carregar as taxas.",
+    "preferredRateModal.genericError": "Algo deu errado. Tente novamente.",
+    "embed.poweredBy": "com tecnologia de",
+    "comparator.agent.languageAriaLabel": "Idioma {lang}",
+    "comparator.row.spreadWord": "spread",
   },
   // Scaffolded locales — core navigation translated; remaining keys fall back to English until full translation phase.
   it: {
@@ -2953,7 +3061,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // same real claim, just business-segment data — and adds this one new
     // line inviting a bespoke quote for volume this section's own generic
     // provider pricing doesn't cover.
-    "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
+    "todaysRoutes.businessQuote":
+      "Need a larger volume or a recurring transfer? Ask for a special quote",
     "comparator.rankingExplainer":
       "Results are ranked by whichever **Sort** you pick. **Smart** blends fee, exchange rate, speed and trust into one score; the rest (Speed, Fees, Rate, Trust, Receive) sort strictly by that one thing. **Sponsored** offers only ever win a genuine tie between otherwise-equal options — never a real difference.",
     "comparator.table.exchangeRate": "Exchange rate",
