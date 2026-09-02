@@ -550,6 +550,49 @@ function resolveTier(
   };
 }
 
+// 2026-09-04 feedback — research v8 addendum §13.1 identified a real gap:
+// resolveTier's fee_tiers only vary by AMOUNT, never by currency pair, so a
+// business broker that genuinely quotes GBP-USD differently from GBP-INR
+// at the same volume has no way to represent that. business_broker_rate_
+// tiers (new table, empty until real broker data is researched and loaded)
+// adds that missing dimension. Same amount-range matching logic as
+// resolveTier above, just scoped to rows already filtered by
+// provider_slug + currency pair by the caller.
+interface BrokerRateTierRow {
+  min_amount: number | null;
+  max_amount: number | null;
+  spread_percent: number;
+  fee_percent: number;
+  fee_fixed: number;
+}
+
+function resolveBrokerTier(
+  rows: BrokerRateTierRow[] | undefined,
+  amount: number,
+): { fee_percent: number; fee_fixed: number; spread_percent: number } | null {
+  if (!rows || rows.length === 0) return null;
+  const inRange = rows.filter(
+    (r) =>
+      (r.min_amount == null || amount >= r.min_amount) &&
+      (r.max_amount == null || amount <= r.max_amount),
+  );
+  if (inRange.length === 0) return null;
+  // Prefer the narrowest matching band (a real min+max range beats an
+  // open-ended fallback row for the same provider/currency pair), same
+  // "most specific match wins" idea as fx_rates' own corridor precedence.
+  const sorted = [...inRange].sort((a, b) => {
+    const widthA = (a.max_amount ?? Infinity) - (a.min_amount ?? 0);
+    const widthB = (b.max_amount ?? Infinity) - (b.min_amount ?? 0);
+    return widthA - widthB;
+  });
+  const match = sorted[0];
+  return {
+    fee_percent: match.fee_percent,
+    fee_fixed: match.fee_fixed,
+    spread_percent: match.spread_percent,
+  };
+}
+
 // ---------- compareProviders ----------
 const compareSchema = z.object({
   amount: z.number().min(1).max(1e15),
@@ -781,15 +824,55 @@ export const compareProviders = createServerFn({ method: "POST" })
     const fromReference = fromUpper !== base && referenceCodes.has(fromUpper);
     const toReference = toUpper !== base && referenceCodes.has(toUpper);
 
+    // 2026-09-04 feedback — business_broker_rate_tiers lookup (see
+    // resolveBrokerTier's own comment): currency-pair + amount tiers for
+    // business brokers, filling the gap resolveTier's amount-only fee_tiers
+    // can't. Business-only (retail searches never have rows here, so this
+    // skips the query entirely for them) — never throws: a lookup failure
+    // just means every provider falls back to resolveTier exactly as
+    // before this table existed, same "non-fatal, fall back" pattern the
+    // corridorRates fetch above already uses.
+    const brokerTiersBySlug = new Map<string, BrokerRateTierRow[]>();
+    if (data.segment === "business") {
+      const { data: tierRows, error: tierError } = await supabaseAdmin
+        .from("business_broker_rate_tiers")
+        .select("provider_slug, min_amount, max_amount, spread_percent, fee_percent, fee_fixed")
+        .eq("from_currency", fromUpper)
+        .eq("to_currency", toUpper);
+      if (tierError) {
+        console.error("[compareProviders] business_broker_rate_tiers lookup failed", tierError);
+      } else {
+        for (const r of tierRows ?? []) {
+          const list = brokerTiersBySlug.get(r.provider_slug) ?? [];
+          list.push({
+            min_amount: r.min_amount != null ? Number(r.min_amount) : null,
+            max_amount: r.max_amount != null ? Number(r.max_amount) : null,
+            spread_percent: Number(r.spread_percent) || 0,
+            fee_percent: Number(r.fee_percent) || 0,
+            fee_fixed: Number(r.fee_fixed) || 0,
+          });
+          brokerTiersBySlug.set(r.provider_slug, list);
+        }
+      }
+    }
+
     // Defensive boundary: a malformed provider row (e.g. bad fee_tiers data
     // in Supabase) throwing here would otherwise escape as an unformatted
     // error. Catch it and surface the same clean message instead.
     try {
       const rows: ComparisonRow[] = eligibleProviders.map((p) => {
         const corridorRate = corridorRates.get(p.slug);
+        // Precedence: an exact per-corridor fx_rates row (existing) still
+        // wins over everything — it's real, route-specific data. Next, a
+        // matching business_broker_rate_tiers row (new) — real,
+        // currency-pair-specific data for brokers that have it. Only then
+        // resolveTier's existing amount-only fee_tiers/flat fallback —
+        // unchanged for every provider with no rows in the new table,
+        // which today is all of them (empty until real data is loaded).
+        const brokerTier = resolveBrokerTier(brokerTiersBySlug.get(p.slug), data.amount);
         const tier = corridorRate
           ? { fee_percent: 0, fee_fixed: corridorRate.fee, spread_percent: corridorRate.spread }
-          : resolveTier(p, data.amount);
+          : (brokerTier ?? resolveTier(p, data.amount));
         const rate = marketRate * (1 - tier.spread_percent / 100);
         const feeRate = tier.fee_percent / 100;
         const amountSent =

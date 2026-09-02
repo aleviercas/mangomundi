@@ -72,9 +72,19 @@
 >   RemitMoney en particular está marcado explícitamente como sospechoso
 >   (0,00% de costo total, sin verificar) — no cargar sin confirmar.
 > - **Arquitectura de brokers business** (Sección 13.1, tabla
->   `business_broker_rate_tiers` propuesta): **no se construyó.** Es una
->   decisión de diseño de base de datos, no de research — queda abierta
->   para que la resuelva el usuario, tal como pide la propia Sección 13.1.
+>   `business_broker_rate_tiers` propuesta): **actualizado 4-sep-2026 —
+>   el usuario confirmó que sí, construir el esquema.** Migración
+>   `add_business_broker_rate_tiers` aplicada: tabla nueva
+>   (`provider_slug, from_currency, to_currency, min_amount, max_amount,
+>   spread_percent, fee_percent, fee_fixed`), lectura pública, y
+>   `compareProviders` (fx.functions.ts) ahora la consulta antes de caer a
+>   `resolveTier()` para búsquedas de segmento business. **La tabla queda
+>   vacía** — sigue sin haber datos reales de tarifas escalonadas por par
+>   de moneda para ninguno de los 6 brokers, así que esto no cambia ningún
+>   resultado hoy (con la tabla vacía, `resolveBrokerTier` siempre devuelve
+>   `null` y todo cae al mismo `resolveTier()` de siempre) — solo deja el
+>   esquema listo para cuando esa investigación exista. Pendiente real:
+>   investigar y cargar las tarifas por corredor/monto de cada broker.
 > - **Todo lo demás de este archivo** (Secciones 3, 7, 8, 9.2, 11, 12.1-12.4,
 >   13.2-13.5, 14.2-14.3, 14.5-14.8) es contexto de mercado, fuentes de
 >   terceros o hallazgos ya reflejados arriba — no generó cambios propios en
