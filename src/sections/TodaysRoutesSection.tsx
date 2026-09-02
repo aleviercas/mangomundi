@@ -163,15 +163,20 @@ export function TodaysRoutesSection({
 
 /**
  * 2026-09-03 feedback — "podemos tambien en el business dejar el todays
- * routes already priced pero para business providers? Y agregar alguna
- * frase como tambien ask for a special quote": business-segment sibling of
- * TodaysRoutesSection above — same real mechanism (useBusinessTodaysRoutes
- * reuses compareProviders with segment:"business" at a real business-scale
- * amount, see fx.functions.ts's getBusinessTodaysRoutes), same card, same
- * title/subtitle copy (still an honest description of what's shown). Adds
- * one line inviting a bespoke quote, since this section's own generic
- * provider pricing — real, but not corridor- or volume-negotiated — is a
- * starting point, not a business's actual negotiated rate.
+ * routes already priced pero para business providers?": business-segment
+ * sibling of TodaysRoutesSection above — same real mechanism
+ * (useBusinessTodaysRoutes reuses compareProviders with segment:"business"
+ * at a real business-scale amount, see fx.functions.ts's
+ * getBusinessTodaysRoutes), same card, same title/subtitle copy (still an
+ * honest description of what's shown).
+ *
+ * 2026-09-04 feedback — the "Need a larger volume or a recurring transfer?
+ * Ask for a special quote" line added the same round (2026-09-03) is
+ * dropped again: BusinessExtrasSection right below this section (see its
+ * own comment) already carries that same invitation — a dedicated
+ * "Institutional & Partnership Inquiries" panel with its own business-desk
+ * email CTA — so this line was a second, weaker copy of something the page
+ * already says properly one band down.
  *
  * Rendered by HomePageBody only when `businessExtras` is set (i.e. on
  * /business) and gated on the same !hasResult condition as every other
@@ -220,13 +225,6 @@ export function BusinessTodaysRoutesSection({
             </Link>
           ))}
         </div>
-
-        <a
-          href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
-          className="mt-3.5 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-brand-cta hover:text-brand-cta-hover"
-        >
-          {t("todaysRoutes.businessQuote")} →
-        </a>
       </div>
     </section>
   );

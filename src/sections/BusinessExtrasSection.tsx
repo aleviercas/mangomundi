@@ -52,7 +52,15 @@ export function BusinessExtrasSection() {
     },
   ];
   return (
-    <section className="py-7 sm:py-10">
+    // 2026-09-04 feedback — "el todays routes already priced que este en
+    // una banda... así la sección de debajo de institutional and
+    // partnerships aparece en otra banda separada": this section and
+    // BusinessTodaysRoutesSection right above it both used the page's own
+    // cream background with no divider between them, so they read as one
+    // continuous block instead of two. border-t + bg-card (same treatment
+    // HowItWorksSection already uses right after the retail equivalent of
+    // this section) gives it a real seam and its own white band.
+    <section className="border-t border-border bg-card py-7 sm:py-10">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid items-stretch gap-6 rounded-[20px] border border-border p-5 lg:grid-cols-[300px_1fr] lg:p-6">
           {/* Same photo the home teaser and quote-form card already use —

@@ -11,6 +11,7 @@ import {
   Briefcase,
   Building2,
   Check,
+  CheckCircle2,
   ChevronDown,
   ChevronsRight,
   Clock,
@@ -3549,16 +3550,62 @@ function BusinessRequestPanel({
     ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry)
     : "—";
 
+  // 2026-09-04 feedback — "cuando se manda el mail que no se cambie el
+  // tamaño de la ventana de your request": the "sent" state used to be a
+  // much shorter card (title + one line) than the normal form below it
+  // (title+disclaimer, a wrapping stats row, the email field and button) —
+  // real content, but a lot less of it, so the panel visibly shrank the
+  // moment a request went out. Mirrors the normal state's own layout
+  // instead (same header row, same stats row confirming what was actually
+  // requested) and only swaps the email form for a same-sized confirmation
+  // message in that one slot, so the panel's height doesn't move.
   if (status === "sent") {
     return (
       <div className="rounded-[18px] border border-border bg-card p-4">
-        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-        <h3 className="font-heading text-[15px] font-extrabold text-foreground">
-          {t("comparator.business.request.title")}
-        </h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          {t("comparator.business.request.sent")}
-        </p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-heading text-[15px] font-extrabold text-foreground">
+              {t("comparator.business.request.title")}
+            </h3>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {t("comparator.business.request.disclaimer")}
+            </p>
+          </div>
+          <div className="shrink-0 text-right">
+            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+              {t("comparator.business.request.brokersSelected")}
+            </div>
+            <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
+              {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-border pt-3">
+          <div className="flex flex-1 flex-wrap items-baseline gap-x-6 gap-y-2">
+            <StatItem label={t("comparator.business.request.volume")}>
+              {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+            </StatItem>
+            <StatItem label={t("comparator.business.request.route")}>
+              <span className="inline-flex flex-wrap items-center gap-1.5">
+                <FlagIcon country={sendingCountry} /> {sendingCountryName}
+                <span>→</span>
+                {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+              </span>
+            </StatItem>
+            <StatItem label={t("comparator.business.request.currency")}>
+              {from} → {to}
+            </StatItem>
+            <StatItem label={t("comparator.business.request.contract")}>
+              {contractTypeLabel} · {frequencyLabel}
+            </StatItem>
+          </div>
+
+          <div className="flex w-full items-center gap-2 rounded-lg border border-success/30 bg-success/10 px-3 py-2.5 text-sm font-semibold text-success sm:w-[280px]">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            {t("comparator.business.request.sent")}
+          </div>
+        </div>
       </div>
     );
   }
