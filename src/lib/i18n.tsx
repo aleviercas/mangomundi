@@ -266,6 +266,12 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.row.labelDelivery": "Delivery",
     "comparator.row.labelPayout": "Payout",
     "comparator.row.labelReceive": "Receive",
+    // 2026-09-03 feedback — "hay que agregar un boton de share this rate
+    // abajo del boton de go to wise o go to torfx": a second, secondary
+    // button under the affiliate CTA sharing that row's own real affiliate
+    // link (never a fabricated one) — hidden entirely when the row has none.
+    "comparator.row.share": "Share this rate",
+    "comparator.row.shareCopied": "Copied!",
     // The single price-stamp line (§C3) replacing the old orange
     // "not verified"/"unconfirmed" pills + separate "Updated: {date}" text.
     "comparator.row.stampLive": "Live",
@@ -791,6 +797,8 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.speed": "Velocidad",
     "fx.action": "Acción",
     "fx.goto": "Ir a",
+    "comparator.row.share": "Compartir esta tasa",
+    "comparator.row.shareCopied": "¡Copiado!",
     "fx.chat.title": "Preguntale a Mango sobre esta recomendación",
     "fx.chat.placeholder": "¿Por qué este proveedor? ¿Y si no tengo apuro?",
     "fx.chat.send": "Enviar",
@@ -1086,6 +1094,8 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.speed": "Velocidade",
     "fx.action": "Ação",
     "fx.goto": "Ir para",
+    "comparator.row.share": "Compartilhar esta taxa",
+    "comparator.row.shareCopied": "Copiado!",
     "fx.chat.title": "Pergunte à Mango sobre esta recomendação",
     "fx.chat.placeholder": "Por que este provedor? E se eu não tiver pressa?",
     "fx.chat.send": "Enviar",

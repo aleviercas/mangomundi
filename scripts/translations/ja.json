@@ -788,5 +788,7 @@
   "wizard.runFirst": "まず比較を実行してください — 表のデータに基づいて回答します。外部ソースは使用しません。",
   "wizard.send": "mangomundi自体はお金を動かしません — 最適な選択肢を示し、その事業者のサイトへ直接ご案内して送金を完了します。比較して行を選び、クリックして完了。当社のアカウントは不要です。",
   "widget.header.title": "レートを比較",
-  "widget.examples.seeMore": "mangomundiでもっとルートを見る"
+  "widget.examples.seeMore": "mangomundiでもっとルートを見る",
+  "comparator.row.share": "このレートを共有",
+  "comparator.row.shareCopied": "コピーしました!"
 }

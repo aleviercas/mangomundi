@@ -788,5 +788,7 @@
   "wizard.runFirst": "Jalankan perbandingan dulu — saya menjawab dengan data tabel, bukan sumber eksternal.",
   "wizard.send": "mangomundi tidak memindahkan uang sendiri — ia menunjukkan opsi terbaik lalu mengarahkan Anda langsung ke penyedia untuk menyelesaikan transfer di situs mereka. Bandingkan, pilih satu baris, dan klik untuk selesai. Tidak perlu akun dengan kami.",
   "widget.header.title": "Bandingkan kurs",
-  "widget.examples.seeMore": "Lihat lebih banyak rute di mangomundi"
+  "widget.examples.seeMore": "Lihat lebih banyak rute di mangomundi",
+  "comparator.row.share": "Bagikan kurs ini",
+  "comparator.row.shareCopied": "Disalin!"
 }

@@ -788,5 +788,7 @@
   "wizard.runFirst": "Najpierw uruchom porównanie — odpowiadam na podstawie danych z tabeli, nie źródeł zewnętrznych.",
   "wizard.send": "mangomundi nie przenosi pieniędzy — pokazuje najlepszą opcję i kieruje Cię prosto do dostawcy, aby dokończyć przelew na jego stronie. Porównaj, wybierz wiersz i kliknij, aby zakończyć. Konto u nas nie jest potrzebne.",
   "widget.header.title": "Porównaj kursy",
-  "widget.examples.seeMore": "Zobacz więcej tras na mangomundi"
+  "widget.examples.seeMore": "Zobacz więcej tras na mangomundi",
+  "comparator.row.share": "Udostępnij ten kurs",
+  "comparator.row.shareCopied": "Skopiowano!"
 }

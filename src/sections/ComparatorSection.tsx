@@ -21,6 +21,7 @@ import {
   Percent,
   Send,
   Shield,
+  Share2,
   Star,
   Sparkle,
   Zap,
@@ -4179,6 +4180,47 @@ function ProviderRow({
     <div className="h-11 w-full shrink-0 sm:w-auto" aria-hidden />
   );
 
+  // 2026-09-03 feedback — "agregar un boton de share this rate abajo del
+  // boton de go to wise o go to torfx... en ese caso esta compartiendo el
+  // link de afiliado, los que no tienen link cargado que no aparezca lo de
+  // compartir": a real link only, never fabricated — same
+  // `row.affiliate_url` gate the CTA above already uses, so a provider
+  // with no link yet shows neither button, same as before. Native share
+  // sheet first (best on mobile — the person picks WhatsApp/Messages/etc.
+  // themselves), clipboard copy as the fallback everywhere else, same
+  // pattern blog_.$slug.tsx's own ShareRow already uses.
+  const [shareCopied, setShareCopied] = useState(false);
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: row.name, url: row.affiliate_url });
+        return;
+      }
+    } catch {
+      // User cancelled the native share sheet, or it failed — fall through
+      // to a plain clipboard copy instead of leaving the click looking dead.
+    }
+    try {
+      await navigator.clipboard.writeText(row.affiliate_url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Clipboard API can fail (permissions, insecure context) — fail
+      // silently rather than showing a broken "copied" state.
+    }
+  };
+  const shareButton = row.affiliate_url ? (
+    <button
+      type="button"
+      onClick={handleShare}
+      aria-label={`${t("comparator.row.share")} — ${row.name}`}
+      className="inline-flex h-8 w-full shrink-0 items-center justify-center gap-1.5 rounded-md text-[12px] font-semibold text-muted-foreground transition hover:text-foreground sm:w-auto"
+    >
+      <Share2 className="h-3.5 w-3.5" />
+      {shareCopied ? t("comparator.row.shareCopied") : t("comparator.row.share")}
+    </button>
+  ) : null;
+
   return (
     <div
       className="group relative overflow-hidden rounded-2xl bg-card p-4 transition-shadow duration-200 ease-out hover:shadow-md sm:px-[19px] sm:py-4"
@@ -4305,7 +4347,10 @@ function ProviderRow({
           >
             {isBest ? t("comparator.row.deltaWinner") : deltaLabel}
           </div>
-          <div className="mt-2.5 flex justify-end">{cta}</div>
+          <div className="mt-2.5 flex flex-col items-end gap-1">
+            {cta}
+            {shareButton}
+          </div>
         </div>
       </div>
       {trustLine && (
@@ -4363,7 +4408,10 @@ function ProviderRow({
           </span>
         </div>
         {trustLine && <div className="mt-2">{trustLine}</div>}
-        <div className="mt-3">{cta}</div>
+        <div className="mt-3 flex flex-col gap-1.5">
+          {cta}
+          {shareButton}
+        </div>
       </div>
 
       {businessExtra && (

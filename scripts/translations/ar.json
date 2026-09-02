@@ -788,5 +788,7 @@
   "wizard.runFirst": "شغّل مقارنة أولاً — أجيب بالاستناد إلى بيانات الجدول، وليس إلى مصادر خارجية.",
   "wizard.send": "لا تحرّك mangomundi الأموال بنفسها — بل تعرض لك أفضل خيار ثم توجّهك مباشرة إلى المزود لإتمام التحويل على موقعه. قارن واختر صفًا وانقر للإنهاء. لا حاجة لحساب لدينا.",
   "widget.header.title": "قارن الأسعار",
-  "widget.examples.seeMore": "شاهد المزيد من المسارات على mangomundi"
+  "widget.examples.seeMore": "شاهد المزيد من المسارات على mangomundi",
+  "comparator.row.share": "شارك هذا السعر",
+  "comparator.row.shareCopied": "تم النسخ!"
 }

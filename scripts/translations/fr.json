@@ -788,5 +788,7 @@
   "wizard.runFirst": "Lancez d'abord une comparaison — je réponds avec les données du tableau, pas avec des sources externes.",
   "wizard.send": "mangomundi ne déplace pas l'argent — il vous montre la meilleure option puis vous envoie directement chez ce prestataire pour finaliser le transfert sur son site. Comparez, choisissez une ligne et cliquez pour terminer. Aucun compte chez nous requis.",
   "widget.header.title": "Comparer les taux",
-  "widget.examples.seeMore": "Voir plus d'itinéraires sur mangomundi"
+  "widget.examples.seeMore": "Voir plus d'itinéraires sur mangomundi",
+  "comparator.row.share": "Partager ce taux",
+  "comparator.row.shareCopied": "Copié !"
 }

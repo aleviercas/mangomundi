@@ -788,5 +788,7 @@
   "wizard.runFirst": "Hãy chạy so sánh trước — tôi trả lời dựa trên dữ liệu bảng, không phải nguồn bên ngoài.",
   "wizard.send": "mangomundi không tự chuyển tiền — nó cho bạn lựa chọn tốt nhất rồi đưa bạn thẳng đến nhà cung cấp để hoàn tất giao dịch trên trang của họ. So sánh, chọn một hàng và nhấp để hoàn tất. Không cần tài khoản với chúng tôi.",
   "widget.header.title": "So sánh tỷ giá",
-  "widget.examples.seeMore": "Xem thêm các tuyến trên mangomundi"
+  "widget.examples.seeMore": "Xem thêm các tuyến trên mangomundi",
+  "comparator.row.share": "Chia sẻ tỷ giá này",
+  "comparator.row.shareCopied": "Đã sao chép!"
 }
