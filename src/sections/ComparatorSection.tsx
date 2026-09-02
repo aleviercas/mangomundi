@@ -1443,6 +1443,20 @@ export function ComparatorSection({
         segment,
         source: "business_request_panel",
       });
+      // 2026-09-03 feedback — "te deja volver a elegir nuevos proveedores
+      // pero la pantalla de sent no se va, tendria que quedar la pantalla
+      // anterior de nuevo limpia una vez que se envio un request": status
+      // used to stay "sent" forever — the panel never returned to its
+      // normal form, even though the results list right above it stayed
+      // fully interactive (Add to request still toggled requestedSlugs),
+      // so a second request had nowhere to go. A brief confirmation, then
+      // a real reset (status back to idle, selections cleared so "Add to
+      // request" buttons return to their unselected state) so the panel is
+      // ready to build a new request rather than stuck showing the last one.
+      window.setTimeout(() => {
+        setRequestPanelStatus("idle");
+        setRequestedSlugs(new Set());
+      }, 3000);
     } catch {
       setRequestPanelStatus("error");
     }
@@ -3470,8 +3484,15 @@ function BusinessRequestPanel({
   onSend: (email: string) => void;
 }) {
   const { t } = useI18n();
-  const [expanded, setExpanded] = useState(false);
   const [email, setEmail] = useState("");
+  // 2026-09-03 feedback — once the parent resets `status` back to "idle"
+  // a few seconds after a successful send (see sendBusinessRequest's own
+  // comment), this panel's own email field needs to clear too, or it would
+  // show the just-submitted address again instead of the clean pre-request
+  // form the feedback asked for.
+  useEffect(() => {
+    if (status === "idle") setEmail("");
+  }, [status]);
   const selectedCount = requestedSlugs.size;
   const sendingCountryName = COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry;
   const receivingCountryName = receivingCountry
@@ -3578,55 +3599,46 @@ function BusinessRequestPanel({
           </StatItem>
         </div>
 
-        {/* `justify-between` on the shared row above is what actually keeps
-            this anchored right regardless of content — the earlier "el
-            botón se mueve al centro" fix (see git history) — so the button
-            itself doesn't need a fixed width for that. It briefly had one
-            anyway (w-[190px]) and .btn-cta's own `white-space: nowrap` made
-            "Send request to 1 broker" wider than that box, so the text
-            visibly overflowed past its own rounded corners. Sized to
-            content (px-5) instead. */}
-        {expanded ? (
-          <form
-            className="flex w-full flex-col gap-2 sm:w-[280px]"
-            onSubmit={(e) => {
-              e.preventDefault();
-              onSend(email);
-            }}
-          >
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t("comparator.business.request.emailPlaceholder")}
-              className="h-11 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground"
-            />
-            <button
-              type="submit"
-              disabled={status === "sending"}
-              className="btn-cta flex h-11 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:opacity-60"
-            >
-              {status === "sending"
-                ? t("comparator.business.request.sending")
-                : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-            </button>
-            {status === "error" && (
-              <p className="text-right text-xs text-destructive">
-                {t("comparator.business.request.error")}
-              </p>
-            )}
-          </form>
-        ) : (
+        {/* 2026-09-03 feedback — "el campo de mail ver si conviene dejarlo
+            siempre visible arriba del boton de send request": this used to
+            be a plain CTA button that only revealed the email input after
+            its own click (an extra step + an extra layout change every
+            time). Always showing the field removes both — one less click
+            to submit, and no more content jumping in as the button is
+            pressed. `justify-between` on the shared row above still keeps
+            this block anchored right regardless of content — the earlier
+            "el botón se mueve al centro" fix (see git history) — so the
+            button itself doesn't need a fixed width for that. */}
+        <form
+          className="flex w-full flex-col gap-2 sm:w-[280px]"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSend(email);
+          }}
+        >
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("comparator.business.request.emailPlaceholder")}
+            className="h-10 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground"
+          />
           <button
-            type="button"
-            disabled={selectedCount === 0}
-            onClick={() => setExpanded(true)}
-            className="btn-cta flex h-10 shrink-0 items-center justify-center rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+            type="submit"
+            disabled={selectedCount === 0 || status === "sending"}
+            className="btn-cta flex h-10 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+            {status === "sending"
+              ? t("comparator.business.request.sending")
+              : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
           </button>
-        )}
+          {status === "error" && (
+            <p className="text-right text-xs text-destructive">
+              {t("comparator.business.request.error")}
+            </p>
+          )}
+        </form>
       </div>
     </div>
   );
