@@ -236,7 +236,17 @@ export function EmbedComparator({
           to fit the fixed 360×540 frame outright (smaller type throughout
           the embedded search row and CompactResultsList, see their own
           comments), not scroll to reveal what doesn't fit. */}
-      <div className="min-h-0 flex-1 overflow-hidden px-3 py-3 sm:px-4">
+      {/* 2026-09-03 feedback — "aprovechar todo el ancho, remover los
+          margenes que separan los costados de ambos lados": this wrapper's
+          own px-3 sm:px-4 (12-16px each side) sat on top of the search
+          card's own border, so the card and the examples list both floated
+          with a visible gutter to the frame's edges instead of using the
+          widget's full width — real, measured empty bands on a 500px-wide
+          screenshot of /embed, not a guess. Only the header/attribution
+          bars (plain text, no card) still carry their own small horizontal
+          padding; this content area (which holds the bordered card) no
+          longer does. */}
+      <div className="min-h-0 flex-1 overflow-hidden py-3">
         <ComparatorSection
           key={remountKey}
           embedded
