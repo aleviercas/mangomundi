@@ -444,6 +444,16 @@ export function ComparatorSection({
   // params so the comparison isn't lost. A no-op when the target already
   // matches the current route (e.g. the B2B banner's CTA while already on
   // /business), which just flips local state — nothing to navigate to.
+  // 2026-09-03 feedback — "el comportamiento de la pagina cuando cambias
+  // entre individual y business es raro porque se mueve de arriba para
+  // abajo": this pill reads as a same-page toggle (same comparator card,
+  // same query carried over), but it's really a navigation to a different
+  // route ("/" vs "/business") — router.tsx's `scrollRestoration: true`
+  // resets a fresh forward navigation's scroll to the top by default, so
+  // clicking it while scrolled down snapped the viewport back up on every
+  // toggle. `resetScroll: false` keeps the current scroll position across
+  // this specific navigation, which is what a toggle (vs. a real page
+  // visit) should do.
   const handleSegmentChange = (next: Segment) => {
     if (next === segment) return;
     const onBusinessRoute = pathname.startsWith("/business");
@@ -463,6 +473,7 @@ export function ComparatorSection({
           origin: sendingCountry || undefined,
           destination: receivingCountry || undefined,
         }),
+        resetScroll: false,
       });
     } else {
       segmentNavigate({
@@ -476,6 +487,7 @@ export function ComparatorSection({
           origin: sendingCountry || undefined,
           destination: receivingCountry || undefined,
         }),
+        resetScroll: false,
       });
     }
   };
