@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import {
   getExclusiveCorridors,
   getWidgetExclusiveCorridors,
+  getWidgetBusinessTodaysRoutes,
   type ExclusiveCorridor,
 } from "@/lib/fx.functions";
 
@@ -43,6 +44,18 @@ export function useWidgetExclusiveCorridors() {
   const fn = useServerFn(getWidgetExclusiveCorridors);
   return useQuery({
     queryKey: ["widget-exclusive-corridors"],
+    queryFn: () => fn(),
+    staleTime: 5 * 60_000,
+  });
+}
+
+/** Business-segment sibling of useWidgetExclusiveCorridors above, for the
+ *  embeddable widget's own Individual/Business toggle (see
+ *  EmbedComparator and getWidgetBusinessTodaysRoutes). */
+export function useWidgetBusinessTodaysRoutes() {
+  const fn = useServerFn(getWidgetBusinessTodaysRoutes);
+  return useQuery({
+    queryKey: ["widget-business-todays-routes"],
     queryFn: () => fn(),
     staleTime: 5 * 60_000,
   });

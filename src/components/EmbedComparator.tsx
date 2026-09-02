@@ -6,7 +6,10 @@ import type { ExclusiveCorridor } from "@/lib/fx.functions";
 import { Wordmark } from "@/components/Wordmark";
 import { defaultCounterCurrency, primaryCountryForCurrency } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
-import { useWidgetExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
+import {
+  useWidgetExclusiveCorridors,
+  useWidgetBusinessTodaysRoutes,
+} from "@/hooks/use-exclusive-corridors";
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { SITE_URL } from "@/config/site";
 
@@ -138,20 +141,33 @@ export function EmbedComparator({
   // currency is picked so it never starts equal to the origin one (that
   // used to trigger the same-currency warning immediately on load).
   const from = initialCurrency ?? geoCurrency;
+
+  const { t } = useI18n();
+  const [result, setResult] = useState<ComparisonResult | null>(null);
+  // 2026-09-04 feedback — "evaluar si conviene hacer un widget para
+  // business, o en el mismo widget agregar la función business con un
+  // botoncito al lado de compare rates": a toggle in this one widget,
+  // decided over a separate business embed — reuses all of AD5-AD7's work
+  // (fixed-size fields, sort pills, pinned "see more" bar) instead of a
+  // second script/route to maintain, and whoever embeds this picks the
+  // segment without installing two different widgets.
+  const [segment, setSegment] = useState<ComparatorQuery["segment"]>("retail");
   const defaultQuery: ComparatorQuery = {
     origin: geoCountry,
     destination: "",
-    segment: "retail",
+    segment,
     from,
     to: defaultCounterCurrency(from),
     amount: initialAmount ?? 1000,
     autoRun: false,
   };
-
-  const { t } = useI18n();
-  const [result, setResult] = useState<ComparisonResult | null>(null);
   const { data: exampleCorridors } = useWidgetExclusiveCorridors();
-  const examples = exampleCorridors?.slice(0, MAX_WIDGET_EXAMPLES) ?? [];
+  const { data: businessCorridors } = useWidgetBusinessTodaysRoutes();
+  const examples =
+    (segment === "business" ? businessCorridors : exampleCorridors)?.slice(
+      0,
+      MAX_WIDGET_EXAMPLES,
+    ) ?? [];
 
   // 2026-09-01 feedback (second round) — WidgetExamples' rows need to be
   // clickable and actually run that corridor, not just decorate the empty
@@ -168,12 +184,23 @@ export function EmbedComparator({
     setExampleQuery({
       origin: primaryCountryForCurrency(example.from) ?? geoCountry,
       destination: primaryCountryForCurrency(example.to) ?? "",
-      segment: "retail",
+      segment,
       from: example.from,
       to: example.to,
       amount: example.amount,
       autoRun: true,
     });
+    setRemountKey((k) => k + 1);
+  };
+  // Same remount trick as handleSelectExample — carries over whatever the
+  // visitor already typed (amount/currencies) instead of resetting the
+  // form, same as the full comparator's own segment toggle carrying state
+  // across its route change (see ComparatorSection's handleSegmentChange).
+  const handleToggleSegment = (next: ComparatorQuery["segment"]) => {
+    if (next === segment) return;
+    setSegment(next);
+    setResult(null);
+    setExampleQuery({ ...(exampleQuery ?? defaultQuery), segment: next, autoRun: false });
     setRemountKey((k) => k + 1);
   };
 
@@ -192,10 +219,39 @@ export function EmbedComparator({
           this bar. Moved into CompactResultsList's own "Your results"
           header row instead (see its comment) — it's about the results
           below, not the search form, so it reads better attached to them. */}
-      <div className="flex shrink-0 items-center border-b border-border px-3.5 py-2.5">
+      <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
         <span className="font-heading text-[13.5px] font-extrabold text-foreground">
           {t("widget.header.title")}
         </span>
+        {/* 2026-09-04 feedback — "evaluar widget business... con un
+            botoncito al lado de compare rates": same tablist markup/
+            copy as the full comparator's own Individual/Business toggle
+            (comparator.segment.*), just without the route-navigation part
+            of handleSegmentChange — this widget has no routes of its own,
+            so toggling only ever needs to remount with the new segment
+            (see handleToggleSegment above). */}
+        <div
+          role="tablist"
+          aria-label={t("search.segment")}
+          className="flex h-5 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
+        >
+          {(["retail", "business"] as const).map((s) => (
+            <button
+              key={s}
+              type="button"
+              role="tab"
+              aria-selected={segment === s}
+              onClick={() => handleToggleSegment(s)}
+              className={`rounded-full px-2 py-0.5 text-[10.5px] font-semibold capitalize leading-none transition ${
+                segment === s
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {t(`comparator.segment.${s}`)}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* 2026-08-31 feedback — "el widget sacarle el scroll, dijimos que iba

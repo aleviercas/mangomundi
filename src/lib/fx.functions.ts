@@ -1109,6 +1109,23 @@ export const getBusinessTodaysRoutes = createServerFn({ method: "GET" }).handler
     ),
 );
 
+// 2026-09-04 feedback — business-segment sibling of
+// getWidgetExclusiveCorridors above, for the embeddable widget's own
+// Individual/Business toggle (see EmbedComparator). Same candidates/gate
+// as getBusinessTodaysRoutes; maxResults=8 matches BUSINESS_ROUTE_
+// CANDIDATES' own length (8), so this is really "show every real
+// qualifying business corridor" rather than a new, separate cap.
+export const getWidgetBusinessTodaysRoutes = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      BUSINESS_ROUTE_CANDIDATES,
+      BUSINESS_ROUTE_REFERENCE_AMOUNT,
+      "business",
+      "[getWidgetBusinessTodaysRoutes]",
+      8,
+    ),
+);
+
 // ---------- trackAffiliateClick ----------
 const trackSchema = z.object({
   provider_slug: z.string().min(1).max(64),
