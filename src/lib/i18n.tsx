@@ -629,6 +629,21 @@ export const DICTS: Record<Lang, Dict> = {
     // comment on useRatesFreshness there, not the dropped todaysRoutes claim.
     "widget.header.ratesJustNow": "rates just now",
     "widget.header.ratesMinAgo": "rates {n} min ago",
+    // 2026-09-03 feedback — "el widget tiene que tener algún título que
+    // invite a comparar y sacale el logo de arriba porque ya aparece
+    // abajo": replaces the header's Wordmark (redundant with the "powered
+    // by mangomundi" attribution link already at the bottom of the same
+    // widget) with a short action-oriented title — this header bar is only
+    // ~360px wide, so kept to two words rather than reusing the home
+    // page's full headline.
+    "widget.header.title": "Compare rates",
+    // "antes de comparar que aparezca también el botón de see more routes
+    // on mangomundi... incluso antes de comparar": a second, explicit
+    // invite to the main site next to the pre-search examples list —
+    // distinct from the always-present "powered by mangomundi" attribution
+    // footer, which is a required credit line, not an invitation to browse
+    // more routes.
+    "widget.examples.seeMore": "See more routes on mangomundi",
     // 2026-09-01 feedback — "antes de seleccionar pueden aparecer ejemplos
     // de todays rates para que no aparezca vacío": a real example corridor
     // (from the same getExclusiveCorridors data TodaysRoutesSection uses),

@@ -68,7 +68,14 @@ function useRatesFreshness(fetchedAt: string | null): string | null {
  *  (11 corridors, see fx.functions.ts's own EXCLUSIVE_CORRIDOR_CANDIDATES)
  *  instead of inventing filler content; the outer frame's existing
  *  `overflow-hidden` still clips gracefully on any route where fewer
- *  corridors qualify. */
+ *  corridors qualify.
+ *
+ *  2026-09-03 feedback — "sacar la palabra example rates, poner today's
+ *  routes already priced como se pone en el home": explicit override of
+ *  this block's own original "Example rates" reasoning above (never reuse
+ *  todaysRoutes.title's copy here) — now reuses that exact copy, same as
+ *  TodaysRoutesSection itself. The underlying data was already identical
+ *  either way (real getExclusiveCorridors results); only the label changes. */
 const MAX_WIDGET_EXAMPLES = 8;
 
 function WidgetExamples({
@@ -84,7 +91,7 @@ function WidgetExamples({
     <div className="mt-2.5 overflow-hidden rounded-[14px] border border-border bg-card">
       <div className="flex items-center gap-1 border-b border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
         <Sparkle className="h-2.5 w-2.5 text-brand-cta" />
-        {t("widget.examples.title")}
+        {t("todaysRoutes.title")}
       </div>
       <div className="divide-y divide-border">
         {examples.map((example) => {
@@ -114,6 +121,23 @@ function WidgetExamples({
           );
         })}
       </div>
+      {/* 2026-09-03 feedback — "antes de comparar que aparezca también el
+          botón de see more routes on mangomundi... incluso antes de
+          comparar": a second, explicit invite to the main site next to
+          these pre-search examples — the attribution link at the bottom of
+          the widget (EmbedComparator's own "powered by mangomundi") is a
+          required credit line, always there regardless of state, not an
+          invitation to browse more routes specifically. target="_blank"
+          same as that attribution link, since this widget can be embedded
+          on a third-party page. */}
+      <a
+        href="https://mangomundi.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-center gap-1 border-t border-border py-1.5 text-[10.5px] font-bold text-brand-cta hover:text-brand-cta-hover"
+      >
+        {t("widget.examples.seeMore")} →
+      </a>
     </div>
   );
 }
@@ -155,6 +179,7 @@ export function EmbedComparator({
     autoRun: false,
   };
 
+  const { t } = useI18n();
   const [result, setResult] = useState<ComparisonResult | null>(null);
   const freshness = useRatesFreshness(result?.fetched_at ?? null);
   const { data: exampleCorridors } = useExclusiveCorridors();
@@ -188,10 +213,17 @@ export function EmbedComparator({
     <div className="relative flex h-full flex-col overflow-hidden bg-[#fcfcfc]">
       {/* design/Mangomundi 4 - Final.dc.html (line 726-729) — the widget's
           own header bar, distinct from ComparatorSection's chrome (which
-          `embedded` strips entirely): wordmark + a real freshness stamp,
-          shown only once a comparison has actually run. */}
+          `embedded` strips entirely). Real freshness stamp, shown only once
+          a comparison has actually run.
+          2026-09-03 feedback — "sacale el logo de arriba porque ya aparece
+          abajo": was the full Wordmark here, redundant with the "powered by
+          mangomundi" attribution already at the bottom of this same widget
+          — replaced with a short action-oriented title instead ("tiene que
+          tener algún título que invite a comparar"). */}
       <div className="flex shrink-0 items-center justify-between border-b border-border px-3.5 py-2.5">
-        <Wordmark className="text-base" />
+        <span className="font-heading text-[13.5px] font-extrabold text-foreground">
+          {t("widget.header.title")}
+        </span>
         {freshness && (
           <span className="text-[10.5px] font-semibold text-muted-foreground">{freshness}</span>
         )}
