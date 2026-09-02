@@ -4107,11 +4107,23 @@ function ProviderRow({
   // design/AJUSTES-2.md §0/§3 — the rating star is filled #F59E0B (amber),
   // one of the two exceptions to "no filled icons" the doc calls out
   // (the other is the Trustpilot star elsewhere, filled #1F7A5A/green).
+  // 2026-09-03 feedback (found during AC23's own testing, confirmed via a
+  // fresh mobile screenshot) — "rating overlapping amount": this whole line
+  // used to be one inline-flex span with no overflow handling, so a long
+  // regulator name (real data — not every provider is just "FCA") had
+  // nothing clipping it and could spill out of its column into the amount
+  // block next to it. The star/score/"on Trustpilot" part never varies in
+  // length and always matters, so it stays fixed (shrink-0); only the
+  // regulator name — the one open-ended part — is its own min-w-0 flex item
+  // with `truncate`, so it gets a real ellipsis instead of an abrupt cut or
+  // an overlap when space runs out.
   const rating = row.trust_score != null && (
-    <span className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] text-muted-foreground">
-      <Star className="h-2.5 w-2.5 shrink-0 fill-[#F59E0B] text-[#F59E0B]" />{" "}
-      {row.trust_score.toFixed(1)} {t("comparator.row.onTrustpilot")}
-      {row.regulator && <> · {row.regulator}</>}
+    <span className="flex min-w-0 items-center gap-1 text-[11.5px] text-muted-foreground">
+      <Star className="h-2.5 w-2.5 shrink-0 fill-[#F59E0B] text-[#F59E0B]" />
+      <span className="shrink-0 whitespace-nowrap">
+        {row.trust_score.toFixed(1)} {t("comparator.row.onTrustpilot")}
+      </span>
+      {row.regulator && <span className="min-w-0 truncate">· {row.regulator}</span>}
     </span>
   );
 
@@ -4306,7 +4318,7 @@ function ProviderRow({
               )}
             </div>
           </div>
-          <div className="mt-1.5">{rating}</div>
+          <div className="mt-1.5 min-w-0">{rating}</div>
         </div>
         {/* Four equal metric columns, each with its own micro-label above
             the value (design/AJUSTES-1.md §C1) — replaces the shared
@@ -4405,6 +4417,11 @@ function ProviderRow({
             />
             <div className="min-w-0">
               <div className="truncate text-[15px] font-bold text-foreground">{row.name}</div>
+              {/* 2026-09-03 feedback — "rating overlapping amount" on mobile:
+                  see the `rating` const's own comment — it now truncates
+                  its own regulator name with an ellipsis instead of
+                  overflowing this shrinkable column into the amount block
+                  next to it. */}
               {rating}
             </div>
           </div>
