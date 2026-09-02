@@ -2945,6 +2945,15 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "todaysRoutes.exclusiveRate": "Exclusive rate",
     "todaysRoutes.bestOf": "Best of {n} · {amount} {from}",
     "todaysRoutes.gain": "+{amount} vs worst",
+    // 2026-09-03 feedback — "podemos tambien en el business dejar el
+    // todays routes already priced pero para business providers? Y
+    // agregar alguna frase como tambien ask for a special quote": the new
+    // business-segment variant of this section (BusinessTodaysRoutesSection)
+    // reuses todaysRoutes.title/subtitle/exclusiveRate/bestOf/gain as-is —
+    // same real claim, just business-segment data — and adds this one new
+    // line inviting a bespoke quote for volume this section's own generic
+    // provider pricing doesn't cover.
+    "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
     "comparator.rankingExplainer":
       "Results are ranked by whichever **Sort** you pick. **Smart** blends fee, exchange rate, speed and trust into one score; the rest (Speed, Fees, Rate, Trust, Receive) sort strictly by that one thing. **Sponsored** offers only ever win a genuine tie between otherwise-equal options — never a real difference.",
     "comparator.table.exchangeRate": "Exchange rate",

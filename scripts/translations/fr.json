@@ -790,5 +790,6 @@
   "widget.header.title": "Comparer les taux",
   "widget.examples.seeMore": "Voir plus d'itinéraires sur mangomundi",
   "comparator.row.share": "Partager ce taux",
-  "comparator.row.shareCopied": "Copié !"
+  "comparator.row.shareCopied": "Copié !",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

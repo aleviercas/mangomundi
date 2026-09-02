@@ -790,5 +790,6 @@
   "widget.header.title": "환율 비교",
   "widget.examples.seeMore": "mangomundi에서 더 많은 경로 보기",
   "comparator.row.share": "이 환율 공유하기",
-  "comparator.row.shareCopied": "복사됨!"
+  "comparator.row.shareCopied": "복사됨!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

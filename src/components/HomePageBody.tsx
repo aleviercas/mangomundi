@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { HeroSection } from "@/sections/HeroSection";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
-import { TodaysRoutesSection } from "@/sections/TodaysRoutesSection";
+import { TodaysRoutesSection, BusinessTodaysRoutesSection } from "@/sections/TodaysRoutesSection";
 import { HowItWorksSection } from "@/sections/HowItWorksSection";
 import { AboutManifestoSection } from "@/sections/AboutManifestoSection";
 import { BusinessWidgetRow } from "@/sections/BusinessWidgetRow";
 import { BlogSection } from "@/sections/BlogSection";
 import { BusinessExtrasSection } from "@/sections/BusinessExtrasSection";
+import type { ExclusiveCorridor } from "@/lib/fx.functions";
 
 export interface ComparatorQueryChange {
   from: string;
@@ -31,6 +32,8 @@ export function HomePageBody({
   onQueryChange,
   hideMarketingSections = false,
   businessExtras = false,
+  todaysRoutesData,
+  businessTodaysRoutesData,
 }: {
   initialQuery: ComparatorQuery;
   onQueryChange?: (q: ComparatorQueryChange) => void;
@@ -48,6 +51,14 @@ export function HomePageBody({
    *  same "how to reach us" ground once there IS a result, so keeping both
    *  visible was double coverage, not addition. */
   businessExtras?: boolean;
+  /** "/"'s own loader-fetched corridors (see its comment) — passed through
+   *  as TodaysRoutesSection's `initialData` so SSR and hydration render the
+   *  same content. Routes that don't prefetch this (e.g. /send/$corridor)
+   *  just leave it undefined, falling back to that section's own
+   *  client-side fetch, same as before this fix. */
+  todaysRoutesData?: ExclusiveCorridor[];
+  /** Same idea as todaysRoutesData, for /business's own prefetch. */
+  businessTodaysRoutesData?: ExclusiveCorridor[];
 }) {
   // Drives the Kayak/Skyscanner-style "search mode" swap: once a comparison
   // has a result, the hero collapses and the comparator card (see its own
@@ -66,7 +77,15 @@ export function HomePageBody({
       />
       {/* design/AJUSTES-1.md §E — below the comparator only while no search
           has run yet, same gate HeroSection's compact mode uses. */}
-      {showMarketing && <TodaysRoutesSection />}
+      {showMarketing && <TodaysRoutesSection initialData={todaysRoutesData} />}
+      {/* 2026-09-03 feedback — business's own version of the section above:
+          hideMarketingSections keeps `showMarketing` false on /business, so
+          this needs its own gate (same !hasResult condition, independent of
+          hideMarketingSections — same pattern businessExtras already uses
+          below). */}
+      {!hasResult && businessExtras && (
+        <BusinessTodaysRoutesSection initialData={businessTodaysRoutesData} />
+      )}
       {/* design/AJUSTES-2.md §2 — with a result, the page is header + search
           bar + rail/results + footer, nothing else: someone comparing 52
           prices isn't reading the manifesto. Header/Footer are root-layout

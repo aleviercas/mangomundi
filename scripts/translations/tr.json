@@ -790,5 +790,6 @@
   "widget.header.title": "Kurları karşılaştır",
   "widget.examples.seeMore": "mangomundi'de daha fazla rota gör",
   "comparator.row.share": "Bu kuru paylaş",
-  "comparator.row.shareCopied": "Kopyalandı!"
+  "comparator.row.shareCopied": "Kopyalandı!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

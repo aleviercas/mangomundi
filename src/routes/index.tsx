@@ -64,22 +64,6 @@ const homeBlogListQuery = (locale: string) =>
     queryFn: () => listBlogPosts({ data: { locale } }),
   });
 
-// 2026-09-03 feedback — "al abrir el home se comporta raro porque todays
-// routes aparece con delay y se mueve la página al cargar": same root cause
-// as homeBlogListQuery's own comment above, for a different section —
-// TodaysRoutesSection's useExclusiveCorridors() is a client-only useQuery
-// with no server-side prefetch, so the server-rendered HTML shipped with no
-// data (shown.length === 0 renders null), and the whole section popped in
-// — pushing everything below it down — only once the client-side fetch
-// resolved after hydration. Identical queryKey to useExclusiveCorridors's
-// own (["exclusive-corridors"]) so that hook just reads this already-
-// populated cache entry, same pattern homeBlogListQuery already uses for
-// BlogSection.
-const exclusiveCorridorsQuery = queryOptions({
-  queryKey: ["exclusive-corridors"],
-  queryFn: () => getExclusiveCorridors(),
-});
-
 export const Route = createFileRoute("/")({
   validateSearch: (search) => searchSchema.parse(search),
   loader: async ({ context }) => {
@@ -88,10 +72,28 @@ export const Route = createFileRoute("/")({
     // Run both prefetches concurrently — neither depends on the other, and
     // sequencing them would just add their latencies instead of taking the
     // slower of the two.
-    await Promise.all([
+    //
+    // 2026-09-03 feedback — "al abrir el home se comporta raro porque todays
+    // routes aparece con delay y se mueve la página al cargar": corridors
+    // used to go through context.queryClient.ensureQueryData, same as the
+    // blog prefetch above still does. That worked for SSR itself, but this
+    // app never wires up queryClient dehydration (no
+    // @tanstack/react-router-ssr-query, no manual dehydrate/hydrate
+    // anywhere) — so a query populated only in the server's queryClient
+    // cache has nothing carrying it to the client's own (fresh, empty) one.
+    // The client's first render then had no data where the server had a
+    // full section, a real content mismatch, so React discarded and
+    // rebuilt the whole section on hydration (visible as the exact "pop in
+    // late" symptom this fix was for). Returning it from the loader instead
+    // uses the router's own loaderData serialization — which this app
+    // already relies on correctly elsewhere (see rootData below) — so both
+    // passes render the identical array up front. See TodaysRoutesSection's
+    // `initialData` prop.
+    const [, corridors] = await Promise.all([
       context.queryClient.ensureQueryData(homeBlogListQuery(toBlogLocale(detected))),
-      context.queryClient.ensureQueryData(exclusiveCorridorsQuery),
+      getExclusiveCorridors(),
     ]);
+    return { corridors };
   },
   // Title/description/OG come from the root head, which is per-language
   // (SEO_META). The home just adds its own canonical, og:url, hreflang and
@@ -148,6 +150,7 @@ function Index() {
   };
   const geoCountry = rootData?.geoCountry ?? "GB";
   const geoCurrency = rootData?.geoCurrency ?? "GBP";
+  const { corridors } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -207,5 +210,11 @@ function Index() {
     [navigate],
   );
 
-  return <HomePageBody initialQuery={geoDefaults} onQueryChange={handleQueryChange} />;
+  return (
+    <HomePageBody
+      initialQuery={geoDefaults}
+      onQueryChange={handleQueryChange}
+      todaysRoutesData={corridors}
+    />
+  );
 }

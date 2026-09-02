@@ -958,46 +958,130 @@ export interface ExclusiveCorridor {
   winnerSlug: string;
 }
 
-export const getExclusiveCorridors = createServerFn({ method: "GET" }).handler(
-  async (): Promise<ExclusiveCorridor[]> => {
-    const settled = await Promise.all(
-      EXCLUSIVE_CORRIDOR_CANDIDATES.map(async (c): Promise<ExclusiveCorridor | null> => {
-        try {
-          const result = await compareProviders({
-            data: {
-              amount: EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
-              from: c.from,
-              to: c.to,
-              segment: "retail",
-              amountMode: "send",
-              sendingCountry: c.sendingCountry,
-              receivingCountry: c.receivingCountry,
-            },
-          });
-          if (result.rows.length === 0) return null;
-          const winner = result.rows.reduce((a, b) => (b.received > a.received ? b : a));
-          if (!winner.has_exclusive_deal) return null;
-          const worstReceived = Math.min(...result.rows.map((r) => r.received));
-          return {
+// Shared by getExclusiveCorridors (retail) and getBusinessTodaysRoutes
+// (business, see below) — same "run the real comparator, keep only
+// candidates where the actual winner has a real exclusive deal" logic,
+// parameterized on segment/amount/candidate list so the business version
+// isn't a copy-pasted drift risk.
+async function computeExclusiveCorridors(
+  candidates: ReadonlyArray<{
+    from: string;
+    to: string;
+    sendingCountry: string;
+    receivingCountry: string;
+  }>,
+  amount: number,
+  segment: "retail" | "business",
+  logLabel: string,
+): Promise<ExclusiveCorridor[]> {
+  const settled = await Promise.all(
+    candidates.map(async (c): Promise<ExclusiveCorridor | null> => {
+      try {
+        const result = await compareProviders({
+          data: {
+            amount,
             from: c.from,
             to: c.to,
-            amount: EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
-            bestReceived: winner.received,
-            gain: winner.received - worstReceived,
-            providerCount: result.rows.length,
-            winnerName: winner.name,
-            winnerSlug: winner.slug,
-          };
-        } catch (err) {
-          // One bad candidate (e.g. no fx_rates coverage for that pair)
-          // shouldn't take down the whole section — skip it.
-          console.error("[getExclusiveCorridors]", c.from, c.to, err);
-          return null;
-        }
-      }),
-    );
-    return settled.filter((r): r is ExclusiveCorridor => r !== null);
-  },
+            segment,
+            amountMode: "send",
+            sendingCountry: c.sendingCountry,
+            receivingCountry: c.receivingCountry,
+          },
+        });
+        if (result.rows.length === 0) return null;
+        const winner = result.rows.reduce((a, b) => (b.received > a.received ? b : a));
+        if (!winner.has_exclusive_deal) return null;
+        const worstReceived = Math.min(...result.rows.map((r) => r.received));
+        return {
+          from: c.from,
+          to: c.to,
+          amount,
+          bestReceived: winner.received,
+          gain: winner.received - worstReceived,
+          providerCount: result.rows.length,
+          winnerName: winner.name,
+          winnerSlug: winner.slug,
+        };
+      } catch (err) {
+        // One bad candidate (e.g. no fx_rates coverage for that pair)
+        // shouldn't take down the whole section — skip it.
+        console.error(logLabel, c.from, c.to, err);
+        return null;
+      }
+    }),
+  );
+  const qualifying = settled.filter((r): r is ExclusiveCorridor => r !== null);
+  // "Rotating on every visit" (design/AJUSTES-1.md §E) — a random starting
+  // offset into the real qualifying list, computed server-side (this used
+  // to happen client-side in TodaysRoutesSection itself, via Math.random()
+  // in a useMemo) so the exact same rotated slice is what both the SSR pass
+  // and the client's own read of this cached response see. Doing it
+  // client-side caused a real hydration mismatch the moment this response
+  // started getting prefetched during SSR (2026-09-03 feedback's own
+  // fix) — the server and the client each rolled a different offset for
+  // the same render, so React discarded and rebuilt the whole section on
+  // hydration. Never repeats a corridor to pad out the count; shows
+  // however many genuinely qualify, up to 4. Still "rotates" in the sense
+  // that matters — a fresh server response (a new visitor, or this cache
+  // entry's own 5-minute staleTime elapsing) rolls a new offset — just no
+  // longer inside a single render's server/client boundary.
+  if (qualifying.length === 0) return [];
+  const offset = Math.floor(Math.random() * qualifying.length);
+  return Array.from(
+    { length: Math.min(4, qualifying.length) },
+    (_, i) => qualifying[(i + offset) % qualifying.length],
+  );
+}
+
+export const getExclusiveCorridors = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      EXCLUSIVE_CORRIDOR_CANDIDATES,
+      EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
+      "retail",
+      "[getExclusiveCorridors]",
+    ),
+);
+
+// 2026-09-03 feedback — "podemos tambien en el business dejar el todays
+// routes already priced pero para business providers?": every business/
+// "both"-segment provider prices generically (fee_percent/fee_fixed/
+// spread_percent on the providers row itself — none of them is
+// `is_corridor_specific`, confirmed against the live table), so unlike the
+// retail candidates above (which needed real per-corridor fx_rates
+// coverage checked first, see this file's own history), any real currency
+// pair works here — the ranking is identical regardless of corridor.
+// Wise (0.43% effective cost) wins on these generic numbers against every
+// other business/both provider, and `has_exclusive_deal` is already true
+// for it, so this reuses computeExclusiveCorridors' existing "winner must
+// have a real exclusive deal" gate unchanged. Amount raised to a real
+// business-scale transfer (the individual band uses 1,000) rather than
+// reusing the retail reference amount.
+const BUSINESS_ROUTE_CANDIDATES: ReadonlyArray<{
+  from: string;
+  to: string;
+  sendingCountry: string;
+  receivingCountry: string;
+}> = [
+  { from: "GBP", to: "USD", sendingCountry: "GB", receivingCountry: "US" },
+  { from: "USD", to: "EUR", sendingCountry: "US", receivingCountry: "DE" },
+  { from: "EUR", to: "GBP", sendingCountry: "DE", receivingCountry: "GB" },
+  { from: "USD", to: "CNY", sendingCountry: "US", receivingCountry: "CN" },
+  { from: "GBP", to: "INR", sendingCountry: "GB", receivingCountry: "IN" },
+  { from: "USD", to: "SGD", sendingCountry: "US", receivingCountry: "SG" },
+  { from: "EUR", to: "INR", sendingCountry: "DE", receivingCountry: "IN" },
+  { from: "USD", to: "AED", sendingCountry: "US", receivingCountry: "AE" },
+];
+const BUSINESS_ROUTE_REFERENCE_AMOUNT = 25_000;
+
+export const getBusinessTodaysRoutes = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      BUSINESS_ROUTE_CANDIDATES,
+      BUSINESS_ROUTE_REFERENCE_AMOUNT,
+      "business",
+      "[getBusinessTodaysRoutes]",
+    ),
 );
 
 // ---------- trackAffiliateClick ----------

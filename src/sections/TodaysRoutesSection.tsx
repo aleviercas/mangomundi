@@ -3,9 +3,88 @@ import { Link } from "@tanstack/react-router";
 import { Sparkle } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 import { useExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
+import { useBusinessTodaysRoutes } from "@/hooks/use-business-todays-routes";
 import { primaryCountryForCurrency } from "@/lib/countries";
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { BrandLogo } from "@/components/BrandLogo";
+import type { ExclusiveCorridor } from "@/lib/fx.functions";
+
+type DisplayCorridor = ExclusiveCorridor & {
+  fromCountry: string | undefined;
+  toCountry: string | undefined;
+};
+
+// The "rotating on every visit" (§E) selection itself now happens server-side
+// (see computeExclusiveCorridors in fx.functions.ts) — corridors here already
+// arrives pre-rotated and sliced to at most 4. Doing the Math.random() pick
+// here on the client used to cause a real hydration mismatch: SSR and the
+// client hydration pass each rolled a different offset for the same render,
+// so React discarded and rebuilt the whole section on load. This hook now
+// only adds the (deterministic, SSR-safe) country lookup for the flag icons.
+function useDisplayCorridors(corridors: ExclusiveCorridor[] | undefined): DisplayCorridor[] {
+  return useMemo(() => {
+    if (!corridors) return [];
+    return corridors.map((c) => ({
+      ...c,
+      fromCountry: primaryCountryForCurrency(c.from),
+      toCountry: primaryCountryForCurrency(c.to),
+    }));
+  }, [corridors]);
+}
+
+// Card content shared by the retail and business variants — each wraps this
+// in its own <Link> (different destination: a corridor page for retail, the
+// /business search itself for business), so only the inner markup is common.
+function RouteCardBody({ c }: { c: DisplayCorridor }) {
+  const { t } = useI18n();
+  return (
+    <>
+      <div className="flex items-center gap-2 text-[13.5px] font-bold text-foreground">
+        {c.fromCountry && <FlagIcon country={c.fromCountry} />}
+        {c.from}
+        <span className="text-muted-foreground">→</span>
+        {c.toCountry && <FlagIcon country={c.toCountry} />}
+        {c.to}
+      </div>
+      <div
+        className="mt-2 inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide"
+        style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
+      >
+        <Sparkle className="h-2.5 w-2.5" />
+        {t("todaysRoutes.exclusiveRate")}
+      </div>
+      <div className="mt-1.5 text-[10.5px] font-bold uppercase tracking-wide text-[#6B5F55]">
+        {t("todaysRoutes.bestOf")
+          .replace("{n}", String(c.providerCount))
+          .replace("{amount}", c.amount.toLocaleString())
+          .replace("{from}", c.from)}
+      </div>
+      <div className="mt-0.5 whitespace-nowrap font-heading text-2xl font-extrabold tracking-tight tabular-nums text-foreground">
+        {Math.round(c.bestReceived).toLocaleString()}{" "}
+        <span className="text-xs font-semibold text-muted-foreground">{c.to}</span>
+      </div>
+      <div className="mt-1.5 flex items-center justify-between gap-2">
+        <BrandLogo
+          name={c.winnerName}
+          url={null}
+          slug={c.winnerSlug}
+          size={18}
+          rounded={false}
+          className="shrink-0 rounded-sm"
+        />
+        <span
+          className="whitespace-nowrap text-[11.5px] font-bold tabular-nums"
+          style={{ color: "#1F7A5A" }}
+        >
+          {t("todaysRoutes.gain").replace("{amount}", Math.round(c.gain).toLocaleString())}
+        </span>
+      </div>
+    </>
+  );
+}
+
+const cardClassName =
+  "block rounded-2xl border border-border bg-card p-3.5 transition hover:border-foreground/20 hover:shadow-[0_10px_24px_-16px_rgba(36,28,22,.35)]";
 
 /**
  * "Today's routes, already priced" (design/AJUSTES-1.md §E) — the one
@@ -22,30 +101,18 @@ import { BrandLogo } from "@/components/BrandLogo";
  * fallback — there's no honest generic version of "here's an exclusive
  * rate" when there isn't one.
  */
-export function TodaysRoutesSection() {
+export function TodaysRoutesSection({
+  initialData,
+}: {
+  /** See useExclusiveCorridors' own comment — pass the route loader's
+   *  already-fetched array through here so SSR and the client's first
+   *  render see the exact same data (no queryClient dehydration exists in
+   *  this app, so anything else here diverges from the server on hydration). */
+  initialData?: ExclusiveCorridor[];
+} = {}) {
   const { t } = useI18n();
-  const { data: corridors } = useExclusiveCorridors();
-
-  // "Rotating on every visit" (§E) — a random starting offset into the
-  // real qualifying list, re-rolled whenever the query data changes (i.e.
-  // once per page load). Never repeats a corridor to pad out the count;
-  // shows however many genuinely qualify, up to 4. Was raised to 6
-  // (2026-08-30 feedback, third round: "tienen que aparecer varias más
-  // para poder cubrir todo el ancho de la página"); brought back down here
-  // (2026-08-30 feedback, sixth round) to leave the header row room for the
-  // AI agent trigger without it feeling squeezed against the title.
-  const shown = useMemo(() => {
-    if (!corridors || corridors.length === 0) return [];
-    const offset = Math.floor(Math.random() * corridors.length);
-    return Array.from({ length: Math.min(4, corridors.length) }, (_, i) => {
-      const c = corridors[(i + offset) % corridors.length];
-      return {
-        ...c,
-        fromCountry: primaryCountryForCurrency(c.from),
-        toCountry: primaryCountryForCurrency(c.to),
-      };
-    });
-  }, [corridors]);
+  const { data: corridors } = useExclusiveCorridors(initialData);
+  const shown = useDisplayCorridors(corridors);
 
   if (shown.length === 0) return null;
 
@@ -83,51 +150,83 @@ export function TodaysRoutesSection() {
               key={`${c.from}-${c.to}`}
               to="/send/$corridor"
               params={{ corridor: `${c.from.toLowerCase()}-${c.to.toLowerCase()}` }}
-              className="block rounded-2xl border border-border bg-card p-3.5 transition hover:border-foreground/20 hover:shadow-[0_10px_24px_-16px_rgba(36,28,22,.35)]"
+              className={cardClassName}
             >
-              <div className="flex items-center gap-2 text-[13.5px] font-bold text-foreground">
-                {c.fromCountry && <FlagIcon country={c.fromCountry} />}
-                {c.from}
-                <span className="text-muted-foreground">→</span>
-                {c.toCountry && <FlagIcon country={c.toCountry} />}
-                {c.to}
-              </div>
-              <div
-                className="mt-2 inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide"
-                style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
-              >
-                <Sparkle className="h-2.5 w-2.5" />
-                {t("todaysRoutes.exclusiveRate")}
-              </div>
-              <div className="mt-1.5 text-[10.5px] font-bold uppercase tracking-wide text-[#6B5F55]">
-                {t("todaysRoutes.bestOf")
-                  .replace("{n}", String(c.providerCount))
-                  .replace("{amount}", c.amount.toLocaleString())
-                  .replace("{from}", c.from)}
-              </div>
-              <div className="mt-0.5 whitespace-nowrap font-heading text-2xl font-extrabold tracking-tight tabular-nums text-foreground">
-                {Math.round(c.bestReceived).toLocaleString()}{" "}
-                <span className="text-xs font-semibold text-muted-foreground">{c.to}</span>
-              </div>
-              <div className="mt-1.5 flex items-center justify-between gap-2">
-                <BrandLogo
-                  name={c.winnerName}
-                  url={null}
-                  slug={c.winnerSlug}
-                  size={18}
-                  rounded={false}
-                  className="shrink-0 rounded-sm"
-                />
-                <span
-                  className="whitespace-nowrap text-[11.5px] font-bold tabular-nums"
-                  style={{ color: "#1F7A5A" }}
-                >
-                  {t("todaysRoutes.gain").replace("{amount}", Math.round(c.gain).toLocaleString())}
-                </span>
-              </div>
+              <RouteCardBody c={c} />
             </Link>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * 2026-09-03 feedback — "podemos tambien en el business dejar el todays
+ * routes already priced pero para business providers? Y agregar alguna
+ * frase como tambien ask for a special quote": business-segment sibling of
+ * TodaysRoutesSection above — same real mechanism (useBusinessTodaysRoutes
+ * reuses compareProviders with segment:"business" at a real business-scale
+ * amount, see fx.functions.ts's getBusinessTodaysRoutes), same card, same
+ * title/subtitle copy (still an honest description of what's shown). Adds
+ * one line inviting a bespoke quote, since this section's own generic
+ * provider pricing — real, but not corridor- or volume-negotiated — is a
+ * starting point, not a business's actual negotiated rate.
+ *
+ * Rendered by HomePageBody only when `businessExtras` is set (i.e. on
+ * /business) and gated on the same !hasResult condition as every other
+ * marketing section there.
+ */
+export function BusinessTodaysRoutesSection({
+  initialData,
+}: {
+  /** See TodaysRoutesSection's own `initialData` comment above. */
+  initialData?: ExclusiveCorridor[];
+} = {}) {
+  const { t } = useI18n();
+  const { data: corridors } = useBusinessTodaysRoutes(initialData);
+  const shown = useDisplayCorridors(corridors);
+
+  if (shown.length === 0) return null;
+
+  return (
+    <section className="border-t border-border py-6 sm:py-7">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <div>
+          <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground sm:text-[22px]">
+            {t("todaysRoutes.title")}
+          </h2>
+          <p className="mt-1 max-w-3xl text-[13px] leading-relaxed text-muted-foreground lg:whitespace-nowrap">
+            {t("todaysRoutes.subtitle")}
+          </p>
+        </div>
+
+        <div className="mt-3.5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {shown.map((c) => (
+            <Link
+              key={`${c.from}-${c.to}`}
+              to="/business"
+              search={{
+                from: c.from,
+                to: c.to,
+                origin: c.fromCountry ?? undefined,
+                destination: c.toCountry ?? undefined,
+                amount: c.amount,
+                autoRun: true,
+              }}
+              className={cardClassName}
+            >
+              <RouteCardBody c={c} />
+            </Link>
+          ))}
+        </div>
+
+        <a
+          href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
+          className="mt-3.5 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-brand-cta hover:text-brand-cta-hover"
+        >
+          {t("todaysRoutes.businessQuote")} →
+        </a>
       </div>
     </section>
   );

@@ -790,5 +790,6 @@
   "widget.header.title": "Bandingkan kurs",
   "widget.examples.seeMore": "Lihat lebih banyak rute di mangomundi",
   "comparator.row.share": "Bagikan kurs ini",
-  "comparator.row.shareCopied": "Disalin!"
+  "comparator.row.shareCopied": "Disalin!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

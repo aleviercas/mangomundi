@@ -5,6 +5,7 @@ import { HomePageBody, type ComparatorQueryChange } from "@/components/HomePageB
 import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
+import { getBusinessTodaysRoutes } from "@/lib/fx.functions";
 
 // Same shape/rationale as "/"'s searchSchema (design/HANDOFF.md §2, Fase B)
 // minus `segment` — this route implies "business" itself. Per-field
@@ -26,6 +27,12 @@ const searchSchema = z
 
 export const Route = createFileRoute("/business")({
   validateSearch: (search) => searchSchema.parse(search),
+  // See index.tsx's identical fix comment on its own loader — corridors
+  // come back as loaderData (the router's own, always-hydration-safe
+  // serialization) rather than through context.queryClient.ensureQueryData,
+  // since this app has no queryClient dehydration wired up to carry that
+  // cache entry to the client's first render.
+  loader: async () => ({ corridors: await getBusinessTodaysRoutes() }),
   head: ({ match }) => {
     const canonical = selfCanonical("/business", match.search.lang);
     const title = "Business FX — compare broker rates for high-volume transfers | mangomundi";
@@ -53,6 +60,7 @@ function BusinessPage() {
   };
   const geoCountry = rootData?.geoCountry ?? "GB";
   const geoCurrency = rootData?.geoCurrency ?? "GBP";
+  const { corridors } = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -91,6 +99,7 @@ function BusinessPage() {
       onQueryChange={handleQueryChange}
       hideMarketingSections
       businessExtras
+      businessTodaysRoutesData={corridors}
     />
   );
 }

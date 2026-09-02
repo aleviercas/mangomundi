@@ -790,5 +790,6 @@
   "widget.header.title": "Confronta i tassi",
   "widget.examples.seeMore": "Guarda altre rotte su mangomundi",
   "comparator.row.share": "Condividi questo tasso",
-  "comparator.row.shareCopied": "Copiato!"
+  "comparator.row.shareCopied": "Copiato!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

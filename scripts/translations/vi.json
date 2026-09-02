@@ -790,5 +790,6 @@
   "widget.header.title": "So sánh tỷ giá",
   "widget.examples.seeMore": "Xem thêm các tuyến trên mangomundi",
   "comparator.row.share": "Chia sẻ tỷ giá này",
-  "comparator.row.shareCopied": "Đã sao chép!"
+  "comparator.row.shareCopied": "Đã sao chép!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

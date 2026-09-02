@@ -790,5 +790,6 @@
   "widget.header.title": "Сравнить курсы",
   "widget.examples.seeMore": "Смотреть больше маршрутов на mangomundi",
   "comparator.row.share": "Поделиться этим курсом",
-  "comparator.row.shareCopied": "Скопировано!"
+  "comparator.row.shareCopied": "Скопировано!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

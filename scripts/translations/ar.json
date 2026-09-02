@@ -790,5 +790,6 @@
   "widget.header.title": "قارن الأسعار",
   "widget.examples.seeMore": "شاهد المزيد من المسارات على mangomundi",
   "comparator.row.share": "شارك هذا السعر",
-  "comparator.row.shareCopied": "تم النسخ!"
+  "comparator.row.shareCopied": "تم النسخ!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

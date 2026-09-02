@@ -790,5 +790,6 @@
   "widget.header.title": "レートを比較",
   "widget.examples.seeMore": "mangomundiでもっとルートを見る",
   "comparator.row.share": "このレートを共有",
-  "comparator.row.shareCopied": "コピーしました!"
+  "comparator.row.shareCopied": "コピーしました!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }

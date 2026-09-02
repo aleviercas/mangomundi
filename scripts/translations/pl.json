@@ -790,5 +790,6 @@
   "widget.header.title": "Porównaj kursy",
   "widget.examples.seeMore": "Zobacz więcej tras na mangomundi",
   "comparator.row.share": "Udostępnij ten kurs",
-  "comparator.row.shareCopied": "Skopiowano!"
+  "comparator.row.shareCopied": "Skopiowano!",
+  "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote"
 }
