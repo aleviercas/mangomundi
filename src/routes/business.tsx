@@ -17,6 +17,10 @@ const searchSchema = z
     amount: z.coerce.number().positive().optional().catch(undefined),
     origin: z.string().optional().catch(undefined),
     destination: z.string().optional().catch(undefined),
+    // See index.tsx's identical field — the Individual/Business segment
+    // switch's explicit override so carrying origin/destination over on a
+    // switch doesn't also auto-fire a comparison the user didn't ask for.
+    autoRun: z.coerce.boolean().optional().catch(undefined),
   })
   .catch({});
 
@@ -59,7 +63,7 @@ function BusinessPage() {
     from: search.from ?? geoCurrency,
     to: search.to ?? defaultCounterCurrency(search.from ?? geoCurrency),
     amount: search.amount ?? 1000,
-    autoRun: Boolean(search.origin && search.destination),
+    autoRun: search.autoRun ?? Boolean(search.origin && search.destination),
   };
 
   // Same one-way state→URL sync as "/" (see its own comment) — this route

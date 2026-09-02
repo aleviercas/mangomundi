@@ -33,6 +33,16 @@ const searchSchema = z
     segment: z.enum(["retail", "business"]).optional().catch(undefined),
     origin: z.string().optional().catch(undefined),
     destination: z.string().optional().catch(undefined),
+    // 2026-09-03 feedback — the Individual/Business segment switch (see
+    // ComparatorSection's handleSegmentChange) navigates here carrying the
+    // current amount/currencies/countries over so the form stays filled in
+    // — but without this explicit override, autoRun below would derive to
+    // true whenever origin+destination are both present, auto-firing a
+    // comparison the user never asked for on the new segment. A real
+    // shared/bookmarked link (with origin+destination but no explicit
+    // autoRun) keeps the old auto-run-on-load behavior; the segment switch
+    // sets this to `false` explicitly to suppress it.
+    autoRun: z.coerce.boolean().optional().catch(undefined),
   })
   .catch({});
 
@@ -135,7 +145,9 @@ function Index() {
     // the comparison immediately instead of waiting for the user to press
     // Compare again — same intent this prop already had (see its own comment
     // in ComparatorSection.tsx), just never wired to anything until now.
-    autoRun: Boolean(search.origin && search.destination),
+    // `search.autoRun === false` (the segment switch's own explicit override,
+    // see the searchSchema's own comment above) wins over that default.
+    autoRun: search.autoRun ?? Boolean(search.origin && search.destination),
   };
 
   // Fase A of design/HANDOFF.md §2 ("el estado vive en la URL, no solo en

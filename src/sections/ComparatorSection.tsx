@@ -445,16 +445,30 @@ export function ComparatorSection({
   // params so the comparison isn't lost. A no-op when the target already
   // matches the current route (e.g. the B2B banner's CTA while already on
   // /business), which just flips local state — nothing to navigate to.
-  // 2026-09-03 feedback — "el comportamiento de la pagina cuando cambias
-  // entre individual y business es raro porque se mueve de arriba para
-  // abajo": this pill reads as a same-page toggle (same comparator card,
-  // same query carried over), but it's really a navigation to a different
-  // route ("/" vs "/business") — router.tsx's `scrollRestoration: true`
-  // resets a fresh forward navigation's scroll to the top by default, so
-  // clicking it while scrolled down snapped the viewport back up on every
-  // toggle. `resetScroll: false` keeps the current scroll position across
-  // this specific navigation, which is what a toggle (vs. a real page
-  // visit) should do.
+  // 2026-09-03 feedback, second round — "el switch deberia dejar la pagina
+  // con el titulo de nuevo hasta que se toque de nuevo compare o update...
+  // dame la recomendacion": confirmed with the user — a segment switch is a
+  // clean reset to a fresh search screen, not a same-page toggle. Two parts
+  // to that, both fixed here:
+  //
+  // 1. autoRun must NOT carry over. Both "/" and "/business" derive their
+  //    own initialQuery.autoRun as `Boolean(origin && destination)` (for a
+  //    real shared/bookmarked link) — but this navigation also carries
+  //    origin/destination over so the FORM stays filled in, which would
+  //    silently satisfy that same condition and auto-fire a comparison on
+  //    the new segment. `autoRun: false` in the search object is now an
+  //    explicit override both routes' searchSchema/initialQuery respect
+  //    (search.autoRun ?? the old derivation) — carries the fields, not the
+  //    auto-execute.
+  // 2. Scroll must go back to the top. An earlier round (first "raro"
+  //    report) added `resetScroll: false` on the theory that a toggle
+  //    shouldn't jump the viewport — but once the destination is an
+  //    intentionally fresh, pre-result screen (hero expanded, no result),
+  //    staying at a mid-page scroll offset left the reader looking at
+  //    whatever content happens to sit there now, unrelated to what used to
+  //    be at that scroll position — the actual "se oculta y aparece" effect
+  //    being reported. Removed here; TanStack Router's own default (scroll
+  //    to top on a fresh forward navigation) is what a real reset needs.
   const handleSegmentChange = (next: Segment) => {
     if (next === segment) return;
     const onBusinessRoute = pathname.startsWith("/business");
@@ -473,8 +487,8 @@ export function ComparatorSection({
           amount,
           origin: sendingCountry || undefined,
           destination: receivingCountry || undefined,
+          autoRun: false,
         }),
-        resetScroll: false,
       });
     } else {
       segmentNavigate({
@@ -487,8 +501,8 @@ export function ComparatorSection({
           segment: undefined,
           origin: sendingCountry || undefined,
           destination: receivingCountry || undefined,
+          autoRun: false,
         }),
-        resetScroll: false,
       });
     }
   };
