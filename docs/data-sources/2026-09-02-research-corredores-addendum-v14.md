@@ -23,33 +23,123 @@ corregido, nunca el promocional.
 
 ### Lo que se cargó a Supabase
 
-Pendiente de completar por el agente que ejecute la carga — ver
-migración correspondiente en `supabase/migrations/` y el resumen que
-se agregue a esta sección al finalizar. Candidatos identificados por el
-research (Sección 6, plan sugerido, punto 16):
+**19 filas nuevas insertadas + 3 filas existentes actualizadas + 1 fila
+nueva en `providers`**, en la migración
+`supabase/migrations/20260902160000_load_v14_corridor_rates.sql`
+(migración separada de v13, siguiendo el mapeo 1 archivo de research →
+1 migración usado desde v8). Todas las filas nuevas verificadas por SQL
+contra Supabase (`project_id=ttqalbexpquzobrdyvgx`) después de la
+carga.
 
-- **México** (4 corredores, todos datos limpios sin insignia
-  promocional): México→Guatemala (Global66 0,01% margen FX / 3,07%
-  costo total; Western Union cuenta bancaria 6,09%, cash pickup 8,94%),
-  México→Honduras (Paysend 4,62% costo total confirmado por URL;
-  Western Union 10,80%), México→El Salvador (Paysend 5,06%; Western
-  Union cuenta bancaria 11,02%, cash pickup 13,72%), México→EEUU
-  (Global66 0,01% margen FX / 6,04% costo total; Western Union cuenta
-  bancaria 10,78%, cash pickup 13,41%).
-- **Brasil** (4 corredores — usar cifras YA CORREGIDAS, no las
-  promocionales, para MoneyGram): Brasil→Bolivia (MoneyGram, dato
-  limpio, 4,98%), Brasil→Paraguay (MoneyGram corregido 5,71% — más caro
-  que Western Union limpio 3,49%), Brasil→Perú (MoneyGram corregido
-  7,85% — más caro que Western Union limpio 2,84%), Brasil→Argentina
-  (MoneyGram corregido 0,25% cash pickup / -0,58% cuenta bancaria;
-  Western Union limpio -3,42% cash pickup / -3,95% cuenta bancaria,
-  ambos favorables).
-- **Taptap Send, Reino Unido→Ghana** (fuente World Bank RPW, margen
-  1,03%, sin fee).
-- **SBI Remit, Japón→Filipinas** (fuente World Bank RPW, margen
-  cambiario 0,09% — resuelve la inconsistencia de tasa pendiente desde
-  la ronda anterior; fee ¥720 para envíos de ¥17.000, ¥1.000 para
-  ¥42.000).
+**México (8 filas insertadas, las 4 corredores de la Sección 1,
+todos datos limpios sin insignia promocional):**
+- México→Guatemala: Global66 (0,01% margen FX, 3,07% costo total) y
+  Western Union cuenta bancaria (1,09% margen, 6,09% costo total).
+- México→Honduras: Western Union (0,86% margen, 10,80%) y Paysend
+  (2,66% margen, 4,62%, confirmado por URL).
+- México→El Salvador: Western Union cuenta bancaria (1,15% margen,
+  11,02%) y Paysend (3,14% margen, 5,06%).
+- México→EEUU (corredor inverso): Global66 (0,01% margen FX, 6,04%
+  costo total) y Western Union cuenta bancaria (0,84% margen, 10,78%).
+- **WU cash pickup NO se cargó como fila separada** en ninguno de los
+  4 corredores (Guatemala, El Salvador y EEUU tenían la cifra
+  disponible) — se verificó que el proyecto no tiene precedente de
+  cargar bank-transfer y cash-pickup del mismo proveedor+corredor como
+  dos filas (las filas WU IT→EC/IT→PE de v11 cargan un solo método y
+  documentan el otro en el comentario); se siguió esa misma
+  convención. Las cifras de cash pickup quedan documentadas en el
+  campo `data_source` de cada fila de WU cargada, no perdidas.
+
+**Brasil (7 filas insertadas, los 4 corredores de la Sección 3 —
+MoneyGram cargado con cifras CORREGIDAS, no promocionales, en
+Paraguay/Perú/Argentina):**
+- Brasil→Bolivia: MoneyGram, dato limpio (3,69% margen FX, 4,98% costo
+  total dado por la fuente).
+- Brasil→Paraguay: MoneyGram corregido (5,72% margen FX ≈ 5,71% costo
+  total) — más caro que Western Union limpio (2,16% margen, 3,49%
+  costo total).
+- Brasil→Perú: MoneyGram corregido (7,85% margen FX ≈ costo total) —
+  más caro que Western Union limpio (1,36% margen, 2,84% costo total).
+- Brasil→Argentina: MoneyGram corregido cash pickup (0,25% margen FX ≈
+  costo total) y Western Union limpio cash pickup (-5,53% margen FX,
+  -3,42% costo total, favorable). **Solo se cargó cash pickup para
+  ambos proveedores, no cuenta bancaria** — `fx_rates` tiene una
+  restricción UNIQUE sobre (`provider_slug`, `sending_country`,
+  `receiving_country`, tramo de monto) que impide dos filas del mismo
+  proveedor+corredor sin una diferencia real de tramo; se descubrió al
+  intentar cargar las 4 combinaciones (2 proveedores × 2 métodos) y
+  chocar contra `fx_rates_provider_corridor_tier`. Las cifras de
+  cuenta bancaria (MoneyGram corregido -0,58%, Western Union -3,95%,
+  ambas más favorables que cash pickup) quedan documentadas en el
+  comentario de cada fila cargada.
+- `public_spread_percent` en las 7 filas de Brasil es el margen FX
+  puro (mid-market vs. tasa aplicada, misma fórmula que las filas
+  WU IT→EC/IT→PE de v11) — el research da fee + tasa + costo total
+  para estos corredores pero no una columna "Margen FX" separada
+  (a diferencia de México), así que el margen se recalculó con esa
+  fórmula estándar del proyecto, no se inventó.
+
+**Taptap Send, Reino Unido→Ghana — ACTUALIZACIÓN, no inserción.** Ya
+existía una fila para este corredor+proveedor (cargada 23-ago-2026,
+`public_spread_percent=1,0%`, fuente genérica "aggregator reviews").
+El research v14 (Sección 5.3) encontró el mismo corredor en la fuente
+primaria World Bank RPW con margen 1,03% — una confirmación casi
+exacta de la estimación previa, pero mucho más sólida. Se actualizó
+`public_spread_percent` a 1,03% y la cita de fuente; `rate` se dejó
+sin tocar (RPW no publica una tasa aplicada absoluta para este
+corredor, y no había un valor nuevo con el que reemplazarla sin
+inventarlo).
+
+**SBI Remit, Japón→Filipinas (2 filas insertadas + 1 fila nueva en
+`providers`).** Proveedor nuevo para el proyecto — no tenía fila
+previa ni en `providers` ni en `fx_rates` para ningún corredor, así
+que se agregó primero a `providers` (mismo patrón ya usado para
+Prex/BDO Remit/Money2India: proveedor nuevo + `fee_tiers` poblado).
+Fee escalonado por tramo de monto, siguiendo la misma convención de
+`min_amount`/`max_amount` por fila ya usada para Money2India/BDO Remit
+(ver `docs/PROJECT-STATE.md` §8): ¥720 para el tramo ¥10.001-¥20.000,
+¥1.000 para el tramo ¥30.001-¥50.000 (ambos confirmados cruzando World
+Bank RPW/un blog contra la página oficial de fees de SBI Remit). Tasa
+aplicada (0,389649 JPY/PHP) derivada aritméticamente del mid-market
+(0,39) y el margen (0,09%) dados por la fuente — no hay una tasa
+aplicada impresa directamente en el research. Margen cambiario 0,09%
+resuelve por completo la inconsistencia de tasa pendiente desde la
+ronda anterior del research. El tramo intermedio (¥20.001-¥30.000) no
+está documentado por ninguna fuente y no se cargó, para no inventar un
+fee.
+
+**Reino Unido→Nigeria (Sección 4.1) — 2 filas actualizadas, 1 revisada
+sin cambios.** El research encontró montos corregidos de Monito (cash
+pickup) para Western Union, Remitly y MoneyGram en este corredor ya
+cargado (desde World Bank RPW Q3 2025). Comparación fila por fila:
+Western Union (RPW ~3,17% costo total efectivo → Monito corregido
+2,00%, diferencia >1 punto porcentual) y Remitly (RPW 0,25% → Monito
+corregido -3,13%, diferencia >3 puntos porcentuales con cambio de
+signo) se trataron como actualizaciones genuinas y se actualizaron sus
+filas existentes, citando la fuente nueva. MoneyGram (RPW 0,03% →
+Monito corregido 0,08%) no cambió meaningfully (ambos "prácticamente a
+mid-market") y **no se tocó**. CAVEAT documentado en ambas
+actualizaciones: la fuente RPW original probablemente medía un método
+de entrega tipo cuenta bancaria/online, mientras que el dato nuevo de
+Monito es explícitamente cash pickup — no es estrictamente la misma
+medición con dos fuentes, sino un método de entrega distinto, aunque
+el proyecto ya no distingue método de entrega como columna separada en
+este corredor.
+
+**TransferGo y SingX — NO se tocó ninguna fila (ver también la sección
+siguiente).** TransferGo tiene filas existentes en `fx_rates`
+(GB→PL, DE→UA) que deben tratarse como pisos optimistas tras la
+confirmación textual de Monito de esta ronda ("Total includes Central
+Bank of Nigeria rate and receiver bonus from TransferGo") — no se
+modificaron porque este documento no da una cifra limpia con la cual
+reemplazarlas. Nota aparte para auditoría futura: los valores de
+0,15%/2,12% que el propio texto del research v14 cita como "ya
+cargados" para TransferGo no coinciden exactamente con lo que hoy está
+en la base para esos corredores (GB→PL 0,35%, DE→UA 1,84%) — una
+discrepancia que queda señalada, no resuelta, en esta carga. SingX no
+tiene ninguna fila en `fx_rates` ni en `providers` — no se agregó
+ninguna, ya que el research confirma que nunca expone una cifra
+corregible, no una cifra limpia que cargar.
 
 ### Proveedores marcados como "contaminación estructural confirmada" (no cargar su tasa de Monito tal cual)
 
