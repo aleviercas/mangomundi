@@ -1685,183 +1685,123 @@ export function ComparatorSection({
                 // currency — see CurrencyCombobox's own `leading`), full
                 // name/code still shows in the open dropdown list exactly
                 // as before (unaffected — only the closed trigger changes).
-                <div className="space-y-[7px]">
-                  {/* 2026-09-04 feedback — "el país a enviar cambia de
-                      tamaño, dejarlo del tamaño de una banderita antes de
-                      seleccionar aunque esté vacía, y que currency tenga el
-                      mismo tamaño que el de currency de destino, así queda
-                      lugar para agrandar Compare": `triggerIconOnly` still
-                      fell back to the full placeholder STRING while nothing
-                      was selected (Combobox's own documented behavior —
-                      there's no icon to show yet), so this box was wide
-                      pre-selection and snapped down to just the flag's
-                      width the moment a country was picked. `placeholder=""`
-                      removes the text fallback (an empty slot instead), and
-                      a fixed `w-9` (was `w-auto`) means the box never
-                      resizes either way. Same fixed `w-[58px]` on the
-                      currency trigger below as the Receive row's own
-                      currency box (AD5) — currency codes are always 3
-                      letters, so nothing ever gets clipped. */}
-                  <div className="flex h-[38px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
-                    <CountryCombobox
-                      value={sendingCountry}
-                      onChange={handleSendingCountryChange}
-                      placeholder=""
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.sourceCountry")}
-                      triggerIconOnly
-                      // 2026-09-04 feedback (round 3) — w-9 was sized for
-                      // just the flag; once the chevron (see Combobox's own
-                      // comment) needs room too, w-11 + tighter gap-1/px-1.5
-                      // is what actually fits both without either
-                      // overflowing and getting clipped by the row's
-                      // overflow-hidden. Still a fixed width either way —
-                      // AD5's "never resizes on selection" is unaffected.
-                      // 2026-09-02 feedback (AG3) — "un poco mas de ancho a
-                      // los campos de las banderitas... que no queden
-                      // aplastados": w-11 was still tight (flag+chevron
-                      // right at the edge of px-1.5's padding). w-12 and
-                      // w-14 both still clipped the Receive box's new "To…"
-                      // placeholder for several locales (confirmed via
-                      // screenshot — EN's "To…" fit at w-14, but longer ones
-                      // like DE's "Nach…"/PT's "Para…" didn't). w-16 leaves
-                      // ~36px for text after the chevron+gap, enough for
-                      // ~5-6 bold characters across every locale tested.
-                      // 2026-09-02 feedback (AH2) — that round widened this
-                      // (Send) box to w-16 but the Receive box below to
-                      // w-20 (it needed more room for the placeholder text)
-                      // — "la banderita de arriba quedó más chiquita que
-                      // la de abajo". Send never shows placeholder text (it
-                      // always has a pre-selected/geo-detected flag), so
-                      // there was no functional reason for the mismatch —
-                      // matching w-20 here is purely so the two rows read
-                      // as the same size.
-                      triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
-                    />
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      min={1}
-                      value={amount || ""}
-                      placeholder="1000"
-                      onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                      aria-label={t("comparator.field.amount")}
-                      className="min-w-0 flex-1 border-l border-border bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                    />
-                    <CurrencyCombobox
-                      value={from}
-                      onChange={handlePickFromCurrency}
-                      placeholder={t("comparator.field.sourceCurrency")}
-                      searchPlaceholder={t("comparator.combobox.search")}
-                      emptyLabel={t("comparator.combobox.empty")}
-                      ariaLabel={t("comparator.field.sourceCurrency")}
-                      compactLabel
-                      triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
-                    />
-                  </div>
+                <div
+                  className={`flex flex-col overflow-hidden rounded-[12px] border-[1.5px] bg-white transition-colors ${
+                    sameCorridorBlocked
+                      ? "border-brand-cta ring-2 ring-brand-cta/60"
+                      : "border-input"
+                  }`}
+                >
+                  {/* 2026-09-04 feedback (Kayak-style redesign, approved
+                      canvas mockup "mangomundi Search Redesign") — Send and
+                      Receive now read as ONE continuous bordered card
+                      (hairline divider between rows, not two separate boxes
+                      with a gap), a square swap button pinned to the right
+                      edge overlapping the seam between them, and Compare as
+                      a full-width row at the bottom of the same card. Field
+                      widths (w-20 flag/country, w-[58px] currency) are
+                      unchanged from the previous layout — AD5/AG3/AH2's
+                      "never resizes on selection, never clips a locale's
+                      placeholder" fixes still apply here. */}
+                  <div className="relative">
+                    <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
+                      <span className="text-[8.5px] font-bold uppercase tracking-wide text-muted-foreground">
+                        {t("comparator.field.amount")}
+                      </span>
+                      <div className="flex h-[26px] items-stretch">
+                        <CountryCombobox
+                          value={sendingCountry}
+                          onChange={handleSendingCountryChange}
+                          placeholder=""
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.sourceCountry")}
+                          triggerIconOnly
+                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                        />
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min={1}
+                          value={amount || ""}
+                          placeholder="1000"
+                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                          aria-label={t("comparator.field.amount")}
+                          className="min-w-0 flex-1 border-l border-border bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                        />
+                        <CurrencyCombobox
+                          value={from}
+                          onChange={handlePickFromCurrency}
+                          placeholder={t("comparator.field.sourceCurrency")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.sourceCurrency")}
+                          compactLabel
+                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                        />
+                      </div>
+                    </div>
 
-                  {/* 2026-09-02 feedback — "en el segundo renglón hay que
-                      achicar el cuadro selector de país para que tenga el
-                      mismo tamaño que el de país de arriba... entonces se
-                      puede agrandar el botón de comparar y el de la
-                      flechita un poco también": the target-country trigger
-                      used to be `flex-1` inside its box (no amount input
-                      here to soak up that flex-1, unlike line 1), so it
-                      stretched to ~112px of mostly blank space next to the
-                      flag — confirmed via a real bounding-box measurement
-                      (111.75px vs line 1's matching 59.19px trigger). Now
-                      `w-auto shrink-0`, same as every other icon-only
-                      trigger, so the box hugs its content; the swap button
-                      grows a touch (32→38px) and Compare (fixed 74px→flex-1)
-                      picks up the freed width instead of leaving it as
-                      dead space inside the country/currency box.
-                      2026-09-03 feedback — "que el boton de compare no
-                      cambie de tamano, el comportamiento que sea como era
-                      antes": AC21 (below, EmbedComparator's own padding)
-                      removed the widget's outer side padding so the card
-                      fills the frame — but Compare being `flex-1` meant
-                      100% of that newly freed width landed on THIS button,
-                      visibly widening it every time the frame got roomier.
-                      Swapped which side is `flex-1`: the country/currency
-                      box now soaks up any extra room (a genuine bonus —
-                      more space for the destination country name), while
-                      Compare goes back to a fixed, content-sized pill that
-                      no longer moves regardless of the frame's width. */}
-                  <div className="flex items-stretch gap-[6px]">
+                    {/* 2026-09-04 feedback — Receive tints in the accent
+                        color while it still needs a country, the same
+                        "field that needs completing" cue the approved
+                        mockup borrows from Kayak's focused "To?" field —
+                        distinct from sameCorridorBlocked (a stronger, more
+                        urgent state on the whole card, unchanged above). */}
+                    <div
+                      className={`flex flex-col gap-[3px] px-2.5 py-[7px] transition-colors ${
+                        !receivingCountry ? "bg-accent/5" : ""
+                      }`}
+                    >
+                      <span
+                        className={`text-[8.5px] font-bold uppercase tracking-wide ${
+                          !receivingCountry ? "text-accent-text" : "text-muted-foreground"
+                        }`}
+                      >
+                        {t("comparator.field.youReceive")}
+                      </span>
+                      <div className="flex h-[26px] items-stretch">
+                        <CountryCombobox
+                          value={receivingCountry}
+                          onChange={handleReceivingCountryChange}
+                          placeholder={t("comparator.field.receiveCountryPlaceholder")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.targetCountry")}
+                          triggerIconOnly
+                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                        />
+                        <CurrencyCombobox
+                          value={to}
+                          onChange={handlePickToCurrency}
+                          placeholder={t("comparator.field.targetCurrency")}
+                          searchPlaceholder={t("comparator.combobox.search")}
+                          emptyLabel={t("comparator.combobox.empty")}
+                          ariaLabel={t("comparator.field.targetCurrency")}
+                          compactLabel
+                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Swap — square, pinned to the right edge, overlapping
+                        the seam between the two rows (top-1/2 of this
+                        relative wrapper lands on that seam since both rows
+                        share the same padding/line-height). */}
                     <button
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-[9px] transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                      className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[9px] shadow-md ring-[3px] ring-white transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                       style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
                     >
-                      <ArrowLeftRight strokeWidth={2.2} className="h-[15px] w-[15px]" />
+                      <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
                     </button>
+                  </div>
 
-                    {/* 2026-09-04 feedback — same fixed-width fix as Send
-                        above, applied here too (flag box `w-9`, currency
-                        `w-[58px]`, identical to Send's own) — this box no
-                        longer needs `flex-1` to fit its content, since that
-                        content stopped varying. Dropping `flex-1` here is
-                        what actually frees the width Compare picks up
-                        below: previously this box absorbed 100% of any
-                        extra frame width because it was the only flexible
-                        side of the row. */}
-                    <div
-                      className={`flex h-[38px] min-w-0 shrink-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
-                        sameCorridorBlocked
-                          ? "border-brand-cta ring-2 ring-brand-cta/60"
-                          : "border-input"
-                      }`}
-                    >
-                      <CountryCombobox
-                        value={receivingCountry}
-                        onChange={handleReceivingCountryChange}
-                        // 2026-09-04 feedback — "sacar la frase de select del
-                        // cuadro selector dejalo en blanco como se hace en el
-                        // comparador": this was the only CountryCombobox
-                        // still passing the "Select…" placeholder text — the
-                        // full comparator's own target-country field (a few
-                        // hundred lines below) already uses "" for exactly
-                        // this reason.
-                        // 2026-09-02 feedback (AG3) — "que la palabra to
-                        // también entre completa": blank read the same way
-                        // the full comparator's own Receive field did before
-                        // AG2 — no cue a country still needed picking.
-                        // Reusing AG2's same short placeholder/key here too.
-                        placeholder={t("comparator.field.receiveCountryPlaceholder")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.targetCountry")}
-                        triggerIconOnly
-                        // 2026-09-04 feedback (round 3) — same w-11/gap-1/
-                        // px-1.5 fix as the Send flag above, for the same
-                        // reason (see Combobox's own comment on the
-                        // triggerIconOnly chevron size).
-                        // 2026-09-02 feedback (AG3) — w-11→w-16 (matching
-                        // the Send flag box) still clipped a few locales'
-                        // translations of the new "To…" placeholder (TR's
-                        // "Kime…" among them) — this box is the one that
-                        // actually needs to fit that text (Send almost
-                        // always shows a pre-selected flag, no text), so it
-                        // gets an extra bump to w-20 rather than widening
-                        // Send to match and eating further into Compare on
-                        // that row too.
-                        triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
-                      />
-                      <CurrencyCombobox
-                        value={to}
-                        onChange={handlePickToCurrency}
-                        placeholder={t("comparator.field.targetCurrency")}
-                        searchPlaceholder={t("comparator.combobox.search")}
-                        emptyLabel={t("comparator.combobox.empty")}
-                        ariaLabel={t("comparator.field.targetCurrency")}
-                        compactLabel
-                        triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
-                      />
-                    </div>
-
+                  {/* Compare — full-width row at the bottom of the same
+                      card, like Kayak's Search button. */}
+                  <div className="border-t border-border p-2">
                     <button
                       type="button"
                       onClick={() => {
@@ -1878,18 +1818,7 @@ export function ComparatorSection({
                         sameCorridorBlocked ||
                         amount <= 0
                       }
-                      // 2026-09-04 feedback — "queda lugar para agrandar el
-                      // botón de compare": was a fixed `w-[84px]`, now
-                      // `flex-1` picks up the width the country/currency box
-                      // above just stopped absorbing — a real, larger
-                      // target instead of dead space next to it.
-                      // 2026-09-02 feedback (AG3) — "se puede achicar un poco
-                      // el botón de compare": still `flex-1` (it should keep
-                      // absorbing whatever room the row has left), but its
-                      // floor drops 70→58px — "Compare"/"Buscar" at
-                      // text-[13px] still fits comfortably — freeing a few
-                      // more px for the flag boxes above to grow into.
-                      className="btn-cta flex h-[38px] min-w-[58px] flex-1 shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="btn-cta flex h-[38px] w-full items-center justify-center rounded-[9px] text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       {compareMut.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -1936,41 +1865,86 @@ export function ComparatorSection({
                 // widget's own line 2 already is (Receive content-sized,
                 // Compare `flex-1` soaking up the rest). @4xl still swaps
                 // this to the original one-line 4-column grid.
-                <div className="flex flex-wrap items-stretch gap-2 @4xl:grid @4xl:gap-2.5 @4xl:grid-cols-[minmax(340px,1.7fr)_46px_minmax(260px,1.3fr)_176px]">
-                  <div className="min-w-0 basis-full @4xl:basis-auto">
-                    <FieldLight label={t("comparator.field.amount")}>
-                      <div
-                        className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] border-input transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
-                          compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
-                        }`}
-                      >
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          min={1}
-                          value={amount || ""}
-                          placeholder="1000"
-                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                          aria-label={t("comparator.field.amount")}
-                          // 2026-09-01 feedback — "hay cambios que no se
-                          // hicieron": the mobile fix for the truncated
-                          // country name (triggerIconOnly) only covered
-                          // <768px — measured live at 1280px desktop, the
-                          // country segment (flex-1) was still only
-                          // 186.64px wide against the amount input's
-                          // flex-[1.4], not enough to fit "United Kingdom"
-                          // (confirmed via getBoundingClientRect + a real
-                          // screenshot, not assumed). This box only ever
-                          // holds a handful of digits at 25px, nowhere
-                          // near as space-hungry as a country name at
-                          // 14.5px — flex-1 (was 1.4) gives the country
-                          // segment its fair half instead of the smaller
-                          // share, without needing another isMobile branch.
-                          className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
-                            compact ? "text-[21px]" : "text-[25px]"
+                <div className="flex flex-col gap-1.5">
+                  {/* 2026-09-04 feedback (Kayak-style redesign, approved
+                      canvas mockup "mangomundi Search Redesign") — the
+                      Personal/Business tabs now sit above the WHOLE search
+                      bar (were previously tucked into the Compare column's
+                      own label row) — same tablist markup/behavior,
+                      unchanged, just relocated. */}
+                  <div className="flex items-center justify-end">
+                    <div
+                      role="tablist"
+                      aria-label={t("search.segment")}
+                      className="flex h-5 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
+                    >
+                      {(["retail", "business"] as Segment[]).map((s) => (
+                        <button
+                          key={s}
+                          role="tab"
+                          aria-selected={segment === s}
+                          onClick={() => handleSegmentChange(s)}
+                          className={`rounded-full px-2 py-0.5 text-[11.5px] font-semibold capitalize leading-none transition ${
+                            segment === s
+                              ? "bg-card text-foreground shadow-sm"
+                              : "text-muted-foreground hover:text-foreground"
                           }`}
-                        />
-                        {/* 2026-09-04 feedback — "cuando elegis la moneda
+                        >
+                          {t(`comparator.segment.${s}`)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* THE bar — Send/swap/Receive/Compare now read as ONE
+                      continuous bordered unit (not 4 independent boxes with
+                      gaps between them): a shared outer border/shadow,
+                      hairline dividers between segments, and Compare as the
+                      bar's own final segment (flush, filling its height —
+                      like Kayak's Search button capping off the bar) rather
+                      than a separately-floating button. Below @4xl it
+                      stacks (Send its own row; swap/Receive/Compare share a
+                      second row, same responsive shape Z2 already
+                      established) but stays visually one card throughout —
+                      no per-field border/shadow anymore, the bar supplies
+                      it. */}
+                  <div
+                    className={`flex flex-col overflow-hidden rounded-md border-[1.5px] transition-colors @4xl:flex-row @4xl:items-stretch ${
+                      sameCorridorBlocked
+                        ? "border-brand-cta ring-2 ring-brand-cta/60"
+                        : "border-input"
+                    } ${compact ? "bg-[#FDFBF9]" : "bg-card"}`}
+                  >
+                    <div className="min-w-0 border-b-[1.5px] border-border/70 px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[1.7] @4xl:items-center @4xl:border-b-0 @4xl:border-r-[1.5px] @4xl:px-4 @4xl:py-0">
+                      <FieldLight label={t("comparator.field.amount")}>
+                        <div className="flex w-full min-w-0 items-stretch">
+                          <input
+                            type="number"
+                            inputMode="decimal"
+                            min={1}
+                            value={amount || ""}
+                            placeholder="1000"
+                            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                            aria-label={t("comparator.field.amount")}
+                            // 2026-09-01 feedback — "hay cambios que no se
+                            // hicieron": the mobile fix for the truncated
+                            // country name (triggerIconOnly) only covered
+                            // <768px — measured live at 1280px desktop, the
+                            // country segment (flex-1) was still only
+                            // 186.64px wide against the amount input's
+                            // flex-[1.4], not enough to fit "United Kingdom"
+                            // (confirmed via getBoundingClientRect + a real
+                            // screenshot, not assumed). This box only ever
+                            // holds a handful of digits at 25px, nowhere
+                            // near as space-hungry as a country name at
+                            // 14.5px — flex-1 (was 1.4) gives the country
+                            // segment its fair half instead of the smaller
+                            // share, without needing another isMobile branch.
+                            className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                              compact ? "text-[21px]" : "text-[25px]"
+                            }`}
+                          />
+                          {/* 2026-09-04 feedback — "cuando elegis la moneda
                             cambian de tamaño de ancho las celdas de la
                             currency y empuja a la de país": `w-auto
                             shrink-0` hugged whichever 3-letter code was
@@ -1982,258 +1956,142 @@ export function ComparatorSection({
                             so there's no reason for this box to vary at
                             all. Same fixed width on both Send and Receive
                             (below) keeps them visually identical too. */}
-                        <CurrencyCombobox
-                          value={from}
-                          onChange={handlePickFromCurrency}
-                          placeholder={t("comparator.field.sourceCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCurrency")}
-                          compactLabel
-                          triggerClassName={`h-full w-[68px] shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
-                            compact ? "px-3 text-[14px]" : "px-3 text-[14.5px]"
-                          }`}
-                        />
-                        <CountryCombobox
-                          value={sendingCountry}
-                          onChange={handleSendingCountryChange}
-                          placeholder={t("comparator.combobox.placeholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCountry")}
-                          // 2026-08-30 feedback (sixth round) — the currency
-                          // segment to the left already covers it, so this
-                          // plain country picker drops the redundant
-                          // currency-code readout.
-                          hideSecondary
-                          triggerIconOnly={isMobile}
-                          triggerClassName={`h-full flex-1 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
-                            compact ? "text-[14px]" : "text-[14.5px]"
-                          } ${isMobile ? "shrink-0 justify-center" : "shrink-0"}`}
-                        />
-                      </div>
-                    </FieldLight>
-                  </div>
-
-                  {/* Swap — click to flip FROM/TO, country and currency
-                      together.
-                      2026-09-01 feedback — "la flechita del comparador
-                      quedó desalineada": measured with Playwright at
-                      exactly 4px too high — this cell has no label above
-                      it (unlike the origin/destination groups, which do,
-                      via FieldLight), so `items-stretch` on the parent
-                      stretches it to match their taller label+box height.
-                      `flex-col justify-end` bottom-aligns it flush with
-                      that shared bottom edge, same trick FieldLight itself
-                      now uses (see its own comment, Z1) — this used to be
-                      conditional on @4xl (a horizontal-vs-vertical-stack
-                      distinction from when swap sat between two FULL-WIDTH
-                      stacked rows below @4xl, needing a 90°-rotated icon to
-                      read as "flip up/down" instead of left/right), but Z2
-                      put swap on the same horizontal line as Receive/
-                      Compare at every width now, so the rotation and the
-                      @4xl-only alignment are both always-on unconditionally. */}
-                  <div className="flex flex-col justify-end">
-                    <button
-                      type="button"
-                      onClick={handleSwap}
-                      aria-label={t("comparator.swap")}
-                      // 2026-09-02 feedback (Z2) — w-[38/40px] below @4xl
-                      // (was the same 44/46px as the @4xl grid track uses,
-                      // sized for its own standalone row) — a few more
-                      // pixels back for Receive/Compare on line 2; @4xl
-                      // restores 44/46px to match that grid's fixed
-                      // 46px column.
-                      className={`flex shrink-0 items-center justify-center rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 ${
-                        compact
-                          ? "h-[52px] w-[38px] @4xl:w-[44px]"
-                          : "h-[58px] w-[40px] @4xl:w-[46px]"
-                      }`}
-                      style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
-                    >
-                      <ArrowLeftRight
-                        strokeWidth={2.2}
-                        className={compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}
-                      />
-                    </button>
-                  </div>
-
-                  {/* 2026-09-03 feedback — "el target currency que no se
-                      mueva porque se achica y se agranda": tried making this
-                      box always icon-only + a small fixed width (108px) —
-                      WRONG FIX, reverted the same day once the next round's
-                      real screenshot showed the desktop-width layout with
-                      the receive field "aplastado" (squished), the country
-                      name never showing at all. `triggerIconOnly=true`
-                      unconditionally meant even the WIDE @4xl grid track
-                      (`minmax(260px,1.3fr)`, plenty of room for a full name
-                      the way the Send field's own country box already shows
-                      one) got squeezed into that same tiny mobile-sized box.
-                      Restored `triggerIconOnly={isMobile}` (full name once
-                      there's room, same as Send) and the @4xl uncapping —
-                      kept the one uncontroversial part of that round, an
-                      empty `placeholder` so the pre-selection state is
-                      blank instead of a "Select…" fallback string, since
-                      that doesn't affect width the way icon-only did.
-                      `@4xl:w-full` (new) is what actually fixes the
-                      original resize complaint without hiding the name:
-                      at @4xl this box now always fills its fixed grid
-                      column width, so switching countries no longer changes
-                      the box's own footprint — only the text inside it.
-                      Autofilling the currency itself already happens
-                      elsewhere (handleReceivingCountryChange sets `to` to
-                      the picked country's own local currency via
-                      localCurrency()) — unaffected by any of this.
-                      2026-09-02 feedback (AG2) — the empty placeholder above
-                      meant this box, with Send already defaulted to "GB" and
-                      no equivalent default here, just read as blank with no
-                      hint a country still needed picking. Swapped in a "To…"
-                      placeholder (short enough not to reintroduce the width
-                      churn the empty string was there to avoid). */}
-                  <div className="min-w-0 w-auto max-w-[120px] shrink-0 @4xl:w-full @4xl:max-w-none">
-                    <FieldLight label={t("comparator.field.youReceive")}>
-                      <div
-                        className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
-                          compact ? "h-[52px] bg-[#FDFBF9]" : "h-[58px] bg-card"
-                        } ${sameCorridorBlocked ? "border-brand-cta ring-2 ring-brand-cta/60" : "border-input"}`}
-                      >
-                        <CountryCombobox
-                          value={receivingCountry}
-                          onChange={handleReceivingCountryChange}
-                          placeholder={t("comparator.field.receiveCountryPlaceholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCountry")}
-                          hideSecondary
-                          triggerIconOnly={isMobile}
-                          triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
-                            compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
-                          } ${isMobile ? "justify-center" : ""}`}
-                        />
-                        {/* Fixed width (same reasoning as Send's currency
-                            box above, AD11) — @4xl:w-[68px] matches Send's
-                            own fixed width exactly so both sides read as
-                            the same-size control. */}
-                        <CurrencyCombobox
-                          value={to}
-                          onChange={handlePickToCurrency}
-                          placeholder={t("comparator.field.targetCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCurrency")}
-                          compactLabel
-                          triggerClassName={`h-full w-[52px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0 @4xl:w-[68px] @4xl:px-3.5 ${
-                            compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
-                          }`}
-                        />
-                      </div>
-                    </FieldLight>
-                  </div>
-
-                  {/* 2026-09-02 feedback (Z2) — `flex-1` (was `min-w-0`
-                      alone, back when this was its own standalone
-                      grid-cols-1 row) so Compare soaks up whatever width
-                      Receive's now content-sized box leaves on line 2 —
-                      same ratio as the widget's own line 2 (Receive
-                      content-sized, CTA `flex-1`). `min-w-[108px]` is the
-                      floor under that shrink (paired with Receive's own
-                      `shrink`, see its comment) — 108px measured as enough
-                      for "Compare"/"Update" at this button's text-[15px]
-                      without the `truncate` span kicking in. */}
-                  <div className="min-w-[92px] flex-1">
-                    {/* 2026-09-02 feedback (second round) — "el individual
-                        business tiene que estar arriba del botón de
-                        comparar no arriba del send": the segment pill
-                        (added to the Send field's own label row in the
-                        previous round) moves here instead — Send goes back
-                        to a plain FieldLight label. Same `mb-1.5` rhythm
-                        FieldLight's own label uses, so the button below
-                        still lines up with the Send/Receive boxes on its
-                        left; `justify-end` right-aligns the pill over the
-                        button instead of the space-between it had over
-                        "Send".
-                        2026-09-03 feedback — "sobra espacio en el cuadro":
-                        this pill (h-6/24px) was taller than FieldLight's
-                        own plain-text label (~22px total incl. its own
-                        mb-1.5) — `items-stretch` on the row equalizes every
-                        column to the tallest one, so that ~8px difference
-                        was stretching the WHOLE search row, Send/Receive
-                        boxes included, not just this column. h-5 (20px)
-                        closes most of that gap.
-                        2026-09-03 feedback (second round) — "que tenga el
-                        mismo tamaño de letra que send y receive": was
-                        text-[10px], smaller than FieldLight's own label
-                        (text-[11.5px], "Send"/"Receive" above the fields) —
-                        matched to that same size instead of its own
-                        smaller one-off value. */}
-                    <div className="mb-1.5 flex items-center justify-end">
-                      <div
-                        role="tablist"
-                        aria-label={t("search.segment")}
-                        className="flex h-5 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
-                      >
-                        {(["retail", "business"] as Segment[]).map((s) => (
-                          <button
-                            key={s}
-                            role="tab"
-                            aria-selected={segment === s}
-                            onClick={() => handleSegmentChange(s)}
-                            className={`rounded-full px-2 py-0.5 text-[11.5px] font-semibold capitalize leading-none transition ${
-                              segment === s
-                                ? "bg-card text-foreground shadow-sm"
-                                : "text-muted-foreground hover:text-foreground"
+                          <CurrencyCombobox
+                            value={from}
+                            onChange={handlePickFromCurrency}
+                            placeholder={t("comparator.field.sourceCurrency")}
+                            searchPlaceholder={t("comparator.combobox.search")}
+                            emptyLabel={t("comparator.combobox.empty")}
+                            ariaLabel={t("comparator.field.sourceCurrency")}
+                            compactLabel
+                            triggerClassName={`h-full w-[68px] shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                              compact ? "px-3 text-[14px]" : "px-3 text-[14.5px]"
                             }`}
-                          >
-                            {t(`comparator.segment.${s}`)}
-                          </button>
-                        ))}
-                      </div>
+                          />
+                          <CountryCombobox
+                            value={sendingCountry}
+                            onChange={handleSendingCountryChange}
+                            placeholder={t("comparator.combobox.placeholder")}
+                            searchPlaceholder={t("comparator.combobox.search")}
+                            emptyLabel={t("comparator.combobox.empty")}
+                            ariaLabel={t("comparator.field.sourceCountry")}
+                            // 2026-08-30 feedback (sixth round) — the currency
+                            // segment to the left already covers it, so this
+                            // plain country picker drops the redundant
+                            // currency-code readout.
+                            hideSecondary
+                            triggerIconOnly={isMobile}
+                            triggerClassName={`h-full flex-1 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                              compact ? "text-[14px]" : "text-[14.5px]"
+                            } ${isMobile ? "shrink-0 justify-center" : "shrink-0"}`}
+                          />
+                        </div>
+                      </FieldLight>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
-                          setValidationError(t("fx.validation"));
-                          return;
+
+                    {/* Swap/Receive/Compare — one row below @4xl (same
+                        responsive shape Z2 established), three flush
+                        segments of the same bar at @4xl (`@4xl:contents`
+                        drops this wrapper from the box model so its
+                        children become direct row items, without
+                        duplicating the markup for two different tree
+                        shapes). */}
+                    <div className="flex items-stretch gap-2 p-2 @4xl:contents @4xl:gap-0 @4xl:p-0">
+                      {/* Swap — click to flip FROM/TO, country and currency
+                          together. Square (not circular), sits between
+                          Send and Receive with a divider on each side at
+                          @4xl — no longer its own floating cell with a gap. */}
+                      <button
+                        type="button"
+                        onClick={handleSwap}
+                        aria-label={t("comparator.swap")}
+                        className="flex shrink-0 items-center justify-center self-stretch rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 @4xl:w-[46px] @4xl:rounded-none @4xl:border-r-[1.5px] @4xl:border-border/70"
+                        style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
+                      >
+                        <ArrowLeftRight
+                          strokeWidth={2.2}
+                          className={compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}
+                        />
+                      </button>
+
+                      {/* Receive — tints in the accent color while it still
+                          needs a country, the same "field that needs
+                          completing" cue the approved mockup borrows from
+                          Kayak's focused "To?" field. */}
+                      <div
+                        className={`min-w-0 flex-1 @4xl:flex @4xl:h-full @4xl:flex-[1.3] @4xl:items-center @4xl:border-r-[1.5px] @4xl:border-border/70 @4xl:px-4 @4xl:py-0 ${
+                          !receivingCountry ? "bg-accent/5" : ""
+                        }`}
+                      >
+                        <FieldLight label={t("comparator.field.youReceive")}>
+                          <div className="flex w-full min-w-0 items-stretch">
+                            <CountryCombobox
+                              value={receivingCountry}
+                              onChange={handleReceivingCountryChange}
+                              placeholder={t("comparator.field.receiveCountryPlaceholder")}
+                              searchPlaceholder={t("comparator.combobox.search")}
+                              emptyLabel={t("comparator.combobox.empty")}
+                              ariaLabel={t("comparator.field.targetCountry")}
+                              hideSecondary
+                              triggerIconOnly={isMobile}
+                              triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
+                                compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
+                              } ${isMobile ? "justify-center" : ""}`}
+                            />
+                            <CurrencyCombobox
+                              value={to}
+                              onChange={handlePickToCurrency}
+                              placeholder={t("comparator.field.targetCurrency")}
+                              searchPlaceholder={t("comparator.combobox.search")}
+                              emptyLabel={t("comparator.combobox.empty")}
+                              ariaLabel={t("comparator.field.targetCurrency")}
+                              compactLabel
+                              triggerClassName={`h-full w-[52px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0 @4xl:w-[68px] @4xl:px-3.5 ${
+                                compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
+                              }`}
+                            />
+                          </div>
+                        </FieldLight>
+                      </div>
+
+                      {/* Compare — the bar's own final segment, flush
+                          against its edge and filling its height, like
+                          Kayak's Search button. */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                            setValidationError(t("fx.validation"));
+                            return;
+                          }
+                          setValidationError(null);
+                          compareMut.mutate(undefined);
+                        }}
+                        disabled={
+                          compareMut.isPending ||
+                          !receivingCountry ||
+                          sameCorridorBlocked ||
+                          amount <= 0
                         }
-                        setValidationError(null);
-                        compareMut.mutate(undefined);
-                      }}
-                      disabled={
-                        compareMut.isPending ||
-                        !receivingCountry ||
-                        sameCorridorBlocked ||
-                        amount <= 0
-                      }
-                      // 2026-09-02 feedback (Z2) — px-3/13px below @4xl
-                      // (was px-6/15px unconditionally, sized for owning
-                      // its own full-width row) — smaller padding/font so
-                      // "Compare"/"Update" fits its `min-w-[108px]` floor
-                      // on line 2 without the `truncate` span cutting in;
-                      // @4xl restores the original size for the one-line
-                      // desktop layout.
-                      className={`btn-cta inline-flex w-full items-center justify-center px-3 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:w-[176px] @4xl:px-6 @4xl:text-[15px] ${
-                        compact
-                          ? "h-[52px] rounded-md"
-                          : "h-[58px] rounded-md shadow-[0_10px_24px_-12px_rgba(238,91,62,.8)]"
-                      }`}
-                    >
-                      {compareMut.isPending ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <span className="truncate">
-                          {/* 2026-08-30 feedback (fourth round) — "el boton de
-                              accion tiene que ser Compare igual que
-                              individual": business used to say
-                              comparator.cta.request here; the search action
-                              is the same as individual's (compare
-                              providers), "Add to request"/"Send request" is
-                              its own separate action below the results, not
-                              this button's job. */}
-                          {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
-                        </span>
-                      )}
-                    </button>
+                        className="btn-cta flex min-w-[108px] flex-1 shrink-0 items-center justify-center rounded-md px-3 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:w-[176px] @4xl:flex-none @4xl:rounded-none @4xl:px-6 @4xl:text-[15px]"
+                      >
+                        {compareMut.isPending ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <span className="truncate">
+                            {/* 2026-08-30 feedback (fourth round) — "el boton de
+                                accion tiene que ser Compare igual que
+                                individual": business used to say
+                                comparator.cta.request here; the search action
+                                is the same as individual's (compare
+                                providers), "Add to request"/"Send request" is
+                                its own separate action below the results, not
+                                this button's job. */}
+                            {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                          </span>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
