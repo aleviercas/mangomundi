@@ -316,7 +316,15 @@ export function EmbedComparator({
         rel="noopener noreferrer"
         className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
-        {t("embed.poweredBy")} <Wordmark className="text-xs" compact icon={false} />
+        {/* 2026-09-02 feedback — "poner powered by mangomundi con el
+            icono y el logo en colores, ahora esta en blanco y negro": two
+            changes from before — `icon` (now default true) brings back
+            the small bicolor "m" mark, and dropping `compact` stops
+            flattening "mundi" to a single ink colour. `compact` was a
+            deliberate call for this 12px lockup ("genuinely too small for
+            the two-tone split to read cleanly", see Wordmark's own doc
+            comment) but the feedback says otherwise. */}
+        {t("embed.poweredBy")} <Wordmark className="text-xs" />
       </a>
     </div>
   );

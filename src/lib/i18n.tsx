@@ -579,7 +579,10 @@ export const DICTS: Record<Lang, Dict> = {
     // JSON translations are real, human work in 19 languages; safer not to
     // touch them for a copy change this session can only verify in
     // English/Spanish/Portuguese.
-    "comparator.widget.seeMore": "See more on mangomundi",
+    // 2026-09-02 feedback — "que diga alguna otra cosa porque abajo dice
+    // powered by mangomundi": the CTA and the attribution bar right below
+    // it both said "mangomundi", reading as redundant back-to-back.
+    "comparator.widget.seeMore": "See more rates and providers",
     // design/Mangomundi 4 - Final.dc.html (line 435) — "Show N more
     // providers" below the (now capped) results list, distinct from
     // comparator.widget.seeMore (the widget's own "See more" link).
@@ -3255,7 +3258,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.advancedOptions": "Opciones avanzadas",
     "comparator.results": "Tus resultados",
     "comparator.widget.yourResults": "Tus resultados",
-    "comparator.widget.seeMore": "Ver más en mangomundi",
+    "comparator.widget.seeMore": "Ver más tarifas y proveedores",
     "comparator.sortBy": "Ordenar",
     "comparator.sort.received": "Mejor tasa",
     "comparator.sort.fee": "Comisiones",
