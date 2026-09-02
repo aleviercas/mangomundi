@@ -786,5 +786,7 @@
   "wizard.quickActionsAria": "Ações rápidas do Wizard IA",
   "wizard.reportNote": "Anotei seu interesse na rota {from}-{to}. Ela foi registrada no log de descoberta; vamos priorizá-la conforme a demanda crescer.",
   "wizard.runFirst": "Primeiro execute uma comparação — respondo com os dados da tabela, não com fontes externas.",
-  "wizard.send": "A mangomundi não move o dinheiro — ela mostra a melhor opção e leva você direto ao provedor para concluir a transferência no site dele. Compare, escolha uma linha e clique para finalizar. Não precisa de conta conosco."
+  "wizard.send": "A mangomundi não move o dinheiro — ela mostra a melhor opção e leva você direto ao provedor para concluir a transferência no site dele. Compare, escolha uma linha e clique para finalizar. Não precisa de conta conosco.",
+  "widget.header.title": "Comparar taxas",
+  "widget.examples.seeMore": "Veja mais rotas na mangomundi"
 }

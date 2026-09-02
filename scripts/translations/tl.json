@@ -786,5 +786,7 @@
   "wizard.quickActionsAria": "Mabibilis na aksyon ng AI Wizard",
   "wizard.reportNote": "Naitala ko ang iyong interes sa rutang {from}-{to}. Naidagdag ito sa discovery log; uunahin namin ito habang lumalaki ang demand.",
   "wizard.runFirst": "Magpatakbo muna ng paghahambing — sumasagot ako gamit ang datos ng talahanayan, hindi mga panlabas na source.",
-  "wizard.send": "Hindi mismo naglilipat ng pera ang mangomundi — ipinapakita nito ang pinakamahusay na opsyon, tapos dinadala ka diretso sa provider na iyon para tapusin ang transfer sa site nila. Maghambing, pumili ng row, at mag-click para matapos. Walang account na kailangan sa amin."
+  "wizard.send": "Hindi mismo naglilipat ng pera ang mangomundi — ipinapakita nito ang pinakamahusay na opsyon, tapos dinadala ka diretso sa provider na iyon para tapusin ang transfer sa site nila. Maghambing, pumili ng row, at mag-click para matapos. Walang account na kailangan sa amin.",
+  "widget.header.title": "Ikumpara ang mga rate",
+  "widget.examples.seeMore": "Tingnan ang higit pang mga ruta sa mangomundi"
 }

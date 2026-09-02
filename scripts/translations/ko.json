@@ -786,5 +786,7 @@
   "wizard.quickActionsAria": "AI 위저드 빠른 작업",
   "wizard.reportNote": "{from}-{to} 경로에 대한 관심을 기록했습니다. 수요가 늘어나면 우선적으로 지원하겠습니다.",
   "wizard.runFirst": "먼저 비교를 실행하세요 — 표 데이터로만 답변하며 외부 소스는 사용하지 않습니다.",
-  "wizard.send": "mangomundi는 돈을 직접 옮기지 않습니다 — 최선의 옵션을 보여주고, 해당 업체 사이트로 바로 안내해 송금을 완료합니다. 비교하고 한 줄을 선택해 클릭하면 끝. 저희 계정은 필요 없습니다."
+  "wizard.send": "mangomundi는 돈을 직접 옮기지 않습니다 — 최선의 옵션을 보여주고, 해당 업체 사이트로 바로 안내해 송금을 완료합니다. 비교하고 한 줄을 선택해 클릭하면 끝. 저희 계정은 필요 없습니다.",
+  "widget.header.title": "환율 비교",
+  "widget.examples.seeMore": "mangomundi에서 더 많은 경로 보기"
 }

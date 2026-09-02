@@ -786,5 +786,7 @@
   "wizard.quickActionsAria": "Aksi cepat Wizard AI",
   "wizard.reportNote": "Saya mencatat minat Anda pada rute {from}-{to}. Sudah tercatat di log penemuan; kami akan memprioritaskannya seiring meningkatnya permintaan.",
   "wizard.runFirst": "Jalankan perbandingan dulu — saya menjawab dengan data tabel, bukan sumber eksternal.",
-  "wizard.send": "mangomundi tidak memindahkan uang sendiri — ia menunjukkan opsi terbaik lalu mengarahkan Anda langsung ke penyedia untuk menyelesaikan transfer di situs mereka. Bandingkan, pilih satu baris, dan klik untuk selesai. Tidak perlu akun dengan kami."
+  "wizard.send": "mangomundi tidak memindahkan uang sendiri — ia menunjukkan opsi terbaik lalu mengarahkan Anda langsung ke penyedia untuk menyelesaikan transfer di situs mereka. Bandingkan, pilih satu baris, dan klik untuk selesai. Tidak perlu akun dengan kami.",
+  "widget.header.title": "Bandingkan kurs",
+  "widget.examples.seeMore": "Lihat lebih banyak rute di mangomundi"
 }

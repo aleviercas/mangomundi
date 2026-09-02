@@ -786,5 +786,7 @@
   "wizard.quickActionsAria": "YZ Wizard hızlı işlemleri",
   "wizard.reportNote": "{from}-{to} rotasına ilginizi not ettim. Keşif günlüğüne kaydedildi; talep arttıkça öncelik vereceğiz.",
   "wizard.runFirst": "Önce bir karşılaştırma çalıştırın — tablo verileriyle yanıtlarım, dış kaynaklarla değil.",
-  "wizard.send": "mangomundi parayı kendisi taşımaz — size en iyi seçeneği gösterir ve transferi tamamlamanız için doğrudan o sağlayıcının sitesine yönlendirir. Karşılaştırın, bir satır seçin ve tıklayıp bitirin. Bizde hesap gerekmez."
+  "wizard.send": "mangomundi parayı kendisi taşımaz — size en iyi seçeneği gösterir ve transferi tamamlamanız için doğrudan o sağlayıcının sitesine yönlendirir. Karşılaştırın, bir satır seçin ve tıklayıp bitirin. Bizde hesap gerekmez.",
+  "widget.header.title": "Kurları karşılaştır",
+  "widget.examples.seeMore": "mangomundi'de daha fazla rota gör"
 }

@@ -786,5 +786,7 @@
   "wizard.quickActionsAria": "AI 向导快捷操作",
   "wizard.reportNote": "已记录您对 {from}-{to} 路线的关注。它已加入发现日志；随着需求增长我们将优先支持。",
   "wizard.runFirst": "请先运行一次比较 — 我根据表格数据回答，不使用外部来源。",
-  "wizard.send": "mangomundi 本身不转移资金——它为你展示最佳选项，然后直接把你带到该服务商，在其网站上完成转账。比较、选择一行、点击即可完成。无需在我们这里开户。"
+  "wizard.send": "mangomundi 本身不转移资金——它为你展示最佳选项，然后直接把你带到该服务商，在其网站上完成转账。比较、选择一行、点击即可完成。无需在我们这里开户。",
+  "widget.header.title": "比较汇率",
+  "widget.examples.seeMore": "在 mangomundi 查看更多路线"
 }
