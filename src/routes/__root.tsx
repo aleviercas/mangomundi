@@ -94,6 +94,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
         { name: "theme-color", content: "#241C16" },
+        // 2026-09-02 feedback — anti-scraping measure for the rate/corridor
+        // data, without touching SEO: no `name: "robots"` tag here on
+        // purpose (its absence already means the default index/follow,
+        // same as before — Google/Bing keep full access). "noai"/
+        // "noimageai" is a separate, narrower signal some publishers use
+        // (the Spawning.ai do-not-train convention) asking AI trainers
+        // specifically not to use this page's content for training —
+        // informal, not universally honored, but a real signal alongside
+        // robots.txt's per-bot Disallow rules (see public/robots.txt).
+        { name: "robots", content: "noai, noimageai" },
         { title: seo.title },
         { name: "description", content: seo.description },
         { name: "author", content: "Mangomundi" },
