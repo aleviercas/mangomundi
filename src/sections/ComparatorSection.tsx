@@ -3512,7 +3512,7 @@ function BusinessRequestPanel({
           <h3 className="font-heading text-[15px] font-extrabold text-foreground">
             {t("comparator.business.request.title")}
           </h3>
-          <p className="mt-1 max-w-md text-xs leading-relaxed text-muted-foreground">
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
             {t("comparator.business.request.disclaimer")}
           </p>
         </div>
@@ -3526,35 +3526,48 @@ function BusinessRequestPanel({
         </div>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-border pt-3">
-        <StatItem label={t("comparator.business.request.volume")}>
-          {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
-        </StatItem>
-        <StatItem label={t("comparator.business.request.route")}>
-          <span className="inline-flex flex-wrap items-center gap-1.5">
-            <FlagIcon country={sendingCountry} /> {sendingCountryName}
-            <span>→</span>
-            {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
-          </span>
-        </StatItem>
-        <StatItem label={t("comparator.business.request.currency")}>
-          {from} → {to}
-        </StatItem>
-        <StatItem label={t("comparator.business.request.contract")}>
-          {contractTypeLabel} · {frequencyLabel}
-        </StatItem>
-      </div>
+      {/* 2026-09-03 feedback (third round) — "el volume route currency
+          contract y el boton de send request podrian estar un poco mas
+          separados y deberian de estar en el mismo nivel, queda mucho
+          espacio en blanco": these used to be two stacked rows, each with
+          its own `border-t pt-3` — one gap for the stats, a second
+          identical gap above the button, adding a full extra row's worth
+          of height for no real content. Merged into one row (one border,
+          one pt-3): stats flow on the left, the button anchors to the
+          right via `justify-between` on the shared row (still never
+          drifting — see the button's own comment below) — `gap-8` between
+          the two sides so the button doesn't crowd the stats now that
+          they share a row. `items-center` on this outer row keeps the
+          button vertically centered against the stats block's height;
+          the stats keep their own `items-baseline` internally. */}
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-border pt-3">
+        <div className="flex flex-1 flex-wrap items-baseline gap-x-6 gap-y-2">
+          <StatItem label={t("comparator.business.request.volume")}>
+            {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+          </StatItem>
+          <StatItem label={t("comparator.business.request.route")}>
+            <span className="inline-flex flex-wrap items-center gap-1.5">
+              <FlagIcon country={sendingCountry} /> {sendingCountryName}
+              <span>→</span>
+              {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+            </span>
+          </StatItem>
+          <StatItem label={t("comparator.business.request.currency")}>
+            {from} → {to}
+          </StatItem>
+          <StatItem label={t("comparator.business.request.contract")}>
+            {contractTypeLabel} · {frequencyLabel}
+          </StatItem>
+        </div>
 
-      {/* `justify-end` is what actually keeps this anchored right regardless
-          of content — the earlier "el botón se mueve al centro" fix (see
-          git history) — so the button itself doesn't need a fixed width
-          for that. It briefly had one anyway (w-[190px]) and .btn-cta's
-          own `white-space: nowrap` made "Send request to 1 broker" wider
-          than that box, so the text visibly overflowed past its own
-          rounded corners. Sized to content (px-5) instead — safe at any
-          broker count since `justify-end` alone already guarantees the
-          position. */}
-      <div className="mt-3 flex justify-end">
+        {/* `justify-between` on the shared row above is what actually keeps
+            this anchored right regardless of content — the earlier "el
+            botón se mueve al centro" fix (see git history) — so the button
+            itself doesn't need a fixed width for that. It briefly had one
+            anyway (w-[190px]) and .btn-cta's own `white-space: nowrap` made
+            "Send request to 1 broker" wider than that box, so the text
+            visibly overflowed past its own rounded corners. Sized to
+            content (px-5) instead. */}
         {expanded ? (
           <form
             className="flex w-full flex-col gap-2 sm:w-[280px]"
