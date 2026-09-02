@@ -2967,8 +2967,17 @@ function TrustpilotCard() {
   // Trustpilot needs its real 52px; this card now gives it comfortable
   // padding instead of a hard height, so it's taller than the button
   // above it, but nothing gets cropped.
+  //
+  // 2026-09-03 feedback — "sacarle el recuadro redondeado y dejarlo sobre
+  // el fondo sin el recuadro": every round so far treated this as a CARD
+  // (bordered, bg-secondary, matching RateAlertCard/BusinessContactCard
+  // above it in the same rail) and kept tuning that card's own height —
+  // wrong frame each time, since the actual ask was to drop the card
+  // entirely. The rail's own `gap-[13px]` (see its own className) already
+  // spaces this from its neighbor above, so this just centers the widget
+  // directly on the rail's own page background, no box of its own.
   return (
-    <div className="flex items-center justify-center rounded-[18px] border border-border bg-secondary px-3 py-2.5 [&_.trustpilot-widget]:mx-auto">
+    <div className="flex items-center justify-center [&_.trustpilot-widget]:mx-auto">
       <TrustBox />
     </div>
   );

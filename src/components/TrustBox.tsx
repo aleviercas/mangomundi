@@ -79,7 +79,19 @@ declare global {
  * above) — this fallback was never given real button styling for that
  * case. Styled as a small badge (star icon + label, bordered pill,
  * Trustpilot's own brand green) so it reads as an intentional link even
- * when their script never takes over. */
+ * when their script never takes over.
+ *
+ * 2026-09-03 feedback — Trustpilot alignment complaints keep recurring next
+ * to 52px buttons (AboutManifestoSection's "About us" CTA is h-[52px]
+ * specifically to match data-style-height below). Verified in a throwaway
+ * test route with a stand-in 52px element (this sandbox has no path to
+ * trustpilot.com to load the real script) that the intended mechanism DOES
+ * line the two up once conversion happens — so the more likely culprit is
+ * THIS fallback link, the one state actually renderable/verifiable here:
+ * `py-1.5` plus a 13px text line sizes it to roughly 32px, well short of
+ * the 52px neighboring buttons are sized to match. `h-[52px]` means the
+ * visible box is always that height regardless of whether Trustpilot's
+ * script ever takes over. */
 export function TrustBox() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -117,7 +129,7 @@ export function TrustBox() {
         href="https://www.trustpilot.com/review/mangomundi.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 rounded-md border border-[#00b67a]/30 bg-[#00b67a]/[.08] px-2.5 py-1.5 text-[13px] font-bold text-[#00b67a] no-underline transition hover:bg-[#00b67a]/[.14]"
+        className="inline-flex h-[52px] items-center gap-1.5 rounded-md border border-[#00b67a]/30 bg-[#00b67a]/[.08] px-2.5 text-[13px] font-bold text-[#00b67a] no-underline transition hover:bg-[#00b67a]/[.14]"
       >
         <Star className="h-3.5 w-3.5 fill-current" aria-hidden />
         Trustpilot
