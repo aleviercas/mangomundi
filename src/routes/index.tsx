@@ -7,6 +7,7 @@ import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 import { defaultCounterCurrency } from "@/lib/countries";
 import { listBlogPosts, toBlogLocale } from "@/lib/blog.functions";
+import { getExclusiveCorridors } from "@/lib/fx.functions";
 
 // `lang` — used to read ?lang= for the self-referencing canonical below (see
 // selfCanonical). Reading it via validateSearch — rather than reaching into
@@ -63,12 +64,34 @@ const homeBlogListQuery = (locale: string) =>
     queryFn: () => listBlogPosts({ data: { locale } }),
   });
 
+// 2026-09-03 feedback — "al abrir el home se comporta raro porque todays
+// routes aparece con delay y se mueve la página al cargar": same root cause
+// as homeBlogListQuery's own comment above, for a different section —
+// TodaysRoutesSection's useExclusiveCorridors() is a client-only useQuery
+// with no server-side prefetch, so the server-rendered HTML shipped with no
+// data (shown.length === 0 renders null), and the whole section popped in
+// — pushing everything below it down — only once the client-side fetch
+// resolved after hydration. Identical queryKey to useExclusiveCorridors's
+// own (["exclusive-corridors"]) so that hook just reads this already-
+// populated cache entry, same pattern homeBlogListQuery already uses for
+// BlogSection.
+const exclusiveCorridorsQuery = queryOptions({
+  queryKey: ["exclusive-corridors"],
+  queryFn: () => getExclusiveCorridors(),
+});
+
 export const Route = createFileRoute("/")({
   validateSearch: (search) => searchSchema.parse(search),
   loader: async ({ context }) => {
     const { getInitialLang } = await import("@/lib/geo.functions");
     const detected = await getInitialLang().catch(() => "en" as const);
-    await context.queryClient.ensureQueryData(homeBlogListQuery(toBlogLocale(detected)));
+    // Run both prefetches concurrently — neither depends on the other, and
+    // sequencing them would just add their latencies instead of taking the
+    // slower of the two.
+    await Promise.all([
+      context.queryClient.ensureQueryData(homeBlogListQuery(toBlogLocale(detected))),
+      context.queryClient.ensureQueryData(exclusiveCorridorsQuery),
+    ]);
   },
   // Title/description/OG come from the root head, which is per-language
   // (SEO_META). The home just adds its own canonical, og:url, hreflang and
