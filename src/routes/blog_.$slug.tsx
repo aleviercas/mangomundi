@@ -386,8 +386,16 @@ function BlogPostPage() {
           both pages, but that extra inset shifted this page's actual
           content (BrandMark included, at this row's right edge) inward
           relative to the listing at any wide viewport. Dropped to match
-          `px-4 sm:px-6` exactly. */}
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-28 pb-24">
+          `px-4 sm:px-6` exactly.
+          2026-09-03 feedback (second round) — "queda mucho espacio en
+          blanco arriba de la pagina": pt-28 (112px) was chosen to match
+          /about and /widget's own header-clearing padding, but those two
+          pages sit on a dark background image right under the header that
+          visually absorbs that space — this page (plain bg-background) and
+          the listing above it read as genuinely too much blank space with
+          the same number. pt-20 (80px, this page's own value before that
+          unification) still clears the 66px fixed header with margin. */}
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-20 pb-24">
         <div className="mb-8 flex items-center justify-between">
           <Link
             to="/blog"
