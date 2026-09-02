@@ -930,6 +930,30 @@ export function ComparatorSection({
     },
   });
 
+  // 2026-09-02 feedback (AH3) — "sigue pasando lo del delay... aparece el
+  // circulito y dice comparing rates pero ese recuadro que aparece con
+  // delay queda mal": the first-search skeleton below used to render the
+  // instant `compareMut.isPending` went true. In this sandbox a real
+  // request is slow enough that isn't visible, but in production a fast
+  // response (a couple hundred ms) meant the skeleton box popped in and
+  // was immediately torn out again for the real results — a flash/flicker,
+  // not a smooth loading state, which reads exactly as "queda mal". Gating
+  // it behind a short delay means a fast response never shows the skeleton
+  // at all (no flash), while a genuinely slow one still gets the normal
+  // loading experience after this brief grace period. The Compare button's
+  // own spinner (below) stays tied directly to `isPending` — that's a
+  // small, layout-stable change, so instant feedback there is still good,
+  // it's only this larger inserted block that benefits from the delay.
+  const [showLoadingSkeleton, setShowLoadingSkeleton] = useState(false);
+  useEffect(() => {
+    if (!compareMut.isPending) {
+      setShowLoadingSkeleton(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowLoadingSkeleton(true), 250);
+    return () => clearTimeout(timer);
+  }, [compareMut.isPending]);
+
   // Auto-run one comparison when arriving from the home widget (?run=1) so the
   // user lands directly on results instead of having to click "Compare Rates"
   // again. Fires once per mount (ref guard also survives a StrictMode
@@ -1704,7 +1728,16 @@ export function ComparatorSection({
                       // like DE's "Nach…"/PT's "Para…" didn't). w-16 leaves
                       // ~36px for text after the chevron+gap, enough for
                       // ~5-6 bold characters across every locale tested.
-                      triggerClassName="h-full w-16 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                      // 2026-09-02 feedback (AH2) — that round widened this
+                      // (Send) box to w-16 but the Receive box below to
+                      // w-20 (it needed more room for the placeholder text)
+                      // — "la banderita de arriba quedó más chiquita que
+                      // la de abajo". Send never shows placeholder text (it
+                      // always has a pre-selected/geo-detected flag), so
+                      // there was no functional reason for the mismatch —
+                      // matching w-20 here is purely so the two rows read
+                      // as the same size.
+                      triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                     />
                     <input
                       type="number"
@@ -2285,8 +2318,11 @@ export function ComparatorSection({
             in place once the new data lands). Without this, clicking Compare
             left a dead gap below the button until the request resolved; sized
             to roughly match 3 real ProviderRow rows for the same
-            CLS-avoidance reason as BlogSection's skeleton. */}
-        {compareMut.isPending && !result && (
+            CLS-avoidance reason as BlogSection's skeleton.
+            2026-09-02 feedback (AH3) — gated behind `showLoadingSkeleton`
+            (see its own comment above) instead of `compareMut.isPending`
+            directly, so a fast response never flashes this in and back out. */}
+        {showLoadingSkeleton && !result && (
           <div className="mt-5 min-w-0">
             <div className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground">
               <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" aria-hidden />
@@ -4746,14 +4782,23 @@ function BusinessRowExtra({
           let the 4 chips reflow arbitrarily (2+2, 3+1, all 4 on one
           line depending on value lengths) — no longer a fixed spread/
           minimum vs. settlement/contracts pairing. Two explicit columns
-          (grid-cols-2, metrics[0]/[1] stacked in the first, [2]/[3] in
-          the second) fix that pairing regardless of value length.
-          Settlement/Contracts' full-sentence values (e.g. "Spot, Forward
-          (min contract value ~£10,000)") still wrap freely inside their
-          own column instead of overflowing. */}
-      <div className="grid min-w-0 flex-1 grid-cols-2 gap-x-5 gap-y-2">
+          (metrics[0]/[1] stacked in the first, [2]/[3] in the second) fix
+          that pairing regardless of value length.
+          2026-09-02 feedback (AH1) — "ponelo mas a la izquierda al lado
+          de la otra columna... aprovechamos el espacio vacío": a
+          grid-cols-2 split this whole block 50/50, so column 2 always
+          started at the container's midpoint regardless of how narrow
+          column 1's own content (a percentage, an amount) actually was —
+          wasted gap between the columns, and settlement/contracts' long
+          sentences capped at that same 50% width even though there was
+          more room to their right before the Add to request block.
+          Flex instead: column 1 is `shrink-0` (sized to its own short
+          content), column 2 is `flex-1` (starts right after column 1's
+          natural width, then uses everything remaining), separated by a
+          fixed, deliberately generous gap rather than a proportional one. */}
+      <div className="flex min-w-0 flex-1 items-start gap-x-8 gap-y-2">
         {[metrics.slice(0, 2), metrics.slice(2, 4)].map((column, i) => (
-          <div key={i} className="flex min-w-0 flex-col gap-2">
+          <div key={i} className={`flex min-w-0 flex-col gap-2 ${i === 0 ? "shrink-0" : "flex-1"}`}>
             {column.map((m) => (
               <StatItem
                 key={m.labelKey}
