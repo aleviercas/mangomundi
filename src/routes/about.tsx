@@ -126,13 +126,16 @@ function AboutPage() {
           {/* 2026-09-03 feedback — "ponerle el icono como en el botón de go to
               compare del blog y mantener la paleta": blog_.$slug.tsx's own
               CTA carries the mangomundi "m" mark (BrandMark) next to its
-              label; this one didn't. Adds the same mark, `tone="light"`
-              (white ink) since this button's own bg-color stays btn-cta's
-              solid mango — not blog's bg-primary — so the icon needs the
-              light variant for contrast here too, same as it does there. */}
+              label; this one didn't. Added the mark with `tone="light"`
+              (white ink), keeping this button's own btn-cta mango — verified
+              legible in a screenshot at the time.
+              2026-09-03 feedback (second round) — "ponelo igual que en el
+              blog, en negro, si lo pones en naranja el logo no se ve":
+              matches blog_.$slug.tsx's CTA exactly now, same classes
+              (bg-primary, rounded-xl, py-2.5) — not just the same color. */}
           <Link
             to="/"
-            className="btn-cta mt-3 inline-flex h-11 items-center justify-center gap-2 rounded-md px-6 text-sm font-semibold"
+            className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
             <BrandMark tone="light" />
             {t("blog.cta.button")}
