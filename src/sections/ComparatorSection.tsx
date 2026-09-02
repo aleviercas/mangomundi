@@ -395,12 +395,20 @@ export function ComparatorSection({
     // never auto-fires either (same explicit-CTA rule every other field
     // follows here).
     if (compact && result) {
+      // 2026-09-02 feedback (round 4) — without this, the URL-sync effect's
+      // own 300ms-debounced setResult(null) (below) fired right behind this
+      // mutate's onMutate (which no longer clears result itself — see its
+      // own comment) and nulled the result out from under the in-flight
+      // re-compare anyway, so the skeleton still flashed. Same guard the
+      // AI-suggested-compare and auto-run-on-mount flows already use.
+      skipNextSyncClearRef.current = true;
       compareMut.mutate({ from: code, to, sendingCountry, receivingCountry });
     }
   };
   const handlePickToCurrency = (code: string) => {
     setTo(code);
     if (compact && result) {
+      skipNextSyncClearRef.current = true;
       compareMut.mutate({ from, to: code, sendingCountry, receivingCountry });
     }
   };
@@ -841,7 +849,19 @@ export function ComparatorSection({
     },
     onMutate: () => {
       setAiLoading(true);
-      setResult(null);
+      // 2026-09-02 feedback (round 4) — "sigue apareciendo la rejilla al
+      // seleccionar la currency y poner compare": this unconditionally
+      // nulled `result`, even for a re-search that already has results on
+      // screen (e.g. changing currency post-search auto-fires a re-compare
+      // — see handlePickFromCurrency/handlePickToCurrency's own comment).
+      // That contradicted the first-search skeleton's own doc comment
+      // ("a re-search with existing results just updates them in place")
+      // — every re-search actually flashed to the empty-result skeleton
+      // and back, which is exactly the "weird visual delay" reported.
+      // Leaving a prior result in place during a re-search (the Compare
+      // button's own spinner — see its disabled/isPending rendering below
+      // — already signals "working") means only a genuine first search
+      // (no prior result) ever shows the skeleton.
       setAiText("");
       setChat([]);
       setMissingCorridor(null);
@@ -2261,9 +2281,16 @@ export function ComparatorSection({
             table) for CompactResultsList — a widget in a 360-440px iframe
             has no room for a sort/filter row, and doesn't need one: it's a
             "what's the best option" summary, not the full comparator. */}
+        {/* 2026-09-02 feedback (round 4) — now that onMutate (above) leaves a
+            prior result in place during a re-search instead of nulling it,
+            this dims it slightly while the new one is in flight — a subtle
+            "updating" cue (on top of the Compare button's own spinner)
+            instead of the jarring blank-then-repopulate flash. */}
         {result &&
           (embedded ? (
-            <div className="mt-2.5 min-w-0">
+            <div
+              className={`mt-2.5 min-w-0 transition-opacity duration-200 ${compareMut.isPending ? "opacity-60" : ""}`}
+            >
               <CompactResultsList
                 result={result}
                 handleAffiliateClick={openPreferredRate}
@@ -2271,7 +2298,9 @@ export function ComparatorSection({
               />
             </div>
           ) : (
-            <div className="mt-5 grid min-w-0 scroll-mt-24 gap-5 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-start lg:gap-[22px]">
+            <div
+              className={`mt-5 grid min-w-0 scroll-mt-24 gap-5 transition-opacity duration-200 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-start lg:gap-[22px] ${compareMut.isPending ? "opacity-60" : ""}`}
+            >
               {/* Left rail — design/AJUSTES-2.md §6 (mockup line 290-365):
                   Filters → AI Agent → Rate alert → Trustpilot, 268px wide,
                   13px gap between cards. ≥lg only; below that the page
