@@ -60,8 +60,8 @@ export function AboutManifestoSection() {
         aria-hidden
       />
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-center gap-10 lg:grid-cols-[1fr_340px] lg:gap-11">
-          <div className="max-w-2xl">
+        <div className="grid items-stretch gap-10 lg:grid-cols-[1fr_340px] lg:gap-11">
+          <div className="max-w-2xl flex flex-col justify-center">
             <p className="text-eyebrow font-bold uppercase text-[#FF8A6B]">
               {t("home.about.eyebrow")}
             </p>
@@ -90,7 +90,7 @@ export function AboutManifestoSection() {
               height to line up against, and the sizing history above no
               longer applies since nothing here needs to match TrustBox's
               own height. */}
-          <div className="flex flex-col gap-3.5">
+          <div className="flex flex-col">
             <div className="grid grid-cols-2 gap-3.5">
               {stats.map((s) => (
                 <div
@@ -106,7 +106,12 @@ export function AboutManifestoSection() {
                 </div>
               ))}
             </div>
-            <div className="flex justify-center">
+            {/* 2026-09-04 feedback (round 2) — pushed to the bottom of the
+                stretched column (mt-auto) instead of sitting right under the
+                stat grid, so it lines up with the "About us" button's own
+                baseline on the left and the band doesn't read as having a
+                dead gap under it. */}
+            <div className="mt-auto flex justify-center pt-6">
               <TrustBox />
             </div>
           </div>
