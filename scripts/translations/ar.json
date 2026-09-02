@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "عملة المصدر",
   "comparator.field.targetCountry": "البلد الهدف",
   "comparator.field.targetCurrency": "العملة المستهدفة",
+  "comparator.field.receiveCountryPlaceholder": "إلى…",
   "comparator.field.urgency": "مدى الاستعجال",
   "comparator.field.youReceive": "تستلم",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

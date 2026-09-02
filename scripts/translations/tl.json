@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Source Currency",
   "comparator.field.targetCountry": "Destinasyong bansa",
   "comparator.field.targetCurrency": "Target Currency",
+  "comparator.field.receiveCountryPlaceholder": "Sa…",
   "comparator.field.urgency": "Pagka-apurahan",
   "comparator.field.youReceive": "Matatanggap mo",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

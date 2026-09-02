@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Исходная валюта",
   "comparator.field.targetCountry": "Страна получения",
   "comparator.field.targetCurrency": "Целевая валюта",
+  "comparator.field.receiveCountryPlaceholder": "Куда…",
   "comparator.field.urgency": "Срочность",
   "comparator.field.youReceive": "Вы получаете",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

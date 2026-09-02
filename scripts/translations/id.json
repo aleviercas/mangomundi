@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Mata Uang Asal",
   "comparator.field.targetCountry": "Negara tujuan",
   "comparator.field.targetCurrency": "Mata Uang Tujuan",
+  "comparator.field.receiveCountryPlaceholder": "Ke…",
   "comparator.field.urgency": "Urgensi",
   "comparator.field.youReceive": "Anda menerima",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

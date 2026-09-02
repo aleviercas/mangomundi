@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Đồng tiền nguồn",
   "comparator.field.targetCountry": "Quốc gia nhận",
   "comparator.field.targetCurrency": "Đồng tiền đích",
+  "comparator.field.receiveCountryPlaceholder": "Đến…",
   "comparator.field.urgency": "Mức độ khẩn cấp",
   "comparator.field.youReceive": "Bạn nhận",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

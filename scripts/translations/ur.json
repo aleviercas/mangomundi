@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "منبع کرنسی",
   "comparator.field.targetCountry": "وصول کرنے والا ملک",
   "comparator.field.targetCurrency": "ہدف کرنسی",
+  "comparator.field.receiveCountryPlaceholder": "کہاں…",
   "comparator.field.urgency": "فوری ضرورت",
   "comparator.field.youReceive": "آپ وصول کریں گے",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

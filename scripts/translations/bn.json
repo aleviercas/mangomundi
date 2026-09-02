@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "উৎস মুদ্রা",
   "comparator.field.targetCountry": "গন্তব্য দেশ",
   "comparator.field.targetCurrency": "টার্গেট মুদ্রা",
+  "comparator.field.receiveCountryPlaceholder": "কোথায়…",
   "comparator.field.urgency": "জরুরি অবস্থা",
   "comparator.field.youReceive": "আপনি পাবেন",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

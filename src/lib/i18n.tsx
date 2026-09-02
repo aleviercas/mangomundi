@@ -2909,6 +2909,12 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // receive" per design/AJUSTES-2.md §1): just "Send"/"Receive".
     "comparator.field.amount": "Send",
     "comparator.field.youReceive": "Receive",
+    // 2026-09-02 feedback (AG2) — "en el home en el campo de recibe escribir
+    // la palabra to para que completen el país antes de que aparezca la
+    // selección": the receiving-country box has no default (unlike Send's,
+    // which starts on "GB") and used an empty placeholder, so it just read
+    // as a blank box with no cue that a country still needed to be picked.
+    "comparator.field.receiveCountryPlaceholder": "To…",
     "comparator.swap": "Swap currencies",
     "comparator.midMarketRate": "Mid-market exchange rate",
     "comparator.field.urgency": "Urgency",
@@ -3217,6 +3223,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
     "comparator.field.sourceCurrency": "Divisa de Origen",
     "comparator.field.targetCurrency": "Divisa de Destino",
+    "comparator.field.receiveCountryPlaceholder": "Hacia…",
     "comparator.segment.retail": "Personal",
     "comparator.segment.business": "Empresas",
     "search.eyebrow": "Terminal de inteligencia financiera",

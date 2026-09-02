@@ -2020,7 +2020,13 @@ export function ComparatorSection({
                       Autofilling the currency itself already happens
                       elsewhere (handleReceivingCountryChange sets `to` to
                       the picked country's own local currency via
-                      localCurrency()) — unaffected by any of this. */}
+                      localCurrency()) — unaffected by any of this.
+                      2026-09-02 feedback (AG2) — the empty placeholder above
+                      meant this box, with Send already defaulted to "GB" and
+                      no equivalent default here, just read as blank with no
+                      hint a country still needed picking. Swapped in a "To…"
+                      placeholder (short enough not to reintroduce the width
+                      churn the empty string was there to avoid). */}
                   <div className="min-w-0 w-auto max-w-[120px] shrink-0 @4xl:w-full @4xl:max-w-none">
                     <FieldLight label={t("comparator.field.youReceive")}>
                       <div
@@ -2031,7 +2037,7 @@ export function ComparatorSection({
                         <CountryCombobox
                           value={receivingCountry}
                           onChange={handleReceivingCountryChange}
-                          placeholder=""
+                          placeholder={t("comparator.field.receiveCountryPlaceholder")}
                           searchPlaceholder={t("comparator.combobox.search")}
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCountry")}

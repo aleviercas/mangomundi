@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Waluta źródłowa",
   "comparator.field.targetCountry": "Kraj docelowy",
   "comparator.field.targetCurrency": "Waluta docelowa",
+  "comparator.field.receiveCountryPlaceholder": "Do…",
   "comparator.field.urgency": "Pilność",
   "comparator.field.youReceive": "Otrzymujesz",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

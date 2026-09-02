@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "源货币",
   "comparator.field.targetCountry": "汇入国家/地区",
   "comparator.field.targetCurrency": "目标货币",
+  "comparator.field.receiveCountryPlaceholder": "到…",
   "comparator.field.urgency": "Urgency",
   "comparator.field.youReceive": "您收到",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Kaynak Para Birimi",
   "comparator.field.targetCountry": "Hedef ülke",
   "comparator.field.targetCurrency": "Hedef Para Birimi",
+  "comparator.field.receiveCountryPlaceholder": "Nereye…",
   "comparator.field.urgency": "Aciliyet",
   "comparator.field.youReceive": "Alırsınız",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

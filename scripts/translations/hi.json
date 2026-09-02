@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "स्रोत मुद्रा",
   "comparator.field.targetCountry": "गंतव्य देश",
   "comparator.field.targetCurrency": "लक्ष्य मुद्रा",
+  "comparator.field.receiveCountryPlaceholder": "को…",
   "comparator.field.urgency": "तात्कालिकता",
   "comparator.field.youReceive": "आप प्राप्त करते हैं",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

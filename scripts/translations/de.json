@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Quellwährung",
   "comparator.field.targetCountry": "Zielland",
   "comparator.field.targetCurrency": "Zielwährung",
+  "comparator.field.receiveCountryPlaceholder": "Nach…",
   "comparator.field.urgency": "Dringlichkeit",
   "comparator.field.youReceive": "Sie erhalten",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

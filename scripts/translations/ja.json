@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "送金元通貨",
   "comparator.field.targetCountry": "送金先の国",
   "comparator.field.targetCurrency": "受取通貨",
+  "comparator.field.receiveCountryPlaceholder": "へ…",
   "comparator.field.urgency": "緊急性",
   "comparator.field.youReceive": "受取通貨",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

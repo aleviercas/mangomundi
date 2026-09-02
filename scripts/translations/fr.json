@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "Devise source",
   "comparator.field.targetCountry": "Pays de destination",
   "comparator.field.targetCurrency": "Devise cible",
+  "comparator.field.receiveCountryPlaceholder": "Vers…",
   "comparator.field.urgency": "Urgence",
   "comparator.field.youReceive": "Vous recevez",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

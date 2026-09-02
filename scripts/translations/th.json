@@ -212,6 +212,7 @@
   "comparator.field.sourceCurrency": "สกุลเงินต้นทาง",
   "comparator.field.targetCountry": "ประเทศปลายทาง",
   "comparator.field.targetCurrency": "สกุลเงินปลายทาง",
+  "comparator.field.receiveCountryPlaceholder": "ไปยัง…",
   "comparator.field.urgency": "ความเร่งด่วน",
   "comparator.field.youReceive": "คุณได้รับ",
   "comparator.filter.exclusiveOnly": "Exclusive rates",
