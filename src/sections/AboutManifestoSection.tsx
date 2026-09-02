@@ -71,50 +71,44 @@ export function AboutManifestoSection() {
             <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/70 sm:text-lg">
               {t("home.about.subtitle")}
             </p>
-            <div className="mt-5 flex flex-wrap items-center gap-3.5">
-              {/* 2026-08-31 feedback — moved here from TodaysRoutesSection's
-                  header row, next to a "About us" CTA. Two rounds of trying
-                  to size the WIDGET to match the button (h-11 wrapper: too
-                  short, capped its real 52px content; then no wrapper at
-                  all: still read as taller/misaligned, per 2026-09-02
-                  feedback) — both assumed the button's height was fixed and
-                  the widget had to conform to it. Flipped: the widget's
-                  data-style-height="52px" (see TrustBox's own comment) is
-                  the one dimension Trustpilot's script actually enforces
-                  and that this codebase can't safely shrink without
-                  clipping (TrustpilotCard's rail instance hit the same
-                  wall). So the BUTTON now matches the widget's real height
-                  instead — h-[52px], not h-11 — two same-height boxes in
-                  an items-center row line up exactly, no rounding, no
-                  guessing which side over/underhangs. Not re-verified
-                  against the live widget here — this sandbox has no
-                  network path to trustpilot.com and `/` 500s server-side on
-                  the Supabase-backed loader other sections on this page
-                  need, so a real screenshot isn't possible from here; if
-                  this still looks off in production, a screenshot is the
-                  next real signal. */}
+            <div className="mt-5">
               <Link
                 to="/about"
                 className="inline-flex h-[52px] items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
               >
                 {t("home.about.cta.aboutUs")}
               </Link>
-              <div className="flex shrink-0 items-center">
-                <TrustBox />
-              </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3.5">
-            {stats.map((s) => (
-              <div key={s.label} className="rounded-[14px] border border-white/14 bg-white/8 p-3.5">
+          {/* 2026-09-04 feedback — "el review us on trustpilot del home en
+              natural by design ponerlo abajo de los 4 cuadrados": TrustBox
+              used to sit next to the "About us" button in the left column
+              (see git history for the sizing story that got it there),
+              misaligned against that button on every round it was
+              adjusted. Moved into this right column instead, below the
+              stat grid — no more shared row with a button of a different
+              height to line up against, and the sizing history above no
+              longer applies since nothing here needs to match TrustBox's
+              own height. */}
+          <div className="flex flex-col gap-3.5">
+            <div className="grid grid-cols-2 gap-3.5">
+              {stats.map((s) => (
                 <div
-                  className={`font-heading text-[26px] font-extrabold tracking-[-0.03em] ${s.valueClassName ?? "text-white"}`}
+                  key={s.label}
+                  className="rounded-[14px] border border-white/14 bg-white/8 p-3.5"
                 >
-                  {s.value}
+                  <div
+                    className={`font-heading text-[26px] font-extrabold tracking-[-0.03em] ${s.valueClassName ?? "text-white"}`}
+                  >
+                    {s.value}
+                  </div>
+                  <div className="mt-[2px] text-[11.5px] text-[#A79C92]">{s.label}</div>
                 </div>
-                <div className="mt-[2px] text-[11.5px] text-[#A79C92]">{s.label}</div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <div className="flex justify-center">
+              <TrustBox />
+            </div>
           </div>
         </div>
       </div>

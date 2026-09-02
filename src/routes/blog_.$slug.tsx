@@ -477,22 +477,17 @@ function BlogPostPage() {
               individual one (post.audience is already "business" | "retail"
               | "both" — "both" falls back to the individual comparator,
               same as a post with no stronger business signal).
-              2026-09-03 feedback — "el logo esta un poquito abajo": measured
-              (getBoundingClientRect) the icon and label spans were
-              geometrically centered against each other already — this is
-              the "m" glyph's own font metrics (rendered at 1.4em, much
-              bigger than the button's own text) sitting visually lower
-              within its box than the text does, an optical- vs.
-              geometric-centering mismatch for a big glyph next to small
-              text. `-mt-1` on a wrapper nudges it up to compensate (same
-              fix, about.tsx's identical button). */}
+              2026-09-03/04 feedback — "el logo esta un poquito abajo" /
+              "el icono queda un poco desalineado": a `-mt-1` nudge on
+              `items-center` wasn't enough. Switched to `items-baseline`
+              (same fix as about.tsx's identical button, see its comment for
+              the pixel-scan verification) — aligns both children on their
+              real text baseline instead of centering mismatched boxes. */}
           <Link
             to={post.audience === "business" ? "/business" : "/"}
-            className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            className="mt-3 inline-flex items-baseline gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
-            <span className="-mt-1">
-              <BrandMark tone="light" />
-            </span>
+            <BrandMark tone="light" />
             {t("blog.cta.button")}
           </Link>
         </div>

@@ -1,6 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { getExclusiveCorridors, type ExclusiveCorridor } from "@/lib/fx.functions";
+import {
+  getExclusiveCorridors,
+  getWidgetExclusiveCorridors,
+  type ExclusiveCorridor,
+} from "@/lib/fx.functions";
 
 /**
  * "Today's routes, already priced" (design/AJUSTES-1.md §E) — real
@@ -26,5 +30,20 @@ export function useExclusiveCorridors(initialData?: ExclusiveCorridor[]) {
     queryFn: () => fn(),
     staleTime: 5 * 60_000,
     initialData,
+  });
+}
+
+/** Same real data/logic as useExclusiveCorridors above, just a higher cap
+ *  (see getWidgetExclusiveCorridors) for the embeddable widget's own
+ *  pre-search examples list, which has more room to fill than the home
+ *  page's 4-card grid. A separate query key — this legitimately returns a
+ *  different (longer) list than useExclusiveCorridors for the same
+ *  underlying data, so they can't share a cache entry. */
+export function useWidgetExclusiveCorridors() {
+  const fn = useServerFn(getWidgetExclusiveCorridors);
+  return useQuery({
+    queryKey: ["widget-exclusive-corridors"],
+    queryFn: () => fn(),
+    staleTime: 5 * 60_000,
   });
 }

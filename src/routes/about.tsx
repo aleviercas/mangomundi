@@ -120,7 +120,12 @@ function AboutPage() {
           blog_.$slug.tsx). Reuses that exact card treatment and its already-
           translated blog.cta.* copy — same real destination (the comparator),
           not a new claim, so no new i18n keys/translations needed. */}
-      <section className="mx-auto max-w-3xl px-5 pb-16 sm:px-8">
+      {/* 2026-09-04 feedback — "la sección de contact quedó con mucho aire,
+          comprimirla un poco más cerca del botón de go to compare": pb-16
+          (64px) here plus ContactSection's own top padding (36-48px, see
+          its comment) stacked into a ~100-112px gap between this card and
+          the "Contact" heading below — trimmed to pb-8/pb-10 (32-40px). */}
+      <section className="mx-auto max-w-3xl px-5 pb-8 sm:px-8 sm:pb-10">
         <div className="rounded-2xl border border-border bg-card p-8 text-center">
           <p className="text-sm text-muted-foreground">{t("blog.cta.prompt")}</p>
           {/* 2026-09-03 feedback — "ponerle el icono como en el botón de go to
@@ -134,23 +139,23 @@ function AboutPage() {
               matches blog_.$slug.tsx's CTA exactly now, same classes
               (bg-primary, rounded-xl, py-2.5) — not just the same color.
               2026-09-03 feedback (third round) — "revisa el botón... porque
-              el logo esta un poquito abajo": measured (getBoundingClientRect)
-              the icon and label spans were geometrically centered against
-              each other already, so this isn't a flex/box-model bug — it's
-              the "m" glyph's own font metrics (rendered at 1.4em, much
-              bigger than the button's own text) sitting visually lower
-              within its box than the text does, a classic optical- vs.
-              geometric-centering mismatch for a big glyph next to small
-              text. `-mt-1` on a wrapper nudges it up to compensate — no
-              such nudge needed for BrandMark's other call sites, which
-              don't sit inline next to text at a much smaller size. */}
+              el logo esta un poquito abajo": tried a `-mt-1` nudge on
+              `items-center`, still off per 2026-09-04 feedback ("el icono
+              queda un poco desalineado"). Root cause: `items-center`
+              centers each flex item's whole box, but BrandMark's box (a
+              bigger 1.4em glyph) and the text's box aren't the same shape,
+              so centering the boxes doesn't align the ink. Switched to
+              `items-baseline` instead, which aligns both children on their
+              actual text baseline (both are literal glyphs, "m" and "G") —
+              measured via a pixel scan of a screenshot crop (sharp,
+              8x device scale): bottom ink edges now within 1px of each
+              other, vs. several px off with the centered+nudge approach.
+              No manual offset needed. */}
           <Link
             to="/"
-            className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            className="mt-3 inline-flex items-baseline gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
-            <span className="-mt-1">
-              <BrandMark tone="light" />
-            </span>
+            <BrandMark tone="light" />
             {t("blog.cta.button")}
           </Link>
         </div>

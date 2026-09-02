@@ -1,13 +1,14 @@
 import { useState } from "react";
-import { Sparkle } from "lucide-react";
+import { ArrowRight, Sparkle } from "lucide-react";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import type { ComparisonResult } from "@/lib/fx.functions";
 import type { ExclusiveCorridor } from "@/lib/fx.functions";
 import { Wordmark } from "@/components/Wordmark";
 import { defaultCounterCurrency, primaryCountryForCurrency } from "@/lib/countries";
 import { useI18n } from "@/lib/i18n";
-import { useExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
+import { useWidgetExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
 import { FlagIcon } from "@/components/ui/FlagIcon";
+import { SITE_URL } from "@/config/site";
 
 /** 2026-09-01 feedback (first round) — "antes de seleccionar pueden aparecer
  *  ejemplos de todays rates para que no aparezca vacío": the compressed
@@ -149,7 +150,7 @@ export function EmbedComparator({
 
   const { t } = useI18n();
   const [result, setResult] = useState<ComparisonResult | null>(null);
-  const { data: exampleCorridors } = useExclusiveCorridors();
+  const { data: exampleCorridors } = useWidgetExclusiveCorridors();
   const examples = exampleCorridors?.slice(0, MAX_WIDGET_EXAMPLES) ?? [];
 
   // 2026-09-01 feedback (second round) — WidgetExamples' rows need to be
@@ -199,22 +200,32 @@ export function EmbedComparator({
 
       {/* 2026-08-31 feedback — "el widget sacarle el scroll, dijimos que iba
           sin scroll" (design/Mangomundi 4 - Final.dc.html line 728 labels
-          the widget mockup itself "Widget · sin scroll"): no overflow-y-auto
-          here anymore, and no scroll-hint chevron — this content is meant
-          to fit the fixed 360×540 frame outright (smaller type throughout
-          the embedded search row and CompactResultsList, see their own
-          comments), not scroll to reveal what doesn't fit. */}
-      {/* 2026-09-03 feedback — "aprovechar todo el ancho, remover los
+          the widget mockup itself "Widget · sin scroll"): the search row +
+          examples/results below are still sized to fit the fixed 360×540
+          frame without scrolling in the common case (smaller type
+          throughout, see their own comments).
+          2026-09-04 feedback — "mostrar mas rutas/opciones para que no
+          quede espacio en blanco": both the pre-search examples list
+          (useWidgetExclusiveCorridors, up to 8) and the post-search
+          results list (CompactResultsList's own `rest`, no longer capped)
+          can now genuinely have more real content than the old hard caps
+          allowed — `overflow-y-auto` (was `overflow-hidden`) is the safety
+          net for whenever that content is taller than 540px leaves room
+          for, instead of silently clipping it. The "see more"/attribution
+          bars below are OUTSIDE this scrolling area (their own shrink-0
+          siblings), so they stay pinned at the bottom of the frame either
+          way — never scrolled out of view.
+          2026-09-03 feedback — "aprovechar todo el ancho, remover los
           margenes que separan los costados de ambos lados": this wrapper's
           own px-3 sm:px-4 (12-16px each side) sat on top of the search
           card's own border, so the card and the examples list both floated
           with a visible gutter to the frame's edges instead of using the
           widget's full width — real, measured empty bands on a 500px-wide
-          screenshot of /embed, not a guess. Only the header/attribution
-          bars (plain text, no card) still carry their own small horizontal
-          padding; this content area (which holds the bordered card) no
-          longer does. */}
-      <div className="min-h-0 flex-1 overflow-hidden py-3">
+          screenshot of /embed, not a guess. Only the header/attribution/
+          see-more bars (plain text or full-bleed, no card) still carry
+          their own small horizontal padding; this content area (which
+          holds the bordered card) no longer does. */}
+      <div className="min-h-0 flex-1 overflow-y-auto py-3">
         <ComparatorSection
           key={remountKey}
           embedded
@@ -223,6 +234,24 @@ export function EmbedComparator({
         />
         {!result && <WidgetExamples examples={examples} onSelect={handleSelectExample} />}
       </div>
+
+      {/* 2026-09-04 feedback — "el boton de see more on mangomundi tiene
+          que quedar abajo en el widget, y también ponerlo antes de
+          comparar abajo": used to live only inside CompactResultsList
+          (post-search only, and it scrolled away with the results list).
+          One persistent bar instead, shown in both the pre-search examples
+          state and the post-search results state, pinned above the
+          required attribution bar at the very bottom of the frame — never
+          part of the scrolling content above. */}
+      <a
+        href={SITE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex shrink-0 items-center justify-center gap-1 border-t border-border bg-foreground px-3.5 py-2 text-xs font-semibold text-background transition-colors hover:bg-foreground/90"
+      >
+        {t("comparator.widget.seeMore")}
+        <ArrowRight className="h-3.5 w-3.5" />
+      </a>
 
       {/* Attribution — required on the free embed; links back to the site. */}
       <a

@@ -12,7 +12,12 @@ export function ContactSection() {
   // HowItWorksSection/AboutManifestoSection/BusinessWidgetRow's own
   // comments); this one was still at the old py-14 sm:py-20 (56–80px).
   return (
-    <section id="contact" className="scroll-mt-24 py-9 sm:py-12">
+    // 2026-09-04 feedback — "la sección de contact quedó con mucho aire":
+    // asymmetric now (less top, same bottom) since the "Go to compare" card
+    // right above (about.tsx, its own pb-* trimmed too) already carries
+    // its own bottom padding — this section's old symmetric py-9/py-12
+    // stacked on top of that for a much bigger gap than either alone.
+    <section id="contact" className="scroll-mt-24 pb-9 pt-4 sm:pb-12 sm:pt-6">
       <div className="mx-auto max-w-7xl px-5 sm:px-8 text-center">
         <p className="text-eyebrow font-bold uppercase text-accent-text">
           {t("home.contact.eyebrow")}

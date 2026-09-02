@@ -973,6 +973,12 @@ async function computeExclusiveCorridors(
   amount: number,
   segment: "retail" | "business",
   logLabel: string,
+  // 2026-09-04 feedback — the embeddable widget wants more pre-search
+  // examples than the home page's own 4-card grid has room for. Default 4
+  // keeps every existing caller (home's TodaysRoutesSection/
+  // BusinessTodaysRoutesSection) unchanged; getWidgetExclusiveCorridors
+  // below is the one caller that raises it.
+  maxResults = 4,
 ): Promise<ExclusiveCorridor[]> {
   const settled = await Promise.all(
     candidates.map(async (c): Promise<ExclusiveCorridor | null> => {
@@ -1028,7 +1034,7 @@ async function computeExclusiveCorridors(
   if (qualifying.length === 0) return [];
   const offset = Math.floor(Math.random() * qualifying.length);
   return Array.from(
-    { length: Math.min(4, qualifying.length) },
+    { length: Math.min(maxResults, qualifying.length) },
     (_, i) => qualifying[(i + offset) % qualifying.length],
   );
 }
@@ -1040,6 +1046,25 @@ export const getExclusiveCorridors = createServerFn({ method: "GET" }).handler(
       EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
       "retail",
       "[getExclusiveCorridors]",
+    ),
+);
+
+// 2026-09-04 feedback — "en el widget mostrar mas rutas para que no quede
+// espacio en blanco antes de comparar": the fixed 360x540 widget frame has
+// more room than the home page's 4-card grid. Same candidates, same real
+// "the winner must actually have the exclusive deal" gate as
+// getExclusiveCorridors above — just a higher maxResults (up to all 11
+// candidates that qualify, matching EmbedComparator's own
+// MAX_WIDGET_EXAMPLES=8 display cap) instead of a second, separate
+// candidate list.
+export const getWidgetExclusiveCorridors = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      EXCLUSIVE_CORRIDOR_CANDIDATES,
+      EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
+      "retail",
+      "[getWidgetExclusiveCorridors]",
+      8,
     ),
 );
 

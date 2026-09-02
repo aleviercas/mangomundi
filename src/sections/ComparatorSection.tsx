@@ -67,7 +67,6 @@ import { useAnalytics } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useRatesFreshness } from "@/hooks/use-rates-freshness";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
-import { SITE_URL } from "@/config/site";
 import { captureBusinessLead, captureEnterpriseLead } from "@/lib/agent.functions";
 import { getMasterRateState, reportMissingCorridor } from "@/lib/master.functions";
 import {
@@ -1643,16 +1642,32 @@ export function ComparatorSection({
                 // name/code still shows in the open dropdown list exactly
                 // as before (unaffected — only the closed trigger changes).
                 <div className="space-y-[7px]">
+                  {/* 2026-09-04 feedback — "el país a enviar cambia de
+                      tamaño, dejarlo del tamaño de una banderita antes de
+                      seleccionar aunque esté vacía, y que currency tenga el
+                      mismo tamaño que el de currency de destino, así queda
+                      lugar para agrandar Compare": `triggerIconOnly` still
+                      fell back to the full placeholder STRING while nothing
+                      was selected (Combobox's own documented behavior —
+                      there's no icon to show yet), so this box was wide
+                      pre-selection and snapped down to just the flag's
+                      width the moment a country was picked. `placeholder=""`
+                      removes the text fallback (an empty slot instead), and
+                      a fixed `w-9` (was `w-auto`) means the box never
+                      resizes either way. Same fixed `w-[58px]` on the
+                      currency trigger below as the Receive row's own
+                      currency box (AD5) — currency codes are always 3
+                      letters, so nothing ever gets clipped. */}
                   <div className="flex h-[38px] w-full min-w-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] border-input bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40">
                     <CountryCombobox
                       value={sendingCountry}
                       onChange={handleSendingCountryChange}
-                      placeholder={t("comparator.combobox.placeholder")}
+                      placeholder=""
                       searchPlaceholder={t("comparator.combobox.search")}
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.sourceCountry")}
                       triggerIconOnly
-                      triggerClassName="h-full w-auto shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                      triggerClassName="h-full w-9 shrink-0 justify-center rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                     />
                     <input
                       type="number"
@@ -1672,7 +1687,7 @@ export function ComparatorSection({
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.sourceCurrency")}
                       compactLabel
-                      triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                      triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
                     />
                   </div>
 
@@ -1714,8 +1729,17 @@ export function ComparatorSection({
                       <ArrowLeftRight strokeWidth={2.2} className="h-[15px] w-[15px]" />
                     </button>
 
+                    {/* 2026-09-04 feedback — same fixed-width fix as Send
+                        above, applied here too (flag box `w-9`, currency
+                        `w-[58px]`, identical to Send's own) — this box no
+                        longer needs `flex-1` to fit its content, since that
+                        content stopped varying. Dropping `flex-1` here is
+                        what actually frees the width Compare picks up
+                        below: previously this box absorbed 100% of any
+                        extra frame width because it was the only flexible
+                        side of the row. */}
                     <div
-                      className={`flex h-[38px] min-w-0 flex-1 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                      className={`flex h-[38px] min-w-0 shrink-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
                         sameCorridorBlocked
                           ? "border-brand-cta ring-2 ring-brand-cta/60"
                           : "border-input"
@@ -1736,7 +1760,7 @@ export function ComparatorSection({
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCountry")}
                         triggerIconOnly
-                        triggerClassName="h-full w-auto shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                        triggerClassName="h-full w-9 shrink-0 justify-center rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                       />
                       <CurrencyCombobox
                         value={to}
@@ -1746,7 +1770,7 @@ export function ComparatorSection({
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCurrency")}
                         compactLabel
-                        triggerClassName="h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                        triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
                       />
                     </div>
 
@@ -1766,7 +1790,12 @@ export function ComparatorSection({
                         sameCorridorBlocked ||
                         amount <= 0
                       }
-                      className="btn-cta flex h-[38px] w-[84px] shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                      // 2026-09-04 feedback — "queda lugar para agrandar el
+                      // botón de compare": was a fixed `w-[84px]`, now
+                      // `flex-1` picks up the width the country/currency box
+                      // above just stopped absorbing — a real, larger
+                      // target instead of dead space next to it.
+                      className="btn-cta flex h-[38px] min-w-[70px] flex-1 shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       {compareMut.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -1847,6 +1876,18 @@ export function ComparatorSection({
                             compact ? "text-[21px]" : "text-[25px]"
                           }`}
                         />
+                        {/* 2026-09-04 feedback — "cuando elegis la moneda
+                            cambian de tamaño de ancho las celdas de la
+                            currency y empuja a la de país": `w-auto
+                            shrink-0` hugged whichever 3-letter code was
+                            selected, and since the country picker beside it
+                            is `flex-1`, every currency change nudged the
+                            country box's own width. Currency codes are
+                            always exactly 3 letters (ISO 4217) — a fixed
+                            width fits every one of them without truncation,
+                            so there's no reason for this box to vary at
+                            all. Same fixed width on both Send and Receive
+                            (below) keeps them visually identical too. */}
                         <CurrencyCombobox
                           value={from}
                           onChange={handlePickFromCurrency}
@@ -1855,8 +1896,8 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.sourceCurrency")}
                           compactLabel
-                          triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
-                            compact ? "px-3.5 text-[14px]" : "px-3.5 text-[14.5px]"
+                          triggerClassName={`h-full w-[68px] shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                            compact ? "px-3 text-[14px]" : "px-3 text-[14.5px]"
                           }`}
                         />
                         <CountryCombobox
@@ -1969,6 +2010,10 @@ export function ComparatorSection({
                             compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
                           } ${isMobile ? "justify-center" : ""}`}
                         />
+                        {/* Fixed width (same reasoning as Send's currency
+                            box above, AD11) — @4xl:w-[68px] matches Send's
+                            own fixed width exactly so both sides read as
+                            the same-size control. */}
                         <CurrencyCombobox
                           value={to}
                           onChange={handlePickToCurrency}
@@ -1977,7 +2022,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCurrency")}
                           compactLabel
-                          triggerClassName={`h-full w-auto shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0 @4xl:px-3.5 ${
+                          triggerClassName={`h-full w-[52px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0 @4xl:w-[68px] @4xl:px-3.5 ${
                             compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
                           }`}
                         />
@@ -3601,7 +3646,19 @@ function BusinessRequestPanel({
             </StatItem>
           </div>
 
-          <div className="flex w-full items-center gap-2 rounded-lg border border-success/30 bg-success/10 px-3 py-2.5 text-sm font-semibold text-success sm:w-[280px]">
+          {/* 2026-09-04 feedback — "eso hace que se mueva el tamaño del
+              cuadro de your request por algo mínimo": matching the form's
+              *content* (same header/stats row) wasn't enough — the form
+              below is two stacked h-10 controls (input + button) with a
+              gap-2 between them, 88px tall (2.5rem+0.5rem+2.5rem), while
+              this confirmation was a single ~40px row. On most widths the
+              stats block next to it was tall enough (wrapped to 2-3 lines)
+              to hide the difference, but whenever it wrapped to fewer
+              lines the shared flex row's height tracked the shorter side,
+              shrinking the panel by that few-px gap. `h-[88px]` pins this
+              box to the exact same height as the form, independent of how
+              the stats wrap. */}
+          <div className="flex h-[88px] w-full items-center justify-center gap-2 rounded-lg border border-success/30 bg-success/10 px-3 text-sm font-semibold text-success sm:w-[280px]">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             {t("comparator.business.request.sent")}
           </div>
@@ -4701,25 +4758,38 @@ function CompactResultsList({
   // instead (see that component's comment) — it's about the freshness of
   // THESE results, so it reads better attached to them.
   const freshness = useRatesFreshness(result.fetched_at);
-  // Same "Recomendado" ranking as the full table (sponsored-first, then
-  // score) — the widget has no sort tabs of its own, so this is the one
-  // ordering it ever shows.
+  // 2026-09-04 feedback — "agregar los 3 botones de ordenar por recommend,
+  // receive more y fastest igual que lo hace el comparador": the widget
+  // used to have no sort control at all, always showing "overall". Same
+  // SortKey/sortByScore the full comparator's own 3 tabs use (see their
+  // own comment a few hundred lines up) — just a compact pill row sized
+  // for this 360px frame instead of the full table's 78px-tall cards.
+  const [sortBy, setSortBy] = useState<SortKey>("overall");
+  // Sponsored-first only applies to the default "overall" ranking, same
+  // rule the full comparator's own sortedFiltered uses (see its own
+  // `if (sortBy !== "overall") return sorted` a few hundred lines up) —
+  // "receive more"/"fastest" are honest metric sorts, not a place to also
+  // sneak sponsored rows to the top.
   const ranked = useMemo(() => {
-    const sorted = sortByScore(result.rows, "overall");
+    const sorted = sortByScore(result.rows, sortBy);
+    if (sortBy !== "overall") return sorted;
     const sponsored = sorted.filter((r) => r.has_exclusive_deal);
     const rest = sorted.filter((r) => !r.has_exclusive_deal);
     return [...sponsored, ...rest];
-  }, [result.rows]);
+  }, [result.rows, sortBy]);
   const winner = ranked[0];
-  // Capped at 2 extra lines — the point is "fits without scrolling", not
-  // "shows everyone"; the invitation block below is the escape hatch for
-  // the rest. (3 was tried first and still needed an internal scroll at
-  // the widget's OLD 600px default height; the default shrank to 540px
-  // on 29-ago-2026 (design/HANDOFF.md §5's 360×540) specifically to match
-  // the mockup, which makes 2 the safer cap, not a looser one — the
-  // send/receive form above already stacks to ~4 fields at 360px wide and
-  // eats most of the vertical budget on its own.)
-  const rest = ranked.slice(1, 3);
+  // 2026-09-04 feedback — "mostrar mas opciones para que ocupe todo el
+  // largo del widget": was capped at 2 extra rows to guarantee no internal
+  // scroll; EmbedComparator's content area now scrolls its own middle
+  // section when it has to (see that component's comment), so this can
+  // show as many as genuinely exist instead of hiding real results.
+  const rest = ranked.slice(1);
+  const sortTabs = [
+    { key: "overall" as SortKey, label: t("comparator.tab.recommended") },
+    { key: "recipient_gets_most" as SortKey, label: t("comparator.tab.receiveMore") },
+    { key: "fastest" as SortKey, label: t("comparator.tab.fastest") },
+  ];
+  const activeTabLabel = sortTabs.find((tab) => tab.key === sortBy)?.label ?? sortTabs[0].label;
 
   if (!winner) {
     return (
@@ -4747,11 +4817,36 @@ function CompactResultsList({
         )}
       </div>
 
-      {/* Winner — the only row with a CTA and full details. "Recommended"
-          tag (2026-09-04 feedback — "el que mostramos es el recommended")
-          replaces the "delivers the most" framing removed above: this row
-          is featured because it's this list's one recommendation, not
-          because of any one metric. */}
+      {/* Compact sort pills — same 3 keys/labels as the full comparator's
+          own tabs (comparator.tab.*), one line of small buttons instead of
+          78px-tall cards. */}
+      <div className="mt-1.5 grid grid-cols-3 gap-1.5 px-2.5">
+        {sortTabs.map((tab) => {
+          const isActive = sortBy === tab.key;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setSortBy(tab.key)}
+              aria-pressed={isActive}
+              className={`h-7 rounded-md px-1.5 text-[10.5px] font-bold transition-colors ${
+                isActive
+                  ? "border-[1.5px] border-brand-cta bg-brand-cta/10 text-foreground"
+                  : "border border-border bg-white text-muted-foreground hover:bg-muted/50"
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Winner — the only row with a CTA and full details. Tag (2026-09-04
+          feedback — "el que mostramos es el recommended") now reflects
+          whichever sort pill is active instead of always saying
+          "Recommended" — once "Receive more"/"Fastest" became real sorts
+          (not just "overall"), a fixed "Recommended" label on the top
+          "Fastest"-sorted row would misdescribe why it's there. */}
       <div className="mt-1.5 rounded-xl border-2 border-brand-cta bg-card p-2.5">
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
@@ -4768,7 +4863,7 @@ function CompactResultsList({
                 className="inline-block rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
                 style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
               >
-                {t("comparator.tab.recommended")}
+                {activeTabLabel}
               </span>
               <div className="truncate text-[11px] tabular-nums text-muted-foreground">
                 {winner.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ·{" "}
@@ -4831,33 +4926,14 @@ function CompactResultsList({
         </div>
       )}
 
-      {/* Invitation block — 2026-09-04 feedback — "sacar la frase de 21
-          more providers on mangomundi y lo de abajo cash pickup card
-          payout... dejar solo el boton pero sin el numero de providers,
-          pone see more on mangomundi": the count and description used to
-          justify this link were repeating what the list above it already
-          shows; now just the one CTA. */}
-      <a
-        href={SITE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-2.5 flex h-9 w-full items-center justify-center gap-1 rounded-md bg-foreground text-xs font-semibold text-background transition-colors hover:bg-foreground/90"
-      >
-        {t("comparator.widget.seeMore")}
-        <ArrowRight className="h-3.5 w-3.5" />
-      </a>
-      {/* 2026-09-01 feedback — "como no tiene scroll hay algo abajo que no
-          se ve": a `{tRecipient}` caption used to render right here, one
-          more line below the invitation block. It was fx.recipient
-          ("Recipient gets") — a label meant to sit next to a figure
-          elsewhere, rendered alone with nothing to attach to, and not part
-          of design/Mangomundi 4 - Final.dc.html's widget mockup (line
-          726-786) at all. In the fixed 360×540 frame (overflow-hidden, no
-          scrollbar — EmbedComparator.tsx's own comment on why), that extra
-          line was exactly what pushed the bottom of this list (and
-          sometimes the "powered by" footer under it) past the visible
-          height with no way to see it had happened. Removed instead of
-          re-fit — it didn't belong here to begin with. */}
+      {/* 2026-09-04 feedback — "el boton de see more on mangomundi tiene
+          que quedar abajo en el widget, y también ponerlo antes de
+          comparar abajo": the "see more" CTA that used to live here (end
+          of this list) only ever showed up post-search. Moved out to
+          EmbedComparator itself instead, as one persistent bar pinned at
+          the bottom of the whole frame in both the pre-search examples
+          state and this post-search results state — see that component's
+          own comment. */}
     </div>
   );
 }
