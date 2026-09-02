@@ -132,12 +132,25 @@ function AboutPage() {
               2026-09-03 feedback (second round) — "ponelo igual que en el
               blog, en negro, si lo pones en naranja el logo no se ve":
               matches blog_.$slug.tsx's CTA exactly now, same classes
-              (bg-primary, rounded-xl, py-2.5) — not just the same color. */}
+              (bg-primary, rounded-xl, py-2.5) — not just the same color.
+              2026-09-03 feedback (third round) — "revisa el botón... porque
+              el logo esta un poquito abajo": measured (getBoundingClientRect)
+              the icon and label spans were geometrically centered against
+              each other already, so this isn't a flex/box-model bug — it's
+              the "m" glyph's own font metrics (rendered at 1.4em, much
+              bigger than the button's own text) sitting visually lower
+              within its box than the text does, a classic optical- vs.
+              geometric-centering mismatch for a big glyph next to small
+              text. `-mt-1` on a wrapper nudges it up to compensate — no
+              such nudge needed for BrandMark's other call sites, which
+              don't sit inline next to text at a much smaller size. */}
           <Link
             to="/"
             className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
-            <BrandMark tone="light" />
+            <span className="-mt-1">
+              <BrandMark tone="light" />
+            </span>
             {t("blog.cta.button")}
           </Link>
         </div>
