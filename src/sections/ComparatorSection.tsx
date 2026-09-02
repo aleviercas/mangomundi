@@ -1951,7 +1951,13 @@ export function ComparatorSection({
                         column to the tallest one, so that ~8px difference
                         was stretching the WHOLE search row, Send/Receive
                         boxes included, not just this column. h-5 (20px)
-                        closes most of that gap. */}
+                        closes most of that gap.
+                        2026-09-03 feedback (second round) — "que tenga el
+                        mismo tamaño de letra que send y receive": was
+                        text-[10px], smaller than FieldLight's own label
+                        (text-[11.5px], "Send"/"Receive" above the fields) —
+                        matched to that same size instead of its own
+                        smaller one-off value. */}
                     <div className="mb-1.5 flex items-center justify-end">
                       <div
                         role="tablist"
@@ -1964,7 +1970,7 @@ export function ComparatorSection({
                             role="tab"
                             aria-selected={segment === s}
                             onClick={() => handleSegmentChange(s)}
-                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize leading-none transition ${
+                            className={`rounded-full px-2 py-0.5 text-[11.5px] font-semibold capitalize leading-none transition ${
                               segment === s
                                 ? "bg-card text-foreground shadow-sm"
                                 : "text-muted-foreground hover:text-foreground"
