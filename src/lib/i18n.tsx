@@ -565,17 +565,32 @@ export const DICTS: Record<Lang, Dict> = {
     // Compact results list inside the embeddable widget (EmbedComparator) —
     // one winner card + compact provider lines + this link back to the
     // full site. {n} is the total number of providers in the comparison.
+    // 2026-09-04 feedback made this key's own usage site dead code (see
+    // comparator.widget.seeMore below) — left in place, translated in all
+    // 19 locales, rather than overwriting those with an unverified
+    // 19-language re-translation of a one-word copy change.
     "comparator.widget.viewAll": "See all {n} on mangomundi",
-    // design/Mangomundi 4 - Final.dc.html (line 743-744) — the widget's own
-    // results eyebrow, literal wording, distinct from comparator.results
-    // (the full table's "Your results" header) which this deliberately
-    // doesn't reuse. {n} is result.rows.length, the real corridor count.
+    // 2026-09-04 feedback — "sacar la frase de 21 more providers on
+    // mangomundi... dejar solo el boton pero sin el numero de providers,
+    // pone see more on mangomundi": comparator.widget.viewAll's own
+    // replacement, without the count (the title/body text it used to sit
+    // under is gone too, see comparator.widget.moreProviders' old comment
+    // below). New key rather than editing viewAll in place — that key's
+    // JSON translations are real, human work in 19 languages; safer not to
+    // touch them for a copy change this session can only verify in
+    // English/Spanish/Portuguese.
+    "comparator.widget.seeMore": "See more on mangomundi",
     // design/Mangomundi 4 - Final.dc.html (line 435) — "Show N more
     // providers" below the (now capped) results list, distinct from
-    // comparator.widget.viewAll (the widget's own "See all N" link).
+    // comparator.widget.seeMore (the widget's own "See more" link).
     "comparator.showMoreProviders": "Show {n} more providers",
-    "comparator.widget.deliversMost": "Delivers the most",
-    "comparator.widget.ofNCompared": "of {n} compared",
+    // 2026-09-04 feedback — "sacar la frase delivers the most poner your
+    // results": the widget's own results eyebrow (design/Mangomundi 4 -
+    // Final.dc.html line 743-744), distinct from comparator.results (the
+    // full table's own "Your results" header) which this deliberately
+    // doesn't reuse — kept as its own key in case the two ever diverge
+    // again, same as before.
+    "comparator.widget.yourResults": "Your results",
     // Business broker table (design/Mangomundi 4 - Final.dc.html line
     // 494-541) — BusinessBrokerRow + BusinessRequestPanel in ComparatorSection.tsx.
     "comparator.business.metric.spread": "Spread",
@@ -643,13 +658,6 @@ export const DICTS: Record<Lang, Dict> = {
     // ~360px wide, so kept to two words rather than reusing the home
     // page's full headline.
     "widget.header.title": "Compare rates",
-    // "antes de comparar que aparezca también el botón de see more routes
-    // on mangomundi... incluso antes de comparar": a second, explicit
-    // invite to the main site next to the pre-search examples list —
-    // distinct from the always-present "powered by mangomundi" attribution
-    // footer, which is a required credit line, not an invitation to browse
-    // more routes.
-    "widget.examples.seeMore": "See more routes on mangomundi",
     // 2026-09-01 feedback — "antes de seleccionar pueden aparecer ejemplos
     // de todays rates para que no aparezca vacío": a real example corridor
     // (from the same getExclusiveCorridors data TodaysRoutesSection uses),
@@ -662,12 +670,6 @@ export const DICTS: Record<Lang, Dict> = {
     "widget.examples.title": "Example rates",
     "widget.examples.exclusiveRate": "Exclusive rate",
     "widget.examples.bestOf": "Best of {n} · {amount} {from}",
-    // The invitation block above viewAll (design/HANDOFF.md §5) — {n} is
-    // the real remaining-provider count for THIS corridor (total minus the
-    // winner and compact rows already shown), never the whole catalog.
-    "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-    "comparator.widget.moreProvidersBody":
-      "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
     // Footer
     // 2026-08-30 feedback — literal to design/Mangomundi 4 - Final.dc.html
     // line 234; EN-only change (decision #8), other langs keep the old copy.
@@ -3253,6 +3255,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.advancedSearch": "Búsqueda avanzada",
     "comparator.advancedOptions": "Opciones avanzadas",
     "comparator.results": "Tus resultados",
+    "comparator.widget.yourResults": "Tus resultados",
+    "comparator.widget.seeMore": "Ver más en mangomundi",
     "comparator.sortBy": "Ordenar",
     "comparator.sort.received": "Mejor tasa",
     "comparator.sort.fee": "Comisiones",

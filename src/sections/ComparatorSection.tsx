@@ -64,6 +64,7 @@ import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useRatesFreshness } from "@/hooks/use-rates-freshness";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { SITE_URL } from "@/config/site";
 import { captureBusinessLead, captureEnterpriseLead } from "@/lib/agent.functions";
@@ -1722,7 +1723,14 @@ export function ComparatorSection({
                       <CountryCombobox
                         value={receivingCountry}
                         onChange={handleReceivingCountryChange}
-                        placeholder={t("comparator.combobox.placeholder")}
+                        // 2026-09-04 feedback — "sacar la frase de select del
+                        // cuadro selector dejalo en blanco como se hace en el
+                        // comparador": this was the only CountryCombobox
+                        // still passing the "Select…" placeholder text — the
+                        // full comparator's own target-country field (a few
+                        // hundred lines below) already uses "" for exactly
+                        // this reason.
+                        placeholder=""
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCountry")}
@@ -4641,6 +4649,11 @@ function CompactResultsList({
   tCta: string;
 }) {
   const { t } = useI18n();
+  // 2026-09-04 feedback — "la frase rates just now ponela en your results":
+  // moved from EmbedComparator's own header bar into this header row
+  // instead (see that component's comment) — it's about the freshness of
+  // THESE results, so it reads better attached to them.
+  const freshness = useRatesFreshness(result.fetched_at);
   // Same "Recomendado" ranking as the full table (sponsored-first, then
   // score) — the widget has no sort tabs of its own, so this is the one
   // ordering it ever shows.
@@ -4669,20 +4682,29 @@ function CompactResultsList({
 
   return (
     <div className="min-w-0">
-      {/* design/Mangomundi 4 - Final.dc.html (line 743-744) — "Delivers the
-          most / of N compared", not the generic comparator.results header
-          the full table uses; a dedicated pair of keys so this doesn't
-          drag that shared string's wording along with it. */}
-      <div className="flex items-baseline justify-between">
+      {/* 2026-09-04 feedback — "sacar la frase delivers the most poner your
+          results... también sacar la frase de of 24 compared": that pair
+          (design/Mangomundi 4 - Final.dc.html line 743-744) is replaced by
+          a plain "Your results" label plus the freshness stamp moved down
+          from the header bar above (see its own comment) — "of N compared"
+          didn't earn its place next to a list that only ever shows 3 of
+          them anyway. Padded to match the winner/invitation cards' own
+          p-2.5 inset below, since this row (plain text, no card of its
+          own) would otherwise sit flush against the frame edge. */}
+      <div className="flex items-baseline justify-between px-2.5">
         <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-          {t("comparator.widget.deliversMost")}
+          {t("comparator.widget.yourResults")}
         </span>
-        <span className="text-[10px] font-bold" style={{ color: "#1F7A5A" }}>
-          {t("comparator.widget.ofNCompared").replace("{n}", String(result.rows.length))}
-        </span>
+        {freshness && (
+          <span className="text-[10px] font-semibold text-muted-foreground">{freshness}</span>
+        )}
       </div>
 
-      {/* Winner — the only row with a CTA and full details. */}
+      {/* Winner — the only row with a CTA and full details. "Recommended"
+          tag (2026-09-04 feedback — "el que mostramos es el recommended")
+          replaces the "delivers the most" framing removed above: this row
+          is featured because it's this list's one recommendation, not
+          because of any one metric. */}
       <div className="mt-1.5 rounded-xl border-2 border-brand-cta bg-card p-2.5">
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
@@ -4694,9 +4716,17 @@ function CompactResultsList({
               rounded={false}
               className="shrink-0 rounded-sm"
             />
-            <div className="min-w-0 truncate text-[11px] tabular-nums text-muted-foreground">
-              {winner.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ·{" "}
-              {formatDeliverySpeed(winner.speed_hours)}
+            <div className="min-w-0">
+              <span
+                className="inline-block rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+                style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
+              >
+                {t("comparator.tab.recommended")}
+              </span>
+              <div className="truncate text-[11px] tabular-nums text-muted-foreground">
+                {winner.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ·{" "}
+                {formatDeliverySpeed(winner.speed_hours)}
+              </div>
             </div>
           </div>
           <div className="shrink-0 text-right">
@@ -4717,9 +4747,11 @@ function CompactResultsList({
         )}
       </div>
 
-      {/* Rest — one compact line each: logo, name, amount, delta. */}
+      {/* Rest — one compact line each: logo, name, amount, delta. Padded
+          for the same reason as the header row above — plain text with no
+          card of its own would otherwise touch the frame edge. */}
       {rest.length > 0 && (
-        <div className="mt-1 flex flex-col">
+        <div className="mt-1 flex flex-col px-2.5">
           {rest.map((row) => {
             const delta = row.received - winner.received;
             return (
@@ -4752,32 +4784,21 @@ function CompactResultsList({
         </div>
       )}
 
-      {/* Invitation block — the non-negotiable part of this widget's
-          redesign (design/HANDOFF.md §5): never just a bare link, always a
-          full pitch for why to leave the compact list for the real site.
-          {n} is this corridor's real remaining count (rows.length minus the
-          winner and the compact rows already shown above), never the whole
-          provider catalog. */}
-      <div className="mt-2.5 rounded-lg bg-muted p-2.5">
-        <div className="text-xs font-bold text-foreground">
-          {t("comparator.widget.moreProviders").replace(
-            "{n}",
-            String(Math.max(result.rows.length - 1 - rest.length, 0)),
-          )}
-        </div>
-        <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
-          {t("comparator.widget.moreProvidersBody")}
-        </p>
-        <a
-          href={SITE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 flex h-9 w-full items-center justify-center gap-1 rounded-md bg-foreground text-xs font-semibold text-background transition-colors hover:bg-foreground/90"
-        >
-          {t("comparator.widget.viewAll").replace("{n}", String(result.rows.length))}
-          <ArrowRight className="h-3.5 w-3.5" />
-        </a>
-      </div>
+      {/* Invitation block — 2026-09-04 feedback — "sacar la frase de 21
+          more providers on mangomundi y lo de abajo cash pickup card
+          payout... dejar solo el boton pero sin el numero de providers,
+          pone see more on mangomundi": the count and description used to
+          justify this link were repeating what the list above it already
+          shows; now just the one CTA. */}
+      <a
+        href={SITE_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-2.5 flex h-9 w-full items-center justify-center gap-1 rounded-md bg-foreground text-xs font-semibold text-background transition-colors hover:bg-foreground/90"
+      >
+        {t("comparator.widget.seeMore")}
+        <ArrowRight className="h-3.5 w-3.5" />
+      </a>
       {/* 2026-09-01 feedback — "como no tiene scroll hay algo abajo que no
           se ve": a `{tRecipient}` caption used to render right here, one
           more line below the invitation block. It was fx.recipient

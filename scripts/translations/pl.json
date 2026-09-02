@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "Zastosuj stawkę mangomundi Preferred",
   "comparator.transferDetails": "Szczegóły przelewu",
   "comparator.transferDetails.subtitle": "Dostosuj kwotę i waluty przed uruchomieniem porównania rynku.",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "Zobacz wszystkie {n} na mangomundi",
   "compare.calculating": "Obliczanie optymalnych ścieżek…",
   "contact.error": "Nie udało się wysłać wiadomości. Spróbuj ponownie.",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "Najpierw uruchom porównanie — odpowiadam na podstawie danych z tabeli, nie źródeł zewnętrznych.",
   "wizard.send": "mangomundi nie przenosi pieniędzy — pokazuje najlepszą opcję i kieruje Cię prosto do dostawcy, aby dokończyć przelew na jego stronie. Porównaj, wybierz wiersz i kliknij, aby zakończyć. Konto u nas nie jest potrzebne.",
   "widget.header.title": "Porównaj kursy",
-  "widget.examples.seeMore": "Zobacz więcej tras na mangomundi",
   "comparator.row.share": "Udostępnij ten kurs",
   "comparator.row.shareCopied": "Skopiowano!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }

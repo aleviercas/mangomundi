@@ -307,10 +307,6 @@
   "comparator.tooltip.preferred_rate": "Aplicar tarifa Preferred de mangomundi",
   "comparator.transferDetails": "Detalles de la transferencia",
   "comparator.transferDetails.subtitle": "Ajusta el importe y las monedas antes de ejecutar la comparación de mercado.",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "Ver los {n} en mangomundi",
   "compare.calculating": "Calculando rutas óptimas…",
   "contact.error": "No hemos podido enviar tu mensaje. Inténtalo de nuevo.",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "Primero corré una comparación — respondo con los datos de la tabla, no con fuentes externas.",
   "wizard.send": "mangomundi no mueve el dinero: te muestra la mejor opción y te lleva directo a ese proveedor para completar la transferencia en su sitio. Compará, elegí una fila y hacé clic para terminar. No necesitás cuenta con nosotros.",
   "widget.header.title": "Comparar tasas",
-  "widget.examples.seeMore": "Ver más rutas en mangomundi",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
   "comingSoon.titleB2b": "Copilot B2B — Acceso prioritario",
   "comingSoon.titleEnterprise": "Enterprise Beta — Acceso prioritario",
@@ -816,5 +811,7 @@
   "preferredRateModal.genericError": "Algo salió mal. Intentá de nuevo.",
   "embed.poweredBy": "con tecnología de",
   "comparator.agent.languageAriaLabel": "Idioma {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Tus resultados",
+  "comparator.widget.seeMore": "Ver más en mangomundi"
 }

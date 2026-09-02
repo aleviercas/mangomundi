@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "Применить тариф mangomundi Preferred",
   "comparator.transferDetails": "Детали перевода",
   "comparator.transferDetails.subtitle": "Настройте сумму и валюты перед запуском сравнения рынка.",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "Показать все {n} на mangomundi",
   "compare.calculating": "Расчет оптимальных путей…",
   "contact.error": "Не удалось отправить сообщение. Попробуйте ещё раз.",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "Сначала запустите сравнение — я отвечаю по данным таблицы, а не по внешним источникам.",
   "wizard.send": "mangomundi не перемещает деньги сам — он показывает лучший вариант и направляет вас прямо к провайдеру, чтобы завершить перевод на его сайте. Сравните, выберите строку и перейдите для завершения. Аккаунт у нас не нужен.",
   "widget.header.title": "Сравнить курсы",
-  "widget.examples.seeMore": "Смотреть больше маршрутов на mangomundi",
   "comparator.row.share": "Поделиться этим курсом",
   "comparator.row.shareCopied": "Скопировано!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }

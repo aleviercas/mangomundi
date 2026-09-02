@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "mangomundi Preferred 환율 적용",
   "comparator.transferDetails": "송금 세부 정보",
   "comparator.transferDetails.subtitle": "시장 비교를 실행하기 전에 금액과 통화를 조정하세요.",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "mangomundi에서 {n}개 모두 보기",
   "compare.calculating": "최적의 경로 계산 중…",
   "contact.error": "메시지 전송에 실패했습니다. 다시 시도해 주세요.",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "먼저 비교를 실행하세요 — 표 데이터로만 답변하며 외부 소스는 사용하지 않습니다.",
   "wizard.send": "mangomundi는 돈을 직접 옮기지 않습니다 — 최선의 옵션을 보여주고, 해당 업체 사이트로 바로 안내해 송금을 완료합니다. 비교하고 한 줄을 선택해 클릭하면 끝. 저희 계정은 필요 없습니다.",
   "widget.header.title": "환율 비교",
-  "widget.examples.seeMore": "mangomundi에서 더 많은 경로 보기",
   "comparator.row.share": "이 환율 공유하기",
   "comparator.row.shareCopied": "복사됨!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }

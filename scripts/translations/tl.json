@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "Ilapat ang mangomundi Preferred rate",
   "comparator.transferDetails": "Mga Detalye ng Transfer",
   "comparator.transferDetails.subtitle": "I-adjust ang halaga at mga currency bago patakbuhin ang paghahambing sa market.",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "Tingnan lahat ng {n} sa mangomundi",
   "compare.calculating": "Kinakalkula ang mga optimal na path…",
   "contact.error": "Hindi naipadala ang mensahe. Subukang muli.",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "Magpatakbo muna ng paghahambing — sumasagot ako gamit ang datos ng talahanayan, hindi mga panlabas na source.",
   "wizard.send": "Hindi mismo naglilipat ng pera ang mangomundi — ipinapakita nito ang pinakamahusay na opsyon, tapos dinadala ka diretso sa provider na iyon para tapusin ang transfer sa site nila. Maghambing, pumili ng row, at mag-click para matapos. Walang account na kailangan sa amin.",
   "widget.header.title": "Ikumpara ang mga rate",
-  "widget.examples.seeMore": "Tingnan ang higit pang mga ruta sa mangomundi",
   "comparator.row.share": "Ibahagi ang rate na ito",
   "comparator.row.shareCopied": "Nakopya!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }

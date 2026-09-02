@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "mangomundi Preferred oranını uygula",
   "comparator.transferDetails": "Transfer Detayları",
   "comparator.transferDetails.subtitle": "Piyasa karşılaştırmasını çalıştırmadan önce tutarı ve para birimlerini ayarlayın.",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "Tümünü ({n}) mangomundi'de gör",
   "compare.calculating": "Optimal yollar hesaplanıyor…",
   "contact.error": "Mesaj gönderilemedi. Lütfen tekrar deneyin.",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "Önce bir karşılaştırma çalıştırın — tablo verileriyle yanıtlarım, dış kaynaklarla değil.",
   "wizard.send": "mangomundi parayı kendisi taşımaz — size en iyi seçeneği gösterir ve transferi tamamlamanız için doğrudan o sağlayıcının sitesine yönlendirir. Karşılaştırın, bir satır seçin ve tıklayıp bitirin. Bizde hesap gerekmez.",
   "widget.header.title": "Kurları karşılaştır",
-  "widget.examples.seeMore": "mangomundi'de daha fazla rota gör",
   "comparator.row.share": "Bu kuru paylaş",
   "comparator.row.shareCopied": "Kopyalandı!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }

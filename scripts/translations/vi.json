@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "Áp dụng tỷ giá mangomundi Preferred",
   "comparator.transferDetails": "Chi tiết Chuyển khoản",
   "comparator.transferDetails.subtitle": "Điều chỉnh số tiền và loại tiền tệ trước khi chạy so sánh thị trường.",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "Xem tất cả {n} trên mangomundi",
   "compare.calculating": "Đang tính toán lộ trình tối ưu…",
   "contact.error": "Gửi tin nhắn thất bại. Vui lòng thử lại.",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "Hãy chạy so sánh trước — tôi trả lời dựa trên dữ liệu bảng, không phải nguồn bên ngoài.",
   "wizard.send": "mangomundi không tự chuyển tiền — nó cho bạn lựa chọn tốt nhất rồi đưa bạn thẳng đến nhà cung cấp để hoàn tất giao dịch trên trang của họ. So sánh, chọn một hàng và nhấp để hoàn tất. Không cần tài khoản với chúng tôi.",
   "widget.header.title": "So sánh tỷ giá",
-  "widget.examples.seeMore": "Xem thêm các tuyến trên mangomundi",
   "comparator.row.share": "Chia sẻ tỷ giá này",
   "comparator.row.shareCopied": "Đã sao chép!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }

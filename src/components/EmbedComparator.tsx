@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Sparkle } from "lucide-react";
 import { ComparatorSection, type ComparatorQuery } from "@/sections/ComparatorSection";
 import type { ComparisonResult } from "@/lib/fx.functions";
@@ -8,29 +8,6 @@ import { defaultCounterCurrency, primaryCountryForCurrency } from "@/lib/countri
 import { useI18n } from "@/lib/i18n";
 import { useExclusiveCorridors } from "@/hooks/use-exclusive-corridors";
 import { FlagIcon } from "@/components/ui/FlagIcon";
-
-/** design/Mangomundi 4 - Final.dc.html (line 727-729) — "rates 2 min ago" in
- *  the widget's own header bar. Computed from the ONE comparison this
- *  widget actually ran (ComparisonResult.fetched_at via ComparatorSection's
- *  onResult), not a page-wide claim across several corridors — that's the
- *  case design/AJUSTES-1.md §E deliberately dropped as unhonest (see
- *  todaysRoutes.title's comment in i18n.tsx). A single widget query has a
- *  single real fetch time, so this one is real. Hidden until a result
- *  exists — nothing to be fresh about before that. */
-function useRatesFreshness(fetchedAt: string | null): string | null {
-  const { t } = useI18n();
-  const [, forceTick] = useState(0);
-  useEffect(() => {
-    if (!fetchedAt) return;
-    const id = setInterval(() => forceTick((n) => n + 1), 30_000);
-    return () => clearInterval(id);
-  }, [fetchedAt]);
-  if (!fetchedAt) return null;
-  const minutes = Math.max(0, Math.round((Date.now() - new Date(fetchedAt).getTime()) / 60_000));
-  return minutes < 1
-    ? t("widget.header.ratesJustNow")
-    : t("widget.header.ratesMinAgo").replace("{n}", String(minutes));
-}
 
 /** 2026-09-01 feedback (first round) — "antes de seleccionar pueden aparecer
  *  ejemplos de todays rates para que no aparezca vacío": the compressed
@@ -121,23 +98,14 @@ function WidgetExamples({
           );
         })}
       </div>
-      {/* 2026-09-03 feedback — "antes de comparar que aparezca también el
-          botón de see more routes on mangomundi... incluso antes de
-          comparar": a second, explicit invite to the main site next to
-          these pre-search examples — the attribution link at the bottom of
-          the widget (EmbedComparator's own "powered by mangomundi") is a
-          required credit line, always there regardless of state, not an
-          invitation to browse more routes specifically. target="_blank"
-          same as that attribution link, since this widget can be embedded
-          on a third-party page. */}
-      <a
-        href="https://mangomundi.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center justify-center gap-1 border-t border-border py-1.5 text-[10.5px] font-bold text-brand-cta hover:text-brand-cta-hover"
-      >
-        {t("widget.examples.seeMore")} →
-      </a>
+      {/* 2026-09-04 feedback — "sacar esa frase en naranja de see more
+          routes en mangomundi y volver a dejar los resultados de todays
+          routes": the routes list above is the point of this block; this
+          second, separate invite (added 2026-09-03) turned out to be
+          redundant next to it, not additive — dropped. The required
+          attribution link at the very bottom of the widget (EmbedComparator
+          's own "powered by mangomundi") already covers "how do I get to
+          the real site" without a second, competing CTA here. */}
     </div>
   );
 }
@@ -181,7 +149,6 @@ export function EmbedComparator({
 
   const { t } = useI18n();
   const [result, setResult] = useState<ComparisonResult | null>(null);
-  const freshness = useRatesFreshness(result?.fetched_at ?? null);
   const { data: exampleCorridors } = useExclusiveCorridors();
   const examples = exampleCorridors?.slice(0, MAX_WIDGET_EXAMPLES) ?? [];
 
@@ -213,20 +180,21 @@ export function EmbedComparator({
     <div className="relative flex h-full flex-col overflow-hidden bg-[#fcfcfc]">
       {/* design/Mangomundi 4 - Final.dc.html (line 726-729) — the widget's
           own header bar, distinct from ComparatorSection's chrome (which
-          `embedded` strips entirely). Real freshness stamp, shown only once
-          a comparison has actually run.
+          `embedded` strips entirely).
           2026-09-03 feedback — "sacale el logo de arriba porque ya aparece
           abajo": was the full Wordmark here, redundant with the "powered by
           mangomundi" attribution already at the bottom of this same widget
           — replaced with a short action-oriented title instead ("tiene que
-          tener algún título que invite a comparar"). */}
-      <div className="flex shrink-0 items-center justify-between border-b border-border px-3.5 py-2.5">
+          tener algún título que invite a comparar").
+          2026-09-04 feedback — "la frase rates just now ponela en your
+          results": the freshness stamp used to live here, on the right of
+          this bar. Moved into CompactResultsList's own "Your results"
+          header row instead (see its comment) — it's about the results
+          below, not the search form, so it reads better attached to them. */}
+      <div className="flex shrink-0 items-center border-b border-border px-3.5 py-2.5">
         <span className="font-heading text-[13.5px] font-extrabold text-foreground">
           {t("widget.header.title")}
         </span>
-        {freshness && (
-          <span className="text-[10.5px] font-semibold text-muted-foreground">{freshness}</span>
-        )}
       </div>
 
       {/* 2026-08-31 feedback — "el widget sacarle el scroll, dijimos que iba

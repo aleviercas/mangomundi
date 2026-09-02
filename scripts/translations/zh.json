@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "应用 mangomundi Preferred 汇率",
   "comparator.transferDetails": "转账详情",
   "comparator.transferDetails.subtitle": "在运行市场比较之前，请调整金额和货币。",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "在 mangomundi 查看全部 {n} 个",
   "compare.calculating": "正在计算最佳路径…",
   "contact.error": "消息发送失败，请重试。",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "请先运行一次比较 — 我根据表格数据回答，不使用外部来源。",
   "wizard.send": "mangomundi 本身不转移资金——它为你展示最佳选项，然后直接把你带到该服务商，在其网站上完成转账。比较、选择一行、点击即可完成。无需在我们这里开户。",
   "widget.header.title": "比较汇率",
-  "widget.examples.seeMore": "在 mangomundi 查看更多路线",
   "comparator.row.share": "分享此汇率",
   "comparator.row.shareCopied": "已复制!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }

@@ -309,10 +309,6 @@
   "comparator.tooltip.preferred_rate": "mangomundi Preferred दर लागू करें",
   "comparator.transferDetails": "ट्रांसफर विवरण",
   "comparator.transferDetails.subtitle": "बाज़ार तुलना चलाने से पहले राशि और मुद्राओं को समायोजित करें।",
-  "comparator.widget.deliversMost": "Delivers the most",
-  "comparator.widget.moreProviders": "{n} more providers on mangomundi",
-  "comparator.widget.moreProvidersBody": "Cash pickup, card payout, exclusive rates and the AI agent for this exact route.",
-  "comparator.widget.ofNCompared": "of {n} compared",
   "comparator.widget.viewAll": "mangomundi पर सभी {n} देखें",
   "compare.calculating": "इष्टतम मार्गों की गणना की जा रही है…",
   "contact.error": "संदेश नहीं भेजा जा सका। कृपया पुनः प्रयास करें।",
@@ -788,7 +784,6 @@
   "wizard.runFirst": "पहले एक तुलना चलाएँ — मैं तालिका के आँकड़ों से उत्तर देता हूँ, बाहरी स्रोतों से नहीं।",
   "wizard.send": "mangomundi खुद पैसा नहीं भेजता — यह आपको सबसे अच्छा विकल्प दिखाता है और फिर ट्रांसफ़र पूरा करने के लिए सीधे उस प्रदाता की साइट पर ले जाता है। तुलना करें, एक पंक्ति चुनें और पूरा करने के लिए क्लिक करें। हमारे साथ खाते की ज़रूरत नहीं।",
   "widget.header.title": "दरों की तुलना करें",
-  "widget.examples.seeMore": "mangomundi पर और रूट देखें",
   "comparator.row.share": "यह दर साझा करें",
   "comparator.row.shareCopied": "कॉपी हो गया!",
   "todaysRoutes.businessQuote": "Need a larger volume or a recurring transfer? Ask for a special quote",
@@ -818,5 +813,7 @@
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",
-  "comparator.row.spreadWord": "spread"
+  "comparator.row.spreadWord": "spread",
+  "comparator.widget.yourResults": "Your results",
+  "comparator.widget.seeMore": "See more on mangomundi"
 }
