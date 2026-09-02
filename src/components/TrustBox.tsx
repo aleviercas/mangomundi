@@ -86,12 +86,30 @@ declare global {
  * specifically to match data-style-height below). Verified in a throwaway
  * test route with a stand-in 52px element (this sandbox has no path to
  * trustpilot.com to load the real script) that the intended mechanism DOES
- * line the two up once conversion happens — so the more likely culprit is
- * THIS fallback link, the one state actually renderable/verifiable here:
- * `py-1.5` plus a 13px text line sizes it to roughly 32px, well short of
- * the 52px neighboring buttons are sized to match. `h-[52px]` means the
- * visible box is always that height regardless of whether Trustpilot's
- * script ever takes over. */
+ * line the two up once conversion happens — so at the time, the fallback
+ * link (the one state actually renderable/verifiable here) looked like the
+ * likely culprit instead: `py-1.5` plus a 13px text line sizes it to
+ * roughly 32px, well short of the 52px neighboring buttons are sized to
+ * match. Fixed to `h-[52px]` so the fallback's own box is always that
+ * height regardless of whether Trustpilot's script takes over.
+ *
+ * 2026-09-03 feedback (second round), now with a real screenshot of the
+ * REAL converted widget for the first time — "ahora quedo muy arriba,
+ * antes estaba muy abajo": the fallback fix above was real but not the
+ * whole story. `data-style-height="52px"` sets Trustpilot's own DIV to
+ * 52px, but their script renders the actual logo+stars content inside
+ * that div top-anchored, not vertically centered within it — so once the
+ * div itself is exactly 52px (matching the button, `items-center` on the
+ * row has nothing left to center), the shorter VISIBLE content inside
+ * still sits flush at the top of that box, reading as "too high" next to
+ * a button whose own text truly does fill its full height. Wrapping the
+ * raw widget div in our own `flex h-[52px] items-center` container fixes
+ * this regardless of what Trustpilot does internally: if their div ends
+ * up shorter than 52px for any reason, this wrapper centers it instead of
+ * leaving it pinned to the top of a taller implicit box; if it fills the
+ * full 52px, the wrapper is a no-op. Either way, centering now happens at
+ * a layer this codebase actually controls instead of relying on Trustpilot's
+ * own iframe content to center itself, which it apparently doesn't. */
 export function TrustBox() {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -115,25 +133,27 @@ export function TrustBox() {
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className="trustpilot-widget"
-      data-locale="en-US"
-      data-template-id="56278e9abfbbba0bdcd568bc"
-      data-businessunit-id="6a7a14b6f29ac72f7bd2792e"
-      data-style-height="52px"
-      data-style-width="auto"
-      data-token="ef14895d-6018-44c4-9b24-4bb39ed6b2e5"
-    >
-      <a
-        href="https://www.trustpilot.com/review/mangomundi.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex h-[52px] items-center gap-1.5 rounded-md border border-[#00b67a]/30 bg-[#00b67a]/[.08] px-2.5 text-[13px] font-bold text-[#00b67a] no-underline transition hover:bg-[#00b67a]/[.14]"
+    <div className="flex h-[52px] items-center">
+      <div
+        ref={ref}
+        className="trustpilot-widget"
+        data-locale="en-US"
+        data-template-id="56278e9abfbbba0bdcd568bc"
+        data-businessunit-id="6a7a14b6f29ac72f7bd2792e"
+        data-style-height="52px"
+        data-style-width="auto"
+        data-token="ef14895d-6018-44c4-9b24-4bb39ed6b2e5"
       >
-        <Star className="h-3.5 w-3.5 fill-current" aria-hidden />
-        Trustpilot
-      </a>
+        <a
+          href="https://www.trustpilot.com/review/mangomundi.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex h-[52px] items-center gap-1.5 rounded-md border border-[#00b67a]/30 bg-[#00b67a]/[.08] px-2.5 text-[13px] font-bold text-[#00b67a] no-underline transition hover:bg-[#00b67a]/[.14]"
+        >
+          <Star className="h-3.5 w-3.5 fill-current" aria-hidden />
+          Trustpilot
+        </a>
+      </div>
     </div>
   );
 }
