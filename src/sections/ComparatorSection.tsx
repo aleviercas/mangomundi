@@ -1672,7 +1672,19 @@ export function ComparatorSection({
                       trigger, so the box hugs its content; the swap button
                       grows a touch (32→38px) and Compare (fixed 74px→flex-1)
                       picks up the freed width instead of leaving it as
-                      dead space inside the country/currency box. */}
+                      dead space inside the country/currency box.
+                      2026-09-03 feedback — "que el boton de compare no
+                      cambie de tamano, el comportamiento que sea como era
+                      antes": AC21 (below, EmbedComparator's own padding)
+                      removed the widget's outer side padding so the card
+                      fills the frame — but Compare being `flex-1` meant
+                      100% of that newly freed width landed on THIS button,
+                      visibly widening it every time the frame got roomier.
+                      Swapped which side is `flex-1`: the country/currency
+                      box now soaks up any extra room (a genuine bonus —
+                      more space for the destination country name), while
+                      Compare goes back to a fixed, content-sized pill that
+                      no longer moves regardless of the frame's width. */}
                   <div className="flex items-stretch gap-[6px]">
                     <button
                       type="button"
@@ -1685,7 +1697,7 @@ export function ComparatorSection({
                     </button>
 
                     <div
-                      className={`flex h-[38px] w-auto shrink-0 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+                      className={`flex h-[38px] min-w-0 flex-1 items-stretch overflow-hidden rounded-[9px] border-[1.5px] bg-white transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
                         sameCorridorBlocked
                           ? "border-brand-cta ring-2 ring-brand-cta/60"
                           : "border-input"
@@ -1729,7 +1741,7 @@ export function ComparatorSection({
                         sameCorridorBlocked ||
                         amount <= 0
                       }
-                      className="btn-cta flex h-[38px] min-w-0 flex-1 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="btn-cta flex h-[38px] w-[84px] shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       {compareMut.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
