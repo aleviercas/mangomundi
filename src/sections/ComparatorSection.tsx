@@ -1861,32 +1861,32 @@ export function ComparatorSection({
                   </div>
 
                   {/* 2026-09-03 feedback — "el target currency que no se
-                      mueva porque se achica y se agranda": this box's width
-                      used to be content-driven (`w-auto max-w-[120px]` below
-                      @4xl, fully uncapped above it — see git history for
-                      that version's own reasoning about Compare's floor,
-                      still the reason the @4xl grid track handles this
-                      differently). Content-driven width is exactly the bug:
-                      `triggerIconOnly={isMobile}` meant DESKTOP kept showing
-                      the receiving country's full name once picked — a
-                      country name is anywhere from "UK" to "United Arab
-                      Emirates", so the box visibly grew/shrank on every
-                      selection, and the pre-selection state added yet a
-                      third width (the "Select…" placeholder text). Fixed
-                      width (`w-[108px]`, same at every breakpoint) plus
-                      `triggerIconOnly` unconditionally (not just mobile) —
-                      once picked, this ALWAYS shows just a flag, a
-                      near-constant size regardless of which country — and
-                      an empty `placeholder` (below) so the pre-selection
-                      state is blank space inside that same fixed box
-                      instead of a wider fallback string, per "tal vez tiene
-                      que aparecer en blanco y no la frase target currency".
+                      mueva porque se achica y se agranda": tried making this
+                      box always icon-only + a small fixed width (108px) —
+                      WRONG FIX, reverted the same day once the next round's
+                      real screenshot showed the desktop-width layout with
+                      the receive field "aplastado" (squished), the country
+                      name never showing at all. `triggerIconOnly=true`
+                      unconditionally meant even the WIDE @4xl grid track
+                      (`minmax(260px,1.3fr)`, plenty of room for a full name
+                      the way the Send field's own country box already shows
+                      one) got squeezed into that same tiny mobile-sized box.
+                      Restored `triggerIconOnly={isMobile}` (full name once
+                      there's room, same as Send) and the @4xl uncapping —
+                      kept the one uncontroversial part of that round, an
+                      empty `placeholder` so the pre-selection state is
+                      blank instead of a "Select…" fallback string, since
+                      that doesn't affect width the way icon-only did.
+                      `@4xl:w-full` (new) is what actually fixes the
+                      original resize complaint without hiding the name:
+                      at @4xl this box now always fills its fixed grid
+                      column width, so switching countries no longer changes
+                      the box's own footprint — only the text inside it.
                       Autofilling the currency itself already happens
                       elsewhere (handleReceivingCountryChange sets `to` to
                       the picked country's own local currency via
-                      localCurrency()) — this only fixes the box's width,
-                      not that behavior, which was already correct. */}
-                  <div className="w-[108px] shrink-0">
+                      localCurrency()) — unaffected by any of this. */}
+                  <div className="min-w-0 w-auto max-w-[120px] shrink-0 @4xl:w-full @4xl:max-w-none">
                     <FieldLight label={t("comparator.field.youReceive")}>
                       <div
                         className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
@@ -1901,10 +1901,10 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCountry")}
                           hideSecondary
-                          triggerIconOnly
-                          triggerClassName={`h-full min-w-0 flex-1 justify-center rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
+                          triggerIconOnly={isMobile}
+                          triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
                             compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
-                          }`}
+                          } ${isMobile ? "justify-center" : ""}`}
                         />
                         <CurrencyCombobox
                           value={to}
