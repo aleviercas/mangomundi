@@ -3733,6 +3733,27 @@ export function getRouteSeo(lang: Lang, path: string): SeoMeta {
   return en ?? SEO_META.en;
 }
 
+// 2026-09-03 feedback — "corregir el titulo que tiene que tener la pestana
+// del navegador en el home y en las otras paginas": a dynamic per-content
+// route (/send/$corridor's own "Compare GBP to MXN..." title, /business's
+// own title, a /blog/$slug post's own per-post title, /embed's) sets a
+// real, specific <title> via that route's own head() — but isn't one of
+// the handful of static paths getRouteSeo() actually knows about
+// (SEO_PER_ROUTE only covers "/blog", "/legal", "/about", "/widget"; "/"
+// itself is covered via SEO_META directly, see index.tsx's own comment).
+// getRouteSeo() never returns nothing though — its last-resort fallback is
+// the generic sitewide title — so the client sync effect below, which
+// re-runs getRouteSeo() on every mount AND on every language switch, was
+// unconditionally overwriting every one of those specific titles with the
+// generic "Mangomundi | Compare exchange rates" the instant it ran. This
+// gate limits that effect to the paths getRouteSeo() actually has an
+// opinion about; every other path keeps whatever title its own route
+// already set.
+function isKnownStaticSeoPath(path: string): boolean {
+  const p = normalizePath(path);
+  return p === "/" || Boolean(SEO_PER_ROUTE.en?.[p]);
+}
+
 export type TKey = string;
 
 /**
@@ -3841,6 +3862,11 @@ export function I18nProvider({
     if (typeof document === "undefined") return;
     document.documentElement.lang = lang;
     document.documentElement.dir = RTL_LANGS.includes(lang) ? "rtl" : "ltr";
+    // See isKnownStaticSeoPath's own comment — a dynamic per-content route
+    // (a corridor page, /business, a blog post, /embed) already set its
+    // own specific title via that route's head(); only the handful of
+    // static pages getRouteSeo() actually covers get live-updated here.
+    if (!isKnownStaticSeoPath(pathname)) return;
     const seo = getRouteSeo(lang, pathname);
     if (seo) {
       document.title = seo.title;
