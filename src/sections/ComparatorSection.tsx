@@ -12,6 +12,7 @@ import {
   Building2,
   Check,
   ChevronDown,
+  ChevronsRight,
   Clock,
   Coins,
   CreditCard,
@@ -3223,15 +3224,26 @@ function FloatingAgent(p: FloatingAgentProps) {
               >
                 ● {lang.toUpperCase()}
               </span>
+              {/* 2026-09-03 feedback — "el boton para minimizar el agente ai
+                  puede ser mas intuitivo? porque el menos chiquitito apenas
+                  se ve": this was a bare 14px minus-line stroke at 60%
+                  white opacity — small, low-contrast, and "−" doesn't read
+                  as "collapse this panel" the way an arrow pointing at the
+                  edge it docks to does. `ChevronsRight` (the panel is
+                  docked to the right edge, see this component's own
+                  comment) reads as "push this back to the edge," a
+                  standard sidebar-collapse affordance; wrapped in a visible
+                  pill (bg-white/10, a real background instead of bare
+                  text) so it reads as a button at a glance instead of
+                  blending into the header row. */}
               <button
                 type="button"
                 onClick={() => onToggle(true)}
                 aria-label={t("agent.minimize")}
-                className="rounded-md p-1 text-white/60 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                title={t("agent.minimize")}
+                className="flex items-center justify-center rounded-full bg-white/10 p-1.5 text-white/90 transition hover:bg-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
               >
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden>
-                  <path d="M3 7h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-                </svg>
+                <ChevronsRight className="h-4 w-4" aria-hidden />
               </button>
             </div>
           </div>
