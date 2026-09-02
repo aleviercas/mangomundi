@@ -809,6 +809,7 @@
   "errorBoundary.tryAgain": "Try again",
   "errorBoundary.goHome": "Go home",
   "comparator.row.genericError": "Couldn't load rates.",
+  "comparator.loading.title": "Comparing rates…",
   "preferredRateModal.genericError": "Something went wrong. Please try again.",
   "embed.poweredBy": "powered by",
   "comparator.agent.languageAriaLabel": "Language {lang}",

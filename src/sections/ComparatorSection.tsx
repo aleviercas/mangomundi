@@ -2220,9 +2220,12 @@ export function ComparatorSection({
             to roughly match 3 real ProviderRow rows for the same
             CLS-avoidance reason as BlogSection's skeleton. */}
         {compareMut.isPending && !result && (
-          <div className="mt-5 min-w-0" aria-hidden>
-            <div className="mb-3 h-3.5 w-28 animate-pulse rounded bg-muted" />
-            <div className="overflow-hidden rounded-2xl border border-border bg-card">
+          <div className="mt-5 min-w-0">
+            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" aria-hidden />
+              {t("comparator.loading.title")}
+            </div>
+            <div className="overflow-hidden rounded-2xl border border-border bg-card" aria-hidden>
               {[0, 1, 2].map((i) => (
                 <div
                   key={i}

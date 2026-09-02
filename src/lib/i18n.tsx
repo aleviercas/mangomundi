@@ -792,6 +792,9 @@ export const DICTS: Record<Lang, Dict> = {
     // 2026-09-03 audit — generic fallbacks shown only when a server error
     // carries no message of its own; previously hardcoded English.
     "comparator.row.genericError": "Couldn't load rates.",
+    // 2026-09-02 — the post-Compare loading skeleton had no label, so it
+    // read as an empty/broken grid rather than a loading state.
+    "comparator.loading.title": "Comparing rates…",
     "preferredRateModal.genericError": "Something went wrong. Please try again.",
     // 2026-09-03 audit — the widget's required affiliate-disclosure link
     // ("powered by mangomundi") had its "powered by" half hardcoded.
@@ -1123,6 +1126,7 @@ export const DICTS: Record<Lang, Dict> = {
     "errorBoundary.tryAgain": "Intentar de nuevo",
     "errorBoundary.goHome": "Ir al inicio",
     "comparator.row.genericError": "No se pudieron cargar las tarifas.",
+    "comparator.loading.title": "Comparando tarifas…",
     "preferredRateModal.genericError": "Algo salió mal. Intentá de nuevo.",
     "embed.poweredBy": "con tecnología de",
     "comparator.agent.languageAriaLabel": "Idioma {lang}",
@@ -1326,6 +1330,7 @@ export const DICTS: Record<Lang, Dict> = {
     "errorBoundary.tryAgain": "Tentar novamente",
     "errorBoundary.goHome": "Ir para o início",
     "comparator.row.genericError": "Não foi possível carregar as taxas.",
+    "comparator.loading.title": "Comparando taxas…",
     "preferredRateModal.genericError": "Algo deu errado. Tente novamente.",
     "embed.poweredBy": "com tecnologia de",
     "comparator.agent.languageAriaLabel": "Idioma {lang}",
