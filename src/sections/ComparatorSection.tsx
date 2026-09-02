@@ -1514,9 +1514,16 @@ export function ComparatorSection({
 
             {/* Form body. @container lets the rows adapt to the CARD's width, not
               the viewport: 3/4 columns when the card is full-width (no results
-              yet), 2 columns once it shares the row with the metrics panel. */}
+              yet), 2 columns once it shares the row with the metrics panel.
+              2026-09-03 feedback — "sobra espacio en el cuadro": sm:p-3.5
+              (14px) trimmed to sm:p-3 (12px) and the space-y-2 (8px) gap
+              before the search row — reserved even while the same-country
+              warning above it is collapsed to 0 height — trimmed to
+              space-y-1.5 (6px). Small on their own, but this card has been
+              through several rounds of exactly this ask (S4/S9/X1/Z1/Z2) —
+              real, not cosmetic padding is what's left to give back. */}
             <div
-              className={`@container ${embedded ? "space-y-2 p-2.5" : "space-y-2 p-2.5 sm:p-3.5"}`}
+              className={`@container ${embedded ? "space-y-1.5 p-2.5" : "space-y-1.5 p-2.5 sm:p-3"}`}
             >
               {/* 2026-09-02 feedback — "el comparador se mueve y parece
                   raro" al elegir país/moneda: reproducido y medido (no a
@@ -1853,30 +1860,33 @@ export function ComparatorSection({
                     </button>
                   </div>
 
-                  {/* 2026-09-02 feedback (Z2) — content-sized on line 2,
-                      same as the widget's own Receive box on its line 2 —
-                      this field only ever holds two icon-only pickers
-                      (country `triggerIconOnly` on mobile, currency always
-                      `compactLabel`). BEFORE a country is picked though,
-                      the empty trigger falls back to its full text
-                      placeholder even with `triggerIconOnly` set (no flag
-                      to show yet) — 194px of "Select…" + "USD" wide,
-                      measured, enough to either truncate Compare down to
-                      "C." (uncapped) or, tried next, wrap Compare onto a
-                      3rd line entirely (plain `shrink`: the trigger's own
-                      internal `flex-1`/`shrink-0` resist shrinking below
-                      their min-content, so the box wouldn't actually give
-                      up enough room for Compare's own `min-w-[108px]`
-                      floor to fit beside it). `max-w-[150px]` is a hard
-                      cap instead — independent of shrink/content — chosen
-                      so swap(46) + gap + this(150) + Compare's floor(108)
-                      total under the ~328px line-2 budget measured at
-                      390px, no wrap. The `truncate` class already on the
-                      trigger's own label span (Combobox.tsx) handles the
-                      resulting clip. `min-w-0` still guards the @4xl grid
-                      track against overflow from a long unabbreviated
-                      country name there. */}
-                  <div className="min-w-0 w-auto max-w-[120px] shrink-0 @4xl:max-w-none">
+                  {/* 2026-09-03 feedback — "el target currency que no se
+                      mueva porque se achica y se agranda": this box's width
+                      used to be content-driven (`w-auto max-w-[120px]` below
+                      @4xl, fully uncapped above it — see git history for
+                      that version's own reasoning about Compare's floor,
+                      still the reason the @4xl grid track handles this
+                      differently). Content-driven width is exactly the bug:
+                      `triggerIconOnly={isMobile}` meant DESKTOP kept showing
+                      the receiving country's full name once picked — a
+                      country name is anywhere from "UK" to "United Arab
+                      Emirates", so the box visibly grew/shrank on every
+                      selection, and the pre-selection state added yet a
+                      third width (the "Select…" placeholder text). Fixed
+                      width (`w-[108px]`, same at every breakpoint) plus
+                      `triggerIconOnly` unconditionally (not just mobile) —
+                      once picked, this ALWAYS shows just a flag, a
+                      near-constant size regardless of which country — and
+                      an empty `placeholder` (below) so the pre-selection
+                      state is blank space inside that same fixed box
+                      instead of a wider fallback string, per "tal vez tiene
+                      que aparecer en blanco y no la frase target currency".
+                      Autofilling the currency itself already happens
+                      elsewhere (handleReceivingCountryChange sets `to` to
+                      the picked country's own local currency via
+                      localCurrency()) — this only fixes the box's width,
+                      not that behavior, which was already correct. */}
+                  <div className="w-[108px] shrink-0">
                     <FieldLight label={t("comparator.field.youReceive")}>
                       <div
                         className={`flex w-full min-w-0 items-stretch overflow-hidden rounded-md border-[1.5px] transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
@@ -1886,25 +1896,15 @@ export function ComparatorSection({
                         <CountryCombobox
                           value={receivingCountry}
                           onChange={handleReceivingCountryChange}
-                          placeholder={t("comparator.combobox.placeholder")}
+                          placeholder=""
                           searchPlaceholder={t("comparator.combobox.search")}
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCountry")}
                           hideSecondary
-                          triggerIconOnly={isMobile}
-                          // 2026-09-02 feedback (Z2) — smaller padding/font
-                          // here (px-2/12.5px vs the usual px-3.5/14-14.5px)
-                          // only below @4xl, where this box now shares line
-                          // 2 with swap+Compare instead of owning its own
-                          // full-width row — the same "shrink the type, not
-                          // just the box" approach the widget's own compact
-                          // tier already uses (see its own 12px/px-2
-                          // comment a few hundred lines up), needed here
-                          // specifically for the pre-selection "Select…"
-                          // placeholder (see this field's wrapper comment).
-                          triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
+                          triggerIconOnly
+                          triggerClassName={`h-full min-w-0 flex-1 justify-center rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
                             compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
-                          } ${isMobile ? "justify-center" : ""}`}
+                          }`}
                         />
                         <CurrencyCombobox
                           value={to}
@@ -1943,12 +1943,20 @@ export function ComparatorSection({
                         still lines up with the Send/Receive boxes on its
                         left; `justify-end` right-aligns the pill over the
                         button instead of the space-between it had over
-                        "Send". */}
+                        "Send".
+                        2026-09-03 feedback — "sobra espacio en el cuadro":
+                        this pill (h-6/24px) was taller than FieldLight's
+                        own plain-text label (~22px total incl. its own
+                        mb-1.5) — `items-stretch` on the row equalizes every
+                        column to the tallest one, so that ~8px difference
+                        was stretching the WHOLE search row, Send/Receive
+                        boxes included, not just this column. h-5 (20px)
+                        closes most of that gap. */}
                     <div className="mb-1.5 flex items-center justify-end">
                       <div
                         role="tablist"
                         aria-label={t("search.segment")}
-                        className="flex h-6 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
+                        className="flex h-5 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
                       >
                         {(["retail", "business"] as Segment[]).map((s) => (
                           <button
@@ -1956,7 +1964,7 @@ export function ComparatorSection({
                             role="tab"
                             aria-selected={segment === s}
                             onClick={() => handleSegmentChange(s)}
-                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize transition ${
+                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize leading-none transition ${
                               segment === s
                                 ? "bg-card text-foreground shadow-sm"
                                 : "text-muted-foreground hover:text-foreground"
