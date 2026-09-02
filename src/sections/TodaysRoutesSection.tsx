@@ -50,7 +50,11 @@ export function TodaysRoutesSection() {
   if (shown.length === 0) return null;
 
   return (
-    <section className="border-t border-border py-7 sm:py-9">
+    // 2026-09-03 feedback — "achicar un poco la banda... para que no quede
+    // tan alta, pero que siga teniendo aire": py-7/py-9 (28px/36px) trimmed
+    // to py-6/py-7 (24px/28px) — real but modest, not stripping the section
+    // down to nothing.
+    <section className="border-t border-border py-6 sm:py-7">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div>
           <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground sm:text-[22px]">
@@ -65,7 +69,7 @@ export function TodaysRoutesSection() {
           </p>
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-3.5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {/* 2026-09-01 feedback — "al hacer click debería mandarte a ese
               resultado del comparador": these cards were plain <div>s with
               no navigation at all. /send/$corridor already exists exactly
@@ -79,7 +83,7 @@ export function TodaysRoutesSection() {
               key={`${c.from}-${c.to}`}
               to="/send/$corridor"
               params={{ corridor: `${c.from.toLowerCase()}-${c.to.toLowerCase()}` }}
-              className="block rounded-2xl border border-border bg-card p-4 transition hover:border-foreground/20 hover:shadow-[0_10px_24px_-16px_rgba(36,28,22,.35)]"
+              className="block rounded-2xl border border-border bg-card p-3.5 transition hover:border-foreground/20 hover:shadow-[0_10px_24px_-16px_rgba(36,28,22,.35)]"
             >
               <div className="flex items-center gap-2 text-[13.5px] font-bold text-foreground">
                 {c.fromCountry && <FlagIcon country={c.fromCountry} />}
@@ -89,13 +93,13 @@ export function TodaysRoutesSection() {
                 {c.to}
               </div>
               <div
-                className="mt-2.5 inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide"
+                className="mt-2 inline-flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-bold uppercase tracking-wide"
                 style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
               >
                 <Sparkle className="h-2.5 w-2.5" />
                 {t("todaysRoutes.exclusiveRate")}
               </div>
-              <div className="mt-2 text-[10.5px] font-bold uppercase tracking-wide text-[#6B5F55]">
+              <div className="mt-1.5 text-[10.5px] font-bold uppercase tracking-wide text-[#6B5F55]">
                 {t("todaysRoutes.bestOf")
                   .replace("{n}", String(c.providerCount))
                   .replace("{amount}", c.amount.toLocaleString())
@@ -105,7 +109,7 @@ export function TodaysRoutesSection() {
                 {Math.round(c.bestReceived).toLocaleString()}{" "}
                 <span className="text-xs font-semibold text-muted-foreground">{c.to}</span>
               </div>
-              <div className="mt-2 flex items-center justify-between gap-2">
+              <div className="mt-1.5 flex items-center justify-between gap-2">
                 <BrandLogo
                   name={c.winnerName}
                   url={null}
