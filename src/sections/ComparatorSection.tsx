@@ -4739,34 +4739,44 @@ function BusinessRowExtra({
       {/* 2026-09-03 feedback (second round) — "lo mismo ocurre en los datos
           en cada proveedor... la posición en columna quedó bastante mal":
           same fix as BusinessRequestPanel's own stats — reuses the same
-          StatItem component instead of a bespoke stacked column, so these
-          four metrics sit as compact side-by-side chips in one wrapping
-          row (each sized to its own content) rather than a tall single
-          column of full sentences. Settlement/Contracts' full-sentence
-          values (e.g. "Spot, Forward (min contract value ~£10,000)") still
-          wrap freely — flex-wrap on the row, not a fixed-width grid cell,
-          so a long value just takes its own line instead of overflowing. */}
-      <div className="flex min-w-0 flex-1 flex-wrap items-start gap-x-5 gap-y-2">
-        {metrics.map((m) => (
-          <StatItem
-            key={m.labelKey}
-            label={t(m.labelKey)}
-            labelExtra={
-              // 2026-09-02 feedback — real value where findable, otherwise
-              // a logical estimate (never blank, never presented as
-              // verified) — see this component's own metrics comment.
-              m.estimated ? (
-                <span
-                  title={t("comparator.business.metric.estimatedTooltip")}
-                  className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-[9px] font-bold normal-case tracking-normal text-accent-text"
-                >
-                  {t("comparator.business.metric.estimated")}
-                </span>
-              ) : undefined
-            }
-          >
-            {m.value}
-          </StatItem>
+          StatItem component instead of a bespoke stacked column.
+          2026-09-02 feedback (AG4, round 4) — "poner spread y abajo
+          minimum en una misma columna, y en otra columna al lado
+          settlement y abajo contracts": the single flex-wrap row above
+          let the 4 chips reflow arbitrarily (2+2, 3+1, all 4 on one
+          line depending on value lengths) — no longer a fixed spread/
+          minimum vs. settlement/contracts pairing. Two explicit columns
+          (grid-cols-2, metrics[0]/[1] stacked in the first, [2]/[3] in
+          the second) fix that pairing regardless of value length.
+          Settlement/Contracts' full-sentence values (e.g. "Spot, Forward
+          (min contract value ~£10,000)") still wrap freely inside their
+          own column instead of overflowing. */}
+      <div className="grid min-w-0 flex-1 grid-cols-2 gap-x-5 gap-y-2">
+        {[metrics.slice(0, 2), metrics.slice(2, 4)].map((column, i) => (
+          <div key={i} className="flex min-w-0 flex-col gap-2">
+            {column.map((m) => (
+              <StatItem
+                key={m.labelKey}
+                label={t(m.labelKey)}
+                labelExtra={
+                  // 2026-09-02 feedback — real value where findable,
+                  // otherwise a logical estimate (never blank, never
+                  // presented as verified) — see this component's own
+                  // metrics comment.
+                  m.estimated ? (
+                    <span
+                      title={t("comparator.business.metric.estimatedTooltip")}
+                      className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-[9px] font-bold normal-case tracking-normal text-accent-text"
+                    >
+                      {t("comparator.business.metric.estimated")}
+                    </span>
+                  ) : undefined
+                }
+              >
+                {m.value}
+              </StatItem>
+            ))}
+          </div>
         ))}
       </div>
       {/* 2026-09-03 feedback — "dejar el botón de add request del lado
