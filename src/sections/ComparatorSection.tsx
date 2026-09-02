@@ -1694,7 +1694,17 @@ export function ComparatorSection({
                       // overflowing and getting clipped by the row's
                       // overflow-hidden. Still a fixed width either way —
                       // AD5's "never resizes on selection" is unaffected.
-                      triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                      // 2026-09-02 feedback (AG3) — "un poco mas de ancho a
+                      // los campos de las banderitas... que no queden
+                      // aplastados": w-11 was still tight (flag+chevron
+                      // right at the edge of px-1.5's padding). w-12 and
+                      // w-14 both still clipped the Receive box's new "To…"
+                      // placeholder for several locales (confirmed via
+                      // screenshot — EN's "To…" fit at w-14, but longer ones
+                      // like DE's "Nach…"/PT's "Para…" didn't). w-16 leaves
+                      // ~36px for text after the chevron+gap, enough for
+                      // ~5-6 bold characters across every locale tested.
+                      triggerClassName="h-full w-16 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                     />
                     <input
                       type="number"
@@ -1782,7 +1792,12 @@ export function ComparatorSection({
                         // full comparator's own target-country field (a few
                         // hundred lines below) already uses "" for exactly
                         // this reason.
-                        placeholder=""
+                        // 2026-09-02 feedback (AG3) — "que la palabra to
+                        // también entre completa": blank read the same way
+                        // the full comparator's own Receive field did before
+                        // AG2 — no cue a country still needed picking.
+                        // Reusing AG2's same short placeholder/key here too.
+                        placeholder={t("comparator.field.receiveCountryPlaceholder")}
                         searchPlaceholder={t("comparator.combobox.search")}
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCountry")}
@@ -1791,7 +1806,16 @@ export function ComparatorSection({
                         // px-1.5 fix as the Send flag above, for the same
                         // reason (see Combobox's own comment on the
                         // triggerIconOnly chevron size).
-                        triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                        // 2026-09-02 feedback (AG3) — w-11→w-16 (matching
+                        // the Send flag box) still clipped a few locales'
+                        // translations of the new "To…" placeholder (TR's
+                        // "Kime…" among them) — this box is the one that
+                        // actually needs to fit that text (Send almost
+                        // always shows a pre-selected flag, no text), so it
+                        // gets an extra bump to w-20 rather than widening
+                        // Send to match and eating further into Compare on
+                        // that row too.
+                        triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                       />
                       <CurrencyCombobox
                         value={to}
@@ -1826,7 +1850,13 @@ export function ComparatorSection({
                       // `flex-1` picks up the width the country/currency box
                       // above just stopped absorbing — a real, larger
                       // target instead of dead space next to it.
-                      className="btn-cta flex h-[38px] min-w-[70px] flex-1 shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                      // 2026-09-02 feedback (AG3) — "se puede achicar un poco
+                      // el botón de compare": still `flex-1` (it should keep
+                      // absorbing whatever room the row has left), but its
+                      // floor drops 70→58px — "Compare"/"Buscar" at
+                      // text-[13px] still fits comfortably — freeing a few
+                      // more px for the flag boxes above to grow into.
+                      className="btn-cta flex h-[38px] min-w-[58px] flex-1 shrink-0 items-center justify-center rounded-[9px] px-1.5 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
                     >
                       {compareMut.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />

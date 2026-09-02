@@ -212,7 +212,7 @@
   "comparator.field.sourceCurrency": "보내는 통화",
   "comparator.field.targetCountry": "받는 국가",
   "comparator.field.targetCurrency": "받는 통화",
-  "comparator.field.receiveCountryPlaceholder": "받는 곳…",
+  "comparator.field.receiveCountryPlaceholder": "수신…",
   "comparator.field.urgency": "긴급도",
   "comparator.field.youReceive": "받는 통화",
   "comparator.filter.exclusiveOnly": "Exclusive rates",

@@ -3223,7 +3223,11 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
     "comparator.field.sourceCurrency": "Divisa de Origen",
     "comparator.field.targetCurrency": "Divisa de Destino",
-    "comparator.field.receiveCountryPlaceholder": "Hacia…",
+    // 2026-09-02 feedback (AG3) — "Hacia…" truncated to "H…" in the
+    // widget's narrower w-14 flag box (fine in the full comparator's own
+    // wider field, AG2) — shortened to match "To…"'s length instead of
+    // widening the box further and eating into Compare's own space.
+    "comparator.field.receiveCountryPlaceholder": "A…",
     "comparator.segment.retail": "Personal",
     "comparator.segment.business": "Empresas",
     "search.eyebrow": "Terminal de inteligencia financiera",
