@@ -18,6 +18,9 @@ export function CountryCombobox({
   emptyLabel,
   ariaLabel,
   triggerClassName,
+  compactLabel,
+  hideSecondary,
+  triggerIconOnly,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -26,6 +29,13 @@ export function CountryCombobox({
   emptyLabel?: string;
   ariaLabel?: string;
   triggerClassName?: string;
+  compactLabel?: boolean;
+  /** See Combobox's own doc comment — drops the local-currency readout,
+   *  for callers with a separate currency field right next to this one. */
+  hideSecondary?: boolean;
+  /** See Combobox's own doc comment — closed trigger shows only the flag,
+   *  full country name still shows once the dropdown opens. */
+  triggerIconOnly?: boolean;
 }) {
   return (
     <Combobox
@@ -37,6 +47,9 @@ export function CountryCombobox({
       emptyLabel={emptyLabel}
       ariaLabel={ariaLabel}
       triggerClassName={triggerClassName}
+      compactLabel={compactLabel}
+      hideSecondary={hideSecondary}
+      triggerIconOnly={triggerIconOnly}
     />
   );
 }

@@ -8,6 +8,88 @@
 > este archivo es el índice y el resumen ejecutivo, se actualiza cada vez que
 > se cierra un sprint o se toma una decisión de arquitectura importante.
 
+> **🔴 Rama activa (2-sep-2026):** el trabajo del rediseño en curso vive en
+> `claude/coordinar-trabajo-simultaneo-y85idz` (contiene, sin cambios, todos
+> los commits que antes estaban en `claude/reorganizar-entrega-rediseno-za6gmc`
+> — esa rama quedó congelada como snapshot en `237ffbe`, confirmado sin
+> cambios sin commitear, no sigas pusheando ahí). Sin PR abierto todavía,
+> deploy de preview en Vercel activo sobre esa rama. Si sos una sesión de
+> Claude que arranca a seguir este trabajo: hacé
+> `git fetch origin claude/coordinar-trabajo-simultaneo-y85idz` y trabajá
+> sobre esa rama, no crees una rama nueva desde `main` — perderías todo este
+> contexto y forkearías el trabajo en curso. **PR abierto: #10** (no se
+> mergea solo — se dejó abierto a propósito para que cada push a la rama
+> re-dispare el preview de Vercel; ver la nota del handoff de la ronda 11
+> sobre por qué). El handoff de la ronda 14 (`decimocuarto`) es el más
+> reciente: batch de 13 puntos (W1-W13) — workflow de email de business
+> request (mail de confirmación va como borrador a la dirección interna,
+> **no directo al cliente**, corrección explícita de Alejandro a mitad de
+> la ronda), fix real del auto-scroll del wizard AI (`scrollIntoView` sin
+> `block` alineaba mal, sacaba la respuesta de vista — ahora `block: "end"`
+> + se salta si el usuario scrolleó hacia arriba a releer), botón de
+> "Send request" forzado siempre a su propia línea (spacer `basis-full`
+> invisible), widget sin símbolo de moneda y con varios ejemplos de
+> corridor (no uno solo), 2 bugs de CSS reales encontrados midiendo (no a
+> ojo): `space-y-9` en `/about` no hacía nada porque `[&_p]:m-0` anulaba
+> el margin-top del que depende (cambiado a `gap-9`), y el aviso de
+> "same-country route" en el comparador saltaba 42px instantáneo (ahora
+> anima con `grid-template-rows`). **Los datos de business que faltaban
+> (CAB Payments y 7 más) ya están completos** — reemplaza la nota vieja de
+> "CAB Payments queda en null, no es un pendiente": ahora tiene una
+> estimación lógica etiquetada "Est." en la UI (`providers.
+> min_amount_estimated` / `settlement_terms_estimated` /
+> `contract_type_estimated`, ver el handoff de la ronda 14 para el detalle
+> de fuentes y metodología de estimación). Auditoría de mobile más
+> exhaustiva que la de la ronda 12 encontró y arregló un overflow
+> horizontal real en `/widget` a 375px (`min-w-0` faltante en un grid
+> item). El handoff completo de la ronda 14 está en
+> `docs/handoff/handoff-2026-09-02-decimocuarto-round-workflow-scroll-espaciado-datos-mobile.md`
+> — a su vez continúa
+> `docs/handoff/handoff-2026-09-01-decimotercero-round-fuentes-flash-y-truncados-reales.md`,
+> `docs/handoff/handoff-2026-09-01-duodecimo-round-mobile-sort-widget-about-business.md`
+> (2 bugs reales de mobile encontrados y arreglados con capturas —
+> truncamiento de país a "U.." y el "1 GBP = X USD" cortado sin scroll en
+> el header del comparador—, ícono de Sort sin recuadro con el glyph
+> clásico, `triggerIconOnly` nuevo en el Combobox base para que el widget
+> muestre solo bandera/símbolo cerrado y nombre completo abierto, ejemplo
+> del widget ahora clickeable, Mission/Vision/Problem de `/about`
+> reescrito como storytelling sin subtítulos, causa real del Trustpilot
+> "cortado" encontrada — 36px le cortaba contenido real al iframe propio
+> de Trustpilot, revertido a 52px —, botón de email de `/business` ya no
+> desperdicia el espacio en blanco),
+> `docs/handoff/handoff-2026-09-01-undecimo-round-fondo-sort-widget-business-datos.md`,
+> `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md`,
+> `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md`,
+> `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md`,
+> `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md`
+> y `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md`.
+> **Importante para la próxima sesión:** este sandbox no puede alcanzar
+> `*.supabase.co`, `trustpilot.com` **ni dominios arbitrarios de
+> terceros** (confirmado en la ronda 11: `*.vercel.app` y las webs propias
+> de los brokers de FX también están bloqueadas) por la política de red de
+> salida (403/EGRESS_BLOCKED del proxy, no es un problema de credenciales —
+> el `SUPABASE_SERVICE_ROLE_KEY` que Alejandro ya cargó en el environment
+> no lo soluciona, el bloqueo es de red, no de autenticación). Esto se
+> resuelve en la configuración del entorno/organización de Claude Code, no
+> desde una sesión. Mientras tanto, un estado con `result` real solo puede
+> verificarse simulando el dato (`window.__FAKE_RESULT_FOR_SCREENSHOT__`
+> inyectado con Playwright, revertido antes de commitear — ver el handoff
+> del noveno round) contra rutas que no llamen a Supabase en su loader
+> (`/business` sirve, `/` y `/blog` no). El widget de Trustpilot real
+> (con el script de `trustpilot.com` cargado) sigue sin poder verse en
+> este sandbox bajo ninguna técnica — confirmar contra el preview real.
+> **Los datos de proveedores (`min_amount`/`settlement_terms`/
+> `contract_type` de brokers de business) quedaron verificados en la
+> ronda 12** contra fuentes oficiales (help centers y PDFs legales de cada
+> broker) vía la sesión de Cowork mencionada arriba — reemplazan los
+> valores de segundo nivel que la ronda 11 había cargado sin poder abrir
+> las webs oficiales. **Actualizado en la ronda 14:** CAB Payments (y 7
+> proveedores de business más) ya NO están en `null` — Alejandro pidió
+> explícitamente completar todo lo que falte con una estimación lógica
+> etiquetada, en vez de dejarlo vacío. Ver el handoff de la ronda 14 para
+> la metodología (mediana entre pares del mismo `provider_type` con dato
+> real) y las columnas `*_estimated` que distinguen dato real de estimado.
+
 ## 1. Qué es mangomundi
 
 Plataforma multilingüe (20 idiomas) de comparación de proveedores de
@@ -240,6 +322,83 @@ Orden de prioridad acordado con Alejandro:
    - Hallazgo relevante para el paso 5: **cero headers de seguridad
      configurados** (`vercel.json` no tiene CSP/HSTS/X-Frame-Options/etc.)
      — pendiente.
+   - **Ronda 3 (29-ago-2026) — rediseño "Mangomundi 4"**: paquete de diseño
+     completo entregado por Alejandro (home, comparador, modo Business,
+     widget, identidad de marca), en rama
+     `claude/reorganizar-entrega-rediseno-za6gmc` (aún no mergeada, nada
+     LIVE todavía). **Las 6 decisiones de producto acordadas están hechas**:
+     favicons/og:image → `public/brand/`; `Wordmark.tsx` con el ícono de
+     marca real (clip-path diagonal) + Rubik cargada; fotografía
+     redimensionada y `AboutManifestoSection`+`StatsSection` fusionadas en
+     una banda oscura a sangre; conteo real de proveedores (server fn +
+     hook compartido, nunca un número hardcodeado); campos de contract
+     type/frequency en el modo Business (con la baja de `RfqTerminal.tsx`,
+     que resultó ser código muerto); banner estable de upsell a Business;
+     widget a 360×540 con bloque de invitación completo; estado del
+     comparador en la URL + rutas reales `/send/:corridor` y `/business`;
+     y el rail izquierdo (Filtros, agente IA acoplado, alerta de tasa,
+     Trustpilot) reestructurando el grid del comparador en `≥lg`. **Ver
+     [`docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-rediseno-mangomundi-4.md)**
+     para el detalle completo de cada pieza.
+   - **Ronda de ajustes 1 (29-ago-2026)** — sobre lo anterior, un segundo
+     documento (`design/AJUSTES-1.md`) pidió fidelidad pixel-a-pixel al
+     mockup: tipografía Bricolage Grotesque, tabla de resultados
+     rediseñada (sin encabezado compartido, sello de precio de una línea,
+     3 botones grandes de orden, detalles de fila), h1 del hero, reskin
+     oscuro completo del panel del agente IA (alcance confirmado con
+     Alejandro — mayor que "arreglar chips truncados"), copy de la banda
+     oscura y de "For business", la sección nueva "Today's routes, already
+     priced" (reusa `compareProviders` sobre una lista candidata de
+     corredores — no hay query nueva de backend sin poder probarla), y el
+     preview del widget con un resultado real. **Los 8 pasos están
+     completos.** Pendiente de verificar con datos reales (mismo límite:
+     sin credenciales de Supabase en este sandbox) — ver
+     [`docs/handoff/handoff-2026-08-29-ajustes-1-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-ajustes-1-rediseno-mangomundi-4.md)
+     para el detalle completo y el orden de verificación sugerido antes de
+     mergear esta rama.
+   - **Ronda de ajustes 2 (30-ago-2026)** — sobre lo anterior, un tercer
+     documento (`design/AJUSTES-2.md`) pidió fidelidad pixel-a-pixel de
+     colores/medidas/tipografía (no estructura, eso ya lo arregló la
+     ronda 1): paleta base pasada de oklch a hex literal, copy y tamaños
+     del CTA "Compare", marketing oculto en la pantalla de resultados,
+     medidas exactas de cada fila (tag de ganador según criterio de
+     orden, link "Fee breakdown"), blog rediseñado como banda compacta al
+     pie, retícula y botones de la banda oscura, las cuatro tarjetas del
+     rail izquierdo a medida exacta, y el header a 66px con nav de 5
+     ítems y pastilla de idioma. **Las 8 secciones están completas.**
+     Instrucción explícita de esta ronda: inspeccionar el markup del
+     `.dc.html` directamente en vez de confiar en la prosa del documento
+     — encontró al menos dos discrepancias reales entre ambos (ver el
+     handoff). Mismo límite de siempre, agravado en esta ronda porque casi
+     todo lo tocado solo se ve con un resultado de comparación real (sin
+     credenciales de Supabase en este sandbox) — ver
+     [`docs/handoff/handoff-2026-08-30-ajustes-2-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-30-ajustes-2-rediseno-mangomundi-4.md)
+     para el detalle completo y el orden de verificación sugerido antes de
+     mergear esta rama.
+   - **Rondas de ajustes 3 y 4 (30-ago-2026)** — dos documentos nuevos,
+     distintos en naturaleza a los anteriores: no piden fidelidad visual
+     sino una pieza de arquitectura que faltaba y contenido/páginas que
+     el diseño daba por hechas pero nunca se construyeron.
+     `design/AJUSTES-3.md` §A agrega las píldoras de moneda al
+     comparador (cambiar moneda sin cambiar país, siempre visible, en
+     vez del link colapsado que abría un picker de ~110 monedas) con un
+     dataset curado nuevo de monedas plausibles por país
+     (`plausibleCurrencies()`, `src/lib/countries.ts`); §B + AJUSTES-4
+     §1 construyen `/about` y `/how-we-make-money` como páginas reales
+     (antes un redirect y un fallback a `/legal#risk`), reusando copy
+     que ya existía huérfano en `i18n.tsx`, y reestructuran el footer a
+     3 columnas (Product/Company/Legal). AJUSTES-4 §3 agrega "Two ways
+     we work with companies" (Treasury Operations / FX & Payment
+     Partnerships) a `/business`, debajo del formulario/resultados —
+     **el único gap real de estas dos rondas**: ninguna de esas dos
+     tarjetas tenía texto en el mockup, el repo o el historial de git,
+     solo los títulos aparecen nombrados en el doc; el cuerpo describe
+     mecánica real ya construida en vez de inventar afirmaciones, ver el
+     handoff para el detalle. **Las 3 piezas están completas.** Ver
+     [`docs/handoff/handoff-2026-08-30-ajustes-3-4-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-30-ajustes-3-4-rediseno-mangomundi-4.md)
+     para el detalle completo, incluida una discrepancia real entre §A y
+     §B del mismo documento (AJUSTES-3) sobre un link, y el orden de
+     verificación sugerido antes de mergear esta rama.
 2. **Precisión de producto/datos** (este documento) — modelo de elegibilidad
    de proveedores por corredor **cerrado y documentado** en
    `docs/architecture-motor-comparador.md` (27-ago-2026, fase 2) — es el
@@ -431,6 +590,11 @@ marketing genérico sin cifra concreta en ninguna página oficial revisada.
 | Brief: auditoría de tarifas, sesión Cowork (27-ago) | `docs/handoff/brief-cowork-2026-08-27-audit-tarifas.md` |
 | Handoff: resultado de la auditoría de tarifas, sesión Cowork fase 1 (27-ago) | `docs/handoff/handoff-2026-08-27-audit-tarifas-cowork.md` |
 | Handoff: fix de corredores + investigación de fintechs, sesión Cowork fase 2 (27-ago) | `docs/handoff/handoff-2026-08-27-fix-corredores-fintechs-cowork.md` |
+| Handoff: sexto round de ajustes de diseño — buscador en una línea, agente junto a Today's routes, Trustpilot real (31-ago) | `docs/handoff/handoff-2026-08-31-sexto-round-ajustes-buscador-agente.md` |
+| Handoff: séptimo round — nav/footer reestructurados, fix de banderas, agente rediseñado (docked claro sin scroll) (31-ago) | `docs/handoff/handoff-2026-08-31-septimo-round-ajustes-nav-footer-agente.md` |
+| Handoff: octavo round — agente siempre flotante/oscuro (corrige el séptimo), rail = FiltersCard oscuro, widget sin scroll (31-ago) | `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md` |
+| Handoff: noveno round — widget con país+moneda+monto verificado sin scroll, `/business` sin vacío de sticky-footer, espaciado sitewide, fix Trustpilot del rail (1-sep) | `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md` |
+| Handoff: décimo round — bug de color de fondo sitewide, píldoras agrupadas, "Rank by" unificado en "More filters", "Your request" comprimido, `/about` con imagen, bug de contenido cortado en el widget (1-sep) | `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md` |
 
 ## 10. Cómo continuar
 

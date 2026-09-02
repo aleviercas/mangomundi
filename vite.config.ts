@@ -77,18 +77,12 @@ export default defineConfig(async ({ command, mode }): Promise<UserConfig> => {
     // i18n dictionary per-locale — a separate, bigger refactor.
     build: {
       chunkSizeWarningLimit: 3000,
-      // flag-icons ships ~250 country flags, most under Vite's default 4KB
-      // inline threshold — base64-inlining them all into the CSS is what
-      // ballooned styles.css to ~550kB (measured on a real Vercel build),
-      // which is render-blocking on every page since it's one global
-      // @import. Excluding just this package's assets from inlining lets
-      // the browser fetch each flag as its own small, cacheable file,
-      // on-demand, exactly when a `fi-xx` class actually needs to paint —
-      // native lazy-loading, not custom async code, and no risk of ever
-      // going stale as currencies.ts/countries.ts change (unlike a curated
-      // CSS subset would be). Every other asset in the app keeps Vite's
-      // normal default behavior (`undefined` here falls back to it) — this
-      // targets flag-icons specifically, nothing else.
+      // FlagIcon.tsx globs every flag-icons SVG via `?url` so each renders as
+      // a real <img> (discovered early by the browser's preload scanner,
+      // unlike the old CSS-background-image approach — see that component's
+      // own comment). Without this, Vite's default 4KB inline threshold
+      // would base64 most of the ~250 flags straight into the JS bundle
+      // instead of leaving them as separate, on-demand, cacheable files.
       assetsInlineLimit: (filePath) => (filePath.includes("flag-icons") ? false : undefined),
     },
     // Match dev and build CSS pipelines (Lightning CSS in both).

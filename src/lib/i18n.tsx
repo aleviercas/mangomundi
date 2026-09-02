@@ -210,11 +210,15 @@ export const DICTS: Record<Lang, Dict> = {
     "nav.blog": "Blog",
     "nav.features": "Features",
     "nav.pricing": "Pricing",
-    "nav.about": "About",
+    "nav.about": "About us",
     "nav.contact": "Contact",
     "nav.legal": "Legal",
     "nav.terms": "Terms",
     "nav.risk": "Risk",
+    // design/AJUSTES-2.md §7 — Header's own nav item text (mockup line
+    // 252), distinct from nav.business ("Business" alone, used by
+    // BusinessSection's eyebrow and Footer's nav — both out of scope here).
+    "nav.forBusiness": "For business",
     "institutional.cta": "Talk to the Institutional Desk",
     "brand.decisionEngine": "Decision Engine",
     "brand.partnerships": "Partnerships",
@@ -253,10 +257,60 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.recipient": "Recipient gets",
     "fx.totalFee": "Total fee",
     "fx.speed": "Speed",
+    // Per-row micro-labels (design/AJUSTES-1.md §C1) — short on purpose,
+    // 10.5px uppercase above each metric's value, not the longer column
+    // labels above (fx.totalFee/fx.speed/fx.recipient), which the shared
+    // header row used before it was removed.
+    "comparator.row.labelFee": "Fee",
+    "comparator.row.labelRate": "Rate",
+    "comparator.row.labelDelivery": "Delivery",
+    "comparator.row.labelPayout": "Payout",
+    "comparator.row.labelReceive": "Receive",
+    // 2026-09-03 feedback — "hay que agregar un boton de share this rate
+    // abajo del boton de go to wise o go to torfx": a second, secondary
+    // button under the affiliate CTA sharing that row's own real affiliate
+    // link (never a fabricated one) — hidden entirely when the row has none.
+    "comparator.row.share": "Share this rate",
+    "comparator.row.shareCopied": "Copied!",
+    // The single price-stamp line (§C3) replacing the old orange
+    // "not verified"/"unconfirmed" pills + separate "Updated: {date}" text.
+    "comparator.row.stampLive": "Live",
+    "comparator.row.stampEstimated": "Estimated",
+    // The 3 big order tabs (§C2) replacing the old 4 small sort pills.
+    // "Fastest"'s hint is deliberately NOT the mockup's literal "Under 10
+    // min" — that's a specific time promise the mockup's static demo data
+    // happens to support, but a real fastest row can be hours or days away.
+    // Same "no inventes datos" principle as B2B_UPSELL_MIN_AMOUNT/provider
+    // counts elsewhere in this redesign: the figure is computed for real
+    // via formatDeliverySpeed (same function the row's own Delivery metric
+    // uses), so the hint stays generic instead of asserting a number.
+    "comparator.tab.recommended": "Recommended",
+    "comparator.tab.recommendedHint": "Best balance",
+    "comparator.tab.receiveMore": "Receive more",
+    "comparator.tab.receiveMoreHint": "Highest payout",
+    "comparator.tab.receiveMoreSub": "the max",
+    "comparator.tab.fastest": "Fastest",
+    "comparator.tab.fastestHint": "Fastest option",
+    // Row details (§C4). "vs best" makes the delta legible on its own —
+    // just "−6,271 DZD" doesn't say what it's a delta FROM.
+    "comparator.row.deltaVsBest": "{amount} vs best",
+    "comparator.row.deltaWinner": "the most we found",
+    // Sponsored corner badge demoted to plain footer text, next to the
+    // price stamp — same has_exclusive_deal trigger as before, presentation
+    // only. The neutrality statement moves from a per-row badge to one line
+    // above the whole list (comparator.disclaimer.neutrality, below).
+    "comparator.row.affiliateLink": "Affiliate link · with exclusive rates",
+    "comparator.row.onTrustpilot": "on Trustpilot",
+    // design/AJUSTES-2.md §3 — the featured row's "why this won" tag, one
+    // phrase per sort criterion (winnerTagKey in ComparatorSection.tsx).
+    "comparator.row.tagBestOverall": "Best overall",
+    "comparator.row.tagReceivesMost": "Receives most",
+    "comparator.row.tagFastest": "Fastest",
+    "comparator.row.tagMostTrusted": "Most trusted",
+    "comparator.row.tagLowestFee": "Lowest fee",
+    "comparator.row.tagBestRate": "Best rate",
     "fx.action": "Action",
     "fx.goto": "Go to",
-    "fx.disclaimer":
-      "mangomundi is independent. Some links are affiliate links — we may earn a commission at no extra cost to you. Rates and fees are estimates; verify on the provider's site before sending.",
     "fx.chat.title": "Ask Mango about this recommendation",
     "fx.chat.placeholder": "Why this provider? What if I'm not in a rush?",
     "fx.chat.send": "Send",
@@ -310,8 +364,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.validation": "Please fill in sending country, receiving country and amount.",
     "fx.ratesSource": "Values fetched directly from the wholesale interbank market. Last update:",
     "fx.at": "at",
-    "fx.trademarks":
-      "All third-party trademarks, logos, and provider names (including Wise, Airwallex, OFX, Convera, and Currencies Direct) are the property of their respective owners. Their appearance on this platform is strictly for informational, comparative, and market reference purposes, and does not imply any affiliation, sponsorship, or commercial endorsement by said owners with mangomundi.",
     "biz.rfqCta": "Open the RFQ desk",
     "biz.rfqRoute": "Get routed to the right desk for your corridor",
     // About
@@ -379,8 +431,17 @@ export const DICTS: Record<Lang, Dict> = {
       "Access transparent, market-backed FX routing and custom asynchronous RFQ bidding protocols for your enterprise corridors.",
     "home.finalCta.rfq": "Access RFQ Terminal",
     "home.hero.ctaCompare": "Try FX Comparator",
-    "home.hero.titlePre": "Compare currency",
-    "home.hero.titleAccent": "exchange rates",
+    // design/AJUSTES-1.md §B — literal h1 copy, plain text (the mockup has
+    // no gradient accent on this headline, unlike the old titlePre/
+    // titleAccent split it replaces). Renamed rather than reusing
+    // "home.hero.title" — that key already exists (line ~377) as dead
+    // copy from an earlier hero design, unused anywhere in src/.
+    "home.hero.headline": "Compare exchange rates and transfer fees",
+    // The link next to the Individual/Business switcher (§B) — renders as
+    // an inert button (no destination route exists yet; decision #5 of
+    // the redesign explicitly deferred building /exchange because "la
+    // pantalla no está diseñada").
+    "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
     "home.dual.title": "Built for every cross-border flow — retail and corporate",
     "home.dual.retail.title": "Retail Remittances & Private Wealth",
     "home.dual.retail.body":
@@ -401,45 +462,60 @@ export const DICTS: Record<Lang, Dict> = {
     "home.how.s3.title": "Send with your provider",
     "home.how.s3.desc":
       "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
-    "home.how.aiAside":
-      "Not sure which option fits best? Ask the mangomundi AI agent, free and with no account needed, to break down fees or double-check your options.",
     "home.feat.liveRates": "Live Rates",
     "home.feat.zeroFees": "Zero Fees",
     "home.feat.noSignup": "No Sign-up",
     // Home — About / Manifesto
-    "home.about.eyebrow": "About",
+    // 2026-08-31 feedback — back to the mockup's own eyebrow
+    // (design/Mangomundi 4 - Final.dc.html line 174 / AJUSTES-4.md §2),
+    // dropped in an earlier round in favor of the generic "About".
+    "home.about.eyebrow": "Neutral by design",
     "home.about.title": "Financial intelligence for every currency decision",
     "home.about.subtitle":
       "A neutral decision engine: we connect retail and corporate flows to the best available cross-border route or local currency exchange operator, without bias or hidden margins.",
-    "home.about.mission.label": "Mission",
+    // 2026-09-01 feedback — "en lugar de misión/visión/problema, escribirlo
+    // como storytelling fluido, sin subtítulos, con negritas, como párrafos
+    // separados que digan por ejemplo 'our mission is...'": these three
+    // used to render as three labeled blocks (design/AJUSTES-3.md §B's
+    // original structure). Same three ideas, now three connected
+    // paragraphs — each still its own key/`<p>` so the page keeps its
+    // spacing rhythm, just without the eyebrow labels above them. `**bold**`
+    // spans render via ReactMarkdown (same treatment as
+    // comparator.rankingExplainer) so they translate correctly across all
+    // 20 locales instead of hardcoding word position.
     "home.about.mission.body":
-      "Facilitate access to the best foreign exchange decisions through neutral, AI-powered intelligence, eliminating information asymmetry and hidden costs from global payments.",
-    "home.about.vision.label": "Vision",
+      "**Our mission is simple:** give every transfer — a family sending money home, a business settling an invoice abroad — access to the best possible exchange rate, powered by neutral, AI-driven intelligence that closes the information gap and strips out hidden costs.",
     "home.about.vision.body":
-      "A world where every local FX or cross-border payment, from a family remittance to a multinational treasury operation, runs through a transparent and equitable decision layer.",
-    "home.about.problem.label": "Problem",
+      "We're working toward a world where **every cross-border payment** runs through a transparent, equitable decision layer, whether it's a family remittance or a multinational treasury operation — never a maze of confusing rates and hidden margins.",
     "home.about.problem.body":
-      "A two-sided inefficiency. On one side, retail clients and businesses face a frustrating maze regarding best rates. On the other, financial institutions struggle with high acquisition costs and fragmented channels.",
+      "Because today, the market fails on both sides. **Retail clients and businesses** struggle through a frustrating maze just to find the best rate, while **financial institutions** absorb high acquisition costs through fragmented channels. mangomundi exists to fix both at once.",
+    // design/AJUSTES-2.md §5 — the dark band's CTA button. "Read our
+    // method"/home.about.cta.method removed 2026-08-30 (see
+    // AboutManifestoSection.tsx's own comment) — only "About us" remains.
+    "home.about.cta.aboutUs": "About us",
     // Home — Stats / Market coverage
     "home.stats.eyebrow": "Market coverage",
     "home.stats.title": "One view across the global FX market",
     "home.stats.subtitle":
       "Our decision engine evaluates more than 50 global providers in real time, normalizing rates, fees, delivery speed and corridor availability into a clear comparison.",
-    "home.stats.founded": "Founded",
     "home.stats.countries": "Countries Covered",
     "home.stats.currencies": "Currencies Supported",
-    "home.stats.providers": "Global providers evaluated in real time",
+    // design/AJUSTES-1.md §F — shortened for the dark-band stat tile
+    // (AboutManifestoSection); also feeds HeroSection's trust bar, same key.
+    "home.stats.providers": "Providers",
+    // 2026-08-30 feedback — replaces the dark band's 4th stat tile, which
+    // used to show a hardcoded, unverifiable "4.6" Trustpilot figure (no
+    // real API integration exists — see TrustpilotCard's own comment).
+    "home.stats.founded": "Founded",
     // Home — Contact
     "home.contact.eyebrow": "Contact",
-    "home.contact.title": "Institutional & Partnership Inquiries",
+    // design/AJUSTES-1.md §G — literal copy for the business pitch band,
+    // replacing the old "Institutional & Partnership Inquiries" + two
+    // treasury/partnership cards (bank language, per the doc).
+    "home.contact.title": "Payroll or supplier payments? Different brokers, different rates.",
     "home.contact.subtitle":
-      "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
-    "home.contact.treasury.title": "For Treasury Operations",
-    "home.contact.treasury.body":
-      "We can develop custom, on-premise AI agents as a service, tailored to your corporate treasury team's workflow to optimize trade finance and liquidity operations.",
-    "home.contact.partners.title": "For FX & Payment Partnerships",
-    "home.contact.partners.body":
-      "We are looking to align with cross-border payment operators and currency exchange providers; let's explore synergies through integrated sponsored placements and affiliate programs designed to maximize efficiency and reduce your Customer Acquisition Cost (CAC).",
+      "14 FX brokers quote settlement terms, minimum amounts and contract type. Same neutrality, applied to volume.",
+    "home.contact.getQuotes": "Get business quotes",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
     "home.blog.title": "Insights on global FX, payments and remittances",
@@ -447,8 +523,14 @@ export const DICTS: Record<Lang, Dict> = {
       "We're preparing in-depth analysis on cross-border payments, corridor economics, and FX intelligence. Check back soon.",
     "home.blog.readMore": "Read more",
     "home.blog.viewAll": "View all posts",
+    // design/AJUSTES-2.md §4 — the compact home-page band's own title and
+    // link, separate from home.blog.title/viewAll which stay the full
+    // /blog listing page's <h1> and are unrelated to this band.
+    "home.blog.compactTitle": "From the blog",
+    "home.blog.allArticles": "All articles ↗",
+    // design/AJUSTES-1.md §B — literal subtitle copy.
     "home.hero.tagline":
-      "Find the best way to send money. Compare rates, fees, transfer speeds, and providers in real time. Powered by neutral AI.",
+      "Who delivers more of your money? Real rates and total fees, side by side, updated every minute. No sign-up.",
     "home.contact.simple.title": "Get in touch",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
@@ -464,23 +546,167 @@ export const DICTS: Record<Lang, Dict> = {
     "home.widget.copied": "Copied!",
     "home.widget.hint":
       "Paste it anywhere in your HTML. The widget is free and runs in an isolated iframe — no code conflicts, no tracking added to your site.",
+    // 2026-08-30 feedback — the home page's own small Widget card
+    // (WidgetTeaserSection.tsx), literal to design/Mangomundi 4 - Final.dc.html
+    // line 206-211. Separate from home.widget.title/body above, which are
+    // now /widget's own page heading/intro (longer, page-appropriate copy).
+    "home.widget.card.title": "Put the comparator on your site",
+    "home.widget.card.body":
+      "360×540, one line of embed code, free. Your readers compare without leaving your article.",
+    "home.widget.card.cta": "Get the embed code",
+    // /widget's own extended explanation (routes/widget.tsx) — the part the
+    // home card no longer has room for.
+    "widget.page.how.label": "How it works",
+    "widget.page.how.body":
+      "Add one script tag or an iframe wherever you want the comparator to appear. It renders in its own isolated frame, so there's no CSS conflict with your page and nothing new is tracked on your site.",
+    "widget.page.who.label": "Who it's for",
+    "widget.page.who.body":
+      "Publishers, fintech blogs and community sites use it so readers can compare exchange rates without leaving the article. Every embedded comparison still runs the same live, neutral ranking as the site itself — nothing about the results changes because it's embedded.",
     // Compact results list inside the embeddable widget (EmbedComparator) —
     // one winner card + compact provider lines + this link back to the
     // full site. {n} is the total number of providers in the comparison.
+    // 2026-09-04 feedback made this key's own usage site dead code (see
+    // comparator.widget.seeMore below) — left in place, translated in all
+    // 19 locales, rather than overwriting those with an unverified
+    // 19-language re-translation of a one-word copy change.
     "comparator.widget.viewAll": "See all {n} on mangomundi",
+    // 2026-09-04 feedback — "sacar la frase de 21 more providers on
+    // mangomundi... dejar solo el boton pero sin el numero de providers,
+    // pone see more on mangomundi": comparator.widget.viewAll's own
+    // replacement, without the count (the title/body text it used to sit
+    // under is gone too, see comparator.widget.moreProviders' old comment
+    // below). New key rather than editing viewAll in place — that key's
+    // JSON translations are real, human work in 19 languages; safer not to
+    // touch them for a copy change this session can only verify in
+    // English/Spanish/Portuguese.
+    // 2026-09-02 feedback — "que diga alguna otra cosa porque abajo dice
+    // powered by mangomundi": the CTA and the attribution bar right below
+    // it both said "mangomundi", reading as redundant back-to-back.
+    "comparator.widget.seeMore": "See more rates and providers",
+    // design/Mangomundi 4 - Final.dc.html (line 435) — "Show N more
+    // providers" below the (now capped) results list, distinct from
+    // comparator.widget.seeMore (the widget's own "See more" link).
+    "comparator.showMoreProviders": "Show {n} more providers",
+    // 2026-09-04 feedback — "sacar la frase delivers the most poner your
+    // results": the widget's own results eyebrow (design/Mangomundi 4 -
+    // Final.dc.html line 743-744), distinct from comparator.results (the
+    // full table's own "Your results" header) which this deliberately
+    // doesn't reuse — kept as its own key in case the two ever diverge
+    // again, same as before.
+    "comparator.widget.yourResults": "Your results",
+    // Business broker table (design/Mangomundi 4 - Final.dc.html line
+    // 494-541) — BusinessBrokerRow + BusinessRequestPanel in ComparatorSection.tsx.
+    "comparator.business.metric.spread": "Spread",
+    "comparator.business.metric.minimum": "Minimum",
+    "comparator.business.metric.settlement": "Settlement",
+    "comparator.business.metric.contracts": "Contracts",
+    // 2026-09-02 feedback — "los proveedores que no tienen valores completar
+    // con el estimado aclarar que es estimado": min_amount/settlement_terms/
+    // contract_type now always have a value (real, sourced where findable —
+    // otherwise a logical estimate: median of same provider_type peers with
+    // real data — see the add_business_terms_estimated_flags migration).
+    // "Est." badges the metric when it's the latter, so it never reads as a
+    // verified fact; the tooltip explains why.
+    "comparator.business.metric.estimated": "Est.",
+    "comparator.business.metric.estimatedTooltip":
+      "Estimated — no public source found for this provider; based on similar providers, not a confirmed figure.",
+    "comparator.business.exclusiveTag": "Exclusive",
+    "comparator.business.estOn": "Est. on {amount}",
+    "comparator.business.saved": "saved",
+    "comparator.business.addToRequest": "Add to request",
+    "comparator.business.added": "Added",
+    "comparator.business.methodology":
+      "Savings estimated against the retail best on the same route. Indicative only: brokers price by volume, frequency and settlement date, which is why this screen ends in a quote instead of a rate.",
+    "comparator.business.request.title": "Your request",
+    // 2026-08-31 feedback — the panel moved above the results, full width;
+    // explains what selecting providers below actually does now that it's
+    // the first thing seen, not a rail card next to an agent that already
+    // explained the flow.
+    "comparator.business.request.explainer":
+      "Want a custom quote instead of shopping rates one by one? Select the brokers below you'd like to hear from — we'll send one request and try to get you negotiated rates for this volume.",
+    "comparator.business.request.volume": "Volume",
+    "comparator.business.request.route": "Route",
+    // 2026-09-02 feedback — "route tiene que ser los países, hay que
+    // agregar las currencies": Route used to show the currency pair
+    // (e.g. "GBP → USD") — now shows the country pair, this is the
+    // currency pair as its own stat instead of being dropped.
+    "comparator.business.request.currency": "Currency",
+    "comparator.business.request.contract": "Contract",
+    "comparator.business.request.brokersSelected": "Brokers selected",
+    "comparator.business.request.of": "of",
+    "comparator.business.request.emailPlaceholder": "you@company.com",
+    "comparator.business.request.sending": "Sending…",
+    "comparator.business.request.cta": "Send request to {n} brokers",
+    "comparator.business.request.error": "Something went wrong. Please try again.",
+    "comparator.business.request.disclaimer":
+      "One email with your requirements. No broker gets your contact details until you reply to their quote.",
+    "comparator.business.request.sent":
+      "Sent. Brokers will reach out with quotes for you to compare — no obligation.",
+    // design/Mangomundi 4 - Final.dc.html line 552-557 — literal except the
+    // CTA: the mockup's "Book a 15-min call" is deliberately not built
+    // (2026-08-30 feedback, second round); email is the one real contact
+    // path this site has (business.extras.cta, same address).
+    "comparator.business.contactCard.title": "Rather talk to someone?",
+    "comparator.business.contactCard.body":
+      "We introduce you to the brokers and stay out of the pricing. No fee for you either way.",
+    // Widget header freshness stamp (EmbedComparator) — real, per the
+    // comment on useRatesFreshness there, not the dropped todaysRoutes claim.
+    "widget.header.ratesJustNow": "rates just now",
+    "widget.header.ratesMinAgo": "rates {n} min ago",
+    // 2026-09-03 feedback — "el widget tiene que tener algún título que
+    // invite a comparar y sacale el logo de arriba porque ya aparece
+    // abajo": replaces the header's Wordmark (redundant with the "powered
+    // by mangomundi" attribution link already at the bottom of the same
+    // widget) with a short action-oriented title — this header bar is only
+    // ~360px wide, so kept to two words rather than reusing the home
+    // page's full headline.
+    "widget.header.title": "Compare rates",
+    // 2026-09-01 feedback — "antes de seleccionar pueden aparecer ejemplos
+    // de todays rates para que no aparezca vacío": a real example corridor
+    // (from the same getExclusiveCorridors data TodaysRoutesSection uses),
+    // shown only while the widget has no result of its own yet — "example"
+    // in the label so it never reads as this widget's own live result.
+    // 2026-09-02 feedback — "queda mucho espacio en blanco, tienen que
+    // aparecer varias monedas como ejemplos no solo una": WidgetExample
+    // (now WidgetExamples, plural) shows up to 3 real corridors instead of
+    // just corridors[0], so the copy moves from singular to plural too.
+    "widget.examples.title": "Example rates",
+    "widget.examples.exclusiveRate": "Exclusive rate",
+    "widget.examples.bestOf": "Best of {n} · {amount} {from}",
     // Footer
-    "footer.tagline": "Smart currency exchange comparison, powered by AI.",
-    "footer.nav.title": "Navigate",
-    "footer.legal.title": "Legal & Compliance",
-    "footer.nav.home": "Home",
-    "footer.nav.about": "About",
+    // 2026-08-30 feedback — literal to design/Mangomundi 4 - Final.dc.html
+    // line 234; EN-only change (decision #8), other langs keep the old copy.
+    // Second feedback round: drop "We never move your money." — the site
+    // says that elsewhere already (comparator step 3, the mockup's own
+    // "3 steps" copy), redundant in the footer tagline specifically.
+    // 2026-08-31 feedback — two lines: "Neutral decision engine" /
+    // "for international transfers." A literal "\n" (rendered with
+    // whitespace-pre-line in Footer.tsx) rather than a new key, so other
+    // languages that keep the old single-line text are unaffected — only
+    // EN gets a forced break unless a future translation adds its own.
+    "footer.tagline": "Neutral decision engine for\ninternational transfers.",
+    // 2026-08-30 feedback (fifth round) — replaces fx.disclaimer +
+    // fx.trademarks (both removed from below the results list) with one
+    // concise line at the very bottom of the footer, alongside the other
+    // legal notes already there.
+    "footer.legalNote":
+      "mangomundi is independent; some links are affiliate links and may earn us a commission at no extra cost to you. Rates are estimates — verify on the provider's site. Third-party names and logos belong to their owners and imply no endorsement.",
+    // design/AJUSTES-3.md §B — Footer restructured to 3 literal columns
+    // (Product / Company / Legal). footer.nav.title was "Navigate" over a
+    // single flat list; repurposed as the "Company" column header now that
+    // the list itself split into FOOTER_PRODUCT/FOOTER_COMPANY (nav.ts) —
+    // EN-only change (decision #8), the role changed, not just the word.
+    // footer.legal.title shortened from "Legal & Compliance" to match the
+    // doc's literal column name.
+    "footer.nav.title": "Company",
+    "footer.legal.title": "Legal",
+    "footer.product.title": "Product",
+    "footer.product.comparator": "Comparator",
+    "footer.product.rateAlerts": "Rate alerts",
     "footer.nav.how": "How it works",
-    "footer.nav.contact": "Contact",
-    "footer.nav.blog": "Blog",
     "footer.legal.terms": "Terms of Service",
     "footer.legal.risk": "Risk Disclosure",
     "footer.legal.privacy": "Privacy Policy",
-    "footer.rights": "All rights reserved.",
     // Legal page
     "legal.pageTitle": "Legal & Compliance",
     "legal.pageSubtitle": "Terms of Service, Risk Disclosure and Privacy Policy.",
@@ -531,6 +757,53 @@ export const DICTS: Record<Lang, Dict> = {
     "legal.privacy.h4": "04 — Your rights",
     "legal.privacy.p4":
       "You can request access, correction, or deletion of your personal data by writing to hello@mangomundi.com.",
+    // 2026-09-03 audit — ComingSoonModal used to be hardcoded Spanish
+    // regardless of the visitor's language; routed through t() here.
+    "comingSoon.titleB2b": "Copilot B2B — priority access",
+    "comingSoon.titleEnterprise": "Enterprise Beta — priority access",
+    "comingSoon.descriptionB2b":
+      "We noticed you're operating at corporate volumes. Leave your work email to enable your Copilot B2B with priority.",
+    "comingSoon.descriptionEnterprise":
+      "This automation is in closed beta. Leave your work email and we'll assign you a slot.",
+    "comingSoon.successMessage":
+      "We're rolling out this automation in closed beta. You've been given priority access.",
+    "comingSoon.successModule": "Module: {module}",
+    "comingSoon.emailPlaceholder": "name@company.com",
+    "comingSoon.consent":
+      "I agree that mangomundi stores my email to contact me about this priority access (GDPR).",
+    "comingSoon.submit": "Request priority access",
+    "comingSoon.disclaimer": "No spam. We'll only write when your slot opens up.",
+    // 2026-09-03 audit — LangSwitcher's own chrome (aria-labels, search
+    // placeholder, empty state) was hardcoded English.
+    "langSwitcher.changeLanguage": "Change language",
+    "langSwitcher.language": "Language",
+    "langSwitcher.searchPlaceholder": "Search…",
+    "langSwitcher.searchAriaLabel": "Search languages",
+    "langSwitcher.noMatches": "No matches",
+    // 2026-09-03 audit — Header's landmark/toggle aria-labels (shared by
+    // blog.tsx and blog_.$slug.tsx's own copies of the same logo link).
+    "header.homeAriaLabel": "mangomundi home",
+    "header.mainAriaLabel": "Main",
+    "header.menuAriaLabel": "Menu",
+    // 2026-09-03 audit — the root route's crash boundary (ErrorComponent)
+    // was hardcoded English, unlike its sibling NotFoundComponent.
+    "errorBoundary.title": "This page didn't load",
+    "errorBoundary.description":
+      "Something went wrong on our end. You can try refreshing or head back home.",
+    "errorBoundary.tryAgain": "Try again",
+    "errorBoundary.goHome": "Go home",
+    // 2026-09-03 audit — generic fallbacks shown only when a server error
+    // carries no message of its own; previously hardcoded English.
+    "comparator.row.genericError": "Couldn't load rates.",
+    // 2026-09-02 — the post-Compare loading skeleton had no label, so it
+    // read as an empty/broken grid rather than a loading state.
+    "comparator.loading.title": "Comparing rates…",
+    "preferredRateModal.genericError": "Something went wrong. Please try again.",
+    // 2026-09-03 audit — the widget's required affiliate-disclosure link
+    // ("powered by mangomundi") had its "powered by" half hardcoded.
+    "embed.poweredBy": "powered by",
+    "comparator.agent.languageAriaLabel": "Language {lang}",
+    "comparator.row.spreadWord": "spread",
   },
   es: {
     "nav.home": "Inicio",
@@ -576,8 +849,8 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.speed": "Velocidad",
     "fx.action": "Acción",
     "fx.goto": "Ir a",
-    "fx.disclaimer":
-      "mangomundi es independiente. Algunos enlaces son de afiliados — podemos cobrar una comisión sin costo extra para vos. Las tasas y comisiones son estimadas; verificá en el sitio del proveedor antes de enviar.",
+    "comparator.row.share": "Compartir esta tasa",
+    "comparator.row.shareCopied": "¡Copiado!",
     "fx.chat.title": "Preguntale a Mango sobre esta recomendación",
     "fx.chat.placeholder": "¿Por qué este proveedor? ¿Y si no tengo apuro?",
     "fx.chat.send": "Enviar",
@@ -632,8 +905,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.ratesSource":
       "Valores obtenidos directamente del mercado interbancario mayorista. Última actualización:",
     "fx.at": "a las",
-    "fx.trademarks":
-      "Todas las marcas comerciales, logotipos y nombres de proveedores de terceros (incluidos Wise, Airwallex, OFX, Convera y Currencies Direct) son propiedad de sus respectivos titulares. Su aparición en esta plataforma se realiza exclusivamente con fines informativos, comparativos y de referencia de mercado, y no implica afiliación, patrocinio o endoso comercial alguno por parte de dichos titulares con mangomundi.",
     "biz.rfqCta": "Abrir mesa RFQ",
     "biz.rfqRoute": "Acceder a la mesa adecuada para tu corredor",
     // About
@@ -716,8 +987,6 @@ export const DICTS: Record<Lang, Dict> = {
     "home.how.s3.title": "Enviá con tu proveedor",
     "home.how.s3.desc":
       "Andá directo al proveedor elegido para completar la transferencia. Sin registro, sin recargos ocultos.",
-    "home.how.aiAside":
-      "¿No estás seguro cuál conviene? Preguntale al agente de IA de mangomundi, gratis y sin necesidad de cuenta, para desglosar comisiones o confirmar la mejor opción.",
     "home.feat.liveRates": "Tasas en vivo",
     "home.feat.zeroFees": "Sin comisiones",
     "home.feat.noSignup": "Sin registro",
@@ -726,21 +995,17 @@ export const DICTS: Record<Lang, Dict> = {
     "home.about.title": "Inteligencia financiera para cada decisión de divisas",
     "home.about.subtitle":
       "Un motor de decisión neutral: conectamos flujos retail y corporativos con la mejor ruta transfronteriza o el mejor operador local de cambio, sin sesgos ni márgenes ocultos.",
-    "home.about.mission.label": "Misión",
     "home.about.mission.body":
-      "Facilitar el acceso a las mejores decisiones de cambio mediante inteligencia neutral impulsada por IA, eliminando la asimetría de información y los costos ocultos de los pagos globales.",
-    "home.about.vision.label": "Visión",
+      "**Nuestra misión es simple:** darle a cada transferencia —una familia que envía dinero a casa, una empresa que paga una factura al exterior— acceso a la mejor tasa de cambio posible, con inteligencia neutral impulsada por IA que cierra la brecha de información y elimina los costos ocultos.",
     "home.about.vision.body":
-      "Un mundo donde cada pago local o transfronterizo, desde una remesa familiar hasta una operación de tesorería multinacional, transite por una capa de decisión transparente y equitativa.",
-    "home.about.problem.label": "Problema",
+      "Trabajamos hacia un mundo donde **cada pago transfronterizo** transite por una capa de decisión transparente y equitativa, sea una remesa familiar o una operación de tesorería multinacional — nunca un laberinto de tasas confusas y márgenes ocultos.",
     "home.about.problem.body":
-      "Una ineficiencia de doble cara. Por un lado, clientes retail y empresas enfrentan un laberinto frustrante para encontrar las mejores tasas. Por el otro, las instituciones financieras enfrentan altos costos de adquisición y canales fragmentados.",
+      "Porque hoy el mercado falla de los dos lados. **Clientes retail y empresas** se pierden en un laberinto frustrante solo para encontrar la mejor tasa, mientras las **instituciones financieras** absorben altos costos de adquisición por canales fragmentados. mangomundi existe para resolver los dos problemas a la vez.",
     // Home — Cobertura de mercado
     "home.stats.eyebrow": "Cobertura de mercado",
     "home.stats.title": "Una vista completa del mercado global de divisas",
     "home.stats.subtitle":
       "Nuestro motor de decisión evalúa más de 50 proveedores globales en tiempo real, normalizando tasas, comisiones, velocidad de entrega y disponibilidad por corredor en una comparación clara.",
-    "home.stats.founded": "Fundada en",
     "home.stats.countries": "Países cubiertos",
     "home.stats.currencies": "Divisas soportadas",
     "home.stats.providers": "Proveedores globales evaluados en tiempo real",
@@ -749,12 +1014,6 @@ export const DICTS: Record<Lang, Dict> = {
     "home.contact.title": "Consultas institucionales y de alianzas",
     "home.contact.subtitle":
       "Para equipos de tesorería y partners de FX que buscan tasas dedicadas, integraciones a medida, o una línea directa con nuestro equipo.",
-    "home.contact.treasury.title": "Para operaciones de tesorería",
-    "home.contact.treasury.body":
-      "Desarrollamos agentes de IA personalizados, on-premise, adaptados al flujo de trabajo de tu equipo de tesorería corporativa para optimizar operaciones de financiamiento comercial y liquidez.",
-    "home.contact.partners.title": "Para alianzas de FX y pagos",
-    "home.contact.partners.body":
-      "Buscamos alinearnos con operadores de pagos transfronterizos y proveedores de cambio de divisas; exploremos sinergias mediante colocaciones patrocinadas integradas y programas de afiliados diseñados para maximizar eficiencia y reducir tu Costo de Adquisición de Clientes (CAC).",
     // Home — Blog
     "home.blog.eyebrow": "Blog",
     "home.blog.title": "Análisis sobre FX global, pagos y remesas",
@@ -762,8 +1021,11 @@ export const DICTS: Record<Lang, Dict> = {
       "Estamos preparando análisis en profundidad sobre pagos transfronterizos, economía de corredores e inteligencia FX. Volvé pronto.",
     "home.blog.readMore": "Leer más",
     "home.blog.viewAll": "Ver todas las notas",
-    "home.hero.titlePre": "Compará",
-    "home.hero.titleAccent": "tipos de cambio",
+    // Reconstruido de las viejas titlePre+titleAccent (no traducción nueva
+    // sin revisión — decisión #8 del rediseño). El subtítulo se queda con
+    // el string viejo por la misma razón; el copy nuevo de EN todavía no
+    // tiene revisión en español.
+    "home.hero.headline": "Compará tipos de cambio",
     "home.hero.tagline":
       "Encontrá la mejor forma de enviar dinero. Compará tasas, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
     "home.contact.simple.title": "Contáctanos",
@@ -785,15 +1047,10 @@ export const DICTS: Record<Lang, Dict> = {
     "footer.tagline": "Comparación inteligente de cambio de divisas, con IA.",
     "footer.nav.title": "Navegación",
     "footer.legal.title": "Legal y Cumplimiento",
-    "footer.nav.home": "Inicio",
-    "footer.nav.about": "Nosotros",
     "footer.nav.how": "Cómo funciona",
-    "footer.nav.contact": "Contacto",
-    "footer.nav.blog": "Blog",
     "footer.legal.terms": "Términos del Servicio",
     "footer.legal.risk": "Aviso de Riesgo",
     "footer.legal.privacy": "Política de Privacidad",
-    "footer.rights": "Todos los derechos reservados.",
     // Página Legal
     "legal.pageTitle": "Legal y Cumplimiento",
     "legal.pageSubtitle": "Términos del Servicio, Aviso de Riesgo y Política de Privacidad.",
@@ -844,6 +1101,39 @@ export const DICTS: Record<Lang, Dict> = {
     "legal.privacy.h4": "04 — Tus derechos",
     "legal.privacy.p4":
       "Podés solicitar acceso, corrección o eliminación de tus datos personales escribiendo a hello@mangomundi.com.",
+    "comingSoon.titleB2b": "Copilot B2B — Acceso prioritario",
+    "comingSoon.titleEnterprise": "Enterprise Beta — Acceso prioritario",
+    "comingSoon.descriptionB2b":
+      "Detectamos que operás con volúmenes corporativos. Dejá tu email institucional para habilitar tu Copilot B2B con prioridad.",
+    "comingSoon.descriptionEnterprise":
+      "Esta automatización está en fase beta cerrada. Dejá tu email corporativo y te asignamos un slot.",
+    "comingSoon.successMessage":
+      "Estamos desplegando esta automatización en fase beta cerrada. Te hemos asignado acceso prioritario.",
+    "comingSoon.successModule": "Módulo: {module}",
+    "comingSoon.emailPlaceholder": "nombre@empresa.com",
+    "comingSoon.consent":
+      "Acepto que mangomundi almacene mi email para contactarme sobre este acceso prioritario (GDPR).",
+    "comingSoon.submit": "Solicitar acceso prioritario",
+    "comingSoon.disclaimer": "Sin spam. Sólo te escribimos cuando se abre tu slot.",
+    "langSwitcher.changeLanguage": "Cambiar idioma",
+    "langSwitcher.language": "Idioma",
+    "langSwitcher.searchPlaceholder": "Buscar…",
+    "langSwitcher.searchAriaLabel": "Buscar idiomas",
+    "langSwitcher.noMatches": "Sin resultados",
+    "header.homeAriaLabel": "Inicio de mangomundi",
+    "header.mainAriaLabel": "Principal",
+    "header.menuAriaLabel": "Menú",
+    "errorBoundary.title": "Esta página no cargó",
+    "errorBoundary.description":
+      "Algo salió mal de nuestro lado. Podés intentar de nuevo o volver al inicio.",
+    "errorBoundary.tryAgain": "Intentar de nuevo",
+    "errorBoundary.goHome": "Ir al inicio",
+    "comparator.row.genericError": "No se pudieron cargar las tarifas.",
+    "comparator.loading.title": "Comparando tarifas…",
+    "preferredRateModal.genericError": "Algo salió mal. Intentá de nuevo.",
+    "embed.poweredBy": "con tecnología de",
+    "comparator.agent.languageAriaLabel": "Idioma {lang}",
+    "comparator.row.spreadWord": "spread",
   },
   pt: {
     "nav.home": "Início",
@@ -889,8 +1179,8 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.speed": "Velocidade",
     "fx.action": "Ação",
     "fx.goto": "Ir para",
-    "fx.disclaimer":
-      "mangomundi é independente. Alguns links são de afiliados — podemos receber comissão sem custo extra para você. Taxas são estimativas; verifique no site do provedor antes de enviar.",
+    "comparator.row.share": "Compartilhar esta taxa",
+    "comparator.row.shareCopied": "Copiado!",
     "fx.chat.title": "Pergunte à Mango sobre esta recomendação",
     "fx.chat.placeholder": "Por que este provedor? E se eu não tiver pressa?",
     "fx.chat.send": "Enviar",
@@ -945,8 +1235,6 @@ export const DICTS: Record<Lang, Dict> = {
     "fx.ratesSource":
       "Valores obtidos diretamente do mercado interbancário atacadista. Última atualização:",
     "fx.at": "às",
-    "fx.trademarks":
-      "Todas as marcas comerciais, logotipos e nomes de provedores terceiros (incluindo Wise, Airwallex, OFX, Convera e Currencies Direct) são de propriedade de seus respectivos titulares. Sua exibição nesta plataforma é feita exclusivamente para fins informativos, comparativos e de referência de mercado, não implicando qualquer afiliação, patrocínio ou endosso comercial por parte de tais titulares com a mangomundi.",
     "biz.rfqCta": "Abrir mesa RFQ",
     "biz.rfqRoute": "Acessar a mesa adequada para o seu corredor",
     // About
@@ -1017,6 +1305,39 @@ export const DICTS: Record<Lang, Dict> = {
     "home.dual.corporate.body":
       "Gerencie exposição corporativa multimoeda, execute pagamentos em massa e proteja o risco cambial com nosso Terminal RFQ interativo e relatórios de dados transparentes.",
     "compare.calculating": "Calculando rotas ótimas…",
+    "comingSoon.titleB2b": "Copilot B2B — Acesso prioritário",
+    "comingSoon.titleEnterprise": "Enterprise Beta — Acesso prioritário",
+    "comingSoon.descriptionB2b":
+      "Detectamos que você opera com volumes corporativos. Deixe seu email institucional para habilitar seu Copilot B2B com prioridade.",
+    "comingSoon.descriptionEnterprise":
+      "Esta automação está em fase beta fechada. Deixe seu email corporativo e reservaremos um slot para você.",
+    "comingSoon.successMessage":
+      "Estamos implantando esta automação em fase beta fechada. Você recebeu acesso prioritário.",
+    "comingSoon.successModule": "Módulo: {module}",
+    "comingSoon.emailPlaceholder": "nome@empresa.com",
+    "comingSoon.consent":
+      "Concordo que a mangomundi armazene meu email para me contatar sobre este acesso prioritário (GDPR).",
+    "comingSoon.submit": "Solicitar acesso prioritário",
+    "comingSoon.disclaimer": "Sem spam. Só escrevemos quando seu slot abrir.",
+    "langSwitcher.changeLanguage": "Mudar idioma",
+    "langSwitcher.language": "Idioma",
+    "langSwitcher.searchPlaceholder": "Buscar…",
+    "langSwitcher.searchAriaLabel": "Buscar idiomas",
+    "langSwitcher.noMatches": "Nenhum resultado",
+    "header.homeAriaLabel": "Início da mangomundi",
+    "header.mainAriaLabel": "Principal",
+    "header.menuAriaLabel": "Menu",
+    "errorBoundary.title": "Esta página não carregou",
+    "errorBoundary.description":
+      "Algo deu errado do nosso lado. Você pode tentar novamente ou voltar ao início.",
+    "errorBoundary.tryAgain": "Tentar novamente",
+    "errorBoundary.goHome": "Ir para o início",
+    "comparator.row.genericError": "Não foi possível carregar as taxas.",
+    "comparator.loading.title": "Comparando taxas…",
+    "preferredRateModal.genericError": "Algo deu errado. Tente novamente.",
+    "embed.poweredBy": "com tecnologia de",
+    "comparator.agent.languageAriaLabel": "Idioma {lang}",
+    "comparator.row.spreadWord": "spread",
   },
   // Scaffolded locales — core navigation translated; remaining keys fall back to English until full translation phase.
   it: {
@@ -1389,6 +1710,22 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
     "legal.risk.s4.title": "Sanctions and Regulatory Compliance",
     "legal.risk.s4.body":
       "Users are solely responsible for ensuring that any cross-border transfer complies with applicable sanctions regimes, anti-money laundering (AML) laws, know-your-customer (KYC) requirements, and cross-border reporting obligations in their jurisdiction. mangomundi does not facilitate transactions to embargoed jurisdictions or sanctioned counterparties. Violations may result in frozen funds, regulatory penalties, or criminal liability.",
+    // design/AJUSTES-4.md §3, /business only (BusinessExtrasSection.tsx).
+    // 2026-08-30 feedback — this is the literal original "Institutional &
+    // Partnership Inquiries" copy from the site's previous design, supplied
+    // verbatim by the user, replacing the generic mechanics-only text
+    // written in an earlier round when no real copy existed anywhere for
+    // these two cards.
+    "business.extras.title": "Institutional & Partnership Inquiries",
+    "business.extras.subtitle":
+      "For treasury teams and FX partners looking for dedicated rates, custom integrations, or a direct line to our team.",
+    "business.extras.cta": "Email our business desk",
+    "business.extras.treasury.title": "For Treasury Operations",
+    "business.extras.treasury.body":
+      "We can develop custom, on-premise AI agents as a service, tailored to your corporate treasury team's workflow to optimize trade finance and liquidity operations.",
+    "business.extras.partnerships.title": "For FX & Payment Partnerships",
+    "business.extras.partnerships.body":
+      "We are looking to align with cross-border payment operators and currency exchange providers; let's explore synergies through integrated sponsored placements and affiliate programs designed to maximize efficiency and reduce your Customer Acquisition Cost (CAC).",
     "business.badge": "For institutions & corporate treasury",
     "business.hero.title.1": "Institutional Routing &",
     "business.hero.title.2": "Strategy Validation.",
@@ -1871,7 +2208,14 @@ const LEGAL_BUSINESS_KEYS: Partial<Record<Lang, Dict>> = {
 const UI_KEYS: Partial<Record<Lang, Dict>> = {
   en: {
     "footer.navigate": "Navigate",
-    "footer.tagline": "Smart currency exchange comparison, powered by AI.",
+    // UI_KEYS is merged over DICTS (see the merge loop below), so this is
+    // the value that actually renders for EN — the DICTS.en copy above
+    // (same key) is shadowed. Kept in sync rather than removed, since the
+    // shadowing itself is pre-existing and out of scope here. 2026-08-31
+    // feedback — two lines via a literal "\n" (Footer.tsx renders this with
+    // whitespace-pre-line); this is the copy that was actually shadowing
+    // the DICTS.en edit and not showing up.
+    "footer.tagline": "Neutral decision engine for\ninternational transfers.",
     "footer.copyright": "All rights reserved.",
     "footer.disclaimerLabel": "disclaimer",
     "common.close": "Close",
@@ -2070,14 +2414,11 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.how.s3.title": "Send with your provider",
     "home.how.s3.desc":
       "Go straight to your chosen provider to finish the transfer. No sign-up, no hidden markup.",
-    "home.how.aiAside":
-      "Not sure which option fits best? Ask the mangomundi AI agent, free and with no account needed, to break down fees or double-check your options.",
     "home.platform.text": "FX is the first vertical.",
     "home.platform.brand": "mangomundi Platform",
     "home.platform.tail":
       "is the AI decision engine behind it — insurance, brokers, SaaS, and more are next.",
     "home.platform.learn": "Learn more",
-    "home.stats.founded": "Founded",
     "home.stats.countries": "Countries",
     "home.stats.currencies": "Currencies",
     "home.test.badge": "Auditable Neutrality",
@@ -2111,7 +2452,6 @@ const HOME_SECTIONS_KEYS: Partial<Record<Lang, Dict>> = {
     "home.platform.tail":
       "es el motor de decisión IA detrás — seguros, brokers, SaaS y más vienen después.",
     "home.platform.learn": "Saber más",
-    "home.stats.founded": "Fundada",
     "home.stats.countries": "Países",
     "home.stats.currencies": "Divisas",
     "home.test.badge": "Neutralidad Auditable",
@@ -2539,11 +2879,22 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Base and quote currencies for the operation.",
     "comparator.field.sourceCurrency": "Source Currency",
     "comparator.field.targetCurrency": "Target Currency",
-    "comparator.field.overrideCurrencyLink": "Need a different currency than the local one?",
-    "comparator.field.overrideCurrencyOpen": "Send/receive in:",
-    "comparator.field.useLocalCurrency": "Use local currency instead",
-    "comparator.segment.retail": "Individual",
+    // 2026-09-02 feedback — "que en lugar de individual poner la frase
+    // personal, entonces queda personal o business": pairs better with
+    // "Business" as a segment label (a bank's own "Personal / Business"
+    // account-type framing) than "Individual" did.
+    "comparator.segment.retail": "Personal",
     "comparator.segment.business": "Business",
+    "comparator.segment.retailCount": "{n} providers · retail rates",
+    "comparator.segment.businessCount": "{n} brokers · negotiated rates",
+    "comparator.field.contractType": "Contract type",
+    "comparator.contractType.spot": "Spot",
+    "comparator.contractType.forward": "Forward",
+    "comparator.contractType.option": "Option",
+    "comparator.field.frequency": "Frequency",
+    "comparator.frequency.oneOff": "One-off",
+    "comparator.frequency.monthly": "Monthly",
+    "comparator.frequency.quarterly": "Quarterly",
     "hero.subheadline.short":
       "AI agent for global and local payments. Best rates for individuals and businesses.",
     "seo.home.title": "Mangomundi | Intelligent currency exchange decisions",
@@ -2554,8 +2905,16 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.cta.compare": "Compare Providers",
     "comparator.field.sourceCountry": "Source country",
     "comparator.field.targetCountry": "Target country",
-    "comparator.field.amount": "You send",
-    "comparator.field.youReceive": "You receive",
+    // 2026-08-31 feedback — dropped "You"/"They" (was "You send"/"They
+    // receive" per design/AJUSTES-2.md §1): just "Send"/"Receive".
+    "comparator.field.amount": "Send",
+    "comparator.field.youReceive": "Receive",
+    // 2026-09-02 feedback (AG2) — "en el home en el campo de recibe escribir
+    // la palabra to para que completen el país antes de que aparezca la
+    // selección": the receiving-country box has no default (unlike Send's,
+    // which starts on "GB") and used an empty placeholder, so it just read
+    // as a blank box with no cue that a country still needed to be picked.
+    "comparator.field.receiveCountryPlaceholder": "To…",
     "comparator.swap": "Swap currencies",
     "comparator.midMarketRate": "Mid-market exchange rate",
     "comparator.field.urgency": "Urgency",
@@ -2563,11 +2922,15 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.combobox.empty": "No results.",
     "comparator.combobox.placeholder": "Select…",
     "comparator.copilot.title": "FX Copilot",
-    "comparator.copilot.agent": "AI Agent",
+    // 2026-08-30 feedback — "que se llame mangomundi ai como en el diseno".
+    "comparator.copilot.agent": "Mangomundi AI",
     "comparator.copilot.placeholder": "Ask a follow-up about this route…",
     "comparator.copilot.empty": "Run a comparison to enable the copilot.",
     "comparator.copilot.send": "Send",
     "comparator.copilot.analyzing": "Analyzing results…",
+    // design/AJUSTES-1.md §D — the line under the composer, dark panel only.
+    "comparator.copilot.trustLine":
+      "Answers come from the loaded comparison. It never favours a provider that pays us more.",
     "comparator.copilot.proceed": "Continue with {provider}",
     "comparator.copilot.proactive.rate":
       "I noticed **{provider}** offers the best rate right now for this amount. Want me to help you proceed?",
@@ -2599,8 +2962,13 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.lastUpdate": "Last update",
     "comparator.savings.label": "Your estimated saving",
     "comparator.savings.baseline": "vs 3.5% market average for this corridor",
+    // design/AJUSTES-1.md §C4 — literal copy, moved from a per-row footer
+    // note to one line above the results list (see ResultsBlock). Other
+    // languages keep their old string per decision #8 (no financial copy
+    // translated without review); this key isn't in .pending.json since
+    // it's not an EN placeholder, just a stale-but-native translation.
     "comparator.disclaimer.neutrality":
-      "mangomundi may earn affiliate commissions; this does not alter the neutrality of the ranking.",
+      "Affiliate links are labelled. Ranking never depends on them.",
     "search.eyebrow": "Financial intelligence terminal",
     "search.origin": "Origin country",
     "search.destination": "Recipient country",
@@ -2612,8 +2980,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "search.startTransfer": "Start a transfer",
     "search.liveRates": "Live rates",
     "search.destinationPrompt": "SELECT THE RECIPIENT COUNTRY",
-    "search.guide":
-      "Enter an amount and choose your currencies — mangomundi instantly compares live rates, fees and delivery speed across dozens of providers, no sign-up needed.",
     "search.promise": "Intelligent market comparison. No account required. No hidden fees.",
     "search.hint": "Independent market comparison. No account required.",
     "search.verified": "Market verified",
@@ -2660,19 +3026,53 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.sort.overall": "Smart",
     "comparator.sort.recipientGetsMost": "Receive",
     "comparator.sort.bestExchangeRate": "Rate",
-    "comparator.sort.more": "More criteria",
+    "comparator.sort.more": "Sort",
     "comparator.sort.mostTrusted": "Trust",
     "comparator.sort.bestBusiness": "Best for business",
     "comparator.sort.cashPickup": "Cash pickup",
     "comparator.sort.mostTransparent": "Most transparent",
     "comparator.sort.largeTransfers": "Large transfers",
     "comparator.sort.bestDeal": "Exclusive offer",
-    "comparator.badge.sponsored": "Sponsored offer",
     "comparator.badge.notVerified": "Estimated price — not verified for this exact route",
     "comparator.badge.unconfirmed": "Unconfirmed",
     "comparator.badge.promoPrefix": "Promo:",
-    "comparator.exclusiveRateNudge": "Check for exclusive rate",
     "comparator.filter.exclusiveOnly": "Exclusive rates",
+    // design/AJUSTES-2.md §6 — the rail's own "Exclusive rates only" row
+    // text (mockup line 308), kept separate from the shorter
+    // comparator.filter.exclusiveOnly used by the inline mobile chip so
+    // that one isn't stretched by the other's width constraints.
+    "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
+    // Left rail — design/HANDOFF.md §3 (29-ago-2026).
+    "comparator.filters.title": "Filters",
+    "comparator.filters.payoutMethod": "Payout method",
+    "comparator.filters.exclusiveOffers": "Exclusive offers",
+    "comparator.filters.rankBy": "Rank by",
+    // design/AJUSTES-2.md §6 — "Clear · {n}" header action (mockup line
+    // 296), {n} is the count of active filter criteria (delivery method +
+    // exclusive-only, not sort — there's always an active sort, so
+    // "clearing" it isn't meaningful).
+    "comparator.filters.clear": "Clear · {n}",
+    // design/AJUSTES-2.md §6 (mockup line 317) — corrected from "above" to
+    // "on the right": the rail now sits to the LEFT of the 3 sort tabs,
+    // not above them, so the old copy described the wrong layout.
+    "comparator.filters.rankByHint": "Replaces the three tabs on the right while active.",
+    "comparator.rateAlert.title": "Watch {from} → {to}",
+    "comparator.rateAlert.body":
+      "One email when the best rate on this route improves. No account needed.",
+    "comparator.rateAlert.cta": "Set a rate alert",
+    "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
+    "comparator.rateAlert.error": "Something went wrong. Please try again.",
+    // design/AJUSTES-1.md §E — "Today's routes, already priced". The
+    // mockup's subtitle claims a specific freshness ("updated 2 min ago")
+    // that a real page combining several corridors with different fetch
+    // times can't honestly assert as one number — dropped rather than
+    // hardcoded.
+    "todaysRoutes.title": "Today's routes, already priced",
+    "todaysRoutes.subtitle":
+      "Routes where a partner gives us an exclusive rate — rotating on every visit. Prices are the best of all providers we compare.",
+    "todaysRoutes.exclusiveRate": "Exclusive rate",
+    "todaysRoutes.bestOf": "Best of {n} · {amount} {from}",
+    "todaysRoutes.gain": "+{amount} vs worst",
     "comparator.rankingExplainer":
       "Results are ranked by whichever **Sort** you pick. **Smart** blends fee, exchange rate, speed and trust into one score; the rest (Speed, Fees, Rate, Trust, Receive) sort strictly by that one thing. **Sponsored** offers only ever win a genuine tie between otherwise-equal options — never a real difference.",
     "comparator.table.exchangeRate": "Exchange rate",
@@ -2706,7 +3106,15 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.b2b.title": "Sending over {amount} {cur}? Talk to our business desk.",
     "comparator.b2b.body":
       "For high-volume transfers, dedicated providers offer custom rates, treasury tooling and an account manager. →",
-    "comparator.b2b.cta": "Email our business desk",
+    // design/AJUSTES-1.md §G — "Talk to us" (outline button next to "Get
+    // business quotes" in BusinessSection). Same mailto action as before,
+    // only the label changed.
+    "comparator.b2b.cta": "Talk to us",
+    "comparator.b2bBanner.below":
+      "Sending more than {threshold}? Business brokers quote negotiated rates.",
+    "comparator.b2bBanner.above":
+      "Sending {amount} {cur} or more? Business brokers quote negotiated rates above {threshold} — usually 0.3–0.7% better than retail.",
+    "comparator.b2bBanner.cta": "See business quotes",
     "wizard.compare": "Compare",
     "wizard.howToCompare":
       "Read the table left to right: **rate** is how much of the destination currency you get per unit sent before fees, **fee** is the total charged by that provider, and **received** is the net amount that actually arrives. Use the column headers to sort by best amount received, lowest fee, or fastest delivery time.",
@@ -2742,6 +3150,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "wizard.exampleNote":
       "Here's a live example — comparing a popular route now. Change the amount or countries above to compare your own.",
     "wizard.moreQuestions": "More questions",
+    // 2026-08-30 feedback — AiCopilot.tsx's own collapse-toggle button,
+    // distinct from wizard.moreQuestions (a section header elsewhere).
+    "wizard.moreOptions": "More options",
     "wizard.quickActions": "Wizard — quick actions",
     "wizard.quickActionsAria": "AI Wizard quick actions",
     "wizard.reportNote":
@@ -2760,11 +3171,14 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.amountMode.receive": "Receive",
     "comparator.field.amountSent": "Amount sent",
     "comparator.field.amountReceived": "Amount received",
-    "comparator.cta.compareRates": "Search",
+    // design/AJUSTES-2.md §1 — "Compare" (no result yet), not "Search":
+    // searching is Google, comparing is the product. "Update" is the
+    // literal label once a result exists (comparator.cta.update, below).
+    "comparator.cta.compareRates": "Compare",
+    "comparator.cta.update": "Update",
     "comparator.table.amountSent": "Amount Sent",
     "comparator.table.bestRate": "Best Rate",
     "comparator.table.features": "Features",
-    "comparator.table.reviews": "reviews",
     "about.title": "Financial intelligence for every currency decision",
     "about.metric4.label": "Global providers evaluated in real time",
     "about.coverage.eyebrow": "Market Coverage",
@@ -2809,10 +3223,12 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
     "comparator.field.sourceCurrency": "Divisa de Origen",
     "comparator.field.targetCurrency": "Divisa de Destino",
-    "comparator.field.overrideCurrencyLink": "¿Necesitás una moneda distinta a la local?",
-    "comparator.field.overrideCurrencyOpen": "Enviar/recibir en:",
-    "comparator.field.useLocalCurrency": "Usar la moneda local",
-    "comparator.segment.retail": "Individual",
+    // 2026-09-02 feedback (AG3) — "Hacia…" truncated to "H…" in the
+    // widget's narrower w-14 flag box (fine in the full comparator's own
+    // wider field, AG2) — shortened to match "To…"'s length instead of
+    // widening the box further and eating into Compare's own space.
+    "comparator.field.receiveCountryPlaceholder": "A…",
+    "comparator.segment.retail": "Personal",
     "comparator.segment.business": "Empresas",
     "search.eyebrow": "Terminal de inteligencia financiera",
     "search.origin": "País de origen",
@@ -2852,6 +3268,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.advancedSearch": "Búsqueda avanzada",
     "comparator.advancedOptions": "Opciones avanzadas",
     "comparator.results": "Tus resultados",
+    "comparator.widget.yourResults": "Tus resultados",
+    "comparator.widget.seeMore": "Ver más tarifas y proveedores",
     "comparator.sortBy": "Ordenar",
     "comparator.sort.received": "Mejor tasa",
     "comparator.sort.fee": "Comisiones",
@@ -2859,7 +3277,6 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.badge.notVerified": "Precio estimado — no verificado para esta ruta",
     "comparator.badge.unconfirmed": "Sin confirmar",
     "comparator.badge.promoPrefix": "Promo:",
-    "comparator.exclusiveRateNudge": "Consultá tarifa exclusiva",
     "comparator.filter.exclusiveOnly": "Tarifas exclusivas",
     "comparator.filter.size": "Tamaño",
     "comparator.filter.showOnly": "Mostrar solo",
@@ -3160,6 +3577,19 @@ const ROUTE_SEO_EN: RouteSeoMap = {
     description:
       "mangomundi Terms of Service, Risk Disclosures and Privacy Policy — how the neutral FX decision engine handles data, liability and user obligations.",
   },
+  // design/AJUSTES-3.md §B — new routes; EN only for now, other languages
+  // fall back to SEO_META[lang] per getRouteSeo()'s documented behavior
+  // (same as any other route/language pair missing from these maps).
+  "/about": {
+    title: "About — mangomundi",
+    description:
+      "mangomundi is a neutral decision engine for cross-border payments and currency exchange — our mission, vision, and the problem we're solving.",
+  },
+  "/widget": {
+    title: "Widget — mangomundi",
+    description:
+      "Embed the mangomundi FX comparator on your site with one script tag or an iframe — free, live rates, no account needed.",
+  },
 };
 
 const ROUTE_SEO_ES: RouteSeoMap = {
@@ -3448,6 +3878,27 @@ export function getRouteSeo(lang: Lang, path: string): SeoMeta {
   return en ?? SEO_META.en;
 }
 
+// 2026-09-03 feedback — "corregir el titulo que tiene que tener la pestana
+// del navegador en el home y en las otras paginas": a dynamic per-content
+// route (/send/$corridor's own "Compare GBP to MXN..." title, /business's
+// own title, a /blog/$slug post's own per-post title, /embed's) sets a
+// real, specific <title> via that route's own head() — but isn't one of
+// the handful of static paths getRouteSeo() actually knows about
+// (SEO_PER_ROUTE only covers "/blog", "/legal", "/about", "/widget"; "/"
+// itself is covered via SEO_META directly, see index.tsx's own comment).
+// getRouteSeo() never returns nothing though — its last-resort fallback is
+// the generic sitewide title — so the client sync effect below, which
+// re-runs getRouteSeo() on every mount AND on every language switch, was
+// unconditionally overwriting every one of those specific titles with the
+// generic "Mangomundi | Compare exchange rates" the instant it ran. This
+// gate limits that effect to the paths getRouteSeo() actually has an
+// opinion about; every other path keeps whatever title its own route
+// already set.
+function isKnownStaticSeoPath(path: string): boolean {
+  const p = normalizePath(path);
+  return p === "/" || Boolean(SEO_PER_ROUTE.en?.[p]);
+}
+
 export type TKey = string;
 
 /**
@@ -3556,6 +4007,11 @@ export function I18nProvider({
     if (typeof document === "undefined") return;
     document.documentElement.lang = lang;
     document.documentElement.dir = RTL_LANGS.includes(lang) ? "rtl" : "ltr";
+    // See isKnownStaticSeoPath's own comment — a dynamic per-content route
+    // (a corridor page, /business, a blog post, /embed) already set its
+    // own specific title via that route's head(); only the handful of
+    // static pages getRouteSeo() actually covers get live-updated here.
+    if (!isKnownStaticSeoPath(pathname)) return;
     const seo = getRouteSeo(lang, pathname);
     if (seo) {
       document.title = seo.title;

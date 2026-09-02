@@ -120,6 +120,59 @@ export const CURRENCIES: CurrencyInfo[] = [
   { code: "SBD", name: "Solomon Islands Dollar", flag: "🇸🇧" },
   { code: "VUV", name: "Vanuatu Vatu", flag: "🇻🇺" },
   { code: "XPF", name: "CFP Franc", flag: "🇵🇫" },
+  // 2026-09-03 feedback — "sigue apareciendo lo de target currency": the
+  // receiving-country picker (CountryCombobox) covers all 251 territories
+  // in `country-to-currency` (see countries.ts), but this list only had 113
+  // currencies — any country whose local currency wasn't one of those 113
+  // left the currency combobox's `value` unmatched against every option,
+  // which renders the raw placeholder text instead of a code (see
+  // Combobox.tsx's `selected` lookup). Confirmed by diffing every currency
+  // in country-to-currency against this list: exactly the 45 below were
+  // missing (Aruba, Bhutan, Brunei, Burundi, Congo-Kinshasa, etc.) — real
+  // ISO 4217 currencies, not fabricated placeholders.
+  { code: "ANG", name: "Netherlands Antillean Guilder", flag: "🇦🇳" },
+  { code: "AWG", name: "Aruban Florin", flag: "🇦🇼" },
+  { code: "BIF", name: "Burundian Franc", flag: "🇧🇮" },
+  { code: "BND", name: "Brunei Dollar", flag: "🇧🇳" },
+  { code: "BTN", name: "Bhutanese Ngultrum", flag: "🇧🇹" },
+  { code: "CDF", name: "Congolese Franc", flag: "🇨🇩" },
+  { code: "CVE", name: "Cape Verdean Escudo", flag: "🇨🇻" },
+  { code: "XCG", name: "Caribbean Guilder", flag: "🇨🇼" },
+  { code: "DJF", name: "Djiboutian Franc", flag: "🇩🇯" },
+  { code: "DZD", name: "Algerian Dinar", flag: "🇩🇿" },
+  { code: "ERN", name: "Eritrean Nakfa", flag: "🇪🇷" },
+  { code: "FKP", name: "Falkland Islands Pound", flag: "🇫🇰" },
+  { code: "GIP", name: "Gibraltar Pound", flag: "🇬🇮" },
+  { code: "GMD", name: "Gambian Dalasi", flag: "🇬🇲" },
+  { code: "GNF", name: "Guinean Franc", flag: "🇬🇳" },
+  { code: "GYD", name: "Guyanese Dollar", flag: "🇬🇾" },
+  { code: "HTG", name: "Haitian Gourde", flag: "🇭🇹" },
+  { code: "KGS", name: "Kyrgystani Som", flag: "🇰🇬" },
+  { code: "KMF", name: "Comorian Franc", flag: "🇰🇲" },
+  { code: "KPW", name: "North Korean Won", flag: "🇰🇵" },
+  { code: "LRD", name: "Liberian Dollar", flag: "🇱🇷" },
+  { code: "LSL", name: "Lesotho Loti", flag: "🇱🇸" },
+  { code: "LYD", name: "Libyan Dinar", flag: "🇱🇾" },
+  { code: "MGA", name: "Malagasy Ariary", flag: "🇲🇬" },
+  { code: "MOP", name: "Macanese Pataca", flag: "🇲🇴" },
+  { code: "MRU", name: "Mauritanian Ouguiya", flag: "🇲🇷" },
+  { code: "MVR", name: "Maldivian Rufiyaa", flag: "🇲🇻" },
+  { code: "MWK", name: "Malawian Kwacha", flag: "🇲🇼" },
+  { code: "SCR", name: "Seychellois Rupee", flag: "🇸🇨" },
+  { code: "SDG", name: "Sudanese Pound", flag: "🇸🇩" },
+  { code: "SHP", name: "Saint Helena Pound", flag: "🇸🇭" },
+  { code: "SLE", name: "Sierra Leonean Leone", flag: "🇸🇱" },
+  { code: "SOS", name: "Somali Shilling", flag: "🇸🇴" },
+  { code: "SRD", name: "Surinamese Dollar", flag: "🇸🇷" },
+  { code: "SSP", name: "South Sudanese Pound", flag: "🇸🇸" },
+  { code: "STN", name: "São Tomé & Príncipe Dobra", flag: "🇸🇹" },
+  { code: "SYP", name: "Syrian Pound", flag: "🇸🇾" },
+  { code: "SZL", name: "Eswatini Lilangeni", flag: "🇸🇿" },
+  { code: "TJS", name: "Tajikistani Somoni", flag: "🇹🇯" },
+  { code: "TMT", name: "Turkmenistan Manat", flag: "🇹🇲" },
+  { code: "TND", name: "Tunisian Dinar", flag: "🇹🇳" },
+  { code: "YER", name: "Yemeni Rial", flag: "🇾🇪" },
+  { code: "ZWG", name: "Zimbabwe Gold", flag: "🇿🇼" },
 ];
 
 export const CURRENCY_BY_CODE: Record<string, CurrencyInfo> = Object.fromEntries(

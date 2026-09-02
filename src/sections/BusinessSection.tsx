@@ -1,60 +1,59 @@
 import { ArrowRight } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
 
-/** Institutional / partnership cards — the former "Contact" section, renamed:
- *  its content is business-facing (treasury ops + FX partnerships). The plain
- *  contact-with-email section now lives in ContactSection. */
+/** design/Mangomundi 4 - Final.dc.html (line 191-203) — "For business" is a
+ *  full bordered card (border 1px #EBE3D9, radius 20px, padding 20px)
+ *  sitting next to the small "Widget" card in a 1.5fr/1fr row (see
+ *  BusinessWidgetRow.tsx), not a full-width band on its own. Previously
+ *  (design/AJUSTES-1.md §G) only the photo had its own border/radius —
+ *  the whole card gets that treatment now, matching the mockup. Copy/CTAs
+ *  unchanged from §G: "Get business quotes" → /business, "Talk to us" →
+ *  the same real mailto. 2026-08-30 feedback: the primary CTA is filled
+ *  ink (#241C16/white, line 199) rather than the mango btn-cta — this is
+ *  the one button in the mockup that deliberately isn't the brand accent
+ *  color. */
 export function BusinessSection() {
   const { t } = useI18n();
-  const cards = [
-    { title: t("home.contact.treasury.title"), body: t("home.contact.treasury.body") },
-    { title: t("home.contact.partners.title"), body: t("home.contact.partners.body") },
-  ];
   return (
-    <section id="business" className="scroll-mt-24 py-14 sm:py-20">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-center gap-8 lg:grid-cols-[1.5fr_0.5fr] lg:gap-12">
-          <div>
-            <p className="text-eyebrow font-bold uppercase text-accent">{t("nav.business")}</p>
-            <h2 className="mt-4 font-heading text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-h2">
-              {t("home.contact.title")}
-            </h2>
-            <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-              {t("home.contact.subtitle")}
-            </p>
-            {/* Moved here from the comparator's "sending a large amount?"
-                banner — same message, but as a stable part of the page
-                instead of something that popped in and out of the card
-                depending on the amount typed. */}
-            <a
-              href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
-              className="btn-cta mt-6 inline-flex items-center gap-1.5 rounded-md px-4 py-2 text-sm font-semibold"
-            >
-              {t("comparator.b2b.cta")}
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </a>
-          </div>
-          <img
-            src="/images/business-person.jpg"
-            alt=""
-            width={1120}
-            height={610}
-            className="aspect-[16/9] w-full max-w-xs rounded-2xl object-cover shadow-[0_16px_40px_-20px_rgba(15,23,42,0.3)] lg:justify-self-end"
-            loading="lazy"
-          />
-        </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {cards.map((c) => (
-            <div
-              key={c.title}
-              className="rounded-[2rem] bg-card p-8 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_40px_-20px_rgba(15,23,42,0.12)]"
-            >
-              <h3 className="font-heading text-h3 font-extrabold text-foreground">{c.title}</h3>
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
-            </div>
-          ))}
+    <div
+      id="business"
+      className="scroll-mt-24 grid items-center gap-6 rounded-[20px] border border-border p-5 lg:grid-cols-[300px_1fr]"
+    >
+      <div className="overflow-hidden rounded-[14px]">
+        <img
+          src="/images/business-person.jpg"
+          alt=""
+          width={300}
+          height={225}
+          className="aspect-[4/3] w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+      <div>
+        <p className="text-eyebrow font-bold uppercase text-accent-text">{t("nav.business")}</p>
+        <h2 className="mt-2.5 font-heading text-[24px] font-extrabold leading-[1.18] tracking-[-0.025em] text-foreground">
+          {t("home.contact.title")}
+        </h2>
+        <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+          {t("home.contact.subtitle")}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <Link
+            to="/business"
+            className="inline-flex h-11 items-center gap-1.5 rounded-xl bg-foreground px-5 text-sm font-semibold text-white hover:opacity-90"
+          >
+            {t("home.contact.getQuotes")}
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+          <a
+            href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
+            className="inline-flex items-center gap-1.5 rounded-md border border-input bg-card px-4 py-2 text-sm font-semibold text-foreground hover:border-foreground/30"
+          >
+            {t("comparator.b2b.cta")}
+          </a>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

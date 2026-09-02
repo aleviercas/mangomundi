@@ -1,9 +1,6 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-/* SVG country flags (fi fi-xx classes) — emoji flags render as plain letters
-   on Windows, so the selects use these instead. */
-@import "flag-icons/css/flag-icons.min.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -18,7 +15,12 @@
   --radius-4xl: calc(var(--radius) + 16px);
 
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  --font-heading: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  /* Headings AND figures (received amounts, rates, deltas, stat numbers) —
+     design/AJUSTES-1.md §A. Replaces Sora, retired from the project. */
+  --font-heading: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  /* Brand wordmark/icon only (Header, Footer, "powered by" lockups) — not a
+     site-wide type change. See design/HANDOFF.md §1. */
+  --font-brand: 'Rubik', ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -34,6 +36,10 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  /* AA-safe darker sibling for small accent-colored TEXT — see --accent-text's
+     own comment. Not a replacement for --color-accent/--color-brand-cta,
+     which stay the vibrant mango for buttons/icons/large text. */
+  --color-accent-text: var(--accent-text);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -81,13 +87,15 @@
   --text-eyebrow--line-height: 1.4;
   --text-eyebrow--letter-spacing: 0.18em;
 
+  /* Bricolage Grotesque needs negative tracking to read tight — unlike Sora,
+     it looks loose at these sizes without it (design/AJUSTES-1.md §A). */
   --text-h1: 3rem;
   --text-h1--line-height: 1.05;
-  --text-h1--letter-spacing: -0.02em;
+  --text-h1--letter-spacing: -0.035em;
 
   --text-h2: 2.75rem;
   --text-h2--line-height: 1.1;
-  --text-h2--letter-spacing: -0.015em;
+  --text-h2--letter-spacing: -0.03em;
 
   --text-h3: 1.25rem;
   --text-h3--line-height: 1.3;
@@ -100,25 +108,52 @@
 :root {
   --radius: 0.875rem;
 
-  --background: oklch(0.965 0.008 255);
-  --foreground: oklch(0.27 0.025 257);
-  --card: oklch(0.99 0.003 255);
-  --card-foreground: oklch(0.27 0.025 257);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.27 0.025 257);
-  --primary: oklch(0.27 0.025 257);
-  --primary-foreground: oklch(0.99 0.003 255);
-  --secondary: oklch(0.92 0.015 255);
-  --secondary-foreground: oklch(0.27 0.025 257);
-  --muted: oklch(0.94 0.01 255);
-  --muted-foreground: oklch(0.52 0.024 257);
-  --accent: oklch(0.71 0.18 30);
-  --accent-foreground: oklch(0.99 0.003 255);
+  /* design/AJUSTES-2.md §0 — the site-wide palette, literal from the
+     mockup (design/Mangomundi 4 - Final.dc.html), replacing the old
+     cool/blue-gray oklch set. This is the foundational change the doc
+     calls out first ("Definilas una vez y muchas cosas se acomodan
+     solas") — background vs. card is what makes card surfaces read as
+     cards instead of white-on-white. Site-wide, not scoped to the
+     redesigned screens only: these are the same shadcn-style semantic
+     tokens every route already draws from, and the mockup's own text
+     frames this as the site's palette, not a home-page-only one (same
+     precedent as §A's Bricolage Grotesque swap in design/AJUSTES-1.md,
+     also a global token change). Kept as literal hex, not converted to
+     oklch, so every value matches the mockup exactly — no color-space
+     rounding.
+     Papel #FBF8F4 · Blanco #FFFFFF · Arena #F5EFE8 · Tinta #241C16 ·
+     Mango #EE5B3E · Verde #1F7A5A · Borde #EBE3D9 · Borde 2 #E5DCD1. */
+  --background: #fbf8f4;
+  --foreground: #241c16;
+  --card: #ffffff;
+  --card-foreground: #241c16;
+  --popover: #ffffff;
+  --popover-foreground: #241c16;
+  --primary: #241c16;
+  --primary-foreground: #ffffff;
+  --secondary: #f5efe8;
+  --secondary-foreground: #241c16;
+  --muted: #f5efe8;
+  --muted-foreground: #6b5f55;
+  --accent: #ee5b3e;
+  --accent-foreground: #ffffff;
+  /* X8 audit — #ee5b3e (mango) measures 3.2-3.4:1 against this page's
+     light backgrounds (white/cream/muted), enough for large text and
+     non-text UI (WCAG's 3:1 floor for those) but short of the 4.5:1 AA
+     needs for normal-size text — and the site's dominant "eyebrow" label
+     pattern (small bold uppercase, e.g. "YOUR RESULTS") is exactly that:
+     normal-size text. This is the same hue, darkened (HSL lightness
+     58.8%→45.8%) until it clears 4.5:1 on white/cream AND on --muted
+     (the worst case, badges sitting on accent/10 tinted chips) with a
+     small margin: 5.18:1 white, 4.89:1 cream, 4.54:1 muted. Buttons,
+     icons, and large headline text keep --accent/--color-brand-cta
+     unchanged — those already pass at the original color. */
+  --accent-text: #cd3112;
   --destructive: oklch(0.55 0.22 20);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.84 0.016 255 / 0.85);
-  --input: oklch(0.82 0.018 255);
-  --ring: oklch(0.71 0.18 30);
+  --border: #ebe3d9;
+  --input: #e5dcd1;
+  --ring: #ee5b3e;
 
   --chart-1: oklch(0.769 0.188 70.08);
   --chart-2: oklch(0.21 0.034 264);
@@ -142,11 +177,12 @@
   --surface: var(--card);
   --surface-elevated: var(--muted);
 
-  /* Same hue families as --chart-3 (green) so "good rate" and the charts
-     agree, and warning sits at a mango-adjacent hue so it doesn't compete
-     with the CTA orange. */
-  --success: oklch(0.6 0.15 145);
-  --success-foreground: oklch(0.99 0.003 255);
+  /* design/AJUSTES-2.md §0 — Verde #1F7A5A ("estados correctos, «Live»,
+     ahorro"). --warning has no mockup equivalent (not in the doc's
+     palette table) — left as the previous oklch value, at a
+     mango-adjacent hue so it doesn't compete with the CTA orange. */
+  --success: #1f7a5a;
+  --success-foreground: #ffffff;
   --warning: oklch(0.6 0.15 75);
   --warning-foreground: oklch(0.99 0.003 255);
 }
@@ -165,7 +201,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   }
 
   .input {
@@ -263,6 +299,25 @@
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* 2026-08-31 feedback — AI agent panel: "que el scroll sea una barra
+   muchísimo más finita" (was the browser's default ~15px scrollbar). A
+   thin, low-contrast thumb instead of hiding it outright (no-scrollbar,
+   above) — there's real content to page through here. */
+@utility thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, currentColor 30%, transparent) transparent;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, currentColor 30%, transparent);
+    border-radius: 9999px;
   }
 }
 

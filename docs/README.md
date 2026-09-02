@@ -16,6 +16,10 @@
 - [`multi-criteria-ranking/scoring-data-findings.md`](./multi-criteria-ranking/scoring-data-findings.md) — research de trust_score, review_count, cash_pickup_available, business_focus_score por proveedor, con fuente citada por dato.
 - [`multi-criteria-ranking/delivery-methods-findings.md`](./multi-criteria-ranking/delivery-methods-findings.md) — research de métodos de entrega (card payout, cash pickup) por proveedor.
 
+## Rediseño de producto
+
+- [`handoff/handoff-2026-08-29-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-rediseno-mangomundi-4.md) — handoff en curso del rediseño "Mangomundi 4" (home, comparador, modo Business, widget, identidad de marca): qué se pidió, qué ya se implementó, decisiones de producto ya tomadas y qué falta. Léelo antes de tocar `design/HANDOFF.md` o cualquiera de las secciones del home.
+
 ## Operación
 
 - [`blog-translation-runbook.md`](./blog-translation-runbook.md) — cómo continuar la traducción del blog a los 20 idiomas soportados.

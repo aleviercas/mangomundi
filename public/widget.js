@@ -9,11 +9,12 @@
  *   data-currency  Sending currency preset (e.g. "USD", "EUR"). Default: geo-detected.
  *   data-amount    Amount preset (e.g. "1000"). Default: 1000.
  *   data-lang      UI language ("es", "de", …) or "auto" to detect. Default: auto.
- *   data-max-width Max widget width in px. Default: 440.
- *   data-height    Widget height in px. Default: 600.
+ *   data-max-width Max widget width in px. Default: 360.
+ *   data-height    Widget height in px. Default: 540.
  *
- * The widget renders in an isolated iframe (no CSS/JS collisions with your page)
- * and scrolls internally. No tracking is added to your site.
+ * The widget renders in an isolated iframe (no CSS/JS collisions with your
+ * page) sized to fit its content without scrolling at the default 360×540.
+ * No tracking is added to your site.
  */
 (function () {
   var ORIGIN = "https://mangomundi.com";
@@ -33,8 +34,8 @@
   if (amount) params.push("amount=" + encodeURIComponent(amount));
   if (lang && lang !== "auto") params.push("lang=" + encodeURIComponent(lang));
 
-  var maxWidth = parseInt(attr("max-width", "440"), 10) || 440;
-  var height = parseInt(attr("height", "600"), 10) || 600;
+  var maxWidth = parseInt(attr("max-width", "360"), 10) || 360;
+  var height = parseInt(attr("height", "540"), 10) || 540;
 
   var iframe = document.createElement("iframe");
   iframe.src = ORIGIN + "/embed" + (params.length ? "?" + params.join("&") : "");
