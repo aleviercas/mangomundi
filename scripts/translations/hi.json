@@ -273,7 +273,7 @@
   "comparator.score.label": "स्कोर",
   "comparator.segment.business": "व्यवसाय",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "रिटेल",
+  "comparator.segment.retail": "व्यक्तिगत",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "व्यवसाय के लिए सर्वश्रेष्ठ",

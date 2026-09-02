@@ -273,7 +273,7 @@
   "comparator.score.label": "Wynik",
   "comparator.segment.business": "Firma",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "Detaliczny",
+  "comparator.segment.retail": "Osobisty",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "Najlepszy dla firm",

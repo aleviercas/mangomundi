@@ -273,7 +273,7 @@
   "comparator.score.label": "Puan",
   "comparator.segment.business": "İşletme",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "Bireysel",
+  "comparator.segment.retail": "Kişisel",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "İşletmeler için en iyi",

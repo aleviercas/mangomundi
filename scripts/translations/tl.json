@@ -273,7 +273,7 @@
   "comparator.score.label": "Score",
   "comparator.segment.business": "Negosyo",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "Retail",
+  "comparator.segment.retail": "Personal",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "Pinakamainam para sa negosyo",

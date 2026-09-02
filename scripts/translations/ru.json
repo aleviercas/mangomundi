@@ -273,7 +273,7 @@
   "comparator.score.label": "Оценка",
   "comparator.segment.business": "Бизнес",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "Розничный",
+  "comparator.segment.retail": "Личный",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "Лучший для бизнеса",

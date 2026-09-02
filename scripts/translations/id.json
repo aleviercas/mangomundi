@@ -273,7 +273,7 @@
   "comparator.score.label": "Skor",
   "comparator.segment.business": "Bisnis",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "Ritel",
+  "comparator.segment.retail": "Pribadi",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "Terbaik untuk bisnis",

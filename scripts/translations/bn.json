@@ -273,7 +273,7 @@
   "comparator.score.label": "স্কোর",
   "comparator.segment.business": "ব্যবসা",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "খুচরা",
+  "comparator.segment.retail": "ব্যক্তিগত",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "ব্যবসার জন্য সেরা",

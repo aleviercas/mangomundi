@@ -273,7 +273,7 @@
   "comparator.score.label": "คะแนน",
   "comparator.segment.business": "ธุรกิจ",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "รายย่อย",
+  "comparator.segment.retail": "ส่วนบุคคล",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "ดีที่สุดสำหรับธุรกิจ",

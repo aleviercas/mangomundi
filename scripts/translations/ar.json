@@ -273,7 +273,7 @@
   "comparator.score.label": "التقييم",
   "comparator.segment.business": "أعمال",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "تجزئة",
+  "comparator.segment.retail": "شخصي",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "الأفضل للأعمال",

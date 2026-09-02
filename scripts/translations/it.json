@@ -273,7 +273,7 @@
   "comparator.score.label": "Punteggio",
   "comparator.segment.business": "Azienda",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "Retail",
+  "comparator.segment.retail": "Privati",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "Migliore per aziende",

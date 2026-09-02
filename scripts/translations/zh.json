@@ -273,7 +273,7 @@
   "comparator.score.label": "评分",
   "comparator.segment.business": "企业",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "零售",
+  "comparator.segment.retail": "个人",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "最适合企业",

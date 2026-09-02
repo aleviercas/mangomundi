@@ -2876,7 +2876,11 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Base and quote currencies for the operation.",
     "comparator.field.sourceCurrency": "Source Currency",
     "comparator.field.targetCurrency": "Target Currency",
-    "comparator.segment.retail": "Individual",
+    // 2026-09-02 feedback — "que en lugar de individual poner la frase
+    // personal, entonces queda personal o business": pairs better with
+    // "Business" as a segment label (a bank's own "Personal / Business"
+    // account-type framing) than "Individual" did.
+    "comparator.segment.retail": "Personal",
     "comparator.segment.business": "Business",
     "comparator.segment.retailCount": "{n} providers · retail rates",
     "comparator.segment.businessCount": "{n} brokers · negotiated rates",
@@ -3210,7 +3214,7 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.currencyPair.note": "Divisas base y cotizada de la operación.",
     "comparator.field.sourceCurrency": "Divisa de Origen",
     "comparator.field.targetCurrency": "Divisa de Destino",
-    "comparator.segment.retail": "Individual",
+    "comparator.segment.retail": "Personal",
     "comparator.segment.business": "Empresas",
     "search.eyebrow": "Terminal de inteligencia financiera",
     "search.origin": "País de origen",

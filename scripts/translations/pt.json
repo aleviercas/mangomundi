@@ -273,7 +273,7 @@
   "comparator.score.label": "Pontuação",
   "comparator.segment.business": "Empresa",
   "comparator.segment.businessCount": "{n} brokers · negotiated rates",
-  "comparator.segment.retail": "Varejo",
+  "comparator.segment.retail": "Particular",
   "comparator.segment.retailCount": "{n} providers · retail rates",
   "comparator.showMoreProviders": "Show {n} more providers",
   "comparator.sort.bestBusiness": "Melhor para empresas",
