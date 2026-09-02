@@ -1667,7 +1667,14 @@ export function ComparatorSection({
                       emptyLabel={t("comparator.combobox.empty")}
                       ariaLabel={t("comparator.field.sourceCountry")}
                       triggerIconOnly
-                      triggerClassName="h-full w-9 shrink-0 justify-center rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                      // 2026-09-04 feedback (round 3) — w-9 was sized for
+                      // just the flag; once the chevron (see Combobox's own
+                      // comment) needs room too, w-11 + tighter gap-1/px-1.5
+                      // is what actually fits both without either
+                      // overflowing and getting clipped by the row's
+                      // overflow-hidden. Still a fixed width either way —
+                      // AD5's "never resizes on selection" is unaffected.
+                      triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                     />
                     <input
                       type="number"
@@ -1760,7 +1767,11 @@ export function ComparatorSection({
                         emptyLabel={t("comparator.combobox.empty")}
                         ariaLabel={t("comparator.field.targetCountry")}
                         triggerIconOnly
-                        triggerClassName="h-full w-9 shrink-0 justify-center rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                        // 2026-09-04 feedback (round 3) — same w-11/gap-1/
+                        // px-1.5 fix as the Send flag above, for the same
+                        // reason (see Combobox's own comment on the
+                        // triggerIconOnly chevron size).
+                        triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
                       />
                       <CurrencyCombobox
                         value={to}
@@ -4810,6 +4821,15 @@ function CompactResultsList({
     { key: "fastest" as SortKey, label: t("comparator.tab.fastest") },
   ];
   const activeTabLabel = sortTabs.find((tab) => tab.key === sortBy)?.label ?? sortTabs[0].label;
+  // 2026-09-04 feedback (round 3) — "que se pueda mostrar mas datos no solo
+  // la cotizacion, el rate, el tiempo, el trust, al menos cuando se hace
+  // click que se despliegue": the non-winner rows only ever showed name +
+  // amount + delta — real data (rate, speed, trust_score) already exists
+  // on each row (the winner card above already reads it) but had nowhere
+  // to go in this compact one-line-per-row list. Click-to-expand instead
+  // of showing it inline on every row unconditionally, since most of these
+  // rows are just for comparison-at-a-glance, not a decision in progress.
+  const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
 
   if (!winner) {
     return (
@@ -4916,30 +4936,75 @@ function CompactResultsList({
         <div className="mt-1 flex flex-col px-2.5">
           {rest.map((row) => {
             const delta = row.received - winner.received;
+            const isExpanded = expandedSlug === row.slug;
             return (
-              <div
-                key={row.slug}
-                className="flex items-center justify-between gap-2 border-b border-border py-1.5 last:border-b-0"
-              >
-                <div className="flex min-w-0 items-center gap-2">
-                  <BrandLogo
-                    name={row.name}
-                    url={row.website_url ?? row.affiliate_url}
-                    slug={row.slug}
-                    size={20}
-                    rounded={false}
-                    className="shrink-0 rounded-sm"
-                  />
-                  <span className="truncate text-xs font-medium text-foreground">{row.name}</span>
-                </div>
-                <div className="flex shrink-0 items-center gap-2 tabular-nums">
-                  <span className="text-xs font-semibold text-foreground">
-                    {row.received.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </span>
-                  <span className="w-12 text-right text-[10px] font-semibold text-muted-foreground">
-                    {delta.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                  </span>
-                </div>
+              <div key={row.slug} className="border-b border-border last:border-b-0">
+                <button
+                  type="button"
+                  onClick={() => setExpandedSlug(isExpanded ? null : row.slug)}
+                  aria-expanded={isExpanded}
+                  className="flex w-full items-center justify-between gap-2 py-1.5 text-left"
+                >
+                  <div className="flex min-w-0 items-center gap-2">
+                    <BrandLogo
+                      name={row.name}
+                      url={row.website_url ?? row.affiliate_url}
+                      slug={row.slug}
+                      size={20}
+                      rounded={false}
+                      className="shrink-0 rounded-sm"
+                    />
+                    <span className="truncate text-xs font-medium text-foreground">{row.name}</span>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1.5 tabular-nums">
+                    <span className="text-xs font-semibold text-foreground">
+                      {row.received.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    </span>
+                    <span className="w-12 text-right text-[10px] font-semibold text-muted-foreground">
+                      {delta.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    </span>
+                    <ChevronDown
+                      className={`h-3 w-3 shrink-0 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                      aria-hidden
+                    />
+                  </div>
+                </button>
+                {isExpanded && (
+                  <div className="flex items-center justify-between gap-2 pb-2 pl-7">
+                    <div className="flex min-w-0 items-center gap-2 text-[10.5px] text-muted-foreground">
+                      <span className="shrink-0 tabular-nums">
+                        {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                      </span>
+                      <span className="shrink-0">·</span>
+                      <span className="shrink-0">{formatDeliverySpeed(row.speed_hours)}</span>
+                      {row.trust_score != null && (
+                        <>
+                          <span className="shrink-0">·</span>
+                          <span className="inline-flex shrink-0 items-center gap-0.5">
+                            <Star className="h-2.5 w-2.5 shrink-0 fill-[#F59E0B] text-[#F59E0B]" />
+                            {row.trust_score.toFixed(1)}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    {/* Row's own name, not the full tCta sentence
+                        ("Apply mangomundi Preferred Channel Rate") — that
+                        copy is sized for the winner card's full-width
+                        button above, way too long for this inline pill.
+                        Same short-label convention the winner CTA already
+                        uses ({winner.name} <ArrowRight/>). */}
+                    {row.affiliate_url && (
+                      <button
+                        onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
+                        aria-label={`${tCta} — ${row.name}`}
+                        className="btn-cta flex h-6 min-w-0 shrink-0 items-center justify-center gap-1 rounded-md px-2 text-[10.5px] font-semibold"
+                      >
+                        <span className="truncate">{row.name}</span>
+                        <ArrowRight className="h-3 w-3 shrink-0" />
+                      </button>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}

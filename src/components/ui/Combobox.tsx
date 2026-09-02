@@ -129,7 +129,22 @@ export function Combobox({
               </span>
             )}
           </span>
-          <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
+          {/* 2026-09-04 feedback (round 3) — "en la de país de origen
+              agregarle las flecitas para saber que se puede elegir": a
+              triggerIconOnly trigger is deliberately tiny (see its own doc
+              comment above) — the base h-4 chevron plus its gap-2 spacing
+              didn't fit next to the flag in that narrow a box, so it
+              silently overflowed and got clipped by the row's own
+              overflow-hidden, taking the flag's visible edge down with it
+              ("aplastada"). A smaller chevron here (paired with tighter
+              gap-1/px-1.5 on the caller's own triggerClassName) is sized to
+              actually fit instead of relying on overflow to hide the
+              mismatch. */}
+          <ChevronsUpDown
+            className={
+              triggerIconOnly ? "h-3 w-3 shrink-0 opacity-60" : "h-4 w-4 shrink-0 opacity-50"
+            }
+          />
         </button>
       </PopoverTrigger>
       <PopoverContent
