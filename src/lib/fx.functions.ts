@@ -727,7 +727,20 @@ export const compareProviders = createServerFn({ method: "POST" })
             .eq("sending_country", data.sendingCountry)
             .eq("receiving_country", data.receivingCountry)
             .or(`min_amount.is.null,min_amount.lte.${data.amount}`)
-            .or(`max_amount.is.null,max_amount.gte.${data.amount}`),
+            .or(`max_amount.is.null,max_amount.gte.${data.amount}`)
+            // Some corridor+provider pairs legitimately have more than one
+            // fx_rates row (e.g. amount-tiered pricing that doesn't fully
+            // partition by min/max_amount, or a newer live measurement
+            // alongside an older generic one). The loop below keys a Map by
+            // provider_slug, and Map.set on a duplicate key keeps whichever
+            // value was set LAST — so without an explicit order, Postgres
+            // doesn't guarantee which row "wins", and it can silently swap
+            // between requests. Ordering oldest-first here means the loop
+            // processes older rows first and the newest row (processed
+            // last) is the one that survives in the Map, i.e. "most recent
+            // row wins" — deterministic, without changing the overwrite
+            // logic itself. See docs/data-sources/2026-09-02-ag6-discrepancy-resolution.md.
+            .order("updated_at", { ascending: true }),
           supabaseAdmin
             .from("corridor_notes")
             .select("reason, note")
