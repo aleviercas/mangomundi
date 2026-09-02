@@ -3523,6 +3523,7 @@ function StatItem({
   label,
   labelExtra,
   children,
+  dark,
 }: {
   label: string;
   /** Rendered right after the label (e.g. BusinessRowExtra's "estimated"
@@ -3530,14 +3531,23 @@ function StatItem({
    *  even when the value below wraps to several lines. */
   labelExtra?: React.ReactNode;
   children: React.ReactNode;
+  /** BusinessRequestPanel's dark theme (2026-09-04 feedback, round 2) —
+   *  same white/50 + white text pairing FiltersCard uses for its own
+   *  labels/values, instead of the light-card muted-foreground/foreground
+   *  pair every other StatItem caller (the broker row metrics) keeps. */
+  dark?: boolean;
 }) {
   return (
     <div className="min-w-0">
-      <div className="flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+      <div
+        className={`flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wide ${dark ? "text-white/50" : "text-muted-foreground"}`}
+      >
         {label}
         {labelExtra}
       </div>
-      <div className="mt-0.5 text-sm font-bold leading-snug tabular-nums text-foreground">
+      <div
+        className={`mt-0.5 text-sm font-bold leading-snug tabular-nums ${dark ? "text-white" : "text-foreground"}`}
+      >
         {children}
       </div>
     </div>
@@ -3609,42 +3619,47 @@ function BusinessRequestPanel({
   // message in that one slot, so the panel's height doesn't move.
   if (status === "sent") {
     return (
-      <div className="rounded-[18px] border border-border bg-card p-4">
+      <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
-            <h3 className="font-heading text-[15px] font-extrabold text-foreground">
+            <h3 className="font-heading text-[15px] font-extrabold text-white">
               {t("comparator.business.request.title")}
             </h3>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+            <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
               {t("comparator.business.request.disclaimer")}
             </p>
           </div>
           <div className="shrink-0 text-right">
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
               {t("comparator.business.request.brokersSelected")}
             </div>
-            <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
+            <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
               {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
             </div>
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-border pt-3">
-          <div className="flex flex-1 flex-wrap items-baseline gap-x-6 gap-y-2">
-            <StatItem label={t("comparator.business.request.volume")}>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-white/15 pt-3">
+          {/* 2026-09-04 feedback (round 2) — "poner currency en el renglón
+              de abajo y antes de contract": grid-cols-2 instead of a free
+              wrapping flex row so Volume/Route always land on row 1 and
+              Currency/Contract on row 2, regardless of viewport width,
+              rather than wherever the flex-wrap happened to break. */}
+          <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-2">
+            <StatItem dark label={t("comparator.business.request.volume")}>
               {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
             </StatItem>
-            <StatItem label={t("comparator.business.request.route")}>
+            <StatItem dark label={t("comparator.business.request.route")}>
               <span className="inline-flex flex-wrap items-center gap-1.5">
                 <FlagIcon country={sendingCountry} /> {sendingCountryName}
                 <span>→</span>
                 {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
               </span>
             </StatItem>
-            <StatItem label={t("comparator.business.request.currency")}>
+            <StatItem dark label={t("comparator.business.request.currency")}>
               {from} → {to}
             </StatItem>
-            <StatItem label={t("comparator.business.request.contract")}>
+            <StatItem dark label={t("comparator.business.request.contract")}>
               {contractTypeLabel} · {frequencyLabel}
             </StatItem>
           </div>
@@ -3661,7 +3676,7 @@ function BusinessRequestPanel({
               shrinking the panel by that few-px gap. `h-[88px]` pins this
               box to the exact same height as the form, independent of how
               the stats wrap. */}
-          <div className="flex h-[88px] w-full items-center justify-center gap-2 rounded-lg border border-success/30 bg-success/10 px-3 text-sm font-semibold text-success sm:w-[280px]">
+          <div className="flex h-[88px] w-full items-center justify-center gap-2 rounded-lg border border-success/40 bg-success/15 px-3 text-sm font-semibold text-success sm:w-[280px]">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
             {t("comparator.business.request.sent")}
           </div>
@@ -3701,22 +3716,22 @@ function BusinessRequestPanel({
   // fix as before (see git history), now independent of how many lines
   // the stats row above it wraps to.
   return (
-    <div className="rounded-[18px] border border-border bg-card p-4">
+    <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-          <h3 className="font-heading text-[15px] font-extrabold text-foreground">
+          <h3 className="font-heading text-[15px] font-extrabold text-white">
             {t("comparator.business.request.title")}
           </h3>
-          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
             {t("comparator.business.request.disclaimer")}
           </p>
         </div>
         <div className="shrink-0 text-right">
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-muted-foreground">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
             {t("comparator.business.request.brokersSelected")}
           </div>
-          <div className="mt-0.5 text-sm font-bold tabular-nums text-foreground">
+          <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
             {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
           </div>
         </div>
@@ -3736,22 +3751,24 @@ function BusinessRequestPanel({
           they share a row. `items-center` on this outer row keeps the
           button vertically centered against the stats block's height;
           the stats keep their own `items-baseline` internally. */}
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-border pt-3">
-        <div className="flex flex-1 flex-wrap items-baseline gap-x-6 gap-y-2">
-          <StatItem label={t("comparator.business.request.volume")}>
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-white/15 pt-3">
+        {/* 2026-09-04 feedback (round 2) — same grid-cols-2 reordering as
+            the "sent" state above. */}
+        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-2">
+          <StatItem dark label={t("comparator.business.request.volume")}>
             {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
           </StatItem>
-          <StatItem label={t("comparator.business.request.route")}>
+          <StatItem dark label={t("comparator.business.request.route")}>
             <span className="inline-flex flex-wrap items-center gap-1.5">
               <FlagIcon country={sendingCountry} /> {sendingCountryName}
               <span>→</span>
               {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
             </span>
           </StatItem>
-          <StatItem label={t("comparator.business.request.currency")}>
+          <StatItem dark label={t("comparator.business.request.currency")}>
             {from} → {to}
           </StatItem>
-          <StatItem label={t("comparator.business.request.contract")}>
+          <StatItem dark label={t("comparator.business.request.contract")}>
             {contractTypeLabel} · {frequencyLabel}
           </StatItem>
         </div>
@@ -3779,7 +3796,7 @@ function BusinessRequestPanel({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("comparator.business.request.emailPlaceholder")}
-            className="h-10 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground"
+            className="h-10 w-full rounded-lg border border-white/20 bg-white/[.06] px-3 text-sm text-white placeholder:text-white/40 focus:border-[#FF8A6B]/60 focus:outline-none"
           />
           <button
             type="submit"
