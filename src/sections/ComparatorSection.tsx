@@ -4830,6 +4830,34 @@ function CompactResultsList({
   // of showing it inline on every row unconditionally, since most of these
   // rows are just for comparison-at-a-glance, not a decision in progress.
   const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
+  // 2026-09-02 feedback — "en el widget también poner el ícono de share en
+  // las tarifas que son con link de afiliado": same native-share-sheet
+  // then clipboard-copy pattern ProviderRow's own handleShare already uses
+  // for the full comparator, sharing the real affiliate_url (never a
+  // fabricated mangomundi page) — same "los que no tienen link cargado que
+  // no aparezca lo de compartir" gate too. A single `sharedSlug` (not a
+  // boolean) since more than one row's share button can exist at once.
+  const [sharedSlug, setSharedSlug] = useState<string | null>(null);
+  const handleShare = async (row: ComparisonResult["rows"][number]) => {
+    if (!row.affiliate_url) return;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: row.name, url: row.affiliate_url });
+        return;
+      }
+    } catch {
+      // User cancelled the native share sheet, or it failed — fall through
+      // to a plain clipboard copy instead of leaving the click looking dead.
+    }
+    try {
+      await navigator.clipboard.writeText(row.affiliate_url);
+      setSharedSlug(row.slug);
+      setTimeout(() => setSharedSlug((s) => (s === row.slug ? null : s)), 2000);
+    } catch {
+      // Clipboard API can fail (permissions, insecure context) — fail
+      // silently rather than showing a broken "copied" state.
+    }
+  };
 
   if (!winner) {
     return (
@@ -4919,13 +4947,28 @@ function CompactResultsList({
           </div>
         </div>
         {winner.affiliate_url && (
-          <button
-            onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
-            aria-label={`${tCta} — ${winner.name}`}
-            className="btn-cta mt-2 flex h-8 w-full items-center justify-center gap-1.5 rounded-md text-xs font-semibold"
-          >
-            {winner.name} <ArrowRight className="h-3.5 w-3.5" />
-          </button>
+          <div className="mt-2 flex items-center gap-1.5">
+            <button
+              onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
+              aria-label={`${tCta} — ${winner.name}`}
+              className="btn-cta flex h-8 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md text-xs font-semibold"
+            >
+              {winner.name} <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+            {/* 2026-09-02 feedback — "en el widget también poner el ícono
+                de share en las tarifas que son con link de afiliado":
+                shares the real affiliate_url (see handleShare's own
+                comment on why), same icon-only compact treatment as the
+                expanded rest-rows below. */}
+            <button
+              type="button"
+              onClick={() => handleShare(winner)}
+              aria-label={`${sharedSlug === winner.slug ? t("comparator.row.shareCopied") : t("comparator.row.share")} — ${winner.name}`}
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:text-foreground"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
         )}
       </div>
 
@@ -4994,14 +5037,26 @@ function CompactResultsList({
                         Same short-label convention the winner CTA already
                         uses ({winner.name} <ArrowRight/>). */}
                     {row.affiliate_url && (
-                      <button
-                        onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
-                        aria-label={`${tCta} — ${row.name}`}
-                        className="btn-cta flex h-6 min-w-0 shrink-0 items-center justify-center gap-1 rounded-md px-2 text-[10.5px] font-semibold"
-                      >
-                        <span className="truncate">{row.name}</span>
-                        <ArrowRight className="h-3 w-3 shrink-0" />
-                      </button>
+                      <div className="flex shrink-0 items-center gap-1">
+                        <button
+                          onClick={() =>
+                            handleAffiliateClick(row.slug, row.affiliate_url, row.name)
+                          }
+                          aria-label={`${tCta} — ${row.name}`}
+                          className="btn-cta flex h-6 min-w-0 items-center justify-center gap-1 rounded-md px-2 text-[10.5px] font-semibold"
+                        >
+                          <span className="truncate">{row.name}</span>
+                          <ArrowRight className="h-3 w-3 shrink-0" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleShare(row)}
+                          aria-label={`${sharedSlug === row.slug ? t("comparator.row.shareCopied") : t("comparator.row.share")} — ${row.name}`}
+                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:text-foreground"
+                        >
+                          <Share2 className="h-3 w-3" />
+                        </button>
+                      </div>
                     )}
                   </div>
                 )}
