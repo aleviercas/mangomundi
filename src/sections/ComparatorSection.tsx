@@ -1575,6 +1575,674 @@ export function ComparatorSection({
   // "Compare"→"Update") once there's a result to make room for. Same gate
   // as the sticky-positioning check a few lines below (`result && !embedded`).
   const compact = Boolean(result) && !embedded;
+  // docs/kayak-redesign-spec.md §4.1 — la píldora colapsada solo existe
+  // cuando ya hay un resultado que ver (antes de eso el formulario ES la
+  // página) y nunca dentro del iframe del widget, que no tiene alto para un
+  // Drawer. El corte visual lo hace `sm:hidden` en el render.
+  const mobileCollapsed = Boolean(result) && !embedded;
+  const [searchOpen, setSearchOpen] = useState(false);
+  // §4.4 — la barra inferior fija aparece recién pasados los 400px de
+  // scroll. Listener pasivo y sin estado intermedio (solo un booleano), para
+  // no re-renderizar la lista entera en cada frame de scroll.
+  const [scrolledPast, setScrolledPast] = useState(false);
+  useEffect(() => {
+    if (!mobileCollapsed) return;
+    const onScroll = () => setScrolledPast(window.scrollY > 400);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [mobileCollapsed]);
+  // El proveedor que la barra inferior ofrece: el de mayor monto recibido de
+  // la lista, con link real. `received` es el número por el que existe la
+  // página, así que "Mejor" acá significa eso y no otra cosa; si ninguno
+  // tiene link cargado, la barra no se muestra en vez de ofrecer un botón
+  // muerto.
+  const bottomBarRow = useMemo(() => {
+    if (!mobileCollapsed || !scrolledPast || !result) return null;
+    const withLink = result.rows.filter((r) => r.affiliate_url);
+    if (withLink.length === 0) return null;
+    return withLink.reduce((best, r) => (r.received > best.received ? r : best));
+  }, [mobileCollapsed, scrolledPast, result]);
+  // Cerrar el Drawer en cuanto vuelve un resultado nuevo: la búsqueda ya se
+  // ejecutó, dejar la hoja abierta tapando la lista sería quedarse en el
+  // formulario después de haberlo enviado.
+  useEffect(() => {
+    if (result) setSearchOpen(false);
+  }, [result]);
+  // Resumen de la píldora — datos reales del estado del formulario, nunca
+  // texto fabricado. El nombre de país sale del catálogo que el resto del
+  // comparador ya usa; si falta, cae al código ISO en vez de inventar.
+  const routeSummary = `${COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry} → ${
+    COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry
+  }`;
+  const detailSummary = `${amount.toLocaleString(undefined, {
+    maximumFractionDigits: 0,
+  })} ${from} · ${
+    deliveryMethods.length === 0
+      ? t("comparator.delivery.any")
+      : deliveryMethods.length === 1
+        ? t(DELIVERY_METHODS.find((m) => m.key === deliveryMethods[0])!.labelKey)
+        : t("comparator.delivery.nSelected").replace("{n}", String(deliveryMethods.length))
+  }`;
+  // docs/kayak-redesign-spec.md §4.1 — el formulario de búsqueda vive en
+  // una constante para poder renderizarlo en DOS lugares sin duplicar el
+  // markup: en su sitio de siempre (desktop, y mobile antes del primer
+  // resultado) y dentro del Drawer de la píldora colapsada de mobile.
+  const searchCard = (
+    <div className="surface-card min-w-0 overflow-hidden">
+      {/* 2026-09-02 feedback — "el box de compare se puede hacer menos
+          alto si se mueve la píldora de individual/business arriba de
+          compare y en la misma línea de send y receive... se puede
+          eliminar toda la pestaña de arriba": this used to be its own
+          bordered header row (~34-50px of chrome — role="tablist" +
+          the segment pill, nothing else) sitting above the form body.
+          Dropped entirely, saving the card that whole row's height.
+          design/AJUSTES-1.md §B's dead /exchange link (that used to
+          live in this removed row) was already gone per AJUSTES-3.md
+          §B — nothing left here worth keeping.
+          2026-09-02 feedback (second round) — "el individual business
+          tiene que estar arriba del botón de comparar no arriba del
+          send": the pill's first home (the Send field's own label
+          line) turned out to be the wrong one — it now sits above
+          the Compare button instead, in that button's own column of
+          this grid (a few hundred lines into the form body below). */}
+
+      {/* Form body. @container lets the rows adapt to the CARD's width, not
+        the viewport: 3/4 columns when the card is full-width (no results
+        yet), 2 columns once it shares the row with the metrics panel.
+        2026-09-03 feedback — "sobra espacio en el cuadro": sm:p-3.5
+        (14px) trimmed to sm:p-3 (12px) and the space-y-2 (8px) gap
+        before the search row — reserved even while the same-country
+        warning above it is collapsed to 0 height — trimmed to
+        space-y-1.5 (6px). Small on their own, but this card has been
+        through several rounds of exactly this ask (S4/S9/X1/Z1/Z2) —
+        real, not cosmetic padding is what's left to give back. */}
+      <div className={`@container ${embedded ? "space-y-1.5 p-2.5" : "space-y-1.5 p-2.5 sm:p-3"}`}>
+        {/* 2026-09-02 feedback — "el comparador se mueve y parece
+            raro" al elegir país/moneda: reproducido y medido (no a
+            ojo) — elegir el mismo país en origen y destino inserta
+            este aviso, la card crece ~42px al instante y todo lo de
+            abajo (Institutional & Partnership Inquiries, footer)
+            salta de golpe. La animación grid-rows (técnica estándar
+            para animar hacia/desde height:auto sin JS ni medir el
+            alto a mano) convierte ese salto instantáneo en una
+            transición suave — sigue "moviendo" la página como
+            cualquier mensaje de validación real, pero de forma
+            predecible en vez de abrupta. El aviso queda siempre
+            montado (nunca unmount) para que la transición tenga algo
+            que animar en ambos sentidos. */}
+        <div
+          className={`grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out ${
+            sameCorridorBlocked && receivingCountry ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+          }`}
+        >
+          <div className="min-h-0">
+            <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent-text">
+              {t("search.sameCountry")}
+            </div>
+          </div>
+        </div>
+        {/* Search form — two shapes depending on `embedded`. Both are
+            country-first (not currency-first), matching how every real
+            MTO comparator does it (Remitly, WorldRemit, Western Union
+            all lead with country; currency is a byproduct, not an
+            independent choice by default) — see the note by
+            handleSendingCountryChange/handleReceivingCountryChange
+            above for why this matters now that fx_rates keys
+            corridor-specific pricing by country pair, not currency
+            pair. `from`/`to` (currency) are still the state everything
+            downstream reads — country selection just derives them by
+            default, and the currency dropdowns below (2026-08-30
+            feedback, fifth round) let a person override them directly
+            without opening the country picker again.
+            design/AJUSTES-2.md §1 — field heights/copy shrink once a
+            result exists (58px→52px, "Compare"→"Update"); the compact
+            fields also swap to #FDFBF9 instead of white. */}
+        {embedded ? (
+          // 2026-09-01 feedback — "el menú de selección debe
+          // comprimirse: la banderita de país en la misma línea que
+          // el monto y la moneda, y abajo en la otra línea la
+          // flechita con el país de destino, la moneda y el botón de
+          // comparar, así abajo queda lugar para los resultados":
+          // the previous version (5 stacked rows: amount+currency,
+          // country, swap, country+currency, CTA) still ate most of
+          // the fixed 540px frame before any result could show.
+          // Compressed to exactly 2 lines — origin flag+amount+
+          // currency sharing one bordered box, then swap+destination
+          // country+currency+Compare sharing a second one — frees
+          // roughly 150px of the frame for real results or (see
+          // EmbedComparator's own example-corridor block) a preview
+          // when there's no result yet.
+          //
+          // 2026-09-01 feedback (second round) — "en el país se está
+          // mostrando el código de moneda, está de más, el país debe
+          // mostrar solo la banderita cuando está seleccionado, pero
+          // el nombre del país al abrir el selector; la moneda debe
+          // mostrar solo el símbolo cuando está seleccionada, el
+          // nombre completo al abrir": the country picker used to
+          // keep `compactLabel` (flag + currency code) instead of the
+          // full name, reasoning that the redundancy with the
+          // adjacent currency picker (which shows that same code)
+          // was an acceptable tradeoff for fitting on one line at
+          // 360px — wrong call, it read as a mistake, not a
+          // tradeoff. `triggerIconOnly` (Combobox's own new mode)
+          // fixes both pickers at once: closed trigger shows only
+          // `leading` (flag for country, currency symbol for
+          // currency — see CurrencyCombobox's own `leading`), full
+          // name/code still shows in the open dropdown list exactly
+          // as before (unaffected — only the closed trigger changes).
+          <div
+            className={`flex flex-col overflow-hidden rounded-[12px] border-[1.5px] bg-white transition-colors ${
+              sameCorridorBlocked ? "border-brand-cta ring-2 ring-brand-cta/60" : "border-input"
+            }`}
+          >
+            {/* 2026-09-04 feedback (Kayak-style redesign, approved
+                canvas mockup "mangomundi Search Redesign") — Send and
+                Receive now read as ONE continuous bordered card
+                (hairline divider between rows, not two separate boxes
+                with a gap), a square swap button pinned to the right
+                edge overlapping the seam between them, and Compare as
+                a full-width row at the bottom of the same card. Field
+                widths (w-20 flag/country, w-[58px] currency) are
+                unchanged from the previous layout — AD5/AG3/AH2's
+                "never resizes on selection, never clips a locale's
+                placeholder" fixes still apply here. */}
+            <div className="relative">
+              <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
+                <span className="text-[8.5px] font-bold uppercase tracking-wide text-muted-foreground">
+                  {t("comparator.field.amount")}
+                </span>
+                <div className="flex h-[26px] items-stretch overflow-hidden rounded-full bg-[#F5EFE8]">
+                  <CountryCombobox
+                    value={sendingCountry}
+                    onChange={handleSendingCountryChange}
+                    placeholder=""
+                    searchPlaceholder={t("comparator.combobox.search")}
+                    emptyLabel={t("comparator.combobox.empty")}
+                    ariaLabel={t("comparator.field.sourceCountry")}
+                    triggerIconOnly
+                    triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                  />
+                  <input
+                    type="number"
+                    inputMode="decimal"
+                    min={1}
+                    value={amount || ""}
+                    placeholder="1000"
+                    onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                    aria-label={t("comparator.field.amount")}
+                    className="min-w-0 flex-1 border-l border-black/10 bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                  />
+                  <CurrencyCombobox
+                    value={from}
+                    onChange={handlePickFromCurrency}
+                    placeholder={t("comparator.field.sourceCurrency")}
+                    searchPlaceholder={t("comparator.combobox.search")}
+                    emptyLabel={t("comparator.combobox.empty")}
+                    ariaLabel={t("comparator.field.sourceCurrency")}
+                    compactLabel
+                    triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                  />
+                </div>
+              </div>
+
+              {/* 2026-09-04 feedback — Receive gets a real bordered
+                  box in the accent color while it still needs a
+                  country (Kayak's focused "To?" field cue), the same
+                  treatment as the full comparator's own Receive
+                  segment — distinct from sameCorridorBlocked (a
+                  stronger, more urgent state on the whole card,
+                  unchanged above). */}
+              <div className="flex flex-col gap-[3px] px-2.5 py-[7px]">
+                <span
+                  className={`text-[8.5px] font-bold uppercase tracking-wide ${
+                    !receivingCountry ? "text-accent-text" : "text-muted-foreground"
+                  }`}
+                >
+                  {t("comparator.field.youReceive")}
+                </span>
+                <div
+                  className={`flex h-[26px] items-stretch overflow-hidden transition-colors ${
+                    !receivingCountry
+                      ? "rounded-[8px] border-[1.5px] border-brand-cta bg-accent/10"
+                      : "rounded-full bg-[#F5EFE8]"
+                  }`}
+                >
+                  <CountryCombobox
+                    value={receivingCountry}
+                    onChange={handleReceivingCountryChange}
+                    placeholder={t("comparator.field.receiveCountryPlaceholder")}
+                    searchPlaceholder={t("comparator.combobox.search")}
+                    emptyLabel={t("comparator.combobox.empty")}
+                    ariaLabel={t("comparator.field.targetCountry")}
+                    triggerIconOnly
+                    triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                  />
+                  <CurrencyCombobox
+                    value={to}
+                    onChange={handlePickToCurrency}
+                    placeholder={t("comparator.field.targetCurrency")}
+                    searchPlaceholder={t("comparator.combobox.search")}
+                    emptyLabel={t("comparator.combobox.empty")}
+                    ariaLabel={t("comparator.field.targetCurrency")}
+                    compactLabel
+                    triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                  />
+                </div>
+              </div>
+
+              {/* Swap — square, pinned to the right edge, overlapping
+                  the seam between the two rows (top-1/2 of this
+                  relative wrapper lands on that seam since both rows
+                  share the same padding/line-height). */}
+              <button
+                type="button"
+                onClick={handleSwap}
+                aria-label={t("comparator.swap")}
+                className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[9px] shadow-md ring-[3px] ring-white transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
+              >
+                <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
+              </button>
+            </div>
+
+            {/* Compare — full-width row at the bottom of the same
+                card, like Kayak's Search button. */}
+            <div className="border-t border-border p-2">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                    setValidationError(t("fx.validation"));
+                    return;
+                  }
+                  setValidationError(null);
+                  compareMut.mutate(undefined);
+                }}
+                disabled={
+                  compareMut.isPending || !receivingCountry || sameCorridorBlocked || amount <= 0
+                }
+                className="btn-cta flex h-[38px] w-full items-center justify-center rounded-[9px] text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+              >
+                {compareMut.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <span className="truncate">
+                    {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+        ) : (
+          // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
+          // comparador... poder seleccionar pais de origen y destino y
+          // moneda de origen y destino y monto". 2026-08-30 feedback
+          // (sixth round) — "ponerlo todo en la misma linea": what was
+          // a country row + an amount/currency row is now one row.
+          // 2026-09-01 feedback — "se pueden agrupar las píldoras de
+          // selección de país monto y moneda de origen y por otra
+          // parte agrupar la de moneda y país de destino": amount +
+          // FROM currency + FROM country used to be 2 separate
+          // bordered boxes; TO country + TO currency likewise. Merged
+          // into ONE bordered box per side (same `border-l` divider
+          // pattern the amount+currency box already used internally
+          // for its own two segments — just extended to a third/
+          // second segment) so "everything about where it's coming
+          // from" and "everything about where it's going" each read
+          // as one visual unit, not four independent pills in a row.
+          // Below the wide breakpoint it still stacks to one column,
+          // same fallback every other tier here already uses.
+          // 2026-09-02 feedback (Z2) — "en mobile ordenar mejor las
+          // ventanas de comparar como hicimos en el widget para que
+          // quede los selectores en dos líneas": below @4xl this was
+          // `grid-cols-1`, so Send/swap/Receive/Compare each became
+          // their own full-width row — 4 stacked rows instead of the
+          // 2-line shape the embedded widget already uses for the
+          // same fields (see the `embedded ?` branch above). Same
+          // idea here, without duplicating the field markup: `flex
+          // flex-wrap` + `basis-full` on Send forces it alone onto
+          // line 1 (the same forced-break trick BusinessRequestPanel
+          // used to use for its own button, W10/Y2 history), and
+          // swap/Receive/Compare — none of which carry `basis-full`
+          // — flow together onto line 2, sized the same way the
+          // widget's own line 2 already is (Receive content-sized,
+          // Compare `flex-1` soaking up the rest). @4xl still swaps
+          // this to the original one-line 4-column grid.
+          <div className="flex flex-col gap-1.5">
+            {/* docs/kayak-redesign-spec.md §3.3 — el toggle en píldora
+                Personal/Empresa pasa a ser la fila de "verticales" de
+                Kayak (tile cuadrado + label debajo), arriba y AFUERA de
+                la barra. Mismo estado `segment` y mismo
+                handleSegmentChange de siempre: cambia la presentación,
+                no el comportamiento. Sigue decidiéndose ANTES de buscar
+                — que es justo lo que esta posición refuerza, igual que
+                Flights/Stays en Kayak. El eyebrow "COMPARAR" ya no
+                existe: la barra se explica sola.
+                Piel B (docs/kayak-patterns-spec.md §3): el tile activo
+                es `bg-brand-cta` plano, no el gradiente de la variante
+                A, y el radio es `rounded-md`, no `rounded-control`. */}
+            <div role="tablist" aria-label={t("search.segment")} className="flex gap-4">
+              {(
+                [
+                  ["retail", User],
+                  ["business", Building2],
+                ] as Array<[Segment, LucideIcon]>
+              ).map(([s, Icon]) => {
+                const active = segment === s;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    role="tab"
+                    aria-selected={active}
+                    onClick={() => handleSegmentChange(s)}
+                    className="flex w-14 shrink-0 flex-col items-center gap-1 rounded-md focus:outline-none focus:ring-2 focus:ring-ring/40"
+                  >
+                    <span
+                      className={`flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
+                        active
+                          ? "bg-brand-cta text-brand-cta-foreground"
+                          : "bg-muted text-foreground hover:bg-secondary"
+                      }`}
+                    >
+                      <Icon className="h-[18px] w-[18px]" aria-hidden />
+                    </span>
+                    <span
+                      className={`truncate text-meta font-semibold ${
+                        active ? "text-foreground" : "text-muted-foreground"
+                      }`}
+                    >
+                      {t(`comparator.segment.${s}`)}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* THE bar — Send/swap/Receive/Compare now read as ONE
+                continuous bordered unit (not 4 independent boxes with
+                gaps between them): a shared outer border/shadow,
+                hairline dividers between segments, and Compare as the
+                bar's own final segment (flush, filling its height —
+                like Kayak's Search button capping off the bar) rather
+                than a separately-floating button. Below @4xl it
+                stacks (Send its own row; swap/Receive/Compare share a
+                second row, same responsive shape Z2 already
+                established) but stays visually one card throughout —
+                no per-field border/shadow anymore, the bar supplies
+                it. */}
+            {/* docs/kayak-redesign-spec.md §3.2 — la barra es UNA sola
+                pieza segmentada: 5 segmentos hermanos (monto+país
+                origen · swap · país destino · método de entrega · CTA),
+                divididos por hairlines verticales, sin borde/radio/
+                sombra propios en ningún segmento — ese es el detalle
+                que la hace leer como Kayak y no como cuatro inputs
+                pegados. El foco se anilla en el BLOQUE, no campo a
+                campo.
+                Piel B (docs/kayak-patterns-spec.md §3): donde el spec A
+                pide `h-15` sin borde, acá va `h-14` CON
+                `border border-border` y el radio actual — segmentada
+                igual, pero con el borde que el resto del sitio usa en
+                sus inputs. */}
+            <div
+              className={`flex flex-col overflow-hidden rounded-md border bg-card transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 @4xl:h-14 @4xl:flex-row @4xl:items-stretch ${
+                sameCorridorBlocked ? "border-brand-cta ring-2 ring-brand-cta/60" : "border-border"
+              }`}
+            >
+              <div className="min-w-0 px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[1.6] @4xl:items-center @4xl:border-r @4xl:border-border @4xl:px-4 @4xl:py-0">
+                <FieldLight label={t("comparator.field.amount")}>
+                  {/* §3.2 — el valor va a sangre dentro del segmento:
+                      ningún segmento lleva fondo, borde ni radio
+                      propios (esto era una píldora `bg-[#F5EFE8]`
+                      hardcodeada). El único divisor interno es una
+                      hairline `border-l border-border`. */}
+                  <div className="flex min-w-0 items-center">
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={1}
+                      value={amount || ""}
+                      placeholder="1000"
+                      onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                      aria-label={t("comparator.field.amount")}
+                      // 2026-09-01 feedback — "hay cambios que no se
+                      // hicieron": the mobile fix for the truncated
+                      // country name (triggerIconOnly) only covered
+                      // <768px — measured live at 1280px desktop, the
+                      // country segment (flex-1) was still only
+                      // 186.64px wide against the amount input's
+                      // flex-[1.4], not enough to fit "United Kingdom"
+                      // (confirmed via getBoundingClientRect + a real
+                      // screenshot, not assumed). This box only ever
+                      // holds a handful of digits at 25px, nowhere
+                      // near as space-hungry as a country name at
+                      // 14.5px — flex-1 (was 1.4) gives the country
+                      // segment its fair half instead of the smaller
+                      // share, without needing another isMobile branch.
+                      // §3.2 — dentro de una barra de 56px con el label
+                      // inline arriba, el monto pasa de 25px suelto a
+                      // `text-metric` (16px, token). Sigue siendo el
+                      // valor con más peso del segmento (font-bold,
+                      // tabular-nums), pero a la densidad de la barra.
+                      className="min-w-0 flex-1 bg-transparent pr-2 text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    />
+                    {/* 2026-09-04 feedback — "cuando elegis la moneda
+                      cambian de tamaño de ancho las celdas de la
+                      currency y empuja a la de país": `w-auto
+                      shrink-0` hugged whichever 3-letter code was
+                      selected, and since the country picker beside it
+                      is `flex-1`, every currency change nudged the
+                      country box's own width. Currency codes are
+                      always exactly 3 letters (ISO 4217) — a fixed
+                      width fits every one of them without truncation,
+                      so there's no reason for this box to vary at
+                      all. Same fixed width on both Send and Receive
+                      (below) keeps them visually identical too. */}
+                    <CurrencyCombobox
+                      value={from}
+                      onChange={handlePickFromCurrency}
+                      placeholder={t("comparator.field.sourceCurrency")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCurrency")}
+                      compactLabel
+                      triggerClassName="h-8 w-[64px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
+                    />
+                    <CountryCombobox
+                      value={sendingCountry}
+                      onChange={handleSendingCountryChange}
+                      placeholder={t("comparator.combobox.placeholder")}
+                      searchPlaceholder={t("comparator.combobox.search")}
+                      emptyLabel={t("comparator.combobox.empty")}
+                      ariaLabel={t("comparator.field.sourceCountry")}
+                      // 2026-08-30 feedback (sixth round) — the currency
+                      // segment to the left already covers it, so this
+                      // plain country picker drops the redundant
+                      // currency-code readout.
+                      hideSecondary
+                      triggerIconOnly={isMobile}
+                      triggerClassName={`h-8 min-w-0 flex-[1.6] rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                        isMobile ? "shrink-0 justify-center" : ""
+                      }`}
+                    />
+                  </div>
+                </FieldLight>
+              </div>
+
+              {/* §3.2 — abajo del breakpoint los segmentos se apilan
+                  como filas de UNA sola tarjeta blanca separadas por
+                  `border-t border-border`, con el CTA como última fila
+                  a ancho completo; arriba son columnas flush de la
+                  misma barra. `contents` (siempre, no solo en @4xl)
+                  saca este wrapper del box model para que los 4
+                  hermanos sean items directos del flex padre en los dos
+                  modos, sin duplicar el markup. Antes esto los metía a
+                  los 4 en UNA fila horizontal abajo del breakpoint —
+                  con el segmento nuevo de método de entrega, Receive y
+                  Payout se pisaban (medido en screenshot a 390px, no
+                  supuesto). */}
+              <div className="contents">
+                {/* Swap — §3.2: su propio segmento de 44px, botón
+                    circular de 32px centrado verticalmente, SIN borde
+                    ni fondo propios (era un cuadrado con
+                    `backgroundColor:#F5EFE8` / `color:#EE5B3E` inline).
+                    Cambia de color al hover, que es toda la afordancia
+                    que necesita dentro de una barra. */}
+                <button
+                  type="button"
+                  onClick={handleSwap}
+                  aria-label={t("comparator.swap")}
+                  className="flex h-10 w-full shrink-0 items-center justify-center border-t border-border text-muted-foreground transition-colors hover:bg-muted hover:text-brand-cta focus:outline-none focus:ring-2 focus:ring-brand-cta/40 @4xl:h-full @4xl:w-11 @4xl:border-r @4xl:border-t-0"
+                >
+                  <ArrowLeftRight strokeWidth={2.2} className="h-[18px] w-[18px]" />
+                </button>
+
+                {/* Receive — a real bordered box in the accent color
+                    while it still needs a country (Kayak's focused
+                    "To?" field cue); once a country's picked it reads
+                    as the same kind of filled pill Send uses. */}
+                <div
+                  className={`min-w-0 border-t border-border px-3 py-2 transition-colors @4xl:flex @4xl:h-full @4xl:flex-[1.2] @4xl:items-center @4xl:border-r @4xl:border-t-0 @4xl:px-4 @4xl:py-0 ${
+                    !receivingCountry ? "bg-accent/10" : ""
+                  }`}
+                >
+                  <FieldLight label={t("comparator.field.youReceive")}>
+                    {/* §3.2 — sin borde/radio/fondo propios. La señal de
+                        "acá falta algo" (el `To?` enfocado de Kayak) ya
+                        no es una caja coral dentro de la barra: es el
+                        SEGMENTO entero tintado en accent/10, que es lo
+                        que la barra segmentada permite y una caja
+                        adentro de otra caja no. */}
+                    <div className="flex min-w-0 items-center">
+                      <CountryCombobox
+                        value={receivingCountry}
+                        onChange={handleReceivingCountryChange}
+                        placeholder={t("comparator.field.receiveCountryPlaceholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCountry")}
+                        hideSecondary
+                        triggerIconOnly={isMobile}
+                        triggerClassName={`h-8 min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 text-meta font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                          isMobile ? "justify-center" : ""
+                        }`}
+                      />
+                      <CurrencyCombobox
+                        value={to}
+                        onChange={handlePickToCurrency}
+                        placeholder={t("comparator.field.targetCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCurrency")}
+                        compactLabel
+                        triggerClassName="h-8 w-[64px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
+                      />
+                    </div>
+                  </FieldLight>
+                </div>
+
+                {/* Método de entrega — §3.2, 4º segmento. Es el
+                    equivalente del selector de pasajeros/clase de
+                    Kayak: vivía abajo, en la fila de chips de filtros,
+                    y sube acá. Mismo estado `deliveryMethods` que el
+                    rail de §3.4 — dos entradas al mismo filtro, nunca
+                    dos filtros. */}
+                <div className="min-w-0 border-t border-border px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[0.9] @4xl:items-center @4xl:border-r @4xl:border-t-0 @4xl:px-4 @4xl:py-0">
+                  <FieldLight label={t("comparator.field.deliveryMethod")}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          className="flex h-8 w-full min-w-0 items-center justify-between gap-1 rounded-none bg-transparent text-meta font-bold text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                        >
+                          <span className="truncate">
+                            {deliveryMethods.length === 0
+                              ? t("comparator.delivery.any")
+                              : deliveryMethods.length === 1
+                                ? t(
+                                    DELIVERY_METHODS.find((m) => m.key === deliveryMethods[0])!
+                                      .labelKey,
+                                  )
+                                : t("comparator.delivery.nSelected").replace(
+                                    "{n}",
+                                    String(deliveryMethods.length),
+                                  )}
+                          </span>
+                          <ChevronDown className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start" className="w-56">
+                        {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => (
+                          <DropdownMenuCheckboxItem
+                            key={key}
+                            checked={deliveryMethods.includes(key)}
+                            onCheckedChange={() => toggleDeliveryMethod(key)}
+                            onSelect={(e) => e.preventDefault()}
+                          >
+                            <span className="inline-flex items-center gap-2">
+                              <Icon className="h-3.5 w-3.5" aria-hidden />
+                              {t(labelKey)}
+                            </span>
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </FieldLight>
+                </div>
+
+                {/* Compare — the bar's own final segment, flush
+                    against its edge and filling its height, like
+                    Kayak's Search button. */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                      setValidationError(t("fx.validation"));
+                      return;
+                    }
+                    setValidationError(null);
+                    compareMut.mutate(undefined);
+                  }}
+                  disabled={
+                    compareMut.isPending || !receivingCountry || sameCorridorBlocked || amount <= 0
+                  }
+                  // §3.2 — el CTA ocupa el extremo derecho a sangre,
+                  // altura completa del bloque, con solo las esquinas
+                  // derechas redondeadas. Piel B: `.btn-cta` (fill
+                  // coral plano), no el `btn-cta-gradient` del spec A.
+                  className="btn-cta flex h-12 w-full shrink-0 items-center justify-center rounded-none rounded-b-md text-meta font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:h-full @4xl:w-[168px] @4xl:rounded-b-none @4xl:rounded-r-md @4xl:px-6"
+                >
+                  {compareMut.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <span className="truncate">
+                      {/* 2026-08-30 feedback (fourth round) — "el boton de
+                          accion tiene que ser Compare igual que
+                          individual": business used to say
+                          comparator.cta.request here; the search action
+                          is the same as individual's (compare
+                          providers), "Add to request"/"Send request" is
+                          its own separate action below the results, not
+                          this button's job. */}
+                      {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {validationError && (
+          <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
+            {validationError}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
   // 2026-08-30 feedback (second, then third round) — the widget's own
   // sizing WAS "unrelated to this home-page pattern" (see git history),
   // meaning it had none: `compact` being false for every embedded render
@@ -1639,631 +2307,65 @@ export function ComparatorSection({
               `compare-card` (radio 8 + sombra corta de Kayak), la variante B
               usa la tarjeta que el sitio ya tiene: `.surface-card`. Reemplaza
               el bg-[#FDFBF9] + shadow-[...] sueltos que había acá. */}
-          <div className="surface-card min-w-0 overflow-hidden">
-            {/* 2026-09-02 feedback — "el box de compare se puede hacer menos
-                alto si se mueve la píldora de individual/business arriba de
-                compare y en la misma línea de send y receive... se puede
-                eliminar toda la pestaña de arriba": this used to be its own
-                bordered header row (~34-50px of chrome — role="tablist" +
-                the segment pill, nothing else) sitting above the form body.
-                Dropped entirely, saving the card that whole row's height.
-                design/AJUSTES-1.md §B's dead /exchange link (that used to
-                live in this removed row) was already gone per AJUSTES-3.md
-                §B — nothing left here worth keeping.
-                2026-09-02 feedback (second round) — "el individual business
-                tiene que estar arriba del botón de comparar no arriba del
-                send": the pill's first home (the Send field's own label
-                line) turned out to be the wrong one — it now sits above
-                the Compare button instead, in that button's own column of
-                this grid (a few hundred lines into the form body below). */}
-
-            {/* Form body. @container lets the rows adapt to the CARD's width, not
-              the viewport: 3/4 columns when the card is full-width (no results
-              yet), 2 columns once it shares the row with the metrics panel.
-              2026-09-03 feedback — "sobra espacio en el cuadro": sm:p-3.5
-              (14px) trimmed to sm:p-3 (12px) and the space-y-2 (8px) gap
-              before the search row — reserved even while the same-country
-              warning above it is collapsed to 0 height — trimmed to
-              space-y-1.5 (6px). Small on their own, but this card has been
-              through several rounds of exactly this ask (S4/S9/X1/Z1/Z2) —
-              real, not cosmetic padding is what's left to give back. */}
-            <div
-              className={`@container ${embedded ? "space-y-1.5 p-2.5" : "space-y-1.5 p-2.5 sm:p-3"}`}
-            >
-              {/* 2026-09-02 feedback — "el comparador se mueve y parece
-                  raro" al elegir país/moneda: reproducido y medido (no a
-                  ojo) — elegir el mismo país en origen y destino inserta
-                  este aviso, la card crece ~42px al instante y todo lo de
-                  abajo (Institutional & Partnership Inquiries, footer)
-                  salta de golpe. La animación grid-rows (técnica estándar
-                  para animar hacia/desde height:auto sin JS ni medir el
-                  alto a mano) convierte ese salto instantáneo en una
-                  transición suave — sigue "moviendo" la página como
-                  cualquier mensaje de validación real, pero de forma
-                  predecible en vez de abrupta. El aviso queda siempre
-                  montado (nunca unmount) para que la transición tenga algo
-                  que animar en ambos sentidos. */}
-              <div
-                className={`grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out ${
-                  sameCorridorBlocked && receivingCountry ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                }`}
-              >
-                <div className="min-h-0">
-                  <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent-text">
-                    {t("search.sameCountry")}
-                  </div>
-                </div>
-              </div>
-              {/* Search form — two shapes depending on `embedded`. Both are
-                  country-first (not currency-first), matching how every real
-                  MTO comparator does it (Remitly, WorldRemit, Western Union
-                  all lead with country; currency is a byproduct, not an
-                  independent choice by default) — see the note by
-                  handleSendingCountryChange/handleReceivingCountryChange
-                  above for why this matters now that fx_rates keys
-                  corridor-specific pricing by country pair, not currency
-                  pair. `from`/`to` (currency) are still the state everything
-                  downstream reads — country selection just derives them by
-                  default, and the currency dropdowns below (2026-08-30
-                  feedback, fifth round) let a person override them directly
-                  without opening the country picker again.
-                  design/AJUSTES-2.md §1 — field heights/copy shrink once a
-                  result exists (58px→52px, "Compare"→"Update"); the compact
-                  fields also swap to #FDFBF9 instead of white. */}
-              {embedded ? (
-                // 2026-09-01 feedback — "el menú de selección debe
-                // comprimirse: la banderita de país en la misma línea que
-                // el monto y la moneda, y abajo en la otra línea la
-                // flechita con el país de destino, la moneda y el botón de
-                // comparar, así abajo queda lugar para los resultados":
-                // the previous version (5 stacked rows: amount+currency,
-                // country, swap, country+currency, CTA) still ate most of
-                // the fixed 540px frame before any result could show.
-                // Compressed to exactly 2 lines — origin flag+amount+
-                // currency sharing one bordered box, then swap+destination
-                // country+currency+Compare sharing a second one — frees
-                // roughly 150px of the frame for real results or (see
-                // EmbedComparator's own example-corridor block) a preview
-                // when there's no result yet.
-                //
-                // 2026-09-01 feedback (second round) — "en el país se está
-                // mostrando el código de moneda, está de más, el país debe
-                // mostrar solo la banderita cuando está seleccionado, pero
-                // el nombre del país al abrir el selector; la moneda debe
-                // mostrar solo el símbolo cuando está seleccionada, el
-                // nombre completo al abrir": the country picker used to
-                // keep `compactLabel` (flag + currency code) instead of the
-                // full name, reasoning that the redundancy with the
-                // adjacent currency picker (which shows that same code)
-                // was an acceptable tradeoff for fitting on one line at
-                // 360px — wrong call, it read as a mistake, not a
-                // tradeoff. `triggerIconOnly` (Combobox's own new mode)
-                // fixes both pickers at once: closed trigger shows only
-                // `leading` (flag for country, currency symbol for
-                // currency — see CurrencyCombobox's own `leading`), full
-                // name/code still shows in the open dropdown list exactly
-                // as before (unaffected — only the closed trigger changes).
-                <div
-                  className={`flex flex-col overflow-hidden rounded-[12px] border-[1.5px] bg-white transition-colors ${
-                    sameCorridorBlocked
-                      ? "border-brand-cta ring-2 ring-brand-cta/60"
-                      : "border-input"
-                  }`}
+          {/* docs/kayak-redesign-spec.md §4.1 — patrón de mobile de Kayak:
+              una vez que hay resultado, la barra completa se reemplaza por
+              una PÍLDORA DE RESUMEN (ruta + monto + método) que al tocarla
+              abre el formulario entero en un Drawer casi a pantalla
+              completa. El mismo `searchCard` se renderiza en los dos lados —
+              nunca una segunda copia del formulario, que se desincronizaría.
+              A la derecha, el botón circular que abre el agente: es el
+              `Ask AI` de Kayak, y el agente ya existe (FloatingAgent) — solo
+              cambia el punto de entrada en mobile, donde su pestaña lateral
+              compite con el pulgar. */}
+          {mobileCollapsed ? (
+            <>
+              {/* `bg-surface-canvas`: esta fila es sticky, y sin fondo
+                  propio la lista de resultados se veía pasar por los huecos
+                  entre la píldora y el botón del agente (visto en screenshot
+                  a 390px con scroll). */}
+              <div className="flex items-center gap-2 bg-surface-canvas py-2 sm:hidden">
+                <Drawer open={searchOpen} onOpenChange={setSearchOpen}>
+                  <DrawerTrigger asChild>
+                    <button
+                      type="button"
+                      className="min-w-0 flex-1 rounded-md bg-muted px-3 py-2 text-left transition-colors hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                    >
+                      <span className="block truncate text-metric font-bold text-foreground">
+                        {routeSummary}
+                      </span>
+                      <span className="block truncate text-meta text-muted-foreground">
+                        {detailSummary}
+                      </span>
+                    </button>
+                  </DrawerTrigger>
+                  <DrawerContent className="max-h-[92vh]">
+                    <DrawerTitle className="sr-only">
+                      {t("comparator.mobile.editSearch")}
+                    </DrawerTitle>
+                    <div className="overflow-y-auto px-4 pb-4">{searchCard}</div>
+                  </DrawerContent>
+                </Drawer>
+                <button
+                  type="button"
+                  onClick={() => handleAgentToggle(false)}
+                  aria-label={t("comparator.copilot.agent")}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-input bg-card text-brand-cta transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
                 >
-                  {/* 2026-09-04 feedback (Kayak-style redesign, approved
-                      canvas mockup "mangomundi Search Redesign") — Send and
-                      Receive now read as ONE continuous bordered card
-                      (hairline divider between rows, not two separate boxes
-                      with a gap), a square swap button pinned to the right
-                      edge overlapping the seam between them, and Compare as
-                      a full-width row at the bottom of the same card. Field
-                      widths (w-20 flag/country, w-[58px] currency) are
-                      unchanged from the previous layout — AD5/AG3/AH2's
-                      "never resizes on selection, never clips a locale's
-                      placeholder" fixes still apply here. */}
-                  <div className="relative">
-                    <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
-                      <span className="text-[8.5px] font-bold uppercase tracking-wide text-muted-foreground">
-                        {t("comparator.field.amount")}
-                      </span>
-                      <div className="flex h-[26px] items-stretch overflow-hidden rounded-full bg-[#F5EFE8]">
-                        <CountryCombobox
-                          value={sendingCountry}
-                          onChange={handleSendingCountryChange}
-                          placeholder=""
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCountry")}
-                          triggerIconOnly
-                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          min={1}
-                          value={amount || ""}
-                          placeholder="1000"
-                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                          aria-label={t("comparator.field.amount")}
-                          className="min-w-0 flex-1 border-l border-black/10 bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                        />
-                        <CurrencyCombobox
-                          value={from}
-                          onChange={handlePickFromCurrency}
-                          placeholder={t("comparator.field.sourceCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCurrency")}
-                          compactLabel
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                      </div>
-                    </div>
-
-                    {/* 2026-09-04 feedback — Receive gets a real bordered
-                        box in the accent color while it still needs a
-                        country (Kayak's focused "To?" field cue), the same
-                        treatment as the full comparator's own Receive
-                        segment — distinct from sameCorridorBlocked (a
-                        stronger, more urgent state on the whole card,
-                        unchanged above). */}
-                    <div className="flex flex-col gap-[3px] px-2.5 py-[7px]">
-                      <span
-                        className={`text-[8.5px] font-bold uppercase tracking-wide ${
-                          !receivingCountry ? "text-accent-text" : "text-muted-foreground"
-                        }`}
-                      >
-                        {t("comparator.field.youReceive")}
-                      </span>
-                      <div
-                        className={`flex h-[26px] items-stretch overflow-hidden transition-colors ${
-                          !receivingCountry
-                            ? "rounded-[8px] border-[1.5px] border-brand-cta bg-accent/10"
-                            : "rounded-full bg-[#F5EFE8]"
-                        }`}
-                      >
-                        <CountryCombobox
-                          value={receivingCountry}
-                          onChange={handleReceivingCountryChange}
-                          placeholder={t("comparator.field.receiveCountryPlaceholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCountry")}
-                          triggerIconOnly
-                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                        <CurrencyCombobox
-                          value={to}
-                          onChange={handlePickToCurrency}
-                          placeholder={t("comparator.field.targetCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCurrency")}
-                          compactLabel
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Swap — square, pinned to the right edge, overlapping
-                        the seam between the two rows (top-1/2 of this
-                        relative wrapper lands on that seam since both rows
-                        share the same padding/line-height). */}
-                    <button
-                      type="button"
-                      onClick={handleSwap}
-                      aria-label={t("comparator.swap")}
-                      className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[9px] shadow-md ring-[3px] ring-white transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
-                      style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
-                    >
-                      <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
-                    </button>
-                  </div>
-
-                  {/* Compare — full-width row at the bottom of the same
-                      card, like Kayak's Search button. */}
-                  <div className="border-t border-border p-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
-                          setValidationError(t("fx.validation"));
-                          return;
-                        }
-                        setValidationError(null);
-                        compareMut.mutate(undefined);
-                      }}
-                      disabled={
-                        compareMut.isPending ||
-                        !receivingCountry ||
-                        sameCorridorBlocked ||
-                        amount <= 0
-                      }
-                      className="btn-cta flex h-[38px] w-full items-center justify-center rounded-[9px] text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
-                    >
-                      {compareMut.isPending ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <span className="truncate">
-                          {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
-                        </span>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
-                // comparador... poder seleccionar pais de origen y destino y
-                // moneda de origen y destino y monto". 2026-08-30 feedback
-                // (sixth round) — "ponerlo todo en la misma linea": what was
-                // a country row + an amount/currency row is now one row.
-                // 2026-09-01 feedback — "se pueden agrupar las píldoras de
-                // selección de país monto y moneda de origen y por otra
-                // parte agrupar la de moneda y país de destino": amount +
-                // FROM currency + FROM country used to be 2 separate
-                // bordered boxes; TO country + TO currency likewise. Merged
-                // into ONE bordered box per side (same `border-l` divider
-                // pattern the amount+currency box already used internally
-                // for its own two segments — just extended to a third/
-                // second segment) so "everything about where it's coming
-                // from" and "everything about where it's going" each read
-                // as one visual unit, not four independent pills in a row.
-                // Below the wide breakpoint it still stacks to one column,
-                // same fallback every other tier here already uses.
-                // 2026-09-02 feedback (Z2) — "en mobile ordenar mejor las
-                // ventanas de comparar como hicimos en el widget para que
-                // quede los selectores en dos líneas": below @4xl this was
-                // `grid-cols-1`, so Send/swap/Receive/Compare each became
-                // their own full-width row — 4 stacked rows instead of the
-                // 2-line shape the embedded widget already uses for the
-                // same fields (see the `embedded ?` branch above). Same
-                // idea here, without duplicating the field markup: `flex
-                // flex-wrap` + `basis-full` on Send forces it alone onto
-                // line 1 (the same forced-break trick BusinessRequestPanel
-                // used to use for its own button, W10/Y2 history), and
-                // swap/Receive/Compare — none of which carry `basis-full`
-                // — flow together onto line 2, sized the same way the
-                // widget's own line 2 already is (Receive content-sized,
-                // Compare `flex-1` soaking up the rest). @4xl still swaps
-                // this to the original one-line 4-column grid.
-                <div className="flex flex-col gap-1.5">
-                  {/* docs/kayak-redesign-spec.md §3.3 — el toggle en píldora
-                      Personal/Empresa pasa a ser la fila de "verticales" de
-                      Kayak (tile cuadrado + label debajo), arriba y AFUERA de
-                      la barra. Mismo estado `segment` y mismo
-                      handleSegmentChange de siempre: cambia la presentación,
-                      no el comportamiento. Sigue decidiéndose ANTES de buscar
-                      — que es justo lo que esta posición refuerza, igual que
-                      Flights/Stays en Kayak. El eyebrow "COMPARAR" ya no
-                      existe: la barra se explica sola.
-                      Piel B (docs/kayak-patterns-spec.md §3): el tile activo
-                      es `bg-brand-cta` plano, no el gradiente de la variante
-                      A, y el radio es `rounded-md`, no `rounded-control`. */}
-                  <div role="tablist" aria-label={t("search.segment")} className="flex gap-4">
-                    {(
-                      [
-                        ["retail", User],
-                        ["business", Building2],
-                      ] as Array<[Segment, LucideIcon]>
-                    ).map(([s, Icon]) => {
-                      const active = segment === s;
-                      return (
-                        <button
-                          key={s}
-                          type="button"
-                          role="tab"
-                          aria-selected={active}
-                          onClick={() => handleSegmentChange(s)}
-                          className="flex w-14 shrink-0 flex-col items-center gap-1 rounded-md focus:outline-none focus:ring-2 focus:ring-ring/40"
-                        >
-                          <span
-                            className={`flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
-                              active
-                                ? "bg-brand-cta text-brand-cta-foreground"
-                                : "bg-muted text-foreground hover:bg-secondary"
-                            }`}
-                          >
-                            <Icon className="h-[18px] w-[18px]" aria-hidden />
-                          </span>
-                          <span
-                            className={`truncate text-meta font-semibold ${
-                              active ? "text-foreground" : "text-muted-foreground"
-                            }`}
-                          >
-                            {t(`comparator.segment.${s}`)}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  {/* THE bar — Send/swap/Receive/Compare now read as ONE
-                      continuous bordered unit (not 4 independent boxes with
-                      gaps between them): a shared outer border/shadow,
-                      hairline dividers between segments, and Compare as the
-                      bar's own final segment (flush, filling its height —
-                      like Kayak's Search button capping off the bar) rather
-                      than a separately-floating button. Below @4xl it
-                      stacks (Send its own row; swap/Receive/Compare share a
-                      second row, same responsive shape Z2 already
-                      established) but stays visually one card throughout —
-                      no per-field border/shadow anymore, the bar supplies
-                      it. */}
-                  {/* docs/kayak-redesign-spec.md §3.2 — la barra es UNA sola
-                      pieza segmentada: 5 segmentos hermanos (monto+país
-                      origen · swap · país destino · método de entrega · CTA),
-                      divididos por hairlines verticales, sin borde/radio/
-                      sombra propios en ningún segmento — ese es el detalle
-                      que la hace leer como Kayak y no como cuatro inputs
-                      pegados. El foco se anilla en el BLOQUE, no campo a
-                      campo.
-                      Piel B (docs/kayak-patterns-spec.md §3): donde el spec A
-                      pide `h-15` sin borde, acá va `h-14` CON
-                      `border border-border` y el radio actual — segmentada
-                      igual, pero con el borde que el resto del sitio usa en
-                      sus inputs. */}
-                  <div
-                    className={`flex flex-col overflow-hidden rounded-md border bg-card transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 @4xl:h-14 @4xl:flex-row @4xl:items-stretch ${
-                      sameCorridorBlocked
-                        ? "border-brand-cta ring-2 ring-brand-cta/60"
-                        : "border-border"
-                    }`}
-                  >
-                    <div className="min-w-0 px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[1.6] @4xl:items-center @4xl:border-r @4xl:border-border @4xl:px-4 @4xl:py-0">
-                      <FieldLight label={t("comparator.field.amount")}>
-                        {/* §3.2 — el valor va a sangre dentro del segmento:
-                            ningún segmento lleva fondo, borde ni radio
-                            propios (esto era una píldora `bg-[#F5EFE8]`
-                            hardcodeada). El único divisor interno es una
-                            hairline `border-l border-border`. */}
-                        <div className="flex min-w-0 items-center">
-                          <input
-                            type="number"
-                            inputMode="decimal"
-                            min={1}
-                            value={amount || ""}
-                            placeholder="1000"
-                            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                            aria-label={t("comparator.field.amount")}
-                            // 2026-09-01 feedback — "hay cambios que no se
-                            // hicieron": the mobile fix for the truncated
-                            // country name (triggerIconOnly) only covered
-                            // <768px — measured live at 1280px desktop, the
-                            // country segment (flex-1) was still only
-                            // 186.64px wide against the amount input's
-                            // flex-[1.4], not enough to fit "United Kingdom"
-                            // (confirmed via getBoundingClientRect + a real
-                            // screenshot, not assumed). This box only ever
-                            // holds a handful of digits at 25px, nowhere
-                            // near as space-hungry as a country name at
-                            // 14.5px — flex-1 (was 1.4) gives the country
-                            // segment its fair half instead of the smaller
-                            // share, without needing another isMobile branch.
-                            // §3.2 — dentro de una barra de 56px con el label
-                            // inline arriba, el monto pasa de 25px suelto a
-                            // `text-metric` (16px, token). Sigue siendo el
-                            // valor con más peso del segmento (font-bold,
-                            // tabular-nums), pero a la densidad de la barra.
-                            className="min-w-0 flex-1 bg-transparent pr-2 text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                          />
-                          {/* 2026-09-04 feedback — "cuando elegis la moneda
-                            cambian de tamaño de ancho las celdas de la
-                            currency y empuja a la de país": `w-auto
-                            shrink-0` hugged whichever 3-letter code was
-                            selected, and since the country picker beside it
-                            is `flex-1`, every currency change nudged the
-                            country box's own width. Currency codes are
-                            always exactly 3 letters (ISO 4217) — a fixed
-                            width fits every one of them without truncation,
-                            so there's no reason for this box to vary at
-                            all. Same fixed width on both Send and Receive
-                            (below) keeps them visually identical too. */}
-                          <CurrencyCombobox
-                            value={from}
-                            onChange={handlePickFromCurrency}
-                            placeholder={t("comparator.field.sourceCurrency")}
-                            searchPlaceholder={t("comparator.combobox.search")}
-                            emptyLabel={t("comparator.combobox.empty")}
-                            ariaLabel={t("comparator.field.sourceCurrency")}
-                            compactLabel
-                            triggerClassName="h-8 w-[64px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
-                          />
-                          <CountryCombobox
-                            value={sendingCountry}
-                            onChange={handleSendingCountryChange}
-                            placeholder={t("comparator.combobox.placeholder")}
-                            searchPlaceholder={t("comparator.combobox.search")}
-                            emptyLabel={t("comparator.combobox.empty")}
-                            ariaLabel={t("comparator.field.sourceCountry")}
-                            // 2026-08-30 feedback (sixth round) — the currency
-                            // segment to the left already covers it, so this
-                            // plain country picker drops the redundant
-                            // currency-code readout.
-                            hideSecondary
-                            triggerIconOnly={isMobile}
-                            triggerClassName={`h-8 min-w-0 flex-[1.6] rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
-                              isMobile ? "shrink-0 justify-center" : ""
-                            }`}
-                          />
-                        </div>
-                      </FieldLight>
-                    </div>
-
-                    {/* §3.2 — abajo del breakpoint los segmentos se apilan
-                        como filas de UNA sola tarjeta blanca separadas por
-                        `border-t border-border`, con el CTA como última fila
-                        a ancho completo; arriba son columnas flush de la
-                        misma barra. `contents` (siempre, no solo en @4xl)
-                        saca este wrapper del box model para que los 4
-                        hermanos sean items directos del flex padre en los dos
-                        modos, sin duplicar el markup. Antes esto los metía a
-                        los 4 en UNA fila horizontal abajo del breakpoint —
-                        con el segmento nuevo de método de entrega, Receive y
-                        Payout se pisaban (medido en screenshot a 390px, no
-                        supuesto). */}
-                    <div className="contents">
-                      {/* Swap — §3.2: su propio segmento de 44px, botón
-                          circular de 32px centrado verticalmente, SIN borde
-                          ni fondo propios (era un cuadrado con
-                          `backgroundColor:#F5EFE8` / `color:#EE5B3E` inline).
-                          Cambia de color al hover, que es toda la afordancia
-                          que necesita dentro de una barra. */}
-                      <button
-                        type="button"
-                        onClick={handleSwap}
-                        aria-label={t("comparator.swap")}
-                        className="flex h-10 w-full shrink-0 items-center justify-center border-t border-border text-muted-foreground transition-colors hover:bg-muted hover:text-brand-cta focus:outline-none focus:ring-2 focus:ring-brand-cta/40 @4xl:h-full @4xl:w-11 @4xl:border-r @4xl:border-t-0"
-                      >
-                        <ArrowLeftRight strokeWidth={2.2} className="h-[18px] w-[18px]" />
-                      </button>
-
-                      {/* Receive — a real bordered box in the accent color
-                          while it still needs a country (Kayak's focused
-                          "To?" field cue); once a country's picked it reads
-                          as the same kind of filled pill Send uses. */}
-                      <div
-                        className={`min-w-0 border-t border-border px-3 py-2 transition-colors @4xl:flex @4xl:h-full @4xl:flex-[1.2] @4xl:items-center @4xl:border-r @4xl:border-t-0 @4xl:px-4 @4xl:py-0 ${
-                          !receivingCountry ? "bg-accent/10" : ""
-                        }`}
-                      >
-                        <FieldLight label={t("comparator.field.youReceive")}>
-                          {/* §3.2 — sin borde/radio/fondo propios. La señal de
-                              "acá falta algo" (el `To?` enfocado de Kayak) ya
-                              no es una caja coral dentro de la barra: es el
-                              SEGMENTO entero tintado en accent/10, que es lo
-                              que la barra segmentada permite y una caja
-                              adentro de otra caja no. */}
-                          <div className="flex min-w-0 items-center">
-                            <CountryCombobox
-                              value={receivingCountry}
-                              onChange={handleReceivingCountryChange}
-                              placeholder={t("comparator.field.receiveCountryPlaceholder")}
-                              searchPlaceholder={t("comparator.combobox.search")}
-                              emptyLabel={t("comparator.combobox.empty")}
-                              ariaLabel={t("comparator.field.targetCountry")}
-                              hideSecondary
-                              triggerIconOnly={isMobile}
-                              triggerClassName={`h-8 min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 text-meta font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
-                                isMobile ? "justify-center" : ""
-                              }`}
-                            />
-                            <CurrencyCombobox
-                              value={to}
-                              onChange={handlePickToCurrency}
-                              placeholder={t("comparator.field.targetCurrency")}
-                              searchPlaceholder={t("comparator.combobox.search")}
-                              emptyLabel={t("comparator.combobox.empty")}
-                              ariaLabel={t("comparator.field.targetCurrency")}
-                              compactLabel
-                              triggerClassName="h-8 w-[64px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
-                            />
-                          </div>
-                        </FieldLight>
-                      </div>
-
-                      {/* Método de entrega — §3.2, 4º segmento. Es el
-                          equivalente del selector de pasajeros/clase de
-                          Kayak: vivía abajo, en la fila de chips de filtros,
-                          y sube acá. Mismo estado `deliveryMethods` que el
-                          rail de §3.4 — dos entradas al mismo filtro, nunca
-                          dos filtros. */}
-                      <div className="min-w-0 border-t border-border px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[0.9] @4xl:items-center @4xl:border-r @4xl:border-t-0 @4xl:px-4 @4xl:py-0">
-                        <FieldLight label={t("comparator.field.deliveryMethod")}>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button
-                                type="button"
-                                className="flex h-8 w-full min-w-0 items-center justify-between gap-1 rounded-none bg-transparent text-meta font-bold text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
-                              >
-                                <span className="truncate">
-                                  {deliveryMethods.length === 0
-                                    ? t("comparator.delivery.any")
-                                    : deliveryMethods.length === 1
-                                      ? t(
-                                          DELIVERY_METHODS.find(
-                                            (m) => m.key === deliveryMethods[0],
-                                          )!.labelKey,
-                                        )
-                                      : t("comparator.delivery.nSelected").replace(
-                                          "{n}",
-                                          String(deliveryMethods.length),
-                                        )}
-                                </span>
-                                <ChevronDown className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                              </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="start" className="w-56">
-                              {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => (
-                                <DropdownMenuCheckboxItem
-                                  key={key}
-                                  checked={deliveryMethods.includes(key)}
-                                  onCheckedChange={() => toggleDeliveryMethod(key)}
-                                  onSelect={(e) => e.preventDefault()}
-                                >
-                                  <span className="inline-flex items-center gap-2">
-                                    <Icon className="h-3.5 w-3.5" aria-hidden />
-                                    {t(labelKey)}
-                                  </span>
-                                </DropdownMenuCheckboxItem>
-                              ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </FieldLight>
-                      </div>
-
-                      {/* Compare — the bar's own final segment, flush
-                          against its edge and filling its height, like
-                          Kayak's Search button. */}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
-                            setValidationError(t("fx.validation"));
-                            return;
-                          }
-                          setValidationError(null);
-                          compareMut.mutate(undefined);
-                        }}
-                        disabled={
-                          compareMut.isPending ||
-                          !receivingCountry ||
-                          sameCorridorBlocked ||
-                          amount <= 0
-                        }
-                        // §3.2 — el CTA ocupa el extremo derecho a sangre,
-                        // altura completa del bloque, con solo las esquinas
-                        // derechas redondeadas. Piel B: `.btn-cta` (fill
-                        // coral plano), no el `btn-cta-gradient` del spec A.
-                        className="btn-cta flex h-12 w-full shrink-0 items-center justify-center rounded-none rounded-b-md text-meta font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:h-full @4xl:w-[168px] @4xl:rounded-b-none @4xl:rounded-r-md @4xl:px-6"
-                      >
-                        {compareMut.isPending ? (
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <span className="truncate">
-                            {/* 2026-08-30 feedback (fourth round) — "el boton de
-                                accion tiene que ser Compare igual que
-                                individual": business used to say
-                                comparator.cta.request here; the search action
-                                is the same as individual's (compare
-                                providers), "Add to request"/"Send request" is
-                                its own separate action below the results, not
-                                this button's job. */}
-                            {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                  </div>
+                  <Sparkle className="h-5 w-5" aria-hidden />
+                </button>
+              </div>
+              {/* §4.1 — mientras corre la búsqueda, barra de progreso de 3px
+                  al pie del header. Es el feedback más barato que hay. */}
+              {compareMut.isPending && (
+                <div className="h-[3px] w-full overflow-hidden rounded-full bg-muted sm:hidden">
+                  <div className="h-full w-1/3 animate-pulse rounded-full bg-brand-cta" />
                 </div>
               )}
-
-              {validationError && (
-                <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
-                  {validationError}
-                </div>
-              )}
-            </div>
-          </div>
+              <div className="hidden sm:block">{searchCard}</div>
+            </>
+          ) : (
+            searchCard
+          )}
         </div>
 
         {/* AI Agent — the floating tab/panel (collapsed edge tab, or once
@@ -2941,6 +3043,45 @@ export function ComparatorSection({
             </div>
           ))}
       </div>
+
+      {/* docs/kayak-redesign-spec.md §4.4 — barra inferior fija de mobile:
+          aparece cuando hay resultados y el usuario ya scrolleó más de 400px
+          (o sea, cuando el CTA del ganador quedó arriba, fuera de vista).
+          A la izquierda el mejor monto, a la derecha el botón que dispara el
+          CTA de ESE proveedor — el mismo `openPreferredRate` que usa la fila,
+          nunca un link distinto. Piel B: `.btn-cta` plano y `rounded-md`, no
+          el gradiente del spec A. `env(safe-area-inset-bottom)` para no
+          quedar bajo la barra de gestos de iOS. */}
+      {bottomBarRow && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
+          <div className="flex items-center justify-between gap-3">
+            <span className="min-w-0 truncate text-meta font-semibold text-foreground">
+              {t("comparator.mobile.bestIs").replace(
+                "{v}",
+                `${bottomBarRow.received.toLocaleString(undefined, {
+                  maximumFractionDigits: 0,
+                })} ${result?.quote ?? ""}`,
+              )}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                openPreferredRate(bottomBarRow.slug, bottomBarRow.affiliate_url, bottomBarRow.name)
+              }
+              // `max-w-[55%]` + truncate y NO `shrink-0`: el label de
+              // `retail.cta` es largo en varios locales ("Apply mangomundi
+              // Preferred Channel Rate") y a ancho libre empujaba el monto
+              // fuera de la barra — el monto es el dato, el botón es la
+              // acción, y el que tiene que ceder ancho es el botón.
+              className="btn-cta flex h-10 max-w-[55%] items-center justify-center rounded-md px-4 text-meta font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <span className="truncate">
+                {t("fx.goto")} {bottomBarRow.name}
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
 
       <PreferredRateModal open={modalOpen} onOpenChange={setModalOpen} context={modalCtx} />
     </SectionTag>
