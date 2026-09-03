@@ -69,8 +69,8 @@ function WidgetExamples({
   const { t } = useI18n();
   if (!examples.length) return null;
   return (
-    <div className="mt-2.5 overflow-hidden rounded-[14px] border border-border bg-card">
-      <div className="flex items-center gap-1 border-b border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+    <div className="mt-2.5 overflow-hidden rounded-xl border border-border bg-card">
+      <div className="flex items-center gap-1 border-b border-border px-3 py-1.5 text-badge font-bold uppercase tracking-wide text-muted-foreground">
         <Sparkle className="h-2.5 w-2.5 text-brand-cta" />
         {t("todaysRoutes.title")}
       </div>
@@ -85,16 +85,16 @@ function WidgetExamples({
               onClick={() => onSelect(example)}
               className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left transition hover:bg-muted/50"
             >
-              <span className="flex items-center gap-1 text-[11px] font-bold text-foreground">
+              <span className="flex items-center gap-1 text-badge font-bold text-foreground">
                 {fromCountry && <FlagIcon country={fromCountry} />}
                 {example.from}
                 <span className="text-muted-foreground">→</span>
                 {toCountry && <FlagIcon country={toCountry} />}
                 {example.to}
               </span>
-              <span className="font-heading text-[13.5px] font-extrabold tabular-nums text-foreground">
+              <span className="font-heading text-meta font-extrabold tabular-nums text-foreground">
                 {Math.round(example.bestReceived).toLocaleString()}
-                <span className="ml-1 text-[10px] font-semibold text-muted-foreground">
+                <span className="ml-1 text-badge font-semibold text-muted-foreground">
                   {example.to}
                 </span>
               </span>
@@ -205,7 +205,7 @@ export function EmbedComparator({
   };
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-[#fcfcfc]">
+    <div className="relative flex h-full flex-col overflow-hidden bg-card">
       {/* design/Mangomundi 4 - Final.dc.html (line 726-729) — the widget's
           own header bar, distinct from ComparatorSection's chrome (which
           `embedded` strips entirely).
@@ -220,7 +220,7 @@ export function EmbedComparator({
           header row instead (see its comment) — it's about the results
           below, not the search form, so it reads better attached to them. */}
       <div className="flex shrink-0 items-center justify-between gap-2 border-b border-border px-3.5 py-2.5">
-        <span className="font-heading text-[13.5px] font-extrabold text-foreground">
+        <span className="font-heading text-metric font-extrabold text-foreground">
           {t("widget.header.title")}
         </span>
         {/* 2026-09-04 feedback — "evaluar widget business... con un
@@ -233,7 +233,7 @@ export function EmbedComparator({
         <div
           role="tablist"
           aria-label={t("search.segment")}
-          className="flex h-5 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
+          className="flex h-6 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
         >
           {(["retail", "business"] as const).map((s) => (
             <button
@@ -242,7 +242,7 @@ export function EmbedComparator({
               role="tab"
               aria-selected={segment === s}
               onClick={() => handleToggleSegment(s)}
-              className={`rounded-full px-2 py-0.5 text-[10.5px] font-semibold capitalize leading-none transition ${
+              className={`rounded-full px-2 py-0.5 text-badge font-semibold capitalize leading-none transition ${
                 segment === s
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
@@ -303,7 +303,7 @@ export function EmbedComparator({
         href={SITE_URL}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex shrink-0 items-center justify-center gap-1 border-t border-border bg-foreground px-3.5 py-2 text-xs font-semibold text-background transition-colors hover:bg-foreground/90"
+        className="flex shrink-0 items-center justify-center gap-1 border-t border-border bg-foreground px-3.5 py-2 text-badge font-semibold text-background transition-colors hover:bg-foreground/90"
       >
         {t("comparator.widget.seeMore")}
         <ArrowRight className="h-3.5 w-3.5" />
@@ -314,7 +314,7 @@ export function EmbedComparator({
         href="https://mangomundi.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+        className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2 text-badge font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         {/* 2026-09-02 feedback — "poner powered by mangomundi con el
             icono y el logo en colores, ahora esta en blanco y negro": two

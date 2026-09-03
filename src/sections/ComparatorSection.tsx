@@ -112,11 +112,6 @@ type AmountMode = "send" | "receive";
 
 /** Field styling for inputs/triggers inside the (light) comparator card —
  *  a recessed pill distinct from the card's own surface. */
-/** Per-metric micro-label above each row value — design/AJUSTES-1.md §C1's
- *  literal spec (10.5px/700/.06em/uppercase/#6B5F55), not the site's
- *  cooler-toned --muted-foreground token: this is a mockup-exact value,
- *  not a general UI gray. */
-const METRIC_LABEL = "text-[10.5px] font-bold uppercase tracking-[.06em] text-[#6B5F55]";
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
 /** Monito-style "how does the recipient get paid" filter — single-select
@@ -1732,8 +1727,8 @@ export function ComparatorSection({
           // name/code still shows in the open dropdown list exactly
           // as before (unaffected — only the closed trigger changes).
           <div
-            className={`flex flex-col overflow-hidden rounded-[12px] border-[1.5px] bg-white transition-colors ${
-              sameCorridorBlocked ? "border-brand-cta ring-2 ring-brand-cta/60" : "border-input"
+            className={`flex flex-col overflow-hidden rounded-md border bg-card transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 ${
+              sameCorridorBlocked ? "border-brand-cta ring-2 ring-brand-cta/60" : "border-border"
             }`}
           >
             {/* 2026-09-04 feedback (Kayak-style redesign, approved
@@ -1748,11 +1743,11 @@ export function ComparatorSection({
                 "never resizes on selection, never clips a locale's
                 placeholder" fixes still apply here. */}
             <div className="relative">
-              <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
-                <span className="text-[8.5px] font-bold uppercase tracking-wide text-muted-foreground">
+              <div className="flex flex-col gap-0.5 border-b border-border px-3 py-2">
+                <span className="text-badge font-semibold text-muted-foreground">
                   {t("comparator.field.amount")}
                 </span>
-                <div className="flex h-[26px] items-stretch overflow-hidden rounded-full bg-[#F5EFE8]">
+                <div className="flex h-7 min-w-0 items-center">
                   <CountryCombobox
                     value={sendingCountry}
                     onChange={handleSendingCountryChange}
@@ -1761,7 +1756,7 @@ export function ComparatorSection({
                     emptyLabel={t("comparator.combobox.empty")}
                     ariaLabel={t("comparator.field.sourceCountry")}
                     triggerIconOnly
-                    triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                    triggerClassName="h-7 w-16 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
                   />
                   <input
                     type="number"
@@ -1771,7 +1766,7 @@ export function ComparatorSection({
                     placeholder="1000"
                     onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                     aria-label={t("comparator.field.amount")}
-                    className="min-w-0 flex-1 border-l border-black/10 bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    className="min-w-0 flex-1 border-l border-border bg-transparent px-2.5 text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
                   />
                   <CurrencyCombobox
                     value={from}
@@ -1781,7 +1776,7 @@ export function ComparatorSection({
                     emptyLabel={t("comparator.combobox.empty")}
                     ariaLabel={t("comparator.field.sourceCurrency")}
                     compactLabel
-                    triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                    triggerClassName="h-7 w-14 shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
                   />
                 </div>
               </div>
@@ -1793,21 +1788,19 @@ export function ComparatorSection({
                   segment — distinct from sameCorridorBlocked (a
                   stronger, more urgent state on the whole card,
                   unchanged above). */}
-              <div className="flex flex-col gap-[3px] px-2.5 py-[7px]">
+              <div
+                className={`flex flex-col gap-0.5 px-3 py-2 transition-colors ${
+                  !receivingCountry ? "bg-accent/10" : ""
+                }`}
+              >
                 <span
-                  className={`text-[8.5px] font-bold uppercase tracking-wide ${
+                  className={`text-badge font-semibold ${
                     !receivingCountry ? "text-accent-text" : "text-muted-foreground"
                   }`}
                 >
                   {t("comparator.field.youReceive")}
                 </span>
-                <div
-                  className={`flex h-[26px] items-stretch overflow-hidden transition-colors ${
-                    !receivingCountry
-                      ? "rounded-[8px] border-[1.5px] border-brand-cta bg-accent/10"
-                      : "rounded-full bg-[#F5EFE8]"
-                  }`}
-                >
+                <div className="flex h-7 min-w-0 items-center">
                   <CountryCombobox
                     value={receivingCountry}
                     onChange={handleReceivingCountryChange}
@@ -1816,7 +1809,7 @@ export function ComparatorSection({
                     emptyLabel={t("comparator.combobox.empty")}
                     ariaLabel={t("comparator.field.targetCountry")}
                     triggerIconOnly
-                    triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                    triggerClassName="h-7 w-16 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
                   />
                   <CurrencyCombobox
                     value={to}
@@ -1826,7 +1819,7 @@ export function ComparatorSection({
                     emptyLabel={t("comparator.combobox.empty")}
                     ariaLabel={t("comparator.field.targetCurrency")}
                     compactLabel
-                    triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                    triggerClassName="h-7 w-14 shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
                   />
                 </div>
               </div>
@@ -1839,10 +1832,9 @@ export function ComparatorSection({
                 type="button"
                 onClick={handleSwap}
                 aria-label={t("comparator.swap")}
-                className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[9px] shadow-md ring-[3px] ring-white transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
-                style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
+                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-muted-foreground transition-colors hover:bg-muted hover:text-brand-cta focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
               >
-                <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
+                <ArrowLeftRight strokeWidth={2.2} className="h-3.5 w-3.5" />
               </button>
             </div>
 
@@ -1862,7 +1854,7 @@ export function ComparatorSection({
                 disabled={
                   compareMut.isPending || !receivingCountry || sameCorridorBlocked || amount <= 0
                 }
-                className="btn-cta flex h-[38px] w-full items-center justify-center rounded-[9px] text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                className="btn-cta flex h-11 w-full items-center justify-center rounded-none rounded-b-md text-meta font-bold focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 {compareMut.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -5229,7 +5221,7 @@ function BusinessRowExtra({
                 amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
               )}
             </div>
-            <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
+            <div className="font-heading text-price font-extrabold tabular-nums text-foreground">
               {savedVsRetail.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
               <span className="text-[11px] font-bold text-muted-foreground">
                 {quote} {t("comparator.business.saved")}
@@ -5363,7 +5355,9 @@ function CompactResultsList({
 
   if (!winner) {
     return (
-      <div className="py-6 text-center text-xs text-muted-foreground">{t("comparator.empty")}</div>
+      <div className="py-6 text-center text-meta text-muted-foreground">
+        {t("comparator.empty")}
+      </div>
     );
   }
 
@@ -5379,11 +5373,11 @@ function CompactResultsList({
           p-2.5 inset below, since this row (plain text, no card of its
           own) would otherwise sit flush against the frame edge. */}
       <div className="flex items-baseline justify-between px-2.5">
-        <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+        <span className="text-badge font-bold uppercase tracking-wide text-muted-foreground">
           {t("comparator.widget.yourResults")}
         </span>
         {freshness && (
-          <span className="text-[10px] font-semibold text-muted-foreground">{freshness}</span>
+          <span className="text-badge font-semibold text-muted-foreground">{freshness}</span>
         )}
       </div>
 
@@ -5399,10 +5393,10 @@ function CompactResultsList({
               type="button"
               onClick={() => setSortBy(tab.key)}
               aria-pressed={isActive}
-              className={`h-7 rounded-md px-1.5 text-[10.5px] font-bold transition-colors ${
+              className={`h-8 rounded-md border px-1.5 text-badge font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                 isActive
-                  ? "border-[1.5px] border-brand-cta bg-brand-cta/10 text-foreground"
-                  : "border border-border bg-white text-muted-foreground hover:bg-muted/50"
+                  ? "border-brand-cta bg-brand-cta/10 text-foreground"
+                  : "border-border bg-card text-muted-foreground hover:bg-muted/50"
               }`}
             >
               {tab.label}
@@ -5417,7 +5411,7 @@ function CompactResultsList({
           "Recommended" — once "Receive more"/"Fastest" became real sorts
           (not just "overall"), a fixed "Recommended" label on the top
           "Fastest"-sorted row would misdescribe why it's there. */}
-      <div className="mt-1.5 rounded-xl border-2 border-brand-cta bg-card p-2.5">
+      <div className="mt-1.5 rounded-xl border-2 border-brand-cta bg-card p-2">
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <BrandLogo
@@ -5429,13 +5423,10 @@ function CompactResultsList({
               className="shrink-0 rounded-sm"
             />
             <div className="min-w-0">
-              <span
-                className="inline-block rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
-                style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
-              >
+              <span className="inline-block rounded-md bg-merit-best px-1.5 py-0.5 text-badge font-semibold text-merit-best-foreground">
                 {activeTabLabel}
               </span>
-              <div className="truncate text-[11px] tabular-nums text-muted-foreground">
+              <div className="truncate text-badge tabular-nums text-muted-foreground">
                 {winner.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ·{" "}
                 {formatDeliverySpeed(winner.speed_hours)}
               </div>
@@ -5445,15 +5436,15 @@ function CompactResultsList({
             <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
               {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </div>
-            <div className="text-[10px] font-semibold text-muted-foreground">{result.quote}</div>
+            <div className="text-badge font-semibold text-muted-foreground">{result.quote}</div>
           </div>
         </div>
         {winner.affiliate_url && (
-          <div className="mt-2 flex items-center gap-1.5">
+          <div className="mt-1.5 flex items-center gap-1.5">
             <button
               onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
               aria-label={`${tCta} — ${winner.name}`}
-              className="btn-cta flex h-8 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md text-xs font-semibold"
+              className="btn-cta flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md text-meta font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {winner.name} <ArrowRight className="h-3.5 w-3.5" />
             </button>
@@ -5466,7 +5457,7 @@ function CompactResultsList({
               type="button"
               onClick={() => handleShare(winner)}
               aria-label={`${sharedSlug === winner.slug ? t("comparator.row.shareCopied") : t("comparator.row.share")} — ${winner.name}`}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:text-foreground"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-input bg-card text-muted-foreground transition hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
             >
               <Share2 className="h-3.5 w-3.5" />
             </button>
@@ -5488,7 +5479,7 @@ function CompactResultsList({
                   type="button"
                   onClick={() => setExpandedSlug(isExpanded ? null : row.slug)}
                   aria-expanded={isExpanded}
-                  className="flex w-full items-center justify-between gap-2 py-1.5 text-left"
+                  className="flex w-full items-center justify-between gap-2 py-1 text-left"
                 >
                   <div className="flex min-w-0 items-center gap-2">
                     <BrandLogo
@@ -5499,13 +5490,15 @@ function CompactResultsList({
                       rounded={false}
                       className="shrink-0 rounded-sm"
                     />
-                    <span className="truncate text-xs font-medium text-foreground">{row.name}</span>
+                    <span className="truncate text-meta font-medium text-foreground">
+                      {row.name}
+                    </span>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5 tabular-nums">
-                    <span className="text-xs font-semibold text-foreground">
+                    <span className="text-meta font-semibold text-foreground">
                       {row.received.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
-                    <span className="w-12 text-right text-[10px] font-semibold text-muted-foreground">
+                    <span className="w-12 text-right text-badge font-semibold text-muted-foreground">
                       {delta.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
                     <ChevronDown
@@ -5516,7 +5509,7 @@ function CompactResultsList({
                 </button>
                 {isExpanded && (
                   <div className="flex items-center justify-between gap-2 pb-2 pl-7">
-                    <div className="flex min-w-0 items-center gap-2 text-[10.5px] text-muted-foreground">
+                    <div className="flex min-w-0 items-center gap-2 text-badge text-muted-foreground">
                       <span className="shrink-0 tabular-nums">
                         {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })}
                       </span>
@@ -5545,7 +5538,7 @@ function CompactResultsList({
                             handleAffiliateClick(row.slug, row.affiliate_url, row.name)
                           }
                           aria-label={`${tCta} — ${row.name}`}
-                          className="btn-cta flex h-6 min-w-0 items-center justify-center gap-1 rounded-md px-2 text-[10.5px] font-semibold"
+                          className="btn-cta flex h-8 min-w-0 items-center justify-center gap-1 rounded-md px-2 text-badge font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
                         >
                           <span className="truncate">{row.name}</span>
                           <ArrowRight className="h-3 w-3 shrink-0" />
@@ -5554,7 +5547,7 @@ function CompactResultsList({
                           type="button"
                           onClick={() => handleShare(row)}
                           aria-label={`${sharedSlug === row.slug ? t("comparator.row.shareCopied") : t("comparator.row.share")} — ${row.name}`}
-                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:text-foreground"
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-input bg-card text-muted-foreground transition hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
                         >
                           <Share2 className="h-3 w-3" />
                         </button>

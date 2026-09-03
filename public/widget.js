@@ -10,10 +10,10 @@
  *   data-amount    Amount preset (e.g. "1000"). Default: 1000.
  *   data-lang      UI language ("es", "de", …) or "auto" to detect. Default: auto.
  *   data-max-width Max widget width in px. Default: 360.
- *   data-height    Widget height in px. Default: 540.
+ *   data-height    Widget height in px. Default: 620.
  *
  * The widget renders in an isolated iframe (no CSS/JS collisions with your
- * page) sized to fit its content without scrolling at the default 360×540.
+ * page) sized to fit its content without scrolling at the default 360x620.
  * No tracking is added to your site.
  */
 (function () {
@@ -35,7 +35,18 @@
   if (lang && lang !== "auto") params.push("lang=" + encodeURIComponent(lang));
 
   var maxWidth = parseInt(attr("max-width", "360"), 10) || 360;
-  var height = parseInt(attr("height", "540"), 10) || 540;
+  // docs/kayak-redesign-spec.md §5.2 — el formulario apilado gana alto con
+  // la fila de tiles de vertical y con el piso tipográfico de 12px de la
+  // pasada de rediseño (varios 9-11px del widget subieron a 12). 620 es lo
+  // que necesita para seguir entrando sin scroll interno.
+  //
+  // La GEOMETRÍA del iframe (radio 16, sombra actual) NO se toca: el spec A
+  // la baja a radio 8 + sombra corta de Kayak, y docs/kayak-patterns-spec.md
+  // §3 lo sobreescribe explícitamente para esta variante ("widget: sin
+  // cambios de geometría; solo el layout apilado y el fondo por token").
+  // Por eso acá no hay ninguna excepción a la regla de "nada de valores
+  // sueltos" que reclamar: no se agrega CSS inline nuevo.
+  var height = parseInt(attr("height", "620"), 10) || 620;
 
   var iframe = document.createElement("iframe");
   iframe.src = ORIGIN + "/embed" + (params.length ? "?" + params.join("&") : "");

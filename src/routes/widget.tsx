@@ -13,7 +13,7 @@ const SCRIPT_SNIPPET = `<script src="https://mangomundi.com/widget.js"
   data-lang="auto" async></script>`;
 
 const IFRAME_SNIPPET = `<iframe src="https://mangomundi.com/embed"
-  width="360" height="540" style="border:0;border-radius:16px"
+  width="360" height="620" style="border:0;border-radius:16px"
   title="Currency comparison by mangomundi" loading="lazy"></iframe>`;
 
 /** design/Mangomundi 4 - Final.dc.html's small home "Widget" card (line
@@ -167,7 +167,7 @@ function WidgetPage() {
         {/* Live preview — the real widget, exactly what gets embedded. */}
         <div className="lg:pt-2">
           <div className="mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
-            <div className="h-[540px]">
+            <div className="h-[620px]">
               {/* 2026-09-02 feedback — "el widget sigue mostrando una
                   búsqueda por default, queremos mostrar todays rates":
                   design/AJUSTES-1.md §H previously auto-ran a real USD→MXN
