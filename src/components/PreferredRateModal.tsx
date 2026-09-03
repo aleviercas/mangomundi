@@ -72,7 +72,7 @@ export function PreferredRateModal({ open, onOpenChange, context }: Props) {
         setTimeout(() => window.open(res.redirectUrl!, "_blank", "noopener,noreferrer"), 1200);
       }
     } catch (err) {
-      setError((err as Error).message || "Failed");
+      setError((err as Error).message || t("preferredRateModal.genericError"));
     } finally {
       setPending(false);
     }

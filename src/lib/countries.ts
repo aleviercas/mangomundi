@@ -12,7 +12,9 @@ export interface CountryInfo {
   currency: string;
 }
 
-const RAW: Record<string, string> = (countryToCurrencyMap as unknown as { default?: Record<string, string> }).default ?? (countryToCurrencyMap as unknown as Record<string, string>);
+const RAW: Record<string, string> =
+  (countryToCurrencyMap as unknown as { default?: Record<string, string> }).default ??
+  (countryToCurrencyMap as unknown as Record<string, string>);
 
 function flagOf(code: string): string {
   if (!/^[A-Z]{2}$/.test(code)) return "🏳️";
@@ -35,8 +37,16 @@ function nameOf(code: string): string {
   }
 }
 
+// No permanent civilian population and no banking/remittance infrastructure
+// — `country-to-currency`'s raw 251-territory list includes these, but no
+// real transfer corridor originates or ends there. Curated exclusion, not a
+// guess: each one checked individually (Antarctica, Bouvet Island, the
+// British Indian Ocean Territory, French Southern Territories, Heard &
+// McDonald Islands, Pitcairn, South Georgia & the South Sandwich Islands).
+const UNINHABITED_TERRITORIES = new Set(["AQ", "BV", "GS", "HM", "IO", "PN", "TF"]);
+
 export const COUNTRIES: CountryInfo[] = Object.keys(RAW)
-  .filter((code) => /^[A-Z]{2}$/.test(code))
+  .filter((code) => /^[A-Z]{2}$/.test(code) && !UNINHABITED_TERRITORIES.has(code))
   .map((code) => ({
     code,
     name: nameOf(code),
@@ -118,4 +128,58 @@ export function resolveRouteCode(code: string): { currency: string; country?: st
     return { currency: COUNTRY_BY_CODE[c].currency, country: c };
   }
   return { currency: c };
+}
+
+// design/AJUSTES-3.md §A — currency pills: "las monedas que se ofrecen son
+// las plausibles del país elegido, no una lista fija". Curated, not derived
+// — country-to-currency only knows a country's own legal-tender currency,
+// not which others genuinely circulate or get requested there. Hand-picked
+// for real reasons (a widely-held reserve currency, a heavily dollarized
+// economy, a currency board/peg, or a major real remittance corridor this
+// app already prices) rather than guessed; a country absent here just gets
+// its local currency plus the full "All" picker, never a fabricated list.
+// Local currency is always implied first — entries here are the ADDITIONAL
+// currencies only, deduped against local in plausibleCurrencies() below.
+const COMMON_ALT_CURRENCIES: Record<string, string[]> = {
+  // Reserve currencies widely held/quoted alongside the local one.
+  GB: ["EUR", "USD"],
+  US: ["EUR", "GBP"],
+  CA: ["USD"],
+  CH: ["EUR", "USD"],
+  // Eurozone — USD and GBP are the currencies most often asked for.
+  DE: ["USD", "GBP"],
+  FR: ["USD", "GBP"],
+  ES: ["USD", "GBP"],
+  IT: ["USD", "GBP"],
+  PT: ["USD", "GBP"],
+  NL: ["USD", "GBP"],
+  IE: ["USD", "GBP"],
+  // Heavily dollarized economies / major USD remittance corridors.
+  MX: ["USD"],
+  AR: ["USD"],
+  CO: ["USD"],
+  PE: ["USD"],
+  PH: ["USD"],
+  IN: ["USD"],
+  NG: ["USD"],
+  KE: ["USD"],
+  GH: ["USD"],
+  PK: ["USD"],
+  BD: ["USD"],
+  VN: ["USD"],
+  KH: ["USD"],
+  // Currency-board / hard-pegged to USD.
+  HK: ["USD"],
+  AE: ["USD"],
+  SG: ["USD"],
+  PA: ["USD"],
+};
+
+/** Local currency first, then the curated plausible alternates for that
+ *  country (deduped) — the ordered list the currency pill row renders,
+ *  before the always-present "All {n}" pill that opens the full picker. */
+export function plausibleCurrencies(countryCode: string): string[] {
+  const local = localCurrency(countryCode);
+  const alt = COMMON_ALT_CURRENCIES[countryCode] ?? [];
+  return [local, ...alt.filter((c) => c !== local)];
 }

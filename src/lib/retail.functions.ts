@@ -43,7 +43,10 @@ export const captureRetailLead = createServerFn({ method: "POST" })
       // consent_timestamp defaults to now() in DB
       status: "preferred_rate_requested",
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
 
     let redirectUrl: string | null = null;
     if (data.affiliateBaseUrl) {
