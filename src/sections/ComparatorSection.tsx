@@ -536,12 +536,6 @@ export function ComparatorSection({
   const urgency: Urgency = "standard";
   const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
-  // PWMOCK-START (local verification only — must be removed before commit)
-  useEffect(() => {
-    const w = window as unknown as { __MOCK_RESULT?: ComparisonResult };
-    if (w.__MOCK_RESULT) setResult(w.__MOCK_RESULT);
-  }, []);
-  // PWMOCK-END
   useEffect(() => {
     onHasResultChange?.(Boolean(result));
     onResult?.(result);
