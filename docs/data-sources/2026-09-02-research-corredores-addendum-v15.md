@@ -31,12 +31,131 @@ de Mukuru sin contexto.
 
 ### Lo que se cargó a Supabase
 
-Pendiente de completar por el agente que ejecute la carga — el archivo
-entrega el detalle completo de cada corredor a continuación
-(candidatos identificados por la propia investigación: Sección 1
-Brasil→Colombia; Sección 2 Mukuru ×4 corredores desde Sudáfrica;
-Sección 3 Xoom EEUU→Tailandia; Sección 4 Lulu Money Kuwait→Egipto;
-Sección 6 Argentina→España y Argentina→Italia).
+Cargado el 2026-09-02/03, migración
+`supabase/migrations/20260902170000_load_v15_corridor_rates.sql`, aplicada
+directamente al proyecto vivo (`ttqalbexpquzobrdyvgx`) y verificada con
+`SELECT` contra la base después de aplicar (no solo confiando en los
+`INSERT`/`UPDATE` propios). **8 filas nuevas de `fx_rates` + 2 filas
+actualizadas + 1 proveedor nuevo** (`fx_rates` pasó de 876 a 884 filas;
+`providers` de 64 a 65).
+
+**Nota previa importante:** antes de cargar nada hubo que reconciliar el
+worktree de este agente, que partía de un `main` desactualizado sin el
+propio archivo v15 ni la carga de v14 — se hizo merge de la rama
+`claude/coordinar-trabajo-simultaneo-y85idz` (que sí tenía ambos) para
+poder trabajar con el estado real del repo y de Supabase.
+
+**1. Brasil→Colombia (Sección 1) — 2 filas nuevas.** MoneyGram (cifra
+CORREGIDA, 3,85%, no la promocional) y Western Union (limpio, 2,61% →
+1,62% de margen FX + 1% de fee). Corredor sin filas previas, verificado
+antes de cargar. `verified_status='sin_confirmar'` (dato de Monito,
+mismo criterio que el resto de Brasil en v14).
+
+**2. Mukuru (Sección 2, 2.1, 5.1) — de los 4 corredores "listos para
+cargar" que el propio documento señala, solo 2 se cargaron tal cual; los
+otros 2 se decidieron explícitamente NO cargar (o cargar distinto),
+verificando primero el estado real de `fx_rates`:**
+- **Botsuana (ZA→BW): 1 fila nueva** (INSERT). Sin fila previa. Fee 137
+  ZAR (10%), margen -0,25%, tipo de cambio 0,76 (dado explícitamente por
+  la fuente RPW). `confirmado_activo`.
+- **Malaui (ZA→MW): 1 fila actualizada** (UPDATE, no insert — ya existía
+  una fila con fuente genérica "Direct research Aug 2025", spread 2%). Se
+  reemplaza con el dato de World Bank RPW (margen -9,58%, costo 0,42%)
+  **con la advertencia explícita exigida por el research en el propio
+  campo `data_source`**: el margen favorable es un artefacto de la brecha
+  de ~148% entre el tipo de cambio oficial y el paralelo de Malaui, NO
+  una ganga real de Mukuru — el texto completo (con "*** ADVERTENCIA
+  EXPLICITA, NO LEER A VALOR NOMINAL ***") queda en la fila y también
+  resumido en `providers.notes` de Mukuru.
+- **Zimbabue (ZA→ZW): NO tocado, decisión deliberada.** La fila existente
+  (id `5f21f5b4…`) ya tenía spread=9,66%, `confirmado_activo`,
+  cross-validada con DOS fuentes independientes (RPW + Monito v12) en una
+  sesión anterior. El propio v15 (Sección 5.1) reconoce que su cifra
+  (9,81% costo/0,32% margen) es una medición distinta y NO resuelve cuál
+  de las dos es más reciente ("no se investigó cuál de las dos fechas es
+  más reciente") — sobreescribir una fila cross-validada con una fila de
+  fuente única y admitidamente ambigua habría violado la regla de nunca
+  reemplazar un dato mejor por uno peor. Verificado tras la carga: la
+  fila sigue intacta.
+- **Zambia (ZA→ZM): NO cargado como fila de `fx_rates`.** A diferencia de
+  Botsuana y Malaui, el documento no da ningún tipo de cambio absoluto
+  para este par (ZAR→ZMW) en ninguna parte del texto — solo fee (137
+  ZAR/10%), margen (1,48%) y costo total (11,48%). `fx_rates.rate` es
+  `NOT NULL` y el proyecto no tiene ningún corredor ZAR→ZMW previamente
+  cargado del cual reusar una tasa canónica (verificado por consulta
+  antes de escribir la migración). Inventar una tasa habría violado la
+  regla de nunca fabricar datos, así que se optó por NO cargar la fila —
+  el fee/margen/costo sí quedan documentados en `providers.notes` de
+  Mukuru para no perder el dato, pero sin una fila de precio en
+  `fx_rates`.
+
+**3. Xoom, EEUU→Tailandia (Sección 3) — 1 fila nueva.** Margen 4,71% (el
+más alto medido en el proyecto entre "proveedores de referencia"), fee
+USD 4,99, tipo de cambio 31,02 THB/USD (dado explícitamente). Se cargó
+UNA sola fila representativa a USD 200 (mismo monto de referencia ya
+usado para Xoom EEUU→México) en vez de partir en 2 tramos por
+`min_amount/max_amount` — el margen es constante entre los dos montos de
+ejemplo de la fuente (USD 200 y USD 500), solo cambia el fee relativo de
+un mismo fee flat de USD 4,99, así que no es un escalón de tarifa real
+que justifique dos filas (a diferencia de Xoom GB→IN, donde sí hay 3
+filas porque ahí el margen mismo cambia por tramo). El tramo de USD 500
+(costo total 5,71%) queda documentado en el comentario de la fila, no
+cargado aparte. `confirmado_activo`.
+
+**4. Lulu Money, Kuwait→Egipto (Sección 4) — proveedor nuevo + 1 fila.**
+No existía en `providers` (verificado antes de cargar) — se agregó
+siguiendo el mismo patrón usado para SBI Remit en v14 (slug
+`lulu-money`, `is_corridor_specific=true`, `active=true`). Fee KWD 1,50
+(2,31%), margen 1,08%, costo total 3,39%. La fuente no da un tipo de
+cambio absoluto para KWD→EGP — se derivó reusando el tipo de cambio
+KWD→EGP ya establecido en el proyecto (163,321743, de la fila de Wise
+para ese mismo par, spread 0%) aplicándole el margen del 1,08% dado por
+RPW (161,5579), la misma técnica que el proyecto ya usa para Xoom
+EEUU→México cuando RPW da el margen pero no una tasa absoluta — no es
+una tasa inventada, es una reutilizada. No se cargó `website_url` (la
+fuente no da uno y no se quiso inventar uno). `confirmado_activo`. Con
+esto, los cinco proveedores "amplios" catalogados en v11 (Mukuru, Xoom,
+Lulu Money, SBI Remit, TransferGo) quedan todos con al menos un
+corredor numérico documentado.
+
+**5. Argentina→España y Argentina→Italia (Sección 6, 6.2) — 3 filas
+nuevas + 1 actualizada.** Verificación previa importante: Argentina como
+`sending_country` YA existía en el proyecto desde v8 (10 corredores vía
+Prex) y ya había filas AR→ES (Wise, Western Union) y AR→IT (Ria, Wise) de
+sesiones anteriores — lo genuinamente nuevo de v15 no es "Argentina como
+país de origen" (como decía el recordatorio del propio documento) sino
+Global66 en ambos corredores y Western Union en AR→IT:
+- **Global66 AR→ES: 1 fila nueva.** Fee 0, margen 5,28%, tipo de cambio
+  0,000541 (dado explícitamente). Primera fila de Global66 para un
+  corredor de SALIDA de Argentina (su único dato previo de Argentina era
+  EUR→ARS, de ENTRADA).
+- **Global66 AR→IT: 1 fila nueva.** Mismo tipo de cambio (0,000541) y
+  margen (5,28%) que España pese a mucha menos cobertura en Monito (646
+  vs. 1.659 comparaciones) — confirma la hipótesis del research de que el
+  margen depende del origen (ARS, riesgo cambiario del peso) y no de la
+  competencia por destino.
+- **Western Union AR→IT: 1 fila nueva.** Sin fila previa para este
+  corredor exacto. Fee 5.000 ARS (5%, cash pickup), margen FX 5,27%.
+- **Western Union AR→ES: 1 fila ACTUALIZADA** (no insert — ya existía una
+  fila con fee=500 ARS flat/spread=3%, fuente genérica "Direct research
+  Aug 2025", sin monto de referencia ni método de entrega). Se reemplaza
+  con el dato específico de Monito (fee 5.000 ARS/5%, cash pickup, margen
+  5,12%) — mismo criterio que la corrección de Taptap Send UK→Ghana en
+  v14 (fuente más específica reemplaza una genérica), con el mismo tipo
+  de caveat de "método de entrega no necesariamente idéntico" ya usado en
+  v14 para Reino Unido→Nigeria.
+
+Todas las filas de Argentina/Brasil/Global66 quedaron con
+`verified_status='sin_confirmar'` (dato de Monito, siguiendo el criterio
+ya establecido para este tipo de fuente en el proyecto); las de Mukuru
+(RPW), Xoom (RPW) y Lulu Money (RPW) quedaron en `confirmado_activo`.
+
+**Lo que NO se tocó, por diseño:** TransferGo y SingX (Sección 5.3, 5.1)
+— el propio documento confirma que sus cifras actuales en el proyecto
+siguen siendo correctas y que no hay una cifra limpia con la cual
+reemplazarlas; Walmart2World (Sección 5.5) — avance de contexto/mecanismo
+sin cifra nueva de tarifa; Secciones 5, 5.2, 5.4 y 7 — tablas de
+consolidación y plan, no datos nuevos.
 
 ---
 
