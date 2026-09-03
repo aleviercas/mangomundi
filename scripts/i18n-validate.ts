@@ -54,7 +54,6 @@ if (existsSync(translationsDir)) {
 // ---------------------------------------------------------------------------
 const report = validateDictionaries();
 
-
 const lines: string[] = [];
 lines.push(`# i18n validation report`);
 lines.push(`generated: ${new Date().toISOString()}`);
@@ -124,26 +123,38 @@ const jsonReport = {
   perLang: Object.fromEntries(
     SUPPORTED_LANGS.filter((c) => c !== "en").map((code) => {
       const r = report.perLang[code];
-      return [code, {
-        coverage: r.coverage,
-        missing: r.missing.length,
-        empty: r.empty.length,
-        missingKeys: r.missing.slice(0, 50),
-      }];
+      return [
+        code,
+        {
+          coverage: r.coverage,
+          missing: r.missing.length,
+          empty: r.empty.length,
+          missingKeys: r.missing.slice(0, 50),
+        },
+      ];
     }),
   ),
 };
-writeFileSync(resolve(process.cwd(), "i18n-errors.json"), JSON.stringify(jsonReport, null, 2), "utf8");
+writeFileSync(
+  resolve(process.cwd(), "i18n-errors.json"),
+  JSON.stringify(jsonReport, null, 2),
+  "utf8",
+);
 
 // HTML report — short, self-contained, easy to open in a browser/CI artifact
-const rowsHtml = SUPPORTED_LANGS.filter((c) => c !== "en").map((code) => {
-  const r = report.perLang[code];
-  const pct = Math.round(r.coverage * 100);
-  const status = r.missing.length === 0 && r.empty.length === 0 ? "ok" : pct >= 95 ? "warn" : "err";
-  const meta = LANGUAGE_METADATA[code];
-  return `<tr class="${status}"><td>${meta.flag} ${meta.label}</td><td>${meta.english}</td>` +
-    `<td class="pct">${pct}%</td><td>${r.missing.length}</td><td>${r.empty.length}</td></tr>`;
-}).join("\n");
+const rowsHtml = SUPPORTED_LANGS.filter((c) => c !== "en")
+  .map((code) => {
+    const r = report.perLang[code];
+    const pct = Math.round(r.coverage * 100);
+    const status =
+      r.missing.length === 0 && r.empty.length === 0 ? "ok" : pct >= 95 ? "warn" : "err";
+    const meta = LANGUAGE_METADATA[code];
+    return (
+      `<tr class="${status}"><td>${meta.flag} ${meta.label}</td><td>${meta.english}</td>` +
+      `<td class="pct">${pct}%</td><td>${r.missing.length}</td><td>${r.empty.length}</td></tr>`
+    );
+  })
+  .join("\n");
 const html = `<!doctype html><meta charset="utf-8"><title>i18n coverage</title>
 <style>body{font:14px/1.5 -apple-system,system-ui,sans-serif;background:#0f172a;color:#f8fafc;padding:24px}
 h1{font-size:18px;margin:0 0 4px}small{color:#94a3b8}
@@ -165,7 +176,9 @@ const ghSummary = process.env.GITHUB_STEP_SUMMARY;
 if (ghSummary) {
   const md: string[] = [];
   md.push(`### i18n coverage — ${report.ok ? "✅ OK" : "❌ DRIFT"}`);
-  md.push(`Source of truth: \`en\` (${report.enKeyCount} keys) · ${SUPPORTED_LANGS.length - 1} target locales`);
+  md.push(
+    `Source of truth: \`en\` (${report.enKeyCount} keys) · ${SUPPORTED_LANGS.length - 1} target locales`,
+  );
   md.push("");
   md.push("| Lang | Coverage | Missing | Empty |");
   md.push("|------|---------:|--------:|------:|");
@@ -176,14 +189,23 @@ if (ghSummary) {
     const icon = r.missing.length === 0 && r.empty.length === 0 ? "🟢" : pct >= 95 ? "🟡" : "🔴";
     md.push(`| ${icon} \`${code}\` | ${pct}% | ${r.missing.length} | ${r.empty.length} |`);
   }
-  const incomplete = SUPPORTED_LANGS.filter((c) => c !== "en" && (report.perLang[c].missing.length + report.perLang[c].empty.length) > 0);
+  const incomplete = SUPPORTED_LANGS.filter(
+    (c) => c !== "en" && report.perLang[c].missing.length + report.perLang[c].empty.length > 0,
+  );
   if (incomplete.length) {
     md.push("");
-    md.push(`<details><summary>Sample missing keys (${incomplete.length} incomplete lang${incomplete.length === 1 ? "" : "s"})</summary>\n`);
+    md.push(
+      `<details><summary>Sample missing keys (${incomplete.length} incomplete lang${incomplete.length === 1 ? "" : "s"})</summary>\n`,
+    );
     for (const code of incomplete) {
       const r = report.perLang[code];
-      const sample = r.missing.slice(0, 10).map((k) => `\`${k}\``).join(", ");
-      md.push(`- **${code}** — missing ${r.missing.length}: ${sample}${r.missing.length > 10 ? ", …" : ""}`);
+      const sample = r.missing
+        .slice(0, 10)
+        .map((k) => `\`${k}\``)
+        .join(", ");
+      md.push(
+        `- **${code}** — missing ${r.missing.length}: ${sample}${r.missing.length > 10 ? ", …" : ""}`,
+      );
     }
     md.push("</details>");
   }
@@ -192,13 +214,10 @@ if (ghSummary) {
 }
 
 console.log(
-  `[i18n] ${report.ok ? "OK" : "DRIFT"} — ${
-    report.brokenLangs.length
-  } broken / ${
+  `[i18n] ${report.ok ? "OK" : "DRIFT"} — ${report.brokenLangs.length} broken / ${
     SUPPORTED_LANGS.filter((c) => c !== "en" && report.perLang[c].missing.length > 0).length
   } incomplete (of ${SUPPORTED_LANGS.length - 1})`,
 );
-
 
 // ---------------------------------------------------------------------------
 // 2) SSR render smoke-test with INVALID language
@@ -225,11 +244,7 @@ let failures = 0;
 for (const c of cases) {
   try {
     const html = renderToString(
-      createElement(
-        I18nProvider,
-        { initialLang: c.lang as Lang },
-        createElement(Probe),
-      ),
+      createElement(I18nProvider, { initialLang: c.lang as Lang }, createElement(Probe)),
     );
     if (!html.includes("data-lang")) throw new Error("output missing probe");
     console.log(`[i18n] render OK (${c.name}) → ${html.slice(0, 80)}…`);
@@ -271,11 +286,14 @@ const filterCases: Array<{ q: string; expectCodes: Lang[] }> = [
 let filterFailures = 0;
 for (const c of filterCases) {
   const got = filterLangs(c.q).map((l) => l.code);
-  const ok = c.expectCodes.every((e) => got.includes(e)) &&
+  const ok =
+    c.expectCodes.every((e) => got.includes(e)) &&
     (c.expectCodes.length === 0 ? got.length === 0 : got.length >= c.expectCodes.length);
   if (!ok) {
     filterFailures++;
-    console.error(`[langswitcher] filter("${c.q}") expected ${JSON.stringify(c.expectCodes)} → got ${JSON.stringify(got)}`);
+    console.error(
+      `[langswitcher] filter("${c.q}") expected ${JSON.stringify(c.expectCodes)} → got ${JSON.stringify(got)}`,
+    );
   } else {
     console.log(`[langswitcher] filter("${c.q}") → ${got.length} result(s) OK`);
   }
@@ -290,7 +308,8 @@ if (filterFailures > 0) {
 // ---------------------------------------------------------------------------
 if (process.env.I18N_STRICT === "1" && !report.ok) {
   const incomplete = SUPPORTED_LANGS.filter(
-    (c) => c !== "en" && (report.perLang[c].missing.length > 0 || report.perLang[c].empty.length > 0),
+    (c) =>
+      c !== "en" && (report.perLang[c].missing.length > 0 || report.perLang[c].empty.length > 0),
   );
   console.error(
     `[i18n] STRICT FAIL — ${report.brokenLangs.length} broken / ${incomplete.length} incomplete dictionaries. ` +
@@ -299,4 +318,3 @@ if (process.env.I18N_STRICT === "1" && !report.ok) {
   process.exit(1);
 }
 console.log(`[i18n] all checks passed`);
-

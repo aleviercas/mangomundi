@@ -15,8 +15,14 @@ export const getMasterRateState = createServerFn({ method: "GET" }).handler(asyn
 });
 
 const reportSchema = z.object({
-  from: z.string().length(3).regex(/^[A-Z]{3}$/i),
-  to: z.string().length(3).regex(/^[A-Z]{3}$/i),
+  from: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/i),
+  to: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/i),
 });
 
 /**
