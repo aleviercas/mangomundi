@@ -24,8 +24,10 @@ import {
   Send,
   Shield,
   Share2,
+  SlidersHorizontal,
   Star,
   Sparkle,
+  User,
   Zap,
   Info,
 } from "lucide-react";
@@ -39,6 +41,7 @@ import {
 } from "@/components/ui/dialog";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -58,6 +61,10 @@ import {
   COUNTRY_BY_CODE,
 } from "@/lib/countries";
 import { BrandLogo } from "@/components/BrandLogo";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { TrustBox } from "@/components/TrustBox";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
@@ -533,6 +540,12 @@ export function ComparatorSection({
   const urgency: Urgency = "standard";
   const [validationError, setValidationError] = useState<string | null>(null);
   const [result, setResult] = useState<ComparisonResult | null>(null);
+  // PWMOCK-START (local verification only — must be removed before commit)
+  useEffect(() => {
+    const w = window as unknown as { __MOCK_RESULT?: ComparisonResult };
+    if (w.__MOCK_RESULT) setResult(w.__MOCK_RESULT);
+  }, []);
+  // PWMOCK-END
   useEffect(() => {
     onHasResultChange?.(Boolean(result));
     onResult?.(result);
@@ -564,9 +577,25 @@ export function ComparatorSection({
   // clear it back to "all methods". Folded into the "Requiere" chip row as
   // a 4th chip group (see render below) rather than a standalone preview
   // grid — the numeric per-method preview was removed in the redesign.
-  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | null>(null);
+  // docs/kayak-redesign-spec.md §3.4 — pasa de single-select a multi-select
+  // real: el rail de filtros muestra los 4 métodos como checkboxes, y en un
+  // rail de checkboxes "elegir uno deselecciona el otro" se lee como un bug.
+  // Lista vacía = sin filtro (idéntico al `null` anterior). El mapa de
+  // predicados (DELIVERY_METHOD_PREDICATES) NO se toca: solo cambia cómo se
+  // combinan, con un `.some()` en vez de una sola llamada.
+  const [deliveryMethods, setDeliveryMethods] = useState<DeliveryMethod[]>([]);
   const toggleDeliveryMethod = (method: DeliveryMethod) =>
-    setDeliveryMethod((prev) => (prev === method ? null : method));
+    setDeliveryMethods((prev) =>
+      prev.includes(method) ? prev.filter((m) => m !== method) : [...prev, method],
+    );
+  // §3.4 punto 3 — "hasta N h". null = sin límite. Los pasos son los tramos
+  // reales que la lista usa (1h / 4h / 24h / 3d / sin límite), no un slider
+  // continuo sobre un dato que se imprime redondeado.
+  const SPEED_STEPS: Array<number | null> = [1, 4, 24, 72, null];
+  const [speedStep, setSpeedStep] = useState(SPEED_STEPS.length - 1);
+  const maxSpeedHours = SPEED_STEPS[speedStep] ?? null;
+  // §3.4 punto 5 — "solo rutas verificadas" (has_corridor_data).
+  const [onlyVerified, setOnlyVerified] = useState(false);
   // Exclusive-rates filter — an explicit, user-initiated narrowing, not a
   // change to the default ranking. Neutrality lives in what happens when
   // this is OFF (default): every provider shown, ordered purely by the
@@ -586,22 +615,37 @@ export function ComparatorSection({
   // §3 — "conteo por opción"). Computed from the current result set, not
   // hardcoded — an option with 0 matches on this corridor still shows "0",
   // never a stale number from a previous search.
-  const { deliveryCounts, exclusiveCount } = useMemo(() => {
+  const { deliveryCounts, exclusiveCount, verifiedCount } = useMemo(() => {
     const counts: Record<DeliveryMethod, number> = {
       bank_transfer: 0,
       cash_pickup: 0,
       card_payout: 0,
       broker: 0,
     };
-    if (!result) return { deliveryCounts: counts, exclusiveCount: 0 };
+    if (!result) return { deliveryCounts: counts, exclusiveCount: 0, verifiedCount: 0 };
     for (const { key } of DELIVERY_METHODS) {
       counts[key] = result.rows.filter(DELIVERY_METHOD_PREDICATES[key]).length;
     }
     return {
       deliveryCounts: counts,
       exclusiveCount: result.rows.filter((r) => r.has_exclusive_deal).length,
+      verifiedCount: result.rows.filter((r) => r.has_corridor_data).length,
     };
   }, [result]);
+  // docs/kayak-redesign-spec.md §3.4 punto 6 — "Limpiar filtros", visible
+  // solo si hay alguno activo. Un contador, no un booleano, porque el botón
+  // de filtros de mobile (§4.2) muestra "Filtros (N)".
+  const activeFilterCount =
+    deliveryMethods.length +
+    (showOnlyExclusive ? 1 : 0) +
+    (onlyVerified ? 1 : 0) +
+    (maxSpeedHours != null ? 1 : 0);
+  const clearFilters = () => {
+    setDeliveryMethods([]);
+    setShowOnlyExclusive(false);
+    setOnlyVerified(false);
+    setSpeedStep(SPEED_STEPS.length - 1);
+  };
   // The 3 big order-tab headline numbers (design/AJUSTES-1.md §C2) — real
   // values from the current result set, never invented. fastestFigure
   // reuses formatDeliverySpeed, the same function ProviderRow's own
@@ -1559,9 +1603,18 @@ export function ComparatorSection({
       // the mockup's own "with results" screen keeps the cream page
       // background behind the rail/results, with individual white CARDS
       // floating on it rather than a white section wrapper.
-      className={embedded ? "min-w-0" : `scroll-mt-24 pb-8 sm:pb-12 ${!result ? "bg-card" : ""}`}
+      // docs/kayak-redesign-spec.md §3.1 — la sección deja de vivir sobre
+      // --background y pasa al lienzo del comparador: el escalón
+      // lienzo/tarjeta es lo que hace que una lista de 7 tarjetas blancas se
+      // lea como lista y no como una mancha continua. `bg-surface-canvas` es
+      // la versión cálida de ese token (ver su comentario en styles.css) —
+      // la piel de la variante B, no el slate frío del spec A.
+      className={embedded ? "min-w-0" : "scroll-mt-24 bg-surface-canvas pt-4 pb-8 sm:pb-12"}
     >
-      <div className={embedded ? "min-w-0" : "mx-auto max-w-7xl px-5 sm:px-8"}>
+      {/* max-w-comparator (1180px) en vez de max-w-7xl (1280): con el rail de
+          filtros de §3.4, 240 de rail + 728 de resultados + gutters dan
+          exactamente eso. */}
+      <div className={embedded ? "min-w-0" : "mx-auto max-w-comparator px-5 sm:px-8"}>
         {/* THE comparator box — the single entry point. Basic row always
             visible; advanced fields fold out below inside the same card.
             Once a comparison has run, the card sticks under the fixed
@@ -1581,7 +1634,11 @@ export function ComparatorSection({
               palette) — this was pure white (`bg-card`) with a cool
               slate-toned shadow (`rgba(15,23,42,...)`) that belongs to a
               blue palette, not this one. */}
-          <div className="min-w-0 overflow-hidden rounded-2xl border border-border bg-[#FDFBF9] shadow-[0_14px_36px_-22px_rgba(60,40,30,0.4)]">
+          {/* docs/kayak-patterns-spec.md §3 — donde el spec A pide
+              `compare-card` (radio 8 + sombra corta de Kayak), la variante B
+              usa la tarjeta que el sitio ya tiene: `.surface-card`. Reemplaza
+              el bg-[#FDFBF9] + shadow-[...] sueltos que había acá. */}
+          <div className="surface-card min-w-0 overflow-hidden">
             {/* 2026-09-02 feedback — "el box de compare se puede hacer menos
                 alto si se mueve la píldora de individual/business arriba de
                 compare y en la misma línea de send y receive... se puede
@@ -1869,34 +1926,54 @@ export function ComparatorSection({
                 // Compare `flex-1` soaking up the rest). @4xl still swaps
                 // this to the original one-line 4-column grid.
                 <div className="flex flex-col gap-1.5">
-                  {/* 2026-09-04 feedback (Kayak-style redesign, approved
-                      canvas mockup "mangomundi Search Redesign") — the
-                      Personal/Business tabs now sit above the WHOLE search
-                      bar (were previously tucked into the Compare column's
-                      own label row) — same tablist markup/behavior,
-                      unchanged, just relocated. */}
-                  <div className="flex items-center justify-end">
-                    <div
-                      role="tablist"
-                      aria-label={t("search.segment")}
-                      className="flex h-5 shrink-0 items-center gap-0.5 rounded-full bg-muted p-0.5"
-                    >
-                      {(["retail", "business"] as Segment[]).map((s) => (
+                  {/* docs/kayak-redesign-spec.md §3.3 — el toggle en píldora
+                      Personal/Empresa pasa a ser la fila de "verticales" de
+                      Kayak (tile cuadrado + label debajo), arriba y AFUERA de
+                      la barra. Mismo estado `segment` y mismo
+                      handleSegmentChange de siempre: cambia la presentación,
+                      no el comportamiento. Sigue decidiéndose ANTES de buscar
+                      — que es justo lo que esta posición refuerza, igual que
+                      Flights/Stays en Kayak. El eyebrow "COMPARAR" ya no
+                      existe: la barra se explica sola.
+                      Piel B (docs/kayak-patterns-spec.md §3): el tile activo
+                      es `bg-brand-cta` plano, no el gradiente de la variante
+                      A, y el radio es `rounded-md`, no `rounded-control`. */}
+                  <div role="tablist" aria-label={t("search.segment")} className="flex gap-4">
+                    {(
+                      [
+                        ["retail", User],
+                        ["business", Building2],
+                      ] as Array<[Segment, LucideIcon]>
+                    ).map(([s, Icon]) => {
+                      const active = segment === s;
+                      return (
                         <button
                           key={s}
+                          type="button"
                           role="tab"
-                          aria-selected={segment === s}
+                          aria-selected={active}
                           onClick={() => handleSegmentChange(s)}
-                          className={`rounded-full px-2 py-0.5 text-[11.5px] font-semibold capitalize leading-none transition ${
-                            segment === s
-                              ? "bg-card text-foreground shadow-sm"
-                              : "text-muted-foreground hover:text-foreground"
-                          }`}
+                          className="flex w-14 shrink-0 flex-col items-center gap-1 rounded-md focus:outline-none focus:ring-2 focus:ring-ring/40"
                         >
-                          {t(`comparator.segment.${s}`)}
+                          <span
+                            className={`flex h-9 w-9 items-center justify-center rounded-md transition-colors ${
+                              active
+                                ? "bg-brand-cta text-brand-cta-foreground"
+                                : "bg-muted text-foreground hover:bg-secondary"
+                            }`}
+                          >
+                            <Icon className="h-[18px] w-[18px]" aria-hidden />
+                          </span>
+                          <span
+                            className={`truncate text-meta font-semibold ${
+                              active ? "text-foreground" : "text-muted-foreground"
+                            }`}
+                          >
+                            {t(`comparator.segment.${s}`)}
+                          </span>
                         </button>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
 
                   {/* THE bar — Send/swap/Receive/Compare now read as ONE
@@ -1911,20 +1988,34 @@ export function ComparatorSection({
                       established) but stays visually one card throughout —
                       no per-field border/shadow anymore, the bar supplies
                       it. */}
+                  {/* docs/kayak-redesign-spec.md §3.2 — la barra es UNA sola
+                      pieza segmentada: 5 segmentos hermanos (monto+país
+                      origen · swap · país destino · método de entrega · CTA),
+                      divididos por hairlines verticales, sin borde/radio/
+                      sombra propios en ningún segmento — ese es el detalle
+                      que la hace leer como Kayak y no como cuatro inputs
+                      pegados. El foco se anilla en el BLOQUE, no campo a
+                      campo.
+                      Piel B (docs/kayak-patterns-spec.md §3): donde el spec A
+                      pide `h-15` sin borde, acá va `h-14` CON
+                      `border border-border` y el radio actual — segmentada
+                      igual, pero con el borde que el resto del sitio usa en
+                      sus inputs. */}
                   <div
-                    className={`flex flex-col overflow-hidden rounded-md border-[1.5px] transition-colors @4xl:flex-row @4xl:items-stretch ${
+                    className={`flex flex-col overflow-hidden rounded-md border bg-card transition-colors focus-within:ring-2 focus-within:ring-brand-cta/40 @4xl:h-14 @4xl:flex-row @4xl:items-stretch ${
                       sameCorridorBlocked
                         ? "border-brand-cta ring-2 ring-brand-cta/60"
-                        : "border-input"
-                    } ${compact ? "bg-[#FDFBF9]" : "bg-card"}`}
+                        : "border-border"
+                    }`}
                   >
-                    <div className="min-w-0 border-b-[1.5px] border-border/70 px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[1.7] @4xl:items-center @4xl:border-b-0 @4xl:border-r-[1.5px] @4xl:px-4 @4xl:py-0">
+                    <div className="min-w-0 px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[1.6] @4xl:items-center @4xl:border-r @4xl:border-border @4xl:px-4 @4xl:py-0">
                       <FieldLight label={t("comparator.field.amount")}>
-                        {/* 2026-09-04 feedback ("quedo muy mal") — Send needs
-                            to read as a filled chip/pill sitting INSIDE the
-                            bar (Kayak's origin pill), not plain text flush
-                            against the segment's own edges. */}
-                        <div className="inline-flex max-w-full items-stretch overflow-hidden rounded-full bg-[#F5EFE8]">
+                        {/* §3.2 — el valor va a sangre dentro del segmento:
+                            ningún segmento lleva fondo, borde ni radio
+                            propios (esto era una píldora `bg-[#F5EFE8]`
+                            hardcodeada). El único divisor interno es una
+                            hairline `border-l border-border`. */}
+                        <div className="flex min-w-0 items-center">
                           <input
                             type="number"
                             inputMode="decimal"
@@ -1947,9 +2038,12 @@ export function ComparatorSection({
                             // 14.5px — flex-1 (was 1.4) gives the country
                             // segment its fair half instead of the smaller
                             // share, without needing another isMobile branch.
-                            className={`min-w-0 flex-1 bg-transparent py-2 pl-4 pr-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
-                              compact ? "text-[21px]" : "text-[25px]"
-                            }`}
+                            // §3.2 — dentro de una barra de 56px con el label
+                            // inline arriba, el monto pasa de 25px suelto a
+                            // `text-metric` (16px, token). Sigue siendo el
+                            // valor con más peso del segmento (font-bold,
+                            // tabular-nums), pero a la densidad de la barra.
+                            className="min-w-0 flex-1 bg-transparent pr-2 text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
                           />
                           {/* 2026-09-04 feedback — "cuando elegis la moneda
                             cambian de tamaño de ancho las celdas de la
@@ -1971,9 +2065,7 @@ export function ComparatorSection({
                             emptyLabel={t("comparator.combobox.empty")}
                             ariaLabel={t("comparator.field.sourceCurrency")}
                             compactLabel
-                            triggerClassName={`h-full w-[68px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent font-bold shadow-none hover:bg-black/5 focus:ring-0 ${
-                              compact ? "px-3 text-[14px]" : "px-3 text-[14.5px]"
-                            }`}
+                            triggerClassName="h-8 w-[64px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
                           />
                           <CountryCombobox
                             value={sendingCountry}
@@ -1988,52 +2080,59 @@ export function ComparatorSection({
                             // currency-code readout.
                             hideSecondary
                             triggerIconOnly={isMobile}
-                            triggerClassName={`h-full flex-1 rounded-none border-0 border-l border-black/10 bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-black/5 focus:ring-0 ${
-                              compact ? "text-[14px]" : "text-[14.5px]"
-                            } ${isMobile ? "shrink-0 justify-center" : "shrink-0"}`}
+                            triggerClassName={`h-8 min-w-0 flex-[1.6] rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                              isMobile ? "shrink-0 justify-center" : ""
+                            }`}
                           />
                         </div>
                       </FieldLight>
                     </div>
 
-                    {/* Swap/Receive/Compare — one row below @4xl (same
-                        responsive shape Z2 established), three flush
-                        segments of the same bar at @4xl (`@4xl:contents`
-                        drops this wrapper from the box model so its
-                        children become direct row items, without
-                        duplicating the markup for two different tree
-                        shapes). */}
-                    <div className="flex items-stretch gap-2 p-2 @4xl:contents @4xl:gap-0 @4xl:p-0">
-                      {/* Swap — click to flip FROM/TO, country and currency
-                          together. Square (not circular), sits between
-                          Send and Receive with a divider on each side at
-                          @4xl — no longer its own floating cell with a gap. */}
+                    {/* §3.2 — abajo del breakpoint los segmentos se apilan
+                        como filas de UNA sola tarjeta blanca separadas por
+                        `border-t border-border`, con el CTA como última fila
+                        a ancho completo; arriba son columnas flush de la
+                        misma barra. `contents` (siempre, no solo en @4xl)
+                        saca este wrapper del box model para que los 4
+                        hermanos sean items directos del flex padre en los dos
+                        modos, sin duplicar el markup. Antes esto los metía a
+                        los 4 en UNA fila horizontal abajo del breakpoint —
+                        con el segmento nuevo de método de entrega, Receive y
+                        Payout se pisaban (medido en screenshot a 390px, no
+                        supuesto). */}
+                    <div className="contents">
+                      {/* Swap — §3.2: su propio segmento de 44px, botón
+                          circular de 32px centrado verticalmente, SIN borde
+                          ni fondo propios (era un cuadrado con
+                          `backgroundColor:#F5EFE8` / `color:#EE5B3E` inline).
+                          Cambia de color al hover, que es toda la afordancia
+                          que necesita dentro de una barra. */}
                       <button
                         type="button"
                         onClick={handleSwap}
                         aria-label={t("comparator.swap")}
-                        className="flex shrink-0 items-center justify-center self-stretch rounded-md transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40 @4xl:w-[46px] @4xl:rounded-none @4xl:border-r-[1.5px] @4xl:border-border/70"
-                        style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
+                        className="flex h-10 w-full shrink-0 items-center justify-center border-t border-border text-muted-foreground transition-colors hover:bg-muted hover:text-brand-cta focus:outline-none focus:ring-2 focus:ring-brand-cta/40 @4xl:h-full @4xl:w-11 @4xl:border-r @4xl:border-t-0"
                       >
-                        <ArrowLeftRight
-                          strokeWidth={2.2}
-                          className={compact ? "h-[17px] w-[17px]" : "h-[18px] w-[18px]"}
-                        />
+                        <ArrowLeftRight strokeWidth={2.2} className="h-[18px] w-[18px]" />
                       </button>
 
                       {/* Receive — a real bordered box in the accent color
                           while it still needs a country (Kayak's focused
                           "To?" field cue); once a country's picked it reads
                           as the same kind of filled pill Send uses. */}
-                      <div className="min-w-0 flex-1 @4xl:flex @4xl:h-full @4xl:flex-[1.3] @4xl:items-center @4xl:border-r-[1.5px] @4xl:border-border/70 @4xl:px-4 @4xl:py-0">
+                      <div
+                        className={`min-w-0 border-t border-border px-3 py-2 transition-colors @4xl:flex @4xl:h-full @4xl:flex-[1.2] @4xl:items-center @4xl:border-r @4xl:border-t-0 @4xl:px-4 @4xl:py-0 ${
+                          !receivingCountry ? "bg-accent/10" : ""
+                        }`}
+                      >
                         <FieldLight label={t("comparator.field.youReceive")}>
-                          <div
-                            className={`inline-flex max-w-full items-stretch overflow-hidden rounded-full transition-colors ${
-                              !receivingCountry
-                                ? "rounded-md border-[1.5px] border-brand-cta bg-accent/10"
-                                : "bg-[#F5EFE8]"
-                            }`}
-                          >
+                          {/* §3.2 — sin borde/radio/fondo propios. La señal de
+                              "acá falta algo" (el `To?` enfocado de Kayak) ya
+                              no es una caja coral dentro de la barra: es el
+                              SEGMENTO entero tintado en accent/10, que es lo
+                              que la barra segmentada permite y una caja
+                              adentro de otra caja no. */}
+                          <div className="flex min-w-0 items-center">
                             <CountryCombobox
                               value={receivingCountry}
                               onChange={handleReceivingCountryChange}
@@ -2043,9 +2142,9 @@ export function ComparatorSection({
                               ariaLabel={t("comparator.field.targetCountry")}
                               hideSecondary
                               triggerIconOnly={isMobile}
-                              triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-3 text-[12.5px] font-bold text-foreground shadow-none hover:bg-black/5 focus:ring-0 @4xl:px-3.5 ${
-                                compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
-                              } ${isMobile ? "justify-center" : ""}`}
+                              triggerClassName={`h-8 min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 text-meta font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                                isMobile ? "justify-center" : ""
+                              }`}
                             />
                             <CurrencyCombobox
                               value={to}
@@ -2055,11 +2154,59 @@ export function ComparatorSection({
                               emptyLabel={t("comparator.combobox.empty")}
                               ariaLabel={t("comparator.field.targetCurrency")}
                               compactLabel
-                              triggerClassName={`h-full w-[52px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-black/5 focus:ring-0 @4xl:w-[68px] @4xl:px-3.5 ${
-                                compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
-                              }`}
+                              triggerClassName="h-8 w-[64px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2.5 text-meta font-bold shadow-none hover:bg-muted focus:ring-0"
                             />
                           </div>
+                        </FieldLight>
+                      </div>
+
+                      {/* Método de entrega — §3.2, 4º segmento. Es el
+                          equivalente del selector de pasajeros/clase de
+                          Kayak: vivía abajo, en la fila de chips de filtros,
+                          y sube acá. Mismo estado `deliveryMethods` que el
+                          rail de §3.4 — dos entradas al mismo filtro, nunca
+                          dos filtros. */}
+                      <div className="min-w-0 border-t border-border px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[0.9] @4xl:items-center @4xl:border-r @4xl:border-t-0 @4xl:px-4 @4xl:py-0">
+                        <FieldLight label={t("comparator.field.deliveryMethod")}>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button
+                                type="button"
+                                className="flex h-8 w-full min-w-0 items-center justify-between gap-1 rounded-none bg-transparent text-meta font-bold text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
+                              >
+                                <span className="truncate">
+                                  {deliveryMethods.length === 0
+                                    ? t("comparator.delivery.any")
+                                    : deliveryMethods.length === 1
+                                      ? t(
+                                          DELIVERY_METHODS.find(
+                                            (m) => m.key === deliveryMethods[0],
+                                          )!.labelKey,
+                                        )
+                                      : t("comparator.delivery.nSelected").replace(
+                                          "{n}",
+                                          String(deliveryMethods.length),
+                                        )}
+                                </span>
+                                <ChevronDown className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="start" className="w-56">
+                              {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => (
+                                <DropdownMenuCheckboxItem
+                                  key={key}
+                                  checked={deliveryMethods.includes(key)}
+                                  onCheckedChange={() => toggleDeliveryMethod(key)}
+                                  onSelect={(e) => e.preventDefault()}
+                                >
+                                  <span className="inline-flex items-center gap-2">
+                                    <Icon className="h-3.5 w-3.5" aria-hidden />
+                                    {t(labelKey)}
+                                  </span>
+                                </DropdownMenuCheckboxItem>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </FieldLight>
                       </div>
 
@@ -2082,7 +2229,11 @@ export function ComparatorSection({
                           sameCorridorBlocked ||
                           amount <= 0
                         }
-                        className="btn-cta flex min-w-[108px] flex-1 shrink-0 items-center justify-center rounded-md px-3 text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:w-[176px] @4xl:flex-none @4xl:rounded-none @4xl:px-6 @4xl:text-[15px]"
+                        // §3.2 — el CTA ocupa el extremo derecho a sangre,
+                        // altura completa del bloque, con solo las esquinas
+                        // derechas redondeadas. Piel B: `.btn-cta` (fill
+                        // coral plano), no el `btn-cta-gradient` del spec A.
+                        className="btn-cta flex h-12 w-full shrink-0 items-center justify-center rounded-none rounded-b-md text-meta font-bold focus:outline-none focus:ring-2 focus:ring-ring @4xl:h-full @4xl:w-[168px] @4xl:rounded-b-none @4xl:rounded-r-md @4xl:px-6"
                       >
                         {compareMut.isPending ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -2238,27 +2389,52 @@ export function ComparatorSection({
             </div>
           ) : (
             <div
-              className={`mt-5 grid min-w-0 scroll-mt-24 gap-5 transition-opacity duration-200 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-start lg:gap-[22px] ${compareMut.isPending ? "opacity-60" : ""}`}
+              // §3.4 — 240px de rail (era 268) + gap 20px: con
+              // max-w-comparator (1180) eso deja los ~728px de columna de
+              // resultados que Kayak usa. `lg:items-start` es lo que permite
+              // que el rail sea sticky sin estirarse a la altura de la lista.
+              className={`mt-5 grid min-w-0 scroll-mt-24 gap-5 transition-opacity duration-200 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-start ${compareMut.isPending ? "opacity-60" : ""}`}
             >
               {/* Left rail — design/AJUSTES-2.md §6 (mockup line 290-365):
                   Filters → AI Agent → Rate alert → Trustpilot, 268px wide,
                   13px gap between cards. ≥lg only; below that the page
                   keeps the existing inline filter row + floating agent
                   (rendered elsewhere), unchanged. */}
-              <aside className="hidden lg:flex lg:flex-col lg:gap-[13px]">
+              <aside className="hidden lg:flex lg:flex-col lg:gap-4">
                 {/* 2026-08-31 feedback — this is the rail's "smart filter"
                     (Kayak-style: dark, but a filter panel, not the chat
                     agent — that one never docks here anymore, see the
                     FloatingAgent render site's own comment). */}
-                <FiltersCard
+                <FiltersRail
                   t={t}
-                  deliveryMethod={deliveryMethod}
+                  sticky
+                  deliveryMethods={deliveryMethods}
                   toggleDeliveryMethod={toggleDeliveryMethod}
-                  setDeliveryMethod={setDeliveryMethod}
                   deliveryCounts={deliveryCounts}
                   showOnlyExclusive={showOnlyExclusive}
                   setShowOnlyExclusive={setShowOnlyExclusive}
                   exclusiveCount={exclusiveCount}
+                  onlyVerified={onlyVerified}
+                  setOnlyVerified={setOnlyVerified}
+                  verifiedCount={verifiedCount}
+                  speedStep={speedStep}
+                  setSpeedStep={setSpeedStep}
+                  speedSteps={SPEED_STEPS}
+                  activeFilterCount={activeFilterCount}
+                  clearFilters={clearFilters}
+                  rateAlert={
+                    segment === "retail" ? (
+                      <RateAlertCard
+                        t={t}
+                        from={from}
+                        to={to}
+                        amount={amount}
+                        sendingCountry={sendingCountry}
+                        receivingCountry={receivingCountry}
+                        embedded
+                      />
+                    ) : undefined
+                  }
                   businessFilters={
                     segment === "business"
                       ? { contractType, setContractType, frequency, setFrequency }
@@ -2267,21 +2443,11 @@ export function ComparatorSection({
                 />
                 {/* 2026-08-31 feedback — "el cuadro de rather talk to
                     someone debe estar en el menú vertical... debajo de los
-                    filtros": back in the rail (was below the results for
-                    one round) — business only, same as RateAlertCard is
-                    retail-only right below (never both at once). */}
-                {segment === "business" ? (
-                  <BusinessContactCard />
-                ) : (
-                  <RateAlertCard
-                    t={t}
-                    from={from}
-                    to={to}
-                    amount={amount}
-                    sendingCountry={sendingCountry}
-                    receivingCountry={receivingCountry}
-                  />
-                )}
+                    filtros": business only. La tarjeta de alerta de tasa que
+                    vivía acá para retail se movió DENTRO del rail, detrás del
+                    Switch "Avisame si mejora" (§3.4 punto 1) — mismo
+                    formulario, una sola entrada. */}
+                {segment === "business" && <BusinessContactCard />}
                 <TrustpilotCard />
               </aside>
 
@@ -2514,76 +2680,116 @@ export function ComparatorSection({
                     </DropdownMenu>
                   </div>
 
-                  {/* Secondary filters — delivery method, exclusive-only, legend.
-                  Visually separate row (smaller chips) so it never competes
-                  with the primary tabs above for attention. Sort criteria no
-                  longer live in this row at all (moved above, see its own
-                  comment) — this cluster is delivery-method/exclusive/legend
-                  only now, still lg:hidden since those 3 stay in the rail's
-                  FiltersCard at that breakpoint. */}
-                  <div className="flex flex-wrap items-center gap-2 lg:hidden">
-                    {/* Delivery method — single-select, mutually exclusive,
-                    click the active one again to clear back to "all
-                    methods". Its own bordered cluster (not plain pill
-                    buttons like the sort chips above) is what visually
-                    marks this as a different KIND of control — a filter
-                    that narrows the result set, not a reorder — without
-                    needing a text label to say so. */}
-                    <div className="flex flex-wrap items-center gap-1.5 rounded-lg border border-border bg-muted/40 p-1">
+                  {/* docs/kayak-redesign-spec.md §4.2 — la fila de filtros de
+                      mobile/tablet: un botón cuadrado que abre el Drawer con
+                      el MISMO rail de §3.4 (no una segunda implementación de
+                      los filtros), y a su derecha los chips en una tira que
+                      scrollea horizontalmente en vez de envolver.
+                      Sobre el `flex-wrap` que había acá: el comentario largo
+                      que lo justificaba es correcto PARA EL WIDGET de 440px,
+                      no para mobile real — y el widget ya no renderiza esta
+                      fila (usa CompactResultsList). Chip activo en oscuro
+                      sólido, no en color de marca: el coral se reserva para
+                      la acción. `lg:hidden` porque a partir de ahí manda el
+                      rail. */}
+                  <div className="flex items-center gap-2 lg:hidden">
+                    <Drawer>
+                      <DrawerTrigger asChild>
+                        <button
+                          type="button"
+                          aria-label={t("comparator.filters.title")}
+                          className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-input bg-card text-foreground transition-colors hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                        >
+                          <SlidersHorizontal className="h-4 w-4" aria-hidden />
+                          {activeFilterCount > 0 && (
+                            <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-cta px-1 text-badge font-bold leading-none text-brand-cta-foreground">
+                              {activeFilterCount}
+                            </span>
+                          )}
+                        </button>
+                      </DrawerTrigger>
+                      <DrawerContent className="max-h-[85vh]">
+                        <DrawerTitle className="sr-only">
+                          {t("comparator.filters.title")}
+                        </DrawerTitle>
+                        <div className="overflow-y-auto px-4 pb-4">
+                          <FiltersRail
+                            t={t}
+                            deliveryMethods={deliveryMethods}
+                            toggleDeliveryMethod={toggleDeliveryMethod}
+                            deliveryCounts={deliveryCounts}
+                            showOnlyExclusive={showOnlyExclusive}
+                            setShowOnlyExclusive={setShowOnlyExclusive}
+                            exclusiveCount={exclusiveCount}
+                            onlyVerified={onlyVerified}
+                            setOnlyVerified={setOnlyVerified}
+                            verifiedCount={verifiedCount}
+                            speedStep={speedStep}
+                            setSpeedStep={setSpeedStep}
+                            speedSteps={SPEED_STEPS}
+                            activeFilterCount={activeFilterCount}
+                            clearFilters={clearFilters}
+                            businessFilters={
+                              segment === "business"
+                                ? { contractType, setContractType, frequency, setFrequency }
+                                : undefined
+                            }
+                          />
+                        </div>
+                      </DrawerContent>
+                    </Drawer>
+
+                    <div className="no-scrollbar flex min-w-0 flex-1 items-center gap-2 overflow-x-auto">
                       {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
-                        const isActive = deliveryMethod === key;
+                        const isActive = deliveryMethods.includes(key);
                         return (
                           <button
                             key={key}
                             type="button"
                             onClick={() => toggleDeliveryMethod(key)}
                             aria-pressed={isActive}
-                            className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                            className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-meta font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
                               isActive
-                                ? "border-foreground bg-foreground text-background"
+                                ? "border-transparent bg-foreground text-background"
                                 : "border-input bg-card text-foreground hover:border-foreground/30"
                             }`}
                           >
-                            <Icon className="h-3.5 w-3.5" />
+                            <Icon className="h-3.5 w-3.5" aria-hidden />
                             {t(labelKey)}
                           </button>
                         );
                       })}
+
+                      {/* Exclusive-rates filter — an explicit opt-in the person
+                          turns on themselves, not a default. Neutral by design:
+                          OFF (default) shows everyone, ordered purely by the
+                          chosen sort; ON only narrows to a labeled subset,
+                          still ordered by that same sort — never a re-ranking. */}
+                      <button
+                        type="button"
+                        onClick={() => setShowOnlyExclusive((prev) => !prev)}
+                        aria-pressed={showOnlyExclusive}
+                        className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-meta font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                          showOnlyExclusive
+                            ? "border-transparent bg-foreground text-background"
+                            : "border-input bg-card text-foreground hover:border-foreground/30"
+                        }`}
+                      >
+                        <Sparkle className="h-3.5 w-3.5" aria-hidden />
+                        {t("comparator.filter.exclusiveOnly")}
+                      </button>
+
+                      {/* Legend opens in a modal — never pushes the results list
+                          down, unlike an inline expand. */}
+                      <button
+                        type="button"
+                        onClick={() => setShowLegend(true)}
+                        aria-label={t("comparator.legend.toggle")}
+                        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30 focus:outline-none focus:ring-2 focus:ring-ring/40"
+                      >
+                        <Info className="h-3.5 w-3.5" aria-hidden />
+                      </button>
                     </div>
-
-                    {/* Exclusive-rates filter — an explicit opt-in the person
-                    turns on themselves, not a default. Accent-colored like
-                    the "Check for exclusive rate" nudge pill on each row —
-                    same visual language for the same underlying disclosed
-                    thing, so the two read as connected. Neutral by design:
-                    OFF (default) shows everyone, ordered purely by the
-                    chosen sort; ON only narrows to a labeled subset,
-                    still ordered by that same sort — never a re-ranking. */}
-                    <button
-                      type="button"
-                      onClick={() => setShowOnlyExclusive((prev) => !prev)}
-                      aria-pressed={showOnlyExclusive}
-                      className={`inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full border px-3 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                        showOnlyExclusive
-                          ? "border-transparent bg-accent text-accent-foreground"
-                          : "border-accent/40 bg-accent/10 text-accent-text hover:border-accent/70"
-                      }`}
-                    >
-                      <Sparkle className="h-3.5 w-3.5" />
-                      {t("comparator.filter.exclusiveOnly")}
-                    </button>
-
-                    {/* Legend opens in a modal — never pushes the results table
-                    down, unlike an inline expand. Same content available on
-                    both desktop (click) and mobile (tap), no hover needed. */}
-                    <button
-                      type="button"
-                      onClick={() => setShowLegend(true)}
-                      aria-label={t("comparator.legend.toggle")}
-                      className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground hover:border-foreground/30"
-                    >
-                      <Info className="h-3.5 w-3.5" />
-                    </button>
                   </div>
                 </div>
                 <Dialog open={showLegend} onOpenChange={setShowLegend}>
@@ -2664,8 +2870,11 @@ export function ComparatorSection({
                   result={result}
                   amount={amount}
                   sortBy={sortBy}
-                  deliveryMethod={deliveryMethod}
+                  deliveryMethods={deliveryMethods}
                   showOnlyExclusive={showOnlyExclusive}
+                  onlyVerified={onlyVerified}
+                  maxSpeedHours={maxSpeedHours}
+                  activeFilterCount={activeFilterCount}
                   hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
                   handleAffiliateClick={openPreferredRate}
                   tRatesSource={t("fx.ratesSource")}
@@ -2743,41 +2952,63 @@ export function ComparatorSection({
 // doesn't replace that, it's additive at the breakpoint where there's room
 // for it.
 
-/** Vertical Filters card: the same delivery-method/exclusive/rank-by state
- *  the inline filter row above already drives, re-skinned into the rail's
- *  list layout with a per-option count (design/AJUSTES-2.md §6, mockup
- *  line 293-319). The mockup marks each option with a literal ☑/☐
- *  character rather than an icon — this card follows that literally
- *  (the inline filter row above keeps its own lucide icons, unchanged;
- *  this is a separate, rail-only presentation of the same state), and its
- *  active/inactive colors come straight from the mockup's own payoutChips
- *  script (line 853-866): active is a dark border/cream fill, not the
- *  dark-filled pill the inline row above uses. */
-function FiltersCard({
+/** Filters rail — docs/kayak-redesign-spec.md §3.4.
+ *
+ *  Kayak puts filters in a ~240px sticky left column of stacked sections;
+ *  this repo had them as a dark "smart filter" card of chip-shaped buttons.
+ *  Migrated to the rail shape: one card, `divide-y` sections, real form
+ *  controls (Switch / Checkbox / Slider) instead of buttons pretending to be
+ *  checkboxes with a literal ☑ character.
+ *
+ *  Piel B (docs/kayak-patterns-spec.md §3): donde el spec A pide
+ *  `compare-card` + `rounded-compact`, acá va `.surface-card` — la tarjeta
+ *  que el resto del sitio ya usa. Y el panel deja de ser oscuro: un rail de
+ *  checkboxes en #241C16 al lado de una lista de tarjetas blancas sobre
+ *  lienzo claro era el único bloque del comparador con paleta invertida.
+ *
+ *  Los chips horizontales NO se borran: siguen siendo la vista < lg (§4.2).
+ *  Este mismo componente se reusa dentro del Drawer de filtros de mobile,
+ *  por eso `sticky` es una prop y no una clase fija. */
+function FiltersRail({
   t,
-  deliveryMethod,
+  sticky = false,
+  deliveryMethods,
   toggleDeliveryMethod,
-  setDeliveryMethod,
   deliveryCounts,
   showOnlyExclusive,
   setShowOnlyExclusive,
   exclusiveCount,
+  onlyVerified,
+  setOnlyVerified,
+  verifiedCount,
+  speedStep,
+  setSpeedStep,
+  speedSteps,
+  activeFilterCount,
+  clearFilters,
+  rateAlert,
   businessFilters,
 }: {
   t: (k: string) => string;
-  deliveryMethod: DeliveryMethod | null;
+  sticky?: boolean;
+  deliveryMethods: DeliveryMethod[];
   toggleDeliveryMethod: (m: DeliveryMethod) => void;
-  setDeliveryMethod: (m: DeliveryMethod | null) => void;
   deliveryCounts: Record<DeliveryMethod, number>;
   showOnlyExclusive: boolean;
   setShowOnlyExclusive: (v: boolean | ((prev: boolean) => boolean)) => void;
   exclusiveCount: number;
-  /** 2026-08-30 feedback (fourth round) — Contract type/Frequency used to
-   *  live in the main search row, which made them look like they affected
-   *  the compare results (they never did — see the useState declarations'
-   *  own comment). Moved here, into the left rail's filters, since that's
-   *  what they actually are: context for the "Add to request" action, not
-   *  the search. undefined outside the business segment. */
+  onlyVerified: boolean;
+  setOnlyVerified: (v: boolean | ((prev: boolean) => boolean)) => void;
+  verifiedCount: number;
+  speedStep: number;
+  setSpeedStep: (v: number) => void;
+  speedSteps: Array<number | null>;
+  activeFilterCount: number;
+  clearFilters: () => void;
+  /** §3.4 punto 1 — "Avisame si mejora", el `Track prices` de Kayak. El
+   *  Switch revela el formulario de alerta que ya existía como tarjeta
+   *  aparte del rail, en vez de duplicar el mecanismo. */
+  rateAlert?: React.ReactNode;
   businessFilters?: {
     contractType: "spot" | "forward" | "option";
     setContractType: (v: "spot" | "forward" | "option") => void;
@@ -2785,75 +3016,166 @@ function FiltersCard({
     setFrequency: (v: "one_off" | "monthly" | "quarterly") => void;
   };
 }) {
-  const criteriaCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
-  // 2026-08-31 feedback — "un agente de Smart filter... con el color
-  // oscuro, como kayak.com": this card (payout method, exclusive offers —
-  // nothing chat-related) went dark to read as the rail's own AI-flavored
-  // panel, matching FloatingAgent's own #241C16/mango palette instead of
-  // the rest of the (light) site.
-  // 2026-09-01 feedback — "el rank by trust fees rate... sacalo del cuadro
-  // vertical de filters": rank-by (trust/fees/rate) used to be a third
-  // section here, duplicating the same 3 criteria as a "More filters"
-  // dropdown that only showed up below the `lg` breakpoint where this rail
-  // is hidden. Removed from here entirely — that dropdown is now the ONE
-  // place those criteria live, always visible next to the 3 main sort tabs
-  // (see its own comment, right above the tab row).
-  const optionRowClass = (active: boolean) =>
-    `flex h-[38px] items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
-      active
-        ? "border-[1.5px] border-[#FF8A6B] bg-white/[.14] font-bold text-white"
-        : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-white/30"
-    }`;
+  const [alertOpen, setAlertOpen] = useState(false);
+  const maxSpeed = speedSteps[speedStep] ?? null;
+  const speedLabel =
+    maxSpeed == null
+      ? t("comparator.filters.speedAny")
+      : t("comparator.filters.speedUpTo").replace("{v}", formatDeliverySpeed(maxSpeed));
 
   return (
     <div
-      style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
-      className="rounded-[18px] px-[17px] py-4"
+      className={`surface-card divide-y divide-border overflow-hidden ${
+        sticky ? "lg:sticky lg:top-[calc(66px+var(--spacing)*4)]" : ""
+      }`}
     >
-      <div className="flex items-center justify-between">
-        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-        <h3 className="text-[15px] font-extrabold text-white">{t("comparator.filters.title")}</h3>
-        <button
-          type="button"
-          onClick={() => {
-            setDeliveryMethod(null);
-            setShowOnlyExclusive(false);
-          }}
-          className="text-[12px] font-bold text-[#FF8A6B] hover:underline"
-        >
-          {t("comparator.filters.clear").replace("{n}", String(criteriaCount))}
-        </button>
+      <div className="flex items-center justify-between px-4 py-3.5">
+        <h3 className="font-heading text-h4 font-extrabold text-foreground">
+          {t("comparator.filters.title")}
+        </h3>
+        {activeFilterCount > 0 && (
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="text-meta font-semibold text-accent-text hover:underline focus:outline-none focus:ring-2 focus:ring-ring/40"
+          >
+            {t("comparator.filters.clear").replace("{n}", String(activeFilterCount))}
+          </button>
+        )}
       </div>
 
+      {/* 1 — Avisame si mejora (Kayak: Track prices) */}
+      {rateAlert && (
+        <div className="px-4 py-3.5">
+          <label className="flex items-center justify-between gap-3">
+            <span className="min-w-0 text-meta font-semibold text-foreground">
+              {t("comparator.filters.trackRate")}
+            </span>
+            <Switch
+              checked={alertOpen}
+              onCheckedChange={setAlertOpen}
+              aria-label={t("comparator.filters.trackRate")}
+            />
+          </label>
+          {alertOpen && <div className="mt-3">{rateAlert}</div>}
+        </div>
+      )}
+
+      {/* 2 — Método de entrega, multi-select con contador por opción */}
+      <div className="px-4 py-3.5">
+        <div className="text-badge font-bold uppercase tracking-wide text-muted-foreground">
+          {t("comparator.filters.payoutMethod")}
+        </div>
+        <div className="mt-2.5 flex flex-col gap-2.5">
+          {DELIVERY_METHODS.map(({ key, labelKey }) => (
+            <label key={key} className="flex cursor-pointer items-center gap-2.5">
+              <Checkbox
+                checked={deliveryMethods.includes(key)}
+                onCheckedChange={() => toggleDeliveryMethod(key)}
+                aria-label={t(labelKey)}
+              />
+              <span className="min-w-0 truncate text-meta text-foreground">{t(labelKey)}</span>
+              <span className="ml-auto shrink-0 text-meta tabular-nums text-muted-foreground">
+                {deliveryCounts[key]}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* 3 — Velocidad de entrega */}
+      <div className="px-4 py-3.5">
+        <div className="flex items-baseline justify-between gap-2">
+          <div className="text-badge font-bold uppercase tracking-wide text-muted-foreground">
+            {t("comparator.filters.deliverySpeed")}
+          </div>
+          <span className="shrink-0 text-meta font-semibold text-foreground">{speedLabel}</span>
+        </div>
+        <Slider
+          className="mt-3"
+          min={0}
+          max={speedSteps.length - 1}
+          step={1}
+          value={[speedStep]}
+          onValueChange={(v) => setSpeedStep(v[0] ?? speedSteps.length - 1)}
+          aria-label={t("comparator.filters.deliverySpeed")}
+        />
+      </div>
+
+      {/* 4 — Solo ofertas exclusivas */}
+      <div className="px-4 py-3.5">
+        <label className="flex cursor-pointer items-center gap-2.5">
+          <Checkbox
+            checked={showOnlyExclusive}
+            onCheckedChange={(v) => setShowOnlyExclusive(v === true)}
+            aria-label={t("comparator.filter.exclusiveOnlyLong")}
+          />
+          <span className="min-w-0 text-meta text-foreground">
+            {t("comparator.filter.exclusiveOnlyLong")}
+          </span>
+          <span className="ml-auto shrink-0 text-meta tabular-nums text-muted-foreground">
+            {exclusiveCount}
+          </span>
+        </label>
+      </div>
+
+      {/* 5 — Verificación */}
+      <div className="px-4 py-3.5">
+        <label className="flex cursor-pointer items-center gap-2.5">
+          <Checkbox
+            checked={onlyVerified}
+            onCheckedChange={(v) => setOnlyVerified(v === true)}
+            aria-label={t("comparator.filters.verifiedOnly")}
+          />
+          <span className="min-w-0 text-meta text-foreground">
+            {t("comparator.filters.verifiedOnly")}
+          </span>
+          <span className="ml-auto shrink-0 text-meta tabular-nums text-muted-foreground">
+            {verifiedCount}
+          </span>
+        </label>
+      </div>
+
+      {/* Business-only context for the "Add to request" action — not a
+          search filter (see its own comment where the state is declared).
+          Kept in the rail, restyled to match the sections above. */}
       {businessFilters && (
-        <div className="mt-[15px]">
-          <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
+        <div className="px-4 py-3.5">
+          <div className="text-badge font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.field.contractType")}
           </div>
-          <div className="mt-[9px] flex gap-[6px]">
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
             {(["spot", "forward", "option"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => businessFilters.setContractType(v)}
                 aria-pressed={businessFilters.contractType === v}
-                className={optionRowClass(businessFilters.contractType === v)}
+                className={`h-8 rounded-md border px-2.5 text-meta transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                  businessFilters.contractType === v
+                    ? "border-transparent bg-foreground font-semibold text-background"
+                    : "border-input bg-card text-foreground hover:border-foreground/30"
+                }`}
               >
                 {t(`comparator.contractType.${v}`)}
               </button>
             ))}
           </div>
-          <div className="mt-[13px] text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
+          <div className="mt-3.5 text-badge font-bold uppercase tracking-wide text-muted-foreground">
             {t("comparator.field.frequency")}
           </div>
-          <div className="mt-[9px] flex flex-col gap-[6px]">
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
             {(["one_off", "monthly", "quarterly"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => businessFilters.setFrequency(v)}
                 aria-pressed={businessFilters.frequency === v}
-                className={optionRowClass(businessFilters.frequency === v)}
+                className={`h-8 rounded-md border px-2.5 text-meta transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                  businessFilters.frequency === v
+                    ? "border-transparent bg-foreground font-semibold text-background"
+                    : "border-input bg-card text-foreground hover:border-foreground/30"
+                }`}
               >
                 {t(`comparator.frequency.${v === "one_off" ? "oneOff" : v}`)}
               </button>
@@ -2861,56 +3183,6 @@ function FiltersCard({
           </div>
         </div>
       )}
-
-      <div
-        className={businessFilters ? "mt-[15px] border-t border-white/10 pt-[13px]" : "mt-[15px]"}
-      >
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
-          {t("comparator.filters.payoutMethod")}
-        </div>
-        <div className="mt-[9px] flex flex-col gap-[6px]">
-          {DELIVERY_METHODS.map(({ key, labelKey }) => {
-            const isActive = deliveryMethod === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => toggleDeliveryMethod(key)}
-                aria-pressed={isActive}
-                className={optionRowClass(isActive)}
-              >
-                <span aria-hidden>{isActive ? "☑" : "☐"}</span>
-                <span className="truncate">{t(labelKey)}</span>
-                <span className="ml-auto shrink-0 text-[11.5px] font-semibold text-white/50 tabular-nums">
-                  {deliveryCounts[key]}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      <div className="mt-[15px] border-t border-white/10 pt-[13px]">
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
-          {t("comparator.filters.exclusiveOffers")}
-        </div>
-        <button
-          type="button"
-          onClick={() => setShowOnlyExclusive((prev) => !prev)}
-          aria-pressed={showOnlyExclusive}
-          className={`mt-[9px] flex h-[38px] w-full items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
-            showOnlyExclusive
-              ? "border-[1.5px] border-[#EE5B3E] bg-[#EE5B3E]/20 text-[#FF8A6B]"
-              : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-[#EE5B3E]/50"
-          }`}
-        >
-          <span aria-hidden>{showOnlyExclusive ? "☑" : "☐"}</span>
-          <span className="truncate">{t("comparator.filter.exclusiveOnlyLong")}</span>
-          <span className="ml-auto shrink-0 text-[11.5px] font-bold tabular-nums">
-            {exclusiveCount}
-          </span>
-        </button>
-      </div>
     </div>
   );
 }
@@ -2933,8 +3205,14 @@ function RateAlertCard({
   amount,
   sendingCountry,
   receivingCountry,
+  embedded = false,
 }: {
   t: (k: string) => string;
+  /** docs/kayak-redesign-spec.md §3.4 punto 1 — dentro del rail esta tarjeta
+   *  ya no es una tarjeta: es el cuerpo de una sección del rail, detrás del
+   *  Switch "Avisame si mejora". Sin chrome propio (borde, radio, foto de
+   *  cabecera) ni título repetido — la sección del rail ya los aporta. */
+  embedded?: boolean;
   from: string;
   to: string;
   amount: number;
@@ -2973,8 +3251,55 @@ function RateAlertCard({
     }
   };
 
+  const body = (
+    <>
+      {!embedded && (
+        // Was h4 — see the "Your results" h2's own comment (X8 audit).
+        <h3 className="font-heading text-h4 font-extrabold text-foreground">
+          {t("comparator.rateAlert.title").replace("{from}", from).replace("{to}", to)}
+        </h3>
+      )}
+      <p className={`text-meta text-muted-foreground ${embedded ? "" : "mt-1.5"}`}>
+        {t("comparator.rateAlert.body")}
+      </p>
+      {done ? (
+        <p className="mt-3 text-meta font-semibold text-success">
+          {t("comparator.rateAlert.success")}
+        </p>
+      ) : (
+        <form onSubmit={onSubmit} className="mt-2.5 space-y-2">
+          <label htmlFor="rate-alert-email" className="sr-only">
+            {t("common.email")}
+          </label>
+          <input
+            id="rate-alert-email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("retail.emailPlaceholder")}
+            className="w-full rounded-md border border-border bg-background px-3 py-2 text-meta text-foreground placeholder:text-muted-foreground focus:border-brand-cta focus:outline-none"
+          />
+          {error && (
+            <p className="text-badge text-destructive">{t("comparator.rateAlert.error")}</p>
+          )}
+          <button
+            type="submit"
+            disabled={pending}
+            className="flex h-10 w-full items-center justify-center gap-1.5 rounded-md border-[1.5px] border-foreground text-meta font-bold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
+          >
+            {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {t("comparator.rateAlert.cta")}
+          </button>
+        </form>
+      )}
+    </>
+  );
+
+  if (embedded) return body;
+
   return (
-    <div className="overflow-hidden rounded-[18px] border border-border bg-card">
+    <div className="surface-card overflow-hidden">
       <div
         className="h-[104px] bg-cover bg-center"
         style={{
@@ -2983,46 +3308,7 @@ function RateAlertCard({
         }}
         aria-hidden
       />
-      <div className="px-[15px] pb-[15px] pt-[13px]">
-        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-        <h3 className="text-[14.5px] font-extrabold text-foreground">
-          {t("comparator.rateAlert.title").replace("{from}", from).replace("{to}", to)}
-        </h3>
-        <p className="mt-1.5 text-xs leading-[1.55] text-muted-foreground">
-          {t("comparator.rateAlert.body")}
-        </p>
-        {done ? (
-          <p className="mt-3 text-xs font-semibold text-success">
-            {t("comparator.rateAlert.success")}
-          </p>
-        ) : (
-          <form onSubmit={onSubmit} className="mt-[10px] space-y-2">
-            <label htmlFor="rate-alert-email" className="sr-only">
-              {t("common.email")}
-            </label>
-            <input
-              id="rate-alert-email"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t("retail.emailPlaceholder")}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-brand-cta focus:outline-none"
-            />
-            {error && (
-              <p className="text-[11px] text-destructive">{t("comparator.rateAlert.error")}</p>
-            )}
-            <button
-              type="submit"
-              disabled={pending}
-              className="flex h-10 w-full items-center justify-center gap-1.5 rounded-[11px] border-[1.5px] border-foreground text-[13px] font-bold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
-            >
-              {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-              {t("comparator.rateAlert.cta")}
-            </button>
-          </form>
-        )}
-      </div>
+      <div className="px-4 pb-4 pt-3.5">{body}</div>
     </div>
   );
 }
@@ -3110,10 +3396,14 @@ function FieldLight({
     // justify-end` bottom-aligns the box instead — same trick the swap
     // button already uses for the same reason — so the box's position
     // depends on the ROW's height, not this field's own label height.
-    <label className="flex h-full min-w-0 flex-col justify-end">
-      <span className="mb-1.5 block truncate text-[11.5px] font-bold" style={{ color: "#6B5F55" }}>
-        {label}
-      </span>
+    // docs/kayak-redesign-spec.md §3.2 — el label deja de ser una línea
+    // propia arriba del campo y pasa a vivir DENTRO del segmento, sobre el
+    // valor, en text-badge (12px, el piso del sistema; antes 11.5px suelto
+    // con un hex suelto). Kayak muestra el label solo cuando el campo está
+    // vacío; acá se deja siempre, porque "Envías"/"Recibís" es información
+    // que un comparador de FX no puede dar por sobrentendida.
+    <label className="flex h-full min-w-0 flex-col justify-center gap-0.5">
+      <span className="block truncate text-badge font-semibold text-muted-foreground">{label}</span>
       <div className="min-w-0">{children}</div>
     </label>
   );
@@ -3843,8 +4133,11 @@ function ResultsBlock({
   result,
   amount,
   sortBy,
-  deliveryMethod,
+  deliveryMethods,
   showOnlyExclusive,
+  onlyVerified,
+  maxSpeedHours,
+  activeFilterCount,
   hasCorridorContext,
   handleAffiliateClick,
   tRatesSource,
@@ -3859,8 +4152,13 @@ function ResultsBlock({
   result: ComparisonResult;
   amount: number;
   sortBy: SortKey;
-  deliveryMethod: DeliveryMethod | null;
+  /** §3.4 — multi-select: lista vacía = sin filtro de método. */
+  deliveryMethods: DeliveryMethod[];
   showOnlyExclusive: boolean;
+  onlyVerified: boolean;
+  /** null = sin límite de velocidad. */
+  maxSpeedHours: number | null;
+  activeFilterCount: number;
   /** design/Mangomundi 4 - Final.dc.html line 494-529 — business segment
    *  passes an extra businessExtra prop to every ProviderRow (see
    *  BusinessRowExtra), never a different row layout — see this prop's own
@@ -3899,10 +4197,17 @@ function ResultsBlock({
     () =>
       result.rows.filter(
         (r) =>
-          (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)) &&
-          (!showOnlyExclusive || r.has_exclusive_deal === true),
+          // §3.4 — multi-select: la fila pasa si soporta ALGUNO de los
+          // métodos tildados (`.some()`), no si soporta el único elegido.
+          // DELIVERY_METHOD_PREDICATES no se toca; solo cambia cómo se
+          // combinan sus predicados.
+          (deliveryMethods.length === 0 ||
+            deliveryMethods.some((m) => DELIVERY_METHOD_PREDICATES[m](r))) &&
+          (!showOnlyExclusive || r.has_exclusive_deal === true) &&
+          (!onlyVerified || r.has_corridor_data === true) &&
+          (maxSpeedHours == null || r.speed_hours <= maxSpeedHours),
       ),
-    [result.rows, deliveryMethod, showOnlyExclusive],
+    [result.rows, deliveryMethods, showOnlyExclusive, onlyVerified, maxSpeedHours],
   );
   const organic = useMemo(() => {
     const sorted = sortByScore(filteredRows, sortBy);
@@ -4028,7 +4333,7 @@ function ResultsBlock({
         ))}
         {organic.length === 0 && (
           <div className="rounded-2xl border border-border bg-card px-4 py-8 text-center text-sm text-muted-foreground">
-            {deliveryMethod != null ? t("comparator.emptyFiltered") : t("comparator.empty")}
+            {activeFilterCount > 0 ? t("comparator.emptyFiltered") : t("comparator.empty")}
           </div>
         )}
       </div>

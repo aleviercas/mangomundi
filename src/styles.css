@@ -137,6 +137,13 @@
 
   --text-badge: 0.75rem;
   --text-badge--line-height: 1.35;
+
+  /* Ancho de la superficie de comparación (docs/kayak-redesign-spec.md §3.1):
+     rail de filtros + columna de resultados + gutters. Va como token
+     `--container-*` (Tailwind v4 genera `max-w-comparator`) y no como
+     `max-w-[1180px]`, porque la escala default no tiene ese valor y la regla
+     1 del spec prohíbe medidas sueltas. */
+  --container-comparator: 73.75rem;
 }
 
 :root {

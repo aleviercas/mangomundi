@@ -3056,6 +3056,28 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // "on the right": the rail now sits to the LEFT of the 3 sort tabs,
     // not above them, so the old copy described the wrong layout.
     "comparator.filters.rankByHint": "Replaces the three tabs on the right while active.",
+    // docs/kayak-redesign-spec.md §3.4 — the filters rail's own sections
+    // (Kayak's "Track prices", the delivery-speed slider, verification),
+    // plus §3.2's delivery-method segment in the search bar, §3.6's status
+    // bar, §3.7's merit badges / row actions and §4's mobile pill.
+    "comparator.filters.trackRate": "Tell me if it improves",
+    "comparator.filters.deliverySpeed": "Delivery speed",
+    "comparator.filters.speedAny": "Any speed",
+    "comparator.filters.speedUpTo": "Up to {v}",
+    "comparator.filters.verifiedOnly": "Verified routes only",
+    "comparator.field.deliveryMethod": "Payout",
+    "comparator.delivery.any": "Any method",
+    "comparator.delivery.nSelected": "{n} methods",
+    "comparator.status.providers": "{n} providers",
+    "comparator.status.fetching": "Fetching prices…",
+    "comparator.status.updated": "Updated {time}",
+    "comparator.status.methodology": "Methodology and legal notice",
+    "comparator.row.badgeBest": "Best",
+    "comparator.row.badgeCheapest": "Cheapest",
+    "comparator.row.save": "Save this rate",
+    "comparator.row.saved": "Saved",
+    "comparator.mobile.editSearch": "Edit search",
+    "comparator.mobile.bestIs": "Best: {v}",
     "comparator.rateAlert.title": "Watch {from} → {to}",
     "comparator.rateAlert.body":
       "One email when the best rate on this route improves. No account needed.",
