@@ -1098,3 +1098,553 @@ export function ComparatorSection({
     // Data-dependent answers (fees / limits) read the current table — need a
     // comparison first.
     if (!result) {
+      setChat((c) => [
+        ...c,
+        { role: "user", content: t(action.label) },
+        { role: "assistant", content: t("wizard.runFirst") },
+      ]);
+      return;
+    }
+    if (action.id === "limits" || action.id === "fees") {
+      const reply =
+        action.id === "limits" ? localTransferLimits(result, t) : localFeeBreakdown(result, t);
+      setChat((c) => [
+        ...c,
+        { role: "user", content: t(action.label) },
+        { role: "assistant", content: reply },
+      ]);
+      return;
+    }
+    void chatMut.mutate(action.prompt);
+  };
+
+  const chatMut = useMutation({
+    mutationFn: async (userMsg: string) => {
+      if (!result || !aiText) throw new Error("No recommendation yet");
+      const newHistory: ChatMsg[] = [...chat, { role: "user", content: userMsg }];
+      setChat(newHistory);
+      // Client-side safety net: the server-side failover chain has a 24s
+      // worst case (3 providers x 8s), but if the serverless function itself
+      // gets killed by the platform's own execution limit before it can
+      // return our graceful fallback, the request would otherwise hang
+      // indefinitely and the app would crash instead of degrading nicely.
+      // Racing against a slightly longer client timeout guarantees we always
+      // land in onError with a friendly message.
+      const CHAT_TIMEOUT_MS = 26_000;
+      const res = await Promise.race([
+        chatFn({
+          data: {
+            amount,
+            from,
+            to,
+            segment,
+            urgency,
+            lang,
+            sortBy,
+            recommendation: aiText,
+            top: result.rows.slice(0, 8).map((r) => ({
+              name: r.name,
+              received: r.received,
+              fee_total: r.fee_total,
+              speed_hours: r.speed_hours,
+              // Same exact condition the row UI uses to show/hide the CTA
+              // button (`{row.affiliate_url ? <button> : ...}`) — not a
+              // separate "is this sponsored" flag, so it can never drift
+              // from what the button actually does. Providers gain/lose a
+              // real link over time (see providers.affiliate_url in
+              // Supabase), so this is recomputed fresh on every request
+              // rather than a hardcoded list.
+              clickable: Boolean(r.affiliate_url),
+            })),
+            history: newHistory.map((m) => ({ role: m.role, content: m.content })),
+          },
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("chat_timeout")), CHAT_TIMEOUT_MS),
+        ),
+      ]);
+      // The AI invites the user to actually run a comparison for a
+      // different route they asked about by appending a machine tag as the
+      // last line of its reply (see the Neutrality Protocol prompt). Parse
+      // it into a real "Compare X → Y" button — clicking it runs the actual
+      // comparator, which only logs the route as missing if it genuinely
+      // isn't supported (via compareMut.onError, unchanged).
+      // Models often backslash-escape square brackets in markdown-rendered
+      // output (since "[x]" is link syntax), so normalize "\[" / "\]" back
+      // to plain brackets before matching the tag.
+      const normalized = res.text.replace(/\\(\[|\])/g, "$1");
+      // Each side may be a 2-letter ISO country code (when the user named a
+      // specific country) or a 3-letter currency code (currency only). Match the
+      // tag ANYWHERE — not just at the very end — since the model doesn't always
+      // place it last; otherwise the raw "[[SUGGEST_COMPARE:…]]" text leaks into
+      // the chat bubble instead of becoming a button.
+      const tagMatch = /\[\[SUGGEST_COMPARE:([A-Z]{2,3})-([A-Z]{2,3})\]\]/.exec(normalized);
+      const displayText = tagMatch
+        ? normalized
+            .replace(tagMatch[0], "")
+            .replace(/\s{2,}/g, " ")
+            .replace(/\s+([.!])/g, "$1")
+            .trim()
+        : res.text;
+      const fromSide = tagMatch ? resolveRouteCode(tagMatch[1]) : undefined;
+      const toSide = tagMatch ? resolveRouteCode(tagMatch[2]) : undefined;
+      const actions: ChatAction[] | undefined =
+        fromSide && toSide
+          ? [
+              {
+                kind: "compare",
+                from: fromSide.currency,
+                to: toSide.currency,
+                fromCountry: fromSide.country,
+                toCountry: toSide.country,
+                // Show the country code when the user named one, else the currency.
+                label: `${t("wizard.compare")} ${
+                  fromSide.country ?? fromSide.currency
+                } → ${toSide.country ?? toSide.currency}`,
+              },
+            ]
+          : undefined;
+      setChat((c) => [...c, { role: "assistant", content: displayText, actions }]);
+    },
+    onError: () => {
+      const locale = resolveWizardLocale(lang);
+      const content =
+        locale === "es"
+          ? "Uy, tardó demasiado en responder. Probá de nuevo en un momento."
+          : locale === "pt"
+            ? "Ops, demorou demais para responder. Tente novamente em instantes."
+            : "Sorry, that took too long to answer. Please try again in a moment.";
+      setChat((c) => [...c, { role: "assistant", content }]);
+    },
+  });
+
+  // React to filter changes in the table: append a short assistant note.
+  const lastSortRef = useRef<SortKey>("overall");
+  useEffect(() => {
+    if (!result) return;
+    if (lastSortRef.current === sortBy) return;
+    lastSortRef.current = sortBy;
+    const msg = proactiveMessage(result, sortBy);
+    if (!msg) return;
+    const label = t(sortLabelKey(sortBy));
+    const intro = t("comparator.copilot.filterReact").replace("{filter}", label);
+    setChat((c) => [...c, { ...msg, content: `${intro}\n\n${msg.content}` }]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sortBy, result]);
+
+  // Keep form state shareable, but only compare after the explicit CTA.
+  // Debounced 300ms so rapid input changes (e.g. typing the amount) don't
+  // trigger redundant state resets or URL writes. (This used to sync the old
+  // /compare URL and got cut down to just stale-result hygiene when the
+  // comparator moved to the home page — see design/HANDOFF.md §2 for why the
+  // URL sync is back, now on "/" via the onQueryChange callback below rather
+  // than this component touching the router directly.)
+  useEffect(() => {
+    setValidationError(null);
+    if (amount <= 0 || !receivingCountry || sameCorridorBlocked) {
+      skipNextSyncClearRef.current = false; // don't let a stale skip leak
+      return;
+    }
+    const handle = setTimeout(() => {
+      // After a suggested/corridor-changing compare we keep the just-set results;
+      // otherwise a manual input edit clears stale results.
+      if (skipNextSyncClearRef.current) {
+        skipNextSyncClearRef.current = false;
+      } else {
+        setResult(null);
+        setAiText("");
+        setChat([]);
+      }
+      onQueryChange?.({ from, to, amount, segment, sendingCountry, receivingCountry });
+    }, 300);
+    return () => clearTimeout(handle);
+  }, [
+    amount,
+    from,
+    to,
+    segment,
+    sendingCountry,
+    receivingCountry,
+    sameCorridorBlocked,
+    onQueryChange,
+  ]);
+
+  // 2026-09-02 feedback — "el auto scroll te saca de la respuesta, mejor
+  // que no se mueva cuando responde, sino no se entiende que es un chat,
+  // que tenga el comportamiento de acuerdo a las mejores prácticas": this
+  // used to call scrollIntoView() with no `block`, which defaults to
+  // "start" — for a zero-height marker sitting right after the newest
+  // message, that aligns the marker's (empty) position to the TOP of the
+  // pane, scrolling the entire new response up out of view instead of
+  // revealing it. `block: "end"` is the actual "stick to bottom" chat
+  // pattern (ChatGPT/Slack/etc.): the pane scrolls just far enough that
+  // the new message's bottom edge lands at the pane's bottom edge, so
+  // reading starts at its top and the chat still visibly advances. Also
+  // skipped entirely when the reader has scrolled up to reread earlier
+  // history — best practice is to leave their position alone rather than
+  // yank them back down mid-read.
+  useEffect(() => {
+    if (!chatNearBottomRef.current) return;
+    chatBottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [chat, chatMut.isPending]);
+
+  // NOTE: previously auto-scrolled the page to "Your Results" whenever a
+  // comparison landed. Removed — the results panel already renders inline
+  // right below the form, and jumping the page felt disorienting rather
+  // than helpful.
+
+  // Persist chat + hasNewResult to survive remounts/navigation without flicker.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      window.localStorage.setItem(AGENT_STORAGE_KEY, JSON.stringify({ chat, hasNewResult }));
+    } catch {
+      /* ignore quota */
+    }
+  }, [chat, hasNewResult]);
+
+  // Toggle handler: clears the "new result" flag when the agent is opened.
+  const handleAgentToggle = (nextCollapsed: boolean) => {
+    setAiCollapsed(nextCollapsed);
+    if (!nextCollapsed) setHasNewResult(false);
+  };
+
+  const openPreferredRate = (slug: string, url: string, name?: string) => {
+    trackFn({
+      data: {
+        provider_slug: slug,
+        amount,
+        from_currency: from,
+        to_currency: to,
+        segment,
+        referrer: typeof window !== "undefined" ? window.location.href : undefined,
+      },
+    }).catch(() => {});
+    track("provider_click", {
+      provider_slug: slug,
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      urgency,
+      source: "home_results",
+    });
+    void name;
+    if (typeof window !== "undefined" && url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
+  const sendChat = async (msg: string) => {
+    const trimmed = msg.trim();
+    if (!trimmed || chatMut.isPending) return;
+    setChatInput("");
+    if (segment === "business" && businessStage !== "done") {
+      // The wizard's opening question is render-only until now (see the
+      // `chat.length === 0` branch) — never written into `chat` while the
+      // panel sits unopened. The FIRST reply is what proves the user
+      // actually engaged, so that's the moment it gets backfilled as a
+      // real message, ahead of their own — otherwise their reply would be
+      // the first thing in the transcript with no visible question above it.
+      setChat((current) =>
+        current.length === 0
+          ? [
+              { role: "assistant", content: t("comparator.copilot.business.intro") },
+              { role: "user", content: trimmed },
+            ]
+          : [...current, { role: "user", content: trimmed }],
+      );
+      if (businessStage === "volume") {
+        const volumeMatch = trimmed.replace(/,/g, "").match(/\d+(?:\.\d+)?/);
+        const monthlyVolume = volumeMatch ? Number(volumeMatch[0]) : 0;
+        const sector = trimmed
+          .replace(volumeMatch?.[0] ?? "", "")
+          .replace(/^[\s,:;-]+|[\s,:;-]+$/g, "");
+        if (!monthlyVolume || sector.length < 2) {
+          setChat((current) => [
+            ...current,
+            { role: "assistant", content: t("comparator.copilot.business.volumeError") },
+          ]);
+          return;
+        }
+        // The country panel above is a separate control the user can skip —
+        // nothing else in this flow checked it, so it was possible to reach
+        // email/consent/submit with receivingCountry still "" and fail the
+        // server-side schema (agent.functions.ts requires exactly 2 chars).
+        if (
+          !sendingCountry ||
+          sendingCountry.length !== 2 ||
+          !receivingCountry ||
+          receivingCountry.length !== 2
+        ) {
+          setChat((current) => [
+            ...current,
+            { role: "assistant", content: t("comparator.copilot.business.countryError") },
+          ]);
+          return;
+        }
+        setBusinessData({ monthlyVolume, sector });
+        setBusinessStage("email");
+        setChat((current) => [
+          ...current,
+          {
+            role: "assistant",
+            content: t("comparator.copilot.business.email").replace(
+              "{providers}",
+              result?.rows
+                .slice(0, 2)
+                .map((row) => row.name)
+                .join(" y ") ?? "—",
+            ),
+          },
+        ]);
+        return;
+      }
+      if (businessStage === "email") {
+        const email = trimmed.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i)?.[0];
+        if (!email) {
+          setChat((current) => [
+            ...current,
+            { role: "assistant", content: t("comparator.copilot.business.emailError") },
+          ]);
+          return;
+        }
+        setBusinessData((current) => ({ ...current, email }));
+        setBusinessStage("consent");
+        setChat((current) => [
+          ...current,
+          { role: "assistant", content: t("comparator.copilot.business.consent") },
+        ]);
+        return;
+      }
+      return;
+    }
+    if (!result) {
+      setChat((current) => [
+        ...current,
+        { role: "user", content: trimmed },
+        { role: "assistant", content: t("wizard.runFirst") },
+      ]);
+      return;
+    }
+    chatMut.mutate(trimmed);
+  };
+
+  const confirmBusinessLead = async () => {
+    if (
+      !businessData.email ||
+      !businessData.monthlyVolume ||
+      !businessData.sector ||
+      !sendingCountry ||
+      sendingCountry.length !== 2 ||
+      !receivingCountry ||
+      receivingCountry.length !== 2 ||
+      savingBusinessLead
+    )
+      return;
+    setSavingBusinessLead(true);
+    try {
+      await captureBusinessFn({
+        data: {
+          email: businessData.email,
+          monthlyVolume: businessData.monthlyVolume,
+          sector: businessData.sector,
+          fromCurrency: from,
+          toCurrency: to,
+          sendingCountry,
+          receivingCountry,
+          locale: lang,
+          consent: true,
+          topProviders: result?.rows.slice(0, 2).map((row) => row.name) ?? [],
+        },
+      });
+      setBusinessStage("done");
+      setChat((current) => [
+        ...current,
+        { role: "user", content: t("comparator.copilot.business.yes") },
+        { role: "assistant", content: t("comparator.copilot.business.success") },
+      ]);
+      track("conversion_completed", {
+        amount: businessData.monthlyVolume,
+        from_currency: from,
+        to_currency: to,
+        segment,
+        source: "business_chat",
+      });
+    } catch {
+      setChat((current) => [
+        ...current,
+        { role: "assistant", content: t("comparator.copilot.business.saveError") },
+      ]);
+    } finally {
+      setSavingBusinessLead(false);
+    }
+  };
+
+  // BusinessRequestPanel's own submit — independent of confirmBusinessLead
+  // above (that one belongs to the chat wizard and needs businessData.sector,
+  // which this panel never collects). Sends the brokers actually added via
+  // "Add to request" (requestedSlugs), not the wizard's topProviders guess.
+  const sendBusinessRequest = async (email: string) => {
+    if (
+      !sendingCountry ||
+      sendingCountry.length !== 2 ||
+      !receivingCountry ||
+      receivingCountry.length !== 2 ||
+      requestPanelStatus === "sending"
+    )
+      return;
+    setRequestPanelStatus("sending");
+    try {
+      await captureBusinessFn({
+        data: {
+          email,
+          monthlyVolume: amount,
+          fromCurrency: from,
+          toCurrency: to,
+          sendingCountry,
+          receivingCountry,
+          locale: lang,
+          consent: true,
+          contractType: t(`comparator.contractType.${contractType}`),
+          frequency: t(`comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`),
+          selectedProviderSlugs: Array.from(requestedSlugs),
+          featureSource: "business_request_panel",
+        },
+      });
+      setRequestPanelStatus("sent");
+      track("conversion_completed", {
+        amount,
+        from_currency: from,
+        to_currency: to,
+        segment,
+        source: "business_request_panel",
+      });
+      // 2026-09-03 feedback — "te deja volver a elegir nuevos proveedores
+      // pero la pantalla de sent no se va, tendria que quedar la pantalla
+      // anterior de nuevo limpia una vez que se envio un request": status
+      // used to stay "sent" forever — the panel never returned to its
+      // normal form, even though the results list right above it stayed
+      // fully interactive (Add to request still toggled requestedSlugs),
+      // so a second request had nowhere to go. A brief confirmation, then
+      // a real reset (status back to idle, selections cleared so "Add to
+      // request" buttons return to their unselected state) so the panel is
+      // ready to build a new request rather than stuck showing the last one.
+      window.setTimeout(() => {
+        setRequestPanelStatus("idle");
+        setRequestedSlugs(new Set());
+      }, 3000);
+    } catch {
+      setRequestPanelStatus("error");
+    }
+  };
+
+  // Embed mode drops the section chrome (padding/centered max-width) so the
+  // comparator fills the iframe container; otherwise it's a home section.
+  const SectionTag = embedded ? "div" : "section";
+  // design/AJUSTES-2.md §1 — the search row shrinks (58px→52px fields,
+  // "Compare"→"Update") once there's a result to make room for. Same gate
+  // as the sticky-positioning check a few lines below (`result && !embedded`).
+  const compact = Boolean(result) && !embedded;
+  // 2026-08-30 feedback (second, then third round) — the widget's own
+  // sizing WAS "unrelated to this home-page pattern" (see git history),
+  // meaning it had none: `compact` being false for every embedded render
+  // left the basic row at full 58px/25px home-page size inside a fixed
+  // 360px container — exactly the "letra muy grande, mucho espacio
+  // desperdiciado" complaint, screenshotted against the mockup's compact
+  // row. `embedded` now gets its OWN third, more aggressive size tier
+  // (42px/16px, closer to the mockup's literal 42px row) at each spot
+  // below, distinct from `compact`'s 52px/21px home-page tier — but ONLY
+  // for sizing; `compact` itself still separately governs the CTA label
+  // ("Update" only once a real result exists), which shouldn't flip just
+  // because this is a widget with no result yet.
+
+  // docs/kayak-redesign-spec.md §4.1 — el patrón mobile de Kayak: una vez
+  // que hay resultado, la barra completa (5 segmentos apilados, ~300px de
+  // alto) se reemplaza por una PÍLDORA de resumen sticky bajo el header, y
+  // el formulario entero se muda a un Drawer que esa píldora abre. Sin
+  // esto, en 390px la barra se come la pantalla entera y los resultados —
+  // que son lo que la persona vino a ver — arrancan debajo del fold.
+  //
+  // Gate por `isMobile` (el hook que este archivo ya usa) y no por una
+  // media query CSS: el formulario tiene que existir en UN solo lugar del
+  // árbol a la vez, o los inputs se duplican y el foco/estado se parte en
+  // dos copias.
+  const collapsedSearch = !embedded && Boolean(result) && isMobile;
+  const collapsedRoute = `${COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry} → ${
+    receivingCountry ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry) : "—"
+  }`;
+  const collapsedDetail = `${amount.toLocaleString()} ${from} · ${
+    deliveryMethod
+      ? t(
+          DELIVERY_METHODS.find((m) => m.key === deliveryMethod)?.labelKey ??
+            "comparator.delivery.all",
+        )
+      : t("comparator.delivery.all")
+  }`;
+  const collapsedSearchPill = (
+    <div className="flex items-center gap-2">
+      <button
+        type="button"
+        onClick={() => setSearchDrawerOpen(true)}
+        aria-label={t("comparator.mobile.editSearch")}
+        className="min-w-0 flex-1 rounded-compact bg-muted px-3 py-2 text-left transition-colors hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        <div className="truncate text-metric font-bold text-foreground">{collapsedRoute}</div>
+        <div className="truncate text-meta text-muted-foreground">{collapsedDetail}</div>
+      </button>
+      {/* El `Ask AI` de Kayak: el agente ya existe y ya está montado — acá
+          sólo cambia su punto de entrada en mobile, donde la pestaña
+          lateral flotante queda tapada por la lista de resultados. */}
+      <button
+        type="button"
+        onClick={() => handleAgentToggle(false)}
+        aria-label={t("comparator.copilot.agent")}
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-input bg-card text-brand-cta transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      >
+        <Sparkle className="h-5 w-5" aria-hidden />
+      </button>
+    </div>
+  );
+  // docs/kayak-redesign-spec.md §3.2/§4.1 — la barra completa se
+  // extrae a una constante porque tiene DOS puntos de montaje: inline
+  // (desktop siempre; mobile mientras no hay resultado) y dentro del
+  // Drawer de la píldora colapsada (mobile con resultado, §4.1). Es el
+  // mismo árbol en los dos casos — duplicar el markup sería garantía de
+  // que las dos copias se separen a la primera corrección.
+  const searchBar = (
+    // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
+    // comparador... poder seleccionar pais de origen y destino y
+    // moneda de origen y destino y monto". 2026-08-30 feedback
+    // (sixth round) — "ponerlo todo en la misma linea": what was
+    // a country row + an amount/currency row is now one row.
+    // 2026-09-01 feedback — "se pueden agrupar las píldoras de
+    // selección de país monto y moneda de origen y por otra
+    // parte agrupar la de moneda y país de destino": amount +
+    // FROM currency + FROM country used to be 2 separate
+    // bordered boxes; TO country + TO currency likewise. Merged
+    // into ONE bordered box per side (same `border-l` divider
+    // pattern the amount+currency box already used internally
+    // for its own two segments — just extended to a third/
+    // second segment) so "everything about where it's coming
+    // from" and "everything about where it's going" each read
+    // as one visual unit, not four independent pills in a row.
+    // Below the wide breakpoint it still stacks to one column,
+    // same fallback every other tier here already uses.
+    // 2026-09-02 feedback (Z2) — "en mobile ordenar mejor las
+    // ventanas de comparar como hicimos en el widget para que
+    // quede los selectores en dos líneas": below @4xl this was
+    // `grid-cols-1`, so Send/swap/Receive/Compare each became
+    // their own full-width row — 4 stacked rows instead of the
+    // 2-line shape the embedded widget already uses for the
+    // same fields (see the `embedded ?` branch above). Same
+    // idea here, without duplicating the field markup: `flex
+    // flex-wrap` + `basis-full` on Send forces it alone onto
+    // line 1 (the same forced-break trick BusinessRequestPanel
+    // used to use for its own button, W10/Y2 history), and
+    // swap/Receive/Compare — none of which carry `basis-full`
+    // — flow together onto line 2, sized the same way the
+    // widget's own line 2 already is (Receive content-sized,
+    // Compare `flex-1` soaking up the rest). @4xl still swaps
+    // this to the original one-line 4-column grid.
+    // docs/kayak-redesign-spec.md §3.2/§3.3 — el formulario deja
