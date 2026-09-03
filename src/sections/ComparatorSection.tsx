@@ -1657,51 +1657,49 @@ export function ComparatorSection({
     // propios: ese es el detalle que hace que se lea como una
     // barra y no como cuatro inputs pegados.
     <div className="flex flex-col gap-3">
-      {/* §3.3 — tiles de vertical. Reemplazan la píldora
-                    Personal/Empresa: mismo estado `segment` y el mismo
-                    role="tablist", pero arriba y AFUERA de la barra,
-                    exactamente donde kayak.com pone Flights/Stays/Cars.
-                    El segmento tiene que decidirse antes de buscar (los
-                    resultados retail y business son conjuntos distintos),
-                    y esta posición lo refuerza. El eyebrow "COMPARAR"
-                    desaparece: la barra ya se explica sola. */}
-      <div role="tablist" aria-label={t("search.segment")} className="flex items-start gap-4">
-        {(
-          [
-            ["retail", User],
-            ["business", Building2],
-          ] as const
-        ).map(([s, Icon]) => {
-          const isActive = segment === s;
-          return (
-            <button
-              key={s}
-              role="tab"
-              type="button"
-              aria-selected={isActive}
-              onClick={() => handleSegmentChange(s)}
-              className="group flex flex-col items-center gap-1 rounded-control focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-            >
-              <span
-                className={`flex h-9 w-9 items-center justify-center rounded-control transition-colors ${
-                  isActive
-                    ? "btn-cta-gradient"
-                    : "bg-muted text-foreground group-hover:bg-secondary"
-                }`}
-              >
-                <Icon className="h-[18px] w-[18px]" aria-hidden />
-              </span>
-              <span
-                className={`text-meta font-semibold capitalize ${
-                  isActive ? "text-foreground" : "text-muted-foreground"
-                }`}
-              >
-                {t(`comparator.segment.${s}`)}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+      {/* §3.3 (revisado) — Personal/Empresa deja de ser dos tiles de
+                    ícono lado a lado y pasa a ser UN selector desplegable,
+                    igual que el "One-way ⌄" de kayak.com: una píldora
+                    chica arriba y AFUERA de la barra, con el valor activo +
+                    chevron, que abre un menú con las dos opciones. Mismo
+                    estado `segment`/`handleSegmentChange` de siempre —
+                    cambia la piel (dos tiles → un trigger), no la lógica
+                    ni el motivo por el que el segmento se decide antes de
+                    buscar (los resultados retail y business son conjuntos
+                    distintos). El eyebrow "COMPARAR" sigue sin volver: la
+                    barra ya se explica sola. */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            aria-label={t("search.segment")}
+            className="flex w-fit items-center gap-1.5 rounded-full border border-input bg-card px-3 py-1.5 text-meta font-semibold text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            {segment === "business" ? (
+              <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
+            ) : (
+              <User className="h-4 w-4 text-muted-foreground" aria-hidden />
+            )}
+            <span>{t(`comparator.segment.${segment}`)}</span>
+            <ChevronDown className="h-4 w-4 opacity-60" aria-hidden />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          <DropdownMenuRadioGroup
+            value={segment}
+            onValueChange={(v) => handleSegmentChange(v as Segment)}
+          >
+            <DropdownMenuRadioItem value="retail">
+              <User className="mr-2 h-4 w-4" aria-hidden />
+              {t("comparator.segment.retail")}
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="business">
+              <Building2 className="mr-2 h-4 w-4" aria-hidden />
+              {t("comparator.segment.business")}
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* §3.2 — LA barra. Un solo bloque: `@2xl:h-15` (60px, la
                     medida real de kayak.co.uk), `rounded-compact`,
@@ -1718,151 +1716,144 @@ export function ComparatorSection({
           sameCorridorBlocked ? "ring-2 ring-brand-cta" : ""
         }`}
       >
-        {/* Segmento 1 — monto + moneda de origen y país de
-                      origen, con un hairline interno entre los dos (el
-                      spec's "separados por hairline interno"). */}
-        <div className="flex min-w-0 flex-col @2xl:flex-[1.7] @2xl:flex-row @2xl:items-stretch">
-          {/* El monto sólo aloja unos dígitos + un código ISO de
-                        3 letras; el país tiene que alojar "United Kingdom"
-                        entero — medido a 50/50, truncaba a "United K...".
-                        La mitad izquierda cede ancho en vez de repartir en
-                        partes iguales. */}
-          <div className="flex min-w-0 items-center px-4 py-2 @2xl:flex-[0.78] @2xl:py-0">
-            <FieldLight label={t("comparator.field.amount")}>
-              <div className="flex min-w-0 items-center gap-1">
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min={1}
-                  value={amount || ""}
-                  placeholder="1000"
-                  onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                  aria-label={t("comparator.field.amount")}
-                  className="w-full min-w-0 bg-transparent text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                />
-                <CurrencyCombobox
-                  value={from}
-                  onChange={handlePickFromCurrency}
-                  placeholder={t("comparator.field.sourceCurrency")}
-                  searchPlaceholder={t("comparator.combobox.search")}
-                  emptyLabel={t("comparator.combobox.empty")}
-                  ariaLabel={t("comparator.field.sourceCurrency")}
-                  compactLabel
-                  triggerClassName="h-auto w-auto shrink-0 gap-0.5 rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
-                />
-              </div>
-            </FieldLight>
-          </div>
-          <div className="flex min-w-0 items-center border-t border-border px-4 py-2 @2xl:flex-[1.22] @2xl:border-l @2xl:border-t-0 @2xl:py-0">
-            <FieldLight label={t("comparator.field.sourceCountry")}>
-              <CountryCombobox
-                value={sendingCountry}
-                onChange={handleSendingCountryChange}
-                placeholder={t("comparator.combobox.placeholder")}
-                searchPlaceholder={t("comparator.combobox.search")}
-                emptyLabel={t("comparator.combobox.empty")}
-                ariaLabel={t("comparator.field.sourceCountry")}
-                hideSecondary
-                triggerClassName="h-auto w-full rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
-              />
-            </FieldLight>
-          </div>
+        {/* Segmento 1 — monto, solo. 2026-09-03 feedback: el monto pasa a
+                      ser el primer segmento y el más grande de la barra (antes
+                      compartía caja con la moneda de origen, a flex-[0.78] de
+                      un bloque de flex-[1.7] — la mitad de eso). La moneda
+                      sale a su propio segmento (ver Segmento 2). */}
+        <div className="flex min-w-0 items-center px-4 py-2 @2xl:flex-[1.3] @2xl:py-0">
+          <FieldLight label={t("comparator.field.amount")}>
+            <input
+              type="number"
+              inputMode="decimal"
+              min={1}
+              value={amount || ""}
+              placeholder="1000"
+              onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+              aria-label={t("comparator.field.amount")}
+              className="w-full min-w-0 bg-transparent text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+            />
+          </FieldLight>
         </div>
 
-        {/* Segmento 2 — swap. Sin borde ni fondo propios (§3.2):
-                      en Kayak es solo el glifo. */}
+        {/* Segmento 2 — moneda de origen. 2026-09-03 feedback: "las
+                      currencys deben ser como espacio de la fecha de kayak" —
+                      deja de vivir pegada al monto y pasa a ser una caja
+                      angosta propia (`@2xl:w-28 @2xl:flex-none`, no crece ni
+                      se achica), la misma idea que el campo de fecha de
+                      kayak.com: chico, de ancho fijo, solo un valor corto. */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2 @2xl:w-28 @2xl:flex-none @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+          {/* Label corto ("Currency", key ya existente y traducida a los
+                        20 idiomas vía comparator.business.request.currency —
+                        no una key nueva) en vez de "Source Currency" completo:
+                        en una caja de ancho fijo tipo fecha de kayak.com, el
+                        label largo truncaba a "Source Cur…". El aria-label
+                        del combobox de abajo sigue siendo el descriptivo
+                        completo, para lectores de pantalla. */}
+          <FieldLight label={t("comparator.business.request.currency")}>
+            <CurrencyCombobox
+              value={from}
+              onChange={handlePickFromCurrency}
+              placeholder={t("comparator.field.sourceCurrency")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.sourceCurrency")}
+              compactLabel
+              triggerClassName="h-auto w-full gap-0.5 rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
+            />
+          </FieldLight>
+        </div>
+
+        {/* Segmento 3 — país de origen. 2026-09-03 feedback: "el país
+                      debería ser como el aeropuerto, con el mismo
+                      comportamiento" — mismo `CountryCombobox` con búsqueda y
+                      lista de banderas que ya se usa acá (es el mismo control
+                      que el picker de origen/destino de un buscador de
+                      vuelos), ahora en un segmento propio sin la moneda al
+                      lado. */}
+        <div className="flex min-w-0 items-center border-t border-border px-4 py-2 @2xl:flex-[1.4] @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+          <FieldLight label={t("comparator.field.sourceCountry")}>
+            <CountryCombobox
+              value={sendingCountry}
+              onChange={handleSendingCountryChange}
+              placeholder={t("comparator.combobox.placeholder")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.sourceCountry")}
+              hideSecondary
+              triggerClassName="h-auto w-full rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
+            />
+          </FieldLight>
+        </div>
+
+        {/* Segmento swap. Sin borde ni fondo propios en reposo (§3.2): en
+                      Kayak es solo el glifo — pero un círculo `hover`/`focus`
+                      centrado en el hairline, como el botón de intercambio
+                      real de kayak.com, en vez de un glifo suelto sin affordance. */}
         <div className="flex items-center justify-center border-t border-border @2xl:w-11 @2xl:border-l @2xl:border-t-0">
           <button
             type="button"
             onClick={handleSwap}
             aria-label={t("comparator.swap")}
-            className="flex h-8 w-8 items-center justify-center rounded-control text-muted-foreground transition-colors hover:text-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:border-input hover:bg-muted hover:text-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <ArrowLeftRight className="h-[18px] w-[18px]" aria-hidden />
           </button>
         </div>
 
-        {/* Segmento 3 — país + moneda de destino. */}
-        <div className="flex min-w-0 items-center border-t border-border px-4 py-2 @2xl:flex-[1.15] @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+        {/* Segmento 4 — país destino, mismo comportamiento de aeropuerto
+                      que el Segmento 3. */}
+        <div className="flex min-w-0 items-center border-t border-border px-4 py-2 @2xl:flex-[1.4] @2xl:border-l @2xl:border-t-0 @2xl:py-0">
           <FieldLight label={t("comparator.field.youReceive")} emphasizeLabel={!receivingCountry}>
-            <div className="flex min-w-0 items-center gap-1">
-              <CountryCombobox
-                value={receivingCountry}
-                onChange={handleReceivingCountryChange}
-                placeholder={t("comparator.field.receiveCountryPlaceholder")}
-                searchPlaceholder={t("comparator.combobox.search")}
-                emptyLabel={t("comparator.combobox.empty")}
-                ariaLabel={t("comparator.field.targetCountry")}
-                hideSecondary
-                triggerClassName={`h-auto min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 text-metric font-bold shadow-none hover:text-brand-cta focus:ring-0 ${
-                  receivingCountry ? "text-foreground" : "text-accent-text"
-                }`}
-              />
-              <CurrencyCombobox
-                value={to}
-                onChange={handlePickToCurrency}
-                placeholder={t("comparator.field.targetCurrency")}
-                searchPlaceholder={t("comparator.combobox.search")}
-                emptyLabel={t("comparator.combobox.empty")}
-                ariaLabel={t("comparator.field.targetCurrency")}
-                compactLabel
-                triggerClassName="h-auto w-auto shrink-0 gap-0.5 rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
-              />
-            </div>
+            <CountryCombobox
+              value={receivingCountry}
+              onChange={handleReceivingCountryChange}
+              placeholder={t("comparator.field.receiveCountryPlaceholder")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.targetCountry")}
+              hideSecondary
+              triggerClassName={`h-auto w-full rounded-none border-0 bg-transparent px-0 text-metric font-bold shadow-none hover:text-brand-cta focus:ring-0 ${
+                receivingCountry ? "text-foreground" : "text-accent-text"
+              }`}
+            />
           </FieldLight>
         </div>
 
-        {/* Segmento 4 — método de entrega (§3.2). Subido acá
-                      desde la fila de filtros de abajo: es el equivalente
-                      del selector de pasajeros/clase de Kayak, un
-                      parámetro de la BÚSQUEDA, no un filtro posterior.
-                      Sigue siendo single-select sobre el mismo estado
-                      `deliveryMethod` — ver la nota de desvío en el
-                      commit: pasarlo a multi-select cambiaría la lógica de
-                      filtrado, no la piel. */}
-        <div className="flex min-w-0 items-center border-t border-border px-4 py-2 @2xl:flex-[0.72] @2xl:border-l @2xl:border-t-0 @2xl:py-0">
-          <FieldLight label={t("comparator.filters.payoutMethod")}>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  type="button"
-                  className="flex w-full min-w-0 items-center gap-1 text-metric font-bold text-foreground transition-colors hover:text-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                >
-                  <span className="min-w-0 truncate">
-                    {deliveryMethod
-                      ? t(
-                          DELIVERY_METHODS.find((m) => m.key === deliveryMethod)?.labelKey ??
-                            "comparator.delivery.all",
-                        )
-                      : t("comparator.delivery.all")}
-                  </span>
-                  <ChevronDown className="h-4 w-4 shrink-0 opacity-60" aria-hidden />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start">
-                <DropdownMenuRadioGroup
-                  value={deliveryMethod ?? "all"}
-                  onValueChange={(v) =>
-                    setDeliveryMethod(v === "all" ? null : (v as DeliveryMethod))
-                  }
-                >
-                  <DropdownMenuRadioItem value="all">
-                    {t("comparator.delivery.all")}
-                  </DropdownMenuRadioItem>
-                  {DELIVERY_METHODS.map(({ key, labelKey }) => (
-                    <DropdownMenuRadioItem key={key} value={key}>
-                      {t(labelKey)}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        {/* Segmento 5 — moneda de destino, misma caja angosta tipo fecha
+                      que el Segmento 2. */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2 @2xl:w-28 @2xl:flex-none @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+          <FieldLight label={t("comparator.business.request.currency")}>
+            <CurrencyCombobox
+              value={to}
+              onChange={handlePickToCurrency}
+              placeholder={t("comparator.field.targetCurrency")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.targetCurrency")}
+              compactLabel
+              triggerClassName="h-auto w-full gap-0.5 rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
+            />
           </FieldLight>
         </div>
 
-        {/* Segmento 5 — CTA a sangre, altura completa del
-                      bloque, solo esquinas derechas redondeadas (el
-                      `overflow-hidden` del contenedor ya las recorta). */}
+        {/* Método de entrega — 2026-09-03 feedback: "el payout method no
+                      queremos que esté en el selector inicial, queda para ser
+                      seleccionado en el comparador". Deja de ser un segmento
+                      de la barra; sigue existiendo como filtro real dentro de
+                      los resultados (rail sticky §3.4 más abajo, con
+                      checkboxes + contador por método, y su equivalente en la
+                      fila de chips de mobile/tablet) — no se perdió
+                      funcionalidad, solo se movió del momento de la búsqueda
+                      al momento de filtrar resultados. */}
+
+        {/* CTA a sangre, altura completa del bloque, solo esquinas
+                      derechas redondeadas (el `overflow-hidden` del
+                      contenedor ya las recorta). 2026-09-03 feedback: "el
+                      botón de compare queda más chico dentro del cuadro del
+                      selector" — de @2xl:w-[168px] a @2xl:w-[130px], con menos
+                      padding horizontal; ya no es el segmento más ancho de la
+                      barra (ese lugar pasa a ser el monto/los países). */}
         <button
           type="button"
           onClick={() => {
@@ -1874,7 +1865,7 @@ export function ComparatorSection({
             compareMut.mutate(undefined);
           }}
           disabled={compareMut.isPending || !receivingCountry || sameCorridorBlocked || amount <= 0}
-          className="btn-cta-gradient flex h-12 w-full items-center justify-center gap-2 rounded-none px-6 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring @2xl:h-auto @2xl:w-[168px]"
+          className="btn-cta-gradient flex h-12 w-full items-center justify-center gap-2 rounded-none px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring @2xl:h-auto @2xl:w-[130px]"
         >
           {compareMut.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
