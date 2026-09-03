@@ -106,14 +106,22 @@ import {
 
 type Segment = "retail" | "business";
 type AmountMode = "send" | "receive";
-
-/** Field styling for inputs/triggers inside the (light) comparator card —
- *  a recessed pill distinct from the card's own surface. */
-/* El micro-label por métrica (METRIC_LABEL, 10.5px/700/#6B5F55 literal del
- * mockup) se eliminó con docs/kayak-redesign-spec.md §3.7: las cuatro
- * columnas de métrica con label propio pasaron a UNA línea inline con
- * separadores "·", así que ya no hay nada que etiquetar — y con eso se va
- * el tamaño más chico de todo el comparador, que era justo lo que la regla
- * 5 del spec (piso de 12px) venía a eliminar. */
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
+type DeliveryMethod = "bank_transfer" | "cash_pickup" | "card_payout" | "broker";
+const DELIVERY_METHOD_PREDICATES: Record<
+  DeliveryMethod,
+  (r: ComparisonResult["rows"][number]) => boolean
+> = {
+  bank_transfer: (r) => r.bank_transfer_available === true,
+  cash_pickup: (r) => r.cash_pickup_available === true,
+  card_payout: (r) => r.card_payout_available === true,
+  broker: (r) => r.provider_type === "broker",
+};
+
+const DELIVERY_METHODS: Array<{ key: DeliveryMethod; icon: typeof Banknote; labelKey: string }> = [
+  { key: "bank_transfer", icon: Building2, labelKey: "comparator.delivery.bankTransfer" },
+  { key: "cash_pickup", icon: Banknote, labelKey: "comparator.delivery.cashPickup" },
+  { key: "card_payout", icon: CreditCard, labelKey: "comparator.delivery.cardPayout" },
+  { key: "broker", icon: Handshake, labelKey: "comparator.delivery.broker" },
+];
