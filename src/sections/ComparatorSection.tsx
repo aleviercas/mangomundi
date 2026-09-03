@@ -4603,7 +4603,7 @@ function ProviderRow({
   // an overlap when space runs out.
   const rating = row.trust_score != null && (
     <span className="flex min-w-0 items-center gap-1 text-[11.5px] text-muted-foreground">
-      <Star className="h-2.5 w-2.5 shrink-0 fill-[#F59E0B] text-[#F59E0B]" />
+      <Star className="h-2.5 w-2.5 shrink-0 fill-warning text-warning" />
       <span className="shrink-0 whitespace-nowrap">
         {row.trust_score.toFixed(1)} {t("comparator.row.onTrustpilot")}
       </span>
@@ -5373,7 +5373,7 @@ function CompactResultsList({
                         <>
                           <span className="shrink-0">·</span>
                           <span className="inline-flex shrink-0 items-center gap-0.5">
-                            <Star className="h-2.5 w-2.5 shrink-0 fill-[#F59E0B] text-[#F59E0B]" />
+                            <Star className="h-2.5 w-2.5 shrink-0 fill-warning text-warning" />
                             {row.trust_score.toFixed(1)}
                           </span>
                         </>

@@ -69,7 +69,7 @@ function WidgetExamples({
   const { t } = useI18n();
   if (!examples.length) return null;
   return (
-    <div className="mt-2.5 overflow-hidden rounded-[14px] border border-border bg-card">
+    <div className="mt-2.5 overflow-hidden rounded-compact border border-border bg-card">
       <div className="flex items-center gap-1 border-b border-border px-3 py-1.5 text-badge font-bold uppercase tracking-wide text-muted-foreground">
         <Sparkle className="h-2.5 w-2.5 text-brand-cta" />
         {t("todaysRoutes.title")}
