@@ -3285,7 +3285,11 @@ function RateAlertCard({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder={t("retail.emailPlaceholder")}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-brand-cta focus:outline-none"
+              // Un cambio de color de borde sólo (focus:border-brand-cta) no es un
+              // indicador de foco suficiente con teclado — medido tabulando la
+              // página, era el único control de esta superficie que no pintaba
+              // nada visible. Se le agrega el mismo anillo que usa el resto.
+              className="w-full rounded-control border border-border bg-background px-3 py-2 text-meta text-foreground placeholder:text-muted-foreground focus:border-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
             />
             {error && (
               <p className="text-badge text-destructive">{t("comparator.rateAlert.error")}</p>

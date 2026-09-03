@@ -241,14 +241,23 @@
   /* CTA con gradiente — mismo ángulo y mismo salto claro→oscuro que Kayak
      (135deg, #FF690F → #E8381B), en los hues mango del proyecto. Es la
      única acción primaria del comparador y del widget.
-     El spec pedía --mango-glow como extremo claro; medido, ese tono da
-     ~2.3:1 con texto blanco encima, por debajo del 3.4:1 que ya tiene hoy
-     el .btn-cta plano — habría BAJADO el contraste, contra la regla 5 del
-     propio spec. El extremo claro es --accent (el coral de marca, 3.4:1,
-     el mismo del CTA actual) y el oscuro --accent-deep (4.3:1): así
-     ningún punto del gradiente queda por debajo del CTA que reemplaza.
-     Llevar el CTA a 4.5:1 estrictos exige oscurecer el coral de marca:
-     decisión de marca, no de esta pasada. */
+     El spec pedía --mango-glow como extremo claro; ese tono da ~2.3:1 con
+     texto blanco encima, por debajo del 3.39:1 que ya tiene el .btn-cta
+     plano — habría BAJADO el contraste, contra la regla 5 del propio spec.
+     El extremo claro es --accent (el coral de marca, exactamente el mismo
+     del CTA que reemplaza) y el oscuro --accent-deep, así que ningún punto
+     del gradiente queda por debajo del CTA actual.
+
+     Medido de verdad (rasterizando cada token a un píxel sRGB y aplicando
+     la fórmula de WCAG, no estimado):
+       texto blanco sobre --accent      → 3.39:1
+       texto blanco sobre --accent-deep → 4.00:1
+     O sea: el gradiente MEJORA el contraste hacia su extremo oscuro pero
+     sigue sin llegar a los 4.5:1 que pide el §7 del spec para texto de
+     13px. No se resuelve acá: llegar a 4.5:1 exige oscurecer el coral de
+     marca en todo el sitio (el .btn-cta de hoy tiene exactamente el mismo
+     3.39:1), y eso es una decisión de marca, no de una pasada de piel.
+     Queda levantado explícitamente en el reporte de esta rama. */
   --accent-deep: oklch(0.62 0.2 25);
   --gradient-cta: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
 

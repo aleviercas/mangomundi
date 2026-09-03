@@ -48,11 +48,11 @@ ser una superficie de buscador, con su propia geometría y su propio lienzo:
 
 | Token | Utilidad | Uso |
 |---|---|---|
-| `--surface-canvas` | `bg-surface-canvas` | Fondo de la sección del comparador: medio punto de L por debajo de `--background`, para que las tarjetas blancas floten. Nunca como fondo de página completa. |
+| `--surface-canvas` | `bg-surface-canvas` | Fondo de la sección del comparador: medio punto de L por debajo de `--background`, para que las tarjetas blancas floten. Nunca como fondo de página completa. `text-muted-foreground` encima mide **5.26:1**. |
 | `--accent-deep` | `bg-accent-deep` / `text-accent-deep` | Extremo oscuro del gradiente de CTA. No usarlo suelto salvo para sombras del propio CTA. |
-| `--gradient-cta` | vía `.btn-cta-gradient` | El **único** gradiente del sitio. Va de `--accent` a `--accent-deep` (no de `--mango-glow`, ver el comentario del token: con `--mango-glow` el texto blanco encima quedaba en ~2.3:1, por debajo del 3.4:1 del `.btn-cta` que reemplaza). |
-| `--merit-best` / `--merit-best-foreground` | `bg-merit-best` / `text-merit-best-foreground` | Badge "mejor opción" de la fila de resultados. 7.3:1 medido. |
-| `--merit-cheap` / `--merit-cheap-foreground` | `bg-merit-cheap` / `text-merit-cheap-foreground` | Badge "más barato". 8.0:1 medido. |
+| `--gradient-cta` | vía `.btn-cta-gradient` | El **único** gradiente del sitio. Va de `--accent` a `--accent-deep` (no de `--mango-glow`, ver el comentario del token). Contraste medido con texto blanco: **3.39:1** en el extremo claro (idéntico al `.btn-cta` plano que reemplaza) y **4.00:1** en el oscuro. No llega a los 4.5:1 de AA para texto chico: subirlo exige oscurecer el coral de marca en todo el sitio, decisión pendiente. |
+| `--merit-best` / `--merit-best-foreground` | `bg-merit-best` / `text-merit-best-foreground` | Badge "mejor opción" de la fila de resultados. **7.20:1** medido. |
+| `--merit-cheap` / `--merit-cheap-foreground` | `bg-merit-cheap` / `text-merit-cheap-foreground` | Badge "más barato". **7.71:1** medido. |
 
 Se llaman `merit-*` y no `badge-*` a propósito: `text-badge-*` sería ambiguo
 entre el color y el tamaño `--text-badge`.
