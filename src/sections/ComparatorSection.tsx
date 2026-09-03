@@ -4703,7 +4703,7 @@ function ProviderRow({
   // with `truncate`, so it gets a real ellipsis instead of an abrupt cut or
   // an overlap when space runs out.
   const rating = row.trust_score != null && (
-    <span className="flex min-w-0 items-center gap-1 text-[11.5px] text-muted-foreground">
+    <span className="flex min-w-0 items-center gap-1 text-badge text-muted-foreground">
       <Star className="h-2.5 w-2.5 shrink-0 fill-[#F59E0B] text-[#F59E0B]" />
       <span className="shrink-0 whitespace-nowrap">
         {row.trust_score.toFixed(1)} {t("comparator.row.onTrustpilot")}
@@ -4722,7 +4722,7 @@ function ProviderRow({
   // provider_rates_last_updated) for how these are computed server-side.
   const priceStamp = lastUpdatedLabel && (
     <span
-      className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] font-semibold"
+      className="inline-flex items-center gap-1 whitespace-nowrap text-badge font-semibold"
       style={{ color: isVerified ? "#1F7A5A" : "#6B5F55" }}
     >
       <Clock className="h-3 w-3 shrink-0" />
@@ -4766,7 +4766,7 @@ function ProviderRow({
   // That explainer is still reachable through the agent itself (its own
   // quick-actions grid), just not duplicated as a per-row footer link.
   const trustLine = footerParts.length > 0 && (
-    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] leading-snug">
+    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-badge leading-snug">
       {footerParts.map((part, i) => (
         <span key={i} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
           {i > 0 && footerDot}
