@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi może otrzymywać prowizje partnerskie; nie wpływa to na neutralność rankingu.",
   "comparator.empty": "Brak dostępnych dostawców dla tego korytarza.",
   "comparator.emptyFiltered": "Żaden dostawca nie spełnia wyboru w \"Wymaga\". Spróbuj usunąć jeden filtr.",
+  "comparator.exclusiveRateNudge": "Może mieć kurs na wyłączność",
   "comparator.execStrategy": "Strategia realizacji",
   "comparator.execStrategy.note": "Kwota nominalna i czas operacji.",
   "comparator.field.amount": "Wysyłasz",

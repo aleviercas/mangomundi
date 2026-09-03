@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi dapat menerima komisi afiliasi; hal ini tidak memengaruhi netralitas peringkat.",
   "comparator.empty": "Belum ada penyedia untuk koridor ini.",
   "comparator.emptyFiltered": "Tidak ada penyedia yang cocok dengan pilihan Anda di \"Membutuhkan\". Coba hapus salah satu filter.",
+  "comparator.exclusiveRateNudge": "Mungkin ada kurs eksklusif",
   "comparator.execStrategy": "Strategi Eksekusi",
   "comparator.execStrategy.note": "Jumlah nosional dan waktu operasi.",
   "comparator.field.amount": "Anda mengirim",

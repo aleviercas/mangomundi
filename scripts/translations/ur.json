@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi ایفیلیٹ کمیشن وصول کر سکتا ہے؛ یہ رینکنگ کی غیر جانبداری کو متاثر نہیں کرتا۔",
   "comparator.empty": "اس راہداری کے لیے ابھی کوئی فراہم کنندہ دستیاب نہیں۔",
   "comparator.emptyFiltered": "\"درکار ہے\" کے تحت آپ کے انتخاب سے کوئی فراہم کنندہ میل نہیں کھاتا۔ ایک فلٹر ہٹا کر دیکھیں۔",
+  "comparator.exclusiveRateNudge": "خصوصی ریٹ ہو سکتا ہے",
   "comparator.execStrategy": "عملدرآمد کی حکمت عملی",
   "comparator.execStrategy.note": "آپریشن کی تخمینی رقم اور وقت۔",
   "comparator.field.amount": "آپ بھیجتے ہیں",

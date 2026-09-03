@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "Maaaring makatanggap ang mangomundi ng affiliate commissions; hindi nito binabago ang neutralidad ng ranking.",
   "comparator.empty": "Wala pang provider para sa koridor na ito.",
   "comparator.emptyFiltered": "Walang provider na tumutugma sa napili mo sa ilalim ng \"Kailangan\". Subukang alisin ang isang filter.",
+  "comparator.exclusiveRateNudge": "Maaaring may eksklusibong rate",
   "comparator.execStrategy": "Estratehiya sa Pag-execute",
   "comparator.execStrategy.note": "Notional amount at tiyempo ng operasyon.",
   "comparator.field.amount": "Iyong ipapadala",

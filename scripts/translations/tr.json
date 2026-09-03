@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi bağlı kuruluş komisyonları alabilir; bu, sıralamanın tarafsızlığını etkilemez.",
   "comparator.empty": "Bu koridor için henüz sağlayıcı yok.",
   "comparator.emptyFiltered": "\"Gerekli\" altında seçtiklerinize uyan sağlayıcı yok. Bir filtreyi kaldırmayı deneyin.",
+  "comparator.exclusiveRateNudge": "Özel kur sunuyor olabilir",
   "comparator.execStrategy": "Yürütme Stratejisi",
   "comparator.execStrategy.note": "Operasyonun nominal tutarı ve zamanlaması.",
   "comparator.field.amount": "Gönderilen tutar",

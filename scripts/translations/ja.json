@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundiはアフィリエイト手数料を受け取る場合がありますが、ランキングの中立性には影響しません。",
   "comparator.empty": "このルートに対応するプロバイダーはまだありません。",
   "comparator.emptyFiltered": "「必須条件」で選択した内容に一致するプロバイダーがありません。フィルターを外してみてください。",
+  "comparator.exclusiveRateNudge": "限定レートの可能性あり",
   "comparator.execStrategy": "執行戦略",
   "comparator.execStrategy.note": "オペレーションの想定元本とタイミング。",
   "comparator.field.amount": "送金額",

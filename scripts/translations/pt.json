@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "A mangomundi pode receber comissões de afiliado; isso não altera a neutralidade do ranking.",
   "comparator.empty": "Ainda não há provedores disponíveis para este corredor.",
   "comparator.emptyFiltered": "Nenhum provedor corresponde ao que você selecionou em \"Requer\". Tente remover um filtro.",
+  "comparator.exclusiveRateNudge": "Pode ter uma taxa exclusiva",
   "comparator.execStrategy": "Estratégia de Execução",
   "comparator.execStrategy.note": "Valor nocional e tempo da operação.",
   "comparator.field.amount": "Você envia",

@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi có thể nhận hoa hồng liên kết; điều này không ảnh hưởng đến tính trung lập của xếp hạng.",
   "comparator.empty": "Chưa có nhà cung cấp cho tuyến này.",
   "comparator.emptyFiltered": "Không có nhà cung cấp phù hợp với lựa chọn của bạn trong \"Yêu cầu\". Hãy thử bỏ một bộ lọc.",
+  "comparator.exclusiveRateNudge": "Có thể có tỷ giá độc quyền",
   "comparator.execStrategy": "Chiến lược thực thi",
   "comparator.execStrategy.note": "Số tiền danh nghĩa và thời điểm thực hiện giao dịch.",
   "comparator.field.amount": "Số tiền gửi",

@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi को संबद्ध कमीशन प्राप्त हो सकता है; इससे रैंकिंग की निष्पक्षता पर कोई प्रभाव नहीं पड़ता।",
   "comparator.empty": "इस कॉरिडोर के लिए अभी कोई प्रदाता उपलब्ध नहीं है।",
   "comparator.emptyFiltered": "\"आवश्यक\" के अंतर्गत आपके चयन से कोई प्रदाता मेल नहीं खाता। कोई फ़िल्टर हटाकर देखें।",
+  "comparator.exclusiveRateNudge": "विशेष दर हो सकती है",
   "comparator.execStrategy": "निष्पादन रणनीति",
   "comparator.execStrategy.note": "संचालन की सांकेतिक राशि और समय।",
   "comparator.field.amount": "आप भेज रहे हैं",

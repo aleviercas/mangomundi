@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi อาจได้รับค่าคอมมิชชั่นพันธมิตร; สิ่งนี้ไม่ส่งผลต่อความเป็นกลางของการจัดอันดับ",
   "comparator.empty": "ยังไม่มีผู้ให้บริการสำหรับเส้นทางนี้",
   "comparator.emptyFiltered": "ไม่มีผู้ให้บริการที่ตรงกับที่คุณเลือกไว้ใน \"ต้องการ\" ลองลบตัวกรองออกดู",
+  "comparator.exclusiveRateNudge": "อาจมีเรตพิเศษ",
   "comparator.execStrategy": "กลยุทธ์การดำเนินการ",
   "comparator.execStrategy.note": "จำนวนเงินตามสัญญามูลค่าหน้าตั๋วและระยะเวลาของการทำรายการ",
   "comparator.field.amount": "คุณส่ง",

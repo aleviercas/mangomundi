@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi 可能收取联盟佣金；这不会影响排名的中立性。",
   "comparator.empty": "该路线暂无可用服务商。",
   "comparator.emptyFiltered": "没有符合您在\"需要\"中所选条件的服务商。试试去掉一个筛选条件。",
+  "comparator.exclusiveRateNudge": "可能有专属汇率",
   "comparator.execStrategy": "执行策略",
   "comparator.execStrategy.note": "操作的名义金额与时间安排。",
   "comparator.field.amount": "汇出金额",

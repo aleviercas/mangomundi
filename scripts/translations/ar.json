@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "قد تتلقى mangomundi عمولات تابعة؛ وهذا لا يؤثر على حيادية الترتيب.",
   "comparator.empty": "لا يوجد مزودون متاحون لهذا الممر بعد.",
   "comparator.emptyFiltered": "لا يوجد مزودون يطابقون ما اخترته في \"يتطلب\". حاول إزالة أحد الفلاتر.",
+  "comparator.exclusiveRateNudge": "قد يوفّر سعرًا حصريًا",
   "comparator.execStrategy": "استراتيجية التنفيذ",
   "comparator.execStrategy.note": "المبلغ الافتراضي وتوقيت العملية.",
   "comparator.field.amount": "أنت ترسل",

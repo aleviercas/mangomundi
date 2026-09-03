@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi может получать партнёрские комиссии; это не влияет на нейтральность рейтинга.",
   "comparator.empty": "Для этого коридора пока нет доступных провайдеров.",
   "comparator.emptyFiltered": "Ни один провайдер не соответствует выбору в разделе «Требуется». Попробуйте убрать один из фильтров.",
+  "comparator.exclusiveRateNudge": "Возможен эксклюзивный курс",
   "comparator.execStrategy": "Стратегия исполнения",
   "comparator.execStrategy.note": "Условная сумма и сроки проведения операции.",
   "comparator.field.amount": "Вы отправляете",

@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi অ্যাফিলিয়েট কমিশন পেতে পারে; এটি র‍্যাঙ্কিংয়ের নিরপেক্ষতাকে প্রভাবিত করে না।",
   "comparator.empty": "এই করিডোরের জন্য এখনো কোনো প্রদানকারী নেই।",
   "comparator.emptyFiltered": "\"প্রয়োজন\"-এ আপনার নির্বাচনের সাথে কোনো প্রদানকারী মেলে না। একটি ফিল্টার সরিয়ে দেখুন।",
+  "comparator.exclusiveRateNudge": "বিশেষ রেট থাকতে পারে",
   "comparator.execStrategy": "এক্সিকিউশন কৌশল",
   "comparator.execStrategy.note": "অপারেশনের আনুমানিক পরিমাণ এবং সময়।",
   "comparator.field.amount": "আপনি পাঠাচ্ছেন",

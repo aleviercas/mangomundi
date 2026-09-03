@@ -3078,6 +3078,15 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.row.saved": "Saved",
     "comparator.mobile.editSearch": "Edit search",
     "comparator.mobile.bestIs": "Best: {v}",
+    // Pre-existing broken key: ComparatorSection has rendered
+    // t("comparator.exclusiveRateNudge") on every sponsored row for a while,
+    // but the key was never in any dictionary, so it printed the raw key
+    // string. Caught on a screenshot of the redesigned row (i18n:check only
+    // compares the other dictionaries against EN, so a key missing from EN
+    // itself is invisible to it). Deliberately hedged wording — this nudge
+    // is separate from the sponsored disclosure, which is the one
+    // guaranteed-true statement on the row.
+    "comparator.exclusiveRateNudge": "May have an exclusive rate",
     "comparator.rateAlert.title": "Watch {from} → {to}",
     "comparator.rateAlert.body":
       "One email when the best rate on this route improves. No account needed.",

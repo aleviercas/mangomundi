@@ -213,6 +213,7 @@
   "comparator.disclaimer.neutrality": "mangomundi kann Affiliate-Provisionen erhalten; dies beeinflusst nicht die Neutralität des Rankings.",
   "comparator.empty": "Für diesen Korridor sind noch keine Anbieter verfügbar.",
   "comparator.emptyFiltered": "Kein Anbieter erfüllt deine Auswahl unter \"Erfordert\". Versuch, einen Filter zu entfernen.",
+  "comparator.exclusiveRateNudge": "Hat möglicherweise einen exklusiven Kurs",
   "comparator.execStrategy": "Ausführungsstrategie",
   "comparator.execStrategy.note": "Nominalbetrag und Zeitpunkt der Operation.",
   "comparator.field.amount": "Sie senden",
