@@ -67,6 +67,21 @@
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
 
+  /* Lienzo del comparador — ver docs/kayak-patterns-spec.md §2. Único token
+     de superficie que la variante B toma del patrón de buscador: la
+     separación lienzo/tarjeta es lo que hace que una lista larga de
+     resultados se lea como lista y no como una mancha continua. La
+     geometría (radios, sombras) del sitio NO se toca. */
+  --color-surface-canvas: var(--surface-canvas);
+
+  /* Badges de mérito de la fila de resultados ("mejor opción" / "más
+     barato"). merit-* y no badge-* para no colisionar con el tamaño
+     --text-badge: text-badge-* sería ambiguo entre color y size. */
+  --color-merit-best: var(--merit-best);
+  --color-merit-best-foreground: var(--merit-best-foreground);
+  --color-merit-cheap: var(--merit-cheap);
+  --color-merit-cheap-foreground: var(--merit-cheap-foreground);
+
   /* Premium CTA — the only orange in the system, reserved for primary action */
   --color-brand-cta: var(--accent);
   --color-brand-cta-hover: var(--mango-glow);
@@ -103,6 +118,25 @@
 
   --text-h4: 1rem;
   --text-h4--line-height: 1.4;
+
+  /* Escala de la superficie de comparación (sep 2026, docs/kayak-patterns-spec.md
+     §2). Existe para poder erradicar los text-[9px]/[10px]/[11px]/[10.5px]
+     sueltos de ComparatorSection.tsx: el piso del sistema pasa a ser 12px.
+     Calibrada a la voz actual — text-price mantiene el peso que el monto ya
+     tenía, no se achica a la densidad de un buscador de vuelos (la variante
+     A sí lo baja a 24/600; esta no). */
+  --text-price: 1.625rem;
+  --text-price--line-height: 1.05;
+  --text-price--letter-spacing: -0.015em;
+
+  --text-metric: 1rem;
+  --text-metric--line-height: 1.35;
+
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.4;
+
+  --text-badge: 0.75rem;
+  --text-badge--line-height: 1.35;
 }
 
 :root {
@@ -176,6 +210,34 @@
   --mango-foreground: var(--accent-foreground);
   --surface: var(--card);
   --surface-elevated: var(--muted);
+
+  /* Lienzo sobre el que flotan las tarjetas del comparador.
+     docs/kayak-patterns-spec.md §2 lo especifica como oklch(0.945 0.01 255)
+     — un gris FRÍO, porque los dos specs se escribieron contra la paleta
+     slate que este repo tenía antes de design/AJUSTES-2.md §0. La paleta
+     actual es cálida (Papel #FBF8F4 / Arena #F5EFE8 / Tinta #241C16): un
+     lienzo azulado abajo de tarjetas blancas sobre fondo crema se lee como
+     un bug de color, no como profundidad. Se toma el ROL del token (un
+     escalón de luminancia entre el papel y la tarjeta blanca) y se
+     reimplementa en la familia cálida del sitio — que es exactamente lo que
+     "patrones de Kayak, piel de mangomundi" quiere decir.
+     Calibrado, no estimado: Kayak separa lienzo (#F0F3F5) de tarjeta
+     (#FFF) por 0.108 de luminancia relativa; este valor da 0.098 — el
+     escalón equivalente. Queda entre --background (0.942) y --muted
+     (0.870), así que los chips `bg-muted` siguen leyéndose más oscuros que
+     el lienzo. Contraste verificado sobre él: --muted-foreground 5.61:1,
+     --accent-text 4.71:1, --foreground 15.19:1. */
+  --surface-canvas: #f8f3ed;
+
+  /* Badges de mérito (docs/kayak-patterns-spec.md §2). Estos SÍ se toman
+     literales del spec A — como dice el §2 de B, "no hay versión más
+     mangomundi de un verde de ahorro". Verificado con conversión real
+     OKLCH→sRGB, no de memoria: best #dff2fd/#005477 = 7.22:1,
+     cheap #dcf7e1/#005725 = 7.67:1. */
+  --merit-best: oklch(0.95 0.025 235);
+  --merit-best-foreground: oklch(0.42 0.09 235);
+  --merit-cheap: oklch(0.95 0.04 150);
+  --merit-cheap-foreground: oklch(0.4 0.11 150);
 
   /* design/AJUSTES-2.md §0 — Verde #1F7A5A ("estados correctos, «Live»,
      ahorro"). --warning has no mockup equivalent (not in the doc's

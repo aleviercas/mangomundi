@@ -32,6 +32,9 @@ utilidades Tailwind vía `@theme inline` (cualquier `--color-X` genera
 | `--accent` | **El color de marca** (coral/mango) — ver `--color-brand-cta` abajo |
 | `--border` / `--input` / `--ring` | Bordes, inputs, focus rings |
 | `--destructive` | Errores, acciones destructivas |
+| `--surface-canvas` → `bg-surface-canvas` | Lienzo del comparador (rama `kayakpatterns`, `docs/kayak-patterns-spec.md` §2). Un escalón de luminancia entre `--background` y la tarjeta blanca, para que una lista larga de resultados se lea como lista y no como una mancha continua. **Solo** la superficie de comparación — no es un fondo de página alternativo. |
+| `--merit-best` / `--merit-best-foreground` → `bg-merit-best text-merit-best-foreground` | Badge "Mejor" de la fila de resultado (azul frío informativo). 7.22:1. |
+| `--merit-cheap` / `--merit-cheap-foreground` → `bg-merit-cheap text-merit-cheap-foreground` | Badge "Más barato" de la fila de resultado (verde de ahorro). 7.67:1. |
 
 **Marca (`--color-brand-cta*`)** — capa semántica sobre `--accent`, para que
 el significado ("este es el color de la acción principal") quede explícito
@@ -55,7 +58,7 @@ para texto legible sobre el fill sólido.
 
 ## Tipografía
 
-- **Sora** (`font-heading`) — todos los `h1`–`h6`, ya aplicado globalmente en `@layer base`.
+- **Bricolage Grotesque** (`font-heading`) — todos los `h1`–`h6`, ya aplicado globalmente en `@layer base`, y además las cifras (montos recibidos, tasas, deltas, números de stats) por `design/AJUSTES-1.md` §A. (Este doc decía "Sora" hasta sep 2026: Sora fue retirada del proyecto en esa pasada y el doc quedó desactualizado. `docs/kayak-patterns-spec.md` §3 también dice "Sora" por el mismo motivo — donde ese spec dice Sora, léase "la tipografía de titulares del sitio", o sea `font-heading`.)
 - **Manrope** (`font-sans`, default del `body`) — todo el texto de párrafo/UI.
 - **Escala formal** (agregada ago 2026, `@theme inline` en `styles.css`, sintaxis `--text-*`/`--text-*--line-height`/`--text-*--letter-spacing` de Tailwind v4 — genera `text-eyebrow`/`text-h1`/etc. automáticamente):
 
@@ -67,12 +70,24 @@ para texto legible sobre el fill sólido.
   | `text-h3` | 20px | Título de card/subsección (features, testimonios, related posts, sponsored). Antes mezclaba `text-lg`/`text-xl` con distinto `font-semibold`/`font-extrabold` sin regla clara. |
   | `text-h4` | 16px | Reservado para un cuarto nivel si aparece (footer headings, etc. — todavía no migrado, son casos chicos con `text-sm font-bold` que no valía la pena tocar en esta pasada). |
 
-  Los tamaños micro/densos de la grilla de resultados del comparador
-  (`text-[10px]`/`text-[11px]`/etc. en `ComparatorSection.tsx`) **no** se
-  migraron a la escala — son afinados a mano para densidad de información en
-  una UI de datos, no forman parte de la jerarquía editorial/marketing que
-  esta escala resuelve. Igual con los tamaños dentro de `RfqTerminal.tsx` y
-  `admin.i18n-status.tsx`.
+- **Escala de la superficie de comparación** (sep 2026, rama `kayakpatterns`
+  — `docs/kayak-patterns-spec.md` §2). Reemplaza los `text-[9px]`/`[10px]`/
+  `[10.5px]`/`[11px]`/`[11.5px]` sueltos que tenían `ComparatorSection.tsx` y
+  `EmbedComparator.tsx`. El piso del sistema en esa superficie pasa a ser
+  **12px**: los 9px de la línea de score y los 10px de la disclosure de
+  patrocinado son ilegibles en cualquier sistema, y la disclosure en
+  particular es una obligación de transparencia que no puede depender de la
+  vista del usuario.
+
+  | Token | Tamaño | Uso |
+  |---|---|---|
+  | `text-price` | 26px / -0.015em | El monto recibido de la fila (el número por el que existe la página). Se usa con `font-heading font-extrabold`. |
+  | `text-metric` | 16px | Cifra secundaria de la matriz de orden (headline de cada tab). |
+  | `text-meta` | 13px | Línea de métricas de la fila, labels de segmento, sublíneas. |
+  | `text-badge` | 12px | **Piso.** Badges, chips, disclosure de patrocinado, contadores. Nada por debajo. |
+
+  Los tamaños dentro de `RfqTerminal.tsx` y `admin.i18n-status.tsx` siguen
+  fuera de scope (paleta y escala propias, mismo criterio que `.terminal-*`).
 
 ## Radios y espaciado
 
