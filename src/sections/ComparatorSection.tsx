@@ -3197,3 +3197,2237 @@ function FiltersCard({
     </div>
   );
 }
+
+/** Email capture for "notify me if this rate improves" — design/HANDOFF.md
+ *  §3. Honest about what it actually is right now: this saves the lead
+ *  (email + corridor/amount context) to `enterprise_leads` via
+ *  captureEnterpriseLead (feature_source: "rate_alert"), same table
+ *  captureBusinessLead already writes route context into. There is NO
+ *  automated job yet that watches rates and fires the email — someone has
+ *  to build that monitor before this promise is fulfilled automatically.
+ *  Decided explicitly (29-ago-2026, see docs/handoff/
+ *  handoff-2026-08-29-rediseno-mangomundi-4.md §4 point 6): capture real
+ *  interest now with honest internal docs, rather than a fake "coming soon"
+ *  button or skipping the card entirely. */
+function RateAlertCard({
+  t,
+  from,
+  to,
+  amount,
+  sendingCountry,
+  receivingCountry,
+}: {
+  t: (k: string) => string;
+  from: string;
+  to: string;
+  amount: number;
+  sendingCountry: string;
+  receivingCountry: string;
+}) {
+  const submit = useServerFn(captureEnterpriseLead);
+  const [email, setEmail] = useState("");
+  const [pending, setPending] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState(false);
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || pending) return;
+    setPending(true);
+    setError(false);
+    try {
+      await submit({
+        data: {
+          email,
+          featureSource: "rate_alert",
+          consent: true,
+          fromCurrency: from,
+          toCurrency: to,
+          sendingCountry: sendingCountry || undefined,
+          receivingCountry: receivingCountry || undefined,
+          amount,
+        },
+      });
+      setDone(true);
+    } catch {
+      setError(true);
+    } finally {
+      setPending(false);
+    }
+  };
+
+  return (
+    <div className="compare-card overflow-hidden">
+      <div
+        className="h-[104px] bg-cover bg-center"
+        style={{
+          backgroundImage: "url('/images/howitworks-person.jpg')",
+          backgroundPosition: "center 28%",
+        }}
+        aria-hidden
+      />
+      <div className="px-[15px] pb-[15px] pt-[13px]">
+        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+        <h3 className="text-[14.5px] font-extrabold text-foreground">
+          {t("comparator.rateAlert.title").replace("{from}", from).replace("{to}", to)}
+        </h3>
+        <p className="mt-1.5 text-xs leading-[1.55] text-muted-foreground">
+          {t("comparator.rateAlert.body")}
+        </p>
+        {done ? (
+          <p className="mt-3 text-xs font-semibold text-success">
+            {t("comparator.rateAlert.success")}
+          </p>
+        ) : (
+          <form onSubmit={onSubmit} className="mt-[10px] space-y-2">
+            <label htmlFor="rate-alert-email" className="sr-only">
+              {t("common.email")}
+            </label>
+            <input
+              id="rate-alert-email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t("retail.emailPlaceholder")}
+              // Un cambio de color de borde sólo (focus:border-brand-cta) no es un
+              // indicador de foco suficiente con teclado — medido tabulando la
+              // página, era el único control de esta superficie que no pintaba
+              // nada visible. Se le agrega el mismo anillo que usa el resto.
+              className="w-full rounded-control border border-border bg-background px-3 py-2 text-meta text-foreground placeholder:text-muted-foreground focus:border-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            />
+            {error && (
+              <p className="text-badge text-destructive">{t("comparator.rateAlert.error")}</p>
+            )}
+            <button
+              type="submit"
+              disabled={pending}
+              className="flex h-10 w-full items-center justify-center gap-1.5 rounded-control border border-foreground text-meta font-bold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
+            >
+              {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+              {t("comparator.rateAlert.cta")}
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Trustpilot presence in the vertical rail (design/HANDOFF.md §3).
+ *
+ *  2026-08-30 feedback: the "4.6" figure was a hardcoded string, not a
+ *  real number from Trustpilot (no API integration exists anywhere in the
+ *  app). A custom "Check our rating" link replaced it for a few rounds,
+ *  but 2026-08-30 feedback (sixth round) asked for the real thing back:
+ *  "dejar el original... que es embebido el codigo desde trustpilot no
+ *  uno hecho a medida" — the actual Trustpilot embed (TrustBox.tsx, same
+ *  widget ContactSection uses), not a look-alike link built here. */
+function TrustpilotCard() {
+  // 2026-08-31 feedback (still reported after the first round of "flex +
+  // justify-center" — that fix helped the About section, next to a button
+  // in a `w-fit` row, but this card is a fixed 268px rail item: once
+  // Trustpilot's bootstrap script upgrades .trustpilot-widget, it sets its
+  // OWN inline width/display on that div (not on any wrapper of ours), and
+  // a block-level child sitting inside a wider flex parent doesn't
+  // necessarily honor the parent's `justify-center` the way a true flex
+  // item would if the script also touches its display/position. `mx-auto`
+  // targeted straight at `.trustpilot-widget` centers that specific div by
+  // its own margins regardless of what width/display the script gives it —
+  // doesn't depend on this wrapper's flex context at all, so it can't be
+  // undone by whatever the script decides to set. Still unverified against
+  // the live widget (no network path to trustpilot.com in this sandbox to
+  // confirm the rendered result) — if this still looks off in production,
+  // screenshot it; there's nothing left to reason about blind.
+  //
+  // 2026-09-01 feedback, now with a real screenshot — the box was roughly
+  // double the height of "Set a rate alert" right above it (RateAlertCard's
+  // own submit button is h-10/40px). Tried forcing a fixed `h-10` +
+  // `overflow-hidden` here and shrinking the widget itself to 36px to
+  // match — WRONG FIX, reverted the same day: `overflow-hidden` on a box
+  // shorter than what Trustpilot's iframe actually renders just clips the
+  // widget's own logo/stars content (see TrustBox.tsx's own comment).
+  // Trustpilot needs its real 52px; this card now gives it comfortable
+  // padding instead of a hard height, so it's taller than the button
+  // above it, but nothing gets cropped.
+  //
+  // 2026-09-03 feedback — "sacarle el recuadro redondeado y dejarlo sobre
+  // el fondo sin el recuadro": every round so far treated this as a CARD
+  // (bordered, bg-secondary, matching RateAlertCard/BusinessContactCard
+  // above it in the same rail) and kept tuning that card's own height —
+  // wrong frame each time, since the actual ask was to drop the card
+  // entirely. The rail's own `gap-[13px]` (see its own className) already
+  // spaces this from its neighbor above, so this just centers the widget
+  // directly on the rail's own page background, no box of its own.
+  return (
+    <div className="flex items-center justify-center [&_.trustpilot-widget]:mx-auto">
+      <TrustBox />
+    </div>
+  );
+}
+
+// design/AJUSTES-2.md §1 — "You send"/"They receive" style labels: 11.5px/
+// 700/#6B5F55, sentence case (was 11px uppercase/tracked, closer to the
+// row's own METRIC_LABEL style than to what this form actually uses).
+// 2026-08-30 feedback (fourth round) — the widget's own compact row (mockup
+// line 734-744) has no label above the amount/destination boxes at all;
+// hideLabel drops it (still an aria-label on the control itself) rather
+// than fighting the mockup's own "hay que comprimirlo mucho más" for a
+// label the widget was never meant to carry.
+function FieldLight({
+  label,
+  children,
+  hideLabel = false,
+  emphasizeLabel = false,
+}: {
+  label: string;
+  children: React.ReactNode;
+  hideLabel?: boolean;
+  /** Pinta el label en coral mientras el campo sigue vacío — el
+   *  equivalente del "To?" resaltado de Kayak. Solo color: nunca un borde
+   *  ni un fondo propios, que romperían la pieza única de la barra. */
+  emphasizeLabel?: boolean;
+}) {
+  if (hideLabel) return <div className="min-w-0">{children}</div>;
+  return (
+    // docs/kayak-redesign-spec.md §3.2 — el label deja de ser una línea
+    // aparte encima de una caja y pasa a vivir DENTRO del segmento, en 12px
+    // (text-badge, el piso del sistema), directamente sobre el valor.
+    // Kayak solo lo muestra cuando el campo está vacío; acá queda siempre,
+    // porque "Envías"/"Recibís" es información que un comparador de FX no
+    // puede dar por sobrentendida.
+    //
+    // `justify-center` (antes `justify-end`, con toda la historia Z1 de
+    // bottom-alinear cajas dentro de una celda de grid que estiraba): ya no
+    // aplica, porque el contenedor pasó a ser un segmento de altura fija de
+    // 60px — el par label+valor se centra en el alto del segmento y no hay
+    // columna hermana más alta con la que desalinearse.
+    <label className="flex min-w-0 flex-col justify-center gap-0.5">
+      <span
+        className={`block truncate text-badge font-semibold ${
+          emphasizeLabel ? "text-accent-text" : "text-muted-foreground"
+        }`}
+      >
+        {label}
+      </span>
+      <div className="min-w-0">{children}</div>
+    </label>
+  );
+}
+
+// ===== Floating AI Agent (a11y + keyboard) =====
+interface FloatingAgentProps {
+  collapsed: boolean;
+  onToggle: (next: boolean) => void;
+  hasNewResult: boolean;
+  amount: number;
+  lang: string;
+  t: (k: string) => string;
+  aiLoading: boolean;
+  chat: ChatMsg[];
+  result: ComparisonResult | null;
+  chatInput: string;
+  setChatInput: (v: string) => void;
+  sendChat: (v: string) => void;
+  chatMutPending: boolean;
+  comparePending: boolean;
+  onSuggestedCompare: (from: string, to: string, fromCountry?: string, toCountry?: string) => void;
+  chatBottomRef: React.RefObject<HTMLDivElement | null>;
+  chatNearBottomRef: React.RefObject<boolean>;
+  openPreferredRate: (slug: string, url: string, name?: string) => void;
+  segment: Segment;
+  businessStage: BusinessStage;
+  savingBusinessLead: boolean;
+  confirmBusinessLead: () => void;
+  setBusinessStage: (s: BusinessStage) => void;
+  setChat: React.Dispatch<React.SetStateAction<ChatMsg[]>>;
+  onWizardAction: (action: WizardAction) => void;
+}
+
+function FloatingAgent(p: FloatingAgentProps) {
+  const {
+    collapsed,
+    onToggle,
+    hasNewResult,
+    amount,
+    lang,
+    t,
+    aiLoading,
+    chat,
+    result,
+    chatInput,
+    setChatInput,
+    sendChat,
+    chatMutPending,
+    comparePending,
+    onSuggestedCompare,
+    chatBottomRef,
+    chatNearBottomRef,
+    openPreferredRate,
+    segment,
+    businessStage,
+    savingBusinessLead,
+    confirmBusinessLead,
+    setBusinessStage,
+    setChat,
+    onWizardAction,
+  } = p;
+  const toggleBtnRef = useRef<HTMLButtonElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const panelLabelId = "ai-agent-title";
+
+  // Escape closes; auto-focus the composer on open.
+  useEffect(() => {
+    if (collapsed) return;
+    // 2026-08-31 feedback — "eliminar los movimientos automáticos... por
+    // ejemplo en el agente": this focus alone was enough to make the
+    // browser auto-scroll the page toward the composer whenever the panel
+    // opened near the edge of the viewport. The focus itself is still
+    // useful (composer ready to type into); preventScroll just drops the
+    // side effect.
+    inputRef.current?.focus({ preventScroll: true });
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onToggle(true);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [collapsed, onToggle]);
+
+  return (
+    // Docked to the side edge, vertically centered — Kayak's pattern for a
+    // persistent secondary panel — instead of a bottom-right corner bubble
+    // that sits on top of content (on mobile it used to overlap the last
+    // result row's CTA). Collapsed, it's a slim edge tab rather than a
+    // floating circle, so it reads as part of the page's furniture, not an
+    // overlay competing with whatever's underneath it. 2026-08-31 feedback
+    // — "siempre a la derecha... solo se minimiza cuando yo lo minimizo":
+    // always this, everywhere, in both states — no more separate "docked"
+    // in-rail variant (that used to also drop the dark chat chrome for a
+    // light rail-matching one; removed rather than left dead, see
+    // FiltersCard for what actually lives in the rail's "smart filter"
+    // slot now).
+    <div className="fixed right-0 top-1/2 z-[60] -translate-y-1/2 sm:right-0">
+      {collapsed ? (
+        <button
+          ref={toggleBtnRef}
+          type="button"
+          onClick={() => onToggle(false)}
+          aria-label={t("comparator.copilot.agent")}
+          aria-expanded={false}
+          aria-haspopup="dialog"
+          aria-controls="ai-agent-panel"
+          className="btn-cta group relative flex flex-col items-center gap-1.5 rounded-l-xl rounded-r-none py-4 pl-3 pr-2.5 shadow-2xl ring-1 ring-foreground/10 transition hover:pr-3.5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        >
+          <Sparkle className="h-5 w-5 shrink-0" aria-hidden />
+          <span
+            className="text-badge font-semibold leading-none [writing-mode:vertical-rl]"
+            aria-hidden
+          >
+            {t("comparator.copilot.agent")}
+          </span>
+          {hasNewResult && (
+            <span
+              aria-label={t("agent.newResult")}
+              className="absolute -left-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-success ring-2 ring-background"
+            />
+          )}
+        </button>
+      ) : (
+        <div
+          id="ai-agent-panel"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby={panelLabelId}
+          style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
+          className="flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl"
+        >
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+            <span
+              id={panelLabelId}
+              className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60"
+            >
+              <Sparkle className="h-3.5 w-3.5 shrink-0 text-[#FF8A6B]" aria-hidden />
+              <span className="truncate">{t("comparator.copilot.agent")}</span>
+            </span>
+            <div className="flex shrink-0 items-center gap-2">
+              <span
+                className="text-badge font-medium uppercase tracking-wider text-success"
+                aria-label={t("comparator.agent.languageAriaLabel").replace(
+                  "{lang}",
+                  lang.toUpperCase(),
+                )}
+              >
+                ● {lang.toUpperCase()}
+              </span>
+              {/* 2026-09-03 feedback — "el boton para minimizar el agente ai
+                  puede ser mas intuitivo? porque el menos chiquitito apenas
+                  se ve": this was a bare 14px minus-line stroke at 60%
+                  white opacity — small, low-contrast, and "−" doesn't read
+                  as "collapse this panel" the way an arrow pointing at the
+                  edge it docks to does. `ChevronsRight` (the panel is
+                  docked to the right edge, see this component's own
+                  comment) reads as "push this back to the edge," a
+                  standard sidebar-collapse affordance; wrapped in a visible
+                  pill (bg-white/10, a real background instead of bare
+                  text) so it reads as a button at a glance instead of
+                  blending into the header row. */}
+              <button
+                type="button"
+                onClick={() => onToggle(true)}
+                aria-label={t("agent.minimize")}
+                title={t("agent.minimize")}
+                className="flex items-center justify-center rounded-full bg-white/10 p-1.5 text-white/90 transition hover:bg-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+              >
+                <ChevronsRight className="h-4 w-4" aria-hidden />
+              </button>
+            </div>
+          </div>
+
+          <div
+            className="flex-1 space-y-3 overflow-y-auto p-4 thin-scrollbar"
+            aria-live="polite"
+            onScroll={(e) => {
+              const el = e.currentTarget;
+              // 2026-09-02 feedback — best-practice chat auto-scroll: only
+              // treat the reader as "following along" (and therefore worth
+              // auto-scrolling on the next message) while they're within a
+              // small threshold of the bottom. Scrolled up to reread
+              // earlier history → leave their position alone.
+              chatNearBottomRef.current = el.scrollHeight - el.scrollTop - el.clientHeight < 64;
+            }}
+          >
+            {aiLoading && (
+              <div className="flex items-center gap-2 text-sm text-[#A79C92]">
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t("fx.analyzing")}
+              </div>
+            )}
+
+            {/* Lazy entry point — nothing here was pre-built in onSuccess
+                anymore (see that handler's own comment). What shows first
+                is decided right here, from state that's already available,
+                the first time the user actually opens the panel:
+                - Business, wizard not finished yet → the wizard's first
+                  question, same copy as before, just rendered directly
+                  instead of pushed into `chat` ahead of time.
+                - Retail, large amount → the B2B-desk nudge, same idea.
+                - Otherwise → the generic welcome + quick-actions grid
+                  (already existed, this branch is unchanged). */}
+            {chat.length === 0 && !aiLoading && (
+              <>
+                {segment === "business" && businessStage !== "done" && result ? (
+                  <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                    <ReactMarkdown>{t("comparator.copilot.business.intro")}</ReactMarkdown>
+                  </div>
+                ) : (
+                  <>
+                    {segment === "retail" && result && amount >= B2B_UPSELL_MIN_AMOUNT && (
+                      <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                        <ReactMarkdown>{t("comparator.copilot.b2bUpsell")}</ReactMarkdown>
+                      </div>
+                    )}
+                    <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                      <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
+                    </div>
+                    <div className="text-badge font-semibold uppercase tracking-wider text-white/50">
+                      {t("wizard.quickActions")}
+                    </div>
+                    <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+                  </>
+                )}
+              </>
+            )}
+
+            {chat.length > 0 && (
+              <div className="space-y-2">
+                {chat.map((m, i) => (
+                  <div
+                    key={i}
+                    className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
+                      m.role === "user"
+                        ? "ml-6 bg-white/[.15] text-[#F1EBE4]"
+                        : "mr-6 border border-white/10 bg-white/[.06] text-[#F1EBE4]"
+                    }`}
+                  >
+                    {m.role === "assistant" ? (
+                      <div className="prose prose-sm prose-invert max-w-none prose-p:my-1">
+                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      <span className="whitespace-pre-wrap">{m.content}</span>
+                    )}
+                    {m.actions && m.actions.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {m.actions.map((a, j) =>
+                          a.kind === "proceed" ? (
+                            <button
+                              key={j}
+                              onClick={() => openPreferredRate(a.slug, a.url)}
+                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-badge font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
+                            >
+                              <Zap className="h-3 w-3" aria-hidden /> {a.label}
+                            </button>
+                          ) : (
+                            <button
+                              key={j}
+                              onClick={() =>
+                                onSuggestedCompare(a.from, a.to, a.fromCountry, a.toCountry)
+                              }
+                              disabled={comparePending}
+                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-badge font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
+                            >
+                              <Zap className="h-3 w-3" aria-hidden /> {a.label}
+                            </button>
+                          ),
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {chatMutPending && (
+                  <div className="mr-6 flex items-center gap-2 rounded-md border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-[#A79C92]">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />{" "}
+                    {t("comparator.copilot.analyzing")}
+                  </div>
+                )}
+                <div ref={chatBottomRef} />
+              </div>
+            )}
+
+            {/* Persistent quick-action tree — stays available after answers so
+                the whole product can be explored without free-typing/AI. */}
+            {chat.length > 0 && !aiLoading && (
+              <div className="pt-1">
+                <div className="mb-1.5 text-badge font-semibold uppercase tracking-wider text-white/50">
+                  {t("wizard.moreQuestions")}
+                </div>
+                <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
+              </div>
+            )}
+          </div>
+
+          <div className="shrink-0 border-t border-white/10 p-3">
+            {segment === "business" && businessStage === "consent" && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  disabled={savingBusinessLead}
+                  onClick={() => void confirmBusinessLead()}
+                  className="bg-accent text-accent-foreground hover:bg-accent/90"
+                >
+                  {savingBusinessLead ? (
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                  ) : null}
+                  {t("comparator.copilot.business.yes")}
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setBusinessStage("email");
+                    setChat((current) => [
+                      ...current,
+                      { role: "assistant", content: t("comparator.copilot.business.no") },
+                    ]);
+                  }}
+                  className="border-white/20 bg-transparent text-[#F1EBE4] hover:bg-white/10 hover:text-[#F1EBE4]"
+                >
+                  {t("comparator.copilot.business.review")}
+                </Button>
+              </div>
+            )}
+            {/* Composer (design/AJUSTES-1.md §D) — a white pill on the dark
+                panel, matching the mockup exactly, rather than the site's
+                usual bordered input field. 2026-08-31 feedback — "que el
+                espacio para escribir sea mas grande": a 2-row textarea (was
+                a single-line 42px input) that grows the panel instead of
+                cramming everything into one line; Enter still sends
+                (Shift+Enter for a literal newline), same as before. */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendChat(chatInput);
+              }}
+              className="flex items-end gap-2 rounded-[11px] bg-white py-1.5 pl-3 pr-1.5"
+            >
+              <label htmlFor="ai-agent-composer" className="sr-only">
+                {t("comparator.copilot.placeholder")}
+              </label>
+              <textarea
+                id="ai-agent-composer"
+                ref={inputRef}
+                rows={2}
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    sendChat(chatInput);
+                  }
+                }}
+                placeholder={t("comparator.copilot.placeholder")}
+                aria-label={t("comparator.copilot.placeholder")}
+                className="min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium text-[#241C16] outline-none placeholder:text-[#9C9089] thin-scrollbar"
+                disabled={chatMutPending}
+              />
+              <button
+                type="submit"
+                disabled={chatMutPending || !chatInput.trim()}
+                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center self-end rounded-lg bg-[#EE5B3E] text-white transition disabled:opacity-50"
+                aria-label={t("comparator.copilot.send")}
+              >
+                <Send className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </form>
+            <p className="mt-2 text-badge leading-relaxed text-[#A79C92]">
+              {t("comparator.copilot.trustLine")}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// A compact label/value pair, sized to its own content (no fixed column) —
+// used by BusinessRequestPanel's stats row so several of these can sit in
+// one wrapping flex row and a long value (e.g. a country pair) just wraps
+// to its own line as a whole unit instead of overflowing a fixed-width cell.
+function StatItem({
+  label,
+  labelExtra,
+  children,
+  dark,
+}: {
+  label: string;
+  /** Rendered right after the label (e.g. BusinessRowExtra's "estimated"
+   *  badge) — kept out of `children` so it stays on the label's own line
+   *  even when the value below wraps to several lines. */
+  labelExtra?: React.ReactNode;
+  children: React.ReactNode;
+  /** BusinessRequestPanel's dark theme (2026-09-04 feedback, round 2) —
+   *  same white/50 + white text pairing FiltersCard uses for its own
+   *  labels/values, instead of the light-card muted-foreground/foreground
+   *  pair every other StatItem caller (the broker row metrics) keeps. */
+  dark?: boolean;
+}) {
+  return (
+    <div className="min-w-0">
+      <div
+        className={`flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wide ${dark ? "text-white/50" : "text-muted-foreground"}`}
+      >
+        {label}
+        {labelExtra}
+      </div>
+      <div
+        className={`mt-0.5 text-sm font-bold leading-snug tabular-nums ${dark ? "text-white" : "text-foreground"}`}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// ===== Business "Your request" panel =====
+// design/Mangomundi 4 - Final.dc.html (line 532-541) — lives in the results
+// column now, below the results list (2026-08-31 feedback; used to dock in
+// the rail next to the agent): a running summary of the request being built
+// from the broker table's "Add to request" toggles, not a chat wizard. Email
+// and consent are
+// collected inline once "Send request" is pressed, rather than up front —
+// nothing here blocks browsing/selecting brokers on providing an email
+// first, unlike the old chat flow.
+function BusinessRequestPanel({
+  amount,
+  from,
+  to,
+  sendingCountry,
+  receivingCountry,
+  totalBrokers,
+  requestedSlugs,
+  contractTypeLabel,
+  frequencyLabel,
+  status,
+  onSend,
+}: {
+  amount: number;
+  from: string;
+  to: string;
+  sendingCountry: string;
+  receivingCountry: string;
+  totalBrokers: number;
+  requestedSlugs: Set<string>;
+  /** Read-only here — the actual controls are the existing "Contract type"/
+   *  "Frequency" selects in the search row above (contractType/frequency
+   *  state, design/HANDOFF.md §4), already real and already wired; this
+   *  panel just reflects the current choice, same as Volume/Route below it. */
+  contractTypeLabel: string;
+  frequencyLabel: string;
+  status: "idle" | "sending" | "sent" | "error";
+  onSend: (email: string) => void;
+}) {
+  const { t } = useI18n();
+  const [email, setEmail] = useState("");
+  // 2026-09-03 feedback — once the parent resets `status` back to "idle"
+  // a few seconds after a successful send (see sendBusinessRequest's own
+  // comment), this panel's own email field needs to clear too, or it would
+  // show the just-submitted address again instead of the clean pre-request
+  // form the feedback asked for.
+  useEffect(() => {
+    if (status === "idle") setEmail("");
+  }, [status]);
+  const selectedCount = requestedSlugs.size;
+  const sendingCountryName = COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry;
+  const receivingCountryName = receivingCountry
+    ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry)
+    : "—";
+
+  // 2026-09-04 feedback — "cuando se manda el mail que no se cambie el
+  // tamaño de la ventana de your request": the "sent" state used to be a
+  // much shorter card (title + one line) than the normal form below it
+  // (title+disclaimer, a wrapping stats row, the email field and button) —
+  // real content, but a lot less of it, so the panel visibly shrank the
+  // moment a request went out. Mirrors the normal state's own layout
+  // instead (same header row, same stats row confirming what was actually
+  // requested) and only swaps the email form for a same-sized confirmation
+  // message in that one slot, so the panel's height doesn't move.
+  if (status === "sent") {
+    return (
+      <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h3 className="font-heading text-[15px] font-extrabold text-white">
+              {t("comparator.business.request.title")}
+            </h3>
+            <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
+              {t("comparator.business.request.disclaimer")}
+            </p>
+          </div>
+          <div className="shrink-0 text-right">
+            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+              {t("comparator.business.request.brokersSelected")}
+            </div>
+            <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
+              {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-white/15 pt-3">
+          {/* 2026-09-04 feedback (round 2) — "poner currency en el renglón
+              de abajo y antes de contract": grid-cols-2 instead of a free
+              wrapping flex row so Volume/Route always land on row 1 and
+              Currency/Contract on row 2, regardless of viewport width,
+              rather than wherever the flex-wrap happened to break. */}
+          <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-2">
+            <StatItem dark label={t("comparator.business.request.volume")}>
+              {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+            </StatItem>
+            <StatItem dark label={t("comparator.business.request.route")}>
+              <span className="inline-flex flex-wrap items-center gap-1.5">
+                <FlagIcon country={sendingCountry} /> {sendingCountryName}
+                <span>→</span>
+                {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+              </span>
+            </StatItem>
+            <StatItem dark label={t("comparator.business.request.currency")}>
+              {from} → {to}
+            </StatItem>
+            <StatItem dark label={t("comparator.business.request.contract")}>
+              {contractTypeLabel} · {frequencyLabel}
+            </StatItem>
+          </div>
+
+          {/* 2026-09-04 feedback — "eso hace que se mueva el tamaño del
+              cuadro de your request por algo mínimo": matching the form's
+              *content* (same header/stats row) wasn't enough — the form
+              below is two stacked h-10 controls (input + button) with a
+              gap-2 between them, 88px tall (2.5rem+0.5rem+2.5rem), while
+              this confirmation was a single ~40px row. On most widths the
+              stats block next to it was tall enough (wrapped to 2-3 lines)
+              to hide the difference, but whenever it wrapped to fewer
+              lines the shared flex row's height tracked the shorter side,
+              shrinking the panel by that few-px gap. `h-[88px]` pins this
+              box to the exact same height as the form, independent of how
+              the stats wrap. */}
+          <div className="flex h-[88px] w-full items-center justify-center gap-2 rounded-lg border border-success/40 bg-success/15 px-3 text-sm font-semibold text-success sm:w-[280px]">
+            <CheckCircle2 className="h-4 w-4 shrink-0" />
+            {t("comparator.business.request.sent")}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // 2026-09-03 feedback — third redesign of this panel: "cambiarle el
+  // color y reorganizar de nuevo todos los datos... así como lo pusimos
+  // en columna queda mal". Every dark treatment tried here (near-black,
+  // then the softened #716B68) kept reading as its own separate, heavier
+  // "mode" next to the plain bg-card results below it — and the stacked
+  // single-column layout (four label/value rows one under another) read
+  // as unnecessarily tall for what's four short facts. Dropping the
+  // custom dark background entirely: this is now styled exactly like
+  // every other card on the page (border-border, bg-card, foreground/
+  // muted-foreground text) rather than a fourth attempt at a bespoke
+  // dark tint — the safest way to stop it clashing is to stop giving it
+  // its own look. The four facts move from a stacked column into a
+  // single wrapping row of compact label/value pairs (StatItem below) —
+  // no grid, no fixed-width cells, so a long country pair just wraps to
+  // the next line as its own unit instead of overflowing a column
+  // (the original overlap bug's actual cause).
+  //
+  // "Eliminar esto porque ocupa lugar... ponerlo en el subtitulo de your
+  // request más conciso": the old explainer paragraph (a full sentence
+  // about what selecting brokers does) AND the disclaimer paragraph below
+  // the stats both took their own line; dropped the explainer and
+  // promoted the disclaimer's own already-existing copy ("One email with
+  // your requirements...") to be the one subtitle under the title —
+  // shorter, and says the one thing that actually matters (privacy),
+  // instead of two paragraphs saying it twice.
+  //
+  // The Send button keeps its own bottom row, right-aligned via
+  // `justify-end` on a row of its own — same "anchored, never drifting"
+  // fix as before (see git history), now independent of how many lines
+  // the stats row above it wraps to.
+  return (
+    <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0 flex-1">
+          {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+          <h3 className="font-heading text-[15px] font-extrabold text-white">
+            {t("comparator.business.request.title")}
+          </h3>
+          <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
+            {t("comparator.business.request.disclaimer")}
+          </p>
+        </div>
+        <div className="shrink-0 text-right">
+          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
+            {t("comparator.business.request.brokersSelected")}
+          </div>
+          <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
+            {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
+          </div>
+        </div>
+      </div>
+
+      {/* 2026-09-03 feedback (third round) — "el volume route currency
+          contract y el boton de send request podrian estar un poco mas
+          separados y deberian de estar en el mismo nivel, queda mucho
+          espacio en blanco": these used to be two stacked rows, each with
+          its own `border-t pt-3` — one gap for the stats, a second
+          identical gap above the button, adding a full extra row's worth
+          of height for no real content. Merged into one row (one border,
+          one pt-3): stats flow on the left, the button anchors to the
+          right via `justify-between` on the shared row (still never
+          drifting — see the button's own comment below) — `gap-8` between
+          the two sides so the button doesn't crowd the stats now that
+          they share a row. `items-center` on this outer row keeps the
+          button vertically centered against the stats block's height;
+          the stats keep their own `items-baseline` internally. */}
+      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-white/15 pt-3">
+        {/* 2026-09-04 feedback (round 2) — same grid-cols-2 reordering as
+            the "sent" state above. */}
+        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-2">
+          <StatItem dark label={t("comparator.business.request.volume")}>
+            {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+          </StatItem>
+          <StatItem dark label={t("comparator.business.request.route")}>
+            <span className="inline-flex flex-wrap items-center gap-1.5">
+              <FlagIcon country={sendingCountry} /> {sendingCountryName}
+              <span>→</span>
+              {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+            </span>
+          </StatItem>
+          <StatItem dark label={t("comparator.business.request.currency")}>
+            {from} → {to}
+          </StatItem>
+          <StatItem dark label={t("comparator.business.request.contract")}>
+            {contractTypeLabel} · {frequencyLabel}
+          </StatItem>
+        </div>
+
+        {/* 2026-09-03 feedback — "el campo de mail ver si conviene dejarlo
+            siempre visible arriba del boton de send request": this used to
+            be a plain CTA button that only revealed the email input after
+            its own click (an extra step + an extra layout change every
+            time). Always showing the field removes both — one less click
+            to submit, and no more content jumping in as the button is
+            pressed. `justify-between` on the shared row above still keeps
+            this block anchored right regardless of content — the earlier
+            "el botón se mueve al centro" fix (see git history) — so the
+            button itself doesn't need a fixed width for that. */}
+        <form
+          className="flex w-full flex-col gap-2 sm:w-[280px]"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onSend(email);
+          }}
+        >
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t("comparator.business.request.emailPlaceholder")}
+            className="h-10 w-full rounded-lg border border-white/20 bg-white/[.06] px-3 text-sm text-white placeholder:text-white/40 focus:border-[#FF8A6B]/60 focus:outline-none"
+          />
+          <button
+            type="submit"
+            disabled={selectedCount === 0 || status === "sending"}
+            className="btn-cta flex h-10 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {status === "sending"
+              ? t("comparator.business.request.sending")
+              : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+          </button>
+          {status === "error" && (
+            <p className="text-right text-xs text-destructive">
+              {t("comparator.business.request.error")}
+            </p>
+          )}
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// design/Mangomundi 4 - Final.dc.html (line 552-557) — the mockup's third
+// rail card is "Rather talk to someone?" + "Book a 15-min call". 2026-08-30
+// feedback (second round) is explicit: no booking flow — contact stays
+// email, same business desk address the home teaser and BusinessExtrasSection
+// already use. Literal to the mockup otherwise: same photo, top-anchored,
+// bordered card.
+function BusinessContactCard() {
+  const { t } = useI18n();
+  return (
+    <div className="compare-card overflow-hidden">
+      <img
+        src="/images/business-person.jpg"
+        alt=""
+        width={300}
+        height={120}
+        className="h-[120px] w-full object-cover object-[center_30%]"
+        loading="lazy"
+      />
+      <div className="p-4">
+        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+        <h3 className="text-[14.5px] font-extrabold text-foreground">
+          {t("comparator.business.contactCard.title")}
+        </h3>
+        <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">
+          {t("comparator.business.contactCard.body")}
+        </p>
+        {/* 2026-08-31 feedback — "el botón de acción de enviar un email
+            respete la paleta": was a plain ink-bordered button, now the
+            brand's own btn-cta (mango), same as BusinessExtrasSection's
+            matching email CTA below. */}
+        <a
+          href="mailto:hello@mangomundi.com?subject=Business%20FX%20inquiry"
+          className="btn-cta mt-2.5 flex h-10 items-center justify-center rounded-xl text-[13px] font-bold"
+        >
+          {t("business.extras.cta")}
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ===== Results table (light) =====
+function ResultsBlock({
+  result,
+  amount,
+  pending,
+  sortBy,
+  deliveryMethod,
+  showOnlyExclusive,
+  hasCorridorContext,
+  handleAffiliateClick,
+  tRatesSource,
+  tAt,
+  tCta,
+  tNeutrality,
+  segment,
+  retailBestReceived,
+  requestedSlugs,
+  onToggleRequested,
+}: {
+  result: ComparisonResult;
+  amount: number;
+  /** docs/kayak-redesign-spec.md §3.6 — alimenta el spinner "buscando
+   *  precios" de la barra de estado. El padre ya atenúa el bloque entero
+   *  durante el fetch; esto le pone palabras a esa atenuación. */
+  pending: boolean;
+  sortBy: SortKey;
+  deliveryMethod: DeliveryMethod | null;
+  showOnlyExclusive: boolean;
+  /** design/Mangomundi 4 - Final.dc.html line 494-529 — business segment
+   *  passes an extra businessExtra prop to every ProviderRow (see
+   *  BusinessRowExtra), never a different row layout — see this prop's own
+   *  2026-08-30 (second round) correction below. */
+  segment: Segment;
+  /** Best received amount from a same-corridor RETAIL comparison, fetched
+   *  separately (see ComparatorSection's retail-baseline effect) so the
+   *  broker table's "Est. saved" figure can honestly say "vs the retail
+   *  best on this route" (the mockup's own disclosed methodology, line
+   *  529) instead of a number with no stated baseline. Null while that
+   *  fetch hasn't resolved yet, or outside the business segment — the
+   *  saved figure is hidden rather than guessed in that case. */
+  retailBestReceived: number | null;
+  requestedSlugs: Set<string>;
+  onToggleRequested: (slug: string) => void;
+  /** True when the current query has both a sending and receiving country
+   *  selected, i.e. a real corridor lookup was attempted server-side — see
+   *  fx.functions.ts. Gates the "not verified for this route" badge: without
+   *  this, every row would show has_corridor_data:false whenever no
+   *  corridor lookup ran at all (currency-only comparisons), which would
+   *  misleadingly badge rows that were never checked against a route in the
+   *  first place. */
+  hasCorridorContext: boolean;
+  handleAffiliateClick: (slug: string, url: string, name?: string) => void;
+  tRatesSource: string;
+  tAt: string;
+  tCta: string;
+  tNeutrality: string;
+}) {
+  const { t } = useI18n();
+
+  // Opt-in requirement filters narrow the pool BEFORE ranking/badges are
+  // computed, so a "cheapest" badge always reflects the cheapest among what
+  // the person can actually see right now, not a hidden full market.
+  const filteredRows = useMemo(
+    () =>
+      result.rows.filter(
+        (r) =>
+          (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)) &&
+          (!showOnlyExclusive || r.has_exclusive_deal === true),
+      ),
+    [result.rows, deliveryMethod, showOnlyExclusive],
+  );
+  const organic = useMemo(() => {
+    const sorted = sortByScore(filteredRows, sortBy);
+    // "Recomendado" only: sponsored providers surface as a group first,
+    // each group still internally ordered by score — an explicit product
+    // decision (not sortByScore's own behavior, which never does this —
+    // see its neutrality comment at the top of scoring.functions.ts). The
+    // sponsored corner tag on every promoted row is what keeps this
+    // disclosed rather than a silent reorder. Other sort tabs (Receive
+    // more / Fastest / the "More criteria" ones) stay purely neutral —
+    // this only applies to the default "overall" ranking.
+    if (sortBy !== "overall") return sorted;
+    const sponsored = sorted.filter((r) => r.has_exclusive_deal);
+    const rest = sorted.filter((r) => !r.has_exclusive_deal);
+    return [...sponsored, ...rest];
+  }, [filteredRows, sortBy]);
+  // Reference point for every row's "vs. the best" delta — the highest
+  // received amount in the currently visible set, independent of the
+  // active sort (so switching to "Fastest" still shows how much less you'd
+  // get vs. the best payout available, not a delta that resets per tab).
+  const bestReceived = useMemo(
+    () => (organic.length ? Math.max(...organic.map((r) => r.received)) : 0),
+    [organic],
+  );
+  // Composite score (0-1, remapped to 7-9 for display — see displayScore)
+  // is INTENTIONALLY always computed with the "overall" profile, never
+  // `sortBy`. Score is meant to read as one stable, objective number per
+  // provider — if it recalculated per sort criterion (it used to), picking
+  // "Fastest" would silently change what "8.4" means without anyone
+  // choosing that, which is confusing at best and looks like the number is
+  // arbitrary at worst. `sortBy` still fully controls actual row ORDER
+  // (see `organic` below) — only the printed Score number is now decoupled
+  // from it.
+  const scoresBySlug = useMemo(
+    () => computeCompositeScores(filteredRows, "overall"),
+    [filteredRows],
+  );
+  // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
+  // in scoring.functions.ts) picks one value for this page view and doesn't
+  // flicker between renders, but still varies across visits/sessions — that's
+  // what actually spreads the "featured" slot across genuinely-tied providers
+  // instead of always favoring whichever one happens to sort first.
+  const tieBreakSeed = useMemo(() => Math.random() * 1000, []);
+  const featuredSlug = useMemo(
+    () => pickFeaturedAmongTies(organic, sortBy, tieBreakSeed)?.slug ?? organic[0]?.slug,
+    [organic, sortBy, tieBreakSeed],
+  );
+  // The featured provider must render FIRST — a "recommended" ribbon on a
+  // row that isn't visually at the top reads as broken, not as a fair
+  // rotation. This only ever reorders among rows that are already within
+  // the near-tie threshold of each other (pickFeaturedAmongTies never picks
+  // outside that cluster), so it never contradicts the actual ranking —
+  // it just decides who leads among genuine equals, and puts them first.
+  const displayRows = useMemo(() => {
+    if (!featuredSlug) return organic;
+    const idx = organic.findIndex((r) => r.slug === featuredSlug);
+    if (idx <= 0) return organic;
+    const copy = [...organic];
+    const [featured] = copy.splice(idx, 1);
+    copy.unshift(featured);
+    return copy;
+  }, [organic, featuredSlug]);
+
+  // Crisp HH:mm:ss for the trust line.
+  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+
+  // design/Mangomundi 4 - Final.dc.html (line 435) — "Show N more providers"
+  // instead of always rendering the full list; resets to collapsed whenever
+  // the underlying result changes (a new search shouldn't stay expanded from
+  // the previous one). Client-side only — result.rows is already fully
+  // loaded, so this is just how many of it render, not a new fetch.
+  const INITIAL_VISIBLE_ROWS = 6;
+  const [showAllRows, setShowAllRows] = useState(false);
+  useEffect(() => setShowAllRows(false), [result]);
+  const visibleRows = showAllRows ? displayRows : displayRows.slice(0, INITIAL_VISIBLE_ROWS);
+  const hiddenRowCount = displayRows.length - visibleRows.length;
+
+  // docs/kayak-redesign-spec.md §4.4 — barra fija al pie en mobile una vez
+  // que la persona scrolleó más de 400px: a esa altura el ganador ya salió
+  // de pantalla y volver arriba para tocarlo es el gesto que Kayak evita.
+  // Vive acá, en ResultsBlock, y no en el padre, porque el ganador es
+  // `displayRows[0]` — el resultado del orden y los filtros ACTIVOS. Sacar
+  // esa cuenta al padre significaría duplicar el ranking, que es
+  // exactamente lo que este rediseño no toca.
+  const [showBottomBar, setShowBottomBar] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowBottomBar(window.scrollY > 400);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  const winner = displayRows[0];
+
+  return (
+    <div className="min-w-0">
+      {/* docs/kayak-redesign-spec.md §3.6 — barra de estado de 40px sobre
+          los resultados, sin fondo. A la izquierda el recuento (durante el
+          fetch, spinner + "buscando precios", el `Fetching prices…` de
+          Kayak); a la derecha el sello de actualización, que antes vivía
+          enterrado en el bloque legal al final de la lista — es EL dato de
+          confianza de un comparador y en Kayak vive arriba, no abajo. */}
+      <div className="flex h-10 items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-1.5 text-meta text-muted-foreground">
+          {pending ? (
+            <>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              {t("comparator.status.fetching")}
+            </>
+          ) : (
+            t("comparator.status.providers").replace("{n}", String(displayRows.length))
+          )}
+        </span>
+        <span className="text-meta text-muted-foreground">
+          {t("comparator.status.updated")}{" "}
+          <span className="tabular-nums font-semibold text-foreground">{updatedTime}</span>
+        </span>
+      </div>
+
+      {/* No shared header row (design/AJUSTES-1.md §C1 — removed on
+          purpose): each row now carries its own per-metric micro-label
+          above its value (see ProviderRow), so a card reads on its own
+          without the eye having to travel back up to a header — which is
+          also what lets the same row layout work on mobile without a
+          separate table. */}
+      <div className={displayRows.length > 0 ? "flex flex-col gap-[11px]" : ""}>
+        {/* 2026-08-30 feedback (second round) — business used to swap this
+            for a completely different card (BusinessBrokerRow). Corrected:
+            the business segment gets the SAME row — same metrics, same
+            affiliate CTA, everything individual already has — with the
+            broker fields (spread/minimum/settlement/contracts) and "Add to
+            special request" appended as an ADDITIONAL block via
+            businessExtra, never a replacement. */}
+        {visibleRows.map((row, i) => (
+          <ProviderRow
+            key={row.slug}
+            row={row}
+            quote={result.quote}
+            base={result.base}
+            score={scoresBySlug.get(row.slug) ?? null}
+            delta={row.received - bestReceived}
+            featured={i === 0}
+            hasCorridorContext={hasCorridorContext}
+            onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
+            tCta={tCta}
+            sortBy={sortBy}
+            businessExtra={
+              segment === "business"
+                ? {
+                    amount,
+                    savedVsRetail:
+                      retailBestReceived != null ? row.received - retailBestReceived : null,
+                    requested: requestedSlugs.has(row.slug),
+                    onToggleRequested: () => onToggleRequested(row.slug),
+                  }
+                : undefined
+            }
+          />
+        ))}
+        {organic.length === 0 && (
+          <div className="rounded-2xl border border-border bg-card px-4 py-8 text-center text-sm text-muted-foreground">
+            {deliveryMethod != null ? t("comparator.emptyFiltered") : t("comparator.empty")}
+          </div>
+        )}
+      </div>
+
+      {hiddenRowCount > 0 && (
+        <button
+          type="button"
+          onClick={() => setShowAllRows(true)}
+          className="mt-3 flex h-11 w-full items-center justify-center rounded-xl border-[1.5px] border-input bg-card text-sm font-bold text-foreground transition-colors hover:border-foreground/40 sm:w-auto sm:px-5"
+        >
+          {t("comparator.showMoreProviders").replace("{n}", String(hiddenRowCount))}
+        </button>
+      )}
+
+      {/* docs/kayak-redesign-spec.md §4.4 — barra fija al pie, sólo mobile
+          (`sm:hidden`) y sólo con el ganador ya fuera de pantalla. A la
+          izquierda el mejor monto encontrado, a la derecha el CTA de ESA
+          fila — el mismo `handleAffiliateClick` que dispara la fila,
+          incluido su tracking, nunca un atajo que saltee la disclosure. */}
+      {winner && showBottomBar && (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
+          <div className="min-w-0">
+            <div className="truncate text-meta font-semibold tabular-nums text-foreground">
+              {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+              {result.quote}
+            </div>
+            <div className="truncate text-badge text-muted-foreground">{winner.name}</div>
+          </div>
+          {winner.affiliate_url && (
+            <button
+              type="button"
+              onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
+              className="btn-cta-gradient inline-flex h-10 shrink-0 items-center justify-center rounded-control px-5 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {t("fx.goto")} {winner.name} ↗
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* docs/kayak-redesign-spec.md §3.6 — el bloque legal se mantiene
+          entero (es obligación, no decoración) pero colapsado en un
+          <details>: el sello de actualización que lo encabezaba ya subió a
+          la barra de estado, así que lo que queda acá es letra chica que no
+          tiene por qué ocupar altura permanente al pie de la lista. */}
+      <details className="mt-4 rounded-compact border border-border bg-card/50 px-4 py-3">
+        <summary className="cursor-pointer text-meta font-semibold text-muted-foreground hover:text-foreground">
+          {t("comparator.legal.summary")}
+        </summary>
+        <div className="mt-2 text-badge leading-relaxed text-muted-foreground">
+          <p>
+            {tRatesSource}{" "}
+            <span className="font-semibold text-foreground">
+              {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
+              <span className="tabular-nums">{updatedTime}</span>
+            </span>
+          </p>
+          <p className="mt-1">
+            <span className="font-semibold text-foreground">⚖︎ </span>
+            {tNeutrality}
+          </p>
+          {/* design/Mangomundi 4 - Final.dc.html line 529 — the broker
+              table's own disclosed methodology, not the retail footer copy
+              above. */}
+          {segment === "business" && <p className="mt-2">{t("comparator.business.methodology")}</p>}
+        </div>
+      </details>
+    </div>
+  );
+}
+
+// design/AJUSTES-2.md §3 — the small orange tag next to the featured row's
+// name ("Best overall"/"Fastest"/…), naming which active sort criterion it
+// won. Distinct from sortLabelKey's short tab/chip words (e.g. "Smart",
+// "Rate") — this is a full phrase explaining the win, matching the
+// mockup's dynamic tag literally ("Best overall", "Receives most",
+// "Fastest").
+/** docs/kayak-redesign-spec.md §3.7 — clave de localStorage del ♡ de cada
+ *  fila. Guarda sólo slugs de proveedor: ni montos, ni corredores, ni nada
+ *  que ate el guardado a una búsqueda concreta — es "me interesa este
+ *  proveedor", no "guardá esta cotización", que caducaría en minutos. */
+const SAVED_RATES_KEY = "mangomundi.savedProviders";
+
+function winnerTagKey(sortBy: SortKey): string {
+  switch (sortBy) {
+    case "recipient_gets_most":
+      return "comparator.row.tagReceivesMost";
+    case "fastest":
+      return "comparator.row.tagFastest";
+    case "most_trusted":
+      return "comparator.row.tagMostTrusted";
+    case "lowest_cost":
+      return "comparator.row.tagLowestFee";
+    case "best_exchange_rate":
+      return "comparator.row.tagBestRate";
+    default:
+      return "comparator.row.tagBestOverall";
+  }
+}
+
+function ProviderRow({
+  row,
+  quote,
+  base,
+  score,
+  delta,
+  featured,
+  hasCorridorContext,
+  onClick,
+  tCta,
+  sortBy,
+  businessExtra,
+}: {
+  row: ComparisonResult["rows"][number];
+  quote: string;
+  base: string;
+  /** Composite score (0-1), ALWAYS the "overall" profile regardless of the
+   *  active sortBy — see the useMemo in ResultsBlock for why it's
+   *  intentionally decoupled from the sort criterion. Shown as the
+   *  "Puntaje N" pill above the logo, relative to the current corridor's
+   *  result set, not an absolute rating (see the legend modal). null if
+   *  this row wasn't part of the scored set (shouldn't normally happen). */
+  score: number | null;
+  /** row.received - bestReceived in the current (filtered, sorted) set.
+   *  0 for the row that IS the best; negative for everyone else. */
+  delta: number;
+  /** True for the first row after featured-promotion (see displayRows in
+   *  ResultsBlock) — gets the coral border + solid CTA, Kayak's "Best
+   *  value" treatment, so there's a single clear lead instead of every
+   *  row looking equally weighted. */
+  featured: boolean;
+  /** See the same-named prop on ResultsBlock — gates the "not verified"
+   *  badge below. */
+  hasCorridorContext: boolean;
+  onClick: () => void;
+  tCta: string;
+  /** Drives the featured row's winner tag (design/AJUSTES-2.md §3) — which
+   *  criterion it won under the currently active sort. */
+  sortBy: SortKey;
+  /** design/Mangomundi 4 - Final.dc.html line 494-529 — business-only,
+   *  additive block (Spread/Minimum/Settlement/Contracts + "Add to special
+   *  request") appended below the row's existing footer. 2026-08-30
+   *  feedback (second round): this used to be a whole separate row
+   *  component replacing the individual layout — corrected to be exactly
+   *  this, an addition, since the business search should show everything
+   *  individual already does (affiliate CTA included) plus this. undefined
+   *  outside the business segment. */
+  businessExtra?: {
+    amount: number;
+    savedVsRetail: number | null;
+    requested: boolean;
+    onToggleRequested: () => void;
+  };
+}) {
+  const { t } = useI18n();
+  const deliveryLabel = formatDeliverySpeed(row.speed_hours);
+
+  const ratePct = row.rate_vs_market_pct;
+  const ratePctLabel = `${ratePct >= 0 ? "+" : ""}${ratePct.toFixed(2)}%`;
+  const ratePctClass =
+    ratePct >= -0.25 ? "text-success" : ratePct >= -1 ? "text-warning" : "text-destructive";
+
+  // Trust/confidence badges — surfaces whether this row's numbers are real
+  // per-route data or a generic estimate, and when they were last checked.
+  // See fx.functions.ts (has_corridor_data, corridor_verified_status,
+  // provider_rates_last_updated) for how these are computed server-side.
+  const notVerifiedForRoute = hasCorridorContext && !row.has_corridor_data;
+  const unconfirmed = row.corridor_verified_status === "sin_confirmar";
+  const lastUpdatedRaw = row.corridor_data_collected_at ?? row.provider_rates_last_updated;
+  // Day + month + time (no year) — design/AJUSTES-1.md §C3's "28 Aug,
+  // 09:41" stamp, not the plain date the pre-adjustment label used.
+  const lastUpdatedLabel = lastUpdatedRaw
+    ? new Date(lastUpdatedRaw).toLocaleString(undefined, {
+        day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : null;
+  const isVerified = !notVerifiedForRoute && !unconfirmed;
+
+  // Feature highlight chips: only the delivery-method pills remain now (on
+  // request) — the merit badges (lowest fee / best exchange rate / most
+  // trusted / wide coverage / exclusive deal) that used to live here were
+  // removed entirely: each one duplicated something already visible
+  // elsewhere on the row (fee/rate in the mini-strip, trust in the star
+  // chip above) or a sort chip already named the same thing, same category
+  // of redundancy already fixed once for "most transparent"/"fastest" —
+  // just applied consistently to the rest now instead of case-by-case.
+  const highlightChips = (() => {
+    type Chip = { key: string; icon: typeof Shield | null; text: string };
+    const chips: Chip[] = [];
+    // Delivery-method pills — derived from the SAME predicate map that
+    // drives the filter chips (DELIVERY_METHOD_PREDICATES), so "this row
+    // qualifies" can never disagree between the filter and the row pill.
+    // Every method the row supports gets a pill, always, independent of
+    // whether that method is the one currently selected in the filter row.
+    for (const { key, icon, labelKey } of DELIVERY_METHODS) {
+      if (!DELIVERY_METHOD_PREDICATES[key](row)) continue;
+      chips.push({ key: `delivery_${key}`, icon, text: t(labelKey) });
+    }
+    return chips;
+  })();
+  // PAYOUT metric cell text (design/AJUSTES-1.md §C1) — same delivery
+  // methods that used to render as chips below the name. §C4 removes those
+  // chips outright: payout is one of the four metrics now, text only, not
+  // repeated as a pill below the name too.
+  const payoutText = highlightChips.map((c) => c.text).join(" · ") || "—";
+
+  // Delta vs. the best received amount in view (§C4) — 0 (or a hair off it,
+  // due to float rounding) means this row IS the best, so it gets the
+  // winner label instead of a "−N vs best" line.
+  const isBest = delta >= -0.005;
+  const deltaLabel = isBest
+    ? null
+    : t("comparator.row.deltaVsBest").replace(
+        "{amount}",
+        `${delta.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${quote}`,
+      );
+
+  // Name + rating (§C4) — "★ 4.3 on Trustpilot · {regulator}", no review
+  // count. row.regulator holds the real per-provider regulator name when
+  // one exists (e.g. "FCA") — kept as real data rather than the mockup's
+  // literal placeholder word "Regulated".
+  // design/AJUSTES-2.md §0/§3 — the rating star is filled #F59E0B (amber),
+  // one of the two exceptions to "no filled icons" the doc calls out
+  // (the other is the Trustpilot star elsewhere, filled #1F7A5A/green).
+  // 2026-09-03 feedback (found during AC23's own testing, confirmed via a
+  // fresh mobile screenshot) — "rating overlapping amount": this whole line
+  // used to be one inline-flex span with no overflow handling, so a long
+  // regulator name (real data — not every provider is just "FCA") had
+  // nothing clipping it and could spill out of its column into the amount
+  // block next to it. The star/score/"on Trustpilot" part never varies in
+  // length and always matters, so it stays fixed (shrink-0); only the
+  // regulator name — the one open-ended part — is its own min-w-0 flex item
+  // with `truncate`, so it gets a real ellipsis instead of an abrupt cut or
+  // an overlap when space runs out.
+  const rating = row.trust_score != null && (
+    <span className="flex min-w-0 items-center gap-1 text-[11.5px] text-muted-foreground">
+      <Star className="h-2.5 w-2.5 shrink-0 fill-warning text-warning" />
+      <span className="shrink-0 whitespace-nowrap">
+        {row.trust_score.toFixed(1)} {t("comparator.row.onTrustpilot")}
+      </span>
+      {row.regulator && <span className="min-w-0 truncate">· {row.regulator}</span>}
+    </span>
+  );
+
+  // Price stamp (design/AJUSTES-1.md §C3) — one line, no pill/background,
+  // replacing the old orange "not verified"/"unconfirmed" badges plus the
+  // separate "Updated: {date}" text. "Not verified" and "unconfirmed" both
+  // collapse into the same "Estimated" state here — both still mean
+  // exactly what the comment above isVerified used to say: treat this
+  // row's fee/rate as an estimate, double-check on the provider's site.
+  // See fx.functions.ts (has_corridor_data, corridor_verified_status,
+  // provider_rates_last_updated) for how these are computed server-side.
+  const priceStamp = lastUpdatedLabel && (
+    <span
+      className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] font-semibold"
+      style={{ color: isVerified ? "#1F7A5A" : "#6B5F55" }}
+    >
+      <Clock className="h-3 w-3 shrink-0" />
+      {isVerified ? t("comparator.row.stampLive") : t("comparator.row.stampEstimated")} ·{" "}
+      {lastUpdatedLabel}
+    </span>
+  );
+  // Sponsored disclosure (§C4) — demoted from a colored corner tab to plain
+  // footer text, same size/weight as the price stamp next to it. Same
+  // has_exclusive_deal trigger as before (presentation change only, not a
+  // rewiring of which flag counts as "sponsored"). The neutrality statement
+  // itself now lives once above the whole list (see ResultsBlock), not
+  // repeated here.
+  const affiliateNote = row.has_exclusive_deal && (
+    <span className="whitespace-nowrap font-medium text-muted-foreground">
+      {t("comparator.row.affiliateLink")}
+    </span>
+  );
+  // design/AJUSTES-2.md §3 — literal "·" dividers between footer elements,
+  // and "Fee breakdown" pinned right (ml-auto). Built as an array so the
+  // dot only ever renders BETWEEN two real elements, never dangling if one
+  // is absent (has_exclusive_deal false, no promo_text, etc.).
+  const footerDot = (
+    <span className="whitespace-nowrap" style={{ color: "#B3A698" }}>
+      ·
+    </span>
+  );
+  const footerParts = [
+    priceStamp,
+    row.promo_text && (
+      <span key="promo" className="inline-flex items-center gap-1 font-medium text-accent-text">
+        <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
+        {row.promo_text}
+      </span>
+    ),
+    affiliateNote,
+  ].filter(Boolean);
+  // 2026-08-30 feedback (fifth round) — "Fee breakdown" removed: it opened
+  // the AI agent's canned fee-explainer rather than showing an inline
+  // breakdown, which read as a dead/confusing link ("no tiene sentido").
+  // That explainer is still reachable through the agent itself (its own
+  // quick-actions grid), just not duplicated as a per-row footer link.
+  const trustLine = footerParts.length > 0 && (
+    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-badge leading-snug">
+      {footerParts.map((part, i) => (
+        <span key={i} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          {i > 0 && footerDot}
+          {part}
+        </span>
+      ))}
+    </div>
+  );
+
+  // Labeled CTA (§C4 — "Go to {name} ↗"; was an icon-only 44×44 square with
+  // no text before that, then just the bare name — the audit's H5: no way
+  // to tell what it does, and five identical buttons in a list have no
+  // hierarchy).
+  //
+  // docs/kayak-redesign-spec.md §3.7 — 36px de alto (la medida real del CTA
+  // de fila de kayak.co.uk: 144x36), radio de control, text-meta. Nunca más
+  // alto que 36 en la fila: era h-11 (44px), y 8 botones de 44px apilados
+  // son los que hacían que la lista perdiera densidad. La destacada lleva
+  // el gradiente; el resto, outline — la jerarquía la da el CTA, no un
+  // borde coral alrededor de toda la tarjeta.
+  const cta = row.affiliate_url ? (
+    <button
+      onClick={onClick}
+      aria-label={`${tCta} — ${row.name}`}
+      // El nombre más largo del catálogo ("Currencies Direct", "Ria Money
+      // Transfer") no entra en la columna de precio de 216px, así que se
+      // trunca — pero el nombre completo está a la izquierda, en el
+      // titular de la propia fila, y el title lo recupera en hover. Es el
+      // único recorte aceptable acá: agrandar la columna se lo come al
+      // bloque de métricas, y achicar la tipografía lo prohíbe el §0.5.
+      title={`${t("fx.goto")} ${row.name}`}
+      className={`inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 rounded-control px-2.5 text-meta font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        featured
+          ? "btn-cta-gradient"
+          : "border border-input bg-card text-foreground hover:border-foreground/40"
+      }`}
+    >
+      <span className="truncate">
+        {t("fx.goto")} {row.name} ↗
+      </span>
+    </button>
+  ) : (
+    // Always reserve the same height, whether or not there's a real link
+    // (a provider with no affiliate_url yet — see fx.functions.ts — would
+    // otherwise collapse this slot and misalign the column below it).
+    <div className="h-9 w-full shrink-0" aria-hidden />
+  );
+
+  // 2026-09-03 feedback — "agregar un boton de share this rate abajo del
+  // boton de go to wise o go to torfx... en ese caso esta compartiendo el
+  // link de afiliado, los que no tienen link cargado que no aparezca lo de
+  // compartir": a real link only, never fabricated — same
+  // `row.affiliate_url` gate the CTA above already uses, so a provider
+  // with no link yet shows neither button, same as before. Native share
+  // sheet first (best on mobile — the person picks WhatsApp/Messages/etc.
+  // themselves), clipboard copy as the fallback everywhere else, same
+  // pattern blog_.$slug.tsx's own ShareRow already uses.
+  const [shareCopied, setShareCopied] = useState(false);
+  const handleShare = async () => {
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: row.name, url: row.affiliate_url });
+        return;
+      }
+    } catch {
+      // User cancelled the native share sheet, or it failed — fall through
+      // to a plain clipboard copy instead of leaving the click looking dead.
+    }
+    try {
+      await navigator.clipboard.writeText(row.affiliate_url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000);
+    } catch {
+      // Clipboard API can fail (permissions, insecure context) — fail
+      // silently rather than showing a broken "copied" state.
+    }
+  };
+
+  // docs/kayak-redesign-spec.md §3.7 — guardar (♡) y compartir (↗) como dos
+  // cuadrados de 36px arriba a la izquierda de la fila, el par de acciones
+  // de la tarjeta de resultado de Kayak. Share pasa de ser un link de texto
+  // debajo del CTA a este par; el gate sigue siendo `row.affiliate_url`
+  // (nunca se comparte ni se guarda un link que no existe).
+  //
+  // El guardado persiste en localStorage, no en el servidor: es una
+  // conveniencia por navegador, no una cuenta. Cada acceso va en try/catch
+  // — en modo privado o con el almacenamiento bloqueado el botón
+  // simplemente no persiste, en vez de romper la fila entera.
+  const [saved, setSaved] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SAVED_RATES_KEY);
+      setSaved(raw ? (JSON.parse(raw) as string[]).includes(row.slug) : false);
+    } catch {
+      setSaved(false);
+    }
+  }, [row.slug]);
+  const toggleSaved = () => {
+    try {
+      const raw = localStorage.getItem(SAVED_RATES_KEY);
+      const list = raw ? (JSON.parse(raw) as string[]) : [];
+      const next = list.includes(row.slug)
+        ? list.filter((s) => s !== row.slug)
+        : [...list, row.slug];
+      localStorage.setItem(SAVED_RATES_KEY, JSON.stringify(next));
+      setSaved(next.includes(row.slug));
+    } catch {
+      // Storage unavailable — flip the visual state anyway so the click
+      // isn't dead; it just won't survive a reload.
+      setSaved((p) => !p);
+    }
+  };
+
+  const rowActionClass =
+    "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+
+  const saveButton = row.affiliate_url ? (
+    <button
+      type="button"
+      onClick={toggleSaved}
+      aria-pressed={saved}
+      aria-label={`${saved ? t("comparator.row.saved") : t("comparator.row.save")} — ${row.name}`}
+      className={`${rowActionClass} ${saved ? "text-brand-cta" : ""}`}
+    >
+      <Heart className={`h-4 w-4 ${saved ? "fill-current" : ""}`} aria-hidden />
+    </button>
+  ) : null;
+
+  const shareButton = row.affiliate_url ? (
+    <button
+      type="button"
+      onClick={handleShare}
+      aria-label={`${t("comparator.row.share")} — ${row.name}`}
+      title={shareCopied ? t("comparator.row.shareCopied") : t("comparator.row.share")}
+      className={`${rowActionClass} ${shareCopied ? "text-success" : ""}`}
+    >
+      {shareCopied ? (
+        <Check className="h-4 w-4" aria-hidden />
+      ) : (
+        <Share2 className="h-4 w-4" aria-hidden />
+      )}
+    </button>
+  ) : null;
+
+  return (
+    // docs/kayak-redesign-spec.md §3.7 — la fila deja de ser una tarjeta
+    // rounded-2xl con borde coral de 2px cuando gana, y pasa a la anatomía
+    // de la tarjeta de resultado de Kayak: `compare-card` (radio 8, sombra
+    // de dos capas), padding 0 en el contenedor, y DOS bloques separados
+    // por una línea vertical — el de identidad+métricas a la izquierda, el
+    // de precio+acción a la derecha. Esa línea vertical antes del precio es
+    // una de las firmas visuales de Kayak.
+    //
+    // La fila destacada ya NO se marca con borde coral: repetido en una
+    // lista de 8 tarjetas pesa demasiado y compite con el CTA. Se marca
+    // como Kayak — badge tintado + CTA con gradiente — y el resto de las
+    // filas llevan CTA outline.
+    <div className="compare-card group relative grid overflow-hidden p-0 hover:shadow-lg sm:grid-cols-[minmax(0,1fr)_216px]">
+      {/* Bloque izquierdo — identidad y métricas. */}
+      <div className="min-w-0 px-4 py-2.5">
+        {/* Línea 1 — acciones a la izquierda, badges de mérito a la
+            derecha. §3.7: nada de rounded-full en botones de acción. */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex shrink-0 items-center gap-1.5">
+            {saveButton}
+            {shareButton}
+          </div>
+          <div className="flex flex-wrap items-center justify-end gap-1.5">
+            {featured && (
+              <span className="rounded-control bg-merit-best px-2 py-0.5 text-badge font-semibold text-merit-best-foreground">
+                {t(winnerTagKey(sortBy))}
+              </span>
+            )}
+            {isBest && (
+              <span className="rounded-control bg-merit-cheap px-2 py-0.5 text-badge font-semibold text-merit-cheap-foreground">
+                {t("comparator.row.tagReceivesMost")}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Línea 2 — logo + nombre, con el rating en la misma línea. */}
+        <div className="mt-1.5 flex min-w-0 items-center gap-3">
+          <BrandLogo
+            name={row.name}
+            url={row.website_url ?? row.affiliate_url}
+            slug={row.slug}
+            size={36}
+            rounded={false}
+            className="shrink-0 rounded-control border border-border bg-white"
+          />
+          <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+            <span className="truncate text-metric font-bold text-foreground">{row.name}</span>
+            {rating}
+          </div>
+        </div>
+
+        {/* Línea 3 — UNA sola línea de métricas con separadores "·", en vez
+            de cuatro columnas con micro-label cada una (§3.7). Los
+            micro-labels desaparecen: con los valores en línea y unidades
+            explícitas ("5 GBP", "23.2115 MXN", "24h") no hacen falta, y son
+            los que forzaban el text-[10.5px] que este spec elimina. */}
+        <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-meta tabular-nums text-muted-foreground">
+          <span>
+            {t("comparator.row.labelFee")}{" "}
+            <span className="font-semibold text-foreground">
+              {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
+            </span>
+          </span>
+          <span aria-hidden>·</span>
+          <span>
+            {t("comparator.row.labelRate")}{" "}
+            <span className="font-semibold text-foreground">
+              {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
+            </span>{" "}
+            <span className={ratePctClass}>{ratePctLabel}</span>
+          </span>
+          <span aria-hidden>·</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden /> {deliveryLabel}
+          </span>
+          <span aria-hidden>·</span>
+          <span className="min-w-0">{payoutText}</span>
+        </div>
+      </div>
+
+      {/* Bloque derecho — precio y acción, detrás de la divisoria vertical.
+          §3.7: la moneda baja de línea (antes iba inline en 12px) y el
+          delta va debajo, siempre en text-badge. */}
+      {/* docs/kayak-redesign-spec.md §4.3 — en mobile este bloque deja de
+          ser una columna angosta alineada a la derecha (que a 390px
+          desperdiciaba media pantalla) y se abre en una fila: el monto
+          grande a la izquierda, el delta a la derecha, y el CTA a ancho
+          completo debajo. A partir de sm vuelve a ser la columna de precio
+          de §3.7, detrás de la divisoria vertical. */}
+      <div className="flex flex-col gap-1.5 border-t border-border px-4 py-2.5 sm:justify-center sm:gap-0.5 sm:border-l sm:border-t-0 sm:text-right">
+        <div className="flex items-end justify-between gap-3 sm:block">
+          <div className="flex items-baseline gap-1.5 sm:block">
+            <div className="whitespace-nowrap text-price font-bold tabular-nums text-foreground">
+              {row.received.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </div>
+            <div className="text-meta font-semibold text-muted-foreground">{quote}</div>
+          </div>
+          <div
+            className={`text-badge font-semibold tabular-nums sm:mt-0.5 ${
+              isBest ? "text-success" : "text-muted-foreground"
+            }`}
+          >
+            {isBest ? t("comparator.row.deltaWinner") : deltaLabel}
+          </div>
+        </div>
+        {/* §4.3 — CTA a ancho completo y 44px de alto en mobile (blanco de
+            toque real con el pulgar); vuelve a los 36px de Kayak en la
+            columna de precio a partir de sm. */}
+        <div className="[&>button]:h-11 sm:[&>button]:h-9">{cta}</div>
+      </div>
+
+      {/* Pie — la línea de confianza y la disclosure de afiliado dejan de
+          estar sueltas y pasan a una banda propia al pie de la tarjeta,
+          a ancho completo de las dos columnas (§3.7). */}
+      {trustLine && (
+        <div className="border-t border-border bg-muted/30 px-4 py-1 sm:col-span-2">
+          {trustLine}
+        </div>
+      )}
+
+      {businessExtra && (
+        <div className="border-t border-border px-4 py-3 sm:col-span-2">
+          <BusinessRowExtra
+            row={row}
+            quote={quote}
+            amount={businessExtra.amount}
+            savedVsRetail={businessExtra.savedVsRetail}
+            requested={businessExtra.requested}
+            onToggleRequested={businessExtra.onToggleRequested}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===== Business row extra =====
+// design/Mangomundi 4 - Final.dc.html (line 494-529) — appended below
+// ProviderRow's own footer when businessExtra is set (segment === "business"
+// only). 2026-08-30 feedback (second round): this used to be a whole
+// separate card replacing ProviderRow for business; corrected to be exactly
+// what its name says — an addition to the same row individual gets
+// (metrics, trust line, affiliate CTA all still render above this), not a
+// substitute for any of it.
+function BusinessRowExtra({
+  row,
+  quote,
+  amount,
+  savedVsRetail,
+  requested,
+  onToggleRequested,
+}: {
+  row: ComparisonResult["rows"][number];
+  quote: string;
+  amount: number;
+  /** null when the retail baseline hasn't loaded yet — the saved figure is
+   *  hidden rather than guessed (see ResultsBlock's own prop comment). */
+  savedVsRetail: number | null;
+  requested: boolean;
+  onToggleRequested: () => void;
+}) {
+  const { t } = useI18n();
+  const metrics: Array<{ labelKey: string; value: string; estimated?: boolean }> = [
+    {
+      labelKey: "comparator.business.metric.spread",
+      value: `${row.spread_applied.toFixed(2)}%`,
+    },
+    {
+      labelKey: "comparator.business.metric.minimum",
+      value:
+        row.min_amount != null
+          ? `${row.min_amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} ${quote}`
+          : "—",
+      estimated: row.min_amount != null && row.min_amount_estimated,
+    },
+    {
+      labelKey: "comparator.business.metric.settlement",
+      value: row.settlement_terms ?? "—",
+      estimated: row.settlement_terms != null && row.settlement_terms_estimated,
+    },
+    {
+      labelKey: "comparator.business.metric.contracts",
+      value: row.contract_type ?? "—",
+      estimated: row.contract_type != null && row.contract_type_estimated,
+    },
+  ];
+
+  return (
+    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      {/* 2026-09-03 feedback (second round) — "lo mismo ocurre en los datos
+          en cada proveedor... la posición en columna quedó bastante mal":
+          same fix as BusinessRequestPanel's own stats — reuses the same
+          StatItem component instead of a bespoke stacked column.
+          2026-09-02 feedback (AG4, round 4) — "poner spread y abajo
+          minimum en una misma columna, y en otra columna al lado
+          settlement y abajo contracts": the single flex-wrap row above
+          let the 4 chips reflow arbitrarily (2+2, 3+1, all 4 on one
+          line depending on value lengths) — no longer a fixed spread/
+          minimum vs. settlement/contracts pairing. Two explicit columns
+          (metrics[0]/[1] stacked in the first, [2]/[3] in the second) fix
+          that pairing regardless of value length.
+          2026-09-02 feedback (AH1) — "ponelo mas a la izquierda al lado
+          de la otra columna... aprovechamos el espacio vacío": a
+          grid-cols-2 split this whole block 50/50, so column 2 always
+          started at the container's midpoint regardless of how narrow
+          column 1's own content (a percentage, an amount) actually was —
+          wasted gap between the columns, and settlement/contracts' long
+          sentences capped at that same 50% width even though there was
+          more room to their right before the Add to request block.
+          Flex instead: column 1 is `shrink-0` (sized to its own short
+          content), column 2 is `flex-1` (starts right after column 1's
+          natural width, then uses everything remaining), separated by a
+          fixed, deliberately generous gap rather than a proportional one. */}
+      <div className="flex min-w-0 flex-1 items-start gap-x-8 gap-y-2">
+        {[metrics.slice(0, 2), metrics.slice(2, 4)].map((column, i) => (
+          <div key={i} className={`flex min-w-0 flex-col gap-2 ${i === 0 ? "shrink-0" : "flex-1"}`}>
+            {column.map((m) => (
+              <StatItem
+                key={m.labelKey}
+                label={t(m.labelKey)}
+                labelExtra={
+                  // 2026-09-02 feedback — real value where findable,
+                  // otherwise a logical estimate (never blank, never
+                  // presented as verified) — see this component's own
+                  // metrics comment.
+                  m.estimated ? (
+                    <span
+                      title={t("comparator.business.metric.estimatedTooltip")}
+                      className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-badge font-bold normal-case tracking-normal text-accent-text"
+                    >
+                      {t("comparator.business.metric.estimated")}
+                    </span>
+                  ) : undefined
+                }
+              >
+                {m.value}
+              </StatItem>
+            ))}
+          </div>
+        ))}
+      </div>
+      {/* 2026-09-03 feedback — "dejar el botón de add request del lado
+          derecho a la misma altura": sits beside the stats row (the outer
+          wrapper's `sm:items-center` centers it against that row's full
+          height, "misma altura" no matter how many lines Settlement/
+          Contracts wrap to).
+          2026-09-03 feedback (second round) — "los botones de add to
+          request en verde quedan fuera de la paleta, deberían estar en
+          negro": Verde read as an odd, unexpected color for this action —
+          switched to solid Tinta (--primary, this palette's black),
+          the same color blog_.$slug.tsx's own "Go to compare" CTA already
+          uses, rather than introducing another new hue. "Added" flips to
+          an outlined light-fill treatment (never back to white/card) with
+          a check icon, so the confirmed state still reads as its own
+          thing rather than just a darker button. */}
+      <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
+        {savedVsRetail != null && savedVsRetail > 0 && (
+          <div className="sm:text-right">
+            <div className="text-badge font-bold uppercase tracking-wide text-muted-foreground">
+              {t("comparator.business.estOn").replace(
+                "{amount}",
+                amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+              )}
+            </div>
+            <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
+              {savedVsRetail.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
+              <span className="text-badge font-bold text-muted-foreground">
+                {quote} {t("comparator.business.saved")}
+              </span>
+            </div>
+          </div>
+        )}
+        {/* 2026-09-02 feedback — "cuando hago click en un proveedor para
+            ponerlo en add to request se mueve todo el texto porque el
+            botón cambia de tamaño": "Add to request" (14 chars) vs.
+            "Added" (5 chars) — fixed width sized to fit the longer label
+            (plus the check icon's own state) so toggling never changes
+            the button's footprint. */}
+        <button
+          type="button"
+          onClick={onToggleRequested}
+          aria-pressed={requested}
+          className={`flex h-9 w-[140px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
+            requested
+              ? "border-[1.5px] border-primary/40 bg-primary/5 text-primary"
+              : "bg-primary text-primary-foreground hover:bg-primary/90"
+          }`}
+        >
+          {requested && <Check className="h-3.5 w-3.5" />}
+          {requested ? t("comparator.business.added") : t("comparator.business.addToRequest")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ===== Compact results — embeddable widget only =====
+// A dedicated renderer, not ProviderRow reused at a small size: the widget
+// lives in a fixed 360px-wide container regardless of the page's actual
+// viewport (see EmbedComparator), so viewport-based sm:/lg: breakpoints
+// can't tell it apart from a real mobile screen — reusing ProviderRow's
+// responsive grid here would either render the desktop 5-column layout
+// squeezed into 360px, or need container queries wired through both the
+// home and embed call sites. A second, deliberately simple component for
+// a deliberately simple job (one winner, a few compact lines, one link
+// out) is the smaller/safer change. Winner expanded with logo+rate+speed+
+// amount+CTA; the rest are single lines (logo, amount, delta) — no
+// per-row CTA, no metrics grid — so the whole thing fits in view without
+// its own internal scroll (the old version mounted the full comparator in
+// a scrolling box with a bouncing "more below" chevron; this fits by
+// being short, not by scrolling).
+function CompactResultsList({
+  result,
+  handleAffiliateClick,
+  tCta,
+}: {
+  result: ComparisonResult;
+  handleAffiliateClick: (slug: string, url: string, name?: string) => void;
+  tCta: string;
+}) {
+  const { t } = useI18n();
+  // 2026-09-04 feedback — "la frase rates just now ponela en your results":
+  // moved from EmbedComparator's own header bar into this header row
+  // instead (see that component's comment) — it's about the freshness of
+  // THESE results, so it reads better attached to them.
+  const freshness = useRatesFreshness(result.fetched_at);
+  // 2026-09-04 feedback — "agregar los 3 botones de ordenar por recommend,
+  // receive more y fastest igual que lo hace el comparador": the widget
+  // used to have no sort control at all, always showing "overall". Same
+  // SortKey/sortByScore the full comparator's own 3 tabs use (see their
+  // own comment a few hundred lines up) — just a compact pill row sized
+  // for this 360px frame instead of the full table's 78px-tall cards.
+  const [sortBy, setSortBy] = useState<SortKey>("overall");
+  // Sponsored-first only applies to the default "overall" ranking, same
+  // rule the full comparator's own sortedFiltered uses (see its own
+  // `if (sortBy !== "overall") return sorted` a few hundred lines up) —
+  // "receive more"/"fastest" are honest metric sorts, not a place to also
+  // sneak sponsored rows to the top.
+  const ranked = useMemo(() => {
+    const sorted = sortByScore(result.rows, sortBy);
+    if (sortBy !== "overall") return sorted;
+    const sponsored = sorted.filter((r) => r.has_exclusive_deal);
+    const rest = sorted.filter((r) => !r.has_exclusive_deal);
+    return [...sponsored, ...rest];
+  }, [result.rows, sortBy]);
+  const winner = ranked[0];
+  // 2026-09-04 feedback — "mostrar mas opciones para que ocupe todo el
+  // largo del widget": was capped at 2 extra rows to guarantee no internal
+  // scroll; EmbedComparator's content area now scrolls its own middle
+  // section when it has to (see that component's comment), so this can
+  // show as many as genuinely exist instead of hiding real results.
+  const rest = ranked.slice(1);
+  const sortTabs = [
+    { key: "overall" as SortKey, label: t("comparator.tab.recommended") },
+    { key: "recipient_gets_most" as SortKey, label: t("comparator.tab.receiveMore") },
+    { key: "fastest" as SortKey, label: t("comparator.tab.fastest") },
+  ];
+  const activeTabLabel = sortTabs.find((tab) => tab.key === sortBy)?.label ?? sortTabs[0].label;
+  // 2026-09-04 feedback (round 3) — "que se pueda mostrar mas datos no solo
+  // la cotizacion, el rate, el tiempo, el trust, al menos cuando se hace
+  // click que se despliegue": the non-winner rows only ever showed name +
+  // amount + delta — real data (rate, speed, trust_score) already exists
+  // on each row (the winner card above already reads it) but had nowhere
+  // to go in this compact one-line-per-row list. Click-to-expand instead
+  // of showing it inline on every row unconditionally, since most of these
+  // rows are just for comparison-at-a-glance, not a decision in progress.
+  const [expandedSlug, setExpandedSlug] = useState<string | null>(null);
+  // 2026-09-02 feedback — "en el widget también poner el ícono de share en
+  // las tarifas que son con link de afiliado": same native-share-sheet
+  // then clipboard-copy pattern ProviderRow's own handleShare already uses
+  // for the full comparator, sharing the real affiliate_url (never a
+  // fabricated mangomundi page) — same "los que no tienen link cargado que
+  // no aparezca lo de compartir" gate too. A single `sharedSlug` (not a
+  // boolean) since more than one row's share button can exist at once.
+  const [sharedSlug, setSharedSlug] = useState<string | null>(null);
+  const handleShare = async (row: ComparisonResult["rows"][number]) => {
+    if (!row.affiliate_url) return;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: row.name, url: row.affiliate_url });
+        return;
+      }
+    } catch {
+      // User cancelled the native share sheet, or it failed — fall through
+      // to a plain clipboard copy instead of leaving the click looking dead.
+    }
+    try {
+      await navigator.clipboard.writeText(row.affiliate_url);
+      setSharedSlug(row.slug);
+      setTimeout(() => setSharedSlug((s) => (s === row.slug ? null : s)), 2000);
+    } catch {
+      // Clipboard API can fail (permissions, insecure context) — fail
+      // silently rather than showing a broken "copied" state.
+    }
+  };
+
+  if (!winner) {
+    return (
+      <div className="py-6 text-center text-xs text-muted-foreground">{t("comparator.empty")}</div>
+    );
+  }
+
+  return (
+    <div className="min-w-0">
+      {/* 2026-09-04 feedback — "sacar la frase delivers the most poner your
+          results... también sacar la frase de of 24 compared": that pair
+          (design/Mangomundi 4 - Final.dc.html line 743-744) is replaced by
+          a plain "Your results" label plus the freshness stamp moved down
+          from the header bar above (see its own comment) — "of N compared"
+          didn't earn its place next to a list that only ever shows 3 of
+          them anyway. Padded to match the winner/invitation cards' own
+          p-2.5 inset below, since this row (plain text, no card of its
+          own) would otherwise sit flush against the frame edge. */}
+      <div className="flex items-baseline justify-between px-2.5">
+        <span className="text-badge font-semibold uppercase tracking-wide text-muted-foreground">
+          {t("comparator.widget.yourResults")}
+        </span>
+        {freshness && <span className="text-badge text-muted-foreground">{freshness}</span>}
+      </div>
+
+      {/* Compact sort pills — same 3 keys/labels as the full comparator's
+          own tabs (comparator.tab.*), one line of small buttons instead of
+          78px-tall cards. */}
+      <div className="mt-1.5 grid grid-cols-3 gap-1.5 px-2.5">
+        {sortTabs.map((tab) => {
+          const isActive = sortBy === tab.key;
+          return (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setSortBy(tab.key)}
+              aria-pressed={isActive}
+              className={`h-8 rounded-control px-1.5 text-badge font-semibold transition-colors ${
+                isActive
+                  ? "border-b-2 border-brand-cta bg-muted text-foreground"
+                  : "border-b-2 border-transparent bg-muted/40 text-muted-foreground hover:bg-muted"
+              }`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Winner — the only row with a CTA and full details. Tag (2026-09-04
+          feedback — "el que mostramos es el recommended") now reflects
+          whichever sort pill is active instead of always saying
+          "Recommended" — once "Receive more"/"Fastest" became real sorts
+          (not just "overall"), a fixed "Recommended" label on the top
+          "Fastest"-sorted row would misdescribe why it's there. */}
+      <div className="compare-card mt-1.5 p-2.5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <BrandLogo
+              name={winner.name}
+              url={winner.website_url ?? winner.affiliate_url}
+              slug={winner.slug}
+              size={28}
+              rounded={false}
+              className="shrink-0 rounded-sm"
+            />
+            <div className="min-w-0">
+              <span className="inline-block rounded-control bg-merit-best px-1.5 py-0.5 text-badge font-semibold text-merit-best-foreground">
+                {activeTabLabel}
+              </span>
+              <div className="truncate text-badge tabular-nums text-muted-foreground">
+                {winner.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ·{" "}
+                {formatDeliverySpeed(winner.speed_hours)}
+              </div>
+            </div>
+          </div>
+          <div className="shrink-0 text-right">
+            <div className="text-price font-bold tabular-nums text-foreground">
+              {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            </div>
+            <div className="text-badge font-semibold text-muted-foreground">{result.quote}</div>
+          </div>
+        </div>
+        {winner.affiliate_url && (
+          <div className="mt-2 flex items-center gap-1.5">
+            <button
+              onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
+              aria-label={`${tCta} — ${winner.name}`}
+              className="btn-cta-gradient flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-control text-meta font-semibold"
+            >
+              {winner.name} <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+            {/* 2026-09-02 feedback — "en el widget también poner el ícono
+                de share en las tarifas que son con link de afiliado":
+                shares the real affiliate_url (see handleShare's own
+                comment on why), same icon-only compact treatment as the
+                expanded rest-rows below. */}
+            <button
+              type="button"
+              onClick={() => handleShare(winner)}
+              aria-label={`${sharedSlug === winner.slug ? t("comparator.row.shareCopied") : t("comparator.row.share")} — ${winner.name}`}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control border border-input text-muted-foreground transition hover:text-foreground"
+            >
+              <Share2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Rest — one compact line each: logo, name, amount, delta. Padded
+          for the same reason as the header row above — plain text with no
+          card of its own would otherwise touch the frame edge. */}
+      {rest.length > 0 && (
+        <div className="mt-1 flex flex-col divide-y divide-border px-2.5">
+          {rest.map((row) => {
+            const delta = row.received - winner.received;
+            const isExpanded = expandedSlug === row.slug;
+            return (
+              <div key={row.slug}>
+                <button
+                  type="button"
+                  onClick={() => setExpandedSlug(isExpanded ? null : row.slug)}
+                  aria-expanded={isExpanded}
+                  className="flex w-full items-center justify-between gap-2 py-1.5 text-left"
+                >
+                  <div className="flex min-w-0 items-center gap-2">
+                    <BrandLogo
+                      name={row.name}
+                      url={row.website_url ?? row.affiliate_url}
+                      slug={row.slug}
+                      size={20}
+                      rounded={false}
+                      className="shrink-0 rounded-sm"
+                    />
+                    <span className="truncate text-meta font-semibold text-foreground">
+                      {row.name}
+                    </span>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1.5 tabular-nums">
+                    <span className="text-meta font-semibold text-foreground">
+                      {row.received.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    </span>
+                    <span className="w-12 text-right text-badge font-semibold text-muted-foreground">
+                      {delta.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                    </span>
+                    <ChevronDown
+                      className={`h-3 w-3 shrink-0 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`}
+                      aria-hidden
+                    />
+                  </div>
+                </button>
+                {isExpanded && (
+                  <div className="flex items-center justify-between gap-2 pb-2 pl-7">
+                    <div className="flex min-w-0 items-center gap-2 text-badge text-muted-foreground">
+                      <span className="shrink-0 tabular-nums">
+                        {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })}
+                      </span>
+                      <span className="shrink-0">·</span>
+                      <span className="shrink-0">{formatDeliverySpeed(row.speed_hours)}</span>
+                      {row.trust_score != null && (
+                        <>
+                          <span className="shrink-0">·</span>
+                          <span className="inline-flex shrink-0 items-center gap-0.5">
+                            <Star className="h-2.5 w-2.5 shrink-0 fill-warning text-warning" />
+                            {row.trust_score.toFixed(1)}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                    {/* Row's own name, not the full tCta sentence
+                        ("Apply mangomundi Preferred Channel Rate") — that
+                        copy is sized for the winner card's full-width
+                        button above, way too long for this inline pill.
+                        Same short-label convention the winner CTA already
+                        uses ({winner.name} <ArrowRight/>). */}
+                    {row.affiliate_url && (
+                      <div className="flex shrink-0 items-center gap-1">
+                        <button
+                          onClick={() =>
+                            handleAffiliateClick(row.slug, row.affiliate_url, row.name)
+                          }
+                          aria-label={`${tCta} — ${row.name}`}
+                          className="btn-cta flex h-6 min-w-0 items-center justify-center gap-1 rounded-md px-2 text-[10.5px] font-semibold"
+                        >
+                          <span className="truncate">{row.name}</span>
+                          <ArrowRight className="h-3 w-3 shrink-0" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleShare(row)}
+                          aria-label={`${sharedSlug === row.slug ? t("comparator.row.shareCopied") : t("comparator.row.share")} — ${row.name}`}
+                          className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:text-foreground"
+                        >
+                          <Share2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* 2026-09-04 feedback — "el boton de see more on mangomundi tiene
+          que quedar abajo en el widget, y también ponerlo antes de
+          comparar abajo": the "see more" CTA that used to live here (end
+          of this list) only ever showed up post-search. Moved out to
+          EmbedComparator itself instead, as one persistent bar pinned at
+          the bottom of the whole frame in both the pre-search examples
+          state and this post-search results state — see that component's
+          own comment. */}
+    </div>
+  );
+}
