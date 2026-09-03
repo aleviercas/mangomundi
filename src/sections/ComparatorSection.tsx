@@ -2198,3 +2198,677 @@ export function ComparatorSection({
                         }
                         setValidationError(null);
                         compareMut.mutate(undefined);
+                      }}
+                      disabled={
+                        compareMut.isPending ||
+                        !receivingCountry ||
+                        sameCorridorBlocked ||
+                        amount <= 0
+                      }
+                      className="btn-cta-gradient flex h-11 w-full items-center justify-center rounded-b-compact text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                    >
+                      {compareMut.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <span className="truncate">
+                          {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ) : collapsedSearch ? (
+                collapsedSearchPill
+              ) : (
+                searchBar
+              )}
+
+              {validationError && (
+                <div className="rounded-md border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning">
+                  {validationError}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* docs/kayak-redesign-spec.md §4.1 — barra de progreso de 3px al
+              pie de la barra sticky mientras corre la búsqueda. Es el
+              feedback más barato que hay: en mobile, con la barra colapsada
+              a una píldora, el spinner del CTA ya no está en pantalla, así
+              que sin esto un re-compare no tiene ningún acuse de recibo.
+              `animate-pulse` y no una animación de progreso falsa: no
+              sabemos cuánto va a tardar, y fingir un porcentaje mentiría. */}
+          {compareMut.isPending && result && !embedded && (
+            <div
+              className="h-[3px] w-full overflow-hidden rounded-full bg-muted"
+              role="progressbar"
+              aria-label={t("comparator.status.fetching")}
+            >
+              <div
+                className="h-full w-full animate-pulse"
+                style={{ backgroundImage: "var(--gradient-cta)" }}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* AI Agent — the floating tab/panel (collapsed edge tab, or once
+            expanded), always, everywhere on the site (2026-08-31 feedback,
+            twice now: first it swapped for a small trigger portaled into
+            TodaysRoutesSection's header row pre-search, then for a docked
+            copy of itself in the results rail — both removed. It never
+            disappears automatically anymore; only collapses when the user
+            clicks minimize. The rail's own dark filter panel, FiltersCard,
+            is a separate, unrelated component — not this agent, see its
+            own comment). Hidden only in embed mode: out of place inside a
+            third-party iframe. */}
+        {/* docs/kayak-redesign-spec.md §4.1 — en mobile con resultado, el
+            punto de entrada del agente pasa a ser el botón ✦ de la píldora,
+            así que la pestaña lateral flotante se oculta: medida en
+            screenshot, se superponía sobre las tarjetas de resultado a
+            390px. Cuando el panel está ABIERTO sigue visible, obviamente —
+            es el panel mismo. */}
+        <div className={collapsedSearch && aiCollapsed ? "hidden" : ""}>
+          {!embedded && (
+            <FloatingAgent
+              collapsed={aiCollapsed}
+              onToggle={handleAgentToggle}
+              hasNewResult={hasNewResult}
+              amount={amount}
+              lang={lang}
+              t={t}
+              aiLoading={aiLoading}
+              chat={chat}
+              result={result}
+              chatInput={chatInput}
+              setChatInput={setChatInput}
+              sendChat={sendChat}
+              chatMutPending={chatMut.isPending}
+              comparePending={compareMut.isPending}
+              onSuggestedCompare={runSuggestedCompare}
+              chatBottomRef={chatBottomRef}
+              chatNearBottomRef={chatNearBottomRef}
+              openPreferredRate={openPreferredRate}
+              segment={segment}
+              businessStage={businessStage}
+              savingBusinessLead={savingBusinessLead}
+              confirmBusinessLead={confirmBusinessLead}
+              setBusinessStage={setBusinessStage}
+              setChat={setChat}
+              onWizardAction={handleWizardAction}
+            />
+          )}
+        </div>
+
+        {/* Missing corridor — crowdsourced discovery CTA. */}
+        {missingCorridor && (
+          <div className="mt-6">
+            <MissingCorridorCta
+              from={missingCorridor.from}
+              to={missingCorridor.to}
+              acknowledged={Boolean(
+                missingLog.find(
+                  (m) =>
+                    m.from === missingCorridor.from &&
+                    m.to === missingCorridor.to &&
+                    m.acknowledged,
+                ),
+              )}
+              onRequest={() => void requestMissingRoute(missingCorridor.from, missingCorridor.to)}
+            />
+          </div>
+        )}
+
+        {/* Errors (non-missing-corridor) */}
+        {compareMut.isError && !missingCorridor && (
+          <div className="mt-6 rounded-xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+            {(compareMut.error as Error)?.message ?? t("comparator.row.genericError")}
+          </div>
+        )}
+
+        {/* First-search loading state — only while there's no prior result to
+            keep showing (a re-search with existing results just updates them
+            in place once the new data lands). Without this, clicking Compare
+            left a dead gap below the button until the request resolved; sized
+            to roughly match 3 real ProviderRow rows for the same
+            CLS-avoidance reason as BlogSection's skeleton.
+            2026-09-02 feedback (AH3) — gated behind `showLoadingSkeleton`
+            (see its own comment above) instead of `compareMut.isPending`
+            directly, so a fast response never flashes this in and back out. */}
+        {showLoadingSkeleton && !result && (
+          <div className="mt-5 min-w-0">
+            <div className="mb-3 flex items-center gap-2 text-sm font-medium text-foreground">
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-primary" aria-hidden />
+              {t("comparator.loading.title")}
+            </div>
+            <div className="overflow-hidden rounded-2xl border border-border bg-card" aria-hidden>
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  className="flex animate-pulse items-center gap-3.5 border-b border-border px-5 py-4 last:border-b-0"
+                >
+                  <div className="h-9 w-9 shrink-0 rounded-sm bg-muted" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 w-24 rounded bg-muted" />
+                    <div className="h-3 w-40 rounded bg-muted" />
+                  </div>
+                  <div className="h-7 w-24 shrink-0 rounded bg-muted" />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Your Results — a first-class home section. The page auto-scrolls
+            to the mid-market rate banner above (inside the comparator card)
+            rather than straight to this table, so the rate is seen first.
+            Embed mode skips all of this (tabs, filters, legend, the full
+            table) for CompactResultsList — a widget in a 360-440px iframe
+            has no room for a sort/filter row, and doesn't need one: it's a
+            "what's the best option" summary, not the full comparator. */}
+        {/* 2026-09-02 feedback (round 4) — now that onMutate (above) leaves a
+            prior result in place during a re-search instead of nulling it,
+            this dims it slightly while the new one is in flight — a subtle
+            "updating" cue (on top of the Compare button's own spinner)
+            instead of the jarring blank-then-repopulate flash. */}
+        {result &&
+          (embedded ? (
+            <div
+              className={`mt-2.5 min-w-0 transition-opacity duration-200 ${compareMut.isPending ? "opacity-60" : ""}`}
+            >
+              <CompactResultsList
+                result={result}
+                handleAffiliateClick={openPreferredRate}
+                tCta={t("retail.cta")}
+              />
+            </div>
+          ) : (
+            <div
+              className={`mt-5 grid min-w-0 scroll-mt-24 gap-5 transition-opacity duration-200 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-start lg:gap-5 ${compareMut.isPending ? "opacity-60" : ""}`}
+            >
+              {/* Left rail — design/AJUSTES-2.md §6 (mockup line 290-365):
+                  Filters → AI Agent → Rate alert → Trustpilot, 268px wide,
+                  13px gap between cards. ≥lg only; below that the page
+                  keeps the existing inline filter row + floating agent
+                  (rendered elsewhere), unchanged. */}
+              {/* docs/kayak-redesign-spec.md §3.4 — 240px (era 268) y
+                  sticky bajo el header + la barra de búsqueda, que ya es
+                  sticky ella misma: el rail de kayak.com acompaña el scroll
+                  de la lista en vez de irse hacia arriba con ella. */}
+              <aside className="hidden lg:sticky lg:top-[136px] lg:flex lg:flex-col lg:gap-3">
+                {/* 2026-08-31 feedback — this is the rail's "smart filter"
+                    (Kayak-style: dark, but a filter panel, not the chat
+                    agent — that one never docks here anymore, see the
+                    FloatingAgent render site's own comment). */}
+                <FiltersCard
+                  t={t}
+                  deliveryMethod={deliveryMethod}
+                  toggleDeliveryMethod={toggleDeliveryMethod}
+                  setDeliveryMethod={setDeliveryMethod}
+                  deliveryCounts={deliveryCounts}
+                  showOnlyExclusive={showOnlyExclusive}
+                  setShowOnlyExclusive={setShowOnlyExclusive}
+                  exclusiveCount={exclusiveCount}
+                  businessFilters={
+                    segment === "business"
+                      ? { contractType, setContractType, frequency, setFrequency }
+                      : undefined
+                  }
+                />
+                {/* 2026-08-31 feedback — "el cuadro de rather talk to
+                    someone debe estar en el menú vertical... debajo de los
+                    filtros": back in the rail (was below the results for
+                    one round) — business only, same as RateAlertCard is
+                    retail-only right below (never both at once). */}
+                {segment === "business" ? (
+                  <BusinessContactCard />
+                ) : (
+                  <RateAlertCard
+                    t={t}
+                    from={from}
+                    to={to}
+                    amount={amount}
+                    sendingCountry={sendingCountry}
+                    receivingCountry={receivingCountry}
+                  />
+                )}
+                <TrustpilotCard />
+              </aside>
+
+              <div className="min-w-0">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                  {/* 2026-09-02 feedback (X8 audit) — was h3, but every
+                      marketing section that carries an h2 (Today's routes,
+                      How it works, About manifesto, Blog…) is hidden the
+                      moment a result exists (see HomePageBody's own
+                      `!hasResult` gates) — so on the actual results page
+                      the heading order was h1 straight to h3, skipping a
+                      level. h2 (same classes, so no visual change) closes
+                      that gap; the h4s below it in this same view (Filters,
+                      rate alert, Your request, "Rather talk to someone?")
+                      move to h3 for the same reason, so nothing skips from
+                      here either. */}
+                  <h2 className="text-eyebrow font-bold uppercase text-accent-text">
+                    {t("comparator.results")}
+                  </h2>
+                  {/* 2026-09-02 feedback — "el resultado de mid market rate
+                      ponelo en el mismo renglón que your results, abajo del
+                      comparador y afuera del box, a la derecha": was inside
+                      the comparator card's own header row (design/AJUSTES-2.md
+                      §2's original placement) — moved here instead, same row
+                      as "Your results", outside the card. resultsRef/
+                      scroll-mt-24 (the auto-scroll target after a compare —
+                      see its own comment near the ref's declaration) moves
+                      with it; `justify-between` on this row already existed
+                      for exactly this second element. */}
+                  <div
+                    ref={resultsRef}
+                    className="flex shrink-0 scroll-mt-24 items-baseline gap-2.5"
+                  >
+                    <span className="font-heading text-[14px] font-extrabold tracking-tight tabular-nums text-foreground sm:text-[18px]">
+                      1 {from} ={" "}
+                      {result.market_rate.toLocaleString(undefined, { maximumFractionDigits: 6 })}{" "}
+                      {to}
+                    </span>
+                    <span className="hidden text-xs sm:inline" style={{ color: "#8A7C6E" }}>
+                      {t("comparator.midMarketRate")}
+                    </span>
+                  </div>
+                </div>
+                <div className="mb-2.5 flex flex-col gap-3">
+                  {/* Sort chips row stays visible at every width (the 3 main
+                    tabs aren't rail content). The secondary filters
+                    cluster right below (delivery method / exclusive /
+                    "more sort" dropdown) is redundant with the rail's
+                    Filters card once that exists, so it's lg:hidden —
+                    mobile/tablet keep using it exactly as before. */}
+                  {/* Sort chips + delivery-method cluster + legend button, all
+                  in ONE flex-wrap row now (on request) — they used to be
+                  two separate rows. Still two visually distinct sections
+                  within it: the sort chips are plain pill buttons, the
+                  delivery methods sit inside their own bordered/tinted
+                  cluster (bg-muted/40 + border), so the grouping stays
+                  legible even after everything wraps onto multiple lines at
+                  narrow widths. No literal divider line between the two
+                  sections — a vertical bar can end up alone at the end of
+                  a wrapped line on narrow widths (widget/mobile), which
+                  reads as a stray/broken element; the cluster's own
+                  border+background already separates it without needing
+                  one. No "Receive via" label either (removed on request —
+                  the bank/cash/card/broker icons plus this being the last
+                  cluster after the sort chips already read as "how do you
+                  want to receive it" without spelling it out). flex-wrap
+                  (not overflow-x-auto) — a horizontal-scroll strip was
+                  tried first, but at the 440px reference width of the
+                  embeddable widget (see EmbedComparator, routes/widget.tsx)
+                  there wasn't enough visible width to hint that more
+                  content existed off-screen, so it just looked cut off
+                  instead of scrollable; wrapping costs vertical space
+                  instead, but never hides anything. */}
+                  {/* Primary tabs (design/AJUSTES-1.md §C2) — 3 big buttons,
+                  not 4 small pills. The headline figure is the point: a
+                  sort tab that shows how much you gain by using it gets
+                  tapped; a pill that just says "Smart" doesn't.
+                  2026-09-01 feedback — "el rank by trust fees rate... sacalo
+                  del cuadro vertical de filters y ponelo a la derecha
+                  arriba al lado de los 3 filtros grandes... al lado de
+                  fastest": those 3 extra criteria used to live in TWO
+                  places (this row's own "More criteria" dropdown, `lg:hidden`
+                  so it only showed below the rail's breakpoint, AND
+                  duplicated again inside the rail's FiltersCard for ≥lg —
+                  see FiltersCard's own comment on why that duplication is
+                  now gone). One control now: this dropdown, moved out of
+                  the `lg:hidden` cluster below and placed directly next to
+                  the 3 tabs, visible at every width.
+                  2026-09-01 feedback — "en realidad es sort, no filter":
+                  renamed the trigger and dropped `sm:items-stretch` (which
+                  forced this control to match the tabs' full 78px height,
+                  reading as a would-be 4th tab) for `sm:items-center`, so
+                  the compact pill sits at a normal control size next to
+                  them instead of pretending to be one. */}
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    {/* §3.5 — un solo bloque de 3 columnas SIN gaps: la
+                        matriz de precio de Kayak es una pieza, no 3
+                        tarjetas sueltas. `overflow-hidden` recorta la barra
+                        inferior de la tab activa contra el radio del
+                        bloque. */}
+                    <div className="grid flex-1 grid-cols-3 overflow-hidden rounded-compact bg-card shadow-compare">
+                      {(
+                        [
+                          {
+                            key: "overall" as SortKey,
+                            label: t("comparator.tab.recommended"),
+                            hint: t("comparator.tab.recommendedHint"),
+                            figure: tabSummary?.recommendedFigure ?? "—",
+                            sub: tabSummary
+                              ? `${tabSummary.quote} · ${tabSummary.recommendedName}`
+                              : "",
+                          },
+                          {
+                            key: "recipient_gets_most" as SortKey,
+                            label: t("comparator.tab.receiveMore"),
+                            hint: t("comparator.tab.receiveMoreHint"),
+                            figure: tabSummary?.receiveMoreFigure ?? "—",
+                            sub: tabSummary
+                              ? `${tabSummary.quote} · ${t("comparator.tab.receiveMoreSub")}`
+                              : "",
+                          },
+                          {
+                            key: "fastest" as SortKey,
+                            label: t("comparator.tab.fastest"),
+                            hint: t("comparator.tab.fastestHint"),
+                            figure: tabSummary?.fastestFigure ?? "—",
+                            sub: tabSummary?.fastestName ?? "",
+                          },
+                        ] as const
+                      ).map((tab) => {
+                        const isActive = sortBy === tab.key;
+                        return (
+                          <button
+                            key={tab.key}
+                            type="button"
+                            onClick={() => setSortBy(tab.key)}
+                            aria-pressed={isActive}
+                            // docs/kayak-redesign-spec.md §3.5 — las 3 tabs
+                            // dejan de ser tarjetas sueltas con borde coral y
+                            // sombra propia y pasan a ser la matriz de precio
+                            // de Kayak: UN bloque de 3 columnas, sin gaps,
+                            // con la activa marcada por una barra inferior de
+                            // 2px (border-b-2 border-brand-cta) sobre fondo
+                            // de tarjeta, y las inactivas hundidas en
+                            // bg-muted/40. El contenido — label, figura y
+                            // subtítulo — ya era el correcto (una tab que
+                            // muestra cuánto se gana se toca; una que sólo
+                            // dice "Smart" no), sólo cambia la piel.
+                            className={`flex flex-col gap-0.5 px-3.5 py-2.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50 ${
+                              isActive
+                                ? "border-b-2 border-brand-cta bg-card"
+                                : "border-b-2 border-transparent bg-muted/40 hover:bg-muted"
+                            }`}
+                          >
+                            <div className="flex items-baseline justify-between gap-2">
+                              <span className="text-meta font-semibold text-muted-foreground">
+                                {tab.label}
+                              </span>
+                              <span className="hidden whitespace-nowrap text-badge text-muted-foreground sm:inline">
+                                {tab.hint}
+                              </span>
+                            </div>
+                            <div className="text-metric font-bold tabular-nums text-foreground">
+                              {tab.figure}
+                            </div>
+                            <div className="truncate text-badge text-muted-foreground">
+                              {tab.sub}
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+
+                    {/* Sort — trust/fee/exchange-rate, an alternate to the
+                    3 big tabs' own sort criteria, not a filter (nothing
+                    here narrows the row set). 2026-09-01 feedback (first
+                    round) — "en realidad es sort, no filter, poner un
+                    ícono de sort clásico y más chiquito": renamed from
+                    "More filters" to "Sort", shrunk from a 124px/2-line
+                    tile to a compact pill. 2026-09-01 feedback (second
+                    round) — "el sort no es coherente con el alto de los
+                    botones grandes, sacale el recuadro de píldora... o el
+                    ícono clásico de sort (3 líneas con flechita)": a 36px
+                    pill vertically centered next to 78px-tall tabs
+                    (`sm:items-center` on the shared row) just floated in
+                    the middle of a much taller row — no box height reads
+                    as "coherent" next to tiles that size without becoming
+                    a 4th tile itself, which would misrepresent it as a
+                    4th sort *criterion* alongside Recommended/Receive
+                    more/Fastest instead of the escape hatch it actually
+                    is. Simplest fix that matches what was asked: drop the
+                    border/background entirely (plain text+icon control,
+                    no pill) and switch to `ArrowDownWideNarrow` — lucide's
+                    "3 bars + arrow" glyph, the actual classic sort icon
+                    (vs. the two-way ArrowUpDown used before). Active state
+                    now reads via color/weight instead of a filled pill.
+                    Selecting one of these still visually replaces the 3
+                    tabs' selection for free: `isActive` on every tab is
+                    `sortBy === tab.key`, and a sort criterion from this
+                    menu (e.g. "most_trusted") never equals any of the 3
+                    tabs' keys, so all three lose their highlighted
+                    border/shadow the moment one of these is picked. */}
+                    <div className="flex/DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
+                          className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
+                            MORE_SORT_CHIPS.includes(sortBy)
+                              ? "text-accent-text"
+                              : "text-foreground hover:text-accent-text"
+                          }`}
+                        >
+                          {(() => {
+                            const Icon = MORE_SORT_CHIPS.includes(sortBy)
+                              ? sortIcon(sortBy)
+                              : ArrowDownWideNarrow;
+                            return <Icon className="h-3.5 w-3.5" />;
+                          })()}
+                          {MORE_SORT_CHIPS.includes(sortBy)
+                            ? t(sortLabelKey(sortBy))
+                            : t("comparator.sort.more")}
+                          <ChevronDown className="h-3 w-3" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuRadioGroup
+                          value={sortBy}
+                          onValueChange={(v) => setSortBy(v as SortKey)}
+                        >
+                          {MORE_SORT_CHIPS.map((key) => (
+                            <DropdownMenuRadioItem key={key} value={key}>
+                              {t(sortLabelKey(key))}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </div>
+
+                    {/* Secondary filters — delivery method, exclusive-only, legend.
+                  Visually separate row (smaller chips) so it never competes
+                  with the primary tabs above for attention. Sort criteria no
+                  longer live in this row at all (moved above, see its own
+                  comment) — this cluster is delivery-method/exclusive/legend
+                  only now, still lg:hidden since those 3 stay in the rail's
+                  FiltersCard at that breakpoint. */}
+                  {/* docs/kayak-redesign-spec.md §4.2 — la fila de filtros de
+                      mobile deja de envolver y pasa a scrollear en
+                      horizontal, precedida por un botón cuadrado que abre el
+                      Drawer de filtros (el mismo rail de §3.4, apilado).
+                      El comentario largo que justificaba `flex-wrap` sigue
+                      siendo cierto PARA EL WIDGET de 440px, donde no hay
+                      ancho para insinuar que hay más contenido fuera de
+                      pantalla — así que el wrap se conserva exactamente ahí
+                      (`embedded`), y sólo mobile real pasa a scroll. */}
+                  <div
+                    className={`flex items-center gap-2 lg:hidden ${embedded ? "flex-wrap" : ""}`}
+                  >
+                    {/* Abre el rail completo como Drawer. Sólo fuera del
+                        widget: dentro de un iframe de 440px un drawer a
+                        pantalla casi completa se lee como un secuestro de la
+                        página del tercero. */}
+                    {!embedded && (
+                      <button
+                        type="button"
+                        onClick={() => setFiltersDrawerOpen(true)}
+                        aria-label={t("comparator.filters.title")}
+                        className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-control border border-input bg-card text-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        <SlidersHorizontal className="h-4 w-4" aria-hidden />
+                        {activeFilterCount > 0 && (
+                          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-cta px-1 text-badge font-bold leading-none text-brand-cta-foreground">
+                            {activeFilterCount}
+                          </span>
+                        )}
+                      </button>
+                    )}
+
+                    <div
+                      className={`flex min-w-0 items-center gap-2 ${
+                        embedded ? "flex-wrap" : "overflow-x-auto no-scrollbar"
+                      }`}
+                    >
+                      {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
+                        const isActive = deliveryMethod === key;
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => toggleDeliveryMethod(key)}
+                            aria-pressed={isActive}
+                            // §4.2 — el chip activo va en oscuro sólido, no
+                            // en color de marca: el coral se reserva para la
+                            // acción (el CTA), no para el estado de un filtro.
+                            className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                              isActive
+                                ? "border-transparent bg-foreground text-background"
+                                : "border-input bg-card text-foreground hover:border-foreground/40"
+                            }`}
+                          >
+                            <Icon className="h-4 w-4" aria-hidden />
+                            {t(labelKey)}
+                          </button>
+                        );
+                      })}
+
+                      {/* Exclusive-rates filter — an explicit opt-in the
+                          person turns on themselves, not a default. Neutral
+                          by design: OFF (default) shows everyone, ordered
+                          purely by the chosen sort — never a re-ranking. Mismo tratamiento de chip
+                          activo que el resto (§4.2): dejó de ser el único
+                          chip coral de la fila. */}
+                      <button
+                        type="button"
+                        onClick={() => setShowOnlyExclusive((prev) => !prev)}
+                        aria-pressed={showOnlyExclusive}
+                        className={`inline-flex h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                          showOnlyExclusive
+                            ? "border-transparent bg-foreground text-background"
+                            : "border-input bg-card text-foreground hover:border-foreground/40"
+                        }`}
+                      >
+                        <Sparkle className="h-4 w-4" aria-hidden />
+                        {t("comparator.filter.exclusiveOnly")}
+                      </button>
+
+                      {/* Legend opens in a modal — never pushes the results
+                          table down, unlike an inline expand. Same content
+                          available on both desktop (click) and mobile (tap),
+                          no hover needed. */}
+                      <button
+                        type="button"
+                        onClick={() => setShowLegend(true)}
+                        aria-label={t("comparator.legend.toggle")}
+                        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        <Info className="h-4 w-4" aria-hidden />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <Dialog open={showLegend} onOpenChange={setShowLegend}>
+                  <DialogContent className="max-w-md">
+                    <DialogHeader>
+                      <DialogTitle>{t("comparator.legend.toggle")}</DialogTitle>
+                      <DialogDescription className="sr-only">
+                        {t("comparator.legend.toggle")}
+                      </DialogDescription>
+                    </DialogHeader>
+                    {/* Moved here from the filter row, on request — same
+                    ReactMarkdown treatment (bold spans translate correctly
+                    across all 20 locales without hardcoding word
+                    position), just relocated so it doesn't compete for
+                    space with the sort/filter chips. */}
+                    <div className="border-b border-border pb-3 text-sm leading-relaxed text-muted-foreground [&_p]:m-0 [&_strong]:font-semibold [&_strong]:text-foreground">
+                      <ReactMarkdown>{t("comparator.rankingExplainer")}</ReactMarkdown>
+                    </div>
+                    <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
+                      {(
+                        [
+                          [Gauge, "comparator.legend.score"],
+                          [Coins, "comparator.legend.fee"],
+                          [Percent, "comparator.legend.bestExchangeRate"],
+                          [Clock, "comparator.legend.speed"],
+                          [Star, "comparator.legend.trust"],
+                          // The 4 delivery methods, each with its OWN real
+                          // icon (matching DELIVERY_METHODS above) instead of
+                          // just explaining "Cash pickup" alone — that used to
+                          // leave Bank/Card/Broker unexplained, an inconsistency
+                          // once all 4 became equal chips in the same cluster.
+                          [Building2, "comparator.legend.bankTransfer"],
+                          [Banknote, "comparator.legend.cashPickup"],
+                          [CreditCard, "comparator.legend.cardPayout"],
+                          [Handshake, "comparator.legend.broker"],
+                          // No separate "Exclusive rates" row here — same
+                          // Sparkle icon as Sponsored right below would read as
+                          // a duplicate entry; the Sponsored text already
+                          // covers the filter in its last sentence instead.
+                          [Sparkle, "comparator.legend.sponsored"],
+                        ] as const
+                      ).map(([Icon, key]) => (
+                        <div key={key} className="flex items-start gap-2">
+                          <Icon className="mt-0.5 h-4 w-4 shrink-0" />
+                          <span>{t(key)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                {/* 2026-08-31 feedback — "el cuadro de request en business
+                    debe estar arriba de los resultados, no abajo, y debe
+                    tener todo el ancho": moved above ResultsBlock (was
+                    below), full width of this column now that
+                    BusinessContactCard went back to the rail instead de
+                    sharing this row with it. */}
+                {segment === "business" && result && (
+                  <div className="mb-4">
+                    <BusinessRequestPanel
+                      amount={amount}
+                      from={from}
+                      to={to}
+                      sendingCountry={sendingCountry}
+                      receivingCountry={receivingCountry}
+                      totalBrokers={result?.rows.length ?? 0}
+                      requestedSlugs={requestedSlugs}
+                      contractTypeLabel={t(`comparator.contractType.${contractType}`)}
+                      frequencyLabel={t(
+                        `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
+                      )}
+                      status={requestPanelStatus}
+                      onSend={sendBusinessRequest}
+                    />
+                  </div>
+                )}
+
+                <ResultsBlock
+                  result={result}
+                  amount={amount}
+                  pending={compareMut.isPending}
+                  sortBy={sortBy}
+                  deliveryMethod={deliveryMethod}
+                  showOnlyExclusive={showOnlyExclusive}
+                  hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
+                  handleAffiliateClick={openPreferredRate}
+                  tRatesSource={t("fx.ratesSource")}
+                  tAt={t("fx.at")}
+                  tCta={t("retail.cta")}
+                  tNeutrality={t("comparator.disclaimer.neutrality")}
+                  segment={segment}
+                  retailBestReceived={retailBestReceived}
+                  requestedSlugs={requestedSlugs}
+                  onToggleRequested={toggleRequestedSlug}
+                />
+              </div>
+            </div>
+          ))}
+      </div>
+    </SectionTag>
+  );
+}
