@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "正在搜索价格…",
+  "comparator.status.providers": "{n} 家服务商",
+  "comparator.status.updated": "更新于",
+  "comparator.legal.summary": "计算方法与法律声明",
+  "comparator.row.save": "保存此汇率",
+  "comparator.row.saved": "已保存",
+  "comparator.mobile.editSearch": "修改搜索"
 }

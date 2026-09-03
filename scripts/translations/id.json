@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "Mencari harga…",
+  "comparator.status.providers": "{n} penyedia",
+  "comparator.status.updated": "Diperbarui",
+  "comparator.legal.summary": "Metodologi dan pemberitahuan hukum",
+  "comparator.row.save": "Simpan kurs ini",
+  "comparator.row.saved": "Tersimpan",
+  "comparator.mobile.editSearch": "Ubah pencarian"
 }

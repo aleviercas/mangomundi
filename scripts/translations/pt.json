@@ -813,5 +813,12 @@
   "comparator.agent.languageAriaLabel": "Idioma {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Seus resultados",
-  "comparator.widget.seeMore": "Ver mais taxas e provedores"
+  "comparator.widget.seeMore": "Ver mais taxas e provedores",
+  "comparator.status.fetching": "Buscando preços…",
+  "comparator.status.providers": "{n} provedores",
+  "comparator.status.updated": "Atualizado",
+  "comparator.legal.summary": "Metodologia e aviso legal",
+  "comparator.row.save": "Salvar esta taxa",
+  "comparator.row.saved": "Salva",
+  "comparator.mobile.editSearch": "Editar busca"
 }

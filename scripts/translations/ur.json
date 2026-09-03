@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "قیمتیں تلاش کی جا رہی ہیں…",
+  "comparator.status.providers": "{n} فراہم کنندگان",
+  "comparator.status.updated": "اپ ڈیٹ",
+  "comparator.legal.summary": "طریقہ کار اور قانونی نوٹس",
+  "comparator.row.save": "یہ ریٹ محفوظ کریں",
+  "comparator.row.saved": "محفوظ",
+  "comparator.mobile.editSearch": "تلاش میں ترمیم کریں"
 }

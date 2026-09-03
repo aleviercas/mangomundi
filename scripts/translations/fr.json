@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "Recherche des prix…",
+  "comparator.status.providers": "{n} prestataires",
+  "comparator.status.updated": "Mis à jour",
+  "comparator.legal.summary": "Méthodologie et mentions légales",
+  "comparator.row.save": "Enregistrer ce taux",
+  "comparator.row.saved": "Enregistré",
+  "comparator.mobile.editSearch": "Modifier la recherche"
 }

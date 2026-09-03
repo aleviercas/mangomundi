@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "กำลังค้นหาราคา…",
+  "comparator.status.providers": "ผู้ให้บริการ {n} ราย",
+  "comparator.status.updated": "อัปเดต",
+  "comparator.legal.summary": "วิธีคำนวณและประกาศทางกฎหมาย",
+  "comparator.row.save": "บันทึกอัตรานี้",
+  "comparator.row.saved": "บันทึกแล้ว",
+  "comparator.mobile.editSearch": "แก้ไขการค้นหา"
 }

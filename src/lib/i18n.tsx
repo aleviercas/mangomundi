@@ -3042,6 +3042,18 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // comparator.filter.exclusiveOnly used by the inline mobile chip so
     // that one isn't stretched by the other's width constraints.
     "comparator.filter.exclusiveOnlyLong": "Exclusive rates only",
+    // docs/kayak-redesign-spec.md §3.6 — status bar above the results list
+    // (Kayak's "Fetching prices…", the result count, and the update stamp
+    // that used to be buried in the legal block at the end of the list).
+    "comparator.status.fetching": "Searching prices…",
+    "comparator.status.providers": "{n} providers",
+    "comparator.status.updated": "Updated",
+    "comparator.legal.summary": "Methodology and legal notice",
+    // §3.7 — per-row save action (the ♡ that sits next to share).
+    "comparator.row.save": "Save this rate",
+    "comparator.row.saved": "Saved",
+    // §4.1 — mobile collapsed search pill.
+    "comparator.mobile.editSearch": "Edit search",
     // Left rail — design/HANDOFF.md §3 (29-ago-2026).
     "comparator.filters.title": "Filters",
     "comparator.filters.payoutMethod": "Payout method",

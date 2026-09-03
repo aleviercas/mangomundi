@@ -812,5 +812,12 @@
   "comparator.agent.languageAriaLabel": "Idioma {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Tus resultados",
-  "comparator.widget.seeMore": "Ver más en mangomundi"
+  "comparator.widget.seeMore": "Ver más en mangomundi",
+  "comparator.status.fetching": "Buscando precios…",
+  "comparator.status.providers": "{n} proveedores",
+  "comparator.status.updated": "Actualizado",
+  "comparator.legal.summary": "Metodología y aviso legal",
+  "comparator.row.save": "Guardar esta tasa",
+  "comparator.row.saved": "Guardada",
+  "comparator.mobile.editSearch": "Editar búsqueda"
 }

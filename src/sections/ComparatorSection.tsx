@@ -2408,7 +2408,12 @@ export function ComparatorSection({
                   the compact pill sits at a normal control size next to
                   them instead of pretending to be one. */}
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-                    <div className="grid flex-1 grid-cols-1 gap-2 sm:grid-cols-3">
+                    {/* §3.5 — un solo bloque de 3 columnas SIN gaps: la
+                        matriz de precio de Kayak es una pieza, no 3
+                        tarjetas sueltas. `overflow-hidden` recorta la barra
+                        inferior de la tab activa contra el radio del
+                        bloque. */}
+                    <div className="grid flex-1 grid-cols-3 overflow-hidden rounded-compact bg-card shadow-compare">
                       {(
                         [
                           {
@@ -2445,33 +2450,36 @@ export function ComparatorSection({
                             type="button"
                             onClick={() => setSortBy(tab.key)}
                             aria-pressed={isActive}
-                            className="flex min-h-[78px] flex-col justify-between rounded-xl px-3.5 py-2.5 text-left transition-shadow focus:outline-none focus:ring-2 focus:ring-ring/40"
-                            style={{
-                              border: isActive ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
-                              // 2026-09-01 feedback — "se resaltan con
-                              // sombras cuando se seleccionan": vs.
-                              // design/Mangomundi 4 - Final.dc.html line
-                              // 827-828 (the tab's own `t.shadow`), this was
-                              // a much weaker shadow — the mockup's actual
-                              // value, restored.
-                              boxShadow: isActive
-                                ? "0 14px 34px -22px rgba(238,91,62,.55)"
-                                : "none",
-                            }}
+                            // docs/kayak-redesign-spec.md §3.5 — las 3 tabs
+                            // dejan de ser tarjetas sueltas con borde coral y
+                            // sombra propia y pasan a ser la matriz de precio
+                            // de Kayak: UN bloque de 3 columnas, sin gaps,
+                            // con la activa marcada por una barra inferior de
+                            // 2px (border-b-2 border-brand-cta) sobre fondo
+                            // de tarjeta, y las inactivas hundidas en
+                            // bg-muted/40. El contenido — label, figura y
+                            // subtítulo — ya era el correcto (una tab que
+                            // muestra cuánto se gana se toca; una que sólo
+                            // dice "Smart" no), sólo cambia la piel.
+                            className={`flex flex-col gap-0.5 px-3.5 py-2.5 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/50 ${
+                              isActive
+                                ? "border-b-2 border-brand-cta bg-card"
+                                : "border-b-2 border-transparent bg-muted/40 hover:bg-muted"
+                            }`}
                           >
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-xs font-bold text-foreground">{tab.label}</span>
-                              <span className="whitespace-nowrap text-[11px] font-medium text-muted-foreground">
+                            <div className="flex items-baseline justify-between gap-2">
+                              <span className="text-meta font-semibold text-muted-foreground">
+                                {tab.label}
+                              </span>
+                              <span className="hidden whitespace-nowrap text-badge text-muted-foreground sm:inline">
                                 {tab.hint}
                               </span>
                             </div>
-                            <div>
-                              <div className="font-heading text-[20px] font-extrabold leading-tight tabular-nums text-foreground">
-                                {tab.figure}
-                              </div>
-                              <div className="truncate text-[11px] font-medium text-muted-foreground">
-                                {tab.sub}
-                              </div>
+                            <div className="text-metric font-bold tabular-nums text-foreground">
+                              {tab.figure}
+                            </div>
+                            <div className="truncate text-badge text-muted-foreground">
+                              {tab.sub}
                             </div>
                           </button>
                         );
@@ -2694,6 +2702,7 @@ export function ComparatorSection({
                 <ResultsBlock
                   result={result}
                   amount={amount}
+                  pending={compareMut.isPending}
                   sortBy={sortBy}
                   deliveryMethod={deliveryMethod}
                   showOnlyExclusive={showOnlyExclusive}
@@ -3882,6 +3891,7 @@ function BusinessContactCard() {
 function ResultsBlock({
   result,
   amount,
+  pending,
   sortBy,
   deliveryMethod,
   showOnlyExclusive,
@@ -3898,6 +3908,10 @@ function ResultsBlock({
 }: {
   result: ComparisonResult;
   amount: number;
+  /** docs/kayak-redesign-spec.md §3.6 — alimenta el spinner "buscando
+   *  precios" de la barra de estado. El padre ya atenúa el bloque entero
+   *  durante el fetch; esto le pone palabras a esa atenuación. */
+  pending: boolean;
   sortBy: SortKey;
   deliveryMethod: DeliveryMethod | null;
   showOnlyExclusive: boolean;
@@ -4026,6 +4040,29 @@ function ResultsBlock({
 
   return (
     <div className="min-w-0">
+      {/* docs/kayak-redesign-spec.md §3.6 — barra de estado de 40px sobre
+          los resultados, sin fondo. A la izquierda el recuento (durante el
+          fetch, spinner + "buscando precios", el `Fetching prices…` de
+          Kayak); a la derecha el sello de actualización, que antes vivía
+          enterrado en el bloque legal al final de la lista — es EL dato de
+          confianza de un comparador y en Kayak vive arriba, no abajo. */}
+      <div className="flex h-10 items-center justify-between gap-3">
+        <span className="inline-flex items-center gap-1.5 text-meta text-muted-foreground">
+          {pending ? (
+            <>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              {t("comparator.status.fetching")}
+            </>
+          ) : (
+            t("comparator.status.providers").replace("{n}", String(displayRows.length))
+          )}
+        </span>
+        <span className="text-meta text-muted-foreground">
+          {t("comparator.status.updated")}{" "}
+          <span className="tabular-nums font-semibold text-foreground">{updatedTime}</span>
+        </span>
+      </div>
+
       {/* No shared header row (design/AJUSTES-1.md §C1 — removed on
           purpose): each row now carries its own per-metric micro-label
           above its value (see ProviderRow), so a card reads on its own
@@ -4083,30 +4120,33 @@ function ResultsBlock({
         </button>
       )}
 
-      {/* 2026-08-31 feedback — the neutrality disclaimer used to sit right
-          above the list, right under the 3 big tabs; moved down here to
-          join the other small print instead of doubling up on fine-print
-          real estate in the busiest part of the page. */}
-      <div className="mt-4 rounded-xl border border-border bg-card/50 px-4 py-3 text-[11px] leading-relaxed text-muted-foreground">
-        <p>
-          {tRatesSource}{" "}
-          <span className="font-semibold text-foreground">
-            {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
-            <span className="tabular-nums">{updatedTime}</span>
-          </span>
-        </p>
-        <p className="mt-1">
-          <span className="font-semibold text-foreground">⚖︎ </span>
-          {tNeutrality}
-        </p>
-      </div>
-      {/* design/Mangomundi 4 - Final.dc.html line 529 — the broker table's
-          own disclosed methodology, not the retail footer copy above. */}
-      {segment === "business" && (
-        <p className="mt-2 text-[11px] leading-relaxed text-muted-foreground">
-          {t("comparator.business.methodology")}
-        </p>
-      )}
+      {/* docs/kayak-redesign-spec.md §3.6 — el bloque legal se mantiene
+          entero (es obligación, no decoración) pero colapsado en un
+          <details>: el sello de actualización que lo encabezaba ya subió a
+          la barra de estado, así que lo que queda acá es letra chica que no
+          tiene por qué ocupar altura permanente al pie de la lista. */}
+      <details className="mt-4 rounded-compact border border-border bg-card/50 px-4 py-3">
+        <summary className="cursor-pointer text-meta font-semibold text-muted-foreground hover:text-foreground">
+          {t("comparator.legal.summary")}
+        </summary>
+        <div className="mt-2 text-badge leading-relaxed text-muted-foreground">
+          <p>
+            {tRatesSource}{" "}
+            <span className="font-semibold text-foreground">
+              {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
+              <span className="tabular-nums">{updatedTime}</span>
+            </span>
+          </p>
+          <p className="mt-1">
+            <span className="font-semibold text-foreground">⚖︎ </span>
+            {tNeutrality}
+          </p>
+          {/* design/Mangomundi 4 - Final.dc.html line 529 — the broker
+              table's own disclosed methodology, not the retail footer copy
+              above. */}
+          {segment === "business" && <p className="mt-2">{t("comparator.business.methodology")}</p>}
+        </div>
+      </details>
     </div>
   );
 }

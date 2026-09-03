@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "料金を検索中…",
+  "comparator.status.providers": "{n} 社",
+  "comparator.status.updated": "更新",
+  "comparator.legal.summary": "算出方法と法的通知",
+  "comparator.row.save": "このレートを保存",
+  "comparator.row.saved": "保存済み",
+  "comparator.mobile.editSearch": "検索を編集"
 }

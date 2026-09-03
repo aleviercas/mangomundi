@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "가격 검색 중…",
+  "comparator.status.providers": "{n}개 업체",
+  "comparator.status.updated": "업데이트",
+  "comparator.legal.summary": "산정 방식 및 법적 고지",
+  "comparator.row.save": "이 환율 저장",
+  "comparator.row.saved": "저장됨",
+  "comparator.mobile.editSearch": "검색 수정"
 }

@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "कीमतें खोजी जा रही हैं…",
+  "comparator.status.providers": "{n} प्रदाता",
+  "comparator.status.updated": "अपडेट",
+  "comparator.legal.summary": "कार्यप्रणाली और कानूनी सूचना",
+  "comparator.row.save": "यह दर सहेजें",
+  "comparator.row.saved": "सहेजा गया",
+  "comparator.mobile.editSearch": "खोज संपादित करें"
 }

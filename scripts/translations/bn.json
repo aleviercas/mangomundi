@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "দাম খোঁজা হচ্ছে…",
+  "comparator.status.providers": "{n} প্রদানকারী",
+  "comparator.status.updated": "হালনাগাদ",
+  "comparator.legal.summary": "পদ্ধতি ও আইনি বিজ্ঞপ্তি",
+  "comparator.row.save": "এই রেট সংরক্ষণ করুন",
+  "comparator.row.saved": "সংরক্ষিত",
+  "comparator.mobile.editSearch": "অনুসন্ধান সম্পাদনা"
 }

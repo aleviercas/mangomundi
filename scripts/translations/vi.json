@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "Đang tìm giá…",
+  "comparator.status.providers": "{n} nhà cung cấp",
+  "comparator.status.updated": "Cập nhật",
+  "comparator.legal.summary": "Phương pháp và thông báo pháp lý",
+  "comparator.row.save": "Lưu tỷ giá này",
+  "comparator.row.saved": "Đã lưu",
+  "comparator.mobile.editSearch": "Sửa tìm kiếm"
 }

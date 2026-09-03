@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "Naghahanap ng presyo…",
+  "comparator.status.providers": "{n} provider",
+  "comparator.status.updated": "Na-update",
+  "comparator.legal.summary": "Pamamaraan at legal na paunawa",
+  "comparator.row.save": "I-save ang rate na ito",
+  "comparator.row.saved": "Na-save",
+  "comparator.mobile.editSearch": "I-edit ang paghahanap"
 }

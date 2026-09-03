@@ -816,5 +816,12 @@
   "comparator.agent.languageAriaLabel": "Language {lang}",
   "comparator.row.spreadWord": "spread",
   "comparator.widget.yourResults": "Your results",
-  "comparator.widget.seeMore": "See more rates and providers"
+  "comparator.widget.seeMore": "See more rates and providers",
+  "comparator.status.fetching": "Поиск цен…",
+  "comparator.status.providers": "Провайдеров: {n}",
+  "comparator.status.updated": "Обновлено",
+  "comparator.legal.summary": "Методология и правовая информация",
+  "comparator.row.save": "Сохранить этот курс",
+  "comparator.row.saved": "Сохранено",
+  "comparator.mobile.editSearch": "Изменить запрос"
 }
