@@ -1,11 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
-import {
-  validateDictionaries,
-  SUPPORTED_LANGS,
-  LANGUAGE_METADATA,
-  type Lang,
-} from "@/lib/i18n";
+import { validateDictionaries, SUPPORTED_LANGS, LANGUAGE_METADATA, type Lang } from "@/lib/i18n";
 import { Check, Copy, AlertTriangle, ArrowLeft, RefreshCw, Filter, X } from "lucide-react";
 
 export const Route = createFileRoute("/admin/i18n-status")({
@@ -71,7 +66,9 @@ function I18nStatusPage() {
       await navigator.clipboard.writeText(text);
       setCopied(key);
       setTimeout(() => setCopied(null), 1600);
-    } catch { /* ignore */ }
+    } catch {
+      /* ignore */
+    }
   };
 
   const clearFilters = () => {
@@ -79,8 +76,7 @@ function I18nStatusPage() {
     setLangFilter("all");
   };
 
-  const rows = SUPPORTED_LANGS
-    .filter((c) => c !== "en")
+  const rows = SUPPORTED_LANGS.filter((c) => c !== "en")
     .map((code) => {
       const r = report.perLang[code];
       const pct = Math.round(r.coverage * 100);
@@ -119,8 +115,8 @@ function I18nStatusPage() {
               i18n Status
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Live coverage of <span className="font-mono">DICTS.en</span> ({report.enKeyCount} keys)
-              against {SUPPORTED_LANGS.length - 1} target locales.
+              Live coverage of <span className="font-mono">DICTS.en</span> ({report.enKeyCount}{" "}
+              keys) against {SUPPORTED_LANGS.length - 1} target locales.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -137,9 +133,7 @@ function I18nStatusPage() {
             </button>
             <div
               className={`rounded-md px-3 py-1.5 text-xs font-mono font-semibold ${
-                report.ok
-                  ? "bg-emerald-500/15 text-emerald-500"
-                  : "bg-amber-500/15 text-amber-500"
+                report.ok ? "bg-emerald-500/15 text-emerald-500" : "bg-amber-500/15 text-amber-500"
               }`}
             >
               {report.ok ? "● ALL GREEN" : `▲ ${incompleteCount} incomplete`}
@@ -160,7 +154,9 @@ function I18nStatusPage() {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <div className="flex items-center gap-2">
             <Filter className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Filters</span>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Filters
+            </span>
           </div>
 
           <select
@@ -219,7 +215,8 @@ function I18nStatusPage() {
                   <>
                     <tr key={r.code} className="border-t border-border/60">
                       <td className="px-4 py-2.5 font-mono text-xs font-semibold">
-                        <span className="mr-1.5">{r.meta.flag}</span>{r.meta.label}
+                        <span className="mr-1.5">{r.meta.flag}</span>
+                        {r.meta.label}
                       </td>
                       <td className="px-4 py-2.5 text-muted-foreground">{r.meta.english}</td>
                       <td className="px-4 py-2.5 text-right font-mono">
@@ -228,8 +225,8 @@ function I18nStatusPage() {
                             r.status === "ok"
                               ? "text-emerald-500"
                               : r.status === "warn"
-                              ? "text-amber-500"
-                              : "text-destructive"
+                                ? "text-amber-500"
+                                : "text-destructive"
                           }
                         >
                           {r.pct}%
@@ -253,9 +250,13 @@ function I18nStatusPage() {
                             title="Copy re-translate command"
                           >
                             {copied === r.code ? (
-                              <><Check className="h-3 w-3" /> Copied</>
+                              <>
+                                <Check className="h-3 w-3" /> Copied
+                              </>
                             ) : (
-                              <><Copy className="h-3 w-3" /> Re-translate</>
+                              <>
+                                <Copy className="h-3 w-3" /> Re-translate
+                              </>
                             )}
                           </button>
                         </div>
@@ -272,10 +273,14 @@ function I18nStatusPage() {
                                 </div>
                                 <ul className="max-h-48 overflow-y-auto rounded-md bg-background/60 p-2 font-mono text-[11px] leading-relaxed">
                                   {r.missing.slice(0, 60).map((k: string) => (
-                                    <li key={k} className="truncate">{k}</li>
+                                    <li key={k} className="truncate">
+                                      {k}
+                                    </li>
                                   ))}
                                   {r.missing.length > 60 && (
-                                    <li className="text-muted-foreground">… +{r.missing.length - 60} more</li>
+                                    <li className="text-muted-foreground">
+                                      … +{r.missing.length - 60} more
+                                    </li>
                                   )}
                                 </ul>
                               </div>
@@ -287,7 +292,9 @@ function I18nStatusPage() {
                                 </div>
                                 <ul className="max-h-48 overflow-y-auto rounded-md bg-background/60 p-2 font-mono text-[11px] leading-relaxed">
                                   {r.empty.slice(0, 60).map((k) => (
-                                    <li key={k} className="truncate">{k}</li>
+                                    <li key={k} className="truncate">
+                                      {k}
+                                    </li>
                                   ))}
                                 </ul>
                               </div>
@@ -306,11 +313,12 @@ function I18nStatusPage() {
         <div className="mt-6 rounded-md border border-border bg-card p-4 text-xs text-muted-foreground">
           <div className="mb-1 font-semibold text-foreground">How re-translate works</div>
           <p>
-            The button copies <code className="font-mono">bun run scripts/translate.ts &lt;lang&gt;</code>.
-            Run it in the project terminal — the script only fills missing keys (incremental) and
-            writes <code className="font-mono">scripts/translations/&lt;lang&gt;.json</code>. Refresh
-            this page after the script finishes; the next build runs the CI gate
-            (<code className="font-mono">I18N_STRICT=1</code>) automatically.
+            The button copies{" "}
+            <code className="font-mono">bun run scripts/translate.ts &lt;lang&gt;</code>. Run it in
+            the project terminal — the script only fills missing keys (incremental) and writes{" "}
+            <code className="font-mono">scripts/translations/&lt;lang&gt;.json</code>. Refresh this
+            page after the script finishes; the next build runs the CI gate (
+            <code className="font-mono">I18N_STRICT=1</code>) automatically.
           </p>
         </div>
       </div>

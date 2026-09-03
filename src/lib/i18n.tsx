@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useRouterState } from "@tanstack/react-router";
+import { useRouter, useRouterState } from "@tanstack/react-router";
 import { z } from "zod";
 
 export type Lang =
@@ -3946,14 +3946,14 @@ export function I18nProvider({
 }) {
   const [lang, setLangState] = useState<Lang>(() => coerceLang(initialLang));
   // Subscribe to router state so SEO meta react to navigation as well as lang.
-  // useRouterState throws if no <RouterProvider> ancestor exists (tests/storybook/SSR probes),
-  // so we guard it and fall back to "/" — never propagate the error.
-  let pathname = "/";
-  try {
-    pathname = useRouterState({ select: (s) => s.location.pathname }) ?? "/";
-  } catch {
-    pathname = "/";
-  }
+  // useRouter({ warn: false }) never throws (unlike useRouterState) when no
+  // <RouterProvider> ancestor exists (tests/storybook/SSR probes) — it just
+  // returns undefined. We use its presence to decide whether to mount
+  // <RouterPathnameSync>, which is the only place that calls useRouterState
+  // (unconditionally, from its own component) — keeping every hook call in
+  // I18nProvider itself unconditional too.
+  const router = useRouter({ warn: false });
+  const [pathname, setPathname] = useState(() => router?.state.location.pathname ?? "/");
 
   // Hydration: prefer the user's previously chosen language (localStorage),
   // then the server-detected geo-IP language passed via props, then navigator,
@@ -4067,7 +4067,23 @@ export function I18nProvider({
     [lang],
   );
 
-  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
+  return (
+    <I18nContext.Provider value={value}>
+      {router && <RouterPathnameSync onPathname={setPathname} />}
+      {children}
+    </I18nContext.Provider>
+  );
+}
+
+// Only ever mounted when I18nProvider has confirmed a router exists, so this
+// is the sole place that calls useRouterState — unconditionally, from its
+// own component — rather than guarding a hook call inline with try/catch.
+function RouterPathnameSync({ onPathname }: { onPathname: (pathname: string) => void }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  useEffect(() => {
+    onPathname(pathname);
+  }, [pathname, onPathname]);
+  return null;
 }
 
 export function useI18n() {

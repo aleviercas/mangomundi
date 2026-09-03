@@ -24,7 +24,11 @@ const CASES: Array<{ lang: string; htmlLang: string; expectContains: string[] }>
   // Spanish — comparator/search copy
   { lang: "es", htmlLang: "es", expectContains: ["Empresa", "Comparar", "país", "envía"] },
   // German — comparator/search copy
-  { lang: "de", htmlLang: "de", expectContains: ["Vergleichen", "Land", "Unternehmen", "Sie senden"] },
+  {
+    lang: "de",
+    htmlLang: "de",
+    expectContains: ["Vergleichen", "Land", "Unternehmen", "Sie senden"],
+  },
   // Japanese — non-Latin script smoke
   { lang: "ja", htmlLang: "ja", expectContains: ["比較", "送金", "国"] },
 ];
@@ -32,9 +36,7 @@ const CASES: Array<{ lang: string; htmlLang: string; expectContains: string[] }>
 async function goto(page: Page, route: string, lang: string) {
   await page.goto(`${route}?lang=${lang}`, { waitUntil: "domcontentloaded" });
   // Wait until the I18nProvider has hydrated and updated <html lang>.
-  await expect
-    .poll(async () => page.evaluate(() => document.documentElement.lang))
-    .toBe(lang);
+  await expect.poll(async () => page.evaluate(() => document.documentElement.lang)).toBe(lang);
 }
 
 test.describe("i18n — locale from ?lang is live in the browser", () => {
@@ -60,9 +62,7 @@ test.describe("i18n — locale from ?lang is live in the browser", () => {
     page,
   }) => {
     await page.goto("/?lang=es", { waitUntil: "domcontentloaded" });
-    await expect
-      .poll(async () => page.evaluate(() => document.documentElement.lang))
-      .toBe("es");
+    await expect.poll(async () => page.evaluate(() => document.documentElement.lang)).toBe("es");
 
     // Persisted for future visits.
     expect(await page.evaluate(() => localStorage.getItem("mg.lang"))).toBe("es");
@@ -71,9 +71,7 @@ test.describe("i18n — locale from ?lang is live in the browser", () => {
     // (/legal — a real, distinct page, not a redirect stub — is a better
     // cross-route check than a route that just bounces back to home.)
     await page.goto("/legal", { waitUntil: "domcontentloaded" });
-    await expect
-      .poll(async () => page.evaluate(() => document.documentElement.lang))
-      .toBe("es");
+    await expect.poll(async () => page.evaluate(() => document.documentElement.lang)).toBe("es");
   });
 
   test("hreflang alternates are present in the document head", async ({ page }) => {

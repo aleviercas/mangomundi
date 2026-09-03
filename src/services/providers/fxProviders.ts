@@ -111,7 +111,6 @@ export async function fetchFrankfurterRate(
   return { rate: json.rate, date: json.date };
 }
 
-
 // ---------- exchangeratesapi.io (free tier: EUR base, HTTP) ----------
 const erApiIoConfig = cfg("exchangeratesapi-io");
 
