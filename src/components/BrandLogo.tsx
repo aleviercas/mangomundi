@@ -72,7 +72,15 @@ function initials(name: string): string {
  * to a clean monogram (initials on a tinted background) if the logo cannot
  * be fetched. No invented emojis are ever shown.
  */
-export function BrandLogo({ name, url, domain, slug, size = 32, className, rounded = true }: BrandLogoProps) {
+export function BrandLogo({
+  name,
+  url,
+  domain,
+  slug,
+  size = 32,
+  className,
+  rounded = true,
+}: BrandLogoProps) {
   const host = domain ?? extractDomain(url);
   const [failed, setFailed] = useState(false);
   const hasLocalLogo = slug && LOCAL_LOGOS.has(slug) && !failed;
@@ -86,11 +94,7 @@ export function BrandLogo({ name, url, domain, slug, size = 32, className, round
         height={size}
         loading="lazy"
         onError={() => setFailed(true)}
-        className={cn(
-          "shrink-0 object-contain",
-          rounded ? "rounded-lg" : "",
-          className,
-        )}
+        className={cn("shrink-0 object-contain", rounded ? "rounded-lg" : "", className)}
         style={{ width: size, height: size }}
       />
     );
@@ -124,11 +128,7 @@ export function BrandLogo({ name, url, domain, slug, size = 32, className, round
         loading="lazy"
         referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
-        className={cn(
-          "shrink-0 object-contain",
-          rounded ? "rounded-lg" : "",
-          className,
-        )}
+        className={cn("shrink-0 object-contain", rounded ? "rounded-lg" : "", className)}
         style={{ width: size, height: size }}
       />
     );

@@ -112,10 +112,7 @@ export class ProviderFactory {
         rates[code] = e.rate;
         refs.add(code);
       }
-      const newest = Object.values(master.rates).reduce(
-        (m, e) => Math.max(m, e.updatedAt),
-        0,
-      );
+      const newest = Object.values(master.rates).reduce((m, e) => Math.max(m, e.updatedAt), 0);
       return {
         rates,
         referenceCodes: refs,

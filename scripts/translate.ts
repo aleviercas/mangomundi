@@ -165,9 +165,7 @@ async function loadPending(): Promise<Record<string, string[]>> {
 }
 
 async function savePending(pending: Record<string, string[]>): Promise<void> {
-  const compact = Object.fromEntries(
-    Object.entries(pending).filter(([, keys]) => keys.length > 0),
-  );
+  const compact = Object.fromEntries(Object.entries(pending).filter(([, keys]) => keys.length > 0));
   await writeFile(PENDING_PATH(), JSON.stringify(compact, null, 2) + "\n", "utf8");
 }
 
