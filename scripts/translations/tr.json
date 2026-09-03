@@ -823,5 +823,6 @@
   "comparator.legal.summary": "Metodoloji ve yasal uyarı",
   "comparator.row.save": "Bu kuru kaydet",
   "comparator.row.saved": "Kaydedildi",
-  "comparator.mobile.editSearch": "Aramayı düzenle"
+  "comparator.mobile.editSearch": "Aramayı düzenle",
+  "comparator.filters.apply": "Sonuçları göster"
 }

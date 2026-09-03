@@ -823,5 +823,6 @@
   "comparator.legal.summary": "计算方法与法律声明",
   "comparator.row.save": "保存此汇率",
   "comparator.row.saved": "已保存",
-  "comparator.mobile.editSearch": "修改搜索"
+  "comparator.mobile.editSearch": "修改搜索",
+  "comparator.filters.apply": "查看结果"
 }

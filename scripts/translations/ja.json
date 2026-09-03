@@ -823,5 +823,6 @@
   "comparator.legal.summary": "算出方法と法的通知",
   "comparator.row.save": "このレートを保存",
   "comparator.row.saved": "保存済み",
-  "comparator.mobile.editSearch": "検索を編集"
+  "comparator.mobile.editSearch": "検索を編集",
+  "comparator.filters.apply": "結果を見る"
 }

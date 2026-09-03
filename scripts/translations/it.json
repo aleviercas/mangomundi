@@ -823,5 +823,6 @@
   "comparator.legal.summary": "Metodologia e note legali",
   "comparator.row.save": "Salva questo tasso",
   "comparator.row.saved": "Salvato",
-  "comparator.mobile.editSearch": "Modifica ricerca"
+  "comparator.mobile.editSearch": "Modifica ricerca",
+  "comparator.filters.apply": "Vedi i risultati"
 }

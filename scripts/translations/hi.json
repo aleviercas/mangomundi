@@ -823,5 +823,6 @@
   "comparator.legal.summary": "कार्यप्रणाली और कानूनी सूचना",
   "comparator.row.save": "यह दर सहेजें",
   "comparator.row.saved": "सहेजा गया",
-  "comparator.mobile.editSearch": "खोज संपादित करें"
+  "comparator.mobile.editSearch": "खोज संपादित करें",
+  "comparator.filters.apply": "परिणाम देखें"
 }

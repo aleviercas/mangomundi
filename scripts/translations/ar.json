@@ -823,5 +823,6 @@
   "comparator.legal.summary": "المنهجية والإشعار القانوني",
   "comparator.row.save": "احفظ هذا السعر",
   "comparator.row.saved": "محفوظ",
-  "comparator.mobile.editSearch": "تعديل البحث"
+  "comparator.mobile.editSearch": "تعديل البحث",
+  "comparator.filters.apply": "عرض النتائج"
 }

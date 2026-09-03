@@ -3054,6 +3054,9 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.row.saved": "Saved",
     // §4.1 — mobile collapsed search pill.
     "comparator.mobile.editSearch": "Edit search",
+    // §4.2 — bottom button of the mobile filters drawer. Filters already
+    // apply live, so this reveals the list again rather than "applying".
+    "comparator.filters.apply": "Show results",
     // Left rail — design/HANDOFF.md §3 (29-ago-2026).
     "comparator.filters.title": "Filters",
     "comparator.filters.payoutMethod": "Payout method",

@@ -823,5 +823,6 @@
   "comparator.legal.summary": "วิธีคำนวณและประกาศทางกฎหมาย",
   "comparator.row.save": "บันทึกอัตรานี้",
   "comparator.row.saved": "บันทึกแล้ว",
-  "comparator.mobile.editSearch": "แก้ไขการค้นหา"
+  "comparator.mobile.editSearch": "แก้ไขการค้นหา",
+  "comparator.filters.apply": "ดูผลลัพธ์"
 }

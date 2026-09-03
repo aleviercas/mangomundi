@@ -820,5 +820,6 @@
   "comparator.legal.summary": "Metodologia e aviso legal",
   "comparator.row.save": "Salvar esta taxa",
   "comparator.row.saved": "Salva",
-  "comparator.mobile.editSearch": "Editar busca"
+  "comparator.mobile.editSearch": "Editar busca",
+  "comparator.filters.apply": "Ver resultados"
 }

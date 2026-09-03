@@ -823,5 +823,6 @@
   "comparator.legal.summary": "Methodik und rechtlicher Hinweis",
   "comparator.row.save": "Diesen Kurs speichern",
   "comparator.row.saved": "Gespeichert",
-  "comparator.mobile.editSearch": "Suche bearbeiten"
+  "comparator.mobile.editSearch": "Suche bearbeiten",
+  "comparator.filters.apply": "Ergebnisse anzeigen"
 }

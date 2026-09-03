@@ -823,5 +823,6 @@
   "comparator.legal.summary": "পদ্ধতি ও আইনি বিজ্ঞপ্তি",
   "comparator.row.save": "এই রেট সংরক্ষণ করুন",
   "comparator.row.saved": "সংরক্ষিত",
-  "comparator.mobile.editSearch": "অনুসন্ধান সম্পাদনা"
+  "comparator.mobile.editSearch": "অনুসন্ধান সম্পাদনা",
+  "comparator.filters.apply": "ফলাফল দেখুন"
 }

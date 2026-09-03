@@ -823,5 +823,6 @@
   "comparator.legal.summary": "Phương pháp và thông báo pháp lý",
   "comparator.row.save": "Lưu tỷ giá này",
   "comparator.row.saved": "Đã lưu",
-  "comparator.mobile.editSearch": "Sửa tìm kiếm"
+  "comparator.mobile.editSearch": "Sửa tìm kiếm",
+  "comparator.filters.apply": "Xem kết quả"
 }

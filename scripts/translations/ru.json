@@ -823,5 +823,6 @@
   "comparator.legal.summary": "Методология и правовая информация",
   "comparator.row.save": "Сохранить этот курс",
   "comparator.row.saved": "Сохранено",
-  "comparator.mobile.editSearch": "Изменить запрос"
+  "comparator.mobile.editSearch": "Изменить запрос",
+  "comparator.filters.apply": "Показать результаты"
 }
