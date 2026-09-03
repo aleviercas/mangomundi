@@ -1703,16 +1703,24 @@ export function ComparatorSection({
 
       {/* §3.2 — LA barra. Un solo bloque: `@2xl:h-15` (60px, la
                     medida real de kayak.co.uk), `rounded-compact`,
-                    `bg-card`, `shadow-compare` y `overflow-hidden` para
-                    que el CTA a sangre respete las esquinas. El anillo de
-                    foco es del bloque entero (`focus-within`), no de cada
-                    campo — con hairlines en vez de bordes, un anillo por
-                    campo rompería la ilusión de pieza única. Debajo de
-                    @2xl los segmentos se apilan como filas de la misma
-                    tarjeta, separadas por `border-t` (§3.2, último
-                    bullet). */}
+                    `bg-card`, `shadow-compare`. 2026-09-03 feedback (segunda
+                    ronda, con capturas reales de kayak.com): la barra NO es
+                    una tira continua de campos separados por hairlines — cada
+                    campo es su propio "recuadrito" (chip con borde + sombra
+                    chica) DENTRO de un marco más grande con relleno propio, y
+                    el botón "Search" es otro chip más, no una pieza a sangre.
+                    Acá: el contenedor externo pasa a ser el marco (`p-1.5`,
+                    sigue con `rounded-compact`/`shadow-compare`, ya no
+                    `overflow-hidden` porque nada sangra a los bordes) y cada
+                    campo/el CTA son chips propios (`rounded-control`,
+                    `border border-border`, `bg-muted/60`, `shadow-sm`),
+                    separados por `gap-1.5` en vez de hairlines. El anillo de
+                    foco sigue siendo del marco entero (`focus-within`). Debajo
+                    de @2xl los chips se apilan solos (mismo `grid-cols-1`),
+                    cada uno ya es una tarjeta completa por sí mismo — no hace
+                    falta `border-t` para separarlos. */}
       <div
-        className={`grid min-w-0 grid-cols-1 overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch ${
+        className={`grid min-w-0 grid-cols-1 gap-1.5 rounded-compact bg-card p-1.5 shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:items-stretch @2xl:gap-1.5 ${
           sameCorridorBlocked ? "ring-2 ring-brand-cta" : ""
         }`}
       >
@@ -1721,7 +1729,7 @@ export function ComparatorSection({
                       compartía caja con la moneda de origen, a flex-[0.78] de
                       un bloque de flex-[1.7] — la mitad de eso). La moneda
                       sale a su propio segmento (ver Segmento 2). */}
-        <div className="flex min-w-0 items-center px-4 py-2 @2xl:flex-[1.3] @2xl:py-0">
+        <div className="flex min-w-0 items-center rounded-control border border-border bg-muted/60 px-3 py-1.5 shadow-sm @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
           <FieldLight label={t("comparator.field.amount")}>
             <input
               type="number"
@@ -1742,7 +1750,7 @@ export function ComparatorSection({
                       angosta propia (`@2xl:w-28 @2xl:flex-none`, no crece ni
                       se achica), la misma idea que el campo de fecha de
                       kayak.com: chico, de ancho fijo, solo un valor corto. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2 @2xl:w-28 @2xl:flex-none @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+        <div className="flex min-w-0 items-center rounded-control border border-border bg-muted/60 px-3 py-1.5 shadow-sm @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:py-0">
           {/* Label corto ("Currency", key ya existente y traducida a los
                         20 idiomas vía comparator.business.request.currency —
                         no una key nueva) en vez de "Source Currency" completo:
@@ -1771,7 +1779,7 @@ export function ComparatorSection({
                       que el picker de origen/destino de un buscador de
                       vuelos), ahora en un segmento propio sin la moneda al
                       lado. */}
-        <div className="flex min-w-0 items-center border-t border-border px-4 py-2 @2xl:flex-[1.4] @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+        <div className="flex min-w-0 items-center rounded-control border border-border bg-muted/60 px-3 py-1.5 shadow-sm @2xl:h-14 @2xl:flex-[1.4] @2xl:py-0">
           <FieldLight label={t("comparator.field.sourceCountry")}>
             <CountryCombobox
               value={sendingCountry}
@@ -1786,11 +1794,12 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento swap. Sin borde ni fondo propios en reposo (§3.2): en
-                      Kayak es solo el glifo — pero un círculo `hover`/`focus`
-                      centrado en el hairline, como el botón de intercambio
-                      real de kayak.com, en vez de un glifo suelto sin affordance. */}
-        <div className="flex items-center justify-center border-t border-border @2xl:w-11 @2xl:border-l @2xl:border-t-0">
+        {/* Segmento swap. Sigue siendo solo el glifo, SIN chip propio — en
+                      las capturas de kayak.com el ícono de intercambio vive
+                      suelto en el gap entre los dos recuadros de lugar, no
+                      dentro de una caja. El círculo de hover/focus se
+                      mantiene como affordance. */}
+        <div className="flex items-center justify-center py-0.5 @2xl:w-9 @2xl:py-0">
           <button
             type="button"
             onClick={handleSwap}
@@ -1803,7 +1812,7 @@ export function ComparatorSection({
 
         {/* Segmento 4 — país destino, mismo comportamiento de aeropuerto
                       que el Segmento 3. */}
-        <div className="flex min-w-0 items-center border-t border-border px-4 py-2 @2xl:flex-[1.4] @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+        <div className="flex min-w-0 items-center rounded-control border border-border bg-muted/60 px-3 py-1.5 shadow-sm @2xl:h-14 @2xl:flex-[1.4] @2xl:py-0">
           <FieldLight label={t("comparator.field.youReceive")} emphasizeLabel={!receivingCountry}>
             <CountryCombobox
               value={receivingCountry}
@@ -1822,7 +1831,7 @@ export function ComparatorSection({
 
         {/* Segmento 5 — moneda de destino, misma caja angosta tipo fecha
                       que el Segmento 2. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2 @2xl:w-28 @2xl:flex-none @2xl:border-l @2xl:border-t-0 @2xl:py-0">
+        <div className="flex min-w-0 items-center rounded-control border border-border bg-muted/60 px-3 py-1.5 shadow-sm @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:py-0">
           <FieldLight label={t("comparator.business.request.currency")}>
             <CurrencyCombobox
               value={to}
@@ -1847,13 +1856,14 @@ export function ComparatorSection({
                       funcionalidad, solo se movió del momento de la búsqueda
                       al momento de filtrar resultados. */}
 
-        {/* CTA a sangre, altura completa del bloque, solo esquinas
-                      derechas redondeadas (el `overflow-hidden` del
-                      contenedor ya las recorta). 2026-09-03 feedback: "el
-                      botón de compare queda más chico dentro del cuadro del
-                      selector" — de @2xl:w-[168px] a @2xl:w-[130px], con menos
-                      padding horizontal; ya no es el segmento más ancho de la
-                      barra (ese lugar pasa a ser el monto/los países). */}
+        {/* CTA — 2026-09-03 feedback (segunda ronda): "el botón de compare
+                      también se ve como que está adentro de una caja" — deja
+                      de ser una pieza a sangre con solo el borde derecho
+                      redondeado y pasa a ser un chip más dentro del marco:
+                      `rounded-control` en las 4 esquinas, con el mismo margen
+                      (`p-1.5` del contenedor) que separa a cualquier otro
+                      campo del borde de la barra. Sigue siendo @2xl:w-[130px]
+                      — ya no es el segmento más ancho de la barra. */}
         <button
           type="button"
           onClick={() => {
@@ -1865,7 +1875,7 @@ export function ComparatorSection({
             compareMut.mutate(undefined);
           }}
           disabled={compareMut.isPending || !receivingCountry || sameCorridorBlocked || amount <= 0}
-          className="btn-cta-gradient flex h-12 w-full items-center justify-center gap-2 rounded-none px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring @2xl:h-auto @2xl:w-[130px]"
+          className="btn-cta-gradient flex h-11 w-full items-center justify-center gap-2 rounded-control px-4 text-meta font-semibold shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-ring @2xl:h-14 @2xl:w-[130px]"
         >
           {compareMut.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
