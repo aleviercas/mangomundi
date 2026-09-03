@@ -548,3 +548,553 @@ export function ComparatorSection({
   const [chat, setChat] = useState<ChatMsg[]>([]);
   const [chatInput, setChatInput] = useState("");
   const chatBottomRef = useRef<HTMLDivElement>(null);
+  // 2026-09-02 feedback — "el auto scroll te saca de la respuesta": stays
+  // true when the reader is at (or near) the bottom of the chat pane; set
+  // by FloatingAgent's own onScroll below. Read at effect time, before any
+  // new content is appended, so it reflects where the reader actually was —
+  // not where the pane ends up after growing.
+  const chatNearBottomRef = useRef(true);
+  const [sortBy, setSortBy] = useState<SortKey>("overall");
+  /** Opt-in requirement filters — distinct from sortBy. Sorting never hides
+   *  a provider (that's the whole point of the multi-criteria engine); these
+   *  DO hide non-matching providers, but only because the person explicitly
+   *  said they need that capability (e.g. "I need cash pickup") — that's the
+   *  person narrowing to their real requirement, not us hiding someone for
+   *  editorial/monetization reasons. */
+  // activeFilters (Sponsored-only / Large-transfers checkboxes) removed —
+  // both filter clusters got dropped from the UI (see FILTERS ROW below),
+  // so this whole mechanism was left with nothing that could ever populate
+  // it. Delivery-method filtering (right below) is unrelated and unaffected.
+  // Delivery-method chips (Bank account / Cash / Card / Broker) — separate
+  // from activeFilters above: single-select, click the active one again to
+  // clear it back to "all methods". Folded into the "Requiere" chip row as
+  // a 4th chip group (see render below) rather than a standalone preview
+  // grid — the numeric per-method preview was removed in the redesign.
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod | null>(null);
+  const toggleDeliveryMethod = (method: DeliveryMethod) =>
+    setDeliveryMethod((prev) => (prev === method ? null : method));
+  // Exclusive-rates filter — an explicit, user-initiated narrowing, not a
+  // change to the default ranking. Neutrality lives in what happens when
+  // this is OFF (default): every provider shown, ordered purely by the
+  // chosen sort criterion, sponsored or not. Turning this ON is the
+  // person choosing to look at a labeled subset — same category as
+  // filtering by delivery method — not mangomundi silently favoring
+  // partners. Within the filtered set, sort still applies exactly as
+  // normal; this never reorders anything on its own.
+  const [showOnlyExclusive, setShowOnlyExclusive] = useState(false);
+  // Single legend panel (not per-row tooltips) explaining what each Features
+  // icon/chip means — icon+text alone still isn't foolproof for a first-time
+  // visitor on a decision involving real money, and repeating a tooltip on
+  // every row adds clutter without adding clarity. One explanation, shown
+  // once, toggled on demand.
+  const [showLegend, setShowLegend] = useState(false);
+  // Per-option match counts for the rail's Filters card (design/HANDOFF.md
+  // §3 — "conteo por opción"). Computed from the current result set, not
+  // hardcoded — an option with 0 matches on this corridor still shows "0",
+  // never a stale number from a previous search.
+  const { deliveryCounts, exclusiveCount } = useMemo(() => {
+    const counts: Record<DeliveryMethod, number> = {
+      bank_transfer: 0,
+      cash_pickup: 0,
+      card_payout: 0,
+      broker: 0,
+    };
+    if (!result) return { deliveryCounts: counts, exclusiveCount: 0 };
+    for (const { key } of DELIVERY_METHODS) {
+      counts[key] = result.rows.filter(DELIVERY_METHOD_PREDICATES[key]).length;
+    }
+    return {
+      deliveryCounts: counts,
+      exclusiveCount: result.rows.filter((r) => r.has_exclusive_deal).length,
+    };
+  }, [result]);
+  /** docs/kayak-redesign-spec.md §4.2 — el contador del botón de filtros de
+   *  mobile ("Aplicar (N)" / el badge sobre el ícono). Cuenta criterios
+   *  ACTIVOS, no opciones disponibles: es la misma cuenta que el rail usa
+   *  para decidir si muestra "Limpiar filtros". */
+  const activeFilterCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
+  // The 3 big order-tab headline numbers (design/AJUSTES-1.md §C2) — real
+  // values from the current result set, never invented. fastestFigure
+  // reuses formatDeliverySpeed, the same function ProviderRow's own
+  // Delivery metric prints, so the tab and the row it points at can never
+  // disagree.
+  const tabSummary = useMemo(() => {
+    if (!result || result.rows.length === 0) return null;
+    const recommendedRow = sortByScore(result.rows, "overall")[0];
+    const receiveMoreRow = sortByScore(result.rows, "recipient_gets_most")[0];
+    const fastestRow = sortByScore(result.rows, "fastest")[0];
+    return {
+      quote: result.quote,
+      recommendedFigure: Math.round(recommendedRow.received).toLocaleString(),
+      recommendedName: recommendedRow.name,
+      receiveMoreFigure: Math.round(receiveMoreRow.received).toLocaleString(),
+      fastestFigure: formatDeliverySpeed(fastestRow.speed_hours),
+      fastestName: fastestRow.name,
+    };
+  }, [result]);
+  const requestRef = useRef(0);
+  // Set true when a compare just populated results for a NEW corridor, so the
+  // debounced URL-sync effect (which fires on from/to/country changes) syncs the
+  // URL without wiping the freshly-set results/chat. One-shot.
+  const skipNextSyncClearRef = useRef(false);
+  // Auto-scroll target: the mid-market rate banner inside the comparator
+  // card (Wise-style — the rate is the first thing the user should see
+  // after comparing; the results table is reachable right below it).
+  const resultsRef = useRef<HTMLDivElement>(null);
+  const [businessStage, setBusinessStage] = useState<BusinessStage>("volume");
+  const [businessData, setBusinessData] = useState<{
+    monthlyVolume?: number;
+    sector?: string;
+    email?: string;
+  }>({});
+  const [savingBusinessLead, setSavingBusinessLead] = useState(false);
+  // "Add to request" selections on the business results list (ProviderRow's
+  // businessExtra block) — feeds BusinessRequestPanel's running list and, on
+  // submit, the selected_provider_slugs column alongside contract_type/frequency.
+  const [requestedSlugs, setRequestedSlugs] = useState<Set<string>>(new Set());
+  const toggleRequestedSlug = (slug: string) => {
+    setRequestedSlugs((current) => {
+      const next = new Set(current);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      return next;
+    });
+  };
+  const [requestPanelStatus, setRequestPanelStatus] = useState<
+    "idle" | "sending" | "sent" | "error"
+  >("idle");
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCtx, setModalCtx] = useState<{
+    amount: number;
+    fromCurrency: string;
+    toCurrency: string;
+    sendingCountry?: string;
+    receivingCountry?: string;
+    providerSlug?: string;
+    affiliateBaseUrl?: string;
+  } | null>(null);
+
+  const compareFn = useServerFn(compareProviders);
+  const trackFn = useServerFn(trackAffiliateClick);
+  const chatFn = useServerFn(chatAboutRecommendation);
+  const captureBusinessFn = useServerFn(captureBusinessLead);
+  const getMasterFn = useServerFn(getMasterRateState);
+  const reportMissingFn = useServerFn(reportMissingCorridor);
+  const { track } = useAnalytics();
+
+  // Business broker table's "Est. saved" figure (BusinessBrokerRow) is
+  // disclosed as "vs. the retail best on the same route" (design/Mangomundi
+  // 4 - Final.dc.html line 529) — a real number needs a real retail
+  // comparison, so this runs one extra compareProviders call, retail-forced,
+  // whenever the business segment has a result. Stale responses (query
+  // changed again before this resolves) are dropped via retailBaselineRef.
+  const [retailBestReceived, setRetailBestReceived] = useState<number | null>(null);
+  const retailBaselineRef = useRef(0);
+  useEffect(() => {
+    if (segment !== "business" || !result) {
+      setRetailBestReceived(null);
+      return;
+    }
+    const requestId = ++retailBaselineRef.current;
+    compareFn({
+      data: {
+        amount,
+        from,
+        to,
+        segment: "retail",
+        amountMode,
+        sendingCountry: sendingCountry || undefined,
+        receivingCountry: receivingCountry || undefined,
+      },
+    })
+      .then((data) => {
+        if (requestId !== retailBaselineRef.current) return;
+        setRetailBestReceived(
+          data.rows.length ? Math.max(...data.rows.map((r) => r.received)) : null,
+        );
+      })
+      .catch(() => {
+        if (requestId === retailBaselineRef.current) setRetailBestReceived(null);
+      });
+  }, [segment, result, amount, from, to, amountMode, sendingCountry, receivingCountry, compareFn]);
+
+  // Floating agent state: minimized by default on ALL devices. Only expands
+  // on explicit user click. Chat transcript + unread badge persist across
+  // navigation via localStorage so remounts don't reset or flicker.
+  const AGENT_STORAGE_KEY = "mm.agent.v1";
+  const [aiCollapsed, setAiCollapsed] = useState(true);
+  /** docs/kayak-redesign-spec.md §4.1 — el formulario completo en mobile,
+   *  detrás de la píldora de resumen. */
+  const [searchDrawerOpen, setSearchDrawerOpen] = useState(false);
+  /** §4.2 — el rail de filtros de §3.4, como Drawer, debajo de `lg`. */
+  const [filtersDrawerOpen, setFiltersDrawerOpen] = useState(false);
+  // Was a per-message unread COUNT; nothing auto-populates `chat` anymore
+  // (see compareMut's onSuccess), so there's no message count left to keep.
+  // A plain boolean — "a result landed while the panel was collapsed" — is
+  // what's left to signal.
+  const [hasNewResult, setHasNewResult] = useState(false);
+
+  // MasterRateMap / MissingCorridorsLog (client mirror). Hydrated from the
+  // server on mount and re-synced after each comparison so the AI Wizard
+  // always has up-to-date context.
+  const [masterMap, setMasterMap] = useState<MasterRateMap | null>(() =>
+    MasterRateStore.getMaster(),
+  );
+  const [missingLog, setMissingLog] = useState<MissingCorridorEntry[]>(() =>
+    MasterRateStore.getMissing(),
+  );
+  const [missingCorridor, setMissingCorridor] = useState<{ from: string; to: string } | null>(null);
+
+  // Restore once on mount.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem(AGENT_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as { chat?: ChatMsg[]; hasNewResult?: boolean };
+        if (Array.isArray(parsed.chat) && parsed.chat.length > 0) setChat(parsed.chat);
+        if (typeof parsed.hasNewResult === "boolean") setHasNewResult(parsed.hasNewResult);
+      }
+    } catch {
+      /* ignore */
+    }
+    // Subscribe to local master store changes (e.g. acknowledgements).
+    const unsub = MasterRateStore.subscribe(() => {
+      setMasterMap(MasterRateStore.getMaster());
+      setMissingLog(MasterRateStore.getMissing());
+    });
+    // Hydrate worker-side master state into local cache (additive merge).
+    getMasterFn()
+      .then((state) => {
+        MasterRateStore.hydrate(state.master);
+        // Server-side missing log entries seed the local log too.
+        for (const m of state.missing) {
+          const existing = MasterRateStore.getMissing().find(
+            (x) => x.from === m.from && x.to === m.to,
+          );
+          if (!existing) MasterRateStore.logMissing(m.from, m.to);
+        }
+      })
+      .catch(() => {
+        /* offline / build-time — ignore */
+      });
+    return () => {
+      unsub();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const buildReasoning = (): string => {
+    return `[LANG:${lang.toUpperCase()}] mangomundi routing justification: for a transfer of ${amount.toLocaleString()} ${from} to ${to}, the engine analysed liquidity paths across indexed providers. The optimal route was selected from flat-fee optimisation and real-time interbank rates; spread, fixed fees, settlement window and regulatory coverage of each counterparty were normalised before ranking.`;
+  };
+
+  const proactiveMessage = (res: ComparisonResult, key: SortKey): ChatMsg | null => {
+    const rows = [...res.rows];
+    if (rows.length === 0) return null;
+    const sorted = sortByScore(rows, key);
+    const top = sorted[0];
+    const dedicatedTplKey =
+      key === "lowest_cost"
+        ? "comparator.copilot.proactive.fee"
+        : key === "fastest"
+          ? "comparator.copilot.proactive.speed"
+          : key === "most_trusted"
+            ? "comparator.copilot.proactive.trust"
+            : key === "best_business"
+              ? "comparator.copilot.proactive.business"
+              : key === "best_cash_pickup"
+                ? "comparator.copilot.proactive.cashPickup"
+                : key === "overall"
+                  ? "comparator.copilot.proactive.rate"
+                  : null;
+    // Profiles without a dedicated, fact-accurate template (most_transparent,
+    // best_large_transfers, best_deal, and any future one) fall back to the
+    // generic "{provider} stands out on {criterion}" copy instead of the old
+    // hardcoded "best rate" text, which would misstate why this pick won.
+    const content = dedicatedTplKey
+      ? t(dedicatedTplKey).replace("{provider}", top.name)
+      : t("comparator.copilot.proactive.generic")
+          .replace("{provider}", top.name)
+          .replace("{criterion}", t(sortLabelKey(key)));
+    return {
+      role: "assistant",
+      content,
+      actions: [
+        {
+          kind: "proceed",
+          slug: top.slug,
+          url: top.affiliate_url,
+          label: t("comparator.copilot.proceed").replace("{provider}", top.name),
+        },
+      ],
+    };
+  };
+
+  const compareMut = useMutation({
+    mutationFn: async (override?: {
+      from: string;
+      to: string;
+      sendingCountry?: string;
+      receivingCountry?: string;
+    }) => {
+      const useFrom = override?.from ?? from;
+      const useTo = override?.to ?? to;
+      const useSending = override?.sendingCountry ?? sendingCountry;
+      const useReceiving = override?.receivingCountry ?? receivingCountry;
+      const requestId = ++requestRef.current;
+      const data = await compareFn({
+        data: {
+          amount,
+          from: useFrom,
+          to: useTo,
+          segment,
+          amountMode,
+          sendingCountry: useSending || undefined,
+          receivingCountry: useReceiving || undefined,
+        },
+      });
+      return {
+        data,
+        requestId,
+        usedFrom: useFrom,
+        usedTo: useTo,
+        usedSending: useSending,
+        usedReceiving: useReceiving,
+      };
+    },
+    onMutate: () => {
+      setAiLoading(true);
+      // 2026-09-02 feedback (round 4) — "sigue apareciendo la rejilla al
+      // seleccionar la currency y poner compare": this unconditionally
+      // nulled `result`, even for a re-search that already has results on
+      // screen (e.g. changing currency post-search auto-fires a re-compare
+      // — see handlePickFromCurrency/handlePickToCurrency's own comment).
+      // That contradicted the first-search skeleton's own doc comment
+      // ("a re-search with existing results just updates them in place")
+      // — every re-search actually flashed to the empty-result skeleton
+      // and back, which is exactly the "weird visual delay" reported.
+      // Leaving a prior result in place during a re-search (the Compare
+      // button's own spinner — see its disabled/isPending rendering below
+      // — already signals "working") means only a genuine first search
+      // (no prior result) ever shows the skeleton.
+      setAiText("");
+      setChat([]);
+      setMissingCorridor(null);
+    },
+    onSuccess: ({ data, requestId, usedFrom, usedTo, usedSending, usedReceiving }) => {
+      if (requestId !== requestRef.current) return;
+      if (usedFrom !== from) setFrom(usedFrom);
+      if (usedTo !== to) setTo(usedTo);
+      // Keep the country selects consistent with the (possibly new) currencies
+      // — a suggested compare can change the corridor, not just the currency.
+      if (usedSending !== sendingCountry) setSendingCountry(usedSending);
+      if (usedReceiving !== receivingCountry) setReceivingCountry(usedReceiving);
+      // If the corridor changed, the URL-sync effect will fire from those state
+      // changes — tell it to keep the results/chat we're about to set.
+      if (
+        usedFrom !== from ||
+        usedTo !== to ||
+        usedSending !== sendingCountry ||
+        usedReceiving !== receivingCountry
+      ) {
+        skipNextSyncClearRef.current = true;
+      }
+      setResult(data);
+      setSortBy("overall");
+      setAiText(buildReasoning());
+      setAiLoading(false);
+      setMissingCorridor(null);
+      // Lazy chat, on purpose — nothing gets built or pushed into `chat`
+      // here anymore. Whatever the panel should open with (the business
+      // wizard's first question, the B2B upsell note, or the generic
+      // welcome + quick-actions grid) is decided at render time from
+      // (segment, businessStage, result), the first time the user actually
+      // expands the panel — see the `chat.length === 0` branch below. A
+      // fresh result still needs a clean slate, so any leftover messages
+      // from a previous corridor get cleared here.
+      setChat([]);
+      if (segment === "business") {
+        setBusinessStage("volume");
+        setBusinessData({});
+      }
+      // Was an unread-count badge tied to how many messages got
+      // auto-generated on load; now that nothing gets auto-generated,
+      // there's nothing to count. Swapped for a plain boolean — "a new
+      // result is waiting" — so the collapsed toggle still visibly invites
+      // the user in without implying unread chat content that doesn't
+      // exist yet.
+      if (aiCollapsed) setHasNewResult(true);
+
+      track("comparator_query", {
+        amount,
+        from_currency: from,
+        to_currency: to,
+        segment,
+        urgency,
+        source: "home_comparator",
+      });
+    },
+    onError: (err) => {
+      setAiLoading(false);
+      const msg = (err as Error)?.message ?? "";
+      const m = /MISSING_CORRIDOR:([A-Z]{3})-([A-Z]{3})/.exec(msg);
+      if (m) {
+        setMissingCorridor({ from: m[1], to: m[2] });
+        MasterRateStore.logMissing(m[1], m[2]);
+      }
+    },
+  });
+
+  // 2026-09-02 feedback (AH3) — "sigue pasando lo del delay... aparece el
+  // circulito y dice comparing rates pero ese recuadro que aparece con
+  // delay queda mal": the first-search skeleton below used to render the
+  // instant `compareMut.isPending` went true. In this sandbox a real
+  // request is slow enough that isn't visible, but in production a fast
+  // response (a couple hundred ms) meant the skeleton box popped in and
+  // was immediately torn out again for the real results — a flash/flicker,
+  // not a smooth loading state, which reads exactly as "queda mal". Gating
+  // it behind a short delay means a fast response never shows the skeleton
+  // at all (no flash), while a genuinely slow one still gets the normal
+  // loading experience after this brief grace period. The Compare button's
+  // own spinner (below) stays tied directly to `isPending` — that's a
+  // small, layout-stable change, so instant feedback there is still good,
+  // it's only this larger inserted block that benefits from the delay.
+  const [showLoadingSkeleton, setShowLoadingSkeleton] = useState(false);
+  useEffect(() => {
+    if (!compareMut.isPending) {
+      setShowLoadingSkeleton(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowLoadingSkeleton(true), 250);
+    return () => clearTimeout(timer);
+  }, [compareMut.isPending]);
+
+  // Auto-run one comparison when arriving from the home widget (?run=1) so the
+  // user lands directly on results instead of having to click "Compare Rates"
+  // again. Fires once per mount (ref guard also survives a StrictMode
+  // double-effect). Same validation as the manual CTA, plus the corridor
+  // sanity check the URL-sync effect uses.
+  const didAutoRunRef = useRef(false);
+  useEffect(() => {
+    if (!initialQuery?.autoRun || didAutoRunRef.current) return;
+    didAutoRunRef.current = true;
+    if (amount <= 0 || !receivingCountry || sameCorridorBlocked) return;
+    // The URL-sync effect's 300ms timer clears result/chat unless this one-shot
+    // flag is set — covers sub-300ms responses landing before the timer fires.
+    skipNextSyncClearRef.current = true;
+    compareMut.mutate(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const requestMissingRoute = async (from: string, to: string) => {
+    MasterRateStore.logMissing(from, to);
+    try {
+      await reportMissingFn({ data: { from, to } });
+    } catch {
+      /* logged locally regardless */
+    }
+    MasterRateStore.acknowledgeMissing(from, to);
+    track("rfq_interaction", {
+      amount,
+      from_currency: from,
+      to_currency: to,
+      segment,
+      urgency,
+      source: "missing_corridor_request",
+    });
+  };
+
+  // Runs an actual comparison for a route the user asked about in free-text
+  // chat, instead of assuming it's unsupported. If it genuinely isn't
+  // supported, compareMut.onError already detects MISSING_CORRIDOR and
+  // surfaces the existing request-this-route CTA — so nothing is logged as
+  // missing until a real attempt confirms it.
+  const runSuggestedCompare = (
+    suggestedFrom: string,
+    suggestedTo: string,
+    suggestedFromCountry?: string,
+    suggestedToCountry?: string,
+  ) => {
+    track("rfq_interaction", {
+      amount,
+      from_currency: suggestedFrom,
+      to_currency: suggestedTo,
+      segment,
+      urgency,
+      source: "chat_suggested_compare",
+    });
+    // If the user named a specific country, use it directly. Otherwise keep each
+    // country consistent with the suggested currency: only change a side's
+    // country when its current country doesn't already use that currency (so a
+    // route that keeps one currency leaves that country untouched).
+    const nextOrigin =
+      suggestedFromCountry ??
+      (localCurrency(sendingCountry) === suggestedFrom
+        ? sendingCountry
+        : (primaryCountryForCurrency(suggestedFrom) ?? sendingCountry));
+    const nextDest =
+      suggestedToCountry ??
+      (localCurrency(receivingCountry) === suggestedTo
+        ? receivingCountry
+        : (primaryCountryForCurrency(suggestedTo) ?? receivingCountry));
+    compareMut.mutate({
+      from: suggestedFrom,
+      to: suggestedTo,
+      sendingCountry: nextOrigin,
+      receivingCountry: nextDest,
+    });
+  };
+
+  const handleWizardAction = (action: WizardAction) => {
+    if (action.id === "report") {
+      const note = t("wizard.reportNote").replace("{from}", from).replace("{to}", to);
+      MasterRateStore.logMissing(from, to);
+      void reportMissingFn({ data: { from, to } }).catch(() => {});
+      setChat((c) => [
+        ...c,
+        { role: "user", content: `${t(action.label)} ${from} → ${to}` },
+        { role: "assistant", content: note },
+      ]);
+      return;
+    }
+
+    // "Run an example" — the no-AI path INTO the comparator: fill a sensible
+    // corridor if the form is incomplete, then run the real comparison. Guides
+    // a first-time user straight to results without typing anything.
+    if (action.id === "example") {
+      if (!receivingCountry) {
+        handleReceivingCountryChange(sendingCountry === "US" ? "MX" : "US");
+      }
+      setValidationError(null);
+      setChat((c) => [
+        ...c,
+        { role: "user", content: t(action.label) },
+        { role: "assistant", content: t("wizard.exampleNote") },
+      ]);
+      requestAnimationFrame(() => compareMut.mutate(undefined));
+      return;
+    }
+
+    // Product / onboarding answers — static copy, no AI, and NO prior
+    // comparison required, so the whole tree works for a first-time visitor.
+    const infoReply: Record<string, () => string> = {
+      about: () => localAbout(t),
+      how: () => localHowToCompare(t),
+      free: () => localFree(t),
+      neutral: () => localNeutral(t),
+      send: () => localSend(t),
+      providers: () => localProviders(result, t),
+    };
+    if (infoReply[action.id]) {
+      setChat((c) => [
+        ...c,
+        { role: "user", content: t(action.label) },
+        { role: "assistant", content: infoReply[action.id]() },
+      ]);
+      return;
+    }
+
+    // Data-dependent answers (fees / limits) read the current table — need a
+    // comparison first.
+    if (!result) {
