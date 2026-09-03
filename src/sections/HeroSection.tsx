@@ -40,17 +40,24 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
       aria-hidden={compact}
     >
       <div className="overflow-hidden">
-        <div className="relative mx-auto w-full max-w-7xl px-5 text-center sm:px-8">
+        {/* docs/kayak-redesign-spec.md §6.2 — el titular pasa de centrado a
+            alineado a la IZQUIERDA y el contenedor baja de max-w-7xl (1280)
+            a 1180, el mismo ancho que el comparador de §3.1: centrado sobre
+            una barra de búsqueda alineada a la izquierda, el bloque entero
+            se leía como dos piezas de páginas distintas. */}
+        <div className="relative mx-auto w-full max-w-[1180px] px-5 sm:px-8">
           {/* design/AJUSTES-1.md §B — literal 44px/800/-0.035em h1, no
               gradient accent (the mockup's h2 is plain text). Smaller on
-              mobile since the doc only specifies one reference size. */}
+              mobile since the doc only specifies one reference size.
+              §6.2 — punto final coral: es el remate de titular de
+              kayak.com y encaja con el naming de marca sin copiarle un
+              solo color. El gradiente sobre la palabra destacada que §6.2
+              manda eliminar ya no existía acá. */}
           <h1 className="font-heading text-[28px] font-extrabold leading-[1.1] tracking-[-0.035em] text-foreground sm:text-[44px]">
             {t("home.hero.headline")}
+            <span className="text-brand-cta">.</span>
           </h1>
-          <p
-            className="mx-auto mt-3 max-w-5xl text-[15px] leading-relaxed sm:text-[17px]"
-            style={{ color: "#6B5F55" }}
-          >
+          <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-muted-foreground sm:text-[17px]">
             {t("home.hero.tagline")}
           </p>
         </div>

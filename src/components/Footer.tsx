@@ -36,7 +36,14 @@ function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyAr
   const { t } = useI18n();
   return (
     <div className="flex flex-col gap-2 text-[12.5px] text-[#A79C92]">
-      <span className="font-bold text-white">{t(titleKey)}</span>
+      {/* docs/kayak-redesign-spec.md §6.4 — títulos de columna en
+          text-badge uppercase con tracking, estilo Kayak. El color SÍ se
+          aparta del spec: éste pide text-muted-foreground, que asume el
+          footer claro de kayak.com; sobre este footer oscuro ese token
+          (#6b5f55) dejaría los títulos MENOS legibles que los links que
+          encabezan — o sea invertiría la jerarquía y bajaría el contraste,
+          contra la regla 5. Se queda en blanco. */}
+      <span className="text-badge font-bold uppercase tracking-wide text-white">{t(titleKey)}</span>
       {items.map((item) => (
         <Link
           key={item.labelKey}
@@ -123,7 +130,13 @@ export function Footer() {
           <FooterColumn titleKey="footer.nav.title" items={FOOTER_COMPANY} />
 
           <div className="flex flex-col gap-2 text-[12.5px] text-[#A79C92]">
-            <span className="font-bold text-white">{t("footer.legal.title")}</span>
+            {/* Mismo tratamiento §6.4 que las otras columnas — esta no usa
+                FooterColumn (su lista de links se arma aparte), así que
+                había que aplicarlo también acá o quedaba la única columna
+                con otro estilo de título. */}
+            <span className="text-badge font-bold uppercase tracking-wide text-white">
+              {t("footer.legal.title")}
+            </span>
             {legal.map((l) => (
               <Link
                 key={l.label}
