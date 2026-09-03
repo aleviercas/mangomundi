@@ -64,6 +64,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { TrustBox } from "@/components/TrustBox";
 import { PreferredRateModal } from "@/components/PreferredRateModal";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
 import { useAnalytics } from "@/hooks/use-analytics";
@@ -2269,14 +2270,18 @@ export function ComparatorSection({
             </div>
           ) : (
             <div
-              className={`mt-5 grid min-w-0 scroll-mt-24 gap-5 transition-opacity duration-200 lg:grid-cols-[268px_minmax(0,1fr)] lg:items-start lg:gap-[22px] ${compareMut.isPending ? "opacity-60" : ""}`}
+              className={`mt-5 grid min-w-0 scroll-mt-24 gap-5 transition-opacity duration-200 lg:grid-cols-[240px_minmax(0,1fr)] lg:items-start lg:gap-5 ${compareMut.isPending ? "opacity-60" : ""}`}
             >
               {/* Left rail — design/AJUSTES-2.md §6 (mockup line 290-365):
                   Filters → AI Agent → Rate alert → Trustpilot, 268px wide,
                   13px gap between cards. ≥lg only; below that the page
                   keeps the existing inline filter row + floating agent
                   (rendered elsewhere), unchanged. */}
-              <aside className="hidden lg:flex lg:flex-col lg:gap-[13px]">
+              {/* docs/kayak-redesign-spec.md §3.4 — 240px (era 268) y
+                  sticky bajo el header + la barra de búsqueda, que ya es
+                  sticky ella misma: el rail de kayak.com acompaña el scroll
+                  de la lista en vez de irse hacia arriba con ella. */}
+              <aside className="hidden lg:sticky lg:top-[136px] lg:flex lg:flex-col lg:gap-3">
                 {/* 2026-08-31 feedback — this is the rail's "smart filter"
                     (Kayak-style: dark, but a filter panel, not the chat
                     agent — that one never docks here anymore, see the
@@ -2826,74 +2831,76 @@ function FiltersCard({
   };
 }) {
   const criteriaCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
-  // 2026-08-31 feedback — "un agente de Smart filter... con el color
-  // oscuro, como kayak.com": this card (payout method, exclusive offers —
-  // nothing chat-related) went dark to read as the rail's own AI-flavored
-  // panel, matching FloatingAgent's own #241C16/mango palette instead of
-  // the rest of the (light) site.
-  // 2026-09-01 feedback — "el rank by trust fees rate... sacalo del cuadro
-  // vertical de filters": rank-by (trust/fees/rate) used to be a third
-  // section here, duplicating the same 3 criteria as a "More filters"
-  // dropdown that only showed up below the `lg` breakpoint where this rail
-  // is hidden. Removed from here entirely — that dropdown is now the ONE
-  // place those criteria live, always visible next to the 3 main sort tabs
-  // (see its own comment, right above the tab row).
-  const optionRowClass = (active: boolean) =>
-    `flex h-[38px] items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
-      active
-        ? "border-[1.5px] border-[#FF8A6B] bg-white/[.14] font-bold text-white"
-        : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-white/30"
-    }`;
+  // docs/kayak-redesign-spec.md §3.4 — el rail deja de ser el panel oscuro
+  // "smart filter" (#241C16 + mango, pensado para leerse como un panel de
+  // agente) y pasa a ser el rail de filtros de kayak.com: una `compare-card`
+  // clara, secciones apiladas separadas por hairlines, cada una con su
+  // encabezado en text-badge y sus filas de checkbox con el contador de
+  // proveedores a la derecha. Es el mismo contenido y el mismo estado — sólo
+  // cambia la piel y la geometría.
+  //
+  // El rank-by (trust/fees/rate) sigue sin vivir acá (2026-09-01: "sacalo
+  // del cuadro vertical de filters"); su única casa es el dropdown "Sort"
+  // al lado de las 3 tabs.
+  const sectionClass = "px-4 py-3.5";
+  const headingClass = "text-badge font-semibold uppercase tracking-wide text-muted-foreground";
+  const rowClass =
+    "flex cursor-pointer items-center gap-2.5 py-1.5 text-meta text-foreground transition-colors hover:text-brand-cta";
 
   return (
-    <div
-      style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
-      className="rounded-[18px] px-[17px] py-4"
-    >
-      <div className="flex items-center justify-between">
+    <div className="compare-card divide-y divide-border">
+      <div className={`flex items-center justify-between ${sectionClass}`}>
         {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-        <h3 className="text-[15px] font-extrabold text-white">{t("comparator.filters.title")}</h3>
-        <button
-          type="button"
-          onClick={() => {
-            setDeliveryMethod(null);
-            setShowOnlyExclusive(false);
-          }}
-          className="text-[12px] font-bold text-[#FF8A6B] hover:underline"
-        >
-          {t("comparator.filters.clear").replace("{n}", String(criteriaCount))}
-        </button>
+        <h3 className="text-metric font-bold text-foreground">{t("comparator.filters.title")}</h3>
+        {/* §3.4, pie del rail — "Limpiar filtros" sólo cuando hay alguno
+            activo, en vez de un "Clear · 0" permanente que no hace nada. */}
+        {criteriaCount > 0 && (
+          <button
+            type="button"
+            onClick={() => {
+              setDeliveryMethod(null);
+              setShowOnlyExclusive(false);
+            }}
+            className="text-meta font-semibold text-accent-text hover:underline"
+          >
+            {t("comparator.filters.clear").replace("{n}", String(criteriaCount))}
+          </button>
+        )}
       </div>
 
       {businessFilters && (
-        <div className="mt-[15px]">
-          <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
-            {t("comparator.field.contractType")}
-          </div>
-          <div className="mt-[9px] flex gap-[6px]">
+        <div className={sectionClass}>
+          <div className={headingClass}>{t("comparator.field.contractType")}</div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
             {(["spot", "forward", "option"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => businessFilters.setContractType(v)}
                 aria-pressed={businessFilters.contractType === v}
-                className={optionRowClass(businessFilters.contractType === v)}
+                className={`inline-flex h-8 items-center rounded-control border px-2.5 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                  businessFilters.contractType === v
+                    ? "border-transparent bg-foreground text-background"
+                    : "border-input bg-card text-foreground hover:border-foreground/40"
+                }`}
               >
                 {t(`comparator.contractType.${v}`)}
               </button>
             ))}
           </div>
-          <div className="mt-[13px] text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
-            {t("comparator.field.frequency")}
-          </div>
-          <div className="mt-[9px] flex flex-col gap-[6px]">
+          <div className={`mt-3 ${headingClass}`}>{t("comparator.field.frequency")}</div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
             {(["one_off", "monthly", "quarterly"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => businessFilters.setFrequency(v)}
                 aria-pressed={businessFilters.frequency === v}
-                className={optionRowClass(businessFilters.frequency === v)}
+                className={`inline-flex h-8 items-center rounded-control border px-2.5 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                  businessFilters.frequency === v
+                    ? "border-transparent bg-foreground text-background"
+                    : "border-input bg-card text-foreground hover:border-foreground/40"
+                }`}
               >
                 {t(`comparator.frequency.${v === "one_off" ? "oneOff" : v}`)}
               </button>
@@ -2902,54 +2909,57 @@ function FiltersCard({
         </div>
       )}
 
-      <div
-        className={businessFilters ? "mt-[15px] border-t border-white/10 pt-[13px]" : "mt-[15px]"}
-      >
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
-          {t("comparator.filters.payoutMethod")}
-        </div>
-        <div className="mt-[9px] flex flex-col gap-[6px]">
+      <div className={sectionClass}>
+        <div className={headingClass}>{t("comparator.filters.payoutMethod")}</div>
+        <div className="mt-1.5">
           {DELIVERY_METHODS.map(({ key, labelKey }) => {
             const isActive = deliveryMethod === key;
             return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => toggleDeliveryMethod(key)}
-                aria-pressed={isActive}
-                className={optionRowClass(isActive)}
-              >
-                <span aria-hidden>{isActive ? "☑" : "☐"}</span>
-                <span className="truncate">{t(labelKey)}</span>
-                <span className="ml-auto shrink-0 text-[11.5px] font-semibold text-white/50 tabular-nums">
+              <label key={key} className={rowClass}>
+                {/* Sigue siendo single-select sobre el mismo estado
+                    `deliveryMethod` — el spec lo quiere multi-select, pero
+                    eso cambia qué filas se muestran (lógica), no la piel.
+                    Ver la nota de desvío del commit. */}
+                <Checkbox
+                  checked={isActive}
+                  onCheckedChange={() => toggleDeliveryMethod(key)}
+                  aria-label={t(labelKey)}
+                  // rounded-sm deriva de --radius (14px) y da 10px: sobre
+                  // una caja de 16px eso se lee como un círculo, o sea como
+                  // un radio button — exactamente lo contrario de lo que
+                  // este control es. rounded-control (4px) es el radio de
+                  // control de esta superficie.
+                  className="rounded-control! border-input"
+                />
+                <span className="min-w-0 flex-1 truncate font-semibold">{t(labelKey)}</span>
+                <span className="shrink-0 text-meta tabular-nums text-muted-foreground">
                   {deliveryCounts[key]}
                 </span>
-              </button>
+              </label>
             );
           })}
         </div>
       </div>
 
-      <div className="mt-[15px] border-t border-white/10 pt-[13px]">
-        <div className="text-[10.5px] font-bold uppercase tracking-[.1em] text-white/50">
-          {t("comparator.filters.exclusiveOffers")}
-        </div>
-        <button
-          type="button"
-          onClick={() => setShowOnlyExclusive((prev) => !prev)}
-          aria-pressed={showOnlyExclusive}
-          className={`mt-[9px] flex h-[38px] w-full items-center gap-[9px] rounded-[10px] border px-[11px] text-[13px] font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-white/30 ${
-            showOnlyExclusive
-              ? "border-[1.5px] border-[#EE5B3E] bg-[#EE5B3E]/20 text-[#FF8A6B]"
-              : "border-white/15 bg-white/[.05] font-semibold text-white/80 hover:border-[#EE5B3E]/50"
-          }`}
-        >
-          <span aria-hidden>{showOnlyExclusive ? "☑" : "☐"}</span>
-          <span className="truncate">{t("comparator.filter.exclusiveOnlyLong")}</span>
-          <span className="ml-auto shrink-0 text-[11.5px] font-bold tabular-nums">
+      <div className={sectionClass}>
+        <div className={headingClass}>{t("comparator.filters.exclusiveOffers")}</div>
+        <label className={`mt-1.5 ${rowClass}`}>
+          {/* §3.4 — deja de ser un chip coral y pasa a ser un checkbox más:
+              el color de marca se reserva para la acción, no para un
+              filtro opcional. */}
+          <Checkbox
+            checked={showOnlyExclusive}
+            onCheckedChange={() => setShowOnlyExclusive((prev) => !prev)}
+            aria-label={t("comparator.filter.exclusiveOnlyLong")}
+            className="rounded-control! border-input"
+          />
+          <span className="min-w-0 flex-1 truncate font-semibold">
+            {t("comparator.filter.exclusiveOnlyLong")}
+          </span>
+          <span className="shrink-0 text-meta tabular-nums text-muted-foreground">
             {exclusiveCount}
           </span>
-        </button>
+        </label>
       </div>
     </div>
   );
@@ -3014,7 +3024,7 @@ function RateAlertCard({
   };
 
   return (
-    <div className="overflow-hidden rounded-[18px] border border-border bg-card">
+    <div className="compare-card overflow-hidden">
       <div
         className="h-[104px] bg-cover bg-center"
         style={{
@@ -3855,7 +3865,7 @@ function BusinessRequestPanel({
 function BusinessContactCard() {
   const { t } = useI18n();
   return (
-    <div className="overflow-hidden rounded-[18px] border border-border bg-card">
+    <div className="compare-card overflow-hidden">
       <img
         src="/images/business-person.jpg"
         alt=""
