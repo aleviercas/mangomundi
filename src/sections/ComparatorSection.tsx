@@ -1708,7 +1708,7 @@ export function ComparatorSection({
                       <span className="text-[8.5px] font-bold uppercase tracking-wide text-muted-foreground">
                         {t("comparator.field.amount")}
                       </span>
-                      <div className="flex h-[26px] items-stretch">
+                      <div className="flex h-[26px] items-stretch overflow-hidden rounded-full bg-[#F5EFE8]">
                         <CountryCombobox
                           value={sendingCountry}
                           onChange={handleSendingCountryChange}
@@ -1717,7 +1717,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.sourceCountry")}
                           triggerIconOnly
-                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                         <input
                           type="number"
@@ -1727,7 +1727,7 @@ export function ComparatorSection({
                           placeholder="1000"
                           onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
                           aria-label={t("comparator.field.amount")}
-                          className="min-w-0 flex-1 border-l border-border bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                          className="min-w-0 flex-1 border-l border-black/10 bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
                         />
                         <CurrencyCombobox
                           value={from}
@@ -1737,22 +1737,19 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.sourceCurrency")}
                           compactLabel
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                       </div>
                     </div>
 
-                    {/* 2026-09-04 feedback — Receive tints in the accent
-                        color while it still needs a country, the same
-                        "field that needs completing" cue the approved
-                        mockup borrows from Kayak's focused "To?" field —
-                        distinct from sameCorridorBlocked (a stronger, more
-                        urgent state on the whole card, unchanged above). */}
-                    <div
-                      className={`flex flex-col gap-[3px] px-2.5 py-[7px] transition-colors ${
-                        !receivingCountry ? "bg-accent/5" : ""
-                      }`}
-                    >
+                    {/* 2026-09-04 feedback — Receive gets a real bordered
+                        box in the accent color while it still needs a
+                        country (Kayak's focused "To?" field cue), the same
+                        treatment as the full comparator's own Receive
+                        segment — distinct from sameCorridorBlocked (a
+                        stronger, more urgent state on the whole card,
+                        unchanged above). */}
+                    <div className="flex flex-col gap-[3px] px-2.5 py-[7px]">
                       <span
                         className={`text-[8.5px] font-bold uppercase tracking-wide ${
                           !receivingCountry ? "text-accent-text" : "text-muted-foreground"
@@ -1760,7 +1757,13 @@ export function ComparatorSection({
                       >
                         {t("comparator.field.youReceive")}
                       </span>
-                      <div className="flex h-[26px] items-stretch">
+                      <div
+                        className={`flex h-[26px] items-stretch overflow-hidden transition-colors ${
+                          !receivingCountry
+                            ? "rounded-[8px] border-[1.5px] border-brand-cta bg-accent/10"
+                            : "rounded-full bg-[#F5EFE8]"
+                        }`}
+                      >
                         <CountryCombobox
                           value={receivingCountry}
                           onChange={handleReceivingCountryChange}
@@ -1769,7 +1772,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCountry")}
                           triggerIconOnly
-                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-muted focus:ring-0"
+                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                         <CurrencyCombobox
                           value={to}
@@ -1779,7 +1782,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCurrency")}
                           compactLabel
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-transparent focus:ring-0"
+                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                       </div>
                     </div>
@@ -1917,7 +1920,11 @@ export function ComparatorSection({
                   >
                     <div className="min-w-0 border-b-[1.5px] border-border/70 px-3 py-2 @4xl:flex @4xl:h-full @4xl:flex-[1.7] @4xl:items-center @4xl:border-b-0 @4xl:border-r-[1.5px] @4xl:px-4 @4xl:py-0">
                       <FieldLight label={t("comparator.field.amount")}>
-                        <div className="flex w-full min-w-0 items-stretch">
+                        {/* 2026-09-04 feedback ("quedo muy mal") — Send needs
+                            to read as a filled chip/pill sitting INSIDE the
+                            bar (Kayak's origin pill), not plain text flush
+                            against the segment's own edges. */}
+                        <div className="inline-flex max-w-full items-stretch overflow-hidden rounded-full bg-[#F5EFE8]">
                           <input
                             type="number"
                             inputMode="decimal"
@@ -1940,7 +1947,7 @@ export function ComparatorSection({
                             // 14.5px — flex-1 (was 1.4) gives the country
                             // segment its fair half instead of the smaller
                             // share, without needing another isMobile branch.
-                            className={`min-w-0 flex-1 bg-transparent px-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
+                            className={`min-w-0 flex-1 bg-transparent py-2 pl-4 pr-2.5 font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none ${
                               compact ? "text-[21px]" : "text-[25px]"
                             }`}
                           />
@@ -1964,7 +1971,7 @@ export function ComparatorSection({
                             emptyLabel={t("comparator.combobox.empty")}
                             ariaLabel={t("comparator.field.sourceCurrency")}
                             compactLabel
-                            triggerClassName={`h-full w-[68px] shrink-0 rounded-none border-0 border-l border-border bg-transparent font-bold shadow-none hover:bg-transparent focus:ring-0 ${
+                            triggerClassName={`h-full w-[68px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent font-bold shadow-none hover:bg-black/5 focus:ring-0 ${
                               compact ? "px-3 text-[14px]" : "px-3 text-[14.5px]"
                             }`}
                           />
@@ -1981,7 +1988,7 @@ export function ComparatorSection({
                             // currency-code readout.
                             hideSecondary
                             triggerIconOnly={isMobile}
-                            triggerClassName={`h-full flex-1 rounded-none border-0 border-l border-border bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 ${
+                            triggerClassName={`h-full flex-1 rounded-none border-0 border-l border-black/10 bg-transparent px-3.5 font-bold text-foreground shadow-none hover:bg-black/5 focus:ring-0 ${
                               compact ? "text-[14px]" : "text-[14.5px]"
                             } ${isMobile ? "shrink-0 justify-center" : "shrink-0"}`}
                           />
@@ -2014,17 +2021,19 @@ export function ComparatorSection({
                         />
                       </button>
 
-                      {/* Receive — tints in the accent color while it still
-                          needs a country, the same "field that needs
-                          completing" cue the approved mockup borrows from
-                          Kayak's focused "To?" field. */}
-                      <div
-                        className={`min-w-0 flex-1 @4xl:flex @4xl:h-full @4xl:flex-[1.3] @4xl:items-center @4xl:border-r-[1.5px] @4xl:border-border/70 @4xl:px-4 @4xl:py-0 ${
-                          !receivingCountry ? "bg-accent/5" : ""
-                        }`}
-                      >
+                      {/* Receive — a real bordered box in the accent color
+                          while it still needs a country (Kayak's focused
+                          "To?" field cue); once a country's picked it reads
+                          as the same kind of filled pill Send uses. */}
+                      <div className="min-w-0 flex-1 @4xl:flex @4xl:h-full @4xl:flex-[1.3] @4xl:items-center @4xl:border-r-[1.5px] @4xl:border-border/70 @4xl:px-4 @4xl:py-0">
                         <FieldLight label={t("comparator.field.youReceive")}>
-                          <div className="flex w-full min-w-0 items-stretch">
+                          <div
+                            className={`inline-flex max-w-full items-stretch overflow-hidden rounded-full transition-colors ${
+                              !receivingCountry
+                                ? "rounded-md border-[1.5px] border-brand-cta bg-accent/10"
+                                : "bg-[#F5EFE8]"
+                            }`}
+                          >
                             <CountryCombobox
                               value={receivingCountry}
                               onChange={handleReceivingCountryChange}
@@ -2034,7 +2043,7 @@ export function ComparatorSection({
                               ariaLabel={t("comparator.field.targetCountry")}
                               hideSecondary
                               triggerIconOnly={isMobile}
-                              triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-2 text-[12.5px] font-bold text-foreground shadow-none hover:bg-muted focus:ring-0 @4xl:px-3.5 ${
+                              triggerClassName={`h-full min-w-0 flex-1 rounded-none border-0 bg-transparent px-3 text-[12.5px] font-bold text-foreground shadow-none hover:bg-black/5 focus:ring-0 @4xl:px-3.5 ${
                                 compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
                               } ${isMobile ? "justify-center" : ""}`}
                             />
@@ -2046,7 +2055,7 @@ export function ComparatorSection({
                               emptyLabel={t("comparator.combobox.empty")}
                               ariaLabel={t("comparator.field.targetCurrency")}
                               compactLabel
-                              triggerClassName={`h-full w-[52px] shrink-0 rounded-none border-0 border-l border-border bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-transparent focus:ring-0 @4xl:w-[68px] @4xl:px-3.5 ${
+                              triggerClassName={`h-full w-[52px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12.5px] font-bold shadow-none hover:bg-black/5 focus:ring-0 @4xl:w-[68px] @4xl:px-3.5 ${
                                 compact ? "@4xl:text-[14px]" : "@4xl:text-[14.5px]"
                               }`}
                             />
