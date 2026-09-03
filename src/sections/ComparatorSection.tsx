@@ -109,11 +109,12 @@ type AmountMode = "send" | "receive";
 
 /** Field styling for inputs/triggers inside the (light) comparator card —
  *  a recessed pill distinct from the card's own surface. */
-/** Per-metric micro-label above each row value — design/AJUSTES-1.md §C1's
- *  literal spec (10.5px/700/.06em/uppercase/#6B5F55), not the site's
- *  cooler-toned --muted-foreground token: this is a mockup-exact value,
- *  not a general UI gray. */
-const METRIC_LABEL = "text-[10.5px] font-bold uppercase tracking-[.06em] text-[#6B5F55]";
+/* El micro-label por métrica (METRIC_LABEL, 10.5px/700/#6B5F55 literal del
+ * mockup) se eliminó con docs/kayak-redesign-spec.md §3.7: las cuatro
+ * columnas de métrica con label propio pasaron a UNA línea inline con
+ * separadores "·", así que ya no hay nada que etiquetar — y con eso se va
+ * el tamaño más chico de todo el comparador, que era justo lo que la regla
+ * 5 del spec (piso de 12px) venía a eliminar. */
 type Urgency = "urgent" | "standard" | "flexible";
 type SortKey = ScoreProfileKey;
 /** Monito-style "how does the recipient get paid" filter — single-select
@@ -2052,11 +2053,16 @@ export function ComparatorSection({
                 // currency — see CurrencyCombobox's own `leading`), full
                 // name/code still shows in the open dropdown list exactly
                 // as before (unaffected — only the closed trigger changes).
+                // docs/kayak-redesign-spec.md §5.4 — el formulario del
+                // widget es el formulario mobile de Kayak: UNA tarjeta
+                // blanca con la geometría compacta (radio 8, sombra corta),
+                // filas divididas por hairlines y el CTA a ancho completo
+                // como última fila. Se va el rounded-[12px] + borde de
+                // 1.5px, que lo hacían leer como un input gigante en vez de
+                // como un buscador.
                 <div
-                  className={`flex flex-col overflow-hidden rounded-[12px] border-[1.5px] bg-white transition-colors ${
-                    sameCorridorBlocked
-                      ? "border-brand-cta ring-2 ring-brand-cta/60"
-                      : "border-input"
+                  className={`compare-card flex flex-col overflow-hidden transition-colors ${
+                    sameCorridorBlocked ? "ring-2 ring-brand-cta" : ""
                   }`}
                 >
                   {/* 2026-09-04 feedback (Kayak-style redesign, approved
@@ -2072,10 +2078,10 @@ export function ComparatorSection({
                       placeholder" fixes still apply here. */}
                   <div className="relative">
                     <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
-                      <span className="text-[8.5px] font-bold uppercase tracking-wide text-muted-foreground">
+                      <span className="text-badge font-semibold text-muted-foreground">
                         {t("comparator.field.amount")}
                       </span>
-                      <div className="flex h-[26px] items-stretch overflow-hidden rounded-full bg-[#F5EFE8]">
+                      <div className="flex h-[30px] items-stretch overflow-hidden rounded-control bg-muted">
                         <CountryCombobox
                           value={sendingCountry}
                           onChange={handleSendingCountryChange}
@@ -2118,17 +2124,15 @@ export function ComparatorSection({
                         unchanged above). */}
                     <div className="flex flex-col gap-[3px] px-2.5 py-[7px]">
                       <span
-                        className={`text-[8.5px] font-bold uppercase tracking-wide ${
+                        className={`text-badge font-semibold ${
                           !receivingCountry ? "text-accent-text" : "text-muted-foreground"
                         }`}
                       >
                         {t("comparator.field.youReceive")}
                       </span>
                       <div
-                        className={`flex h-[26px] items-stretch overflow-hidden transition-colors ${
-                          !receivingCountry
-                            ? "rounded-[8px] border-[1.5px] border-brand-cta bg-accent/10"
-                            : "rounded-full bg-[#F5EFE8]"
+                        className={`flex h-[30px] items-stretch overflow-hidden rounded-control transition-colors ${
+                          !receivingCountry ? "border border-brand-cta bg-accent/10" : "bg-muted"
                         }`}
                       >
                         <CountryCombobox
@@ -2162,8 +2166,11 @@ export function ComparatorSection({
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-[9px] shadow-md ring-[3px] ring-white transition hover:brightness-95 focus:outline-none focus:ring-2 focus:ring-brand-cta/40"
-                      style={{ backgroundColor: "#F5EFE8", color: "#EE5B3E" }}
+                      // §5.4 / regla 1 — los dos hex sueltos (#F5EFE8 fondo,
+                      // #EE5B3E ícono) pasan a tokens; el ring blanco que lo
+                      // recortaba contra el borde pasa a ring-card, que es
+                      // ese mismo blanco pero por token.
+                      className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-control bg-muted text-brand-cta shadow-md ring-[3px] ring-card transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cta/40"
                     >
                       <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
                     </button>
@@ -2171,7 +2178,11 @@ export function ComparatorSection({
 
                   {/* Compare — full-width row at the bottom of the same
                       card, like Kayak's Search button. */}
-                  <div className="border-t border-border p-2">
+                  {/* docs/kayak-redesign-spec.md §5.4 — el CTA es la última
+                      FILA de la tarjeta, a sangre y con las esquinas
+                      inferiores redondeadas, no un botón flotando dentro de
+                      un padding. */}
+                  <div className="border-t border-border">
                     <button
                       type="button"
                       data-search-submit
@@ -2189,7 +2200,7 @@ export function ComparatorSection({
                         sameCorridorBlocked ||
                         amount <= 0
                       }
-                      className="btn-cta flex h-[38px] w-full items-center justify-center rounded-[9px] text-[13px] font-bold focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="btn-cta-gradient flex h-11 w-full items-center justify-center rounded-b-compact text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                     >
                       {compareMut.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -3277,12 +3288,12 @@ function RateAlertCard({
               className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus:border-brand-cta focus:outline-none"
             />
             {error && (
-              <p className="text-[11px] text-destructive">{t("comparator.rateAlert.error")}</p>
+              <p className="text-badge text-destructive">{t("comparator.rateAlert.error")}</p>
             )}
             <button
               type="submit"
               disabled={pending}
-              className="flex h-10 w-full items-center justify-center gap-1.5 rounded-[11px] border-[1.5px] border-foreground text-[13px] font-bold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
+              className="flex h-10 w-full items-center justify-center gap-1.5 rounded-control border border-foreground text-meta font-bold text-foreground transition-colors hover:bg-foreground hover:text-background disabled:opacity-50"
             >
               {pending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               {t("comparator.rateAlert.cta")}
@@ -3500,7 +3511,7 @@ function FloatingAgent(p: FloatingAgentProps) {
         >
           <Sparkle className="h-5 w-5 shrink-0" aria-hidden />
           <span
-            className="text-[11px] font-semibold leading-none [writing-mode:vertical-rl]"
+            className="text-badge font-semibold leading-none [writing-mode:vertical-rl]"
             aria-hidden
           >
             {t("comparator.copilot.agent")}
@@ -3531,7 +3542,7 @@ function FloatingAgent(p: FloatingAgentProps) {
             </span>
             <div className="flex shrink-0 items-center gap-2">
               <span
-                className="text-[10px] font-medium uppercase tracking-wider text-success"
+                className="text-badge font-medium uppercase tracking-wider text-success"
                 aria-label={t("comparator.agent.languageAriaLabel").replace(
                   "{lang}",
                   lang.toUpperCase(),
@@ -3608,7 +3619,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                     <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
                       <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
                     </div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-white/50">
+                    <div className="text-badge font-semibold uppercase tracking-wider text-white/50">
                       {t("wizard.quickActions")}
                     </div>
                     <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
@@ -3642,7 +3653,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                             <button
                               key={j}
                               onClick={() => openPreferredRate(a.slug, a.url)}
-                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
+                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-badge font-semibold focus:outline-none focus:ring-2 focus:ring-ring"
                             >
                               <Zap className="h-3 w-3" aria-hidden /> {a.label}
                             </button>
@@ -3653,7 +3664,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                                 onSuggestedCompare(a.from, a.to, a.fromCountry, a.toCountry)
                               }
                               disabled={comparePending}
-                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-[11px] font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
+                              className="btn-cta inline-flex items-center gap-1 rounded-md px-2.5 py-1 text-badge font-semibold focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-60"
                             >
                               <Zap className="h-3 w-3" aria-hidden /> {a.label}
                             </button>
@@ -3677,7 +3688,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 the whole product can be explored without free-typing/AI. */}
             {chat.length > 0 && !aiLoading && (
               <div className="pt-1">
-                <div className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-white/50">
+                <div className="mb-1.5 text-badge font-semibold uppercase tracking-wider text-white/50">
                   {t("wizard.moreQuestions")}
                 </div>
                 <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
@@ -3760,7 +3771,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 <Send className="h-3.5 w-3.5" aria-hidden />
               </button>
             </form>
-            <p className="mt-2 text-[11px] leading-relaxed text-[#A79C92]">
+            <p className="mt-2 text-badge leading-relaxed text-[#A79C92]">
               {t("comparator.copilot.trustLine")}
             </p>
           </div>
@@ -5028,7 +5039,7 @@ function BusinessRowExtra({
                   m.estimated ? (
                     <span
                       title={t("comparator.business.metric.estimatedTooltip")}
-                      className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-[9px] font-bold normal-case tracking-normal text-accent-text"
+                      className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-badge font-bold normal-case tracking-normal text-accent-text"
                     >
                       {t("comparator.business.metric.estimated")}
                     </span>
@@ -5058,7 +5069,7 @@ function BusinessRowExtra({
       <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
         {savedVsRetail != null && savedVsRetail > 0 && (
           <div className="sm:text-right">
-            <div className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+            <div className="text-badge font-bold uppercase tracking-wide text-muted-foreground">
               {t("comparator.business.estOn").replace(
                 "{amount}",
                 amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
@@ -5066,7 +5077,7 @@ function BusinessRowExtra({
             </div>
             <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
               {savedVsRetail.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
-              <span className="text-[11px] font-bold text-muted-foreground">
+              <span className="text-badge font-bold text-muted-foreground">
                 {quote} {t("comparator.business.saved")}
               </span>
             </div>
@@ -5214,12 +5225,10 @@ function CompactResultsList({
           p-2.5 inset below, since this row (plain text, no card of its
           own) would otherwise sit flush against the frame edge. */}
       <div className="flex items-baseline justify-between px-2.5">
-        <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+        <span className="text-badge font-semibold uppercase tracking-wide text-muted-foreground">
           {t("comparator.widget.yourResults")}
         </span>
-        {freshness && (
-          <span className="text-[10px] font-semibold text-muted-foreground">{freshness}</span>
-        )}
+        {freshness && <span className="text-badge text-muted-foreground">{freshness}</span>}
       </div>
 
       {/* Compact sort pills — same 3 keys/labels as the full comparator's
@@ -5234,10 +5243,10 @@ function CompactResultsList({
               type="button"
               onClick={() => setSortBy(tab.key)}
               aria-pressed={isActive}
-              className={`h-7 rounded-md px-1.5 text-[10.5px] font-bold transition-colors ${
+              className={`h-8 rounded-control px-1.5 text-badge font-semibold transition-colors ${
                 isActive
-                  ? "border-[1.5px] border-brand-cta bg-brand-cta/10 text-foreground"
-                  : "border border-border bg-white text-muted-foreground hover:bg-muted/50"
+                  ? "border-b-2 border-brand-cta bg-muted text-foreground"
+                  : "border-b-2 border-transparent bg-muted/40 text-muted-foreground hover:bg-muted"
               }`}
             >
               {tab.label}
@@ -5252,7 +5261,7 @@ function CompactResultsList({
           "Recommended" — once "Receive more"/"Fastest" became real sorts
           (not just "overall"), a fixed "Recommended" label on the top
           "Fastest"-sorted row would misdescribe why it's there. */}
-      <div className="mt-1.5 rounded-xl border-2 border-brand-cta bg-card p-2.5">
+      <div className="compare-card mt-1.5 p-2.5">
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center gap-2">
             <BrandLogo
@@ -5264,23 +5273,20 @@ function CompactResultsList({
               className="shrink-0 rounded-sm"
             />
             <div className="min-w-0">
-              <span
-                className="inline-block rounded-md px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide"
-                style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
-              >
+              <span className="inline-block rounded-control bg-merit-best px-1.5 py-0.5 text-badge font-semibold text-merit-best-foreground">
                 {activeTabLabel}
               </span>
-              <div className="truncate text-[11px] tabular-nums text-muted-foreground">
+              <div className="truncate text-badge tabular-nums text-muted-foreground">
                 {winner.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} ·{" "}
                 {formatDeliverySpeed(winner.speed_hours)}
               </div>
             </div>
           </div>
           <div className="shrink-0 text-right">
-            <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
+            <div className="text-price font-bold tabular-nums text-foreground">
               {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}
             </div>
-            <div className="text-[10px] font-semibold text-muted-foreground">{result.quote}</div>
+            <div className="text-badge font-semibold text-muted-foreground">{result.quote}</div>
           </div>
         </div>
         {winner.affiliate_url && (
@@ -5288,7 +5294,7 @@ function CompactResultsList({
             <button
               onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
               aria-label={`${tCta} — ${winner.name}`}
-              className="btn-cta flex h-8 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-md text-xs font-semibold"
+              className="btn-cta-gradient flex h-10 min-w-0 flex-1 items-center justify-center gap-1.5 rounded-control text-meta font-semibold"
             >
               {winner.name} <ArrowRight className="h-3.5 w-3.5" />
             </button>
@@ -5301,7 +5307,7 @@ function CompactResultsList({
               type="button"
               onClick={() => handleShare(winner)}
               aria-label={`${sharedSlug === winner.slug ? t("comparator.row.shareCopied") : t("comparator.row.share")} — ${winner.name}`}
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border text-muted-foreground transition hover:text-foreground"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-control border border-input text-muted-foreground transition hover:text-foreground"
             >
               <Share2 className="h-3.5 w-3.5" />
             </button>
@@ -5313,12 +5319,12 @@ function CompactResultsList({
           for the same reason as the header row above — plain text with no
           card of its own would otherwise touch the frame edge. */}
       {rest.length > 0 && (
-        <div className="mt-1 flex flex-col px-2.5">
+        <div className="mt-1 flex flex-col divide-y divide-border px-2.5">
           {rest.map((row) => {
             const delta = row.received - winner.received;
             const isExpanded = expandedSlug === row.slug;
             return (
-              <div key={row.slug} className="border-b border-border last:border-b-0">
+              <div key={row.slug}>
                 <button
                   type="button"
                   onClick={() => setExpandedSlug(isExpanded ? null : row.slug)}
@@ -5334,13 +5340,15 @@ function CompactResultsList({
                       rounded={false}
                       className="shrink-0 rounded-sm"
                     />
-                    <span className="truncate text-xs font-medium text-foreground">{row.name}</span>
+                    <span className="truncate text-meta font-semibold text-foreground">
+                      {row.name}
+                    </span>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5 tabular-nums">
-                    <span className="text-xs font-semibold text-foreground">
+                    <span className="text-meta font-semibold text-foreground">
                       {row.received.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
-                    <span className="w-12 text-right text-[10px] font-semibold text-muted-foreground">
+                    <span className="w-12 text-right text-badge font-semibold text-muted-foreground">
                       {delta.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
                     <ChevronDown
@@ -5351,7 +5359,7 @@ function CompactResultsList({
                 </button>
                 {isExpanded && (
                   <div className="flex items-center justify-between gap-2 pb-2 pl-7">
-                    <div className="flex min-w-0 items-center gap-2 text-[10.5px] text-muted-foreground">
+                    <div className="flex min-w-0 items-center gap-2 text-badge text-muted-foreground">
                       <span className="shrink-0 tabular-nums">
                         {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })}
                       </span>

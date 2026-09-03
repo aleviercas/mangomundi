@@ -12,8 +12,12 @@ const SCRIPT_SNIPPET = `<script src="https://mangomundi.com/widget.js"
   data-currency="USD"
   data-lang="auto" async></script>`;
 
+// docs/kayak-redesign-spec.md §5.1/§5.2 — el snippet manual tiene que
+// coincidir con lo que widget.js genera: radio 8 (geometría de buscador,
+// --radius-compact) y +20px de alto, que es lo que gana el formulario
+// apilado con el CTA como fila propia a sangre.
 const IFRAME_SNIPPET = `<iframe src="https://mangomundi.com/embed"
-  width="360" height="540" style="border:0;border-radius:16px"
+  width="360" height="560" style="border:0;border-radius:8px"
   title="Currency comparison by mangomundi" loading="lazy"></iframe>`;
 
 /** design/Mangomundi 4 - Final.dc.html's small home "Widget" card (line
@@ -166,8 +170,12 @@ function WidgetPage() {
 
         {/* Live preview — the real widget, exactly what gets embedded. */}
         <div className="lg:pt-2">
-          <div className="mx-auto w-full max-w-[360px] overflow-hidden rounded-2xl border border-border bg-card shadow-[0_20px_60px_-25px_rgba(15,23,42,0.25)]">
-            <div className="h-[540px]">
+          {/* §5.1 — la vista previa usa la MISMA geometría que el iframe
+              real (compare-card: radio 8 + sombra corta), no un radio 2xl
+              con sombra difusa: si la preview miente sobre cómo se ve
+              embebido, no sirve de preview. */}
+          <div className="compare-card mx-auto w-full max-w-[360px] overflow-hidden">
+            <div className="h-[560px]">
               {/* 2026-09-02 feedback — "el widget sigue mostrando una
                   búsqueda por default, queremos mostrar todays rates":
                   design/AJUSTES-1.md §H previously auto-ran a real USD→MXN

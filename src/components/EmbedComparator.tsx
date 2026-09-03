@@ -70,7 +70,7 @@ function WidgetExamples({
   if (!examples.length) return null;
   return (
     <div className="mt-2.5 overflow-hidden rounded-[14px] border border-border bg-card">
-      <div className="flex items-center gap-1 border-b border-border px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+      <div className="flex items-center gap-1 border-b border-border px-3 py-1.5 text-badge font-bold uppercase tracking-wide text-muted-foreground">
         <Sparkle className="h-2.5 w-2.5 text-brand-cta" />
         {t("todaysRoutes.title")}
       </div>
@@ -85,7 +85,7 @@ function WidgetExamples({
               onClick={() => onSelect(example)}
               className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left transition hover:bg-muted/50"
             >
-              <span className="flex items-center gap-1 text-[11px] font-bold text-foreground">
+              <span className="flex items-center gap-1 text-badge font-bold text-foreground">
                 {fromCountry && <FlagIcon country={fromCountry} />}
                 {example.from}
                 <span className="text-muted-foreground">→</span>
@@ -94,7 +94,7 @@ function WidgetExamples({
               </span>
               <span className="font-heading text-[13.5px] font-extrabold tabular-nums text-foreground">
                 {Math.round(example.bestReceived).toLocaleString()}
-                <span className="ml-1 text-[10px] font-semibold text-muted-foreground">
+                <span className="ml-1 text-badge font-semibold text-muted-foreground">
                   {example.to}
                 </span>
               </span>
@@ -204,8 +204,11 @@ export function EmbedComparator({
     setRemountKey((k) => k + 1);
   };
 
+  // docs/kayak-redesign-spec.md §5.3 — bg-[#fcfcfc] estaba hardcodeado
+  // (violaba la regla 1 del design system) y encima no coincidía con ningún
+  // token: ahora es --card, el mismo blanco de la tarjeta que va adentro.
   return (
-    <div className="relative flex h-full flex-col overflow-hidden bg-[#fcfcfc]">
+    <div className="relative flex h-full flex-col overflow-hidden bg-card">
       {/* design/Mangomundi 4 - Final.dc.html (line 726-729) — the widget's
           own header bar, distinct from ComparatorSection's chrome (which
           `embedded` strips entirely).
@@ -280,7 +283,12 @@ export function EmbedComparator({
           screenshot of /embed, not a guess. Only the header/attribution/
           see-more bars (plain text or full-bleed, no card) still carry
           their own small horizontal padding; this content area (which
-          holds the bordered card) no longer does. */}
+          holds the bordered card) no longer does.
+          docs/kayak-redesign-spec.md §5.3 pide "px-3 py-3 fijo (sin sm:)";
+          lo que ese punto ataca — un breakpoint `sm:` dentro de un iframe
+          que no conoce el viewport — ya está resuelto acá, y el padding
+          horizontal se quedó en 0 a propósito por el fix medido de arriba.
+          Se conserva el 0, no el 3. */}
       <div className="min-h-0 flex-1 overflow-y-auto py-3">
         <ComparatorSection
           key={remountKey}
@@ -314,7 +322,7 @@ export function EmbedComparator({
         href="https://mangomundi.com"
         target="_blank"
         rel="noopener noreferrer"
-        className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2.5 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+        className="flex shrink-0 items-center justify-center gap-1.5 border-t border-border bg-card py-2 text-badge font-medium text-muted-foreground transition-colors hover:text-foreground"
       >
         {/* 2026-09-02 feedback — "poner powered by mangomundi con el
             icono y el logo en colores, ahora esta en blanco y negro": two
