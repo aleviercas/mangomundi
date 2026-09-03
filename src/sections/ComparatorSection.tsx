@@ -2634,7 +2634,7 @@ export function ComparatorSection({
                     menu (e.g. "most_trusted") never equals any of the 3
                     tabs' keys, so all three lose their highlighted
                     border/shadow the moment one of these is picked. */}
-                    <div className="flex/DropdownMenu>
+                    <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
                           type="button"
@@ -2669,9 +2669,10 @@ export function ComparatorSection({
                           ))}
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
-                    </div>
+                    </DropdownMenu>
+                  </div>
 
-                    {/* Secondary filters — delivery method, exclusive-only, legend.
+                  {/* Secondary filters — delivery method, exclusive-only, legend.
                   Visually separate row (smaller chips) so it never competes
                   with the primary tabs above for attention. Sort criteria no
                   longer live in this row at all (moved above, see its own
@@ -2741,7 +2742,9 @@ export function ComparatorSection({
                       {/* Exclusive-rates filter — an explicit opt-in the
                           person turns on themselves, not a default. Neutral
                           by design: OFF (default) shows everyone, ordered
-                          purely by the chosen sort — never a re-ranking. Mismo tratamiento de chip
+                          purely by the chosen sort; ON only narrows to a
+                          labeled subset, still ordered by that same sort —
+                          never a re-ranking. Mismo tratamiento de chip
                           activo que el resto (§4.2): dejó de ser el único
                           chip coral de la fila. */}
                       <button
@@ -2825,7 +2828,7 @@ export function ComparatorSection({
                     debe estar arriba de los resultados, no abajo, y debe
                     tener todo el ancho": moved above ResultsBlock (was
                     below), full width of this column now that
-                    BusinessContactCard went back to the rail instead de
+                    BusinessContactCard went back to the rail instead of
                     sharing this row with it. */}
                 {segment === "business" && result && (
                   <div className="mb-4">
@@ -2865,10 +2868,332 @@ export function ComparatorSection({
                   requestedSlugs={requestedSlugs}
                   onToggleRequested={toggleRequestedSlug}
                 />
+
+                {/* Stable business upsell (design/HANDOFF.md §3 + decision
+                  29-ago-2026): always rendered once there's a result, never
+                  popping in/out as the typed amount crosses the threshold —
+                  only its emphasis changes. B2B_UPSELL_MIN_AMOUNT (not the
+                  25,000 in the mockup, which was just that screen's example
+                  amount) governs both the emphasis AND the copy shown once
+                  crossed — the amount named there is the user's own typed
+                  amount, never a fixed figure. Retail only: a business-
+                  segment user is already talking to brokers. The always-on
+                  band in BusinessSection (home) is unrelated and unchanged. */}
+                {segment === "retail" && (
+                  <div
+                    className={`mt-4 flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3 text-sm transition-colors ${
+                      amount >= B2B_UPSELL_MIN_AMOUNT
+                        ? "border-border bg-muted text-foreground"
+                        : "border-border/60 bg-transparent text-muted-foreground"
+                    }`}
+                  >
+                    <span className="min-w-0 flex-1">
+                      {amount >= B2B_UPSELL_MIN_AMOUNT
+                        ? t("comparator.b2bBanner.above")
+                            .replace("{amount}", amount.toLocaleString())
+                            .replace("{cur}", from)
+                            .replace("{threshold}", B2B_UPSELL_MIN_AMOUNT.toLocaleString())
+                        : t("comparator.b2bBanner.below").replace(
+                            "{threshold}",
+                            B2B_UPSELL_MIN_AMOUNT.toLocaleString(),
+                          )}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleSegmentChange("business")}
+                      className={`inline-flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring ${
+                        amount >= B2B_UPSELL_MIN_AMOUNT
+                          ? "bg-foreground text-background hover:bg-foreground/90"
+                          : "text-accent-text hover:text-brand-cta-hover"
+                      }`}
+                    >
+                      {t("comparator.b2bBanner.cta")}
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden />
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
       </div>
+
+      {/* docs/kayak-redesign-spec.md §4.1 — el formulario completo detrás de
+          la píldora colapsada. Sólo se monta cuando la píldora está en
+          pantalla (`collapsedSearch`), así el árbol nunca tiene dos copias
+          de los mismos inputs a la vez. El CTA del formulario cierra el
+          drawer al disparar la búsqueda: la lista de abajo ya se reordena
+          sola, no hace falta que la persona lo cierre a mano. */}
+      {collapsedSearch && (
+        <Drawer open={searchDrawerOpen} onOpenChange={setSearchDrawerOpen}>
+          <DrawerContent className="max-h-[92vh]">
+            <DrawerHeader className="pb-2">
+              <DrawerTitle className="text-metric font-bold">
+                {t("comparator.mobile.editSearch")}
+              </DrawerTitle>
+            </DrawerHeader>
+            <div
+              className="overflow-y-auto px-4 pb-6"
+              onClickCapture={(e) => {
+                // El CTA es el único control del drawer que termina la
+                // tarea; cualquier otro click (abrir un combobox, tocar
+                // swap) tiene que dejarlo abierto.
+                if ((e.target as HTMLElement).closest("[data-search-submit]")) {
+                  setSearchDrawerOpen(false);
+                }
+              }}
+            >
+              {searchBar}
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
+
+      {/* docs/kayak-redesign-spec.md §4.2 — el mismo rail de filtros de
+          §3.4, apilado en un Drawer, para los anchos donde el rail no
+          existe. Reusa FiltersCard entero en vez de una segunda
+          implementación de los mismos controles: dos copias de un filtro es
+          cómo se llega a que una filtre y la otra no. */}
+      {!embedded && (
+        <Drawer open={filtersDrawerOpen} onOpenChange={setFiltersDrawerOpen}>
+          <DrawerContent className="max-h-[85vh] lg:hidden">
+            <DrawerHeader className="pb-2">
+              <DrawerTitle className="text-metric font-bold">
+                {t("comparator.filters.title")}
+              </DrawerTitle>
+            </DrawerHeader>
+            <div className="overflow-y-auto px-4">
+              <FiltersCard
+                t={t}
+                deliveryMethod={deliveryMethod}
+                toggleDeliveryMethod={toggleDeliveryMethod}
+                setDeliveryMethod={setDeliveryMethod}
+                deliveryCounts={deliveryCounts}
+                showOnlyExclusive={showOnlyExclusive}
+                setShowOnlyExclusive={setShowOnlyExclusive}
+                exclusiveCount={exclusiveCount}
+                businessFilters={
+                  segment === "business"
+                    ? { contractType, setContractType, frequency, setFrequency }
+                    : undefined
+                }
+                hideHeader
+              />
+            </div>
+            {/* "Aplicar (N)" fijo abajo. Los filtros ya se aplican en vivo
+                (cada checkbox reordena la lista al instante), así que este
+                botón sólo cierra — pero sin él el drawer no tiene salida
+                obvia con el pulgar, que es todo el punto en mobile. */}
+            <div className="border-t border-border p-4">
+              <button
+                type="button"
+                onClick={() => setFiltersDrawerOpen(false)}
+                className="btn-cta-gradient flex h-11 w-full items-center justify-center rounded-control text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {t("comparator.filters.apply")}
+                {activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
+              </button>
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
+
+      <PreferredRateModal open={modalOpen} onOpenChange={setModalOpen} context={modalCtx} />
     </SectionTag>
+  );
+}
+
+// ===== Left rail (desktop, ≥lg only) — design/HANDOFF.md §3 =====
+// FiltersCard ("smart filter", 2026-08-31) → Rate alert (retail) or
+// BusinessContactCard (business, "talk to someone") → Trustpilot, stacked
+// in a 268px column. The AI agent never docks here anymore — it's always
+// the floating tab (see its own render site's comment). BusinessRequestPanel
+// lives in the results column instead, above ResultsBlock, full width — it's
+// a running summary of what's being built for the request, not rail
+// furniture. Below lg the page keeps today's existing layout (inline
+// filter chips further up + the floating agent) unchanged — this rail
+// doesn't replace that, it's additive at the breakpoint where there's room
+// for it.
+
+/** Vertical Filters card: the same delivery-method/exclusive/rank-by state
+ *  the inline filter row above already drives, re-skinned into the rail's
+ *  list layout with a per-option count (design/AJUSTES-2.md §6, mockup
+ *  line 293-319). The mockup marks each option with a literal ☑/☐
+ *  character rather than an icon — this card follows that literally
+ *  (the inline filter row above keeps its own lucide icons, unchanged;
+ *  this is a separate, rail-only presentation of the same state), and its
+ *  active/inactive colors come straight from the mockup's own payoutChips
+ *  script (line 853-866): active is a dark border/cream fill, not the
+ *  dark-filled pill the inline row above uses. */
+function FiltersCard({
+  t,
+  deliveryMethod,
+  toggleDeliveryMethod,
+  setDeliveryMethod,
+  deliveryCounts,
+  showOnlyExclusive,
+  setShowOnlyExclusive,
+  exclusiveCount,
+  businessFilters,
+  hideHeader = false,
+}: {
+  t: (k: string) => string;
+  deliveryMethod: DeliveryMethod | null;
+  toggleDeliveryMethod: (m: DeliveryMethod) => void;
+  setDeliveryMethod: (m: DeliveryMethod | null) => void;
+  deliveryCounts: Record<DeliveryMethod, number>;
+  showOnlyExclusive: boolean;
+  setShowOnlyExclusive: (v: boolean | ((prev: boolean) => boolean)) => void;
+  exclusiveCount: number;
+  /** 2026-08-30 feedback (fourth round) — Contract type/Frequency used to
+   *  live in the main search row, which made them look like they affected
+   *  the compare results (they never did — see the useState declarations'
+   *  own comment). Moved here, into the left rail's filters, since that's
+   *  what they actually are: context for the "Add to request" action, not
+   *  the search. undefined outside the business segment. */
+  businessFilters?: {
+    contractType: "spot" | "forward" | "option";
+    setContractType: (v: "spot" | "forward" | "option") => void;
+    frequency: "one_off" | "monthly" | "quarterly";
+    setFrequency: (v: "one_off" | "monthly" | "quarterly") => void;
+  };
+  /** docs/kayak-redesign-spec.md §4.2 — dentro del Drawer de mobile el
+   *  título ya lo pone el DrawerHeader; repetirlo acá deja "Filtros" dos
+   *  veces, una arriba de la otra. */
+  hideHeader?: boolean;
+}) {
+  const criteriaCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
+  // docs/kayak-redesign-spec.md §3.4 — el rail deja de ser el panel oscuro
+  // "smart filter" (#241C16 + mango, pensado para leerse como un panel de
+  // agente) y pasa a ser el rail de filtros de kayak.com: una `compare-card`
+  // clara, secciones apiladas separadas por hairlines, cada una con su
+  // encabezado en text-badge y sus filas de checkbox con el contador de
+  // proveedores a la derecha. Es el mismo contenido y el mismo estado — sólo
+  // cambia la piel y la geometría.
+  //
+  // El rank-by (trust/fees/rate) sigue sin vivir acá (2026-09-01: "sacalo
+  // del cuadro vertical de filters"); su única casa es el dropdown "Sort"
+  // al lado de las 3 tabs.
+  const sectionClass = "px-4 py-3.5";
+  const headingClass = "text-badge font-semibold uppercase tracking-wide text-muted-foreground";
+  const rowClass =
+    "flex cursor-pointer items-center gap-2.5 py-1.5 text-meta text-foreground transition-colors hover:text-brand-cta";
+
+  return (
+    <div className="compare-card divide-y divide-border">
+      <div
+        className={`${hideHeader ? "hidden" : "flex"} items-center justify-between ${sectionClass}`}
+      >
+        {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
+        <h3 className="text-metric font-bold text-foreground">{t("comparator.filters.title")}</h3>
+        {/* §3.4, pie del rail — "Limpiar filtros" sólo cuando hay alguno
+            activo, en vez de un "Clear · 0" permanente que no hace nada. */}
+        {criteriaCount > 0 && (
+          <button
+            type="button"
+            onClick={() => {
+              setDeliveryMethod(null);
+              setShowOnlyExclusive(false);
+            }}
+            className="text-meta font-semibold text-accent-text hover:underline"
+          >
+            {t("comparator.filters.clear").replace("{n}", String(criteriaCount))}
+          </button>
+        )}
+      </div>
+
+      {businessFilters && (
+        <div className={sectionClass}>
+          <div className={headingClass}>{t("comparator.field.contractType")}</div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {(["spot", "forward", "option"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => businessFilters.setContractType(v)}
+                aria-pressed={businessFilters.contractType === v}
+                className={`inline-flex h-8 items-center rounded-control border px-2.5 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                  businessFilters.contractType === v
+                    ? "border-transparent bg-foreground text-background"
+                    : "border-input bg-card text-foreground hover:border-foreground/40"
+                }`}
+              >
+                {t(`comparator.contractType.${v}`)}
+              </button>
+            ))}
+          </div>
+          <div className={`mt-3 ${headingClass}`}>{t("comparator.field.frequency")}</div>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {(["one_off", "monthly", "quarterly"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => businessFilters.setFrequency(v)}
+                aria-pressed={businessFilters.frequency === v}
+                className={`inline-flex h-8 items-center rounded-control border px-2.5 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                  businessFilters.frequency === v
+                    ? "border-transparent bg-foreground text-background"
+                    : "border-input bg-card text-foreground hover:border-foreground/40"
+                }`}
+              >
+                {t(`comparator.frequency.${v === "one_off" ? "oneOff" : v}`)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className={sectionClass}>
+        <div className={headingClass}>{t("comparator.filters.payoutMethod")}</div>
+        <div className="mt-1.5">
+          {DELIVERY_METHODS.map(({ key, labelKey }) => {
+            const isActive = deliveryMethod === key;
+            return (
+              <label key={key} className={rowClass}>
+                {/* Sigue siendo single-select sobre el mismo estado
+                    `deliveryMethod` — el spec lo quiere multi-select, pero
+                    eso cambia qué filas se muestran (lógica), no la piel.
+                    Ver la nota de desvío del commit. */}
+                <Checkbox
+                  checked={isActive}
+                  onCheckedChange={() => toggleDeliveryMethod(key)}
+                  aria-label={t(labelKey)}
+                  // rounded-sm deriva de --radius (14px) y da 10px: sobre
+                  // una caja de 16px eso se lee como un círculo, o sea como
+                  // un radio button — exactamente lo contrario de lo que
+                  // este control es. rounded-control (4px) es el radio de
+                  // control de esta superficie.
+                  className="rounded-control! border-input"
+                />
+                <span className="min-w-0 flex-1 truncate font-semibold">{t(labelKey)}</span>
+                <span className="shrink-0 text-meta tabular-nums text-muted-foreground">
+                  {deliveryCounts[key]}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className={sectionClass}>
+        <div className={headingClass}>{t("comparator.filters.exclusiveOffers")}</div>
+        <label className={`mt-1.5 ${rowClass}`}>
+          {/* §3.4 — deja de ser un chip coral y pasa a ser un checkbox más:
+              el color de marca se reserva para la acción, no para un
+              filtro opcional. */}
+          <Checkbox
+            checked={showOnlyExclusive}
+            onCheckedChange={() => setShowOnlyExclusive((prev) => !prev)}
+            aria-label={t("comparator.filter.exclusiveOnlyLong")}
+            className="rounded-control! border-input"
+          />
+          <span className="min-w-0 flex-1 truncate font-semibold">
+            {t("comparator.filter.exclusiveOnlyLong")}
+          </span>
+          <span className="shrink-0 text-meta tabular-nums text-muted-foreground">
+            {exclusiveCount}
+          </span>
+        </label>
+      </div>
+    </div>
   );
 }
