@@ -4157,6 +4157,12 @@ function ResultsBlock({
 // "Rate") — this is a full phrase explaining the win, matching the
 // mockup's dynamic tag literally ("Best overall", "Receives most",
 // "Fastest").
+/** docs/kayak-redesign-spec.md §3.7 — clave de localStorage del ♡ de cada
+ *  fila. Guarda sólo slugs de proveedor: ni montos, ni corredores, ni nada
+ *  que ate el guardado a una búsqueda concreta — es "me interesa este
+ *  proveedor", no "guardá esta cotización", que caducaría en minutos. */
+const SAVED_RATES_KEY = "mangomundi.savedProviders";
+
 function winnerTagKey(sortBy: SortKey): string {
   switch (sortBy) {
     case "recipient_gets_most":
@@ -4375,7 +4381,7 @@ function ProviderRow({
   // That explainer is still reachable through the agent itself (its own
   // quick-actions grid), just not duplicated as a per-row footer link.
   const trustLine = footerParts.length > 0 && (
-    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] leading-snug">
+    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-badge leading-snug">
       {footerParts.map((part, i) => (
         <span key={i} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
           {i > 0 && footerDot}
@@ -4388,17 +4394,29 @@ function ProviderRow({
   // Labeled CTA (§C4 — "Go to {name} ↗"; was an icon-only 44×44 square with
   // no text before that, then just the bare name — the audit's H5: no way
   // to tell what it does, and five identical buttons in a list have no
-  // hierarchy). The featured row gets the full-color fill; every other row
-  // gets an outlined version — Kayak's "Best value / Cheapest" pattern, one
-  // clear lead instead of five equal buttons.
+  // hierarchy).
+  //
+  // docs/kayak-redesign-spec.md §3.7 — 36px de alto (la medida real del CTA
+  // de fila de kayak.co.uk: 144x36), radio de control, text-meta. Nunca más
+  // alto que 36 en la fila: era h-11 (44px), y 8 botones de 44px apilados
+  // son los que hacían que la lista perdiera densidad. La destacada lleva
+  // el gradiente; el resto, outline — la jerarquía la da el CTA, no un
+  // borde coral alrededor de toda la tarjeta.
   const cta = row.affiliate_url ? (
     <button
       onClick={onClick}
       aria-label={`${tCta} — ${row.name}`}
-      className={`inline-flex h-11 w-full shrink-0 items-center justify-center gap-1.5 rounded-md border-[1.5px] px-4 text-[14px] font-bold transition-transform duration-200 ease-out group-hover:-translate-y-0.5 sm:w-auto ${
+      // El nombre más largo del catálogo ("Currencies Direct", "Ria Money
+      // Transfer") no entra en la columna de precio de 216px, así que se
+      // trunca — pero el nombre completo está a la izquierda, en el
+      // titular de la propia fila, y el title lo recupera en hover. Es el
+      // único recorte aceptable acá: agrandar la columna se lo come al
+      // bloque de métricas, y achicar la tipografía lo prohíbe el §0.5.
+      title={`${t("fx.goto")} ${row.name}`}
+      className={`inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 rounded-control px-2.5 text-meta font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         featured
-          ? "btn-cta border-transparent group-hover:shadow-[0_8px_24px_-10px_color-mix(in_oklab,var(--color-brand-cta)_55%,transparent)]"
-          : "border-input bg-card text-foreground hover:border-foreground/30"
+          ? "btn-cta-gradient"
+          : "border border-input bg-card text-foreground hover:border-foreground/40"
       }`}
     >
       <span className="truncate">
@@ -4409,7 +4427,7 @@ function ProviderRow({
     // Always reserve the same height, whether or not there's a real link
     // (a provider with no affiliate_url yet — see fx.functions.ts — would
     // otherwise collapse this slot and misalign the column below it).
-    <div className="h-11 w-full shrink-0 sm:w-auto" aria-hidden />
+    <div className="h-9 w-full shrink-0" aria-hidden />
   );
 
   // 2026-09-03 feedback — "agregar un boton de share this rate abajo del
@@ -4441,226 +4459,198 @@ function ProviderRow({
       // silently rather than showing a broken "copied" state.
     }
   };
+
+  // docs/kayak-redesign-spec.md §3.7 — guardar (♡) y compartir (↗) como dos
+  // cuadrados de 36px arriba a la izquierda de la fila, el par de acciones
+  // de la tarjeta de resultado de Kayak. Share pasa de ser un link de texto
+  // debajo del CTA a este par; el gate sigue siendo `row.affiliate_url`
+  // (nunca se comparte ni se guarda un link que no existe).
+  //
+  // El guardado persiste en localStorage, no en el servidor: es una
+  // conveniencia por navegador, no una cuenta. Cada acceso va en try/catch
+  // — en modo privado o con el almacenamiento bloqueado el botón
+  // simplemente no persiste, en vez de romper la fila entera.
+  const [saved, setSaved] = useState(false);
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SAVED_RATES_KEY);
+      setSaved(raw ? (JSON.parse(raw) as string[]).includes(row.slug) : false);
+    } catch {
+      setSaved(false);
+    }
+  }, [row.slug]);
+  const toggleSaved = () => {
+    try {
+      const raw = localStorage.getItem(SAVED_RATES_KEY);
+      const list = raw ? (JSON.parse(raw) as string[]) : [];
+      const next = list.includes(row.slug)
+        ? list.filter((s) => s !== row.slug)
+        : [...list, row.slug];
+      localStorage.setItem(SAVED_RATES_KEY, JSON.stringify(next));
+      setSaved(next.includes(row.slug));
+    } catch {
+      // Storage unavailable — flip the visual state anyway so the click
+      // isn't dead; it just won't survive a reload.
+      setSaved((p) => !p);
+    }
+  };
+
+  const rowActionClass =
+    "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
+
+  const saveButton = row.affiliate_url ? (
+    <button
+      type="button"
+      onClick={toggleSaved}
+      aria-pressed={saved}
+      aria-label={`${saved ? t("comparator.row.saved") : t("comparator.row.save")} — ${row.name}`}
+      className={`${rowActionClass} ${saved ? "text-brand-cta" : ""}`}
+    >
+      <Heart className={`h-4 w-4 ${saved ? "fill-current" : ""}`} aria-hidden />
+    </button>
+  ) : null;
+
   const shareButton = row.affiliate_url ? (
     <button
       type="button"
       onClick={handleShare}
       aria-label={`${t("comparator.row.share")} — ${row.name}`}
-      className="inline-flex h-8 w-full shrink-0 items-center justify-center gap-1.5 rounded-md text-[12px] font-semibold text-muted-foreground transition hover:text-foreground sm:w-auto"
+      title={shareCopied ? t("comparator.row.shareCopied") : t("comparator.row.share")}
+      className={`${rowActionClass} ${shareCopied ? "text-success" : ""}`}
     >
-      <Share2 className="h-3.5 w-3.5" />
-      {shareCopied ? t("comparator.row.shareCopied") : t("comparator.row.share")}
+      {shareCopied ? (
+        <Check className="h-4 w-4" aria-hidden />
+      ) : (
+        <Share2 className="h-4 w-4" aria-hidden />
+      )}
     </button>
   ) : null;
 
   return (
-    <div
-      className="group relative overflow-hidden rounded-2xl bg-card p-4 transition-shadow duration-200 ease-out hover:shadow-md sm:px-[19px] sm:py-4"
-      style={{
-        border: featured ? "1.5px solid #EE5B3E" : "1px solid #EBE3D9",
-        // 2026-09-01 feedback — "se resaltan con sombras cuando se
-        // seleccionan": this was using the 3-tab row's OWN shadow value
-        // (design/Mangomundi 4 - Final.dc.html line 828, `t.shadow`)
-        // instead of the result rows' own, slightly different one
-        // (line 846, `r.shadow`) — the two got cross-wired at some point.
-        boxShadow: featured ? "0 12px 28px -18px rgba(238,91,62,.6)" : "none",
-      }}
-    >
-      {/* Desktop — single grid, columns match the ResultsBlock header
-          exactly, so values line up under their titles instead of each
-          row repeating its own "Comisión"/"Tasa"/"Entrega" micro-labels. */}
-      <div className="hidden sm:grid sm:grid-cols-[224px_1fr_204px] sm:items-center sm:gap-[18px]">
-        <div className="min-w-0">
-          <div className="flex items-center gap-3">
-            <BrandLogo
-              name={row.name}
-              url={row.website_url ?? row.affiliate_url}
-              slug={row.slug}
-              size={36}
-              rounded={false}
-              className="shrink-0 rounded-sm border border-border bg-white transition-transform duration-200 ease-out group-hover:scale-110"
-            />
-            <div className="min-w-0">
-              {/* 2026-09-01 feedback — "hay cambios que no se hicieron":
-                  found via audit, not reported directly — the featured
-                  row's name+badge shared one line in a fixed 224px
-                  column; even "Provider 1" (10 chars) truncated to
-                  "Provid..." fighting the "BEST OVERALL" badge for room
-                  (confirmed on screenshot, not assumed). `flex-wrap`
-                  drops the badge to its own line instead of truncating
-                  the name — the name is the identifying info, the badge
-                  is a bonus tag, so wrapping preserves the one that
-                  matters. Non-featured rows (no badge) are unaffected. */}
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="truncate text-[15px] font-bold text-foreground">{row.name}</span>
-                {/* design/AJUSTES-2.md §3 — the featured row's "why this
-                    won" tag, matching the active sort criterion literally
-                    (mockup: "Best overall"/"Fastest"/"Receives most"). */}
-                {featured && (
-                  <span
-                    className="shrink-0 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide"
-                    style={{ backgroundColor: "#FDE9E4", color: "#C2410C" }}
-                  >
-                    {t(winnerTagKey(sortBy))}
-                  </span>
-                )}
-              </div>
-              {score != null && (
-                <div className="whitespace-nowrap text-[9px] font-semibold uppercase tracking-wide text-muted-foreground/80">
-                  {t("comparator.score.label")} {displayScore(score)}
-                </div>
-              )}
-            </div>
+    // docs/kayak-redesign-spec.md §3.7 — la fila deja de ser una tarjeta
+    // rounded-2xl con borde coral de 2px cuando gana, y pasa a la anatomía
+    // de la tarjeta de resultado de Kayak: `compare-card` (radio 8, sombra
+    // de dos capas), padding 0 en el contenedor, y DOS bloques separados
+    // por una línea vertical — el de identidad+métricas a la izquierda, el
+    // de precio+acción a la derecha. Esa línea vertical antes del precio es
+    // una de las firmas visuales de Kayak.
+    //
+    // La fila destacada ya NO se marca con borde coral: repetido en una
+    // lista de 8 tarjetas pesa demasiado y compite con el CTA. Se marca
+    // como Kayak — badge tintado + CTA con gradiente — y el resto de las
+    // filas llevan CTA outline.
+    <div className="compare-card group relative grid overflow-hidden p-0 hover:shadow-lg sm:grid-cols-[minmax(0,1fr)_216px]">
+      {/* Bloque izquierdo — identidad y métricas. */}
+      <div className="min-w-0 px-4 py-2.5">
+        {/* Línea 1 — acciones a la izquierda, badges de mérito a la
+            derecha. §3.7: nada de rounded-full en botones de acción. */}
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex shrink-0 items-center gap-1.5">
+            {saveButton}
+            {shareButton}
           </div>
-          <div className="mt-1.5 min-w-0">{rating}</div>
-        </div>
-        {/* Four equal metric columns, each with its own micro-label above
-            the value (design/AJUSTES-1.md §C1) — replaces the shared
-            header row that used to title these from above the whole list. */}
-        <div className="grid grid-cols-4 gap-[10px]">
-          <div className="min-w-0 tabular-nums">
-            <div className={METRIC_LABEL}>{t("comparator.row.labelFee")}</div>
-            <div className="mt-0.5 text-[14.5px] font-semibold text-foreground">
-              {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
-            </div>
-            {/* Fee/rate split is the whole point of a neutral comparator (a
-                "$0 fee" headline can still hide a bad spread) — kept as a
-                small subline rather than dropped. */}
-            {(row.fee_percent_applied > 0 ||
-              row.fee_fixed_applied > 0 ||
-              row.spread_applied > 0) && (
-              <div className="text-[10px] leading-snug text-muted-foreground">
-                {row.fee_percent_applied > 0 && `${row.fee_percent_applied.toFixed(2)}%`}
-                {row.fee_fixed_applied > 0 && ` + ${row.fee_fixed_applied} ${base}`}
-                {row.spread_applied > 0 &&
-                  ` · ${row.spread_applied.toFixed(2)}% ${t("comparator.row.spreadWord")}`}
-              </div>
+          <div className="flex flex-wrap items-center justify-end gap-1.5">
+            {featured && (
+              <span className="rounded-control bg-merit-best px-2 py-0.5 text-badge font-semibold text-merit-best-foreground">
+                {t(winnerTagKey(sortBy))}
+              </span>
+            )}
+            {isBest && (
+              <span className="rounded-control bg-merit-cheap px-2 py-0.5 text-badge font-semibold text-merit-cheap-foreground">
+                {t("comparator.row.tagReceivesMost")}
+              </span>
             )}
           </div>
-          <div className="min-w-0 tabular-nums">
-            <div className={METRIC_LABEL}>{t("comparator.row.labelRate")}</div>
-            <div className="mt-0.5 text-[14.5px] font-semibold text-foreground">
-              {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
-            </div>
-            <div className={`text-[10px] ${ratePctClass}`}>{ratePctLabel}</div>
-          </div>
-          <div className="min-w-0 tabular-nums">
-            <div className={METRIC_LABEL}>{t("comparator.row.labelDelivery")}</div>
-            <div className="mt-0.5 inline-flex items-center gap-1 text-[14.5px] font-semibold text-foreground">
-              <Clock className="h-3.5 w-3.5" /> {deliveryLabel}
-            </div>
-          </div>
-          <div className="min-w-0">
-            <div className={METRIC_LABEL}>{t("comparator.row.labelPayout")}</div>
-            {/* 2026-09-01 feedback — "hay cambios que no se hicieron":
-                found via audit — a provider supporting 2+ delivery
-                methods (e.g. "Bank transfer · Card") truncated to
-                "Bank · Ca..." in this equal-width 1/4 metric column,
-                confirmed on screenshot. Joined method names wrap onto a
-                2nd line just fine (no single word is long enough to
-                break awkwardly) instead of hiding real information. */}
-            <div className="mt-0.5 text-[14.5px] font-semibold leading-snug text-foreground">
-              {payoutText}
-            </div>
+        </div>
+
+        {/* Línea 2 — logo + nombre, con el rating en la misma línea. */}
+        <div className="mt-1.5 flex min-w-0 items-center gap-3">
+          <BrandLogo
+            name={row.name}
+            url={row.website_url ?? row.affiliate_url}
+            slug={row.slug}
+            size={36}
+            rounded={false}
+            className="shrink-0 rounded-control border border-border bg-white"
+          />
+          <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+            <span className="truncate text-metric font-bold text-foreground">{row.name}</span>
+            {rating}
           </div>
         </div>
-        <div className="min-w-0 text-right">
-          <div className={METRIC_LABEL}>{t("comparator.row.labelReceive")}</div>
-          <div className="mt-0.5 whitespace-nowrap font-heading text-[28px] font-extrabold leading-[1.1] tracking-[-0.03em] tabular-nums text-foreground">
+
+        {/* Línea 3 — UNA sola línea de métricas con separadores "·", en vez
+            de cuatro columnas con micro-label cada una (§3.7). Los
+            micro-labels desaparecen: con los valores en línea y unidades
+            explícitas ("5 GBP", "23.2115 MXN", "24h") no hacen falta, y son
+            los que forzaban el text-[10.5px] que este spec elimina. */}
+        <div className="mt-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-meta tabular-nums text-muted-foreground">
+          <span>
+            {t("comparator.row.labelFee")}{" "}
+            <span className="font-semibold text-foreground">
+              {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
+            </span>
+          </span>
+          <span aria-hidden>·</span>
+          <span>
+            {t("comparator.row.labelRate")}{" "}
+            <span className="font-semibold text-foreground">
+              {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
+            </span>{" "}
+            <span className={ratePctClass}>{ratePctLabel}</span>
+          </span>
+          <span aria-hidden>·</span>
+          <span className="inline-flex items-center gap-1">
+            <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden /> {deliveryLabel}
+          </span>
+          <span aria-hidden>·</span>
+          <span className="min-w-0">{payoutText}</span>
+        </div>
+      </div>
+
+      {/* Bloque derecho — precio y acción, detrás de la divisoria vertical.
+          §3.7: la moneda baja de línea (antes iba inline en 12px) y el
+          delta va debajo, siempre en text-badge. */}
+      <div className="flex flex-col justify-center gap-0.5 border-t border-border px-4 py-2.5 text-right sm:border-l sm:border-t-0">
+        <div>
+          <div className="whitespace-nowrap text-price font-bold tabular-nums text-foreground">
             {row.received.toLocaleString(undefined, {
               minimumFractionDigits: 2,
               maximumFractionDigits: 2,
-            })}{" "}
-            <span className="text-xs font-semibold text-muted-foreground">{quote}</span>
+            })}
           </div>
-          <div
-            className={`mt-0.5 text-[12px] font-bold tabular-nums ${
-              isBest ? "text-success" : "text-muted-foreground"
-            }`}
-          >
-            {isBest ? t("comparator.row.deltaWinner") : deltaLabel}
-          </div>
-          <div className="mt-2.5 flex flex-col items-end gap-1">
-            {cta}
-            {shareButton}
-          </div>
+          <div className="text-meta font-semibold text-muted-foreground">{quote}</div>
         </div>
-      </div>
-      {trustLine && (
         <div
-          className="mt-[10px] hidden pt-[9px] sm:block"
-          style={{ borderTop: "1px solid #F5EFE8" }}
+          className={`text-badge font-semibold tabular-nums ${
+            isBest ? "text-success" : "text-muted-foreground"
+          }`}
         >
+          {isBest ? t("comparator.row.deltaWinner") : deltaLabel}
+        </div>
+        {cta}
+      </div>
+
+      {/* Pie — la línea de confianza y la disclosure de afiliado dejan de
+          estar sueltas y pasan a una banda propia al pie de la tarjeta,
+          a ancho completo de las dos columnas (§3.7). */}
+      {trustLine && (
+        <div className="border-t border-border bg-muted/30 px-4 py-1 sm:col-span-2">
           {trustLine}
         </div>
       )}
 
-      {/* Mobile — a card of its own, not a squeezed-down grid: identity +
-          amount together up top (the decision-making number, not buried
-          after three metric rows), a compact metrics line, then the CTA
-          at full width. */}
-      <div className="sm:hidden">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <BrandLogo
-              name={row.name}
-              url={row.website_url ?? row.affiliate_url}
-              slug={row.slug}
-              size={32}
-              rounded={false}
-              className="shrink-0 rounded-sm border border-border bg-white"
-            />
-            <div className="min-w-0">
-              <div className="truncate text-[15px] font-bold text-foreground">{row.name}</div>
-              {/* 2026-09-03 feedback — "rating overlapping amount" on mobile:
-                  see the `rating` const's own comment — it now truncates
-                  its own regulator name with an ellipsis instead of
-                  overflowing this shrinkable column into the amount block
-                  next to it. */}
-              {rating}
-            </div>
-          </div>
-          <div className="shrink-0 text-right">
-            <div className="whitespace-nowrap font-heading text-xl font-extrabold leading-[1.1] tabular-nums text-foreground">
-              {row.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-              <span className="text-[11px] font-semibold text-muted-foreground">{quote}</span>
-            </div>
-            <div
-              className={`mt-0.5 text-[12px] font-bold tabular-nums ${
-                isBest ? "text-success" : "text-muted-foreground"
-              }`}
-            >
-              {isBest ? t("comparator.row.deltaWinner") : deltaLabel}
-            </div>
-          </div>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 tabular-nums text-[12px] text-muted-foreground">
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3 w-3" /> {deliveryLabel}
-          </span>
-          <span>
-            {row.rate.toLocaleString(undefined, { maximumFractionDigits: 4 })} {quote}
-          </span>
-          <span>
-            {row.fee_total.toLocaleString(undefined, { maximumFractionDigits: 2 })} {base}
-          </span>
-        </div>
-        {trustLine && <div className="mt-2">{trustLine}</div>}
-        <div className="mt-3 flex flex-col gap-1.5">
-          {cta}
-          {shareButton}
-        </div>
-      </div>
-
       {businessExtra && (
-        <BusinessRowExtra
-          row={row}
-          quote={quote}
-          amount={businessExtra.amount}
-          savedVsRetail={businessExtra.savedVsRetail}
-          requested={businessExtra.requested}
-          onToggleRequested={businessExtra.onToggleRequested}
-        />
+        <div className="border-t border-border px-4 py-3 sm:col-span-2">
+          <BusinessRowExtra
+            row={row}
+            quote={quote}
+            amount={businessExtra.amount}
+            savedVsRetail={businessExtra.savedVsRetail}
+            requested={businessExtra.requested}
+            onToggleRequested={businessExtra.onToggleRequested}
+          />
+        </div>
       )}
     </div>
   );
