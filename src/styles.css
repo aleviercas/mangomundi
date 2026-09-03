@@ -14,6 +14,23 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
+  /* === Kayak-skin: geometría compacta de la superficie de comparación ====
+     El sistema general usa --radius 0.875rem (14px), correcto para las
+     secciones de marketing. El comparador/widget necesitan la geometría
+     dura de un buscador (8px tarjeta / 4px control): con 14px una lista de
+     8 tarjetas apiladas se lee blanda y pierde densidad. Deliberadamente
+     FUERA de la escala derivada de --radius: cambiar --radius no los toca.
+     Ver docs/kayak-redesign-spec.md §2. */
+  --radius-compact: 0.5rem;
+  --radius-control: 0.25rem;
+
+  /* Sombra única de la superficie de comparación. El segundo halo hacia
+     arriba es lo que despega la tarjeta del lienzo sin que se vea
+     "elevada" — misma construcción que usa kayak.com. */
+  --shadow-compare:
+    0 3px 6px 0 oklch(0.27 0.025 257 / 0.16),
+    0 -1px 4px 0 oklch(0.27 0.025 257 / 0.04);
+
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
   /* Headings AND figures (received amounts, rates, deltas, stat numbers) —
      design/AJUSTES-1.md §A. Replaces Sora, retired from the project. */
@@ -67,6 +84,22 @@
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
 
+  /* Lienzo del comparador — un punto más oscuro que --background para que
+     las tarjetas blancas floten sobre él (kayak.com: #F0F3F5 detrás de
+     tarjetas #FFF). Nunca como fondo de página completa. */
+  --color-surface-canvas: var(--surface-canvas);
+
+  /* Extremo oscuro del gradiente de CTA (ver --gradient-cta abajo). */
+  --color-accent-deep: var(--accent-deep);
+
+  /* Badges de mérito de la fila de resultados — "mejor opción" (azul frío,
+     informativo) y "más barato" (familia de --success). Nombrados merit-*
+     y no badge-* para no colisionar con el tamaño --text-badge. */
+  --color-merit-best: var(--merit-best);
+  --color-merit-best-foreground: var(--merit-best-foreground);
+  --color-merit-cheap: var(--merit-cheap);
+  --color-merit-cheap-foreground: var(--merit-cheap-foreground);
+
   /* Premium CTA — the only orange in the system, reserved for primary action */
   --color-brand-cta: var(--accent);
   --color-brand-cta-hover: var(--mango-glow);
@@ -103,6 +136,24 @@
 
   --text-h4: 1rem;
   --text-h4--line-height: 1.4;
+
+  /* Escala de la superficie de comparación (sep 2026, pasada "Kayak
+     skin"). Kayak no baja de 12px en ninguna parte de su buscador; esta
+     escala existe para poder erradicar los text-[9px]/[10px]/[11px]
+     sueltos del comparador y del widget. El piso del sistema es
+     text-badge = 12px. */
+  --text-price: 1.5rem;
+  --text-price--line-height: 1.1;
+  --text-price--letter-spacing: -0.01em;
+
+  --text-metric: 1rem;
+  --text-metric--line-height: 1.35;
+
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.4;
+
+  --text-badge: 0.75rem;
+  --text-badge--line-height: 1.35;
 }
 
 :root {
@@ -176,6 +227,37 @@
   --mango-foreground: var(--accent-foreground);
   --surface: var(--card);
   --surface-elevated: var(--muted);
+
+  /* === Kayak-skin (sep 2026, docs/kayak-redesign-spec.md §2) ============ */
+
+  /* Lienzo del comparador. kayak.com pone #F0F3F5 detrás de tarjetas
+     #FFF; acá el mismo salto de L, medio punto por debajo de
+     --background, para que las tarjetas blancas floten. El hue frío es
+     literal del spec (variante "clon visual"): el comparador se lee como
+     una superficie de buscador aparte, no como una sección más de la
+     página cream. */
+  --surface-canvas: oklch(0.945 0.01 255);
+
+  /* CTA con gradiente — mismo ángulo y mismo salto claro→oscuro que Kayak
+     (135deg, #FF690F → #E8381B), en los hues mango del proyecto. Es la
+     única acción primaria del comparador y del widget.
+     El spec pedía --mango-glow como extremo claro; medido, ese tono da
+     ~2.3:1 con texto blanco encima, por debajo del 3.4:1 que ya tiene hoy
+     el .btn-cta plano — habría BAJADO el contraste, contra la regla 5 del
+     propio spec. El extremo claro es --accent (el coral de marca, 3.4:1,
+     el mismo del CTA actual) y el oscuro --accent-deep (4.3:1): así
+     ningún punto del gradiente queda por debajo del CTA que reemplaza.
+     Llevar el CTA a 4.5:1 estrictos exige oscurecer el coral de marca:
+     decisión de marca, no de esta pasada. */
+  --accent-deep: oklch(0.62 0.2 25);
+  --gradient-cta: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+
+  /* Badges de mérito ("mejor opción" / "más barato"). Medidos: 7.3:1 y
+     8.0:1 de texto sobre su propio tinte. */
+  --merit-best: oklch(0.95 0.025 235);
+  --merit-best-foreground: oklch(0.42 0.09 235);
+  --merit-cheap: oklch(0.95 0.04 150);
+  --merit-cheap-foreground: oklch(0.4 0.11 150);
 
   /* design/AJUSTES-2.md §0 — Verde #1F7A5A ("estados correctos, «Live»,
      ahorro"). --warning has no mockup equivalent (not in the doc's
@@ -328,5 +410,43 @@
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.04),
     0 8px 24px -12px rgba(15, 23, 42, 0.08);
+}
+
+/* === Kayak-skin utilities ===============================================
+   Conviven con .surface-card / .btn-cta, que siguen siendo las del resto
+   del sitio (radio 2xl, sombra difusa, fill plano). No se reemplazan: la
+   superficie de comparación usa estas, el marketing usa aquellas. Ver
+   docs/kayak-redesign-spec.md. */
+
+@utility compare-card {
+  background-color: var(--color-card);
+  border: 1px solid transparent;
+  border-radius: var(--radius-compact);
+  box-shadow: var(--shadow-compare);
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+@utility btn-cta-gradient {
+  background-image: var(--gradient-cta);
+  color: var(--color-brand-cta-foreground);
+  white-space: nowrap;
+  transition:
+    filter 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+  &:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 6px 18px -8px var(--color-accent-deep);
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: none;
+  }
 }
 
