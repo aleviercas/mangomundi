@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
+import { LangSwitcher } from "@/components/LangSwitcher";
 import { FOOTER_COMPANY, FOOTER_PRODUCT, type NavEntry } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
@@ -63,10 +64,17 @@ function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyAr
  *  surface this had before, and noticeably more compact (28px/30px
  *  padding, 26px column gap — not py-16/gap-12). Copyright folds into the
  *  end of the Legal column here, literal to the mockup, rather than a
- *  separate bottom bar — there is no bottom bar at all now: the language
- *  switcher that used to live there (2026-08-30, first pass) was dropped
- *  on the next round of feedback since Header already carries one, and a
- *  second one only added a redundant bar.
+ *  separate bottom bar.
+ *  2026-09-04 feedback (ronda 4) — "el boton de selector de idioma pasa al
+ *  footer como hace kayak": the language switcher is back, next to the
+ *  copyright line under the social icons — kayak.com's own footer shows
+ *  "English"/"£ GBP" in exactly that spot (verified live), and Header no
+ *  longer carries one (see Header.tsx) so this isn't a second/redundant
+ *  copy, it's the only one now. `variant="footer"` keeps it on the dark
+ *  footer palette (`text-[#A79C92]`/`border-white/14`, same as the social
+ *  icons right above it) instead of the light-theme tokens the other
+ *  variants use; `direction="up"` so the dropdown opens upward, since this
+ *  sits at the very bottom of the page.
  *  "Local exchange" (Product) and "How we make money" (Company) stay
  *  deliberately absent — see FOOTER_PRODUCT/FOOTER_COMPANY's own comments
  *  in config/nav.ts for why. The mockup's own wordmark here carries the
@@ -121,9 +129,12 @@ export function Footer() {
             </div>
             {/* 2026-08-31 feedback — copyright moved here, under the social
                 icons, off the end of the Legal column. */}
-            <span className="mt-4 block text-[12.5px] text-[#A79C92]">
-              © {new Date().getFullYear()} Mangomundi
-            </span>
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <span className="text-[12.5px] text-[#A79C92]">
+                © {new Date().getFullYear()} Mangomundi
+              </span>
+              <LangSwitcher variant="footer" direction="up" />
+            </div>
           </div>
 
           <FooterColumn titleKey="footer.product.title" items={FOOTER_PRODUCT} />

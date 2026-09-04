@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Wordmark } from "@/components/Wordmark";
-import { LangSwitcher } from "@/components/LangSwitcher";
 import { HEADER_NAV } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
@@ -12,8 +11,12 @@ import { useI18n } from "@/lib/i18n";
  *  design/AJUSTES-2.md §7 (mockup line 249-254): 66px tall, solid white,
  *  1px #EBE3D9 bottom border, 30px lateral padding; nav 14px/600/#6B5F55
  *  with a 26px gap, in the literal order How it works · For business ·
- *  Widget · Blog · About (HEADER_NAV, see config/nav.ts); a language pill
- *  at the end. */
+ *  Widget · Blog · About (HEADER_NAV, see config/nav.ts).
+ *  2026-09-04 feedback (ronda 4) — "el boton de selector de idioma pasa al
+ *  footer como hace kayak": the language pill that used to close out this
+ *  nav is gone from here — kayak.com doesn't show one in its header either
+ *  (verified live), it's a small "English"/"£ GBP" control at the very
+ *  bottom of the page. See Footer.tsx, which now renders it there. */
 export function Header() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -53,7 +56,6 @@ export function Header() {
               {t(item.labelKey)}
             </Link>
           ))}
-          <LangSwitcher variant="pill" />
         </nav>
 
         {/* Mobile menu toggle */}
