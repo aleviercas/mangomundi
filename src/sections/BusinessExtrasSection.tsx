@@ -61,7 +61,9 @@ export function BusinessExtrasSection() {
     // HowItWorksSection already uses right after the retail equivalent of
     // this section) gives it a real seam and its own white band.
     <section className="border-t border-border bg-card py-7 sm:py-10">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver AboutManifestoSection:
+          tope de ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-8">
         <div className="grid items-stretch gap-6 rounded-[20px] border border-border p-5 lg:grid-cols-[300px_1fr] lg:p-6">
           {/* Same photo the home teaser and quote-form card already use —
               not a new asset, stretched to the panel's full height instead

@@ -59,7 +59,16 @@ export function AboutManifestoSection() {
         }}
         aria-hidden
       />
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — "kayak aprovecha mejor todo
+          el ancho de la pagina": medido en vivo contra kayak.com/kayak.co.uk
+          (`kml-layout.edges`, tanto en home como en la página de
+          resultados) el tope real de kayak es 1340px, no 1280 —
+          `max-w-7xl` pasa a `max-w-[1340px]` acá y en el resto de las
+          secciones de marketing + Header/Footer, que no tienen ninguna
+          matemática de columnas interna atada a ese número (a diferencia
+          del comparador: ver el comment de ComparatorSection sobre por
+          qué ESE 1180px se deja intacto). */}
+      <div className="relative mx-auto max-w-[1340px] px-5 sm:px-8">
         <div className="grid items-stretch gap-10 lg:grid-cols-[1fr_340px] lg:gap-11">
           <div className="max-w-2xl flex flex-col justify-center">
             <p className="text-eyebrow font-bold uppercase text-[#FF8A6B]">

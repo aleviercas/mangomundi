@@ -71,16 +71,44 @@ export function Header() {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-[66px] border-b border-border bg-card">
-      <div className="mx-auto flex h-full max-w-7xl items-center gap-3 px-5 sm:px-[30px]">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — "kayak aprovecha mejor todo
+          el ancho de la pagina": medido en vivo (getBoundingClientRect
+          sobre `kml-layout.edges` a 1440px y 1920px, mismo valor en los
+          dos) el tope real de kayak.com/kayak.co.uk es 1340px, no 1280
+          (`max-w-7xl`) — sube acá y en Footer + todas las secciones de
+          marketing del home. El comparador (`max-w-[1180px]` en
+          ComparatorSection/HeroSection) queda intacto a propósito: medido
+          también en vivo contra la página de resultados real de kayak
+          (rail 220px + resultados 760px = 980px, ampliado a 1280 total
+          sólo por una columna de anuncios de 300px que este sitio no
+          tiene), la proporción rail+resultados de acá (240+728=968px) ya
+          es prácticamente idéntica a la de kayak sin ads — tocarla no
+          acerca nada a kayak, sólo arriesga romper esa matemática. */}
+      <div className="mx-auto flex h-full max-w-[1340px] items-center gap-3 px-5 sm:px-[30px]">
         {/* Menu trigger — left of the logo, at every breakpoint, like
             kayak's ☰. Opens the same dropdown panel HEADER_NAV always used
-            on mobile (below), just no longer gated to `md:hidden`. */}
+            on mobile (below), just no longer gated to `md:hidden`.
+            2026-09-04 feedback (ronda 6, cont.) — "el menu hamburgesa esta
+            desalineado del logo": measured live (getBoundingClientRect at
+            4x zoom) — this button's box and the Wordmark link's box ARE
+            centered on the exact same Y in the 66px header (both flex
+            children of the same `items-center` row), so it isn't a
+            box-model bug. What's actually off is optical: "mangomundi" is
+            set in lowercase with a real descender on the "g", which pulls
+            the WORD's bounding box down without pulling its visual
+            weight/x-height down with it — so the glyph's optical center
+            sits a couple px higher than its own box center, while the
+            hamburger icon (a symmetric glyph, no descender) has no such
+            gap. Two boxes centered on the same line ≠ two GLYPHS optically
+            centered on the same line when one of them carries a
+            descender. `-translate-y-px` nudges the icon up to close that
+            gap without touching either box's actual layout. */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={t("header.menuAriaLabel")}
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-foreground hover:bg-muted"
+          className="inline-flex h-9 w-9 shrink-0 -translate-y-px items-center justify-center rounded-md text-foreground hover:bg-muted"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -102,6 +130,31 @@ export function Header() {
           </span>
           <Wordmark className="hidden text-2xl sm:inline-flex" icon={false} />
         </Link>
+
+        {/* 2026-09-04 feedback (ronda 6, cont.) — "el mangomundi ai tiene
+            que estar arriba a la izquierda como el de kayak" + "tiene que
+            havber una barrita separadora como hace kayak": inspeccionado
+            en vivo el DOM real de kayak.com — su "Ask AI" vive DENTRO del
+            header, pegado al logo por el lado izquierdo, separado por una
+            sola línea vertical (`.NgeD-divider`), nunca del lado derecho.
+            FloatingAgent (ComparatorSection) sigue siendo el dueño del
+            botón/panel — no hay forma limpia de tirar todo ese estado acá
+            arriba — pero ahora hace un `createPortal` de su trigger
+            colapsado (divider incluido) a ESTE slot cuando existe, así
+            queda dentro del flujo flex normal del header (mismo
+            comportamiento en cualquier ancho, mobile incluido) en vez de
+            un pill con posición fija adivinando dónde termina el
+            wordmark. Vacío en cualquier página sin comparador (no hay
+            nada que portalear ahí), así que no deja una barrita colgando
+            de la nada.
+            2026-09-04 feedback (ronda 6, cont.) — medido en vivo el
+            `.NgeD-divider` real de kayak.com: 1px × 24px, `margin: 0 12px 0
+            32px` (32px de aire respecto al logo, 12px hacia el botón). Este
+            slot ya recibe 12px del propio `gap-3` de la fila del header (el
+            mismo gap que separa el ☰ del logo) — `ml-5` suma otros 20px
+            para llegar a esos 32px totales antes del divisor; `gap-3` acá
+            adentro reproduce los 12px que separan el divisor del botón. */}
+        <div id="header-ai-slot" className="ml-5 flex items-center gap-3" />
       </div>
 
       {/* Side drawer — now the only nav, opened by the ☰ trigger at every

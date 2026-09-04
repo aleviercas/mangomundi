@@ -19,7 +19,7 @@ type DisplayCorridor = ExclusiveCorridor & {
 // arrives pre-rotated and sliced to at most 4. Doing the Math.random() pick
 // here on the client used to cause a real hydration mismatch: SSR and the
 // client hydration pass each rolled a different offset for the same render,
-// so React discarded and rebuilt the whole section on load. This hook now
+// so React discarded and rebuilt the whole section on load. This hook only
 // only adds the (deterministic, SSR-safe) country lookup for the flag icons.
 function useDisplayCorridors(corridors: ExclusiveCorridor[] | undefined): DisplayCorridor[] {
   return useMemo(() => {
@@ -90,8 +90,8 @@ const cardClassName =
  * "Today's routes, already priced" (design/AJUSTES-1.md §E) — the one
  * genuinely new section in this round of adjustments. Shown below the
  * comparator only while no search has run yet (same `hasResult` gate
- * HeroSection's compact mode already uses in HomePageBody), so the home
- * page has indexable, priced content without anyone typing anything.
+ * HomePageBody uses), so the home page has indexable, priced content
+ * without anyone typing anything.
  *
  * Real data only: useExclusiveCorridors reuses compareProviders itself
  * (see fx.functions.ts's getExclusiveCorridors) over a short candidate
@@ -122,7 +122,9 @@ export function TodaysRoutesSection({
     // to py-6/py-7 (24px/28px) — real but modest, not stripping the section
     // down to nothing.
     <section className="border-t border-border py-6 sm:py-7">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver AboutManifestoSection:
+          tope de ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-8">
         <div>
           <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground sm:text-[22px]">
             {t("todaysRoutes.title")}
@@ -196,7 +198,9 @@ export function BusinessTodaysRoutesSection({
 
   return (
     <section className="border-t border-border py-6 sm:py-7">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver AboutManifestoSection:
+          tope de ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-8">
         <div>
           <h2 className="font-heading text-xl font-extrabold tracking-tight text-foreground sm:text-[22px]">
             {t("todaysRoutes.title")}

@@ -25,7 +25,9 @@ export function ContactSection() {
     // section's own top padding entirely; the card's bottom padding is
     // now the only gap.
     <section id="contact" className="scroll-mt-24 pb-9 sm:pb-12">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 text-center">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver AboutManifestoSection:
+          tope de ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-8 text-center">
         <p className="text-eyebrow font-bold uppercase text-accent-text">
           {t("home.contact.eyebrow")}
         </p>

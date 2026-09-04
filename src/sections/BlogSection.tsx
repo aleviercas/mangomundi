@@ -26,7 +26,9 @@ export function BlogSection() {
 
   return (
     <section id="blog" className="scroll-mt-24 border-t border-border bg-secondary py-7">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver AboutManifestoSection:
+          tope de ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-8">
         <div className="flex items-end justify-between gap-4">
           <h2 className="font-heading text-[19px] font-extrabold tracking-[-0.02em] text-foreground">
             {t("home.blog.compactTitle")}

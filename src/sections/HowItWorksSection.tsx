@@ -26,7 +26,9 @@ export function HowItWorksSection() {
       // ran noticeably looser than that on every breakpoint.
       className="scroll-mt-24 border-t border-border bg-card py-9 sm:py-12"
     >
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver AboutManifestoSection:
+          tope de ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-8">
         <div className="grid items-center gap-11 lg:grid-cols-[1fr_470px]">
           <div>
             <p className="text-[11.5px] font-bold uppercase tracking-[.16em] text-[#C2410C]">

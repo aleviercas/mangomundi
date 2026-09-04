@@ -108,7 +108,9 @@ export function Footer() {
 
   return (
     <footer className="bg-[#1B1510] py-7">
-      <div className="mx-auto max-w-7xl px-5 sm:px-[30px]">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver Header.tsx: tope de
+          ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-[30px]">
         <div className="grid gap-[26px] md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Link to="/" className="inline-flex items-center" onClick={handleLogoClick}>
