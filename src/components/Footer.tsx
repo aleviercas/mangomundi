@@ -1,3 +1,4 @@
+import type { MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
 import { LangSwitcher } from "@/components/LangSwitcher";
@@ -85,6 +86,20 @@ function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyAr
 export function Footer() {
   const { t } = useI18n();
 
+  // 2026-09-04 feedback (ronda 5) — "cuando hago click en el logo mangomundi
+  // en el encabezado [y] footer deberia llevar al home y resetear la
+  // pagina": same fix as Header's own logo link (see its own comment) —
+  // already-home is a same-route no-op for the router, so it's the one case
+  // that needs a hard reload instead of a client-side Link navigation.
+  const handleLogoClick = (e: MouseEvent) => {
+    if (window.location.pathname === "/") {
+      e.preventDefault();
+      window.location.assign("/");
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const legal = [
     { to: "/legal", hash: "terms", label: t("footer.legal.terms") },
     { to: "/legal", hash: "privacy", label: t("footer.legal.privacy") },
@@ -96,11 +111,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-5 sm:px-[30px]">
         <div className="grid gap-[26px] md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link
-              to="/"
-              className="inline-flex items-center"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            >
+            <Link to="/" className="inline-flex items-center" onClick={handleLogoClick}>
               <Wordmark className="text-[21px]" tone="light" icon={false} />
             </Link>
             <p className="mt-2.5 max-w-[280px] whitespace-pre-line text-[12.5px] leading-[1.6] text-[#8A7C6E]">
