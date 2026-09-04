@@ -1571,45 +1571,6 @@ export function ComparatorSection({
   // media query CSS: el formulario tiene que existir en UN solo lugar del
   // árbol a la vez, o los inputs se duplican y el foco/estado se parte en
   // dos copias.
-  // 2026-09-04 feedback (ronda 8) — "en el comparador no se puede hacer
-  // como hace kayak de que la barra de seleccion o el combox se mueve al
-  // header?": la ronda 7 sólo había igualado el COLOR del wrapper sticky
-  // (`bg-card`) contra el header — el usuario vuelve a pedir esto porque
-  // esa aproximación visual no era el pedido real: en kayak.com medido en
-  // vivo, la barra de búsqueda completa (trip-type + campos + Search)
-  // pasa a vivir DENTRO del mismo `<header>` (su propio header crece de
-  // ~66px a ~80px en una página de resultados real, JFK-LAX medido en
-  // vivo). Acá se resuelve igual que el trigger de FloatingAgent: un
-  // portal a un slot vacío que Header.tsx reserva (`#header-searchbar-slot`,
-  // ver ese archivo) — Header y este componente son hermanos sin padre en
-  // común. `searchBar` (definido más abajo) es el mismo nodo de siempre,
-  // sin duplicar su JSX: cuando el merge está activo se portalea entero
-  // (campos + selector individual/business + botón Compare, todo junto,
-  // igual que kayak trae el trip-type DENTRO de la misma fila) y el
-  // render inline de más abajo pasa a `null` para no montarlo dos veces.
-  // Gate a `xl:` (1280px) — `searchBar` es una sola fila desde ese ancho
-  // en adelante (ver su propio comment, colapsa a 1 columna por debajo);
-  // meterlo en el header angosto se vería roto, así que ahí (y en mobile,
-  // que ya tiene su propio patrón de píldora+drawer via `collapsedSearch`)
-  // se mantiene el fallback de antes: la tarjeta sticky pegada debajo del
-  // header. `--header-h` (styles.css) es lo que hace que ese fallback, el
-  // panel del AI y el drawer sigan alineados al borde real del header
-  // aunque su alto cambie por tener o no la barra adentro — Header.tsx
-  // mide su propio alto con un ResizeObserver y lo publica ahí, en vez de
-  // hardcodear 66px en cuatro archivos distintos.
-  const [headerSearchbarSlot, setHeaderSearchbarSlot] = useState<HTMLElement | null>(null);
-  const [isWideForHeaderMerge, setIsWideForHeaderMerge] = useState(false);
-  useEffect(() => {
-    setHeaderSearchbarSlot(document.getElementById("header-searchbar-slot"));
-    const mql = window.matchMedia("(min-width: 1280px)");
-    const onChange = () => setIsWideForHeaderMerge(mql.matches);
-    onChange();
-    mql.addEventListener("change", onChange);
-    return () => mql.removeEventListener("change", onChange);
-  }, []);
-  const mergeSearchIntoHeader =
-    !embedded && Boolean(result) && !isMobile && isWideForHeaderMerge && Boolean(headerSearchbarSlot);
-
   const collapsedSearch = !embedded && Boolean(result) && isMobile;
   const collapsedRoute = `${COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry} → ${
     receivingCountry ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry) : "—"
@@ -1697,55 +1658,54 @@ export function ComparatorSection({
     // propios: ese es el detalle que hace que se lea como una
     // barra y no como cuatro inputs pegados.
     <div className="flex flex-col gap-3">
-      {/* §3.3 (revisado, ronda 8) — "el icono de personal y business arriba
-                    del combox ponerlo como el selector de one way return
-                    multicity? que ocupa menos lugar?": medido en vivo el
-                    selector real de tipo de viaje de kayak.com
-                    (`.voEJ-top-controls` > "One-way ⌄") — NO es una píldora
-                    de dos opciones con fondo (lo que la ronda 7 acababa de
-                    construir, más compacta que los tiles de 52px pero
-                    todavía un contenedor con dos botones visibles), es un
-                    trigger ÚNICO: 78.8×28px medidos, sin borde/fondo/sombra
-                    propios (`background-color: rgba(0,0,0,0)`,
-                    `border: 0px`), texto plano 14px/400 + un chevron, que
-                    al hacer click despliega las opciones en un menú aparte.
-                    Un solo elemento en vez de dos es lo que de verdad
-                    "ocupa menos lugar" en la fila. Pasa de un `role="group"`
-                    con dos `<button>` a un `DropdownMenu` (mismo primitive
-                    que ya usa Sort más abajo en este archivo) con un único
-                    trigger de texto — sin caja, sin fondo, sin padding
-                    grueso — que muestra la opción activa, y un
-                    `DropdownMenuRadioGroup` con las dos opciones adentro.
-                    Mismo estado `segment`/`handleSegmentChange` de siempre —
-                    vuelve a cambiar sólo la piel, no la lógica. */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            aria-label={t("search.segment")}
-            className="inline-flex w-fit items-center gap-1 rounded-sm px-1 py-1 text-meta font-semibold text-foreground transition-colors hover:text-foreground/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            {t(`comparator.segment.${segment}`)}
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="min-w-[9.5rem]">
-          <DropdownMenuRadioGroup
-            value={segment}
-            onValueChange={(next) => handleSegmentChange(next as Segment)}
-          >
-            {(["retail", "business"] as const).map((value) => {
-              const Icon = value === "business" ? Building2 : User;
-              return (
-                <DropdownMenuRadioItem key={value} value={value} className="gap-2">
-                  <Icon className="h-3.5 w-3.5 shrink-0 opacity-70" aria-hidden />
-                  {t(`comparator.segment.${value}`)}
-                </DropdownMenuRadioItem>
-              );
-            })}
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* §3.3 (revisado, ronda 7) — "tiene que replicar el comportamiento
+                    de kayak... arreglar el selector para que sea como el de
+                    kayak" + "lo de personal business te dije que si lo
+                    hagas" (confirmación explícita: el usuario ya había
+                    pedido este cambio en una ronda anterior, no era
+                    tentativo). Las dos tiles cuadradas de 52×52px de la
+                    ronda 4 copiaban el PATRÓN de los tiles de vertical de
+                    kayak.com (Flights/Stays/Cars/...), pero ese patrón es
+                    para elegir entre 4-5 categorías de producto muy
+                    distintas, con un ícono grande cada una — no para un
+                    toggle binario dentro de la propia barra de búsqueda.
+                    Kayak SÍ tiene un control exactamente para esto (un
+                    selector chico de 2-3 opciones metido en la barra, p.
+                    ej. one-way/round-trip): una píldora compacta, un solo
+                    contenedor con las opciones adentro, la activa con su
+                    propio fondo — no dos elementos sueltos con espacio
+                    entre ellos. Mismo patrón que ya usa este archivo más
+                    abajo para los tabs de Sort/resultados (un solo
+                    contenedor `bg-card`/`bg-muted`, la opción activa con su
+                    propio recuadro). Mismo estado `segment`/
+                    `handleSegmentChange` de siempre — vuelve a cambiar sólo
+                    la piel, no la lógica. */}
+      <div
+        className="inline-flex w-fit gap-0.5 rounded-control bg-muted p-1"
+        role="group"
+        aria-label={t("search.segment")}
+      >
+        {(["retail", "business"] as const).map((value) => {
+          const active = segment === value;
+          const Icon = value === "business" ? Building2 : User;
+          return (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => handleSegmentChange(value)}
+              className={`flex items-center gap-1.5 rounded-[6px] px-3 py-1.5 text-meta font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                active
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              {t(`comparator.segment.${value}`)}
+            </button>
+          );
+        })}
+      </div>
 
       {/* docs/kayak-redesign-spec.md §3.2 — LA barra. Un solo bloque:
                     `@2xl:h-15` (60px, la medida real de kayak.co.uk),
@@ -2055,35 +2015,39 @@ export function ComparatorSection({
       <div className={embedded ? "min-w-0" : "mx-auto max-w-[1180px] px-5 sm:px-8"}>
         {/* THE comparator box — the single entry point. Basic row always
             visible; advanced fields fold out below inside the same card.
-            Once a comparison has run and the viewport is wide enough
-            (`mergeSearchIntoHeader`), `searchBar` itself moves into the
-            header via portal (see its own render site below) and this
-            wrapper collapses to nothing — no dead sticky band left behind.
-            Narrower/mobile keeps the previous fallback: the card sticks
-            under the fixed header (top: var(--header-h), styles.css) so
-            the search stays reachable while results scroll underneath —
-            the Kayak/Skyscanner "search collapses to a sticky bar" pattern,
-            without a second page. */}
+            Once a comparison has run, the card sticks under the fixed
+            header (top-[66px] = its design/AJUSTES-2.md §7 height) so the
+            search stays reachable and editable while the results list below
+            scrolls underneath it — the Kayak/Skyscanner "search collapses
+            to a sticky bar, results take the screen" pattern, without a
+            second page. */}
         <div
           className={`min-w-0 ${
             result && !embedded
-              ? mergeSearchIntoHeader
-                ? // 2026-09-04 feedback (ronda 8) — "la barra... se mueve al
-                  // header?": ahora se mueve de verdad (ver
-                  // `mergeSearchIntoHeader` más arriba) — este wrapper ya no
-                  // tiene nada propio que envolver (`searchBar` renderiza
-                  // `null` acá abajo, portaleado al header en su lugar), así
-                  // que no lleva ni `sticky` ni `bg-card` ni padding: sin
-                  // esto quedaba una franja blanca vacía de ~16px flotando
-                  // debajo del header, del `py-2` que antes existía para el
-                  // contenido que ya no está acá.
-                  ""
-                : // El wrapper sticky necesita fondo propio: sin él, la lista
-                  // que scrollea por debajo se ve a través de los huecos
-                  // alrededor de la píldora/barra (verificado en screenshot a
-                  // 390px). Fallback para <1280px/mobile — ver el comment de
-                  // `mergeSearchIntoHeader`.
-                  "sticky top-[var(--header-h)] z-30 bg-card py-2"
+              ? // El wrapper sticky necesita fondo propio: sin él, la lista
+                // que scrollea por debajo se ve a través de los huecos
+                // alrededor de la píldora/barra (verificado en screenshot a
+                // 390px).
+                //
+                // 2026-09-04 feedback (ronda 7) — "cuando aprieto comparar
+                // la barra del buscador en kayak se mueve arriba al
+                // encabezado y en mangomundi no": en kayak.com, la barra
+                // compacta de resultados vive DENTRO de la misma fila del
+                // header (misma pieza blanca que el logo/☰/Ask AI, medido
+                // en vivo sobre /flights/JFK-LAX/...) — no es sólo "queda
+                // pegada arriba", es "pasa a ser parte del header". Acá no
+                // hay forma limpia de mover este árbol adentro de
+                // Header.tsx (son hermanos sin padre común, motivo por el
+                // que FloatingAgent tuvo que resolver lo mismo con un
+                // portal), pero el fondo SÍ puede dejar de ser el lienzo
+                // beige de la sección (`bg-surface-canvas`, antes) y pasar
+                // a `bg-card` (blanco, el mismo tono que Header.tsx) — así,
+                // pegada justo debajo del header fijo sin ningún corte de
+                // color entre los dos, se lee como una sola pieza blanca
+                // continua en vez de una banda de color aparte que sólo
+                // "quedó pegada" — el efecto visual que kayak realmente
+                // tiene, sin la reestructura de mover el árbol de nodos.
+                "sticky top-[66px] z-30 bg-card py-2"
               : ""
           }`}
         >
@@ -2363,11 +2327,6 @@ export function ComparatorSection({
                 </div>
               ) : collapsedSearch ? (
                 collapsedSearchPill
-              ) : mergeSearchIntoHeader ? (
-                // 2026-09-04 feedback (ronda 8) — se portalea entero al
-                // header (ver el `createPortal` junto a `headerSearchbarSlot`
-                // más abajo); acá no se monta una segunda copia.
-                null
               ) : (
                 searchBar
               )}
@@ -2400,24 +2359,6 @@ export function ComparatorSection({
             </div>
           )}
         </div>
-
-        {/* 2026-09-04 feedback (ronda 8) — "la barra... se mueve al header?":
-            el mismo `searchBar` que se usaría acá abajo (ver el ternario de
-            más arriba, que renderiza `null` cuando `mergeSearchIntoHeader`
-            está activo) se portalea entero a `#header-searchbar-slot`
-            (Header.tsx) — campos + selector individual/business + botón
-            Compare, tal como kayak trae su trip-type DENTRO de la misma
-            fila del header. `border-t` propio (Header.tsx no le pone borde
-            al slot vacío para no dejar una línea colgando cuando no hay
-            nada portaleado) + `bg-card` explícito (por si alguna vez este
-            panel corre sobre otro fondo) + el mismo padding lateral que ya
-            usa la fila de arriba del header (`px-3 sm:px-4`, Header.tsx). */}
-        {headerSearchbarSlot && mergeSearchIntoHeader
-          ? createPortal(
-              <div className="border-t border-border bg-card px-3 py-2 sm:px-4">{searchBar}</div>,
-              headerSearchbarSlot,
-            )
-          : null}
 
         {/* AI Agent — the floating tab/panel (collapsed edge tab, or once
             expanded), always, everywhere on the site (2026-08-31 feedback,
@@ -2562,22 +2503,7 @@ export function ComparatorSection({
                   sticky bajo el header + la barra de búsqueda, que ya es
                   sticky ella misma: el rail de kayak.com acompaña el scroll
                   de la lista en vez de irse hacia arriba con ella. */}
-              {/* 2026-09-04 feedback (ronda 8) — 136px = 66px (header) + ~70px
-                  (la tarjeta sticky del buscador debajo). Con el merge del
-                  header (`mergeSearchIntoHeader` más arriba) esa segunda
-                  franja deja de existir — el rail sólo necesita el alto
-                  real del header (que además puede ahora medir más, ver
-                  `--header-h` en styles.css) más un respiro chico, no los
-                  70px extra que asumían que la barra siempre sigue
-                  separada debajo. Sin `mergeSearchIntoHeader`, mismo cálculo
-                  de siempre (header + tarjeta sticky de ~70px). */}
-              <aside
-                className={`hidden lg:sticky lg:flex lg:flex-col lg:gap-3 ${
-                  mergeSearchIntoHeader
-                    ? "lg:top-[calc(var(--header-h)+12px)]"
-                    : "lg:top-[calc(var(--header-h)+70px)]"
-                }`}
-              >
+              <aside className="hidden lg:sticky lg:top-[136px] lg:flex lg:flex-col lg:gap-3">
                 {/* 2026-08-31 feedback — this is the rail's "smart filter"
                     (Kayak-style: dark, but a filter panel, not the chat
                     agent — that one never docks here anymore, see the
@@ -3690,32 +3616,6 @@ function FloatingAgent(p: FloatingAgentProps) {
     setMobileHeaderSlot(document.getElementById("header-ai-slot-mobile"));
   }, []);
 
-  // 2026-09-04 feedback (ronda 8) — "el mangomundi ai cuando se despliega
-  // no tendria que tapar lo del fondo, igual que como hace kayak": medido
-  // en vivo el `<main>` real de kayak.com con su "Ask AI" abierto — la caja
-  // se angosta y se corre a la derecha (x pasa de 0 a ~360px, mismo ancho
-  // que el panel), no es un panel `position:fixed` flotando ENCIMA del
-  // contenido. Acá el panel también es `fixed` (ver el wrapper más abajo,
-  // sigue siéndolo — no hay forma de "empujar" con un elemento que salió
-  // del flujo), así que lo que empuja es `<main>` mismo: __root.tsx le puso
-  // `id="page-main"`, y esta clase se prende/apaga en él directamente vía
-  // DOM (mismo patrón que ya usan `headerSlot`/`mobileHeaderSlot` arriba —
-  // Header, `<main>`/Outlet y este componente son hermanos sin padre en
-  // común que los una a los tres, así que un ref/contexto compartido no
-  // alcanza). El padding-left real (con la transición y el corte a
-  // `sm:`-y-mayor) vive en styles.css junto a `#page-main` — acá sólo se
-  // togglea la clase, nunca el valor. En mobile el panel ya ocupa el
-  // viewport completo (`w-[min(380px,100vw)]` en el wrapper de abajo), así
-  // que empujar ahí correría el contenido fuera de pantalla en vez de
-  // liberar espacio — de ahí el corte a `sm:` en la regla CSS, no acá.
-  useEffect(() => {
-    const main = document.getElementById("page-main");
-    main?.classList.toggle("ai-panel-open", !collapsed);
-    return () => {
-      main?.classList.remove("ai-panel-open");
-    };
-  }, [collapsed]);
-
   // Escape closes; auto-focus the composer on open.
   useEffect(() => {
     if (collapsed) return;
@@ -3761,26 +3661,6 @@ function FloatingAgent(p: FloatingAgentProps) {
   // `hover:bg-muted/60` sutil como única señal interactiva, y el texto
   // pasa a `font-bold` (kayak's "Ask AI" es un texto grueso, no
   // semibold).
-  //
-  // 2026-09-04 feedback (ronda 8) — "el mangomundi ai que tenga algun
-  // borde fluo dinamico como hace ask ai de kayak": auditado en vivo
-  // (barrido de hojas de estilo + pseudo-elementos + una animación
-  // page-wide en kayak.com, trigger inactivo y panel abierto) — no se
-  // encontró ningún borde/glow animado real en el "Ask AI" de kayak; el
-  // único `@keyframes glow` que existe en su CSS es un pulso de opacidad
-  // genérico para placeholders de precio cargando (`.c9mPP-mod-loading`),
-  // sin relación con este botón. No se pudo verificar que kayak tenga este
-  // efecto — se implementa igual acá porque el usuario lo pidió
-  // explícitamente independiente de la paridad literal con kayak: un
-  // anillo con gradiente cónico rotando detrás del trigger (`.ai-glow-border`,
-  // ver styles.css), sólo en el trigger colapsado — no en el panel ya
-  // abierto, para no quedar animando algo encima de lo que el usuario está
-  // leyendo/escribiendo. "si le ponemos el borde fluo a mangomundi ai le
-  // sacamos entonces el puntito verde": el punto verde de `hasNewResult`
-  // (abajo) se saca de los dos triggers (éste y el mobile) ahora que el
-  // glow es la señal de "hay algo nuevo/vivo acá" — la prop/estado
-  // `hasNewResult` se deja intacta (sigue persistida en localStorage y
-  // podría volver a usarse), sólo se deja de RENDERIZAR el punto.
   const collapsedTrigger = (
     <>
       <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
@@ -3792,10 +3672,16 @@ function FloatingAgent(p: FloatingAgentProps) {
         aria-expanded={false}
         aria-haspopup="dialog"
         aria-controls="ai-agent-panel"
-        className="ai-glow-border group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
       >
         <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
         <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
+        {hasNewResult && (
+          <span
+            aria-label={t("agent.newResult")}
+            className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
+          />
+        )}
       </button>
     </>
   );
@@ -3820,9 +3706,15 @@ function FloatingAgent(p: FloatingAgentProps) {
       aria-expanded={false}
       aria-haspopup="dialog"
       aria-controls="ai-agent-panel"
-      className="ai-glow-border group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      className="group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
     >
       <Sparkle className="h-5 w-5 shrink-0 text-brand-cta" aria-hidden />
+      {hasNewResult && (
+        <span
+          aria-label={t("agent.newResult")}
+          className="absolute right-1.5 top-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
+        />
+      )}
     </button>
   );
 
@@ -3863,13 +3755,13 @@ function FloatingAgent(p: FloatingAgentProps) {
     // (#241C16) es una decisión de marca propia de mangomundi con su
     // propia historia (no una copia del blanco de kayak) y se mantiene —
     // sólo cambia la GEOMETRÍA (dónde vive y cuánto ocupa), no la piel.
-    <div className="fixed inset-y-0 left-0 top-[var(--header-h)] z-[60] w-[min(380px,100vw)]">
+    <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
       <div
         id="ai-agent-panel"
         role="dialog"
         aria-modal="false"
         aria-labelledby={panelLabelId}
-        style={{ backgroundColor: "var(--ai-panel-bg)", color: "var(--ai-panel-foreground)" }}
+        style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
         className="flex h-full w-full flex-col overflow-hidden shadow-2xl"
       >
           <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
@@ -3877,7 +3769,7 @@ function FloatingAgent(p: FloatingAgentProps) {
               id={panelLabelId}
               className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60"
             >
-              <Sparkle className="h-3.5 w-3.5 shrink-0 text-[var(--ai-panel-accent)]" aria-hidden />
+              <Sparkle className="h-3.5 w-3.5 shrink-0 text-[#FF8A6B]" aria-hidden />
               <span className="truncate">{t("comparator.copilot.agent")}</span>
             </span>
             <div className="flex shrink-0 items-center gap-2">
@@ -3933,7 +3825,7 @@ function FloatingAgent(p: FloatingAgentProps) {
             }}
           >
             {aiLoading && (
-              <div className="flex items-center gap-2 text-sm text-[var(--ai-panel-muted)]">
+              <div className="flex items-center gap-2 text-sm text-[#A79C92]">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t("fx.analyzing")}
               </div>
             )}
@@ -4020,7 +3912,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                   </div>
                 ))}
                 {chatMutPending && (
-                  <div className="mr-6 flex items-center gap-2 rounded-md border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-[var(--ai-panel-muted)]">
+                  <div className="mr-6 flex items-center gap-2 rounded-md border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-[#A79C92]">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />{" "}
                     {t("comparator.copilot.analyzing")}
                   </div>
@@ -4085,7 +3977,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 e.preventDefault();
                 sendChat(chatInput);
               }}
-              className="flex items-end gap-2 rounded-[11px] bg-card py-1.5 pl-3 pr-1.5"
+              className="flex items-end gap-2 rounded-[11px] bg-white py-1.5 pl-3 pr-1.5"
             >
               <label htmlFor="ai-agent-composer" className="sr-only">
                 {t("comparator.copilot.placeholder")}
@@ -4104,19 +3996,19 @@ function FloatingAgent(p: FloatingAgentProps) {
                 }}
                 placeholder={t("comparator.copilot.placeholder")}
                 aria-label={t("comparator.copilot.placeholder")}
-                className="min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium text-foreground outline-none placeholder:text-[#9C9089] thin-scrollbar"
+                className="min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium text-[#241C16] outline-none placeholder:text-[#9C9089] thin-scrollbar"
                 disabled={chatMutPending}
               />
               <button
                 type="submit"
                 disabled={chatMutPending || !chatInput.trim()}
-                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center self-end rounded-lg bg-brand-cta text-brand-cta-foreground transition disabled:opacity-50"
+                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center self-end rounded-lg bg-[#EE5B3E] text-white transition disabled:opacity-50"
                 aria-label={t("comparator.copilot.send")}
               >
                 <Send className="h-3.5 w-3.5" aria-hidden />
               </button>
             </form>
-            <p className="mt-2 text-badge leading-relaxed text-[var(--ai-panel-muted)]">
+            <p className="mt-2 text-badge leading-relaxed text-[#A79C92]">
               {t("comparator.copilot.trustLine")}
             </p>
           </div>
@@ -4229,13 +4121,13 @@ function BusinessRequestPanel({
   // message in that one slot, so the panel's height doesn't move.
   if (status === "sent") {
     return (
-      <div style={{ backgroundColor: "var(--ai-panel-bg)", color: "var(--ai-panel-foreground)" }} className="rounded-[18px] p-4">
+      <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0 flex-1">
             <h3 className="font-heading text-[15px] font-extrabold text-white">
               {t("comparator.business.request.title")}
             </h3>
-            <p className="mt-1 text-xs leading-relaxed text-[var(--ai-panel-muted)]">
+            <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
               {t("comparator.business.request.disclaimer")}
             </p>
           </div>
@@ -4326,14 +4218,14 @@ function BusinessRequestPanel({
   // fix as before (see git history), now independent of how many lines
   // the stats row above it wraps to.
   return (
-    <div style={{ backgroundColor: "var(--ai-panel-bg)", color: "var(--ai-panel-foreground)" }} className="rounded-[18px] p-4">
+    <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
           {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
           <h3 className="font-heading text-[15px] font-extrabold text-white">
             {t("comparator.business.request.title")}
           </h3>
-          <p className="mt-1 text-xs leading-relaxed text-[var(--ai-panel-muted)]">
+          <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
             {t("comparator.business.request.disclaimer")}
           </p>
         </div>
@@ -4406,7 +4298,7 @@ function BusinessRequestPanel({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("comparator.business.request.emailPlaceholder")}
-            className="h-10 w-full rounded-lg border border-white/20 bg-white/[.06] px-3 text-sm text-white placeholder:text-white/40 focus:border-[var(--ai-panel-accent)]/60 focus:outline-none"
+            className="h-10 w-full rounded-lg border border-white/20 bg-white/[.06] px-3 text-sm text-white placeholder:text-white/40 focus:border-[#FF8A6B]/60 focus:outline-none"
           />
           <button
             type="submit"
@@ -4952,12 +4844,7 @@ function ProviderRow({
   const priceStamp = lastUpdatedLabel && (
     <span
       className="inline-flex items-center gap-1 whitespace-nowrap text-[11.5px] font-semibold"
-      // 2026-09-04 feedback (ronda 8, "revisar la paleta de colores... de
-      // todo el sitio") — #1F7A5A y #6B5F55 eran los mismos valores de
-      // --success y --muted-foreground (styles.css), repetidos acá como
-      // hex sueltos en vez de referenciar esos tokens — mismo color, dos
-      // fuentes de verdad.
-      style={{ color: isVerified ? "var(--success)" : "var(--muted-foreground)" }}
+      style={{ color: isVerified ? "#1F7A5A" : "#6B5F55" }}
     >
       <Clock className="h-3 w-3 shrink-0" />
       {isVerified ? t("comparator.row.stampLive") : t("comparator.row.stampEstimated")} ·{" "}
