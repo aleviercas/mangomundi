@@ -1750,7 +1750,15 @@ export function ComparatorSection({
                       caja (`rounded-md border bg-card shadow-sm`), como el
                       valor de una currency/país sí muestra kayak.com. */}
         <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
-          <FieldLight label={t("comparator.field.amount")}>
+          {/* 2026-09-04 feedback (ronda 6) — "eliminar los titulos de
+                        adentro de las casillas": kayak's own search bar
+                        never shows a caption inside a filled field — the
+                        field's own placeholder/value IS the label. Every
+                        segment in this bar goes `hideLabel` now; each
+                        control below still carries its own `aria-label`
+                        for assistive tech, so nothing is lost, just not
+                        shown visually. */}
+          <FieldLight label={t("comparator.field.amount")} hideLabel>
             <input
               type="number"
               inputMode="decimal"
@@ -1779,7 +1787,7 @@ export function ComparatorSection({
                         label largo truncaba a "Source Cur…". El aria-label
                         del combobox de abajo sigue siendo el descriptivo
                         completo, para lectores de pantalla. */}
-          <FieldLight label={t("comparator.business.request.currency")}>
+          <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
               value={from}
               onChange={handlePickFromCurrency}
@@ -1788,6 +1796,7 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.sourceCurrency")}
               compactLabel
+              hideChevron
               triggerClassName="h-auto w-full gap-0.5 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
@@ -1800,7 +1809,7 @@ export function ComparatorSection({
                       origen/destino de un buscador de vuelos), en su propio
                       segmento sin chip, separado por hairline. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
-          <FieldLight label={t("comparator.field.sourceCountry")}>
+          <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
             <CountryCombobox
               value={sendingCountry}
               onChange={handleSendingCountryChange}
@@ -1809,34 +1818,42 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.sourceCountry")}
               hideSecondary
+              hideChevron
               triggerClassName="h-auto w-full rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
 
-        {/* Segmento swap. 2026-09-04: en el widget (`EmbedComparator`, más
-                      abajo en este archivo) el swap ya es un círculo con
-                      borde/sombra SIEMPRE visibles (no solo en hover) — así
-                      se ve el de kayak.co.uk en vivo. Acá tenía
-                      `border-transparent` (invisible hasta el hover), que
-                      es la única diferencia real con el del widget; se
-                      alinea al mismo tratamiento sin tocar el layout (sigue
-                      siendo su propio segmento, sin chip). */}
+        {/* Segmento swap. 2026-09-04 (ronda 6) — "la flechita de ida y
+                      vuelta en kayak es cuadrada": kayak's own is a square
+                      (`rounded-control`, same corner radius as its mode
+                      tiles), not a circle — matches the widget's own swap
+                      button below (`EmbedComparator`), which already got
+                      this right. Stays its own segment between the two
+                      country fields (already "in the middle of the two"
+                      per the bar's segment order), just square now instead
+                      of `rounded-full`, and on the same brand-cta accent
+                      the widget's swap uses instead of a neutral
+                      border/muted-foreground treatment. */}
         <div className="flex items-center justify-center py-0.5 @2xl:w-9 @2xl:py-0">
           <button
             type="button"
             onClick={handleSwap}
             aria-label={t("comparator.swap")}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-input bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="flex h-9 w-9 items-center justify-center rounded-control border border-input bg-muted text-brand-cta shadow-sm transition-colors hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
-            <ArrowLeftRight className="h-[18px] w-[18px]" aria-hidden />
+            <ArrowLeftRight strokeWidth={2.2} className="h-[16px] w-[16px]" aria-hidden />
           </button>
         </div>
 
         {/* Segmento 4 — país destino, mismo comportamiento de aeropuerto
                       que el Segmento 3, mismo hairline de separación. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
-          <FieldLight label={t("comparator.field.youReceive")} emphasizeLabel={!receivingCountry}>
+          <FieldLight
+            label={t("comparator.field.youReceive")}
+            emphasizeLabel={!receivingCountry}
+            hideLabel
+          >
             <CountryCombobox
               value={receivingCountry}
               onChange={handleReceivingCountryChange}
@@ -1845,6 +1862,7 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.targetCountry")}
               hideSecondary
+              hideChevron
               triggerClassName={`h-auto w-full rounded-md border bg-card px-2 py-1 text-metric font-bold shadow-sm focus:ring-1 focus:ring-ring/40 ${
                 receivingCountry
                   ? "border-border text-foreground hover:border-foreground/40"
@@ -1857,7 +1875,7 @@ export function ComparatorSection({
         {/* Segmento 5 — moneda de destino, misma caja angosta tipo fecha
                       que el Segmento 2, mismo hairline de separación. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
-          <FieldLight label={t("comparator.business.request.currency")}>
+          <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
               value={to}
               onChange={handlePickToCurrency}
@@ -1866,6 +1884,7 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.targetCurrency")}
               compactLabel
+              hideChevron
               triggerClassName="h-auto w-full gap-0.5 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
@@ -2104,6 +2123,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.sourceCountry")}
                           triggerIconOnly
+                          hideChevron
                           triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                         <input
@@ -2124,6 +2144,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.sourceCurrency")}
                           compactLabel
+                          hideChevron
                           triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                       </div>
@@ -2157,6 +2178,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCountry")}
                           triggerIconOnly
+                          hideChevron
                           triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                         <CurrencyCombobox
@@ -2167,6 +2189,7 @@ export function ComparatorSection({
                           emptyLabel={t("comparator.combobox.empty")}
                           ariaLabel={t("comparator.field.targetCurrency")}
                           compactLabel
+                          hideChevron
                           triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                       </div>
@@ -3394,7 +3417,15 @@ function FieldLight({
    *  ni un fondo propios, que romperían la pieza única de la barra. */
   emphasizeLabel?: boolean;
 }) {
-  if (hideLabel) return <div className="min-w-0">{children}</div>;
+  // 2026-09-04 feedback (ronda 6) — "pildoras adentro del selector":
+  // neither branch carried its own width, so inside a flex-row segment
+  // this shrank to the CONTENT's width (flex's main-axis default,
+  // `flex: 0 1 auto`) instead of filling the segment — invisible while the
+  // trigger/input was borderless, obvious as a floating "pill" once ronda
+  // 4 gave those triggers a real box (border/shadow). `w-full` on both
+  // branches makes the label (or the bare wrapper, hideLabel) claim the
+  // full segment width so the boxed value inside actually stretches.
+  if (hideLabel) return <div className="w-full min-w-0">{children}</div>;
   return (
     // docs/kayak-redesign-spec.md §3.2 — el label deja de ser una línea
     // aparte encima de una caja y pasa a vivir DENTRO del segmento, en 12px
@@ -3408,7 +3439,7 @@ function FieldLight({
     // aplica, porque el contenedor pasó a ser un segmento de altura fija de
     // 60px — el par label+valor se centra en el alto del segmento y no hay
     // columna hermana más alta con la que desalinearse.
-    <label className="flex min-w-0 flex-col justify-center gap-0.5">
+    <label className="flex w-full min-w-0 flex-col justify-center gap-0.5">
       <span
         className={`block truncate text-badge font-semibold ${
           emphasizeLabel ? "text-accent-text" : "text-muted-foreground"
@@ -3500,19 +3531,17 @@ function FloatingAgent(p: FloatingAgentProps) {
   }, [collapsed, onToggle]);
 
   return (
-    // Docked to the side edge, vertically centered — Kayak's pattern for a
-    // persistent secondary panel — instead of a bottom-right corner bubble
-    // that sits on top of content (on mobile it used to overlap the last
-    // result row's CTA). Collapsed, it's a slim edge tab rather than a
-    // floating circle, so it reads as part of the page's furniture, not an
-    // overlay competing with whatever's underneath it. 2026-08-31 feedback
-    // — "siempre a la derecha... solo se minimiza cuando yo lo minimizo":
-    // always this, everywhere, in both states — no more separate "docked"
-    // in-rail variant (that used to also drop the dark chat chrome for a
-    // light rail-matching one; removed rather than left dead, see
-    // FiltersCard for what actually lives in the rail's "smart filter"
-    // slot now).
-    <div className="fixed right-0 top-1/2 z-[60] -translate-y-1/2 sm:right-0">
+    // 2026-09-04 feedback (ronda 6) — "la pestana del asistente ai se puede
+    // poner arriba como hace kayak": kayak's "Ask AI" lives as a compact
+    // pill up in the header area, not docked mid-edge like this used to be
+    // (a vertically-centered vertical-text tab, more like a browser
+    // sidebar than a page control). Same component, same state/props —
+    // only the anchor moves, from `top-1/2 -translate-y-1/2` (edge-docked)
+    // to a fixed spot just under the 66px header (`top-[76px]`), and the
+    // collapsed trigger becomes a horizontal rounded pill (icon + label in
+    // a row, not stacked vertical-rl text) to read as a header-style button
+    // rather than an edge tab.
+    <div className="fixed right-4 top-[76px] z-[60] sm:right-6">
       {collapsed ? (
         <button
           ref={toggleBtnRef}
@@ -3522,13 +3551,10 @@ function FloatingAgent(p: FloatingAgentProps) {
           aria-expanded={false}
           aria-haspopup="dialog"
           aria-controls="ai-agent-panel"
-          className="btn-cta group relative flex flex-col items-center gap-1.5 rounded-l-xl rounded-r-none py-4 pl-3 pr-2.5 shadow-2xl ring-1 ring-foreground/10 transition hover:pr-3.5 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="btn-cta group relative flex items-center gap-2 rounded-full py-2.5 pl-3.5 pr-4 shadow-2xl ring-1 ring-foreground/10 transition focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
-          <Sparkle className="h-5 w-5 shrink-0" aria-hidden />
-          <span
-            className="text-badge font-semibold leading-none [writing-mode:vertical-rl]"
-            aria-hidden
-          >
+          <Sparkle className="h-4 w-4 shrink-0" aria-hidden />
+          <span className="text-meta font-semibold leading-none">
             {t("comparator.copilot.agent")}
           </span>
           {hasNewResult && (
@@ -3545,7 +3571,7 @@ function FloatingAgent(p: FloatingAgentProps) {
           aria-modal="false"
           aria-labelledby={panelLabelId}
           style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
-          className="flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-r-none shadow-2xl"
+          className="flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl shadow-2xl"
         >
           <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
             <span
