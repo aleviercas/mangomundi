@@ -1725,7 +1725,7 @@ export function ComparatorSection({
                     (`border-t` apilado en mobile, `border-l` en fila en
                     desktop), con el CTA a sangre en el extremo derecho. */}
       <div
-        className={`grid min-w-0 grid-cols-1 rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch @2xl:overflow-hidden ${
+        className={`grid min-w-0 grid-cols-1 rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch ${
           sameCorridorBlocked ? "ring-2 ring-brand-cta" : ""
         }`}
       >
@@ -1798,17 +1798,20 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento swap. Sigue siendo solo el glifo, SIN chip propio — en
-                      kayak.com el ícono de intercambio vive suelto en el
-                      gap entre los dos campos de lugar, no dentro de una
-                      caja ni de un hairline propio. El círculo de
-                      hover/focus se mantiene como affordance. */}
+        {/* Segmento swap. 2026-09-04: en el widget (`EmbedComparator`, más
+                      abajo en este archivo) el swap ya es un círculo con
+                      borde/sombra SIEMPRE visibles (no solo en hover) — así
+                      se ve el de kayak.co.uk en vivo. Acá tenía
+                      `border-transparent` (invisible hasta el hover), que
+                      es la única diferencia real con el del widget; se
+                      alinea al mismo tratamiento sin tocar el layout (sigue
+                      siendo su propio segmento, sin chip). */}
         <div className="flex items-center justify-center py-0.5 @2xl:w-9 @2xl:py-0">
           <button
             type="button"
             onClick={handleSwap}
             aria-label={t("comparator.swap")}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:border-input hover:bg-muted hover:text-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-input bg-card text-muted-foreground shadow-sm transition-colors hover:bg-muted hover:text-brand-cta focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
           >
             <ArrowLeftRight className="h-[18px] w-[18px]" aria-hidden />
           </button>
@@ -1860,14 +1863,24 @@ export function ComparatorSection({
                       funcionalidad, solo se movió del momento de la búsqueda
                       al momento de filtrar resultados. */}
 
-        {/* CTA — a sangre en el extremo derecho de la barra en desktop
-                      (`@2xl:rounded-none @2xl:rounded-r-compact`, sin
-                      hairline propio: el contraste de color ya lo separa,
-                      igual que el botón "Search" naranja de kayak.com), y
-                      como última fila a ancho completo en mobile
-                      (`rounded-b-compact`), igual que el CTA del widget
-                      (`EmbedComparator`/`embedded` branch de este mismo
-                      archivo, que ya usa este patrón). */}
+        {/* CTA — 2026-09-04 CORRECCIÓN (verificado en vivo contra
+                      kayak.com/kayak.co.uk a los anchos que este entorno
+                      puede capturar sin artefactos, 375/768/~750px): el
+                      botón "Search" de kayak NUNCA sangra al borde de la
+                      tarjeta blanca. Siempre tiene margen visible arriba,
+                      abajo y a los costados, y sus 4 esquinas están
+                      redondeadas — nunca solo un lado. El comentario previo
+                      ("a sangre... igual que el botón Search de kayak.com")
+                      se escribió midiendo `.J_T2-row` a 1440px sin haber
+                      visto realmente cómo se ve el botón ahí; a los anchos
+                      donde sí pudimos ver la página en vivo, sangrar al
+                      borde es exactamente lo que kayak NO hace. Mismo ancho
+                      de columna (130px) y misma altura (44px/h-11) que
+                      antes, pero ahora con margen (`mx-3`/`@2xl:mx-2`) y
+                      radio completo (`rounded-compact`, no
+                      `rounded-r-compact`/`rounded-b-compact`) en vez de
+                      sangrar. Mismo fix aplicado más abajo al botón del
+                      widget (`EmbedComparator`/`embedded`). */}
         <button
           type="button"
           onClick={() => {
@@ -1879,7 +1892,7 @@ export function ComparatorSection({
             compareMut.mutate(undefined);
           }}
           disabled={compareMut.isPending || !receivingCountry || sameCorridorBlocked || amount <= 0}
-          className="btn-cta-gradient flex h-11 w-full items-center justify-center gap-2 rounded-b-compact px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring @2xl:h-full @2xl:w-[130px] @2xl:rounded-none @2xl:rounded-r-compact"
+          className="btn-cta-gradient mx-3 mb-3 mt-1 flex h-11 items-center justify-center gap-2 rounded-compact px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring @2xl:mx-2 @2xl:my-0 @2xl:h-11 @2xl:w-[130px] @2xl:flex-none @2xl:self-center"
         >
           {compareMut.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
@@ -2181,13 +2194,15 @@ export function ComparatorSection({
                     </button>
                   </div>
 
-                  {/* Compare — full-width row at the bottom of the same
-                      card, like Kayak's Search button. */}
-                  {/* docs/kayak-redesign-spec.md §5.4 — el CTA es la última
-                      FILA de la tarjeta, a sangre y con las esquinas
-                      inferiores redondeadas, no un botón flotando dentro de
-                      un padding. */}
-                  <div className="border-t border-border">
+                  {/* Compare — 2026-09-04 CORRECCIÓN: igual que en la barra
+                      principal (`searchBar` más arriba en este archivo), el
+                      botón "Search" de kayak.com nunca sangra al borde de
+                      la tarjeta — siempre tiene margen visible y esquinas
+                      redondeadas completas. El comentario anterior
+                      ("a sangre... como el botón Search de kayak.com") era
+                      la lectura equivocada; se corrige acá igual que en el
+                      buscador de escritorio. */}
+                  <div className="border-t border-border px-3 py-3">
                     <button
                       type="button"
                       data-search-submit
@@ -2205,7 +2220,7 @@ export function ComparatorSection({
                         sameCorridorBlocked ||
                         amount <= 0
                       }
-                      className="btn-cta-gradient flex h-11 w-full items-center justify-center rounded-b-compact text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                      className="btn-cta-gradient flex h-11 w-full items-center justify-center rounded-compact text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                     >
                       {compareMut.isPending ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
