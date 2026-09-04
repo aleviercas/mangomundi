@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
@@ -139,8 +139,13 @@ export function Combobox({
               ("aplastada"). A smaller chevron here (paired with tighter
               gap-1/px-1.5 on the caller's own triggerClassName) is sized to
               actually fit instead of relying on overflow to hide the
-              mismatch. */}
-          <ChevronsUpDown
+              mismatch.
+              2026-09-04 feedback (round 4) — "las flechitas que sean como
+              las de kayak": kayak's dropdown affordance is a single simple
+              chevron pointing down, not the two-headed up/down glyph this
+              had (`ChevronsUpDown`). Same sizing/opacity per mode, just the
+              simpler icon. */}
+          <ChevronDown
             className={
               triggerIconOnly ? "h-3 w-3 shrink-0 opacity-60" : "h-4 w-4 shrink-0 opacity-50"
             }
