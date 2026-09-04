@@ -1,4 +1,4 @@
-import { useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Wordmark, BrandMark } from "@/components/Wordmark";
@@ -51,6 +51,41 @@ export function Header() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
 
+  // 2026-09-04 feedback (ronda 8) — "la barra de seleccion... se mueve al
+  // header?": ComparatorSection ahora portalea la barra de búsqueda entera
+  // a `#header-searchbar-slot` de más abajo (fila 2) una vez que hay
+  // resultado y el viewport es lo bastante ancho — igual que kayak.com,
+  // cuyo `<header>` real mide ~66px en el home y ~80px en una página de
+  // resultados (medido en vivo, JFK-LAX) porque la fila de búsqueda pasa a
+  // vivir ADENTRO de él. Este `<header>` ya no puede tener un alto fijo
+  // (`h-[66px]`, como antes) si su fila 2 puede aparecer o no — el alto
+  // ahora lo decide el contenido (`flex-col`, sin `h-*` en el elemento
+  // raíz; la fila 1 abajo sí mantiene su propio `h-[66px]` para no
+  // cambiar de tamaño ella misma).
+  //
+  // Cuatro lugares más (drawer de este archivo, `<main>` de __root.tsx, el
+  // panel del AI y la tarjeta sticky de fallback en ComparatorSection.tsx)
+  // necesitan saber el alto REAL del header para no quedar tapados o con
+  // un hueco cuando cambia — en vez de hardcodear 66px en los cuatro (lo
+  // que ya se había hecho antes y quedó mal el día que el header creció),
+  // este componente mide su propio alto con un ResizeObserver y lo publica
+  // como la custom property `--header-h` en `<html>`, que esos otros
+  // archivos leen vía `var(--header-h)` (ver el default `66px` en
+  // styles.css `:root`, el valor de siempre antes de que JS corra en el
+  // primer paint/SSR).
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const publish = () => {
+      document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+    };
+    publish();
+    const ro = new ResizeObserver(publish);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   // 2026-09-04 feedback (ronda 5) — "cuando hago click en el logo... deberia
   // llevar al home y resetear la pagina": a <Link to="/"> from a route other
   // than home already remounts the home page (a real navigation happens),
@@ -71,7 +106,10 @@ export function Header() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 h-[66px] border-b border-border bg-card">
+    <header
+      ref={headerRef}
+      className="fixed top-0 left-0 right-0 z-50 flex flex-col border-b border-border bg-card"
+    >
       {/* 2026-09-04 feedback (ronda 6, cont.) — "kayak aprovecha mejor todo
           el ancho de la pagina": medido en vivo (getBoundingClientRect
           sobre `kml-layout.edges` a 1440px y 1920px, mismo valor en los
@@ -97,7 +135,7 @@ export function Header() {
           padding fijo en vez de un contenedor centrado. Footer y las
           secciones de marketing quedan con su 1340px intacto (ver sus
           propios comentarios), sólo el header pasa a borde a borde. */}
-      <div className="flex h-full items-center gap-3 px-3 sm:px-4">
+      <div className="flex h-[66px] shrink-0 items-center gap-3 px-3 sm:px-4">
         {/* Menu trigger — left of the logo, at every breakpoint, like
             kayak's ☰. Opens the same dropdown panel HEADER_NAV always used
             on mobile (below), just no longer gated to `md:hidden`.
@@ -189,22 +227,41 @@ export function Header() {
         <div id="header-ai-slot-mobile" className="ml-auto flex items-center sm:hidden" />
       </div>
 
+      {/* Fila 2 — 2026-09-04 feedback (ronda 8) — "la barra de seleccion...
+          se mueve al header?": ComparatorSection porta la barra de
+          búsqueda entera acá (`createPortal`, ver `mergeSearchIntoHeader`
+          en ese archivo) una vez que hay resultado y el viewport es lo
+          bastante ancho — la misma pieza blanca del header, no una banda
+          aparte, igual que kayak.com (medido en vivo: su header pasa de
+          ~66px a ~80px en una página de resultados porque esta fila vive
+          adentro). Vacío en cualquier página sin comparador, o en mobile,
+          o por debajo de 1280px — no ocupa alto ni pinta nada (sin
+          padding/borde propios acá; el contenido portaleado trae los
+          suyos) hasta que algo se portalea adentro, así nunca deja una
+          franja colgando de la nada, mismo criterio que `header-ai-slot`. */}
+      <div id="header-searchbar-slot" />
+
       {/* Side drawer — now the only nav, opened by the ☰ trigger at every
           width (used to be mobile-only; desktop had its own always-open
           inline row next to the logo, dropped per the doc comment above).
           Docked to the LEFT edge under the header (kayak's own pattern —
           see the file's doc comment), as an overlay: `fixed` positioning
           means it never pushes the page's own content (the comparator's
-          sticky search bar included) down or sideways. */}
+          sticky search bar included) down or sideways.
+          2026-09-04 feedback (ronda 8) — `top-[66px]` fijo pasa a
+          `top-[var(--header-h)]`: si la fila 2 de arriba está mostrando la
+          barra portaleada, el header real mide más de 66px, y este drawer
+          debe abrir debajo del header COMPLETO (las dos filas), no tapar
+          la barra de búsqueda que acaba de mudarse ahí. */}
       {open && (
         <>
           <div
-            className="fixed inset-x-0 bottom-0 top-[66px] z-40 bg-black/30"
+            className="fixed inset-x-0 bottom-0 top-[var(--header-h)] z-40 bg-black/30"
             onClick={() => setOpen(false)}
             aria-hidden="true"
           />
           <nav
-            className="fixed bottom-0 left-0 top-[66px] z-50 flex w-[280px] max-w-[80vw] flex-col overflow-y-auto border-r border-border bg-card px-3 py-4 shadow-2xl"
+            className="fixed bottom-0 left-0 top-[var(--header-h)] z-50 flex w-[280px] max-w-[80vw] flex-col overflow-y-auto border-r border-border bg-card px-3 py-4 shadow-2xl"
             aria-label={t("header.mainAriaLabel")}
           >
             <ul className="space-y-1">

@@ -311,10 +311,25 @@ function LangKeyedShell() {
   // normal pattern for a marketing site (the footer isn't meant to be
   // glued to the viewport bottom, just to end the page). Long pages (home)
   // are unaffected since their content already exceeds any viewport height.
+  // 2026-09-04 feedback (ronda 8) — "el mangomundi ai cuando se despliega
+  // no tendria que tapar lo del fondo, igual que como hace kayak": este
+  // `id` es el gancho que FloatingAgent (ComparatorSection.tsx) usa para
+  // togglear `.ai-panel-open` por DOM directo cuando el panel abre/cierra
+  // — Header, este `<main>`/Outlet y ComparatorSection son hermanos sin
+  // padre en común que los una a los tres (mismo motivo por el que los
+  // triggers colapsados viajan por portal a `#header-ai-slot`/
+  // `#header-ai-slot-mobile` en vez de props). La regla real
+  // (padding-left + transición, sólo desde `sm:`) vive en styles.css junto
+  // a `#page-main` — acá sólo el id que la engancha.
   return (
     <div key={lang} className="relative z-10 flex flex-col">
       <Header />
-      <main className="pt-[66px]">
+      {/* `pt-[66px]` fijo pasa a `pt-[var(--header-h)]` (ver el comment de
+          esa custom property en styles.css `:root`) — Header.tsx puede
+          medir más de 66px una vez que la barra de búsqueda del comparador
+          se le porta adentro (ronda 8), y este padding es lo que evita que
+          el contenido de la página arranque tapado debajo del header fijo. */}
+      <main id="page-main" className="pt-[var(--header-h)]">
         <Outlet />
       </main>
       <Footer />
