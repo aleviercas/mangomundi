@@ -33,6 +33,7 @@ export function CurrencyCombobox({
   ariaLabel,
   triggerClassName,
   compactLabel,
+  hideChevron,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -46,6 +47,8 @@ export function CurrencyCombobox({
    *  the embedded widget's tight row, same as CountryCombobox's own
    *  compactLabel. */
   compactLabel?: boolean;
+  /** See Combobox's own doc comment — drops the dropdown chevron. */
+  hideChevron?: boolean;
 }) {
   return (
     <Combobox
@@ -58,6 +61,7 @@ export function CurrencyCombobox({
       ariaLabel={ariaLabel}
       triggerClassName={triggerClassName}
       compactLabel={compactLabel}
+      hideChevron={hideChevron}
     />
   );
 }

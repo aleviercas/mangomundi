@@ -21,6 +21,7 @@ export function CountryCombobox({
   compactLabel,
   hideSecondary,
   triggerIconOnly,
+  hideChevron,
 }: {
   value: string;
   onChange: (v: string) => void;
@@ -36,6 +37,8 @@ export function CountryCombobox({
   /** See Combobox's own doc comment — closed trigger shows only the flag,
    *  full country name still shows once the dropdown opens. */
   triggerIconOnly?: boolean;
+  /** See Combobox's own doc comment — drops the dropdown chevron. */
+  hideChevron?: boolean;
 }) {
   return (
     <Combobox
@@ -50,6 +53,7 @@ export function CountryCombobox({
       compactLabel={compactLabel}
       hideSecondary={hideSecondary}
       triggerIconOnly={triggerIconOnly}
+      hideChevron={hideChevron}
     />
   );
 }

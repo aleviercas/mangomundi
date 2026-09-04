@@ -40,65 +40,14 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
       aria-hidden={compact}
     >
       <div className="relative overflow-hidden">
-        {/* 2026-09-04 feedback (ronda 5) — "a la derecha en home agregar
-            alguna imagen semitrasparente de monedas": monedas superpuestas
-            en los tonos de marca (ink/mango), muy tenues (12% opacity), de
-            adorno puro (aria-hidden, pointer-events-none). Ancla al borde
-            derecho de la SECCIÓN completa (no de la columna de 1180px de
-            abajo) y solo se muestra desde `xl:` — así vive en el margen
-            que ya queda libre fuera de esa columna en pantallas anchas, en
-            vez de competir por ancho con el titular/subtítulo (que además
-            acaba de perder su tope de ancho, ver el <p> de acá abajo). El
-            `overflow-hidden` del contenedor la recorta si el viewport
-            todavía no tiene margen de sobra. */}
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute right-[-40px] top-1/2 hidden -translate-y-1/2 select-none xl:block"
-          width="320"
-          height="320"
-          viewBox="0 0 320 320"
-          fill="none"
-        >
-          <circle cx="150" cy="160" r="110" fill="#241C16" opacity="0.1" />
-          <circle cx="150" cy="160" r="110" stroke="#241C16" strokeOpacity="0.16" strokeWidth="1.5" />
-          <text
-            x="150"
-            y="182"
-            textAnchor="middle"
-            fontFamily="Georgia, serif"
-            fontSize="86"
-            fill="#241C16"
-            opacity="0.14"
-          >
-            $
-          </text>
-          <circle cx="255" cy="90" r="58" fill="#EE5B3E" opacity="0.12" />
-          <circle cx="255" cy="90" r="58" stroke="#EE5B3E" strokeOpacity="0.2" strokeWidth="1.5" />
-          <text
-            x="255"
-            y="110"
-            textAnchor="middle"
-            fontFamily="Georgia, serif"
-            fontSize="46"
-            fill="#EE5B3E"
-            opacity="0.18"
-          >
-            €
-          </text>
-          <circle cx="248" cy="248" r="42" fill="#241C16" opacity="0.08" />
-          <circle cx="248" cy="248" r="42" stroke="#241C16" strokeOpacity="0.16" strokeWidth="1.5" />
-          <text
-            x="248"
-            y="263"
-            textAnchor="middle"
-            fontFamily="Georgia, serif"
-            fontSize="34"
-            fill="#241C16"
-            opacity="0.14"
-          >
-            £
-          </text>
-        </svg>
+        {/* 2026-09-04 feedback (ronda 6) — "el dibujo de fondo del signo
+            pesos quedo horrible sacalo completamente del home": the
+            translucent coin/currency-symbol SVG added ronda 5 (right edge,
+            xl:+ only) is gone. Kayak's own hero has no decorative artwork
+            competing with the headline — plain background, and that's what
+            this goes back to. `overflow-hidden` stays on the wrapper; it's
+            harmless with nothing left to clip and cheaper to leave than to
+            verify nothing else here relies on it. */}
         {/* docs/kayak-redesign-spec.md §6.2 — el titular pasa de centrado a
             alineado a la IZQUIERDA y el contenedor baja de max-w-7xl (1280)
             a 1180, el mismo ancho que el comparador de §3.1: centrado sobre

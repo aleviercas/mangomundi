@@ -62,6 +62,15 @@ export interface ComboboxProps {
    *  Falls back to the placeholder text when nothing is selected yet,
    *  since there's no icon to show in that case. */
   triggerIconOnly?: boolean;
+  /** 2026-09-04 feedback (ronda 6) — "sacarle la flechita del menu
+   *  desplegable ya se sabe que es para seleccionar": the corridor pickers
+   *  (currency/country in the search bar and widget) drop the chevron —
+   *  the field already reads as a selector from its own trigger chrome
+   *  (border/box, flag/symbol), same as kayak's own search fields, which
+   *  carry no dropdown arrow either. Off by default: every other caller
+   *  (Sort, filters, etc.) keeps the chevron, since those aren't inside a
+   *  self-evidently-a-picker search bar. */
+  hideChevron?: boolean;
 }
 
 /**
@@ -84,6 +93,7 @@ export function Combobox({
   compactLabel = false,
   hideSecondary = false,
   triggerIconOnly = false,
+  hideChevron = false,
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const selected = React.useMemo(() => options.find((o) => o.value === value), [options, value]);
@@ -145,11 +155,13 @@ export function Combobox({
               chevron pointing down, not the two-headed up/down glyph this
               had (`ChevronsUpDown`). Same sizing/opacity per mode, just the
               simpler icon. */}
-          <ChevronDown
-            className={
-              triggerIconOnly ? "h-3 w-3 shrink-0 opacity-60" : "h-4 w-4 shrink-0 opacity-50"
-            }
-          />
+          {!hideChevron && (
+            <ChevronDown
+              className={
+                triggerIconOnly ? "h-3 w-3 shrink-0 opacity-60" : "h-4 w-4 shrink-0 opacity-50"
+              }
+            />
+          )}
         </button>
       </PopoverTrigger>
       <PopoverContent
