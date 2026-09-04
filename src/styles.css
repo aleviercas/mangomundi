@@ -232,11 +232,17 @@
 
   /* Lienzo del comparador. kayak.com pone #F0F3F5 detrás de tarjetas
      #FFF; acá el mismo salto de L, medio punto por debajo de
-     --background, para que las tarjetas blancas floten. El hue frío es
-     literal del spec (variante "clon visual"): el comparador se lee como
-     una superficie de buscador aparte, no como una sección más de la
-     página cream. */
-  --surface-canvas: oklch(0.945 0.01 255);
+     --background, para que las tarjetas blancas floten.
+     2026-09-04 feedback (ronda 5) — "los colores de fondo quedaron
+     raros": el hue 255 (frío, azulado) era literal del spec de kayak,
+     pero kayak.com es una página fría en general — mangomundi no: todo
+     el resto de la marca (--background, --secondary, el CTA mango) vive
+     en hues cálidos. Un parche frío azulado detrás de la barra, en medio
+     de una página cálida, es exactamente lo que se leía "raro". Mismo
+     salto de L/C que antes (sigue leyéndose como un lienzo aparte para
+     que las tarjetas blancas floten), hue movido a la misma familia
+     cálida que el resto de la paleta en vez del azul literal de kayak. */
+  --surface-canvas: oklch(0.945 0.01 75);
 
   /* CTA con gradiente — mismo ángulo y mismo salto claro→oscuro que Kayak
      (135deg, #FF690F → #E8381B), en los hues mango del proyecto. Es la
