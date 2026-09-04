@@ -15,13 +15,20 @@ export type NavEntry = { labelKey: TKey; to?: string; hash?: string };
  *  one key. Individual links to "/" (the retail-default comparator),
  *  Business to "/business" (its own route, defaults to business mode) —
  *  navigation only, this doesn't touch the in-page toggle's own local
- *  state on whichever page it's already showing. */
+ *  state on whichever page it's already showing.
+ *  2026-09-04 feedback (ronda 7) — "se puede agregar tambien contact en el
+ *  menu de la izquierda" (el drawer que abre el ☰, ver Header.tsx): Contact
+ *  ya vive en la columna Company del footer (`FOOTER_COMPANY` abajo),
+ *  apuntando a /about#contact (la sección de contacto real de /about, ver
+ *  el comment de esa constante) — no una página nueva. Se agrega la misma
+ *  entrada acá, mismo target, al final de la lista. */
 export const HEADER_NAV: ReadonlyArray<NavEntry> = [
   { to: "/", labelKey: "comparator.segment.retail" },
   { to: "/business", labelKey: "comparator.segment.business" },
   { to: "/widget", labelKey: "home.widget.eyebrow" },
   { to: "/blog", labelKey: "nav.blog" },
   { to: "/about", labelKey: "nav.about" },
+  { to: "/about", hash: "contact", labelKey: "nav.contact" },
 ];
 
 /** 2026-08-31 feedback — Footer's 3 columns:
