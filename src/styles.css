@@ -239,10 +239,19 @@
      el resto de la marca (--background, --secondary, el CTA mango) vive
      en hues cálidos. Un parche frío azulado detrás de la barra, en medio
      de una página cálida, es exactamente lo que se leía "raro". Mismo
-     salto de L/C que antes (sigue leyéndose como un lienzo aparte para
+     salto de L/C que antes (sigue legéndose — sic — como un lienzo aparte para
      que las tarjetas blancas floten), hue movido a la misma familia
-     cálida que el resto de la paleta en vez del azul literal de kayak. */
-  --surface-canvas: oklch(0.945 0.01 75);
+     cálida que el resto de la paleta en vez del azul literal de kayak.
+     2026-09-04 feedback (ronda 6) — "el color de fondo del selector y del
+     titulo es el mismo": a L de 0.945 quedaba demasiado cerca de --card
+     (blanco puro) y de --background (#fbf8f4, L≈0.975) — la tarjeta de la
+     barra dejaba de leerse como si flotara sobre un lienzo propio, todo
+     el bloque hero+comparador se veía como un solo blanco continuo. Baja
+     a 0.92/0.02 (más L y C de salto real respecto a --card, mismo hue
+     cálido) para que el contraste lienzo↔tarjeta vuelva a notarse, como
+     el gris azulado #F0F3F5 de kayak.com se nota contra sus tarjetas
+     blancas. */
+  --surface-canvas: oklch(0.92 0.02 75);
 
   /* CTA con gradiente — mismo ángulo y mismo salto claro→oscuro que Kayak
      (135deg, #FF690F → #E8381B), en los hues mango del proyecto. Es la
@@ -464,4 +473,3 @@
     filter: none;
   }
 }
-
