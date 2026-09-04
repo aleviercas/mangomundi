@@ -84,7 +84,19 @@ export function Header() {
           tiene), la proporción rail+resultados de acá (240+728=968px) ya
           es prácticamente idéntica a la de kayak sin ads — tocarla no
           acerca nada a kayak, sólo arriesga romper esa matemática. */}
-      <div className="mx-auto flex h-full max-w-[1340px] items-center gap-3 px-5 sm:px-[30px]">
+      {/* 2026-09-04 feedback (ronda 7) — "la hamburguesa no quedo bien a la
+          izquierda de la pagina": el header real de kayak.com NO está
+          centrado ni topeado a un ancho máximo (medido en vivo,
+          getBoundingClientRect a 1440px y 1920px: el ☰ queda siempre en
+          x=12, sea cual sea el ancho de la ventana) — es borde a borde,
+          con un padding lateral fijo chico. El `mx-auto max-w-[1340px]`
+          de la ronda anterior estaba tomado de una medición real, pero de
+          las SECCIONES DE CONTENIDO del body (Footer, marketing), no del
+          header — éste es un elemento aparte, sin tope de ancho, con un
+          padding fijo en vez de un contenedor centrado. Footer y las
+          secciones de marketing quedan con su 1340px intacto (ver sus
+          propios comentarios), sólo el header pasa a borde a borde. */}
+      <div className="flex h-full items-center gap-3 px-3 sm:px-4">
         {/* Menu trigger — left of the logo, at every breakpoint, like
             kayak's ☰. Opens the same dropdown panel HEADER_NAV always used
             on mobile (below), just no longer gated to `md:hidden`.
@@ -153,8 +165,27 @@ export function Header() {
             slot ya recibe 12px del propio `gap-3` de la fila del header (el
             mismo gap que separa el ☰ del logo) — `ml-5` suma otros 20px
             para llegar a esos 32px totales antes del divisor; `gap-3` acá
-            adentro reproduce los 12px que separan el divisor del botón. */}
-        <div id="header-ai-slot" className="ml-5 flex items-center gap-3" />
+            adentro reproduce los 12px que separan el divisor del botón.
+            2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta
+            diferente que el de kayak" + "tiene que replicar el
+            comportamiento de kayak... en mobile": kayak.com NO usa el mismo
+            trigger en mobile que en desktop — su propio DOM real (medido en
+            una ronda anterior) marca el botón de escritorio con
+            `drdg-hide-below-s` (texto+icono, pegado al logo) y uno
+            DISTINTO para mobile con `drdg-hide-above-s` (sólo icono, en la
+            esquina opuesta). Este slot pasa a `hidden sm:flex` — ya no
+            recibe nada por debajo de `sm` — y FloatingAgent ahora porta un
+            segundo trigger, sólo-ícono, al slot de la derecha (ver más
+            abajo) para ese rango. */}
+        <div id="header-ai-slot" className="ml-5 hidden items-center gap-3 sm:flex" />
+
+        {/* Slot para el trigger mobile del agente — sólo ícono, en la
+            esquina opuesta al ☰/logo, como el propio "Ask AI" de kayak en
+            mobile (ver comentario de arriba). `ml-auto` lo empuja al borde
+            derecho de esta misma fila; vacío (y por lo tanto invisible)
+            en cualquier página sin comparador, igual que el slot de
+            escritorio. */}
+        <div id="header-ai-slot-mobile" className="ml-auto flex items-center sm:hidden" />
       </div>
 
       {/* Side drawer — now the only nav, opened by the ☰ trigger at every

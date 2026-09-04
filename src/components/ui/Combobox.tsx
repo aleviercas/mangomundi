@@ -164,10 +164,36 @@ export function Combobox({
           )}
         </button>
       </PopoverTrigger>
+      {/* 2026-09-04 feedback (ronda 7) — "cuando se despliega el menu para
+          seleccionar el pais es diferente que el de kayak buscando
+          aeropuerto": medido en vivo el picker de aeropuerto real de
+          kayak.com (`getComputedStyle` sobre el popover y sus filas) — es
+          una tarjeta blanca FLOTANTE bastante más ancha que el campo que
+          la abre (480px medidos, contra un trigger de ~110px: no copia el
+          ancho del trigger), radio 8px, sombra en capas hacia arriba y
+          hacia abajo (`0 10px 20px, 0 3px 6px, 0 -3px 6px`), y una lista
+          plana sin ningún resaltado de color fuerte en la fila activa —
+          sólo hover neutro. Este picker heredaba el ancho exacto del
+          trigger (`w-[var(--radix-popover-trigger-width)]`) — angosto
+          porque el trigger de la barra también lo es — y pintaba la fila
+          enfocada con `bg-accent` (el coral de marca), que es la señal de
+          "seleccionado" en TODO el resto del sitio pero acá, dentro de una
+          lista de opciones para elegir, se lee como un semáforo prendido
+          en la primera fila en vez de un simple foco de teclado. Pasa a un
+          ancho propio (no atado al trigger) y una sombra en capas más
+          parecida a la real; el resaltado de fila pasa de `bg-accent` a un
+          gris neutro (ver `command.tsx`'s `CommandItem` — acá se
+          sobrescribe puntualmente vía `className`, no se toca ese
+          componente compartido, porque otros pickers del sitio que no son
+          de tipo "país/aeropuerto" sí quieren seguir usando el color de
+          marca para su propio estado seleccionado). */}
       <PopoverContent
         align="start"
         sideOffset={6}
-        className={cn("w-[var(--radix-popover-trigger-width)] min-w-[14rem] p-0", className)}
+        className={cn(
+          "w-[320px] max-w-[calc(100vw-2rem)] rounded-lg p-0 shadow-[0_10px_20px_rgba(25,32,36,0.1),0_3px_6px_rgba(25,32,36,0.04),0_-3px_6px_rgba(25,32,36,0.04)]",
+          className,
+        )}
       >
         <Command
           filter={(itemValue, search) => {
@@ -192,7 +218,7 @@ export function Combobox({
                     onChange(v);
                     setOpen(false);
                   }}
-                  className="gap-2"
+                  className="gap-2.5 rounded-md px-2.5 py-2.5 data-[selected=true]:bg-muted data-[selected=true]:text-foreground"
                 >
                   {opt.leading && (
                     <span className="shrink-0 text-base leading-none">{opt.leading}</span>

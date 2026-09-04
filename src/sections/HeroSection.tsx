@@ -34,7 +34,22 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
       // del subtítulo) — junto con el header del comparador ahora más
       // bajo (ver el comment de la card de ComparatorSection), la sección
       // completa entra más holgada en una pantalla.
-      className={`relative grid overflow-hidden bg-card transition-[grid-template-rows,padding] duration-300 ease-out ${
+      // 2026-09-04 feedback (ronda 7) — "hay bandas de diferentes colores
+      // entre el titulo del home y el selector, en kayak es todo el mismo
+      // color": kayak envuelve título + tiles de modo + barra de búsqueda
+      // en UNA sola tarjeta de un solo color (`.E9x1-card`, medido en vivo:
+      // rgb(240,243,245), sin cortes internos). Acá el título vivía en
+      // `bg-card` (blanco) y el comparador (sección siguiente, hermana
+      // directa en HomePageBody) en `bg-surface-canvas` (beige oscuro) —
+      // dos bandas visualmente distintas pegadas una a la otra. Pasa a
+      // `bg-surface-canvas` también acá, así las dos secciones comparten
+      // exactamente el mismo lienzo y se leen como una sola tarjeta, igual
+      // que en kayak. `bg-card` que tenía este `<section>` no era una
+      // decisión con historia propia que valga la pena preservar aparte
+      // (era simplemente "lo que había antes de que el comparador tuviera
+      // su propio lienzo" — ver el comment de ComparatorSection sobre
+      // --surface-canvas para el resto de esa historia).
+      className={`relative grid overflow-hidden bg-surface-canvas transition-[grid-template-rows,padding] duration-300 ease-out ${
         compact ? "grid-rows-[0fr] py-0" : "grid-rows-[1fr] pt-6 pb-5 sm:pt-10 sm:pb-6"
       }`}
       aria-hidden={compact}
