@@ -14,8 +14,17 @@ export function LangSwitcher({
    *  flag + 13px code in a bordered rounded-full pill, no globe/chevron
    *  icons. Footer's own trigger (variant "default", unchanged) keeps its
    *  existing look; this only swaps the closed-state button, the dropdown
-   *  panel underneath is identical either way. */
-  variant?: "default" | "pill";
+   *  panel underneath is identical either way.
+   *  2026-09-04 feedback (ronda 4) — "el boton de selector de idioma pasa
+   *  al footer como hace kayak": kayak.com no muestra ningún selector de
+   *  idioma/región en el header — vive abajo del todo, junto al copyright
+   *  ("English", "£ GBP"), verificado en vivo. El selector se mudó del
+   *  Header al Footer (ver ambos archivos); este variant es esa versión de
+   *  footer — mismos flag+code que "pill", pero con la paleta oscura fija
+   *  del footer (`text-[#A79C92]`/`border-white/14`, igual que los íconos
+   *  sociales de al lado) en vez de los tokens de tema claro que "pill" y
+   *  "default" usan. */
+  variant?: "default" | "pill" | "footer";
 }) {
   const { lang, setLang, t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -55,6 +64,16 @@ export function LangSwitcher({
         <button
           onClick={() => setOpen((o) => !o)}
           className="inline-flex items-center gap-1.5 rounded-full border border-input px-3 py-1.5 text-[13px] text-foreground transition hover:border-foreground/40"
+          aria-label={t("langSwitcher.changeLanguage")}
+          aria-expanded={open}
+        >
+          <FlagIcon country={current.flag} />
+          <span>{current.label}</span>
+        </button>
+      ) : variant === "footer" ? (
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="inline-flex items-center gap-1.5 rounded-full border border-white/14 px-3 py-1.5 text-[12.5px] text-[#A79C92] transition-colors hover:border-white/30 hover:text-white"
           aria-label={t("langSwitcher.changeLanguage")}
           aria-expanded={open}
         >
