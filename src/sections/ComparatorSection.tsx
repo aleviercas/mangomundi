@@ -14,7 +14,7 @@ import {
   Check,
   CheckCircle2,
   ChevronDown,
-  ChevronsRight,
+  ChevronsLeft,
   Clock,
   Coins,
   CreditCard,
@@ -1658,20 +1658,33 @@ export function ComparatorSection({
     // propios: ese es el detalle que hace que se lea como una
     // barra y no como cuatro inputs pegados.
     <div className="flex flex-col gap-3">
-      {/* §3.3 (revisado, ronda 4) — "el boton personal o business hacelo
-                    como kayak": vuelve a ser DOS tiles cuadrados lado a
-                    lado en vez de un trigger de dropdown — el mismo patrón
-                    que Flights/Stays/Cars/Flight+Hotel de kayak.com (medido
-                    en vivo: 52×52px, `border-radius: 8px`, borde 0.8px,
-                    doble box-shadow, la tile activa en el gradiente de
-                    marca con ícono blanco, las demás en blanco con ícono
-                    apagado), con el label debajo de cada tile en vez de al
-                    lado. Mismo estado `segment`/`handleSegmentChange` de
-                    siempre — vuelve a cambiar solo la piel (trigger → dos
-                    tiles), no la lógica ni el motivo por el que el
-                    segmento se decide antes de buscar (los resultados
-                    retail y business son conjuntos distintos). */}
-      <div className="flex w-fit gap-3" role="group" aria-label={t("search.segment")}>
+      {/* §3.3 (revisado, ronda 7) — "tiene que replicar el comportamiento
+                    de kayak... arreglar el selector para que sea como el de
+                    kayak" + "lo de personal business te dije que si lo
+                    hagas" (confirmación explícita: el usuario ya había
+                    pedido este cambio en una ronda anterior, no era
+                    tentativo). Las dos tiles cuadradas de 52×52px de la
+                    ronda 4 copiaban el PATRÓN de los tiles de vertical de
+                    kayak.com (Flights/Stays/Cars/...), pero ese patrón es
+                    para elegir entre 4-5 categorías de producto muy
+                    distintas, con un ícono grande cada una — no para un
+                    toggle binario dentro de la propia barra de búsqueda.
+                    Kayak SÍ tiene un control exactamente para esto (un
+                    selector chico de 2-3 opciones metido en la barra, p.
+                    ej. one-way/round-trip): una píldora compacta, un solo
+                    contenedor con las opciones adentro, la activa con su
+                    propio fondo — no dos elementos sueltos con espacio
+                    entre ellos. Mismo patrón que ya usa este archivo más
+                    abajo para los tabs de Sort/resultados (un solo
+                    contenedor `bg-card`/`bg-muted`, la opción activa con su
+                    propio recuadro). Mismo estado `segment`/
+                    `handleSegmentChange` de siempre — vuelve a cambiar sólo
+                    la piel, no la lógica. */}
+      <div
+        className="inline-flex w-fit gap-0.5 rounded-control bg-muted p-1"
+        role="group"
+        aria-label={t("search.segment")}
+      >
         {(["retail", "business"] as const).map((value) => {
           const active = segment === value;
           const Icon = value === "business" ? Building2 : User;
@@ -1681,25 +1694,14 @@ export function ComparatorSection({
               type="button"
               aria-pressed={active}
               onClick={() => handleSegmentChange(value)}
-              className="flex flex-col items-center gap-1.5 focus:outline-none"
+              className={`flex items-center gap-1.5 rounded-[6px] px-3 py-1.5 text-meta font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                active
+                  ? "bg-card text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <span
-                className={`flex h-[52px] w-[52px] items-center justify-center rounded-control border shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-ring/50 ${
-                  active
-                    ? "btn-cta-gradient border-transparent"
-                    : "border-input bg-card hover:border-foreground/30"
-                }`}
-              >
-                <Icon
-                  className={`h-5 w-5 ${active ? "text-brand-cta-foreground" : "text-foreground"}`}
-                  aria-hidden
-                />
-              </span>
-              <span
-                className={`text-meta font-semibold ${active ? "text-foreground" : "text-muted-foreground"}`}
-              >
-                {t(`comparator.segment.${value}`)}
-              </span>
+              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              {t(`comparator.segment.${value}`)}
             </button>
           );
         })}
@@ -1747,9 +1749,27 @@ export function ComparatorSection({
                       seleccionado aparezca con la cajita como lo hace
                       kayak": cada celda pinta un fondo suave en hover
                       (`hover:bg-muted/60`), y el valor deja de flotar suelto
-                      sobre el lienzo del segmento — vuelve a tener su propia
-                      caja (`rounded-md border bg-card shadow-sm`), como el
-                      valor de una currency/país sí muestra kayak.com. */}
+                      sobre el lienzo del segmento — tiene su propia caja.
+                      2026-09-04 feedback (ronda 7) — "esas pildoras adentro
+                      no son de kayak, por ejemplo en el monto la currency y
+                      el pais": la ronda 4 le había dado a esa caja
+                      `rounded-md border bg-card shadow-sm` (blanco, con
+                      sombra) — medido en vivo esta ronda contra el chip
+                      real de kayak.com (`.c_neb-item`, getComputedStyle):
+                      fondo rgb(240,243,245) — NO blanco, un gris apenas
+                      distinto del blanco de la fila que lo contiene —,
+                      borde 0.8px rgb(217,226,232), radius 4px,
+                      `box-shadow: none`. Kayak distingue el chip del resto
+                      de la fila SOLO con un hairline y un cambio de tono muy
+                      sutil, nunca con sombra — la sombra es justamente lo
+                      que hacía que esto se leyera como una píldora flotando
+                      encima del lienzo en vez de un chip plano incrustado
+                      en él. Pasa a `rounded border bg-muted` (el mismo tono
+                      cálido que ya usa el resto del sitio para "superficie
+                      un paso por debajo de card", en vez de inventar un gris
+                      frío nuevo) sin `shadow-sm`, acá y en las cuatro cajas
+                      hermanas (currency origen/destino, país origen/
+                      destino) de este mismo bloque. */}
         <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
           {/* 2026-09-04 feedback (ronda 6) — "eliminar los titulos de
                         adentro de las casillas": kayak's own search bar
@@ -1768,7 +1788,7 @@ export function ComparatorSection({
               placeholder="1000"
               onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
               aria-label={t("comparator.field.amount")}
-              className="w-full min-w-0 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold tabular-nums text-foreground shadow-sm transition-colors placeholder:text-muted-foreground hover:border-foreground/40 focus:border-transparent focus:outline-none focus:ring-1 focus:ring-ring/40"
+              className="w-full min-w-0 rounded border border-border bg-muted px-2 py-1 text-metric font-bold tabular-nums text-foreground transition-colors placeholder:text-muted-foreground hover:border-foreground/30 focus:border-transparent focus:outline-none focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
@@ -1798,7 +1818,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.sourceCurrency")}
               compactLabel
               hideChevron
-              triggerClassName="h-auto w-full gap-0.5 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
+              triggerClassName="h-auto w-full gap-0.5 rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
@@ -1820,7 +1840,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.sourceCountry")}
               hideSecondary
               hideChevron
-              triggerClassName="h-auto w-full rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
+              triggerClassName="h-auto w-full rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
@@ -1891,9 +1911,9 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.targetCountry")}
               hideSecondary
               hideChevron
-              triggerClassName={`h-auto w-full rounded-md border bg-card px-2 py-1 text-metric font-bold shadow-sm focus:ring-1 focus:ring-ring/40 ${
+              triggerClassName={`h-auto w-full rounded border bg-muted px-2 py-1 text-metric font-bold focus:ring-1 focus:ring-ring/40 ${
                 receivingCountry
-                  ? "border-border text-foreground hover:border-foreground/40"
+                  ? "border-border text-foreground hover:border-foreground/30"
                   : "border-accent-text/40 text-accent-text hover:border-accent-text"
               }`}
             />
@@ -1913,7 +1933,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.targetCurrency")}
               compactLabel
               hideChevron
-              triggerClassName="h-auto w-full gap-0.5 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
+              triggerClassName="h-auto w-full gap-0.5 rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
@@ -2007,9 +2027,27 @@ export function ComparatorSection({
               ? // El wrapper sticky necesita fondo propio: sin él, la lista
                 // que scrollea por debajo se ve a través de los huecos
                 // alrededor de la píldora/barra (verificado en screenshot a
-                // 390px). Es el mismo lienzo de la sección, así que no
-                // agrega una banda visible — sólo tapa.
-                "sticky top-[66px] z-30 bg-surface-canvas py-2"
+                // 390px).
+                //
+                // 2026-09-04 feedback (ronda 7) — "cuando aprieto comparar
+                // la barra del buscador en kayak se mueve arriba al
+                // encabezado y en mangomundi no": en kayak.com, la barra
+                // compacta de resultados vive DENTRO de la misma fila del
+                // header (misma pieza blanca que el logo/☰/Ask AI, medido
+                // en vivo sobre /flights/JFK-LAX/...) — no es sólo "queda
+                // pegada arriba", es "pasa a ser parte del header". Acá no
+                // hay forma limpia de mover este árbol adentro de
+                // Header.tsx (son hermanos sin padre común, motivo por el
+                // que FloatingAgent tuvo que resolver lo mismo con un
+                // portal), pero el fondo SÍ puede dejar de ser el lienzo
+                // beige de la sección (`bg-surface-canvas`, antes) y pasar
+                // a `bg-card` (blanco, el mismo tono que Header.tsx) — así,
+                // pegada justo debajo del header fijo sin ningún corte de
+                // color entre los dos, se lee como una sola pieza blanca
+                // continua en vez de una banda de color aparte que sólo
+                // "quedó pegada" — el efecto visual que kayak realmente
+                // tiene, sin la reestructura de mover el árbol de nodos.
+                "sticky top-[66px] z-30 bg-card py-2"
               : ""
           }`}
         >
@@ -3566,8 +3604,16 @@ function FloatingAgent(p: FloatingAgentProps) {
   // mount (both components mount together on every route that renders
   // this comparator), not in a loop — the slot doesn't come and go.
   const [headerSlot, setHeaderSlot] = useState<HTMLElement | null>(null);
+  // 2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta diferente
+  // que el de kayak... replicar el comportamiento de kayak... en mobile":
+  // segundo target de portal, para el trigger sólo-ícono que Header.tsx
+  // ahora reserva a la derecha (`#header-ai-slot-mobile`, visible sólo por
+  // debajo de `sm`) — ver el comment de `collapsedTriggerMobile` más abajo
+  // para el resto del contexto.
+  const [mobileHeaderSlot, setMobileHeaderSlot] = useState<HTMLElement | null>(null);
   useEffect(() => {
     setHeaderSlot(document.getElementById("header-ai-slot"));
+    setMobileHeaderSlot(document.getElementById("header-ai-slot-mobile"));
   }, []);
 
   // Escape closes; auto-focus the composer on open.
@@ -3603,6 +3649,18 @@ function FloatingAgent(p: FloatingAgentProps) {
   // permanently-rendered element in Header.tsx — so a route that mounts
   // Header without ComparatorSection (i.e. without this component) never
   // shows a divider with nothing next to it.
+  //
+  // 2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta diferente
+  // que el de kayak": zoom ×3 en vivo sobre el "Ask AI" real de kayak.com
+  // mostró texto+ícono LISO — sin borde, sin fondo, sin trato de píldora,
+  // como un link más del nav — no el pill con `border-border bg-card`
+  // heredado de cuando este trigger todavía flotaba fuera del header.
+  // Ahora que vive adentro del propio header (portal), no necesita su
+  // propio marco para distinguirse del fondo: el header blanco YA es el
+  // marco. Se va `rounded-full border border-border bg-card`; queda un
+  // `hover:bg-muted/60` sutil como única señal interactiva, y el texto
+  // pasa a `font-bold` (kayak's "Ask AI" es un texto grueso, no
+  // semibold).
   const collapsedTrigger = (
     <>
       <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
@@ -3614,12 +3672,10 @@ function FloatingAgent(p: FloatingAgentProps) {
         aria-expanded={false}
         aria-haspopup="dialog"
         aria-controls="ai-agent-panel"
-        className="group relative flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-foreground transition hover:border-foreground/30 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className="group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
       >
         <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
-        <span className="text-meta font-semibold leading-none">
-          {t("comparator.copilot.agent")}
-        </span>
+        <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
         {hasNewResult && (
           <span
             aria-label={t("agent.newResult")}
@@ -3630,29 +3686,83 @@ function FloatingAgent(p: FloatingAgentProps) {
     </>
   );
 
+  // 2026-09-04 feedback (ronda 7) — "tiene que replicar el comportamiento
+  // de kayak... en mobile" (el usuario resuelve acá una ambigüedad que
+  // había quedado abierta en la ronda anterior: mangomundi replica el
+  // comportamiento REAL de kayak, que es distinto en mobile, en vez de
+  // unificar los dos). El DOM real de kayak.com trae un trigger de
+  // escritorio (texto+ícono, pegado al logo — `collapsedTrigger` de
+  // arriba) y uno DISTINTO para mobile: sólo ícono, 44×44 (target táctil
+  // real), anclado en la esquina opuesta del header en vez de al lado del
+  // logo. No hay separador acá — a diferencia del trigger de escritorio,
+  // este vive solo en su propia esquina, sin nada al lado de qué
+  // dividirse.
+  const collapsedTriggerMobile = (
+    <button
+      ref={toggleBtnRef}
+      type="button"
+      onClick={() => onToggle(false)}
+      aria-label={t("comparator.copilot.agent")}
+      aria-expanded={false}
+      aria-haspopup="dialog"
+      aria-controls="ai-agent-panel"
+      className="group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+    >
+      <Sparkle className="h-5 w-5 shrink-0 text-brand-cta" aria-hidden />
+      {hasNewResult && (
+        <span
+          aria-label={t("agent.newResult")}
+          className="absolute right-1.5 top-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
+        />
+      )}
+    </button>
+  );
+
   if (collapsed) {
-    // `headerSlot` resolves on mount (the effect above runs essentially
-    // immediately after first paint) — null only for the first frame, or on
-    // the off chance Header.tsx's slot isn't in the DOM at all. Rendering
-    // nothing for that one frame beats a fixed-position fallback pill that
-    // would flash somewhere else on-screen and then jump into the header a
-    // moment later.
-    return headerSlot ? createPortal(collapsedTrigger, headerSlot) : null;
+    // `headerSlot`/`mobileHeaderSlot` resolve on mount (the effect above
+    // runs essentially immediately after first paint) — null only for the
+    // first frame, or on the off chance Header.tsx's slots aren't in the
+    // DOM at all. Rendering nothing for that one frame beats a
+    // fixed-position fallback pill that would flash somewhere else
+    // on-screen and then jump into the header a moment later. Both portals
+    // render together: Header.tsx's own `hidden sm:flex` / `sm:hidden` on
+    // each slot (not this component) is what actually keeps only one
+    // visible at a time per breakpoint — same single source of truth
+    // Header.tsx already uses for every other responsive swap in that row.
+    return (
+      <>
+        {headerSlot ? createPortal(collapsedTrigger, headerSlot) : null}
+        {mobileHeaderSlot ? createPortal(collapsedTriggerMobile, mobileHeaderSlot) : null}
+      </>
+    );
   }
 
   return (
-    // Open panel now originates from the left, under the header, matching
-    // where its trigger actually lives (top-left, next to the logo) instead
-    // of the old top-right anchor — see this component's own doc comment
-    // above for the full "ask ai a la izquierda" context.
-    <div className="fixed left-4 top-[76px] z-[60] sm:left-6">
+    // 2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta
+    // diferente que el de kayak que usa todo el costado izquierdo":
+    // inspeccionado en vivo el panel real de kayak.com al abrir su "Ask
+    // AI" (getBoundingClientRect a 1440×900) — no es una tarjeta chica
+    // flotando sobre la página (lo que este panel era hasta ahora, 380×560
+    // como máximo, con las cuatro esquinas redondeadas): es un panel
+    // DOCKED, pegado al borde izquierdo real (x=0) desde justo debajo del
+    // header (y = altura del header) hasta abajo de todo el viewport
+    // (height = 100% - header), 360px de ancho, empujando el contenido de
+    // la página hacia la derecha en vez de flotar encima de él. Pasa de
+    // `left-4 top-[76px]` (esquina, tarjeta) a `left-0 top-[66px] bottom-0`
+    // (borde a borde, alto completo) — mismo `top-[66px]` que ya usan la
+    // barra sticky del comparador y el drawer del menú (Header.tsx), la
+    // altura real del header en toda la página. El estilo oscuro
+    // (#241C16) es una decisión de marca propia de mangomundi con su
+    // propia historia (no una copia del blanco de kayak) y se mantiene —
+    // sólo cambia la GEOMETRÍA (dónde vive y cuánto ocupa), no la piel.
+    <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
       <div
         id="ai-agent-panel"
         role="dialog"
         aria-modal="false"
         aria-labelledby={panelLabelId}
         style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
-        className="flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl shadow-2xl"
+        className="flex h-full w-full flex-col overflow-hidden shadow-2xl"
       >
           <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
             <span
@@ -3677,13 +3787,18 @@ function FloatingAgent(p: FloatingAgentProps) {
                   se ve": this was a bare 14px minus-line stroke at 60%
                   white opacity — small, low-contrast, and "−" doesn't read
                   as "collapse this panel" the way an arrow pointing at the
-                  edge it docks to does. `ChevronsRight` (the panel is
-                  docked to the right edge, see this component's own
-                  comment) reads as "push this back to the edge," a
-                  standard sidebar-collapse affordance; wrapped in a visible
-                  pill (bg-white/10, a real background instead of bare
-                  text) so it reads as a button at a glance instead of
-                  blending into the header row. */}
+                  edge it docks to does. An arrow reading "push this back to
+                  the edge" is a standard sidebar-collapse affordance;
+                  wrapped in a visible pill (bg-white/10, a real background
+                  instead of bare text) so it reads as a button at a glance
+                  instead of blending into the header row.
+                  2026-09-04 feedback (ronda 7) — the panel itself moved
+                  from a floating top-left card to a real docked-left
+                  sidebar (see this component's own render-site comment) —
+                  `ChevronsRight` was pointing away from the edge it now
+                  actually collapses into. `ChevronsLeft` points at the
+                  left edge the panel docks to, matching the geometry
+                  instead of contradicting it. */}
               <button
                 type="button"
                 onClick={() => onToggle(true)}
@@ -3691,7 +3806,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 title={t("agent.minimize")}
                 className="flex items-center justify-center rounded-full bg-white/10 p-1.5 text-white/90 transition hover:bg-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
               >
-                <ChevronsRight className="h-4 w-4" aria-hidden />
+                <ChevronsLeft className="h-4 w-4" aria-hidden />
               </button>
             </div>
           </div>
@@ -4386,16 +4501,16 @@ function ResultsBlock({
     second: "2-digit",
   });
 
-  // design/Mangomundi 4 - Final.dc.html (line 435) — "Show N more providers"
-  // instead of always rendering the full list; resets to collapsed whenever
-  // the underlying result changes (a new search shouldn't stay expanded from
-  // the previous one). Client-side only — result.rows is already fully
-  // loaded, so this is just how many of it render, not a new fetch.
-  const INITIAL_VISIBLE_ROWS = 6;
-  const [showAllRows, setShowAllRows] = useState(false);
-  useEffect(() => setShowAllRows(false), [result]);
-  const visibleRows = showAllRows ? displayRows : displayRows.slice(0, INITIAL_VISIBLE_ROWS);
-  const hiddenRowCount = displayRows.length - visibleRows.length;
+  // 2026-09-04 feedback (ronda 7) — "el listado se muestra completo, sacar
+  // el boton de show more en los resultados del comparador": design/
+  // Mangomundi 4 - Final.dc.html (line 435) called for a "Show N more
+  // providers" button truncating the list to INITIAL_VISIBLE_ROWS (6) by
+  // default — but the list already renders in full below (no truncation
+  // left in `visibleRows`), which made the button dead weight: clicking it
+  // never changed anything visible, since there was nothing hidden to
+  // reveal. `visibleRows` is just `displayRows` now — no slicing, no
+  // "collapsed" state to reset per result.
+  const visibleRows = displayRows;
 
   // docs/kayak-redesign-spec.md §4.4 — barra fija al pie en mobile una vez
   // que la persona scrolleó más de 400px: a esa altura el ganador ya salió
@@ -4484,16 +4599,6 @@ function ResultsBlock({
           </div>
         )}
       </div>
-
-      {hiddenRowCount > 0 && (
-        <button
-          type="button"
-          onClick={() => setShowAllRows(true)}
-          className="mt-3 flex h-11 w-full items-center justify-center rounded-xl border-[1.5px] border-input bg-card text-sm font-bold text-foreground transition-colors hover:border-foreground/40 sm:w-auto sm:px-5"
-        >
-          {t("comparator.showMoreProviders").replace("{n}", String(hiddenRowCount))}
-        </button>
-      )}
 
       {/* docs/kayak-redesign-spec.md §4.4 — barra fija al pie, sólo mobile
           (`sm:hidden`) y sólo con el ganador ya fuera de pantalla. A la
