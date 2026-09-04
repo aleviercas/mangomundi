@@ -1657,49 +1657,52 @@ export function ComparatorSection({
     // propios: ese es el detalle que hace que se lea como una
     // barra y no como cuatro inputs pegados.
     <div className="flex flex-col gap-3">
-      {/* §3.3 (revisado) — Personal/Empresa deja de ser dos tiles de
-                    ícono lado a lado y pasa a ser UN selector desplegable,
-                    igual que el "One-way ⌄" de kayak.com: una píldora
-                    chica arriba y AFUERA de la barra, con el valor activo +
-                    chevron, que abre un menú con las dos opciones. Mismo
-                    estado `segment`/`handleSegmentChange` de siempre —
-                    cambia la piel (dos tiles → un trigger), no la lógica
-                    ni el motivo por el que el segmento se decide antes de
-                    buscar (los resultados retail y business son conjuntos
-                    distintos). El eyebrow "COMPARAR" sigue sin volver: la
-                    barra ya se explica sola. */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            aria-label={t("search.segment")}
-            className="flex w-fit items-center gap-1.5 rounded-full border border-input bg-card px-3 py-1.5 text-meta font-semibold text-foreground shadow-sm transition-colors hover:border-foreground/30 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            {segment === "business" ? (
-              <Building2 className="h-4 w-4 text-muted-foreground" aria-hidden />
-            ) : (
-              <User className="h-4 w-4 text-muted-foreground" aria-hidden />
-            )}
-            <span>{t(`comparator.segment.${segment}`)}</span>
-            <ChevronDown className="h-4 w-4 opacity-60" aria-hidden />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start">
-          <DropdownMenuRadioGroup
-            value={segment}
-            onValueChange={(v) => handleSegmentChange(v as Segment)}
-          >
-            <DropdownMenuRadioItem value="retail">
-              <User className="mr-2 h-4 w-4" aria-hidden />
-              {t("comparator.segment.retail")}
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem value="business">
-              <Building2 className="mr-2 h-4 w-4" aria-hidden />
-              {t("comparator.segment.business")}
-            </DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* §3.3 (revisado, ronda 4) — "el boton personal o business hacelo
+                    como kayak": vuelve a ser DOS tiles cuadrados lado a
+                    lado en vez de un trigger de dropdown — el mismo patrón
+                    que Flights/Stays/Cars/Flight+Hotel de kayak.com (medido
+                    en vivo: 52×52px, `border-radius: 8px`, borde 0.8px,
+                    doble box-shadow, la tile activa en el gradiente de
+                    marca con ícono blanco, las demás en blanco con ícono
+                    apagado), con el label debajo de cada tile en vez de al
+                    lado. Mismo estado `segment`/`handleSegmentChange` de
+                    siempre — vuelve a cambiar solo la piel (trigger → dos
+                    tiles), no la lógica ni el motivo por el que el
+                    segmento se decide antes de buscar (los resultados
+                    retail y business son conjuntos distintos). */}
+      <div className="flex w-fit gap-3" role="group" aria-label={t("search.segment")}>
+        {(["retail", "business"] as const).map((value) => {
+          const active = segment === value;
+          const Icon = value === "business" ? Building2 : User;
+          return (
+            <button
+              key={value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => handleSegmentChange(value)}
+              className="flex flex-col items-center gap-1.5 focus:outline-none"
+            >
+              <span
+                className={`flex h-[52px] w-[52px] items-center justify-center rounded-control border shadow-sm transition-all focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                  active
+                    ? "btn-cta-gradient border-transparent"
+                    : "border-input bg-card hover:border-foreground/30"
+                }`}
+              >
+                <Icon
+                  className={`h-5 w-5 ${active ? "text-brand-cta-foreground" : "text-muted-foreground"}`}
+                  aria-hidden
+                />
+              </span>
+              <span
+                className={`text-meta font-semibold ${active ? "text-foreground" : "text-muted-foreground"}`}
+              >
+                {t(`comparator.segment.${value}`)}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* docs/kayak-redesign-spec.md §3.2 — LA barra. Un solo bloque:
                     `@2xl:h-15` (60px, la medida real de kayak.co.uk),
@@ -1725,7 +1728,7 @@ export function ComparatorSection({
                     (`border-t` apilado en mobile, `border-l` en fila en
                     desktop), con el CTA a sangre en el extremo derecho. */}
       <div
-        className={`grid min-w-0 grid-cols-1 rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch ${
+        className={`grid min-w-0 grid-cols-1 overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch ${
           sameCorridorBlocked ? "ring-2 ring-brand-cta" : ""
         }`}
       >
@@ -1733,7 +1736,15 @@ export function ComparatorSection({
                       más grande de la barra. Sin chip propio: comparte el
                       lienzo del contenedor (regla general de este bloque,
                       ver comentario de arriba). */}
-        <div className="flex min-w-0 items-center px-3 py-2.5 @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
+        {/* 2026-09-04 feedback (ronda 4) — "que cuando pasas por arriba la
+                      celda a seleccionar se pinta" + "lo de adentro
+                      seleccionado aparezca con la cajita como lo hace
+                      kayak": cada celda pinta un fondo suave en hover
+                      (`hover:bg-muted/60`), y el valor deja de flotar suelto
+                      sobre el lienzo del segmento — vuelve a tener su propia
+                      caja (`rounded-md border bg-card shadow-sm`), como el
+                      valor de una currency/país sí muestra kayak.com. */}
+        <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
           <FieldLight label={t("comparator.field.amount")}>
             <input
               type="number"
@@ -1743,7 +1754,7 @@ export function ComparatorSection({
               placeholder="1000"
               onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
               aria-label={t("comparator.field.amount")}
-              className="w-full min-w-0 bg-transparent text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+              className="w-full min-w-0 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold tabular-nums text-foreground shadow-sm transition-colors placeholder:text-muted-foreground hover:border-foreground/40 focus:border-transparent focus:outline-none focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
@@ -1755,7 +1766,7 @@ export function ComparatorSection({
                       de ancho fijo, solo un valor corto. Separada del
                       segmento anterior por hairline (`border-t` en mobile,
                       `border-l` en desktop), sin chip propio. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           {/* Label corto ("Currency", key ya existente y traducida a los
                         20 idiomas vía comparator.business.request.currency —
                         no una key nueva) en vez de "Source Currency" completo:
@@ -1772,7 +1783,7 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.sourceCurrency")}
               compactLabel
-              triggerClassName="h-auto w-full gap-0.5 rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
+              triggerClassName="h-auto w-full gap-0.5 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
@@ -1783,7 +1794,7 @@ export function ComparatorSection({
                       ya se usa acá (es el mismo control que el picker de
                       origen/destino de un buscador de vuelos), en su propio
                       segmento sin chip, separado por hairline. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.field.sourceCountry")}>
             <CountryCombobox
               value={sendingCountry}
@@ -1793,7 +1804,7 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.sourceCountry")}
               hideSecondary
-              triggerClassName="h-auto w-full rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
+              triggerClassName="h-auto w-full rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
@@ -1819,7 +1830,7 @@ export function ComparatorSection({
 
         {/* Segmento 4 — país destino, mismo comportamiento de aeropuerto
                       que el Segmento 3, mismo hairline de separación. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.field.youReceive")} emphasizeLabel={!receivingCountry}>
             <CountryCombobox
               value={receivingCountry}
@@ -1829,8 +1840,10 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.targetCountry")}
               hideSecondary
-              triggerClassName={`h-auto w-full rounded-none border-0 bg-transparent px-0 text-metric font-bold shadow-none hover:text-brand-cta focus:ring-0 ${
-                receivingCountry ? "text-foreground" : "text-accent-text"
+              triggerClassName={`h-auto w-full rounded-md border bg-card px-2 py-1 text-metric font-bold shadow-sm focus:ring-1 focus:ring-ring/40 ${
+                receivingCountry
+                  ? "border-border text-foreground hover:border-foreground/40"
+                  : "border-accent-text/40 text-accent-text hover:border-accent-text"
               }`}
             />
           </FieldLight>
@@ -1838,7 +1851,7 @@ export function ComparatorSection({
 
         {/* Segmento 5 — moneda de destino, misma caja angosta tipo fecha
                       que el Segmento 2, mismo hairline de separación. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.business.request.currency")}>
             <CurrencyCombobox
               value={to}
@@ -1848,7 +1861,7 @@ export function ComparatorSection({
               emptyLabel={t("comparator.combobox.empty")}
               ariaLabel={t("comparator.field.targetCurrency")}
               compactLabel
-              triggerClassName="h-auto w-full gap-0.5 rounded-none border-0 bg-transparent px-0 text-metric font-bold text-foreground shadow-none hover:text-brand-cta focus:ring-0"
+              triggerClassName="h-auto w-full gap-0.5 rounded-md border border-border bg-card px-2 py-1 text-metric font-bold text-foreground shadow-sm hover:border-foreground/40 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
         </div>
