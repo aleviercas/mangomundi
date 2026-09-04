@@ -2,6 +2,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import ReactMarkdown from "react-markdown";
 import {
   ArrowRight,
@@ -1834,7 +1835,28 @@ export function ComparatorSection({
                       per the bar's segment order), just square now instead
                       of `rounded-full`, and on the same brand-cta accent
                       the widget's swap uses instead of a neutral
-                      border/muted-foreground treatment. */}
+                      border/muted-foreground treatment.
+                      2026-09-04 (ronda 6, cont.) — "el cuadrado de flecha
+                      ida y vuelta va en el medio de los dos y quedo en el
+                      costado de from" + "fijate las lineas divisorias como
+                      se comportan y como lo hace kayak": first fix here
+                      (adding this segment's own hairline, matching every
+                      other segment) was the wrong read — checked live
+                      against kayak.com's real flight search DOM
+                      (`.N4mz-location-group`, `getComputedStyle` on every
+                      `.J_T2-field-group` in the row): kayak's own
+                      origin+swap+destination cluster is ONE undivided
+                      group internally (`J_T2-mod-divider-inner` — no
+                      hairline between the swap control and either field
+                      that flanks it); the hairlines only wrap the OUTSIDE
+                      of that whole 3-part cluster, same as the currency
+                      segments still do here today. A hairline on just one
+                      side of swap is what made it read as glued to
+                      "from" specifically — the fix is to have NO hairline
+                      on either side, so origin field / swap / destination
+                      field read as one continuous piece and the swap
+                      control sits centered in it, exactly like kayak's
+                      own. */}
         <div className="flex items-center justify-center py-0.5 @2xl:w-9 @2xl:py-0">
           <button
             type="button"
@@ -1846,9 +1868,15 @@ export function ComparatorSection({
           </button>
         </div>
 
-        {/* Segmento 4 — país destino, mismo comportamiento de aeropuerto
-                      que el Segmento 3, mismo hairline de separación. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        {/* Segmento 4 — país destino. 2026-09-04 (ronda 6, cont.) — no
+                      lleva hairline propia: junto con el Segmento 3 y el
+                      swap de arriba forma un único cluster sin divisiones
+                      internas, igual que el `.N4mz-location-group` real de
+                      kayak (ver comentario del swap) — el hairline que
+                      separa este cluster del resto de la barra sigue
+                      estando, pero AFUERA de él (antes del Segmento 3 y
+                      después de este, en el Segmento 5, sin tocar). */}
+        <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:py-0">
           <FieldLight
             label={t("comparator.field.youReceive")}
             emphasizeLabel={!receivingCountry}
@@ -2110,6 +2138,19 @@ export function ComparatorSection({
                       "never resizes on selection, never clips a locale's
                       placeholder" fixes still apply here. */}
                   <div className="relative">
+                    {/* 2026-09-04 feedback (ronda 6, cont.) — "organizar
+                        mejor el widget los tamanos de los campos": these
+                        two country triggers went `triggerIconOnly` back on
+                        2026-09-01 (closed trigger = just the flag, no text)
+                        but kept the `w-20` (80px) box sized for the OLDER
+                        flag+text trigger they replaced — leaving ~55px of
+                        dead space around a ~20px flag glyph in a frame
+                        that's only 360px wide to begin with, at the direct
+                        expense of the amount input next to it. `w-11`
+                        (44px) is a real touch target for the flag button
+                        without carrying that dead weight; the freed width
+                        goes straight to the amount field via its own
+                        `flex-1`. */}
                     <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
                       <span className="text-badge font-semibold text-muted-foreground">
                         {t("comparator.field.amount")}
@@ -2124,7 +2165,7 @@ export function ComparatorSection({
                           ariaLabel={t("comparator.field.sourceCountry")}
                           triggerIconOnly
                           hideChevron
-                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                         <input
                           type="number"
@@ -2179,7 +2220,7 @@ export function ComparatorSection({
                           ariaLabel={t("comparator.field.targetCountry")}
                           triggerIconOnly
                           hideChevron
-                          triggerClassName="h-full w-20 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                         />
                         <CurrencyCombobox
                           value={to}
@@ -3513,6 +3554,22 @@ function FloatingAgent(p: FloatingAgentProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const panelLabelId = "ai-agent-title";
 
+  // 2026-09-04 feedback (ronda 6, cont.) — "el mangomundi ai tiene que
+  // estar arriva a la izquierda como el de kayak": Header.tsx now renders
+  // an empty `#header-ai-slot` right after the logo, in its own normal
+  // flex flow (see that file's own comment for why — kayak's real DOM has
+  // its "Ask AI" living there, not floating). Grabbed via plain DOM query
+  // instead of a ref/context because Header and ComparatorSection are
+  // siblings with no shared parent that owns both — a portal target
+  // that's just "the element with this id" is the simplest thing that
+  // works without threading a ref through the page shell. Runs once after
+  // mount (both components mount together on every route that renders
+  // this comparator), not in a loop — the slot doesn't come and go.
+  const [headerSlot, setHeaderSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setHeaderSlot(document.getElementById("header-ai-slot"));
+  }, []);
+
   // Escape closes; auto-focus the composer on open.
   useEffect(() => {
     if (collapsed) return;
@@ -3530,49 +3587,73 @@ function FloatingAgent(p: FloatingAgentProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [collapsed, onToggle]);
 
+  // 2026-09-04 feedback (ronda 6, cont.) — "ver como se despliega el ask ai
+  // a la izquierda, asi mangomundi lo hace igual en el navegador e igual en
+  // mobile": the collapsed trigger no longer lives in its own fixed-position
+  // div at all — it's portaled (via `headerSlot` above) straight into
+  // Header.tsx's `#header-ai-slot`, right after the logo, so it sits inside
+  // that header's own normal flex row (identical behavior at every
+  // viewport, mobile included, for free — no separate mobile positioning
+  // logic to keep in sync). Restyled to match: kayak's real "Ask AI" is a
+  // light bordered pill sitting flush in a white header, not a bold
+  // solid-color CTA button floating over the page, so this drops the old
+  // `btn-cta` treatment for a subtle border/bg pairing plus a small
+  // accent-colored icon. The divider (kayak's own `.NgeD-divider`, verified
+  // live) travels with the button inside the portal — not a separate
+  // permanently-rendered element in Header.tsx — so a route that mounts
+  // Header without ComparatorSection (i.e. without this component) never
+  // shows a divider with nothing next to it.
+  const collapsedTrigger = (
+    <>
+      <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
+      <button
+        ref={toggleBtnRef}
+        type="button"
+        onClick={() => onToggle(false)}
+        aria-label={t("comparator.copilot.agent")}
+        aria-expanded={false}
+        aria-haspopup="dialog"
+        aria-controls="ai-agent-panel"
+        className="group relative flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-foreground transition hover:border-foreground/30 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      >
+        <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
+        <span className="text-meta font-semibold leading-none">
+          {t("comparator.copilot.agent")}
+        </span>
+        {hasNewResult && (
+          <span
+            aria-label={t("agent.newResult")}
+            className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
+          />
+        )}
+      </button>
+    </>
+  );
+
+  if (collapsed) {
+    // `headerSlot` resolves on mount (the effect above runs essentially
+    // immediately after first paint) — null only for the first frame, or on
+    // the off chance Header.tsx's slot isn't in the DOM at all. Rendering
+    // nothing for that one frame beats a fixed-position fallback pill that
+    // would flash somewhere else on-screen and then jump into the header a
+    // moment later.
+    return headerSlot ? createPortal(collapsedTrigger, headerSlot) : null;
+  }
+
   return (
-    // 2026-09-04 feedback (ronda 6) — "la pestana del asistente ai se puede
-    // poner arriba como hace kayak": kayak's "Ask AI" lives as a compact
-    // pill up in the header area, not docked mid-edge like this used to be
-    // (a vertically-centered vertical-text tab, more like a browser
-    // sidebar than a page control). Same component, same state/props —
-    // only the anchor moves, from `top-1/2 -translate-y-1/2` (edge-docked)
-    // to a fixed spot just under the 66px header (`top-[76px]`), and the
-    // collapsed trigger becomes a horizontal rounded pill (icon + label in
-    // a row, not stacked vertical-rl text) to read as a header-style button
-    // rather than an edge tab.
-    <div className="fixed right-4 top-[76px] z-[60] sm:right-6">
-      {collapsed ? (
-        <button
-          ref={toggleBtnRef}
-          type="button"
-          onClick={() => onToggle(false)}
-          aria-label={t("comparator.copilot.agent")}
-          aria-expanded={false}
-          aria-haspopup="dialog"
-          aria-controls="ai-agent-panel"
-          className="btn-cta group relative flex items-center gap-2 rounded-full py-2.5 pl-3.5 pr-4 shadow-2xl ring-1 ring-foreground/10 transition focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-        >
-          <Sparkle className="h-4 w-4 shrink-0" aria-hidden />
-          <span className="text-meta font-semibold leading-none">
-            {t("comparator.copilot.agent")}
-          </span>
-          {hasNewResult && (
-            <span
-              aria-label={t("agent.newResult")}
-              className="absolute -left-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-success ring-2 ring-background"
-            />
-          )}
-        </button>
-      ) : (
-        <div
-          id="ai-agent-panel"
-          role="dialog"
-          aria-modal="false"
-          aria-labelledby={panelLabelId}
-          style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
-          className="flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl shadow-2xl"
-        >
+    // Open panel now originates from the left, under the header, matching
+    // where its trigger actually lives (top-left, next to the logo) instead
+    // of the old top-right anchor — see this component's own doc comment
+    // above for the full "ask ai a la izquierda" context.
+    <div className="fixed left-4 top-[76px] z-[60] sm:left-6">
+      <div
+        id="ai-agent-panel"
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby={panelLabelId}
+        style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
+        className="flex h-[min(560px,80vh)] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl shadow-2xl"
+      >
           <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
             <span
               id={panelLabelId}
@@ -3817,7 +3898,6 @@ function FloatingAgent(p: FloatingAgentProps) {
             </p>
           </div>
         </div>
-      )}
     </div>
   );
 }
