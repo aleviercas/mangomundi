@@ -2,6 +2,7 @@ import { useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Wordmark, BrandMark } from "@/components/Wordmark";
+import { LangSwitcher } from "@/components/LangSwitcher";
 import { HEADER_NAV } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
@@ -203,7 +204,7 @@ export function Header() {
             aria-hidden="true"
           />
           <nav
-            className="fixed bottom-0 left-0 top-[66px] z-50 w-[280px] max-w-[80vw] overflow-y-auto border-r border-border bg-card px-3 py-4 shadow-2xl"
+            className="fixed bottom-0 left-0 top-[66px] z-50 flex w-[280px] max-w-[80vw] flex-col overflow-y-auto border-r border-border bg-card px-3 py-4 shadow-2xl"
             aria-label={t("header.mainAriaLabel")}
           >
             <ul className="space-y-1">
@@ -220,6 +221,24 @@ export function Header() {
                 </li>
               ))}
             </ul>
+
+            {/* 2026-09-04 feedback (ronda 7) — "poner la banderita del
+                selector de idioma tambien en el menu de la izquierda como
+                hace kayak": kayak.com repite su selector de idioma/región
+                (banderita + código) DENTRO del panel que se desliza del ☰,
+                no sólo en el footer — mismo control, un segundo lugar
+                donde encontrarlo. El de acá se queda (ronda 4, ver su
+                propio comment) — éste es un acceso adicional, no un
+                reemplazo. `variant="pill"` (banderita + código en una
+                píldora con borde) es el mismo tratamiento que ya usa este
+                archivo en otros lugares, sólo que ahora vive al pie de la
+                lista de navegación, separado por un hairline propio;
+                `direction="up"` porque el drawer llega hasta el borde
+                inferior del viewport — un dropdown "down" ahí se saldría
+                de pantalla. */}
+            <div className="mt-auto border-t border-border pt-3">
+              <LangSwitcher variant="pill" direction="up" />
+            </div>
           </nav>
         </>
       )}
