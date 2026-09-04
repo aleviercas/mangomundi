@@ -90,8 +90,8 @@ const cardClassName =
  * "Today's routes, already priced" (design/AJUSTES-1.md §E) — the one
  * genuinely new section in this round of adjustments. Shown below the
  * comparator only while no search has run yet (same `hasResult` gate
- * HomePageBody uses), so the home page has indexable, priced content
- * without anyone typing anything.
+ * HeroSection's compact mode already uses in HomePageBody), so the home
+ * page has indexable, priced content without anyone typing anything.
  *
  * Real data only: useExclusiveCorridors reuses compareProviders itself
  * (see fx.functions.ts's getExclusiveCorridors) over a short candidate
