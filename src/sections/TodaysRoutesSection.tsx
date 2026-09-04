@@ -19,7 +19,7 @@ type DisplayCorridor = ExclusiveCorridor & {
 // arrives pre-rotated and sliced to at most 4. Doing the Math.random() pick
 // here on the client used to cause a real hydration mismatch: SSR and the
 // client hydration pass each rolled a different offset for the same render,
-// so React discarded and rebuilt the whole section on load. This hook only
+// so React discarded and rebuilt the whole section on load. This hook now
 // only adds the (deterministic, SSR-safe) country lookup for the flag icons.
 function useDisplayCorridors(corridors: ExclusiveCorridor[] | undefined): DisplayCorridor[] {
   return useMemo(() => {
