@@ -1,15 +1,64 @@
-/** SVG flag via the flag-icons CSS classes. Emoji flags (regional-indicator
- *  pairs) render as plain letters on Windows Chrome/Edge, so the selects use
- *  real SVGs. Accepts either a 2-letter ISO-3166 code or a flag emoji (the
- *  code is derived by reversing the regional indicators — works for 🇪🇺 too,
- *  flag-icons ships fi-eu). */
+// 2026-08-31 feedback — flags "tardan en cargar / se ven mal": the previous
+// version rendered a `<span class="fi fi-xx">` whose flag is a CSS
+// background-image. Background-images aren't found by the browser's preload
+// scanner (only real <img>/<link> tags are) — they're only requested once
+// layout is computed, well after the rest of the page has started painting,
+// which is exactly what makes a flag "pop in" late. Rendering a real <img>
+// instead lets the browser discover and fetch it immediately while still
+// parsing the HTML, same network cost per flag but requested far earlier.
+// Each country's SVG is still its own on-demand file (flag-icons ships one
+// per country) — see vite.config.ts's own note on why these aren't inlined
+// into the CSS bundle (would balloon it to ~550kB render-blocking).
+const FLAG_URLS = import.meta.glob("/node_modules/flag-icons/flags/4x3/*.svg", {
+  eager: true,
+  query: "?url",
+  import: "default",
+}) as Record<string, string>;
+
+const FLAG_BY_CODE: Record<string, string> = {};
+for (const [path, url] of Object.entries(FLAG_URLS)) {
+  const code = path
+    .split("/")
+    .pop()
+    ?.replace(/\.svg$/, "");
+  if (code) FLAG_BY_CODE[code] = url;
+}
+
+/** 2026-08-31 feedback (twice) — "las banderitas... tienen un delay" when a
+ *  country dropdown first opens: Radix's Popover doesn't mount its content
+ *  (so none of the list's <img> tags exist) until the first open, so
+ *  nothing asks the browser for those ~195 SVGs before that moment — the
+ *  <img> switch above only fixed the flags already visible on the page (the
+ *  closed trigger), not ones still hidden inside an unopened list.
+ *
+ *  First attempt at a fix was a JS `new Image()` warm-up run from a
+ *  `useEffect` on idle (__root.tsx) — didn't move the needle enough,
+ *  because it can't start until React has hydrated and the browser has
+ *  gone idle, well after the page's own critical requests. Real
+ *  `<link rel="prefetch">` tags (this list, consumed by __root.tsx's own
+ *  `head()`) get discovered by the browser's preload scanner while it's
+ *  still parsing the initial HTML — before any JS runs at all — and
+ *  `prefetch` (vs. `preload`) tells the browser these are low-priority,
+ *  fetch-when-there's-spare-bandwidth hints that won't compete with
+ *  fonts/CSS/JS for the connection. */
+export const ALL_FLAG_URLS = Object.values(FLAG_BY_CODE);
+
+/** Accepts either a 2-letter ISO-3166 code or a flag emoji (the code is
+ *  derived by reversing the regional indicators — works for 🇪🇺 too,
+ *  flag-icons ships eu.svg). */
 export function FlagIcon({ country }: { country: string }) {
-  const code = country.length === 2 ? country : countryFromFlagEmoji(country);
-  if (!code) return <span className="text-base leading-none">{country}</span>;
+  const code = (country.length === 2 ? country : countryFromFlagEmoji(country))?.toLowerCase();
+  const src = code ? FLAG_BY_CODE[code] : undefined;
+  if (!src) return <span className="text-base leading-none">{country}</span>;
   return (
-    <span
-      className={`fi fi-${code.toLowerCase()} rounded-[2px]`}
-      style={{ fontSize: "0.9em" }}
+    <img
+      src={src}
+      alt=""
+      width={20}
+      height={15}
+      loading="eager"
+      decoding="async"
+      className="inline-block h-[0.9em] w-[1.2em] rounded-[2px] object-cover align-middle"
       aria-hidden="true"
     />
   );

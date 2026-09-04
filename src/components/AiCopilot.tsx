@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Info,
   MapPin,
@@ -81,10 +82,28 @@ interface AiCopilotProps {
   className?: string;
 }
 
+// design/Mangomundi 4 - Final.dc.html (line 335-338) — the docked agent
+// card shows 4 quick-action rows, not the full list. 2026-08-30 feedback:
+// "que aparezcan solo algunas opciones al principio y diga mas opciones
+// porque si aparece todo con el scroll queda mal y que quede espacio para
+// escribir" — all 9 DEFAULT_WIZARD_ACTIONS rendering unconditionally ate
+// the panel's scroll space and pushed the chat input further from view.
+// Capped here, not by trimming DEFAULT_WIZARD_ACTIONS itself (every
+// caller — welcome screen and "more questions" after a turn — still has
+// all 9 available on request).
+const COLLAPSED_ACTION_COUNT = 4;
+
 /**
  * AiCopilot — Wizard-style action grid. Acts as the entry surface for the
  * floating AI Agent so users get guided suggestions (low token burn) before
  * free-form chat.
+ */
+/**
+ * Suggested-question chips (design/AJUSTES-1.md §D) — one per line, full
+ * width, arrow on the right. Only ever rendered inside FloatingAgent's
+ * dark #241C16 panel (its only consumer — it no longer has a light "docked"
+ * mode, see FloatingAgent's own comment), so the colors here are that
+ * panel's literal palette, not a general-purpose light/dark variant.
  */
 export function AiCopilot({
   actions = DEFAULT_WIZARD_ACTIONS,
@@ -93,27 +112,38 @@ export function AiCopilot({
   className = "",
 }: AiCopilotProps) {
   const { t } = useI18n();
+  const [expanded, setExpanded] = useState(false);
+  const hasMore = actions.length > COLLAPSED_ACTION_COUNT;
+  const shown = expanded ? actions : actions.slice(0, COLLAPSED_ACTION_COUNT);
   return (
     <div
-      className={`grid grid-cols-1 gap-1.5 sm:grid-cols-2 ${className}`}
+      className={`flex flex-col gap-1.5 ${className}`}
       role="group"
       aria-label={t("wizard.quickActionsAria")}
     >
-      {actions.map((a) => {
-        const Icon = a.icon;
-        return (
-          <button
-            key={a.id}
-            type="button"
-            onClick={() => onAction(a)}
-            disabled={disabled}
-            className="inline-flex items-center gap-2 rounded-md border border-border bg-card px-2.5 py-2 text-left text-xs font-medium text-foreground transition hover:border-foreground/30 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
-            <span className="truncate">{t(a.label)}</span>
-          </button>
-        );
-      })}
+      {shown.map((a) => (
+        <button
+          key={a.id}
+          type="button"
+          onClick={() => onAction(a)}
+          disabled={disabled}
+          className="flex w-full items-center justify-between gap-2 rounded-[10px] border border-white/[.12] bg-white/[.07] px-[11px] py-[9px] text-left text-[12px] font-semibold text-[#F1EBE4] transition hover:bg-white/[.1] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
+        >
+          <span className="truncate">{t(a.label)}</span>
+          <span className="shrink-0 text-[#FF8A6B]" aria-hidden>
+            →
+          </span>
+        </button>
+      ))}
+      {hasMore && !expanded && (
+        <button
+          type="button"
+          onClick={() => setExpanded(true)}
+          className="w-full rounded-[10px] px-[11px] py-[7px] text-center text-[11.5px] font-semibold text-[#F1EBE4]/70 transition hover:text-[#F1EBE4] focus:outline-none focus:ring-2 focus:ring-white/30"
+        >
+          {t("wizard.moreOptions")}
+        </button>
+      )}
     </div>
   );
 }

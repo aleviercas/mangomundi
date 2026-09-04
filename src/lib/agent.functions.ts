@@ -6,19 +6,55 @@ const LeadInput = z.object({
   email: z.string().email().max(255),
   featureSource: z.string().min(1).max(120),
   consent: z.literal(true),
+  // Optional route context — populated by callers that have one (e.g. the
+  // comparator's rate-alert card), so a captured lead isn't just an email
+  // with no idea which corridor/rate the person actually cares about.
+  // Same columns captureBusinessLead already writes on this same table.
+  fromCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/)
+    .optional(),
+  toCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/)
+    .optional(),
+  sendingCountry: z.string().length(2).optional(),
+  receivingCountry: z.string().length(2).optional(),
+  amount: z.number().positive().finite().optional(),
 });
 
 const BusinessLeadInput = z.object({
   email: z.string().trim().email().max(255),
   monthlyVolume: z.number().positive().finite().max(1e15),
-  sector: z.string().trim().min(2).max(120),
-  fromCurrency: z.string().length(3).regex(/^[A-Z]{3}$/),
-  toCurrency: z.string().length(3).regex(/^[A-Z]{3}$/),
+  // Optional: the "Your request" panel (BusinessRequestPanel) doesn't ask
+  // for an industry sector — only the older chat-wizard flow does. Nullable
+  // on enterprise_leads already; no default fabricated here when absent.
+  sector: z.string().trim().min(2).max(120).optional(),
+  fromCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
+  toCurrency: z
+    .string()
+    .length(3)
+    .regex(/^[A-Z]{3}$/),
   sendingCountry: z.string().length(2),
   receivingCountry: z.string().length(2),
   locale: z.string().min(2).max(5),
   consent: z.literal(true),
   topProviders: z.array(z.string().trim().min(1).max(120)).max(2).default([]),
+  // "Your request" panel (design/Mangomundi 4 - Final.dc.html line 526-560)
+  // — the broker slugs the user explicitly added via "Add to request",
+  // distinct from topProviders above (the AI wizard's own suggestions).
+  // Optional: the AI-wizard flow that predates this panel never sends them.
+  contractType: z.string().trim().max(60).optional(),
+  frequency: z.string().trim().max(60).optional(),
+  selectedProviderSlugs: z.array(z.string().trim().min(1).max(120)).max(20).default([]),
+  // Distinguishes which UI produced this lead (defaults to the original
+  // chat-wizard flow's value, so existing callers don't need to change).
+  featureSource: z.string().trim().min(1).max(120).default("comparator_conversational_agent"),
 });
 
 const InquiryInput = z.object({
@@ -38,10 +74,93 @@ export const captureEnterpriseLead = createServerFn({ method: "POST" })
       status: "beta_pending",
       privacy_consent: true,
       consent_timestamp: new Date().toISOString(),
+      ...(data.fromCurrency ? { from_currency: data.fromCurrency } : {}),
+      ...(data.toCurrency ? { to_currency: data.toCurrency } : {}),
+      ...(data.sendingCountry ? { sending_country: data.sendingCountry } : {}),
+      ...(data.receivingCountry ? { receiving_country: data.receivingCountry } : {}),
+      ...(data.amount ? { amount: data.amount } : {}),
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
+    // 2026-08-31 feedback — "qué hace el sitio cuando el usuario envía el
+    // mail de set alert": until now, nothing after this insert — no
+    // internal heads-up (unlike captureBusinessLead's own notification),
+    // and no automated rate-checking job exists anywhere in this codebase
+    // to actually honor comparator.rateAlert.success's promise ("we'll
+    // email you when this rate improves"). This at least gets a human
+    // notified so a rate-alert (or any other beta-waitlist) lead can be
+    // followed up on manually — same best-effort pattern as the business
+    // lead notification, never blocks the response.
+    const routeLine =
+      data.fromCurrency && data.toCurrency
+        ? `<p><strong>Route:</strong> ${data.fromCurrency} → ${data.toCurrency}${
+            data.sendingCountry && data.receivingCountry
+              ? ` (${data.sendingCountry} → ${data.receivingCountry})`
+              : ""
+          }</p>`
+        : "";
+    await sendLeadNotificationEmail({
+      subject: `New lead — ${data.featureSource} (${data.email})`,
+      html: `
+        <h2>New ${data.featureSource} lead</h2>
+        <p><strong>Email:</strong> ${data.email}</p>
+        ${routeLine}
+        ${data.amount ? `<p><strong>Amount:</strong> ${data.amount.toLocaleString()}</p>` : ""}
+      `,
+    });
     return { ok: true };
   });
+
+/** 2026-09-02 feedback — "una vez que me llega el mail hay que contestarle
+ *  con un mail al cliente que recibimos el pedido y que responderemos a la
+ *  brevedad" — then, same day, corrected: "mejor que el mail automático no
+ *  se lo mande al cliente directamente sino que me lo mandas a mi para
+ *  enviarselo al cliente asi no es automatico y yo lo veo antes". So this
+ *  is NOT sent to the customer — it's the drafted client-facing copy,
+ *  delivered to the internal notification address (same recipient as the
+ *  lead notification below) for Alejandro to review and forward himself.
+ *  EN/ES only (the site is 20-language wide, but this is a transactional
+ *  email with no access to the React i18n context — full parity would
+ *  mean hand-writing 20 templates for a first version of a feature
+ *  explicitly scoped as "el mail automático" plus "el plan" for the rest,
+ *  not a full rollout). Falls back to English for any other locale. */
+function clientConfirmationDraft(
+  locale: string,
+  requestId: string,
+  from: string,
+  to: string,
+  clientEmail: string,
+) {
+  const body = locale.toLowerCase().startsWith("es")
+    ? {
+        subject: `[Borrador — reenviar a ${clientEmail}] Recibimos tu pedido — ${requestId}`,
+        clientHtml: `
+          <p>Hola,</p>
+          <p>Recibimos tu pedido de cotización FX (${from} → ${to}) — referencia <strong>${requestId}</strong>.</p>
+          <p>Nuestro equipo lo va a revisar y te va a responder a la brevedad con las opciones de los brokers que elegiste.</p>
+          <p>Gracias,<br/>El equipo de mangomundi</p>
+        `,
+      }
+    : {
+        subject: `[Draft — forward to ${clientEmail}] We received your request — ${requestId}`,
+        clientHtml: `
+          <p>Hi,</p>
+          <p>We've received your FX quote request (${from} → ${to}) — reference <strong>${requestId}</strong>.</p>
+          <p>Our team will review it and get back to you shortly with quotes from the brokers you selected.</p>
+          <p>Thanks,<br/>The mangomundi team</p>
+        `,
+      };
+  return {
+    subject: body.subject,
+    html: `
+      <p style="color:#888">This is a draft — not sent to the customer. Copy/forward the section below to <strong>${clientEmail}</strong>.</p>
+      <hr/>
+      ${body.clientHtml}
+    `,
+  };
+}
 
 export const captureBusinessLead = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => BusinessLeadInput.parse(input))
@@ -51,22 +170,30 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
     const requestId = `B2B-${Date.now().toString(36).toUpperCase()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
     const { error } = await supabaseAdmin.from("enterprise_leads").insert({
       email: data.email,
-      feature_source: "comparator_conversational_agent",
+      feature_source: data.featureSource,
       status: "pending",
       request_id: requestId,
       from_currency: data.fromCurrency,
       to_currency: data.toCurrency,
       amount: data.monthlyVolume,
       monthly_volume: data.monthlyVolume,
-      sector: data.sector,
       segment: "business",
       sending_country: data.sendingCountry,
       receiving_country: data.receivingCountry,
       locale: data.locale,
       privacy_consent: true,
       consent_timestamp: consentAt,
+      ...(data.sector ? { sector: data.sector } : {}),
+      ...(data.contractType ? { contract_type: data.contractType } : {}),
+      ...(data.frequency ? { frequency: data.frequency } : {}),
+      ...(data.selectedProviderSlugs.length
+        ? { selected_provider_slugs: data.selectedProviderSlugs }
+        : {}),
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
 
     const webhookUrl = process.env.RFQ_WEBHOOK_URL;
     if (webhookUrl) {
@@ -86,6 +213,9 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
             receiving_country: data.receivingCountry,
             consent_at: consentAt,
             top_providers: data.topProviders,
+            contract_type: data.contractType ?? null,
+            frequency: data.frequency ?? null,
+            selected_provider_slugs: data.selectedProviderSlugs,
           }),
         });
       } catch (error) {
@@ -102,14 +232,33 @@ export const captureBusinessLead = createServerFn({ method: "POST" })
         <p><strong>Request ID:</strong> ${requestId}</p>
         <p><strong>Email:</strong> ${data.email}</p>
         <p><strong>Monthly volume:</strong> ${data.monthlyVolume.toLocaleString()} ${data.fromCurrency}</p>
-        <p><strong>Sector:</strong> ${data.sector}</p>
+        <p><strong>Sector:</strong> ${data.sector ?? "—"}</p>
         <p><strong>Route:</strong> ${data.fromCurrency} → ${data.toCurrency} (${data.sendingCountry} → ${data.receivingCountry})</p>
         <p><strong>Providers suggested to the user:</strong> ${data.topProviders.join(", ") || "—"}</p>
+        <p><strong>Added to request:</strong> ${data.selectedProviderSlugs.join(", ") || "—"}</p>
+        <p><strong>Contract type:</strong> ${data.contractType ?? "—"}</p>
+        <p><strong>Frequency:</strong> ${data.frequency ?? "—"}</p>
         <p><strong>Locale:</strong> ${data.locale}</p>
         <p><strong>Consent recorded at:</strong> ${consentAt}</p>
       `,
     });
-    return { ok: true, requestId, emailQueued };
+    // Client-confirmation DRAFT — see clientConfirmationDraft's own comment:
+    // goes to the internal address (same as the lead notification above),
+    // never straight to the customer. Alejandro reviews and forwards it
+    // himself. Same best-effort contract: never blocks the response, the
+    // lead is already saved above regardless of whether this send succeeds.
+    const draft = clientConfirmationDraft(
+      data.locale,
+      requestId,
+      data.fromCurrency,
+      data.toCurrency,
+      data.email,
+    );
+    const clientEmailQueued = await sendLeadNotificationEmail({
+      subject: draft.subject,
+      html: draft.html,
+    });
+    return { ok: true, requestId, emailQueued, clientEmailQueued };
   });
 
 export const captureGeneralInquiry = createServerFn({ method: "POST" })
@@ -123,6 +272,9 @@ export const captureGeneralInquiry = createServerFn({ method: "POST" })
       message: data.message,
       source: "about_contact_form",
     });
-    if (error) { console.error("[server-fn]", error); throw new Error("An unexpected error occurred. Please try again."); }
+    if (error) {
+      console.error("[server-fn]", error);
+      throw new Error("An unexpected error occurred. Please try again.");
+    }
     return { ok: true };
   });

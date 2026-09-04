@@ -15,6 +15,7 @@ import { extractFaqPairs } from "@/lib/faq.functions";
 import { useI18n } from "@/lib/i18n";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { BrandLogo } from "@/components/BrandLogo";
+import { BrandMark } from "@/components/Wordmark";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
@@ -99,7 +100,7 @@ export const Route = createFileRoute("/blog_/$slug")({
             name: "Mangomundi",
             logo: {
               "@type": "ImageObject",
-              url: `${SITE_URL}/og-image.jpg`,
+              url: `${SITE_URL}/brand/icon-512.png`,
             },
           },
           mainEntityOfPage: url,
@@ -370,13 +371,45 @@ function BlogPostPage() {
 
   return (
     <article className="bg-background">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 pt-20 pb-24">
-        <Link
-          to="/blog"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8"
-        >
-          <ArrowLeft className="h-4 w-4" /> {t("blog.backShort")}
-        </Link>
+      {/* 2026-09-02 feedback — "el ícono se mueve o está en distinta
+          posición" vs. el listado de /blog: acá el padding-top era pt-20
+          (80px) fijo, el listado usaba py-16 sm:py-20 (64px en mobile) —
+          coincidían solo a partir de sm. pt-28 (112px) unifica con el
+          listado (arreglado junto con esto) y con el resto del sitio
+          (/about, /widget usan el mismo valor para despejar el header
+          fijo de 66px, Header.tsx).
+          2026-09-03 feedback — same complaint again, still real above the
+          `sm` breakpoint that first fix didn't touch: this wrapper also had
+          `lg:px-8` (32px inset at ≥1024px) that blog.tsx's own listing
+          wrapper never had (`px-4 sm:px-6`, no lg: step) — both are
+          `mx-auto max-w-3xl`, so the box itself lands in the same spot on
+          both pages, but that extra inset shifted this page's actual
+          content (BrandMark included, at this row's right edge) inward
+          relative to the listing at any wide viewport. Dropped to match
+          `px-4 sm:px-6` exactly.
+          2026-09-03 feedback (second round) — "queda mucho espacio en
+          blanco arriba de la pagina": pt-28 (112px) was chosen to match
+          /about and /widget's own header-clearing padding, but those two
+          pages sit on a dark background image right under the header that
+          visually absorbs that space — this page (plain bg-background) and
+          the listing above it read as genuinely too much blank space with
+          the same number. pt-20 (80px, this page's own value before that
+          unification) still clears the 66px fixed header with margin. */}
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-20 pb-24">
+        <div className="mb-8 flex items-center justify-between">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> {t("blog.backShort")}
+          </Link>
+          {/* 2026-08-30 feedback (fourth round) — a small brand mark on every
+              post, same icon the widget badge uses (BrandMark, Wordmark.tsx),
+              not the full wordmark — this is a watermark, not navigation. */}
+          <Link to="/" aria-label={t("header.homeAriaLabel")}>
+            <BrandMark />
+          </Link>
+        </div>
 
         <div className="flex items-center gap-2 text-[10px] uppercase tracking-wider text-muted-foreground mb-4">
           {/* Two separate badges for "both", not one combined "Both" label
@@ -438,10 +471,23 @@ function BlogPostPage() {
 
         <div className="mt-16 rounded-2xl border border-border bg-card p-6 text-center">
           <p className="text-sm text-muted-foreground">{t("blog.cta.prompt")}</p>
+          {/* 2026-08-31 feedback — the mangomundi "m" mark on the button, and
+              the destination now follows the post's own audience: a
+              business post sends you to the business comparator, not the
+              individual one (post.audience is already "business" | "retail"
+              | "both" — "both" falls back to the individual comparator,
+              same as a post with no stronger business signal).
+              2026-09-03/04 feedback — "el logo esta un poquito abajo" /
+              "el icono queda un poco desalineado": a `-mt-1` nudge on
+              `items-center` wasn't enough. Switched to `items-baseline`
+              (same fix as about.tsx's identical button, see its comment for
+              the pixel-scan verification) — aligns both children on their
+              real text baseline instead of centering mismatched boxes. */}
           <Link
-            to="/"
-            className="mt-3 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+            to={post.audience === "business" ? "/business" : "/"}
+            className="mt-3 inline-flex items-baseline gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
+            <BrandMark tone="light" />
             {t("blog.cta.button")}
           </Link>
         </div>

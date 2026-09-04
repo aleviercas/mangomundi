@@ -1,8 +1,9 @@
+import type { MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
-import { HOME_NAV } from "@/config/nav";
-import { useI18n } from "@/lib/i18n";
 import { LangSwitcher } from "@/components/LangSwitcher";
+import { FOOTER_COMPANY, FOOTER_PRODUCT, type NavEntry } from "@/config/nav";
+import { useI18n } from "@/lib/i18n";
 
 const socials = [
   {
@@ -27,29 +28,98 @@ const socials = [
   },
 ];
 
+/** design/Mangomundi 4 - Final.dc.html (line 232-240) — Footer's own dark
+ *  column, given either a home-page anchor or a real route (NavEntry,
+ *  config/nav.ts). Literal to the mockup: 12.5px items in #A79C92, bold
+ *  white 12.5px header, 8px gap — hardcoded hex, not the light-theme
+ *  text-muted-foreground/text-foreground tokens, since this is a
+ *  dark-specific palette independent of the rest of the (light) site. */
+function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyArray<NavEntry> }) {
+  const { t } = useI18n();
+  return (
+    <div className="flex flex-col gap-2 text-[12.5px] text-[#A79C92]">
+      {/* docs/kayak-redesign-spec.md §6.4 — títulos de columna en
+          text-badge uppercase con tracking, estilo Kayak. El color SÍ se
+          aparta del spec: éste pide text-muted-foreground, que asume el
+          footer claro de kayak.com; sobre este footer oscuro ese token
+          (#6b5f55) dejaría los títulos MENOS legibles que los links que
+          encabezan — o sea invertiría la jerarquía y bajaría el contraste,
+          contra la regla 5. Se queda en blanco. */}
+      <span className="text-badge font-bold uppercase tracking-wide text-white">{t(titleKey)}</span>
+      {items.map((item) => (
+        <Link
+          key={item.labelKey}
+          to={item.to ?? "/"}
+          hash={item.hash}
+          className="transition-colors hover:text-white"
+        >
+          {t(item.labelKey)}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+/** design/Mangomundi 4 - Final.dc.html (line 232-240) — 2026-08-30
+ *  feedback: the footer is a dark band (#1B1510), not the light bg-muted
+ *  surface this had before, and noticeably more compact (28px/30px
+ *  padding, 26px column gap — not py-16/gap-12). Copyright folds into the
+ *  end of the Legal column here, literal to the mockup, rather than a
+ *  separate bottom bar.
+ *  2026-09-04 feedback (ronda 4) — "el boton de selector de idioma pasa al
+ *  footer como hace kayak": the language switcher is back, next to the
+ *  copyright line under the social icons — kayak.com's own footer shows
+ *  "English"/"£ GBP" in exactly that spot (verified live), and Header no
+ *  longer carries one (see Header.tsx) so this isn't a second/redundant
+ *  copy, it's the only one now. `variant="footer"` keeps it on the dark
+ *  footer palette (`text-[#A79C92]`/`border-white/14`, same as the social
+ *  icons right above it) instead of the light-theme tokens the other
+ *  variants use; `direction="up"` so the dropdown opens upward, since this
+ *  sits at the very bottom of the page.
+ *  "Local exchange" (Product) and "How we make money" (Company) stay
+ *  deliberately absent — see FOOTER_PRODUCT/FOOTER_COMPANY's own comments
+ *  in config/nav.ts for why. The mockup's own wordmark here carries the
+ *  icon (line 234), but the standing 2026-08-30 instruction to drop the
+ *  icon from Header *and* Footer ("el logo se usa en otros lugares") is
+ *  the more specific, deliberate call — text-only here too, same as
+ *  Header. */
 export function Footer() {
   const { t } = useI18n();
-  const navigate = HOME_NAV.map(({ hash, labelKey }) => ({ hash, label: t(labelKey) }));
+
+  // 2026-09-04 feedback (ronda 5) — "cuando hago click en el logo mangomundi
+  // en el encabezado [y] footer deberia llevar al home y resetear la
+  // pagina": same fix as Header's own logo link (see its own comment) —
+  // already-home is a same-route no-op for the router, so it's the one case
+  // that needs a hard reload instead of a client-side Link navigation.
+  const handleLogoClick = (e: MouseEvent) => {
+    if (window.location.pathname === "/") {
+      e.preventDefault();
+      window.location.assign("/");
+      return;
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const legal = [
     { to: "/legal", hash: "terms", label: t("footer.legal.terms") },
-    { to: "/legal", hash: "risk", label: t("footer.legal.risk") },
     { to: "/legal", hash: "privacy", label: t("footer.legal.privacy") },
+    { to: "/legal", hash: "risk", label: t("footer.legal.risk") },
   ] as const;
 
   return (
-    <footer className="border-t border-border bg-muted">
-      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
-        <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr]">
+    <footer className="bg-[#1B1510] py-7">
+      {/* 2026-09-04 feedback (ronda 6, cont.) — ver Header.tsx: tope de
+          ancho subido a 1340px, medido en vivo contra kayak.com. */}
+      <div className="mx-auto max-w-[1340px] px-5 sm:px-[30px]">
+        <div className="grid gap-[26px] md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link
-              to="/"
-              className="inline-flex items-center"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            >
-              <Wordmark className="text-2xl" />
+            <Link to="/" className="inline-flex items-center" onClick={handleLogoClick}>
+              <Wordmark className="text-[21px]" tone="light" icon={false} />
             </Link>
-            <div className="mt-6 flex items-center gap-3">
+            <p className="mt-2.5 max-w-[280px] whitespace-pre-line text-[12.5px] leading-[1.6] text-[#8A7C6E]">
+              {t("footer.tagline")}
+            </p>
+            <div className="mt-4 flex items-center gap-2.5">
               {socials.map((s) => (
                 <a
                   key={s.label}
@@ -57,11 +127,11 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="group inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-foreground hover:text-background"
+                  className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/14 text-[#A79C92] transition-colors hover:border-white/30 hover:text-white"
                 >
                   <svg
                     viewBox="0 0 24 24"
-                    className="h-4 w-4"
+                    className="h-3.5 w-3.5"
                     fill="currentColor"
                     aria-hidden="true"
                   >
@@ -70,52 +140,38 @@ export function Footer() {
                 </a>
               ))}
             </div>
+            {/* 2026-08-31 feedback — copyright moved here, under the social
+                icons, off the end of the Legal column. */}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <span className="text-[12.5px] text-[#A79C92]">
+                © {new Date().getFullYear()} Mangomundi
+              </span>
+              <LangSwitcher variant="footer" direction="up" />
+            </div>
           </div>
 
-          <div>
-            <h3 className="font-heading text-sm font-bold text-foreground">
-              {t("footer.nav.title")}
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {navigate.map((l) => (
-                <li key={l.label}>
-                  <Link
-                    to="/"
-                    hash={l.hash}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <FooterColumn titleKey="footer.product.title" items={FOOTER_PRODUCT} />
+          <FooterColumn titleKey="footer.nav.title" items={FOOTER_COMPANY} />
 
-          <div>
-            <h3 className="font-heading text-sm font-bold text-foreground">
+          <div className="flex flex-col gap-2 text-[12.5px] text-[#A79C92]">
+            {/* Mismo tratamiento §6.4 que las otras columnas — esta no usa
+                FooterColumn (su lista de links se arma aparte), así que
+                había que aplicarlo también acá o quedaba la única columna
+                con otro estilo de título. */}
+            <span className="text-badge font-bold uppercase tracking-wide text-white">
               {t("footer.legal.title")}
-            </h3>
-            <ul className="mt-4 space-y-3">
-              {legal.map((l) => (
-                <li key={l.label}>
-                  <Link
-                    to={l.to}
-                    hash={l.hash}
-                    className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            </span>
+            {legal.map((l) => (
+              <Link
+                key={l.label}
+                to={l.to}
+                hash={l.hash}
+                className="transition-colors hover:text-white"
+              >
+                {l.label}
+              </Link>
+            ))}
           </div>
-        </div>
-
-        <div className="mt-14 flex flex-col-reverse items-center gap-4 border-t border-border pt-8 sm:flex-row sm:justify-between">
-          <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Mangomundi. {t("footer.rights")}
-          </p>
-          <LangSwitcher direction="up" />
         </div>
       </div>
     </footer>

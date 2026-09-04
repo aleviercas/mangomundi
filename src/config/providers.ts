@@ -245,7 +245,7 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
     segment: "corporate",
     integrationType: "direct",
     commissionType: "revenue_share",
-    commissionValue: 0.10,
+    commissionValue: 0.1,
   },
   moneycorp: {
     slug: "moneycorp",
@@ -253,7 +253,7 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
     segment: "corporate",
     integrationType: "direct",
     commissionType: "revenue_share",
-    commissionValue: 0.10,
+    commissionValue: 0.1,
   },
   ofx: {
     slug: "ofx",
@@ -270,7 +270,7 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
     segment: "corporate",
     integrationType: "direct",
     commissionType: "revenue_share",
-    commissionValue: 0.10,
+    commissionValue: 0.1,
   },
   "cab-payments": {
     slug: "cab-payments",

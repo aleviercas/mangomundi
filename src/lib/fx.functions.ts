@@ -104,6 +104,21 @@ export interface Provider {
    *  when no corridor-specific fx_rates row exists for this route (i.e.
    *  has_corridor_data is false). */
   rates_last_updated?: string | null;
+  min_amount?: number | null;
+  /** Business/broker table only (design/Mangomundi 4 - Final.dc.html line
+   *  494-529). Null until researched per provider — see the migration's own
+   *  column comment; the UI must not fabricate a value when these are null. */
+  settlement_terms?: string | null;
+  contract_type?: string | null;
+  /** 2026-09-02 feedback — "completar con el estimado aclarar que es
+   *  estimado": true when the matching field above is a logical estimate
+   *  (median of same provider_type peers with real sourced data) rather
+   *  than a real, sourced figure — see the add_business_terms_estimated_
+   *  flags migration. The UI must show "Est." when true, never present an
+   *  estimate as a verified fact. */
+  min_amount_estimated?: boolean | null;
+  settlement_terms_estimated?: boolean | null;
+  contract_type_estimated?: boolean | null;
 }
 
 export interface ComparisonRow {
@@ -167,6 +182,21 @@ export interface ComparisonRow {
   /** providers.rates_last_updated — generic fallback "last updated" date
    *  for the UI trust badge, used when has_corridor_data is false. */
   provider_rates_last_updated: string | null;
+  /** Business broker table (design/Mangomundi 4 - Final.dc.html line
+   *  494-529) — real minimum ticket size (providers.min_amount, corridor
+   *  min_amount when a corridor rate applies) and, where researched,
+   *  settlement window/contract type. Null settlement_terms/contract_type
+   *  mean genuinely not researched yet, not zero/none — the UI shows a
+   *  neutral "—" rather than fabricating a value. */
+  min_amount: number | null;
+  settlement_terms: string | null;
+  contract_type: string | null;
+  /** See ProviderInput's own comment — true means the matching field above
+   *  is a logical estimate, not a sourced figure. Always false/null when
+   *  the field itself is null (nothing to label as estimated). */
+  min_amount_estimated: boolean;
+  settlement_terms_estimated: boolean;
+  contract_type_estimated: boolean;
 }
 
 export interface ComparisonResult {
@@ -520,6 +550,49 @@ function resolveTier(
   };
 }
 
+// 2026-09-04 feedback — research v8 addendum §13.1 identified a real gap:
+// resolveTier's fee_tiers only vary by AMOUNT, never by currency pair, so a
+// business broker that genuinely quotes GBP-USD differently from GBP-INR
+// at the same volume has no way to represent that. business_broker_rate_
+// tiers (new table, empty until real broker data is researched and loaded)
+// adds that missing dimension. Same amount-range matching logic as
+// resolveTier above, just scoped to rows already filtered by
+// provider_slug + currency pair by the caller.
+interface BrokerRateTierRow {
+  min_amount: number | null;
+  max_amount: number | null;
+  spread_percent: number;
+  fee_percent: number;
+  fee_fixed: number;
+}
+
+function resolveBrokerTier(
+  rows: BrokerRateTierRow[] | undefined,
+  amount: number,
+): { fee_percent: number; fee_fixed: number; spread_percent: number } | null {
+  if (!rows || rows.length === 0) return null;
+  const inRange = rows.filter(
+    (r) =>
+      (r.min_amount == null || amount >= r.min_amount) &&
+      (r.max_amount == null || amount <= r.max_amount),
+  );
+  if (inRange.length === 0) return null;
+  // Prefer the narrowest matching band (a real min+max range beats an
+  // open-ended fallback row for the same provider/currency pair), same
+  // "most specific match wins" idea as fx_rates' own corridor precedence.
+  const sorted = [...inRange].sort((a, b) => {
+    const widthA = (a.max_amount ?? Infinity) - (a.min_amount ?? 0);
+    const widthB = (b.max_amount ?? Infinity) - (b.min_amount ?? 0);
+    return widthA - widthB;
+  });
+  const match = sorted[0];
+  return {
+    fee_percent: match.fee_percent,
+    fee_fixed: match.fee_fixed,
+    spread_percent: match.spread_percent,
+  };
+}
+
 // ---------- compareProviders ----------
 const compareSchema = z.object({
   amount: z.number().min(1).max(1e15),
@@ -553,12 +626,43 @@ interface CorridorRate {
   data_source: string | null;
   data_collected_at: string | null;
   verified_status: string | null;
+  min_amount: number | null;
 }
 
 interface CorridorNote {
   reason: string;
   note: string;
 }
+
+/**
+ * Real, live counts of active providers per segment — for copy like "52
+ * providers · retail rates" / "14 brokers · negotiated rates" (design/
+ * HANDOFF.md §2/§4). Never hardcode these numbers in a component: the
+ * catalog changes as providers are researched and activated, and a number
+ * baked into copy goes stale silently (the exact problem HANDOFF §2 flags
+ * for the hero subtitle). `segment: "both"` counts toward both totals —
+ * same eligibility rule `compareProviders` already uses above.
+ */
+export const getProviderCounts = createServerFn({ method: "GET" }).handler(async () => {
+  const [{ count: retail, error: retailError }, { count: business, error: businessError }] =
+    await Promise.all([
+      supabaseAdmin
+        .from("providers")
+        .select("*", { count: "exact", head: true })
+        .eq("active", true)
+        .in("segment", ["retail", "both"]),
+      supabaseAdmin
+        .from("providers")
+        .select("*", { count: "exact", head: true })
+        .eq("active", true)
+        .in("segment", ["business", "both"]),
+    ]);
+  if (retailError || businessError) {
+    console.error("[server-fn]", retailError ?? businessError);
+    throw new Error("An unexpected error occurred. Please try again.");
+  }
+  return { retail: retail ?? 0, business: business ?? 0 };
+});
 
 export const compareProviders = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => compareSchema.parse(input))
@@ -623,7 +727,20 @@ export const compareProviders = createServerFn({ method: "POST" })
             .eq("sending_country", data.sendingCountry)
             .eq("receiving_country", data.receivingCountry)
             .or(`min_amount.is.null,min_amount.lte.${data.amount}`)
-            .or(`max_amount.is.null,max_amount.gte.${data.amount}`),
+            .or(`max_amount.is.null,max_amount.gte.${data.amount}`)
+            // Some corridor+provider pairs legitimately have more than one
+            // fx_rates row (e.g. amount-tiered pricing that doesn't fully
+            // partition by min/max_amount, or a newer live measurement
+            // alongside an older generic one). The loop below keys a Map by
+            // provider_slug, and Map.set on a duplicate key keeps whichever
+            // value was set LAST — so without an explicit order, Postgres
+            // doesn't guarantee which row "wins", and it can silently swap
+            // between requests. Ordering oldest-first here means the loop
+            // processes older rows first and the newest row (processed
+            // last) is the one that survives in the Map, i.e. "most recent
+            // row wins" — deterministic, without changing the overwrite
+            // logic itself. See docs/data-sources/2026-09-02-ag6-discrepancy-resolution.md.
+            .order("updated_at", { ascending: true }),
           supabaseAdmin
             .from("corridor_notes")
             .select("reason, note")
@@ -643,6 +760,7 @@ export const compareProviders = createServerFn({ method: "POST" })
             data_source: r.data_source ?? null,
             data_collected_at: r.data_collected_at ?? null,
             verified_status: r.verified_status ?? null,
+            min_amount: r.min_amount != null ? Number(r.min_amount) : null,
           });
         }
       }
@@ -719,15 +837,55 @@ export const compareProviders = createServerFn({ method: "POST" })
     const fromReference = fromUpper !== base && referenceCodes.has(fromUpper);
     const toReference = toUpper !== base && referenceCodes.has(toUpper);
 
+    // 2026-09-04 feedback — business_broker_rate_tiers lookup (see
+    // resolveBrokerTier's own comment): currency-pair + amount tiers for
+    // business brokers, filling the gap resolveTier's amount-only fee_tiers
+    // can't. Business-only (retail searches never have rows here, so this
+    // skips the query entirely for them) — never throws: a lookup failure
+    // just means every provider falls back to resolveTier exactly as
+    // before this table existed, same "non-fatal, fall back" pattern the
+    // corridorRates fetch above already uses.
+    const brokerTiersBySlug = new Map<string, BrokerRateTierRow[]>();
+    if (data.segment === "business") {
+      const { data: tierRows, error: tierError } = await supabaseAdmin
+        .from("business_broker_rate_tiers")
+        .select("provider_slug, min_amount, max_amount, spread_percent, fee_percent, fee_fixed")
+        .eq("from_currency", fromUpper)
+        .eq("to_currency", toUpper);
+      if (tierError) {
+        console.error("[compareProviders] business_broker_rate_tiers lookup failed", tierError);
+      } else {
+        for (const r of tierRows ?? []) {
+          const list = brokerTiersBySlug.get(r.provider_slug) ?? [];
+          list.push({
+            min_amount: r.min_amount != null ? Number(r.min_amount) : null,
+            max_amount: r.max_amount != null ? Number(r.max_amount) : null,
+            spread_percent: Number(r.spread_percent) || 0,
+            fee_percent: Number(r.fee_percent) || 0,
+            fee_fixed: Number(r.fee_fixed) || 0,
+          });
+          brokerTiersBySlug.set(r.provider_slug, list);
+        }
+      }
+    }
+
     // Defensive boundary: a malformed provider row (e.g. bad fee_tiers data
     // in Supabase) throwing here would otherwise escape as an unformatted
     // error. Catch it and surface the same clean message instead.
     try {
       const rows: ComparisonRow[] = eligibleProviders.map((p) => {
         const corridorRate = corridorRates.get(p.slug);
+        // Precedence: an exact per-corridor fx_rates row (existing) still
+        // wins over everything — it's real, route-specific data. Next, a
+        // matching business_broker_rate_tiers row (new) — real,
+        // currency-pair-specific data for brokers that have it. Only then
+        // resolveTier's existing amount-only fee_tiers/flat fallback —
+        // unchanged for every provider with no rows in the new table,
+        // which today is all of them (empty until real data is loaded).
+        const brokerTier = resolveBrokerTier(brokerTiersBySlug.get(p.slug), data.amount);
         const tier = corridorRate
           ? { fee_percent: 0, fee_fixed: corridorRate.fee, spread_percent: corridorRate.spread }
-          : resolveTier(p, data.amount);
+          : (brokerTier ?? resolveTier(p, data.amount));
         const rate = marketRate * (1 - tier.spread_percent / 100);
         const feeRate = tier.fee_percent / 100;
         const amountSent =
@@ -785,6 +943,16 @@ export const compareProviders = createServerFn({ method: "POST" })
           corridor_data_collected_at: corridorRate?.data_collected_at ?? null,
           corridor_verified_status: corridorRate?.verified_status ?? null,
           provider_rates_last_updated: p.rates_last_updated ?? null,
+          min_amount:
+            corridorRate?.min_amount ?? (p.min_amount != null ? Number(p.min_amount) : null),
+          settlement_terms: p.settlement_terms ?? null,
+          contract_type: p.contract_type ?? null,
+          // A corridor-specific min_amount is real per-route data, not the
+          // provider-level estimate — only flag as estimated when the
+          // corridor override isn't the one actually being shown.
+          min_amount_estimated: corridorRate?.min_amount == null && Boolean(p.min_amount_estimated),
+          settlement_terms_estimated: Boolean(p.settlement_terms_estimated),
+          contract_type_estimated: Boolean(p.contract_type_estimated),
         };
       });
       rows.sort((a, b) => b.received - a.received);
@@ -809,6 +977,250 @@ export const compareProviders = createServerFn({ method: "POST" })
       throw new Error("An unexpected error occurred. Please try again.");
     }
   });
+
+// ---------- getExclusiveCorridors ----------
+// design/AJUSTES-1.md §E — "Today's routes, already priced". No backend
+// query for "every corridor with an exclusive-deal provider" exists, so
+// this deliberately reuses compareProviders — the same, already real,
+// already-tested comparison logic the whole site runs on — over a short
+// candidate list of commonly-searched pairs, instead of adding new
+// unverified query logic. TanStack Start server functions are directly
+// callable from other server code (no HTTP round trip server-side), so
+// this is a plain function call, not a new client request per candidate.
+//
+// A candidate only makes it into the result if the row that actually WINS
+// (highest received amount) is itself the has_exclusive_deal provider —
+// not just any exclusive-deal row somewhere in the list. The card's whole
+// pitch ("best of N, and it's an exclusive rate") only holds if those are
+// the same provider; otherwise the badge would be attached to a price that
+// has nothing to do with the deal.
+//
+// 2026-08-30 feedback — this section never rendered in production. Checked
+// the real data: every candidate's WITHOUT a sendingCountry/receivingCountry
+// falls back to each provider's generic flat/tiered pricing (the
+// corridor-rates lookup in compareProviders is skipped entirely without
+// both countries — see its own `if (!currencyOverridden && data.sendingCountry
+// && data.receivingCountry)` gate) — and on generic pricing, Atlantic Money
+// (0% spread, $3 flat fee, not an exclusive-deal provider) beats every
+// exclusive-deal provider's own generic default on every candidate, every
+// time. Real per-corridor fx_rates rows exist for several of these exact
+// pairs (e.g. Wise/MoneyGram on USD-MXN both quote fee 0/spread 0 — beats
+// Atlantic Money's generic $3 fee) but were never being used. Adding the
+// real sending/receiving country per candidate — not fabricated, matched to
+// the sending_country/receiving_country values actually present in fx_rates
+// for these pairs — lets that corridor-specific data apply, same as a real
+// visitor's own search would get.
+// 2026-08-30 feedback (third round) — "todays rates tienen que aparecer
+// varias más para poder cubrir todo el ancho de la página": the previous
+// 8-pair list only ever produced 1-2 qualifying winners (see the comment
+// above), nowhere near enough to fill a wide row. Checked each addition's
+// REAL spread/fee against the live fx_rates table before including it here
+// — every one below genuinely beats the generic multi-currency baseline
+// (Atlantic Money: 0% spread + a flat 3-unit fee, no corridor override,
+// so it wins by default whenever no real corridor data intervenes) at the
+// same 1000 reference amount getExclusiveCorridors already used, not
+// guessed. Dropped the ones that don't (GBP-MXN has no exclusive-provider
+// corridor row at all; GBP-INR/PKR, EUR-BRL, USD-PHP all lose to Atlantic
+// Money on the real numbers) rather than padding the list with corridors
+// that would just silently fail to qualify anyway.
+const EXCLUSIVE_CORRIDOR_CANDIDATES: ReadonlyArray<{
+  from: string;
+  to: string;
+  sendingCountry: string;
+  receivingCountry: string;
+}> = [
+  { from: "USD", to: "MXN", sendingCountry: "US", receivingCountry: "MX" },
+  { from: "USD", to: "NGN", sendingCountry: "US", receivingCountry: "NG" },
+  { from: "EUR", to: "COP", sendingCountry: "ES", receivingCountry: "CO" },
+  { from: "AUD", to: "INR", sendingCountry: "AU", receivingCountry: "IN" },
+  { from: "AUD", to: "PHP", sendingCountry: "AU", receivingCountry: "PH" },
+  { from: "AUD", to: "IDR", sendingCountry: "AU", receivingCountry: "ID" },
+  { from: "AUD", to: "ZAR", sendingCountry: "AU", receivingCountry: "ZA" },
+  { from: "CAD", to: "INR", sendingCountry: "CA", receivingCountry: "IN" },
+  { from: "CAD", to: "PHP", sendingCountry: "CA", receivingCountry: "PH" },
+  { from: "CAD", to: "NGN", sendingCountry: "CA", receivingCountry: "NG" },
+  { from: "CAD", to: "CNY", sendingCountry: "CA", receivingCountry: "CN" },
+];
+const EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT = 1000;
+
+export interface ExclusiveCorridor {
+  from: string;
+  to: string;
+  amount: number;
+  bestReceived: number;
+  gain: number;
+  providerCount: number;
+  winnerName: string;
+  winnerSlug: string;
+}
+
+// Shared by getExclusiveCorridors (retail) and getBusinessTodaysRoutes
+// (business, see below) — same "run the real comparator, keep only
+// candidates where the actual winner has a real exclusive deal" logic,
+// parameterized on segment/amount/candidate list so the business version
+// isn't a copy-pasted drift risk.
+async function computeExclusiveCorridors(
+  candidates: ReadonlyArray<{
+    from: string;
+    to: string;
+    sendingCountry: string;
+    receivingCountry: string;
+  }>,
+  amount: number,
+  segment: "retail" | "business",
+  logLabel: string,
+  // 2026-09-04 feedback — the embeddable widget wants more pre-search
+  // examples than the home page's own 4-card grid has room for. Default 4
+  // keeps every existing caller (home's TodaysRoutesSection/
+  // BusinessTodaysRoutesSection) unchanged; getWidgetExclusiveCorridors
+  // below is the one caller that raises it.
+  maxResults = 4,
+): Promise<ExclusiveCorridor[]> {
+  const settled = await Promise.all(
+    candidates.map(async (c): Promise<ExclusiveCorridor | null> => {
+      try {
+        const result = await compareProviders({
+          data: {
+            amount,
+            from: c.from,
+            to: c.to,
+            segment,
+            amountMode: "send",
+            sendingCountry: c.sendingCountry,
+            receivingCountry: c.receivingCountry,
+          },
+        });
+        if (result.rows.length === 0) return null;
+        const winner = result.rows.reduce((a, b) => (b.received > a.received ? b : a));
+        if (!winner.has_exclusive_deal) return null;
+        const worstReceived = Math.min(...result.rows.map((r) => r.received));
+        return {
+          from: c.from,
+          to: c.to,
+          amount,
+          bestReceived: winner.received,
+          gain: winner.received - worstReceived,
+          providerCount: result.rows.length,
+          winnerName: winner.name,
+          winnerSlug: winner.slug,
+        };
+      } catch (err) {
+        // One bad candidate (e.g. no fx_rates coverage for that pair)
+        // shouldn't take down the whole section — skip it.
+        console.error(logLabel, c.from, c.to, err);
+        return null;
+      }
+    }),
+  );
+  const qualifying = settled.filter((r): r is ExclusiveCorridor => r !== null);
+  // "Rotating on every visit" (design/AJUSTES-1.md §E) — a random starting
+  // offset into the real qualifying list, computed server-side (this used
+  // to happen client-side in TodaysRoutesSection itself, via Math.random()
+  // in a useMemo) so the exact same rotated slice is what both the SSR pass
+  // and the client's own read of this cached response see. Doing it
+  // client-side caused a real hydration mismatch the moment this response
+  // started getting prefetched during SSR (2026-09-03 feedback's own
+  // fix) — the server and the client each rolled a different offset for
+  // the same render, so React discarded and rebuilt the whole section on
+  // hydration. Never repeats a corridor to pad out the count; shows
+  // however many genuinely qualify, up to 4. Still "rotates" in the sense
+  // that matters — a fresh server response (a new visitor, or this cache
+  // entry's own 5-minute staleTime elapsing) rolls a new offset — just no
+  // longer inside a single render's server/client boundary.
+  if (qualifying.length === 0) return [];
+  const offset = Math.floor(Math.random() * qualifying.length);
+  return Array.from(
+    { length: Math.min(maxResults, qualifying.length) },
+    (_, i) => qualifying[(i + offset) % qualifying.length],
+  );
+}
+
+export const getExclusiveCorridors = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      EXCLUSIVE_CORRIDOR_CANDIDATES,
+      EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
+      "retail",
+      "[getExclusiveCorridors]",
+    ),
+);
+
+// 2026-09-04 feedback — "en el widget mostrar mas rutas para que no quede
+// espacio en blanco antes de comparar": the fixed 360x540 widget frame has
+// more room than the home page's 4-card grid. Same candidates, same real
+// "the winner must actually have the exclusive deal" gate as
+// getExclusiveCorridors above — just a higher maxResults (up to all 11
+// candidates that qualify, matching EmbedComparator's own
+// MAX_WIDGET_EXAMPLES=8 display cap) instead of a second, separate
+// candidate list.
+export const getWidgetExclusiveCorridors = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      EXCLUSIVE_CORRIDOR_CANDIDATES,
+      EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT,
+      "retail",
+      "[getWidgetExclusiveCorridors]",
+      8,
+    ),
+);
+
+// 2026-09-03 feedback — "podemos tambien en el business dejar el todays
+// routes already priced pero para business providers?": every business/
+// "both"-segment provider prices generically (fee_percent/fee_fixed/
+// spread_percent on the providers row itself — none of them is
+// `is_corridor_specific`, confirmed against the live table), so unlike the
+// retail candidates above (which needed real per-corridor fx_rates
+// coverage checked first, see this file's own history), any real currency
+// pair works here — the ranking is identical regardless of corridor.
+// Wise (0.43% effective cost) wins on these generic numbers against every
+// other business/both provider, and `has_exclusive_deal` is already true
+// for it, so this reuses computeExclusiveCorridors' existing "winner must
+// have a real exclusive deal" gate unchanged. Amount raised to a real
+// business-scale transfer (the individual band uses 1,000) rather than
+// reusing the retail reference amount.
+const BUSINESS_ROUTE_CANDIDATES: ReadonlyArray<{
+  from: string;
+  to: string;
+  sendingCountry: string;
+  receivingCountry: string;
+}> = [
+  { from: "GBP", to: "USD", sendingCountry: "GB", receivingCountry: "US" },
+  { from: "USD", to: "EUR", sendingCountry: "US", receivingCountry: "DE" },
+  { from: "EUR", to: "GBP", sendingCountry: "DE", receivingCountry: "GB" },
+  { from: "USD", to: "CNY", sendingCountry: "US", receivingCountry: "CN" },
+  { from: "GBP", to: "INR", sendingCountry: "GB", receivingCountry: "IN" },
+  { from: "USD", to: "SGD", sendingCountry: "US", receivingCountry: "SG" },
+  { from: "EUR", to: "INR", sendingCountry: "DE", receivingCountry: "IN" },
+  { from: "USD", to: "AED", sendingCountry: "US", receivingCountry: "AE" },
+];
+const BUSINESS_ROUTE_REFERENCE_AMOUNT = 25_000;
+
+export const getBusinessTodaysRoutes = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      BUSINESS_ROUTE_CANDIDATES,
+      BUSINESS_ROUTE_REFERENCE_AMOUNT,
+      "business",
+      "[getBusinessTodaysRoutes]",
+    ),
+);
+
+// 2026-09-04 feedback — business-segment sibling of
+// getWidgetExclusiveCorridors above, for the embeddable widget's own
+// Individual/Business toggle (see EmbedComparator). Same candidates/gate
+// as getBusinessTodaysRoutes; maxResults=8 matches BUSINESS_ROUTE_
+// CANDIDATES' own length (8), so this is really "show every real
+// qualifying business corridor" rather than a new, separate cap.
+export const getWidgetBusinessTodaysRoutes = createServerFn({ method: "GET" }).handler(
+  async (): Promise<ExclusiveCorridor[]> =>
+    computeExclusiveCorridors(
+      BUSINESS_ROUTE_CANDIDATES,
+      BUSINESS_ROUTE_REFERENCE_AMOUNT,
+      "business",
+      "[getWidgetBusinessTodaysRoutes]",
+      8,
+    ),
+);
 
 // ---------- trackAffiliateClick ----------
 const trackSchema = z.object({

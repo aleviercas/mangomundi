@@ -1,9 +1,6 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-/* SVG country flags (fi fi-xx classes) — emoji flags render as plain letters
-   on Windows, so the selects use these instead. */
-@import "flag-icons/css/flag-icons.min.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -17,8 +14,30 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
+  /* === Kayak-skin: geometría compacta de la superficie de comparación ====
+     El sistema general usa --radius 0.875rem (14px), correcto para las
+     secciones de marketing. El comparador/widget necesitan la geometría
+     dura de un buscador (8px tarjeta / 4px control): con 14px una lista de
+     8 tarjetas apiladas se lee blanda y pierde densidad. Deliberadamente
+     FUERA de la escala derivada de --radius: cambiar --radius no los toca.
+     Ver docs/kayak-redesign-spec.md §2. */
+  --radius-compact: 0.5rem;
+  --radius-control: 0.25rem;
+
+  /* Sombra única de la superficie de comparación. El segundo halo hacia
+     arriba es lo que despega la tarjeta del lienzo sin que se vea
+     "elevada" — misma construcción que usa kayak.com. */
+  --shadow-compare:
+    0 3px 6px 0 oklch(0.27 0.025 257 / 0.16),
+    0 -1px 4px 0 oklch(0.27 0.025 257 / 0.04);
+
   --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
-  --font-heading: 'Sora', ui-sans-serif, system-ui, sans-serif;
+  /* Headings AND figures (received amounts, rates, deltas, stat numbers) —
+     design/AJUSTES-1.md §A. Replaces Sora, retired from the project. */
+  --font-heading: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  /* Brand wordmark/icon only (Header, Footer, "powered by" lockups) — not a
+     site-wide type change. See design/HANDOFF.md §1. */
+  --font-brand: 'Rubik', ui-sans-serif, system-ui, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -34,6 +53,10 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  /* AA-safe darker sibling for small accent-colored TEXT — see --accent-text's
+     own comment. Not a replacement for --color-accent/--color-brand-cta,
+     which stay the vibrant mango for buttons/icons/large text. */
+  --color-accent-text: var(--accent-text);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -61,6 +84,22 @@
   --color-surface: var(--surface);
   --color-surface-elevated: var(--surface-elevated);
 
+  /* Lienzo del comparador — un punto más oscuro que --background para que
+     las tarjetas blancas floten sobre él (kayak.com: #F0F3F5 detrás de
+     tarjetas #FFF). Nunca como fondo de página completa. */
+  --color-surface-canvas: var(--surface-canvas);
+
+  /* Extremo oscuro del gradiente de CTA (ver --gradient-cta abajo). */
+  --color-accent-deep: var(--accent-deep);
+
+  /* Badges de mérito de la fila de resultados — "mejor opción" (azul frío,
+     informativo) y "más barato" (familia de --success). Nombrados merit-*
+     y no badge-* para no colisionar con el tamaño --text-badge. */
+  --color-merit-best: var(--merit-best);
+  --color-merit-best-foreground: var(--merit-best-foreground);
+  --color-merit-cheap: var(--merit-cheap);
+  --color-merit-cheap-foreground: var(--merit-cheap-foreground);
+
   /* Premium CTA — the only orange in the system, reserved for primary action */
   --color-brand-cta: var(--accent);
   --color-brand-cta-hover: var(--mango-glow);
@@ -81,13 +120,15 @@
   --text-eyebrow--line-height: 1.4;
   --text-eyebrow--letter-spacing: 0.18em;
 
+  /* Bricolage Grotesque needs negative tracking to read tight — unlike Sora,
+     it looks loose at these sizes without it (design/AJUSTES-1.md §A). */
   --text-h1: 3rem;
   --text-h1--line-height: 1.05;
-  --text-h1--letter-spacing: -0.02em;
+  --text-h1--letter-spacing: -0.035em;
 
   --text-h2: 2.75rem;
   --text-h2--line-height: 1.1;
-  --text-h2--letter-spacing: -0.015em;
+  --text-h2--letter-spacing: -0.03em;
 
   --text-h3: 1.25rem;
   --text-h3--line-height: 1.3;
@@ -95,30 +136,94 @@
 
   --text-h4: 1rem;
   --text-h4--line-height: 1.4;
+
+  /* Escala de la superficie de comparación (sep 2026, pasada "Kayak
+     skin"). Kayak no baja de 12px en ninguna parte de su buscador; esta
+     escala existe para poder erradicar los text-[9px]/[10px]/[11px]
+     sueltos del comparador y del widget. El piso del sistema es
+     text-badge = 12px. */
+  --text-price: 1.5rem;
+  --text-price--line-height: 1.1;
+  --text-price--letter-spacing: -0.01em;
+
+  --text-metric: 1rem;
+  --text-metric--line-height: 1.35;
+
+  --text-meta: 0.8125rem;
+  --text-meta--line-height: 1.4;
+
+  --text-badge: 0.75rem;
+  --text-badge--line-height: 1.35;
 }
 
 :root {
   --radius: 0.875rem;
 
-  --background: oklch(0.965 0.008 255);
-  --foreground: oklch(0.27 0.025 257);
-  --card: oklch(0.99 0.003 255);
-  --card-foreground: oklch(0.27 0.025 257);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.27 0.025 257);
-  --primary: oklch(0.27 0.025 257);
-  --primary-foreground: oklch(0.99 0.003 255);
-  --secondary: oklch(0.92 0.015 255);
-  --secondary-foreground: oklch(0.27 0.025 257);
-  --muted: oklch(0.94 0.01 255);
-  --muted-foreground: oklch(0.52 0.024 257);
-  --accent: oklch(0.71 0.18 30);
-  --accent-foreground: oklch(0.99 0.003 255);
+  /* 2026-09-04 feedback (ronda 8) — "la barra de seleccion... se mueve al
+     header?": Header.tsx puede crecer más allá de sus 66px de siempre
+     cuando ComparatorSection portalea la barra de búsqueda a su fila 2
+     (`#header-searchbar-slot`) — igual que el header real de kayak.com,
+     medido en vivo, que pasa de ~66px en el home a ~80px en una página de
+     resultados por el mismo motivo. Header.tsx mide su propio alto real
+     con un ResizeObserver y lo publica acá mismo (`documentElement.style.
+     setProperty`); todo lo demás que necesitaba saber "dónde termina el
+     header" (el `<main>` de __root.tsx, el drawer y la fila 2 del propio
+     Header.tsx, el panel del AI y el rail de resultados en
+     ComparatorSection.tsx) lee `var(--header-h)` en vez de tener 66px
+     hardcodeado por su cuenta en cuatro archivos distintos — que es
+     exactamente cómo esto se rompía antes: el día que el header cambiaba
+     de alto en un solo lugar, los otros tres quedaban desalineados. El
+     valor acá abajo es sólo el default para el primer paint/SSR, antes de
+     que el ResizeObserver corra — el mismo 66px real de siempre en toda
+     página sin la barra portaleada adentro. */
+  --header-h: 66px;
+
+  /* design/AJUSTES-2.md §0 — the site-wide palette, literal from the
+     mockup (design/Mangomundi 4 - Final.dc.html), replacing the old
+     cool/blue-gray oklch set. This is the foundational change the doc
+     calls out first ("Definilas una vez y muchas cosas se acomodan
+     solas") — background vs. card is what makes card surfaces read as
+     cards instead of white-on-white. Site-wide, not scoped to the
+     redesigned screens only: these are the same shadcn-style semantic
+     tokens every route already draws from, and the mockup's own text
+     frames this as the site's palette, not a home-page-only one (same
+     precedent as §A's Bricolage Grotesque swap in design/AJUSTES-1.md,
+     also a global token change). Kept as literal hex, not converted to
+     oklch, so every value matches the mockup exactly — no color-space
+     rounding.
+     Papel #FBF8F4 · Blanco #FFFFFF · Arena #F5EFE8 · Tinta #241C16 ·
+     Mango #EE5B3E · Verde #1F7A5A · Borde #EBE3D9 · Borde 2 #E5DCD1. */
+  --background: #fbf8f4;
+  --foreground: #241c16;
+  --card: #ffffff;
+  --card-foreground: #241c16;
+  --popover: #ffffff;
+  --popover-foreground: #241c16;
+  --primary: #241c16;
+  --primary-foreground: #ffffff;
+  --secondary: #f5efe8;
+  --secondary-foreground: #241c16;
+  --muted: #f5efe8;
+  --muted-foreground: #6b5f55;
+  --accent: #ee5b3e;
+  --accent-foreground: #ffffff;
+  /* X8 audit — #ee5b3e (mango) measures 3.2-3.4:1 against this page's
+     light backgrounds (white/cream/muted), enough for large text and
+     non-text UI (WCAG's 3:1 floor for those) but short of the 4.5:1 AA
+     needs for normal-size text — and the site's dominant "eyebrow" label
+     pattern (small bold uppercase, e.g. "YOUR RESULTS") is exactly that:
+     normal-size text. This is the same hue, darkened (HSL lightness
+     58.8%→45.8%) until it clears 4.5:1 on white/cream AND on --muted
+     (the worst case, badges sitting on accent/10 tinted chips) with a
+     small margin: 5.18:1 white, 4.89:1 cream, 4.54:1 muted. Buttons,
+     icons, and large headline text keep --accent/--color-brand-cta
+     unchanged — those already pass at the original color. */
+  --accent-text: #cd3112;
   --destructive: oklch(0.55 0.22 20);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.84 0.016 255 / 0.85);
-  --input: oklch(0.82 0.018 255);
-  --ring: oklch(0.71 0.18 30);
+  --border: #ebe3d9;
+  --input: #e5dcd1;
+  --ring: #ee5b3e;
 
   --chart-1: oklch(0.769 0.188 70.08);
   --chart-2: oklch(0.21 0.034 264);
@@ -142,13 +247,96 @@
   --surface: var(--card);
   --surface-elevated: var(--muted);
 
-  /* Same hue families as --chart-3 (green) so "good rate" and the charts
-     agree, and warning sits at a mango-adjacent hue so it doesn't compete
-     with the CTA orange. */
-  --success: oklch(0.6 0.15 145);
-  --success-foreground: oklch(0.99 0.003 255);
+  /* === Kayak-skin (sep 2026, docs/kayak-redesign-spec.md §2) ============ */
+
+  /* Lienzo del comparador. kayak.com pone #F0F3F5 detrás de tarjetas
+     #FFF; acá el mismo salto de L, medio punto por debajo de
+     --background, para que las tarjetas blancas floten.
+     2026-09-04 feedback (ronda 5) — "los colores de fondo quedaron
+     raros": el hue 255 (frío, azulado) era literal del spec de kayak,
+     pero kayak.com es una página fría en general — mangomundi no: todo
+     el resto de la marca (--background, --secondary, el CTA mango) vive
+     en hues cálidos. Un parche frío azulado detrás de la barra, en medio
+     de una página cálida, es exactamente lo que se leía "raro". Mismo
+     salto de L/C que antes (sigue leyéndose como un lienzo aparte para
+     que las tarjetas blancas floten), hue movido a la misma familia
+     cálida que el resto de la paleta en vez del azul literal de kayak.
+     2026-09-04 feedback (ronda 6) — "el color de fondo del selector y del
+     titulo es el mismo": a L de 0.945 quedaba demasiado cerca de --card
+     (blanco puro) y de --background (#fbf8f4, L≈0.975) — la tarjeta de la
+     barra dejaba de leerse como si flotara sobre un lienzo propio, todo
+     el bloque hero+comparador se veía como un solo blanco continuo. Baja
+     a 0.92/0.02 (más L y C de salto real respecto a --card, mismo hue
+     cálido) para que el contraste lienzo↔tarjeta vuelva a notarse, como
+     el gris azulado #F0F3F5 de kayak.com se nota contra sus tarjetas
+     blancas. */
+  --surface-canvas: oklch(0.92 0.02 75);
+
+  /* CTA con gradiente — mismo ángulo y mismo salto claro→oscuro que Kayak
+     (135deg, #FF690F → #E8381B), en los hues mango del proyecto. Es la
+     única acción primaria del comparador y del widget.
+     El spec pedía --mango-glow como extremo claro; ese tono da ~2.3:1 con
+     texto blanco encima, por debajo del 3.39:1 que ya tiene el .btn-cta
+     plano — habría BAJADO el contraste, contra la regla 5 del propio spec.
+     El extremo claro es --accent (el coral de marca, exactamente el mismo
+     del CTA que reemplaza) y el oscuro --accent-deep, así que ningún punto
+     del gradiente queda por debajo del CTA actual.
+
+     Medido de verdad (rasterizando cada token a un píxel sRGB y aplicando
+     la fórmula de WCAG, no estimado):
+       texto blanco sobre --accent      → 3.39:1
+       texto blanco sobre --accent-deep → 4.00:1
+     O sea: el gradiente MEJORA el contraste hacia su extremo oscuro pero
+     sigue sin llegar a los 4.5:1 que pide el §7 del spec para texto de
+     13px. No se resuelve acá: llegar a 4.5:1 exige oscurecer el coral de
+     marca en todo el sitio (el .btn-cta de hoy tiene exactamente el mismo
+     3.39:1), y eso es una decisión de marca, no de una pasada de piel.
+     Queda levantado explícitamente en el reporte de esta rama. */
+  --accent-deep: oklch(0.62 0.2 25);
+  --gradient-cta: linear-gradient(135deg, var(--accent) 0%, var(--accent-deep) 100%);
+
+  /* Badges de mérito ("mejor opción" / "más barato"). Medidos: 7.3:1 y
+     8.0:1 de texto sobre su propio tinte. */
+  --merit-best: oklch(0.95 0.025 235);
+  --merit-best-foreground: oklch(0.42 0.09 235);
+  --merit-cheap: oklch(0.95 0.04 150);
+  --merit-cheap-foreground: oklch(0.4 0.11 150);
+
+  /* design/AJUSTES-2.md §0 — Verde #1F7A5A ("estados correctos, «Live»,
+     ahorro"). --warning has no mockup equivalent (not in the doc's
+     palette table) — left as the previous oklch value, at a
+     mango-adjacent hue so it doesn't compete with the CTA orange. */
+  --success: #1f7a5a;
+  --success-foreground: #ffffff;
   --warning: oklch(0.6 0.15 75);
   --warning-foreground: oklch(0.99 0.003 255);
+
+  /* 2026-09-04 feedback (ronda 8) — "el fondo del mangomundi ai deberia de
+     tener otro color?": el panel del AI (FloatingAgent, ComparatorSection
+     .tsx) usa `#241C16`/`#F1EBE4` como fondo/texto — auditado acá: `#241C16`
+     NO es un color nuevo o suelto, es exactamente `--foreground`/`--primary`
+     de arriba (la "tinta" de marca) usada como FONDO en vez de texto — ya
+     pertenecía a la paleta, sólo invertido. Por eso no cambia de valor acá;
+     lo que sí estaba mal es que vivía como dos strings hex sueltos en un
+     `style={{}}` inline en vez de tokens, así que si la tinta de marca
+     cambiara alguna vez, este panel se desincronizaría en silencio. Pasan a
+     tokens propios: `--ai-panel-bg` reutiliza `--foreground` directamente
+     (así queda de verdad atado, no sólo copiado), `--ai-panel-foreground`
+     se queda con su propio valor (`#F1EBE4`, un hueso cálido, no
+     `--primary-foreground` blanco puro) porque blanco puro sobre la tinta
+     oscura del panel se leía más duro/frío que este tono — una decisión
+     con su propia razón, no un descuido, así que se preserva como token
+     aparte en vez de fusionarse con `--primary-foreground`. */
+  --ai-panel-bg: var(--foreground);
+  --ai-panel-foreground: #f1ebe4;
+  /* Mismo audit — estos dos hex se repetían idénticos en ~7 lugares del
+     panel del AI (íconos/foco en `#FF8A6B`, texto secundario en `#A79C92`)
+     sin ningún token detrás; tonos propios porque `--accent`/
+     `--muted-foreground` normales están calibrados para contraste sobre
+     fondos claros, no sobre la tinta oscura de este panel — no se
+     fusionan con esos tokens, se nombran aparte. */
+  --ai-panel-accent: #ff8a6b;
+  --ai-panel-muted: #a79c92;
 }
 
 .dark { color-scheme: dark; }
@@ -165,7 +353,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
   }
 
   .input {
@@ -266,6 +454,25 @@
   }
 }
 
+/* 2026-08-31 feedback — AI agent panel: "que el scroll sea una barra
+   muchísimo más finita" (was the browser's default ~15px scrollbar). A
+   thin, low-contrast thumb instead of hiding it outright (no-scrollbar,
+   above) — there's real content to page through here. */
+@utility thin-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, currentColor 30%, transparent) transparent;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in oklab, currentColor 30%, transparent);
+    border-radius: 9999px;
+  }
+}
+
 @utility surface-card {
   background-color: var(--color-card);
   border: 1px solid var(--color-border);
@@ -275,3 +482,122 @@
     0 8px 24px -12px rgba(15, 23, 42, 0.08);
 }
 
+/* === Kayak-skin utilities ===============================================
+   Conviven con .surface-card / .btn-cta, que siguen siendo las del resto
+   del sitio (radio 2xl, sombra difusa, fill plano). No se reemplazan: la
+   superficie de comparación usa estas, el marketing usa aquellas. Ver
+   docs/kayak-redesign-spec.md. */
+
+@utility compare-card {
+  background-color: var(--color-card);
+  border: 1px solid transparent;
+  border-radius: var(--radius-compact);
+  box-shadow: var(--shadow-compare);
+  transition:
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+
+/* 2026-09-04 feedback (ronda 8) — "el mangomundi ai cuando se despliega no
+   tendria que tapar lo del fondo, igual que como hace kayak": medido en
+   vivo el `<main>` real de kayak.com con su Ask AI abierto — la caja se
+   angosta y se corre a la derecha en vez de quedar tapada por un panel
+   `position:fixed` flotando encima. `#page-main` es el `<main>` de
+   __root.tsx (RootShell's `LangKeyedShell`); FloatingAgent
+   (ComparatorSection.tsx) togglea esta clase directamente por DOM cuando
+   el panel abre/cierra — mismo patrón cross-tree que ya usan los portales
+   de `header-ai-slot`/`header-ai-slot-mobile`, porque Header, `<main>` y
+   ComparatorSection son hermanos sin padre en común. `min-width: 640px`
+   (Tailwind `sm`) — en mobile el panel ya ocupa el viewport completo
+   (`w-[min(380px,100vw)]`), empujar el contenido ahí lo mandaría fuera de
+   pantalla en vez de liberar espacio. El padding (no margin) empareja el
+   comportamiento real medido: el `<main>` sigue de borde a borde, sólo su
+   ÁREA DE CONTENIDO se angosta — el hueco que deja queda cubierto por el
+   panel mismo (`z-[60]`), así que no hace falta pintarlo de ningún color
+   propio. */
+@media (min-width: 640px) {
+  #page-main {
+    transition: padding-left 0.3s ease-out;
+  }
+  #page-main.ai-panel-open {
+    padding-left: min(380px, 100vw);
+  }
+}
+
+/* 2026-09-04 feedback (ronda 8) — "el mangomundi ai que tenga algun borde
+   fluo dinamico como hace ask ai de kayak": auditado en vivo (hojas de
+   estilo, pseudo-elementos, barrido de animaciones page-wide) contra el
+   Ask AI real de kayak.com — no se encontró ningún borde/glow animado ahí;
+   el único `@keyframes glow` de su CSS es un pulso de opacidad genérico
+   para skeletons de precio cargando, sin relación con ese botón. No se
+   pudo confirmar que kayak tenga este efecto — se construye igual acá
+   porque el usuario lo pidió explícitamente, independiente de la paridad
+   literal. Anillo con gradiente cónico (marca: mango → mango-glow →
+   accent-deep) rotando detrás del elemento vía un `::before` enmascarado
+   a sólo el grosor del borde (`mask-composite: exclude`, con el prefijo
+   `-webkit-` para Safari) — el mismo truco que un "borde con gradiente
+   animado" sin poder animar `border-image` directamente (no es
+   animable). `border-radius: inherit` para que calce con cualquier forma
+   del elemento (píldora cuadrada del trigger de escritorio, círculo del
+   de mobile). Aplicado sólo al trigger COLAPSADO (ver su propio comment
+   en ComparatorSection.tsx) — no al panel ya abierto, para no tener algo
+   animando permanentemente alrededor de donde el usuario está leyendo o
+   escribiendo. "si le ponemos el borde fluo... le sacamos el puntito
+   verde": el punto verde de `hasNewResult` se sacó de los dos triggers en
+   el mismo cambio (ver ComparatorSection.tsx). */
+@keyframes mg-ai-glow-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.ai-glow-border {
+  position: relative;
+  isolation: isolate;
+}
+.ai-glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from 0deg,
+    var(--color-brand-cta),
+    var(--mango-glow),
+    var(--color-accent-deep),
+    var(--color-brand-cta)
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  animation: mg-ai-glow-spin 3.5s linear infinite;
+}
+
+@utility btn-cta-gradient {
+  background-image: var(--gradient-cta);
+  color: var(--color-brand-cta-foreground);
+  white-space: nowrap;
+  transition:
+    filter 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+  &:hover {
+    filter: brightness(1.06);
+    box-shadow: 0 6px 18px -8px var(--color-accent-deep);
+  }
+  &:active {
+    transform: translateY(1px);
+  }
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    filter: none;
+  }
+}

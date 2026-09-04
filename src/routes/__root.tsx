@@ -12,6 +12,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
+import { ALL_FLAG_URLS } from "@/components/ui/FlagIcon";
 
 import { SITE_URL, GA4_MEASUREMENT_ID, GTM_CONTAINER_ID } from "@/config/site";
 import appCss from "../styles.css?url";
@@ -42,16 +43,15 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
+  const { t } = useI18n();
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="font-heading text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+          {t("errorBoundary.title")}
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong on our end. You can try refreshing or head back home.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("errorBoundary.description")}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -60,13 +60,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            Try again
+            {t("errorBoundary.tryAgain")}
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-surface-elevated"
           >
-            Go home
+            {t("errorBoundary.goHome")}
           </a>
         </div>
       </div>
@@ -88,12 +88,22 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     const seo = SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en;
     // Absolute URL — social crawlers (WhatsApp/X/LinkedIn/Facebook) reject
     // relative og:image paths, so the card would never render.
-    const ogImage = `${SITE_URL}/og-image.jpg`;
+    const ogImage = `${SITE_URL}/brand/og-card.png`;
     return {
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { name: "theme-color", content: "#E9EDF3" },
+        { name: "theme-color", content: "#241C16" },
+        // 2026-09-02 feedback — anti-scraping measure for the rate/corridor
+        // data, without touching SEO: no `name: "robots"` tag here on
+        // purpose (its absence already means the default index/follow,
+        // same as before — Google/Bing keep full access). "noai"/
+        // "noimageai" is a separate, narrower signal some publishers use
+        // (the Spawning.ai do-not-train convention) asking AI trainers
+        // specifically not to use this page's content for training —
+        // informal, not universally honored, but a real signal alongside
+        // robots.txt's per-bot Disallow rules (see public/robots.txt).
+        { name: "robots", content: "noai, noimageai" },
         { title: seo.title },
         { name: "description", content: seo.description },
         { name: "author", content: "Mangomundi" },
@@ -113,21 +123,62 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
       links: [
         { rel: "stylesheet", href: appCss },
-        // New mm favicon set. PNG icons are preferred by modern browsers; the
-        // .ico is the legacy fallback for /favicon.ico requests.
-        { rel: "icon", href: "/favicon.ico", sizes: "any" },
-        { rel: "icon", type: "image/png", sizes: "32x32", href: "/icon-32.png" },
-        { rel: "icon", type: "image/png", sizes: "16x16", href: "/icon-16.png" },
-        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
-        { rel: "icon", type: "image/png", sizes: "192x192", href: "/android-chrome-192x192.png" },
-        { rel: "icon", type: "image/png", sizes: "512x512", href: "/android-chrome-512x512.png" },
-        { rel: "manifest", href: "/site.webmanifest" },
+        // mangomundi brand favicon set (design/HANDOFF.md §1) — PNG icons only,
+        // no legacy .ico or android-chrome-* fallbacks.
+        { rel: "icon", type: "image/png", sizes: "32x32", href: "/brand/favicon-32.png" },
+        { rel: "icon", type: "image/png", sizes: "16x16", href: "/brand/favicon-16.png" },
+        { rel: "apple-touch-icon", href: "/brand/apple-touch-icon.png" },
+        { rel: "manifest", href: "/brand/manifest.json" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=Manrope:wght@200;300;400;500;600;700&display=swap",
+          // Bricolage Grotesque: headings AND figures — h1/h2/section titles,
+          // every received/rate/delta/stat number (design/AJUSTES-1.md §A).
+          // Replaces Sora, retired from the project. Manrope: everything
+          // else (labels, row text, buttons, paragraphs). Rubik
+          // ital,wght@0,700;1,700: the brand wordmark/icon only
+          // (design/HANDOFF.md §1) — 700 upright for the straight "m"s, 700
+          // italic for the "ango"/"undi" tails.
+          //
+          // 2026-09-01 feedback — "el título está en negrita y después
+          // cambia la letra": `display=swap` renders the page with the
+          // fallback stack (`ui-sans-serif, system-ui, sans-serif` —
+          // styles.css's own --font-heading) immediately, then visibly
+          // swaps to Bricolage Grotesque the moment it finishes
+          // downloading — exactly the jump reported, most noticeable on
+          // the big bold h1/h2 titles. `display=optional` fixes it at the
+          // font-loading level: the browser gives the webfont a very
+          // short window (~100ms) to be ready (near-instant on repeat
+          // visits, since it's cached) and uses the fallback with no
+          // later swap otherwise — so the title never visibly changes
+          // after first paint, at the cost of an occasional slow first
+          // visit rendering in the fallback font instead of waiting for
+          // Bricolage. Applies to all 3 families requested in this one
+          // stylesheet (Bricolage/Manrope/Rubik) since `display` is a
+          // per-request query param here, not settable per-family.
+          href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=optional",
         },
+        // 2026-08-31 feedback (twice), still reported 2026-09-01 after
+        // switching from a JS idle-callback warm-up to `<link
+        // rel="prefetch">` — the flags kept popping in late regardless.
+        // `prefetch`'s own spec behavior is the reason: browsers treat it
+        // as "fetch this only once the page is otherwise idle" (often
+        // deferred past onload, sometimes past several seconds of network
+        // quiet), not "fetch this soon at low priority" — a real person
+        // opening the country dropdown within the first second or two of
+        // landing can easily open it before a single prefetch has fired.
+        // `preload` + `fetchPriority: "low"` is the fix for that specific
+        // gap: still discovered by the preload scanner while parsing this
+        // HTML (same as before), but scheduled as a normal load-time fetch
+        // instead of being deferred to idle — just at the bottom of the
+        // priority queue, so critical resources (fonts, hero, JS/CSS) still
+        // win the bandwidth first. ~270 SVGs / ~2.7MB total is real weight
+        // to add to page load even at low priority, which is exactly why
+        // this couldn't just be `preload` at default/high priority instead.
+        ...ALL_FLAG_URLS.map(
+          (href) => ({ rel: "preload", href, as: "image", fetchPriority: "low" }) as const,
+        ),
       ],
     };
   },
@@ -248,10 +299,37 @@ function LangKeyedShell() {
     );
   }
 
+  // 2026-09-01 feedback — "la sección de business sigue quedando mucho
+  // espacio en blanco": this container used to force `min-h-screen` +
+  // `flex-col` so a short page's <Footer> still landed at the bottom of
+  // the viewport instead of right after the content. That's exactly what
+  // was producing the huge empty cream gap the user kept flagging on
+  // `/business` (and `/about`) — real content there is shorter than a
+  // typical viewport, so the footer got pushed ~250-300px down to sit at
+  // the viewport edge. Dropping the forced min-height lets the footer sit
+  // directly under whatever content each page actually has, which is the
+  // normal pattern for a marketing site (the footer isn't meant to be
+  // glued to the viewport bottom, just to end the page). Long pages (home)
+  // are unaffected since their content already exceeds any viewport height.
+  // 2026-09-04 feedback (ronda 8) — "el mangomundi ai cuando se despliega
+  // no tendria que tapar lo del fondo, igual que como hace kayak": este
+  // `id` es el gancho que FloatingAgent (ComparatorSection.tsx) usa para
+  // togglear `.ai-panel-open` por DOM directo cuando el panel abre/cierra
+  // — Header, este `<main>`/Outlet y ComparatorSection son hermanos sin
+  // padre en común que los una a los tres (mismo motivo por el que los
+  // triggers colapsados viajan por portal a `#header-ai-slot`/
+  // `#header-ai-slot-mobile` en vez de props). La regla real
+  // (padding-left + transición, sólo desde `sm:`) vive en styles.css junto
+  // a `#page-main` — acá sólo el id que la engancha.
   return (
-    <div key={lang} className="relative z-10 flex min-h-screen flex-col">
+    <div key={lang} className="relative z-10 flex flex-col">
       <Header />
-      <main className="flex-1 pt-16">
+      {/* `pt-[66px]` fijo pasa a `pt-[var(--header-h)]` (ver el comment de
+          esa custom property en styles.css `:root`) — Header.tsx puede
+          medir más de 66px una vez que la barra de búsqueda del comparador
+          se le porta adentro (ronda 8), y este padding es lo que evita que
+          el contenido de la página arranque tapado debajo del header fijo. */}
+      <main id="page-main" className="pt-[var(--header-h)]">
         <Outlet />
       </main>
       <Footer />
@@ -267,7 +345,15 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <I18nProvider initialLang={initialLang}>
         <ComingSoonProvider>
-          <div className="min-h-screen bg-[#fcfcfc]">
+          {/* 2026-09-01 feedback — "revisar los colores... hay tonos del
+              fondo diferentes" vs. design/Mangomundi 4 - Final.dc.html: the
+              mockup's page background is #FBF8F4 (a warm cream, already
+              `--background` in styles.css) — this wrapper had its own
+              hardcoded #fcfcfc (near-white) instead of the token, so every
+              section that relies on inheriting the page background instead
+              of setting its own (TodaysRoutesSection among them) rendered
+              paler than the mockup everywhere at once. */}
+          <div className="bg-background">
             <LangKeyedShell />
           </div>
           <SpeedInsights />
