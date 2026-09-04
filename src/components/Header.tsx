@@ -21,16 +21,31 @@ import { useI18n } from "@/lib/i18n";
  *  ☰ + logo on the left, nothing competing on the right — the nav lives
  *  behind the hamburger at every width, not spread out inline on desktop.
  *  Same trigger button now works at every breakpoint (moved from the
- *  right, mobile-only, to the left, always) and opens the same dropdown
- *  panel HEADER_NAV always used on mobile; there's no more separate
- *  always-open desktop `<nav>`. A lean left-only header is also what
- *  leaves the compact sticky search bar (ComparatorSection's own
- *  `compact` state) a clean strip under the header once there's a
- *  result, instead of competing for room with a right-aligned nav row.
+ *  right, mobile-only, to the left, always) and opens the same nav items
+ *  HEADER_NAV always used on mobile; there's no more separate always-open
+ *  desktop `<nav>`. A lean left-only header is also what leaves the
+ *  compact sticky search bar (ComparatorSection's own `compact` state) a
+ *  clean strip under the header once there's a result, instead of
+ *  competing for room with a right-aligned nav row.
  *  "cuando kayak usa el loguito solo de la k... podemos usar el logo de
  *  la m": kayak's mobile header shows just the K mark, full wordmark only
  *  once there's room — same idea here with `BrandMark` (the icon-only "m")
- *  below `sm`, the full `Wordmark` from `sm` up. */
+ *  below `sm`, the full `Wordmark` from `sm` up.
+ *  2026-09-04 feedback (ronda 6) — "el menu de la esquina en kayak se
+ *  despliega para el costado no para abajo" + "la idea es que el selector
+ *  del buscador pase arriba de todo como hace kayak, por eso el menu
+ *  desplegable sale del costado": kayak's ☰ opens a panel that SLIDES IN
+ *  from the left as an overlay (verified live) — it never pushes the page
+ *  content down, which matters here specifically because
+ *  ComparatorSection's search bar sticks to `top-[66px]` once there's a
+ *  result; a panel that pushed content down would shove that sticky bar
+ *  (and everything below it) out of place every time the menu opened. The
+ *  ronda-5 version (`{open && <nav className="border-t...">}`, a strip
+ *  that dropped in BELOW the header and pushed the page down) is replaced
+ *  with a fixed-position drawer anchored to the left edge, under the
+ *  header, plus a click-to-close backdrop — same nav items, same open
+ *  state, just docked to the side like kayak's instead of stacked
+ *  downward. */
 export function Header() {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
@@ -89,29 +104,40 @@ export function Header() {
         </Link>
       </div>
 
-      {/* Nav panel — now the only nav, opened by the ☰ trigger at every
+      {/* Side drawer — now the only nav, opened by the ☰ trigger at every
           width (used to be mobile-only; desktop had its own always-open
-          inline row next to the logo, dropped per the doc comment above). */}
+          inline row next to the logo, dropped per the doc comment above).
+          Docked to the LEFT edge under the header (kayak's own pattern —
+          see the file's doc comment), as an overlay: `fixed` positioning
+          means it never pushes the page's own content (the comparator's
+          sticky search bar included) down or sideways. */}
       {open && (
-        <nav
-          className="border-t border-border bg-card/95 px-5 py-3 backdrop-blur-xl"
-          aria-label={t("header.mainAriaLabel")}
-        >
-          <ul className="mx-auto max-w-7xl space-y-1">
-            {HEADER_NAV.map((item) => (
-              <li key={item.labelKey}>
-                <Link
-                  to={item.to ?? "/"}
-                  hash={item.hash}
-                  onClick={() => setOpen(false)}
-                  className="block rounded-md px-2 py-2 text-sm font-medium text-foreground hover:bg-muted"
-                >
-                  {t(item.labelKey)}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <>
+          <div
+            className="fixed inset-x-0 bottom-0 top-[66px] z-40 bg-black/30"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+          <nav
+            className="fixed bottom-0 left-0 top-[66px] z-50 w-[280px] max-w-[80vw] overflow-y-auto border-r border-border bg-card px-3 py-4 shadow-2xl"
+            aria-label={t("header.mainAriaLabel")}
+          >
+            <ul className="space-y-1">
+              {HEADER_NAV.map((item) => (
+                <li key={item.labelKey}>
+                  <Link
+                    to={item.to ?? "/"}
+                    hash={item.hash}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-md px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
+                  >
+                    {t(item.labelKey)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </>
       )}
     </header>
   );
