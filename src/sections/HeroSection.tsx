@@ -39,7 +39,66 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
       }`}
       aria-hidden={compact}
     >
-      <div className="overflow-hidden">
+      <div className="relative overflow-hidden">
+        {/* 2026-09-04 feedback (ronda 5) — "a la derecha en home agregar
+            alguna imagen semitrasparente de monedas": monedas superpuestas
+            en los tonos de marca (ink/mango), muy tenues (12% opacity), de
+            adorno puro (aria-hidden, pointer-events-none). Ancla al borde
+            derecho de la SECCIÓN completa (no de la columna de 1180px de
+            abajo) y solo se muestra desde `xl:` — así vive en el margen
+            que ya queda libre fuera de esa columna en pantallas anchas, en
+            vez de competir por ancho con el titular/subtítulo (que además
+            acaba de perder su tope de ancho, ver el <p> de acá abajo). El
+            `overflow-hidden` del contenedor la recorta si el viewport
+            todavía no tiene margen de sobra. */}
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute right-[-40px] top-1/2 hidden -translate-y-1/2 select-none xl:block"
+          width="320"
+          height="320"
+          viewBox="0 0 320 320"
+          fill="none"
+        >
+          <circle cx="150" cy="160" r="110" fill="#241C16" opacity="0.1" />
+          <circle cx="150" cy="160" r="110" stroke="#241C16" strokeOpacity="0.16" strokeWidth="1.5" />
+          <text
+            x="150"
+            y="182"
+            textAnchor="middle"
+            fontFamily="Georgia, serif"
+            fontSize="86"
+            fill="#241C16"
+            opacity="0.14"
+          >
+            $
+          </text>
+          <circle cx="255" cy="90" r="58" fill="#EE5B3E" opacity="0.12" />
+          <circle cx="255" cy="90" r="58" stroke="#EE5B3E" strokeOpacity="0.2" strokeWidth="1.5" />
+          <text
+            x="255"
+            y="110"
+            textAnchor="middle"
+            fontFamily="Georgia, serif"
+            fontSize="46"
+            fill="#EE5B3E"
+            opacity="0.18"
+          >
+            €
+          </text>
+          <circle cx="248" cy="248" r="42" fill="#241C16" opacity="0.08" />
+          <circle cx="248" cy="248" r="42" stroke="#241C16" strokeOpacity="0.16" strokeWidth="1.5" />
+          <text
+            x="248"
+            y="263"
+            textAnchor="middle"
+            fontFamily="Georgia, serif"
+            fontSize="34"
+            fill="#241C16"
+            opacity="0.14"
+          >
+            £
+          </text>
+        </svg>
         {/* docs/kayak-redesign-spec.md §6.2 — el titular pasa de centrado a
             alineado a la IZQUIERDA y el contenedor baja de max-w-7xl (1280)
             a 1180, el mismo ancho que el comparador de §3.1: centrado sobre
@@ -57,7 +116,14 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
             {t("home.hero.headline")}
             <span className="text-brand-cta">.</span>
           </h1>
-          <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-muted-foreground sm:text-[17px]">
+          {/* 2026-09-04 feedback (ronda 5) — "el titulo... que quede en un
+              renglon si hay lugar": `max-w-3xl` (768px) was narrower than
+              the tagline needs at the sizes people actually use — it wraps
+              to 2-3 lines even though the section's own container
+              (`max-w-[1180px]` above) has plenty of room for one. Dropping
+              the cap lets it use that same width and wrap only when the
+              viewport genuinely doesn't have the room, not before. */}
+          <p className="mt-3 max-w-none text-[15px] leading-relaxed text-muted-foreground sm:text-[17px]">
             {t("home.hero.tagline")}
           </p>
         </div>

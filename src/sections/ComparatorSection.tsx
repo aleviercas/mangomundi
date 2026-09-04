@@ -1690,7 +1690,7 @@ export function ComparatorSection({
                 }`}
               >
                 <Icon
-                  className={`h-5 w-5 ${active ? "text-brand-cta-foreground" : "text-muted-foreground"}`}
+                  className={`h-5 w-5 ${active ? "text-brand-cta-foreground" : "text-foreground"}`}
                   aria-hidden
                 />
               </span>
@@ -1727,10 +1727,15 @@ export function ComparatorSection({
                     sin borde/sombra/fondo por campo, separada por hairlines
                     (`border-t` apilado en mobile, `border-l` en fila en
                     desktop), con el CTA a sangre en el extremo derecho. */}
+      {/* 2026-09-04 feedback (ronda 5) — "cuando elegis el mismo pais no es
+                    necesario que te mande ninguna advertencia ni que te
+                    bloquee, se puede seleccionar otra moneda y listo": el
+                    highlight `ring-2 ring-brand-cta` que se prendía con
+                    `sameCorridorBlocked` desaparece — ya no hay ningún
+                    aviso ni bloqueo ligado a elegir el mismo país en origen
+                    y destino, en ningún punto de la barra. */}
       <div
-        className={`grid min-w-0 grid-cols-1 overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch ${
-          sameCorridorBlocked ? "ring-2 ring-brand-cta" : ""
-        }`}
+        className="grid min-w-0 grid-cols-1 overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch"
       >
         {/* Segmento 1 — monto, solo. El monto es el primer segmento y el
                       más grande de la barra. Sin chip propio: comparte el
@@ -1897,14 +1902,14 @@ export function ComparatorSection({
         <button
           type="button"
           onClick={() => {
-            if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+            if (!receivingCountry || amount <= 0) {
               setValidationError(t("fx.validation"));
               return;
             }
             setValidationError(null);
             compareMut.mutate(undefined);
           }}
-          disabled={compareMut.isPending || !receivingCountry || sameCorridorBlocked || amount <= 0}
+          disabled={compareMut.isPending || !receivingCountry || amount <= 0}
           className="btn-cta-gradient mx-3 mb-3 mt-1 flex h-11 items-center justify-center gap-2 rounded-compact px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring @2xl:mx-2 @2xl:my-0 @2xl:h-11 @2xl:w-[130px] @2xl:flex-none @2xl:self-center"
         >
           {compareMut.isPending ? (
@@ -2011,30 +2016,12 @@ export function ComparatorSection({
               through several rounds of exactly this ask (S4/S9/X1/Z1/Z2) —
               real, not cosmetic padding is what's left to give back. */}
             <div className={`@container ${embedded ? "space-y-1.5 p-2.5" : "space-y-2"}`}>
-              {/* 2026-09-02 feedback — "el comparador se mueve y parece
-                  raro" al elegir país/moneda: reproducido y medido (no a
-                  ojo) — elegir el mismo país en origen y destino inserta
-                  este aviso, la card crece ~42px al instante y todo lo de
-                  abajo (Institutional & Partnership Inquiries, footer)
-                  salta de golpe. La animación grid-rows (técnica estándar
-                  para animar hacia/desde height:auto sin JS ni medir el
-                  alto a mano) convierte ese salto instantáneo en una
-                  transición suave — sigue "moviendo" la página como
-                  cualquier mensaje de validación real, pero de forma
-                  predecible en vez de abrupta. El aviso queda siempre
-                  montado (nunca unmount) para que la transición tenga algo
-                  que animar en ambos sentidos. */}
-              <div
-                className={`grid overflow-hidden transition-[grid-template-rows] duration-200 ease-out ${
-                  sameCorridorBlocked && receivingCountry ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                }`}
-              >
-                <div className="min-h-0">
-                  <div className="rounded-md border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent-text">
-                    {t("search.sameCountry")}
-                  </div>
-                </div>
-              </div>
+              {/* 2026-09-04 feedback (ronda 5) — "cuando elegis el mismo
+                  pais no es necesario que te mande ninguna advertencia ni
+                  que te bloquee": este aviso (2026-09-02) desaparece por
+                  completo. Elegir el mismo país en origen y destino ya no
+                  interrumpe nada — simplemente se puede seguir y elegir
+                  otra moneda si hace falta. */}
               {/* Search form — two shapes depending on `embedded`. Both are
                   country-first (not currency-first), matching how every real
                   MTO comparator does it (Remitly, WorldRemit, Western Union
@@ -2091,11 +2078,7 @@ export function ComparatorSection({
                 // como última fila. Se va el rounded-[12px] + borde de
                 // 1.5px, que lo hacían leer como un input gigante en vez de
                 // como un buscador.
-                <div
-                  className={`compare-card flex flex-col overflow-hidden transition-colors ${
-                    sameCorridorBlocked ? "ring-2 ring-brand-cta" : ""
-                  }`}
-                >
+                <div className="compare-card flex flex-col overflow-hidden transition-colors">
                   {/* 2026-09-04 feedback (Kayak-style redesign, approved
                       canvas mockup "mangomundi Search Redesign") — Send and
                       Receive now read as ONE continuous bordered card
@@ -2220,19 +2203,14 @@ export function ComparatorSection({
                       type="button"
                       data-search-submit
                       onClick={() => {
-                        if (!receivingCountry || sameCorridorBlocked || amount <= 0) {
+                        if (!receivingCountry || amount <= 0) {
                           setValidationError(t("fx.validation"));
                           return;
                         }
                         setValidationError(null);
                         compareMut.mutate(undefined);
                       }}
-                      disabled={
-                        compareMut.isPending ||
-                        !receivingCountry ||
-                        sameCorridorBlocked ||
-                        amount <= 0
-                      }
+                      disabled={compareMut.isPending || !receivingCountry || amount <= 0}
                       className="btn-cta-gradient flex h-11 w-full items-center justify-center rounded-compact text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
                     >
                       {compareMut.isPending ? (
