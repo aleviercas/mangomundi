@@ -2113,150 +2113,114 @@ export function ComparatorSection({
                 // 1.5px, que lo hacían leer como un input gigante en vez de
                 // como un buscador.
                 <div className="compare-card flex flex-col overflow-hidden transition-colors">
-                  {/* 2026-09-04 feedback (Kayak-style redesign, approved
-                      canvas mockup "mangomundi Search Redesign") — Send and
-                      Receive now read as ONE continuous bordered card
-                      (hairline divider between rows, not two separate boxes
-                      with a gap), a square swap button pinned to the right
-                      edge overlapping the seam between them, and Compare as
-                      a full-width row at the bottom of the same card. Field
-                      widths (w-20 flag/country, w-[58px] currency) are
-                      unchanged from the previous layout — AD5/AG3/AH2's
-                      "never resizes on selection, never clips a locale's
-                      placeholder" fixes still apply here. */}
+                  {/* 2026-09-06 feedback (ronda 10) — "sacarle los titulos a
+                      los campos" + "poner el combobox en el mismo orden que
+                      el home: monto en el primer renglón, y abajo país y
+                      moneda [de origen y luego de destino], la flechita de
+                      ida y vuelta entremedio sin ocupar renglón propio" +
+                      "agranda el espacio de país (origen y destino) que
+                      quedó muy chico, la currency que ocupe solo su
+                      lugar". Antes esta tarjeta era 2 renglones (origen:
+                      bandera+monto+moneda / destino: bandera+moneda) con
+                      el swap superpuesto en la costura entre ambos.
+                      Ahora son 3: (1) monto solo, (2) país+moneda de
+                      origen, (3) país+moneda de destino — sin ninguna
+                      leyenda ("Amount"/"You receive") arriba de cada
+                      campo, el valor/placeholder ya es la única etiqueta
+                      visual (aria-label sigue completo para lectores de
+                      pantalla). El país deja `triggerIconOnly` (antes sólo
+                      mostraba la bandera en una caja de 44px) y pasa a
+                      `flex-1` con bandera + nombre — con el monto en su
+                      propio renglón, país y moneda tienen todo el ancho
+                      de la tarjeta para repartirse, no sólo lo que sobraba
+                      del monto. La moneda mantiene su ancho fijo angosto
+                      (58px, sólo lo que necesita un código de 3 letras),
+                      así el espacio ganado va entero al país. El swap
+                      pasa a superponerse en la costura entre el renglón 2
+                      y el 3 (antes 1-2): se anida un `relative` propio
+                      alrededor de esos dos renglones nada más, dejando el
+                      monto (renglón 1) afuera de ese cálculo de costura. */}
+                  <div className="border-b border-border px-2.5 py-[9px]">
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={1}
+                      value={amount || ""}
+                      placeholder="1000"
+                      onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                      aria-label={t("comparator.field.amount")}
+                      className="w-full min-w-0 bg-transparent text-[16px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    />
+                  </div>
+
                   <div className="relative">
-                    {/* 2026-09-04 feedback (ronda 6, cont.) — "organizar
-                        mejor el widget los tamanos de los campos": these
-                        two country triggers went `triggerIconOnly` back on
-                        2026-09-01 (closed trigger = just the flag, no text)
-                        but kept the `w-20` (80px) box sized for the OLDER
-                        flag+text trigger they replaced — leaving ~55px of
-                        dead space around a ~20px flag glyph in a frame
-                        that's only 360px wide to begin with, at the direct
-                        expense of the amount input next to it. `w-11`
-                        (44px) is a real touch target for the flag button
-                        without carrying that dead weight; the freed width
-                        goes straight to the amount field via its own
-                        `flex-1`. */}
-                    <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
-                      <span className="text-badge font-semibold text-muted-foreground">
-                        {t("comparator.field.amount")}
-                      </span>
-                      {/* 2026-09-06 feedback — same rule as the desktop bar:
-                          país mantiene su propio recuadro (picker de
-                          aeropuerto de kayak), monto y moneda van sin caja
-                          (campo tipo fecha de kayak). Antes las tres piezas
-                          compartían un único `rounded-control bg-muted`
-                          envolvente, que las leía a todas como una sola
-                          píldora — se saca ese contenedor y el país pasa a
-                          tener su propia caja chica (`rounded border
-                          border-border bg-muted`), separada por gap, del
-                          resto del renglón que queda liso sobre el lienzo
-                          de la tarjeta. */}
-                      <div className="flex h-[30px] items-stretch gap-1.5">
-                        <CountryCombobox
-                          value={sendingCountry}
-                          onChange={handleSendingCountryChange}
-                          placeholder=""
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCountry")}
-                          triggerIconOnly
-                          hideChevron
-                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded border border-border bg-muted px-1.5 text-[12px] font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
-                        />
-                        <div className="flex min-w-0 flex-1 items-stretch overflow-hidden">
-                          <input
-                            type="number"
-                            inputMode="decimal"
-                            min={1}
-                            value={amount || ""}
-                            placeholder="1000"
-                            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                            aria-label={t("comparator.field.amount")}
-                            className="min-w-0 flex-1 bg-transparent px-1 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                          />
-                          <CurrencyCombobox
-                            value={from}
-                            onChange={handlePickFromCurrency}
-                            placeholder={t("comparator.field.sourceCurrency")}
-                            searchPlaceholder={t("comparator.combobox.search")}
-                            emptyLabel={t("comparator.combobox.empty")}
-                            ariaLabel={t("comparator.field.sourceCurrency")}
-                            compactLabel
-                            hideChevron
-                            triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                          />
-                        </div>
-                      </div>
+                    <div className="flex h-9 items-stretch gap-1.5 border-b border-border px-2.5 py-[7px]">
+                      <CountryCombobox
+                        value={sendingCountry}
+                        onChange={handleSendingCountryChange}
+                        placeholder={t("comparator.combobox.placeholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.sourceCountry")}
+                        hideSecondary
+                        hideChevron
+                        triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border border-border bg-muted px-2 text-[12px] font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+                      />
+                      <CurrencyCombobox
+                        value={from}
+                        onChange={handlePickFromCurrency}
+                        placeholder={t("comparator.field.sourceCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.sourceCurrency")}
+                        compactLabel
+                        hideChevron
+                        triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                      />
                     </div>
 
                     {/* 2026-09-04 feedback — Receive gets a real bordered
                         box in the accent color while it still needs a
-                        country (Kayak's focused "To?" field cue), the same
-                        treatment as the full comparator's own Receive
-                        segment — distinct from sameCorridorBlocked (a
-                        stronger, more urgent state on the whole card,
-                        unchanged above). */}
-                    <div className="flex flex-col gap-[3px] px-2.5 py-[7px]">
-                      <span
-                        className={`text-badge font-semibold ${
-                          !receivingCountry ? "text-accent-text" : "text-muted-foreground"
+                        country (Kayak's focused "To?" field cue), la misma
+                        idea que el campo de origen de arriba — distinto de
+                        sameCorridorBlocked (sin cambios). */}
+                    <div className="flex h-9 items-stretch gap-1.5 px-2.5 py-[7px]">
+                      <CountryCombobox
+                        value={receivingCountry}
+                        onChange={handleReceivingCountryChange}
+                        placeholder={t("comparator.field.receiveCountryPlaceholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCountry")}
+                        hideSecondary
+                        hideChevron
+                        triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border px-2 text-[12px] font-bold transition-colors ${
+                          !receivingCountry
+                            ? "border-brand-cta bg-accent/10 text-accent-text"
+                            : "border-border bg-muted text-foreground hover:border-foreground/30"
                         }`}
-                      >
-                        {t("comparator.field.youReceive")}
-                      </span>
-                      {/* 2026-09-06 feedback — misma regla que el origen de
-                          arriba: el país es el único que lleva recuadro
-                          propio (picker de aeropuerto de kayak); la moneda
-                          queda lisa. El estado "todavía sin país" sigue
-                          siendo el borde/fondo en accent-cta, pero ahora
-                          vive en la caja chica del país, no en todo el
-                          renglón. */}
-                      <div className="flex h-[30px] items-stretch gap-1.5">
-                        <CountryCombobox
-                          value={receivingCountry}
-                          onChange={handleReceivingCountryChange}
-                          placeholder={t("comparator.field.receiveCountryPlaceholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCountry")}
-                          triggerIconOnly
-                          hideChevron
-                          triggerClassName={`h-full w-11 shrink-0 justify-center gap-1 rounded border px-1.5 text-[12px] font-bold transition-colors ${
-                            !receivingCountry
-                              ? "border-brand-cta bg-accent/10 text-accent-text"
-                              : "border-border bg-muted text-foreground hover:border-foreground/30"
-                          }`}
-                        />
-                        <div className="flex min-w-0 flex-1 items-stretch overflow-hidden">
-                          <CurrencyCombobox
-                            value={to}
-                            onChange={handlePickToCurrency}
-                            placeholder={t("comparator.field.targetCurrency")}
-                            searchPlaceholder={t("comparator.combobox.search")}
-                            emptyLabel={t("comparator.combobox.empty")}
-                            ariaLabel={t("comparator.field.targetCurrency")}
-                            compactLabel
-                            hideChevron
-                            triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                          />
-                        </div>
-                      </div>
+                      />
+                      <CurrencyCombobox
+                        value={to}
+                        onChange={handlePickToCurrency}
+                        placeholder={t("comparator.field.targetCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCurrency")}
+                        compactLabel
+                        hideChevron
+                        triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                      />
                     </div>
 
-                    {/* Swap — square, pinned to the right edge, overlapping
-                        the seam between the two rows (top-1/2 of this
-                        relative wrapper lands on that seam since both rows
-                        share the same padding/line-height). */}
+                    {/* Swap — cuadrado, superpuesto en la costura entre país/
+                        moneda de origen y de destino (renglones 2 y 3 de
+                        arriba; el monto, renglón 1, queda afuera de este
+                        `relative`, sin swap encima). */}
                     <button
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      // §5.4 / regla 1 — los dos hex sueltos (#F5EFE8 fondo,
-                      // #EE5B3E ícono) pasan a tokens; el ring blanco que lo
-                      // recortaba contra el borde pasa a ring-card, que es
-                      // ese mismo blanco pero por token.
                       className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-control bg-muted text-brand-cta shadow-md ring-[3px] ring-card transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cta/40"
                     >
                       <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
