@@ -1748,58 +1748,25 @@ export function ComparatorSection({
                     `sameCorridorBlocked` desaparece — ya no hay ningún
                     aviso ni bloqueo ligado a elegir el mismo país en origen
                     y destino, en ningún punto de la barra. */}
+      {/* 2026-09-06 feedback (ronda 10) — "en el home... cambia el orden
+          del origen: pone primero el monto, luego el pais y luego la
+          moneda; despues la flechita, y despues el pais y la moneda de
+          destino asi como esta" — el origen pasa de [Monto, Moneda, País]
+          a [Monto, País, Moneda]; el destino no se toca ([País, Moneda]).
+          El país ya no queda pegado al swap (esa regla de "cluster sin
+          hairline" de la ronda 6 era específica al orden viejo, donde el
+          país de origen y el de destino quedaban a ambos lados del swap);
+          con moneda de origen ahora pegada al swap, cada segmento vuelve a
+          llevar su propio hairline (border-t en mobile / border-l en
+          desktop), sin cluster especial. */}
       <div
         className="grid min-w-0 grid-cols-1 overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch"
       >
-        {/* Segmento 1 — monto, solo. El monto es el primer segmento y el
-                      más grande de la barra. Sin chip propio: comparte el
-                      lienzo del contenedor (regla general de este bloque,
-                      ver comentario de arriba). */}
-        {/* 2026-09-04 feedback (ronda 4) — "que cuando pasas por arriba la
-                      celda a seleccionar se pinta" + "lo de adentro
-                      seleccionado aparezca con la cajita como lo hace
-                      kayak": cada celda pinta un fondo suave en hover
-                      (`hover:bg-muted/60`), y el valor deja de flotar suelto
-                      sobre el lienzo del segmento — tiene su propia caja.
-                      2026-09-04 feedback (ronda 7) — "esas pildoras adentro
-                      no son de kayak, por ejemplo en el monto la currency y
-                      el pais": la ronda 4 le había dado a esa caja
-                      `rounded-md border bg-card shadow-sm` (blanco, con
-                      sombra) — medido en vivo esta ronda contra el chip
-                      real de kayak.com (`.c_neb-item`, getComputedStyle):
-                      fondo rgb(240,243,245) — NO blanco, un gris apenas
-                      distinto del blanco de la fila que lo contiene —,
-                      borde 0.8px rgb(217,226,232), radius 4px,
-                      `box-shadow: none`. Kayak distingue el chip del resto
-                      de la fila SOLO con un hairline y un cambio de tono muy
-                      sutil, nunca con sombra — la sombra es justamente lo
-                      que hacía que esto se leyera como una píldora flotando
-                      encima del lienzo en vez de un chip plano incrustado
-                      en él. Pasa a `rounded border bg-muted` (el mismo tono
-                      cálido que ya usa el resto del sitio para "superficie
-                      un paso por debajo de card", en vez de inventar un gris
-                      frío nuevo) sin `shadow-sm`, acá y en las cuatro cajas
-                      hermanas (currency origen/destino, país origen/
-                      destino) de este mismo bloque. */}
+        {/* Segmento 1 — monto, solo. Primer segmento, el más grande de la
+                      barra. Sin chip propio, sin caja tipo píldora — plano
+                      sobre el lienzo del contenedor, como la fecha de
+                      kayak.com (ver historial de rondas anteriores). */}
         <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
-          {/* 2026-09-04 feedback (ronda 6) — "eliminar los titulos de
-                        adentro de las casillas": kayak's own search bar
-                        never shows a caption inside a filled field — the
-                        field's own placeholder/value IS the label. Every
-                        segment in this bar goes `hideLabel` now; each
-                        control below still carries its own `aria-label`
-                        for assistive tech, so nothing is lost, just not
-                        shown visually. */}
-          {/* 2026-09-06 feedback — "el monto no tenga forma de píldora, que
-              lo haga como la fecha de kayak": kayak's own date field inside
-              the search bar carries no box of its own at all — no border,
-              no fill — it's plain text sitting directly on the bar's
-              canvas, and the bar's shared hover/focus treatment (this
-              segment's own `hover:bg-muted/60`, `focus-within:ring-2` on
-              the outer bar) is what signals interactivity, not a chip.
-              This reverts the ronda 7 chip (`rounded border border-border
-              bg-muted`) on the amount field specifically — the country
-              fields below keep it, see their own comment. */}
           <FieldLight label={t("comparator.field.amount")} hideLabel>
             <input
               type="number"
@@ -1814,55 +1781,13 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento 2 — moneda de origen. "Las currencys deben ser como
-                      espacio de la fecha de kayak" — caja angosta propia
-                      (`@2xl:w-28 @2xl:flex-none`, no crece ni se achica), la
-                      misma idea que el campo de fecha de kayak.com: chico,
-                      de ancho fijo, solo un valor corto. Separada del
-                      segmento anterior por hairline (`border-t` en mobile,
-                      `border-l` en desktop), sin chip propio.
-                      2026-09-06 feedback — el comentario de arriba ya decía
-                      "sin chip propio" pero el trigger seguía llevando el
-                      chip de ronda 7 (`rounded border border-border
-                      bg-muted`), que era para las CAJAS de país/aeropuerto,
-                      no para este campo tipo fecha. Corregido: ver el
-                      comentario del propio trigger, abajo. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
-          {/* Label corto ("Currency", key ya existente y traducida a los
-                        20 idiomas vía comparator.business.request.currency —
-                        no una key nueva) en vez de "Source Currency" completo:
-                        en una caja de ancho fijo tipo fecha de kayak.com, el
-                        label largo truncaba a "Source Cur…". El aria-label
-                        del combobox de abajo sigue siendo el descriptivo
-                        completo, para lectores de pantalla. */}
-          <FieldLight label={t("comparator.business.request.currency")} hideLabel>
-            <CurrencyCombobox
-              value={from}
-              onChange={handlePickFromCurrency}
-              placeholder={t("comparator.field.sourceCurrency")}
-              searchPlaceholder={t("comparator.combobox.search")}
-              emptyLabel={t("comparator.combobox.empty")}
-              ariaLabel={t("comparator.field.sourceCurrency")}
-              compactLabel
-              hideChevron
-              triggerClassName="h-auto w-full gap-0.5 rounded-sm border-0 bg-transparent px-0 py-0 shadow-none text-metric font-bold text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
-            />
-          </FieldLight>
-        </div>
-
-        {/* Segmento 3 — país de origen. "El país debería ser como el
-                      aeropuerto, con el mismo comportamiento" — mismo
+        {/* Segmento 2 — país de origen (antes Segmento 3). Mismo
                       `CountryCombobox` con búsqueda y lista de banderas que
-                      ya se usa acá (es el mismo control que el picker de
-                      origen/destino de un buscador de vuelos), separado por
-                      hairline.
-                      2026-09-06 feedback — a diferencia del monto/moneda
-                      (que van sin caja, ver sus propios comentarios), el
-                      país SÍ mantiene el recuadro (`rounded border
-                      border-border bg-muted`, el chip de ronda 7): es la
-                      señal visual de "esto es un selector con menú
-                      desplegable", igual que el campo de aeropuerto real de
-                      kayak.com se distingue del campo de fecha. */}
+                      el picker de origen/destino de un buscador de vuelos.
+                      Mantiene el recuadro (`rounded border border-border
+                      bg-muted`): es la señal visual de "esto es un
+                      selector con menú desplegable", igual que el campo de
+                      aeropuerto real de kayak.com. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
             <CountryCombobox
@@ -1879,39 +1804,33 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento swap. 2026-09-04 (ronda 6) — "la flechita de ida y
-                      vuelta en kayak es cuadrada": kayak's own is a square
-                      (`rounded-control`, same corner radius as its mode
-                      tiles), not a circle — matches the widget's own swap
-                      button below (`EmbedComparator`), which already got
-                      this right. Stays its own segment between the two
-                      country fields (already "in the middle of the two"
-                      per the bar's segment order), just square now instead
-                      of `rounded-full`, and on the same brand-cta accent
-                      the widget's swap uses instead of a neutral
-                      border/muted-foreground treatment.
-                      2026-09-04 (ronda 6, cont.) — "el cuadrado de flecha
-                      ida y vuelta va en el medio de los dos y quedo en el
-                      costado de from" + "fijate las lineas divisorias como
-                      se comportan y como lo hace kayak": first fix here
-                      (adding this segment's own hairline, matching every
-                      other segment) was the wrong read — checked live
-                      against kayak.com's real flight search DOM
-                      (`.N4mz-location-group`, `getComputedStyle` on every
-                      `.J_T2-field-group` in the row): kayak's own
-                      origin+swap+destination cluster is ONE undivided
-                      group internally (`J_T2-mod-divider-inner` — no
-                      hairline between the swap control and either field
-                      that flanks it); the hairlines only wrap the OUTSIDE
-                      of that whole 3-part cluster, same as the currency
-                      segments still do here today. A hairline on just one
-                      side of swap is what made it read as glued to
-                      "from" specifically — the fix is to have NO hairline
-                      on either side, so origin field / swap / destination
-                      field read as one continuous piece and the swap
-                      control sits centered in it, exactly like kayak's
-                      own. */}
-        <div className="flex items-center justify-center py-0.5 @2xl:w-9 @2xl:py-0">
+        {/* Segmento 3 — moneda de origen (antes Segmento 2). Caja angosta
+                      propia (`@2xl:w-28 @2xl:flex-none`), la misma idea que
+                      el campo de fecha de kayak.com: chico, ancho fijo, sin
+                      chip propio, plano sobre el lienzo. */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+          <FieldLight label={t("comparator.business.request.currency")} hideLabel>
+            <CurrencyCombobox
+              value={from}
+              onChange={handlePickFromCurrency}
+              placeholder={t("comparator.field.sourceCurrency")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.sourceCurrency")}
+              compactLabel
+              hideChevron
+              triggerClassName="h-auto w-full gap-0.5 rounded-sm border-0 bg-transparent px-0 py-0 shadow-none text-metric font-bold text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
+            />
+          </FieldLight>
+        </div>
+
+        {/* Segmento swap. Cuadrado (`rounded-control`, no `rounded-full`),
+                      acento brand-cta. Ya no forma un cluster sin hairline
+                      con los países flanqueantes (esa regla era del orden
+                      viejo, país-swap-país); ahora el segmento que lo
+                      precede es la moneda de origen, así que lleva su
+                      propio espacio como cualquier otro segmento. */}
+        <div className="flex items-center justify-center border-t border-border py-0.5 @2xl:h-14 @2xl:w-9 @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <button
             type="button"
             onClick={handleSwap}
@@ -1922,15 +1841,11 @@ export function ComparatorSection({
           </button>
         </div>
 
-        {/* Segmento 4 — país destino. 2026-09-04 (ronda 6, cont.) — no
-                      lleva hairline propia: junto con el Segmento 3 y el
-                      swap de arriba forma un único cluster sin divisiones
-                      internas, igual que el `.N4mz-location-group` real de
-                      kayak (ver comentario del swap) — el hairline que
-                      separa este cluster del resto de la barra sigue
-                      estando, pero AFUERA de él (antes del Segmento 3 y
-                      después de este, en el Segmento 5, sin tocar). */}
-        <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:py-0">
+        {/* Segmento 4 — país de destino. Sin cambios de orden respecto al
+                      destino ("asi como esta"): sigue yendo país primero,
+                      moneda después. Ahora lleva su propio hairline (ya no
+                      hay cluster con el swap, ver comentario arriba). */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight
             label={t("comparator.field.youReceive")}
             emphasizeLabel={!receivingCountry}
@@ -1954,9 +1869,8 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento 5 — moneda de destino, mismo campo sin caja tipo fecha
-                      que el Segmento 2 (ver su comentario 2026-09-06), mismo
-                      hairline de separación. */}
+        {/* Segmento 5 — moneda de destino, sin cambios de orden. Mismo
+                      campo sin caja tipo fecha que el Segmento 3. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
