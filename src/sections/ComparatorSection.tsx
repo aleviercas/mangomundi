@@ -3607,16 +3607,12 @@ function FloatingAgent(p: FloatingAgentProps) {
         aria-expanded={false}
         aria-haspopup="dialog"
         aria-controls="ai-agent-panel"
-        className="group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className={`group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+          hasNewResult ? "ai-glow-border" : ""
+        }`}
       >
         <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
         <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
-        {hasNewResult && (
-          <span
-            aria-label={t("agent.newResult")}
-            className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
-          />
-        )}
       </button>
     </>
   );
@@ -3641,15 +3637,11 @@ function FloatingAgent(p: FloatingAgentProps) {
       aria-expanded={false}
       aria-haspopup="dialog"
       aria-controls="ai-agent-panel"
-      className="group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      className={`group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+        hasNewResult ? "ai-glow-border" : ""
+      }`}
     >
       <Sparkle className="h-5 w-5 shrink-0 text-brand-cta" aria-hidden />
-      {hasNewResult && (
-        <span
-          aria-label={t("agent.newResult")}
-          className="absolute right-1.5 top-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
-        />
-      )}
     </button>
   );
 
