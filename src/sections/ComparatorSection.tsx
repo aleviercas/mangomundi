@@ -29,7 +29,6 @@ import {
   SlidersHorizontal,
   Star,
   Sparkle,
-  User,
   Zap,
   Info,
 } from "lucide-react";
@@ -1680,6 +1679,14 @@ export function ComparatorSection({
                     propio recuadro). Mismo estado `segment`/
                     `handleSegmentChange` de siempre — vuelve a cambiar sólo
                     la piel, no la lógica. */}
+      {/* 2026-09-06 feedback — "sin icono, como el botoncito de one way de
+          kayak": kayak's own one-way/round-trip toggle inside the search
+          bar is text-only — no leading glyph on either option. The
+          Building2/User icons here were carried over from when this was
+          still two square vertical-style tiles (see the ronda 7 comment
+          right below, now stale on that specific point); dropping them
+          only removes the glyph, the pill/segment shape and active-state
+          treatment are unchanged. */}
       <div
         className="inline-flex w-fit gap-0.5 rounded-control bg-muted p-1"
         role="group"
@@ -1687,20 +1694,18 @@ export function ComparatorSection({
       >
         {(["retail", "business"] as const).map((value) => {
           const active = segment === value;
-          const Icon = value === "business" ? Building2 : User;
           return (
             <button
               key={value}
               type="button"
               aria-pressed={active}
               onClick={() => handleSegmentChange(value)}
-              className={`flex items-center gap-1.5 rounded-[6px] px-3 py-1.5 text-meta font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+              className={`flex items-center rounded-[6px] px-3 py-1.5 text-meta font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                 active
                   ? "bg-card text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
               {t(`comparator.segment.${value}`)}
             </button>
           );
@@ -1779,6 +1784,16 @@ export function ComparatorSection({
                         control below still carries its own `aria-label`
                         for assistive tech, so nothing is lost, just not
                         shown visually. */}
+          {/* 2026-09-06 feedback — "el monto no tenga forma de píldora, que
+              lo haga como la fecha de kayak": kayak's own date field inside
+              the search bar carries no box of its own at all — no border,
+              no fill — it's plain text sitting directly on the bar's
+              canvas, and the bar's shared hover/focus treatment (this
+              segment's own `hover:bg-muted/60`, `focus-within:ring-2` on
+              the outer bar) is what signals interactivity, not a chip.
+              This reverts the ronda 7 chip (`rounded border border-border
+              bg-muted`) on the amount field specifically — the country
+              fields below keep it, see their own comment. */}
           <FieldLight label={t("comparator.field.amount")} hideLabel>
             <input
               type="number"
@@ -1788,7 +1803,7 @@ export function ComparatorSection({
               placeholder="1000"
               onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
               aria-label={t("comparator.field.amount")}
-              className="w-full min-w-0 rounded border border-border bg-muted px-2 py-1 text-metric font-bold tabular-nums text-foreground transition-colors placeholder:text-muted-foreground hover:border-foreground/30 focus:border-transparent focus:outline-none focus:ring-1 focus:ring-ring/40"
+              className="w-full min-w-0 rounded-sm border-0 bg-transparent px-0 py-0 text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
             />
           </FieldLight>
         </div>
@@ -1799,7 +1814,13 @@ export function ComparatorSection({
                       misma idea que el campo de fecha de kayak.com: chico,
                       de ancho fijo, solo un valor corto. Separada del
                       segmento anterior por hairline (`border-t` en mobile,
-                      `border-l` en desktop), sin chip propio. */}
+                      `border-l` en desktop), sin chip propio.
+                      2026-09-06 feedback — el comentario de arriba ya decía
+                      "sin chip propio" pero el trigger seguía llevando el
+                      chip de ronda 7 (`rounded border border-border
+                      bg-muted`), que era para las CAJAS de país/aeropuerto,
+                      no para este campo tipo fecha. Corregido: ver el
+                      comentario del propio trigger, abajo. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           {/* Label corto ("Currency", key ya existente y traducida a los
                         20 idiomas vía comparator.business.request.currency —
@@ -1818,7 +1839,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.sourceCurrency")}
               compactLabel
               hideChevron
-              triggerClassName="h-auto w-full gap-0.5 rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+              triggerClassName="h-auto w-full gap-0.5 rounded-sm border-0 bg-transparent px-0 py-0 shadow-none text-metric font-bold text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
             />
           </FieldLight>
         </div>
@@ -1827,8 +1848,15 @@ export function ComparatorSection({
                       aeropuerto, con el mismo comportamiento" — mismo
                       `CountryCombobox` con búsqueda y lista de banderas que
                       ya se usa acá (es el mismo control que el picker de
-                      origen/destino de un buscador de vuelos), en su propio
-                      segmento sin chip, separado por hairline. */}
+                      origen/destino de un buscador de vuelos), separado por
+                      hairline.
+                      2026-09-06 feedback — a diferencia del monto/moneda
+                      (que van sin caja, ver sus propios comentarios), el
+                      país SÍ mantiene el recuadro (`rounded border
+                      border-border bg-muted`, el chip de ronda 7): es la
+                      señal visual de "esto es un selector con menú
+                      desplegable", igual que el campo de aeropuerto real de
+                      kayak.com se distingue del campo de fecha. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
             <CountryCombobox
@@ -1920,8 +1948,9 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento 5 — moneda de destino, misma caja angosta tipo fecha
-                      que el Segmento 2, mismo hairline de separación. */}
+        {/* Segmento 5 — moneda de destino, mismo campo sin caja tipo fecha
+                      que el Segmento 2 (ver su comentario 2026-09-06), mismo
+                      hairline de separación. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
@@ -1933,7 +1962,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.targetCurrency")}
               compactLabel
               hideChevron
-              triggerClassName="h-auto w-full gap-0.5 rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+              triggerClassName="h-auto w-full gap-0.5 rounded-sm border-0 bg-transparent px-0 py-0 shadow-none text-metric font-bold text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
             />
           </FieldLight>
         </div>
