@@ -44,6 +44,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
@@ -1679,38 +1680,43 @@ export function ComparatorSection({
                     propio recuadro). Mismo estado `segment`/
                     `handleSegmentChange` de siempre — vuelve a cambiar sólo
                     la piel, no la lógica. */}
-      {/* 2026-09-06 feedback — "sin icono, como el botoncito de one way de
-          kayak": kayak's own one-way/round-trip toggle inside the search
-          bar is text-only — no leading glyph on either option. The
-          Building2/User icons here were carried over from when this was
-          still two square vertical-style tiles (see the ronda 7 comment
-          right below, now stale on that specific point); dropping them
-          only removes the glyph, the pill/segment shape and active-state
-          treatment are unchanged. */}
-      <div
-        className="inline-flex w-fit gap-0.5 rounded-control bg-muted p-1"
-        role="group"
-        aria-label={t("search.segment")}
-      >
-        {(["retail", "business"] as const).map((value) => {
-          const active = segment === value;
-          return (
-            <button
+      {/* 2026-09-06 feedback (ronda 10) — "que se comporte como hace kayak
+          con el de one way o return, poniendo un selector desplegable con
+          flechita": el toggle de dos botones en una píldora (ronda 9,
+          arriba en el historial de git) copiaba la FORMA del control de
+          kayak pero no su comportamiento real — kayak's one-way/round-trip
+          no es un toggle de dos botones, es un selector desplegable: un
+          solo trigger de texto con una flechita (chevron) que abre un menú
+          con las opciones. Pasa a `DropdownMenu` (mismo primitivo de Radix
+          que ya usa el resto del sitio, p.ej. el selector de idioma del
+          header) — un trigger que muestra la opción activa + `ChevronDown`,
+          y un menú con las dos opciones al hacer click. Sin ícono en el
+          trigger ni en las opciones del menú (eso seguía siendo válido de
+          la ronda 9, kayak tampoco lleva glifo ahí). */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            type="button"
+            aria-label={t("search.segment")}
+            className="inline-flex w-fit items-center gap-1 rounded-control px-2 py-1.5 text-meta font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+          >
+            {t(`comparator.segment.${segment}`)}
+            <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="min-w-[160px]">
+          {(["retail", "business"] as const).map((value) => (
+            <DropdownMenuItem
               key={value}
-              type="button"
-              aria-pressed={active}
-              onClick={() => handleSegmentChange(value)}
-              className={`flex items-center rounded-[6px] px-3 py-1.5 text-meta font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
-                active
-                  ? "bg-card text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              onSelect={() => handleSegmentChange(value)}
+              className={segment === value ? "font-semibold text-foreground" : "text-foreground"}
             >
               {t(`comparator.segment.${value}`)}
-            </button>
-          );
-        })}
-      </div>
+              {segment === value && <Check className="ml-auto h-3.5 w-3.5" aria-hidden />}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* docs/kayak-redesign-spec.md §3.2 — LA barra. Un solo bloque:
                     `@2xl:h-15` (60px, la medida real de kayak.co.uk),
