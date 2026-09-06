@@ -2222,7 +2222,18 @@ export function ComparatorSection({
                       <span className="text-badge font-semibold text-muted-foreground">
                         {t("comparator.field.amount")}
                       </span>
-                      <div className="flex h-[30px] items-stretch overflow-hidden rounded-control bg-muted">
+                      {/* 2026-09-06 feedback — same rule as the desktop bar:
+                          país mantiene su propio recuadro (picker de
+                          aeropuerto de kayak), monto y moneda van sin caja
+                          (campo tipo fecha de kayak). Antes las tres piezas
+                          compartían un único `rounded-control bg-muted`
+                          envolvente, que las leía a todas como una sola
+                          píldora — se saca ese contenedor y el país pasa a
+                          tener su propia caja chica (`rounded border
+                          border-border bg-muted`), separada por gap, del
+                          resto del renglón que queda liso sobre el lienzo
+                          de la tarjeta. */}
+                      <div className="flex h-[30px] items-stretch gap-1.5">
                         <CountryCombobox
                           value={sendingCountry}
                           onChange={handleSendingCountryChange}
@@ -2232,29 +2243,31 @@ export function ComparatorSection({
                           ariaLabel={t("comparator.field.sourceCountry")}
                           triggerIconOnly
                           hideChevron
-                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded border border-border bg-muted px-1.5 text-[12px] font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
                         />
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          min={1}
-                          value={amount || ""}
-                          placeholder="1000"
-                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                          aria-label={t("comparator.field.amount")}
-                          className="min-w-0 flex-1 border-l border-black/10 bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                        />
-                        <CurrencyCombobox
-                          value={from}
-                          onChange={handlePickFromCurrency}
-                          placeholder={t("comparator.field.sourceCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCurrency")}
-                          compactLabel
-                          hideChevron
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
+                        <div className="flex min-w-0 flex-1 items-stretch overflow-hidden">
+                          <input
+                            type="number"
+                            inputMode="decimal"
+                            min={1}
+                            value={amount || ""}
+                            placeholder="1000"
+                            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                            aria-label={t("comparator.field.amount")}
+                            className="min-w-0 flex-1 bg-transparent px-1 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                          />
+                          <CurrencyCombobox
+                            value={from}
+                            onChange={handlePickFromCurrency}
+                            placeholder={t("comparator.field.sourceCurrency")}
+                            searchPlaceholder={t("comparator.combobox.search")}
+                            emptyLabel={t("comparator.combobox.empty")}
+                            ariaLabel={t("comparator.field.sourceCurrency")}
+                            compactLabel
+                            hideChevron
+                            triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                          />
+                        </div>
                       </div>
                     </div>
 
@@ -2273,11 +2286,14 @@ export function ComparatorSection({
                       >
                         {t("comparator.field.youReceive")}
                       </span>
-                      <div
-                        className={`flex h-[30px] items-stretch overflow-hidden rounded-control transition-colors ${
-                          !receivingCountry ? "border border-brand-cta bg-accent/10" : "bg-muted"
-                        }`}
-                      >
+                      {/* 2026-09-06 feedback — misma regla que el origen de
+                          arriba: el país es el único que lleva recuadro
+                          propio (picker de aeropuerto de kayak); la moneda
+                          queda lisa. El estado "todavía sin país" sigue
+                          siendo el borde/fondo en accent-cta, pero ahora
+                          vive en la caja chica del país, no en todo el
+                          renglón. */}
+                      <div className="flex h-[30px] items-stretch gap-1.5">
                         <CountryCombobox
                           value={receivingCountry}
                           onChange={handleReceivingCountryChange}
@@ -2287,19 +2303,25 @@ export function ComparatorSection({
                           ariaLabel={t("comparator.field.targetCountry")}
                           triggerIconOnly
                           hideChevron
-                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                          triggerClassName={`h-full w-11 shrink-0 justify-center gap-1 rounded border px-1.5 text-[12px] font-bold transition-colors ${
+                            !receivingCountry
+                              ? "border-brand-cta bg-accent/10 text-accent-text"
+                              : "border-border bg-muted text-foreground hover:border-foreground/30"
+                          }`}
                         />
-                        <CurrencyCombobox
-                          value={to}
-                          onChange={handlePickToCurrency}
-                          placeholder={t("comparator.field.targetCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCurrency")}
-                          compactLabel
-                          hideChevron
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
+                        <div className="flex min-w-0 flex-1 items-stretch overflow-hidden">
+                          <CurrencyCombobox
+                            value={to}
+                            onChange={handlePickToCurrency}
+                            placeholder={t("comparator.field.targetCurrency")}
+                            searchPlaceholder={t("comparator.combobox.search")}
+                            emptyLabel={t("comparator.combobox.empty")}
+                            ariaLabel={t("comparator.field.targetCurrency")}
+                            compactLabel
+                            hideChevron
+                            triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                          />
+                        </div>
                       </div>
                     </div>
 
