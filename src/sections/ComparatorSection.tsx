@@ -29,7 +29,6 @@ import {
   SlidersHorizontal,
   Star,
   Sparkle,
-  User,
   Zap,
   Info,
 } from "lucide-react";
@@ -45,6 +44,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
@@ -614,6 +614,43 @@ export function ComparatorSection({
    *  ACTIVOS, no opciones disponibles: es la misma cuenta que el rail usa
    *  para decidir si muestra "Limpiar filtros". */
   const activeFilterCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
+  // 2026-09-07 feedback — "el recomendado dice transfergo pero el primero
+  // de la lista es wise" / "en fastest el boton dice moneygram pero
+  // aparece revolut": las 3 tabs (más arriba) calculaban su propio
+  // "ganador" con un `sortByScore(...)[0]` ingenuo, mientras que la fila
+  // que ResultsBlock (más abajo) realmente destaca primero y le pone el
+  // tag "Best overall"/"Fastest"/etc. pasa por DOS pasos más que las tabs
+  // no replicaban: (1) en "overall" los proveedores sponsored/exclusivos
+  // se adelantan como grupo (regla de negocio explícita, ver el propio
+  // comentario de `organic` en ResultsBlock) y (2) `pickFeaturedAmongTies`
+  // rota cuál de los proveedores genuinamente empatados (±0.5% de score)
+  // se destaca, usando un seed aleatorio por sesión — dos razones
+  // perfectamente válidas para que la fila destacada NO sea la que un
+  // `sortByScore(...)[0]` a secas devolvería, pero que dejaban a las tabs
+  // hablando de un proveedor distinto al que la lista mostraba primero.
+  // `tieBreakSeed` pasa a vivir ACÁ (antes era un useMemo local dentro de
+  // ResultsBlock, con su propio Math.random() — dos seeds independientes
+  // no podían coincidir nunca) y se pasa como prop hacia abajo, así hay
+  // una sola fuente de verdad; `pickFeaturedRow` replica exactamente los
+  // mismos 2 pasos que `organic`/`featuredSlug` de ResultsBlock para cada
+  // una de las 3 claves de sort, así el número de la tab y el primer
+  // resultado con su tag siempre hablan del mismo proveedor.
+  const tieBreakSeed = useMemo(() => Math.random() * 1000, []);
+  const pickFeaturedRow = useMemo(() => {
+    return (rows: ComparisonResult["rows"], key: SortKey) => {
+      const filtered = rows.filter(
+        (r) =>
+          (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)) &&
+          (!showOnlyExclusive || r.has_exclusive_deal === true),
+      );
+      const sorted = sortByScore(filtered, key);
+      const ordered =
+        key === "overall"
+          ? [...sorted.filter((r) => r.has_exclusive_deal), ...sorted.filter((r) => !r.has_exclusive_deal)]
+          : sorted;
+      return pickFeaturedAmongTies(ordered, key, tieBreakSeed) ?? ordered[0];
+    };
+  }, [deliveryMethod, showOnlyExclusive, tieBreakSeed]);
   // The 3 big order-tab headline numbers (design/AJUSTES-1.md §C2) — real
   // values from the current result set, never invented. fastestFigure
   // reuses formatDeliverySpeed, the same function ProviderRow's own
@@ -621,18 +658,26 @@ export function ComparatorSection({
   // disagree.
   const tabSummary = useMemo(() => {
     if (!result || result.rows.length === 0) return null;
-    const recommendedRow = sortByScore(result.rows, "overall")[0];
-    const receiveMoreRow = sortByScore(result.rows, "recipient_gets_most")[0];
-    const fastestRow = sortByScore(result.rows, "fastest")[0];
+    const recommendedRow = pickFeaturedRow(result.rows, "overall");
+    const receiveMoreRow = pickFeaturedRow(result.rows, "recipient_gets_most");
+    const fastestRow = pickFeaturedRow(result.rows, "fastest");
+    if (!recommendedRow || !receiveMoreRow || !fastestRow) return null;
     return {
       quote: result.quote,
       recommendedFigure: Math.round(recommendedRow.received).toLocaleString(),
       recommendedName: recommendedRow.name,
       receiveMoreFigure: Math.round(receiveMoreRow.received).toLocaleString(),
+      // 2026-09-07 feedback — "en receive more dice 'the max' y no te dice
+      // el proveedor": a diferencia de recommendedName/fastestName (que sí
+      // leían el nombre real de su propia fila), este sub-texto estaba
+      // hardcodeado a la key de traducción `comparator.tab.receiveMoreSub`
+      // ("the max"), una frase genérica en vez del nombre del proveedor
+      // ganador. Pasa a `receiveMoreRow.name`, igual que las otras dos.
+      receiveMoreName: receiveMoreRow.name,
       fastestFigure: formatDeliverySpeed(fastestRow.speed_hours),
       fastestName: fastestRow.name,
     };
-  }, [result]);
+  }, [result, pickFeaturedRow]);
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -1572,6 +1617,27 @@ export function ComparatorSection({
   // árbol a la vez, o los inputs se duplican y el foco/estado se parte en
   // dos copias.
   const collapsedSearch = !embedded && Boolean(result) && isMobile;
+  // 2026-09-06/07 feedback (ronda 10) — "cuando se pasa a la accion de
+  // comparar todo el combox se mueve al header... a la misma altura que
+  // el icono de mangomundi, igual que kayak.com". Header.tsx ya trae el
+  // slot receptor desde ronda 8 (`#header-searchbar-slot`, fila 2 del
+  // propio <header>, con el header creciendo vía ResizeObserver +
+  // `--header-h`) pero nunca se había conectado del lado de
+  // ComparatorSection — este componente y Header.tsx son hermanos sin
+  // padre común, mismo motivo por el que FloatingAgent (más abajo en
+  // este archivo) ya resuelve su propio trigger colapsado con un portal
+  // a `#header-ai-slot`. Mismo patrón acá: grabado vía DOM query (no
+  // ref/context) porque no hay forma más simple de apuntar a un elemento
+  // que vive en un componente hermano.
+  const [headerSearchSlot, setHeaderSearchSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setHeaderSearchSlot(document.getElementById("header-searchbar-slot"));
+  }, []);
+  // Sólo una vez que hay resultado (antes de buscar, la barra vive en su
+  // lugar normal dentro de la página, no en el header) y en desktop —
+  // en mobile ya existe collapsedSearch (píldora + Drawer), que cubre el
+  // mismo caso de "resultado + poco espacio" con su propio patrón.
+  const mergeSearchIntoHeader = !embedded && Boolean(result) && !isMobile;
   const collapsedRoute = `${COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry} → ${
     receivingCountry ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry) : "—"
   }`;
@@ -1613,41 +1679,74 @@ export function ComparatorSection({
   // Drawer de la píldora colapsada (mobile con resultado, §4.1). Es el
   // mismo árbol en los dos casos — duplicar el markup sería garantía de
   // que las dos copias se separen a la primera corrección.
-  const searchBar = (
-    // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
-    // comparador... poder seleccionar pais de origen y destino y
-    // moneda de origen y destino y monto". 2026-08-30 feedback
-    // (sixth round) — "ponerlo todo en la misma linea": what was
-    // a country row + an amount/currency row is now one row.
-    // 2026-09-01 feedback — "se pueden agrupar las píldoras de
-    // selección de país monto y moneda de origen y por otra
-    // parte agrupar la de moneda y país de destino": amount +
-    // FROM currency + FROM country used to be 2 separate
-    // bordered boxes; TO country + TO currency likewise. Merged
-    // into ONE bordered box per side (same `border-l` divider
-    // pattern the amount+currency box already used internally
-    // for its own two segments — just extended to a third/
-    // second segment) so "everything about where it's coming
-    // from" and "everything about where it's going" each read
-    // as one visual unit, not four independent pills in a row.
-    // Below the wide breakpoint it still stacks to one column,
-    // same fallback every other tier here already uses.
-    // 2026-09-02 feedback (Z2) — "en mobile ordenar mejor las
-    // ventanas de comparar como hicimos en el widget para que
-    // quede los selectores en dos líneas": below @4xl this was
-    // `grid-cols-1`, so Send/swap/Receive/Compare each became
-    // their own full-width row — 4 stacked rows instead of the
-    // 2-line shape the embedded widget already uses for the
-    // same fields (see the `embedded ?` branch above). Same
-    // idea here, without duplicating the field markup: `flex
-    // flex-wrap` + `basis-full` on Send forces it alone onto
-    // line 1 (the same forced-break trick BusinessRequestPanel
-    // used to use for its own button, W10/Y2 history), and
-    // swap/Receive/Compare — none of which carry `basis-full`
-    // — flow together onto line 2, sized the same way the
-    // widget's own line 2 already is (Receive content-sized,
-    // Compare `flex-1` soaking up the rest). @4xl still swaps
-    // this to the original one-line 4-column grid.
+  // 2026-09-06 feedback (ronda 10) — extraído a su propia constante: antes
+  // vivía inline como primer hijo de `searchBar` (columna, arriba de la
+  // barra); ahora también hace falta suelto para `headerSearchBar` (fila,
+  // a la izquierda de la barra) — mismo trigger/menú en los dos lugares,
+  // sólo cambia el layout que lo envuelve, no el control en sí.
+  const segmentToggle = (
+    // §3.3 (revisado, ronda 7) — "tiene que replicar el comportamiento
+    // de kayak... arreglar el selector para que sea como el de
+    // kayak" + "lo de personal business te dije que si lo
+    // hagas" (confirmación explícita: el usuario ya había
+    // pedido este cambio en una ronda anterior, no era
+    // tentativo). Las dos tiles cuadradas de 52×52px de la
+    // ronda 4 copiaban el PATRÓN de los tiles de vertical de
+    // kayak.com (Flights/Stays/Cars/...), pero ese patrón es
+    // para elegir entre 4-5 categorías de producto muy
+    // distintas, con un ícono grande cada una — no para un
+    // toggle binario dentro de la propia barra de búsqueda.
+    // Kayak SÍ tiene un control exactamente para esto (un
+    // selector chico de 2-3 opciones metido en la barra, p.
+    // ej. one-way/round-trip): una píldora compacta, un solo
+    // contenedor con las opciones adentro, la activa con su
+    // propio fondo — no dos elementos sueltos con espacio
+    // entre ellos. Mismo patrón que ya usa este archivo más
+    // abajo para los tabs de Sort/resultados (un solo
+    // contenedor `bg-card`/`bg-muted`, la opción activa con su
+    // propio recuadro). Mismo estado `segment`/
+    // `handleSegmentChange` de siempre — vuelve a cambiar sólo
+    // la piel, no la lógica.
+    // 2026-09-06 feedback (ronda 10) — "que se comporte como hace kayak
+    // con el de one way o return, poniendo un selector desplegable con
+    // flechita": el toggle de dos botones en una píldora (ronda 9,
+    // arriba en el historial de git) copiaba la FORMA del control de
+    // kayak pero no su comportamiento real — kayak's one-way/round-trip
+    // no es un toggle de dos botones, es un selector desplegable: un
+    // solo trigger de texto con una flechita (chevron) que abre un menú
+    // con las opciones. Pasa a `DropdownMenu` (mismo primitivo de Radix
+    // que ya usa el resto del sitio, p.ej. el selector de idioma del
+    // header) — un trigger que muestra la opción activa + `ChevronDown`,
+    // y un menú con las dos opciones al hacer click. Sin ícono en el
+    // trigger ni en las opciones del menú (eso seguía siendo válido de
+    // la ronda 9, kayak tampoco lleva glifo ahí).
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label={t("search.segment")}
+          className="inline-flex w-fit items-center gap-1 whitespace-nowrap rounded-control px-2 py-1.5 text-meta font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          {t(`comparator.segment.${segment}`)}
+          <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="min-w-[160px]">
+        {(["retail", "business"] as const).map((value) => (
+          <DropdownMenuItem
+            key={value}
+            onSelect={() => handleSegmentChange(value)}
+            className={segment === value ? "font-semibold text-foreground" : "text-foreground"}
+          >
+            {t(`comparator.segment.${value}`)}
+            {segment === value && <Check className="ml-auto h-3.5 w-3.5" aria-hidden />}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  const searchBarFields = (
     // docs/kayak-redesign-spec.md §3.2/§3.3 — el formulario deja
     // de ser cajas independientes con label arriba y pasa a ser
     // lo que usa kayak.com: una fila de tiles de "vertical"
@@ -1658,55 +1757,6 @@ export function ComparatorSection({
     // propios: ese es el detalle que hace que se lea como una
     // barra y no como cuatro inputs pegados.
     <div className="flex flex-col gap-3">
-      {/* §3.3 (revisado, ronda 7) — "tiene que replicar el comportamiento
-                    de kayak... arreglar el selector para que sea como el de
-                    kayak" + "lo de personal business te dije que si lo
-                    hagas" (confirmación explícita: el usuario ya había
-                    pedido este cambio en una ronda anterior, no era
-                    tentativo). Las dos tiles cuadradas de 52×52px de la
-                    ronda 4 copiaban el PATRÓN de los tiles de vertical de
-                    kayak.com (Flights/Stays/Cars/...), pero ese patrón es
-                    para elegir entre 4-5 categorías de producto muy
-                    distintas, con un ícono grande cada una — no para un
-                    toggle binario dentro de la propia barra de búsqueda.
-                    Kayak SÍ tiene un control exactamente para esto (un
-                    selector chico de 2-3 opciones metido en la barra, p.
-                    ej. one-way/round-trip): una píldora compacta, un solo
-                    contenedor con las opciones adentro, la activa con su
-                    propio fondo — no dos elementos sueltos con espacio
-                    entre ellos. Mismo patrón que ya usa este archivo más
-                    abajo para los tabs de Sort/resultados (un solo
-                    contenedor `bg-card`/`bg-muted`, la opción activa con su
-                    propio recuadro). Mismo estado `segment`/
-                    `handleSegmentChange` de siempre — vuelve a cambiar sólo
-                    la piel, no la lógica. */}
-      <div
-        className="inline-flex w-fit gap-0.5 rounded-control bg-muted p-1"
-        role="group"
-        aria-label={t("search.segment")}
-      >
-        {(["retail", "business"] as const).map((value) => {
-          const active = segment === value;
-          const Icon = value === "business" ? Building2 : User;
-          return (
-            <button
-              key={value}
-              type="button"
-              aria-pressed={active}
-              onClick={() => handleSegmentChange(value)}
-              className={`flex items-center gap-1.5 rounded-[6px] px-3 py-1.5 text-meta font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
-                active
-                  ? "bg-card text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <Icon className="h-3.5 w-3.5 shrink-0" aria-hidden />
-              {t(`comparator.segment.${value}`)}
-            </button>
-          );
-        })}
-      </div>
-
       {/* docs/kayak-redesign-spec.md §3.2 — LA barra. Un solo bloque:
                     `@2xl:h-15` (60px, la medida real de kayak.co.uk),
                     `rounded-compact`, `bg-card`, `shadow-compare`.
@@ -1737,48 +1787,25 @@ export function ComparatorSection({
                     `sameCorridorBlocked` desaparece — ya no hay ningún
                     aviso ni bloqueo ligado a elegir el mismo país en origen
                     y destino, en ningún punto de la barra. */}
+      {/* 2026-09-06 feedback (ronda 10) — "en el home... cambia el orden
+          del origen: pone primero el monto, luego el pais y luego la
+          moneda; despues la flechita, y despues el pais y la moneda de
+          destino asi como esta" — el origen pasa de [Monto, Moneda, País]
+          a [Monto, País, Moneda]; el destino no se toca ([País, Moneda]).
+          El país ya no queda pegado al swap (esa regla de "cluster sin
+          hairline" de la ronda 6 era específica al orden viejo, donde el
+          país de origen y el de destino quedaban a ambos lados del swap);
+          con moneda de origen ahora pegada al swap, cada segmento vuelve a
+          llevar su propio hairline (border-t en mobile / border-l en
+          desktop), sin cluster especial. */}
       <div
         className="grid min-w-0 grid-cols-1 overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch"
       >
-        {/* Segmento 1 — monto, solo. El monto es el primer segmento y el
-                      más grande de la barra. Sin chip propio: comparte el
-                      lienzo del contenedor (regla general de este bloque,
-                      ver comentario de arriba). */}
-        {/* 2026-09-04 feedback (ronda 4) — "que cuando pasas por arriba la
-                      celda a seleccionar se pinta" + "lo de adentro
-                      seleccionado aparezca con la cajita como lo hace
-                      kayak": cada celda pinta un fondo suave en hover
-                      (`hover:bg-muted/60`), y el valor deja de flotar suelto
-                      sobre el lienzo del segmento — tiene su propia caja.
-                      2026-09-04 feedback (ronda 7) — "esas pildoras adentro
-                      no son de kayak, por ejemplo en el monto la currency y
-                      el pais": la ronda 4 le había dado a esa caja
-                      `rounded-md border bg-card shadow-sm` (blanco, con
-                      sombra) — medido en vivo esta ronda contra el chip
-                      real de kayak.com (`.c_neb-item`, getComputedStyle):
-                      fondo rgb(240,243,245) — NO blanco, un gris apenas
-                      distinto del blanco de la fila que lo contiene —,
-                      borde 0.8px rgb(217,226,232), radius 4px,
-                      `box-shadow: none`. Kayak distingue el chip del resto
-                      de la fila SOLO con un hairline y un cambio de tono muy
-                      sutil, nunca con sombra — la sombra es justamente lo
-                      que hacía que esto se leyera como una píldora flotando
-                      encima del lienzo en vez de un chip plano incrustado
-                      en él. Pasa a `rounded border bg-muted` (el mismo tono
-                      cálido que ya usa el resto del sitio para "superficie
-                      un paso por debajo de card", en vez de inventar un gris
-                      frío nuevo) sin `shadow-sm`, acá y en las cuatro cajas
-                      hermanas (currency origen/destino, país origen/
-                      destino) de este mismo bloque. */}
+        {/* Segmento 1 — monto, solo. Primer segmento, el más grande de la
+                      barra. Sin chip propio, sin caja tipo píldora — plano
+                      sobre el lienzo del contenedor, como la fecha de
+                      kayak.com (ver historial de rondas anteriores). */}
         <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
-          {/* 2026-09-04 feedback (ronda 6) — "eliminar los titulos de
-                        adentro de las casillas": kayak's own search bar
-                        never shows a caption inside a filled field — the
-                        field's own placeholder/value IS the label. Every
-                        segment in this bar goes `hideLabel` now; each
-                        control below still carries its own `aria-label`
-                        for assistive tech, so nothing is lost, just not
-                        shown visually. */}
           <FieldLight label={t("comparator.field.amount")} hideLabel>
             <input
               type="number"
@@ -1788,47 +1815,18 @@ export function ComparatorSection({
               placeholder="1000"
               onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
               aria-label={t("comparator.field.amount")}
-              className="w-full min-w-0 rounded border border-border bg-muted px-2 py-1 text-metric font-bold tabular-nums text-foreground transition-colors placeholder:text-muted-foreground hover:border-foreground/30 focus:border-transparent focus:outline-none focus:ring-1 focus:ring-ring/40"
+              className="w-full min-w-0 rounded-sm border-0 bg-transparent px-0 py-0 text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
             />
           </FieldLight>
         </div>
 
-        {/* Segmento 2 — moneda de origen. "Las currencys deben ser como
-                      espacio de la fecha de kayak" — caja angosta propia
-                      (`@2xl:w-28 @2xl:flex-none`, no crece ni se achica), la
-                      misma idea que el campo de fecha de kayak.com: chico,
-                      de ancho fijo, solo un valor corto. Separada del
-                      segmento anterior por hairline (`border-t` en mobile,
-                      `border-l` en desktop), sin chip propio. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
-          {/* Label corto ("Currency", key ya existente y traducida a los
-                        20 idiomas vía comparator.business.request.currency —
-                        no una key nueva) en vez de "Source Currency" completo:
-                        en una caja de ancho fijo tipo fecha de kayak.com, el
-                        label largo truncaba a "Source Cur…". El aria-label
-                        del combobox de abajo sigue siendo el descriptivo
-                        completo, para lectores de pantalla. */}
-          <FieldLight label={t("comparator.business.request.currency")} hideLabel>
-            <CurrencyCombobox
-              value={from}
-              onChange={handlePickFromCurrency}
-              placeholder={t("comparator.field.sourceCurrency")}
-              searchPlaceholder={t("comparator.combobox.search")}
-              emptyLabel={t("comparator.combobox.empty")}
-              ariaLabel={t("comparator.field.sourceCurrency")}
-              compactLabel
-              hideChevron
-              triggerClassName="h-auto w-full gap-0.5 rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
-            />
-          </FieldLight>
-        </div>
-
-        {/* Segmento 3 — país de origen. "El país debería ser como el
-                      aeropuerto, con el mismo comportamiento" — mismo
+        {/* Segmento 2 — país de origen (antes Segmento 3). Mismo
                       `CountryCombobox` con búsqueda y lista de banderas que
-                      ya se usa acá (es el mismo control que el picker de
-                      origen/destino de un buscador de vuelos), en su propio
-                      segmento sin chip, separado por hairline. */}
+                      el picker de origen/destino de un buscador de vuelos.
+                      Mantiene el recuadro (`rounded border border-border
+                      bg-muted`): es la señal visual de "esto es un
+                      selector con menú desplegable", igual que el campo de
+                      aeropuerto real de kayak.com. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
             <CountryCombobox
@@ -1845,39 +1843,33 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento swap. 2026-09-04 (ronda 6) — "la flechita de ida y
-                      vuelta en kayak es cuadrada": kayak's own is a square
-                      (`rounded-control`, same corner radius as its mode
-                      tiles), not a circle — matches the widget's own swap
-                      button below (`EmbedComparator`), which already got
-                      this right. Stays its own segment between the two
-                      country fields (already "in the middle of the two"
-                      per the bar's segment order), just square now instead
-                      of `rounded-full`, and on the same brand-cta accent
-                      the widget's swap uses instead of a neutral
-                      border/muted-foreground treatment.
-                      2026-09-04 (ronda 6, cont.) — "el cuadrado de flecha
-                      ida y vuelta va en el medio de los dos y quedo en el
-                      costado de from" + "fijate las lineas divisorias como
-                      se comportan y como lo hace kayak": first fix here
-                      (adding this segment's own hairline, matching every
-                      other segment) was the wrong read — checked live
-                      against kayak.com's real flight search DOM
-                      (`.N4mz-location-group`, `getComputedStyle` on every
-                      `.J_T2-field-group` in the row): kayak's own
-                      origin+swap+destination cluster is ONE undivided
-                      group internally (`J_T2-mod-divider-inner` — no
-                      hairline between the swap control and either field
-                      that flanks it); the hairlines only wrap the OUTSIDE
-                      of that whole 3-part cluster, same as the currency
-                      segments still do here today. A hairline on just one
-                      side of swap is what made it read as glued to
-                      "from" specifically — the fix is to have NO hairline
-                      on either side, so origin field / swap / destination
-                      field read as one continuous piece and the swap
-                      control sits centered in it, exactly like kayak's
-                      own. */}
-        <div className="flex items-center justify-center py-0.5 @2xl:w-9 @2xl:py-0">
+        {/* Segmento 3 — moneda de origen (antes Segmento 2). Caja angosta
+                      propia (`@2xl:w-28 @2xl:flex-none`), la misma idea que
+                      el campo de fecha de kayak.com: chico, ancho fijo, sin
+                      chip propio, plano sobre el lienzo. */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+          <FieldLight label={t("comparator.business.request.currency")} hideLabel>
+            <CurrencyCombobox
+              value={from}
+              onChange={handlePickFromCurrency}
+              placeholder={t("comparator.field.sourceCurrency")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.sourceCurrency")}
+              compactLabel
+              hideChevron
+              triggerClassName="h-auto w-full gap-0.5 rounded-sm border-0 bg-transparent px-0 py-0 shadow-none text-metric font-bold text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
+            />
+          </FieldLight>
+        </div>
+
+        {/* Segmento swap. Cuadrado (`rounded-control`, no `rounded-full`),
+                      acento brand-cta. Ya no forma un cluster sin hairline
+                      con los países flanqueantes (esa regla era del orden
+                      viejo, país-swap-país); ahora el segmento que lo
+                      precede es la moneda de origen, así que lleva su
+                      propio espacio como cualquier otro segmento. */}
+        <div className="flex items-center justify-center border-t border-border py-0.5 @2xl:h-14 @2xl:w-9 @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <button
             type="button"
             onClick={handleSwap}
@@ -1888,15 +1880,11 @@ export function ComparatorSection({
           </button>
         </div>
 
-        {/* Segmento 4 — país destino. 2026-09-04 (ronda 6, cont.) — no
-                      lleva hairline propia: junto con el Segmento 3 y el
-                      swap de arriba forma un único cluster sin divisiones
-                      internas, igual que el `.N4mz-location-group` real de
-                      kayak (ver comentario del swap) — el hairline que
-                      separa este cluster del resto de la barra sigue
-                      estando, pero AFUERA de él (antes del Segmento 3 y
-                      después de este, en el Segmento 5, sin tocar). */}
-        <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:py-0">
+        {/* Segmento 4 — país de destino. Sin cambios de orden respecto al
+                      destino ("asi como esta"): sigue yendo país primero,
+                      moneda después. Ahora lleva su propio hairline (ya no
+                      hay cluster con el swap, ver comentario arriba). */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight
             label={t("comparator.field.youReceive")}
             emphasizeLabel={!receivingCountry}
@@ -1920,8 +1908,8 @@ export function ComparatorSection({
           </FieldLight>
         </div>
 
-        {/* Segmento 5 — moneda de destino, misma caja angosta tipo fecha
-                      que el Segmento 2, mismo hairline de separación. */}
+        {/* Segmento 5 — moneda de destino, sin cambios de orden. Mismo
+                      campo sin caja tipo fecha que el Segmento 3. */}
         <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
@@ -1933,7 +1921,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.targetCurrency")}
               compactLabel
               hideChevron
-              triggerClassName="h-auto w-full gap-0.5 rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+              triggerClassName="h-auto w-full gap-0.5 rounded-sm border-0 bg-transparent px-0 py-0 shadow-none text-metric font-bold text-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
             />
           </FieldLight>
         </div>
@@ -1991,6 +1979,49 @@ export function ComparatorSection({
     </div>
   );
 
+  // Punto de montaje "normal": inline en la página (desktop siempre antes
+  // de comparar; mobile mientras no hay resultado) y dentro del Drawer de
+  // la píldora colapsada (mobile con resultado). El selector va apilado
+  // arriba de la barra, como siempre.
+  const searchBar = (
+    <div className="flex flex-col gap-3">
+      {segmentToggle}
+      {searchBarFields}
+    </div>
+  );
+
+  // 2026-09-06/07 feedback (ronda 10) — "el return o one way queda
+  // adelante asi todo queda bien arriba del encabezado": tercer punto de
+  // montaje, sólo para cuando `mergeSearchIntoHeader` es true (ver su
+  // propio comentario más arriba) — misma barra, pero en FILA en vez de
+  // columna, con el selector de segmento primero (a la izquierda) y la
+  // barra ocupando el resto del ancho disponible, para vivir cómoda en
+  // la fila angosta del header en vez de apilarse verticalmente encima
+  // de ella.
+  // 2026-09-07 feedback — "quedo mal, se puso todo vertical, no
+  // horizontal y el header sigue vacio": la barra decide fila-vs-columna
+  // con container queries (`@2xl:flex` etc. en `searchBarFields`/el bloque
+  // de segmentos), que sólo funcionan si un ANCESTRO tiene `@container`
+  // (`container-type: inline-size`) — ese ancestro es el div "Form body"
+  // de más abajo (`@container ${embedded ? ... : "space-y-2"}`), que
+  // envuelve a `searchBar` en su punto de montaje normal, pero NO viaja
+  // con el contenido portaleado: Header.tsx vive en otro punto del árbol
+  // de React por completo. Sin ese contexto, cada `@2xl:`/`@4xl:` de
+  // adentro simplemente nunca matchea nada — todo cae al layout mobile
+  // por default (columna, un campo por fila), que es exactamente lo que
+  // se vio: una barra gigante y vertical, con el header creciendo para
+  // contenerla (el propio ResizeObserver de Header.tsx haciendo bien su
+  // trabajo con una altura que nunca debió ser esa). Se agrega `@container`
+  // acá mismo, en la raíz de `headerSearchBar` — el header en desktop
+  // tiene de sobra los ~672px que pide el breakpoint `@2xl` por defecto de
+  // Tailwind, así que la barra pasa a fila apenas tiene este contexto.
+  const headerSearchBar = (
+    <div className="@container flex w-full items-center gap-3 border-t border-border px-3 py-2 sm:px-4">
+      <div className="shrink-0">{segmentToggle}</div>
+      <div className="min-w-0 flex-1">{searchBarFields}</div>
+    </div>
+  );
+
   return (
     <SectionTag
       id={embedded ? undefined : "comparator"}
@@ -2023,7 +2054,7 @@ export function ComparatorSection({
             second page. */}
         <div
           className={`min-w-0 ${
-            result && !embedded
+            collapsedSearch
               ? // El wrapper sticky necesita fondo propio: sin él, la lista
                 // que scrollea por debajo se ve a través de los huecos
                 // alrededor de la píldora/barra (verificado en screenshot a
@@ -2033,20 +2064,15 @@ export function ComparatorSection({
                 // la barra del buscador en kayak se mueve arriba al
                 // encabezado y en mangomundi no": en kayak.com, la barra
                 // compacta de resultados vive DENTRO de la misma fila del
-                // header (misma pieza blanca que el logo/☰/Ask AI, medido
-                // en vivo sobre /flights/JFK-LAX/...) — no es sólo "queda
-                // pegada arriba", es "pasa a ser parte del header". Acá no
-                // hay forma limpia de mover este árbol adentro de
-                // Header.tsx (son hermanos sin padre común, motivo por el
-                // que FloatingAgent tuvo que resolver lo mismo con un
-                // portal), pero el fondo SÍ puede dejar de ser el lienzo
-                // beige de la sección (`bg-surface-canvas`, antes) y pasar
-                // a `bg-card` (blanco, el mismo tono que Header.tsx) — así,
-                // pegada justo debajo del header fijo sin ningún corte de
-                // color entre los dos, se lee como una sola pieza blanca
-                // continua en vez de una banda de color aparte que sólo
-                // "quedó pegada" — el efecto visual que kayak realmente
-                // tiene, sin la reestructura de mover el árbol de nodos.
+                // header. En DESKTOP esto ya no pasa por acá — ver
+                // `mergeSearchIntoHeader`/`headerSearchBar` más arriba, que
+                // portalea la barra entera a `#header-searchbar-slot` de
+                // Header.tsx —, así que esta rama sticky/bg-card queda sólo
+                // para MOBILE con resultado (`collapsedSearch`): ahí la
+                // píldora resumen sigue viviendo inline en la página, pegada
+                // debajo del header fijo, con su propio fondo para que la
+                // lista que scrollea por debajo no se transparente por los
+                // huecos alrededor de ella.
                 "sticky top-[66px] z-30 bg-card py-2"
               : ""
           }`}
@@ -2164,128 +2190,129 @@ export function ComparatorSection({
                 // 1.5px, que lo hacían leer como un input gigante en vez de
                 // como un buscador.
                 <div className="compare-card flex flex-col overflow-hidden transition-colors">
-                  {/* 2026-09-04 feedback (Kayak-style redesign, approved
-                      canvas mockup "mangomundi Search Redesign") — Send and
-                      Receive now read as ONE continuous bordered card
-                      (hairline divider between rows, not two separate boxes
-                      with a gap), a square swap button pinned to the right
-                      edge overlapping the seam between them, and Compare as
-                      a full-width row at the bottom of the same card. Field
-                      widths (w-20 flag/country, w-[58px] currency) are
-                      unchanged from the previous layout — AD5/AG3/AH2's
-                      "never resizes on selection, never clips a locale's
-                      placeholder" fixes still apply here. */}
+                  {/* 2026-09-06 feedback (ronda 10) — "sacarle los titulos a
+                      los campos" + "poner el combobox en el mismo orden que
+                      el home: monto en el primer renglón, y abajo país y
+                      moneda [de origen y luego de destino], la flechita de
+                      ida y vuelta entremedio sin ocupar renglón propio" +
+                      "agranda el espacio de país (origen y destino) que
+                      quedó muy chico, la currency que ocupe solo su
+                      lugar". Antes esta tarjeta era 2 renglones (origen:
+                      bandera+monto+moneda / destino: bandera+moneda) con
+                      el swap superpuesto en la costura entre ambos.
+                      Ahora son 3: (1) monto solo, (2) país+moneda de
+                      origen, (3) país+moneda de destino — sin ninguna
+                      leyenda ("Amount"/"You receive") arriba de cada
+                      campo, el valor/placeholder ya es la única etiqueta
+                      visual (aria-label sigue completo para lectores de
+                      pantalla). El país deja `triggerIconOnly` (antes sólo
+                      mostraba la bandera en una caja de 44px) y pasa a
+                      `flex-1` con bandera + nombre — con el monto en su
+                      propio renglón, país y moneda tienen todo el ancho
+                      de la tarjeta para repartirse, no sólo lo que sobraba
+                      del monto. La moneda mantiene su ancho fijo angosto
+                      (58px, sólo lo que necesita un código de 3 letras),
+                      así el espacio ganado va entero al país. El swap
+                      pasa a superponerse en la costura entre el renglón 2
+                      y el 3 (antes 1-2): se anida un `relative` propio
+                      alrededor de esos dos renglones nada más, dejando el
+                      monto (renglón 1) afuera de ese cálculo de costura. */}
+                  <div className="border-b border-border px-2.5 py-[9px]">
+                    <input
+                      type="number"
+                      inputMode="decimal"
+                      min={1}
+                      value={amount || ""}
+                      placeholder="1000"
+                      onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+                      aria-label={t("comparator.field.amount")}
+                      className="w-full min-w-0 bg-transparent text-[16px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+                    />
+                  </div>
+
                   <div className="relative">
-                    {/* 2026-09-04 feedback (ronda 6, cont.) — "organizar
-                        mejor el widget los tamanos de los campos": these
-                        two country triggers went `triggerIconOnly` back on
-                        2026-09-01 (closed trigger = just the flag, no text)
-                        but kept the `w-20` (80px) box sized for the OLDER
-                        flag+text trigger they replaced — leaving ~55px of
-                        dead space around a ~20px flag glyph in a frame
-                        that's only 360px wide to begin with, at the direct
-                        expense of the amount input next to it. `w-11`
-                        (44px) is a real touch target for the flag button
-                        without carrying that dead weight; the freed width
-                        goes straight to the amount field via its own
-                        `flex-1`. */}
-                    <div className="flex flex-col gap-[3px] border-b border-border px-2.5 py-[7px]">
-                      <span className="text-badge font-semibold text-muted-foreground">
-                        {t("comparator.field.amount")}
-                      </span>
-                      <div className="flex h-[30px] items-stretch overflow-hidden rounded-control bg-muted">
-                        <CountryCombobox
-                          value={sendingCountry}
-                          onChange={handleSendingCountryChange}
-                          placeholder=""
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCountry")}
-                          triggerIconOnly
-                          hideChevron
-                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                        <input
-                          type="number"
-                          inputMode="decimal"
-                          min={1}
-                          value={amount || ""}
-                          placeholder="1000"
-                          onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
-                          aria-label={t("comparator.field.amount")}
-                          className="min-w-0 flex-1 border-l border-black/10 bg-transparent px-2.5 text-[14px] font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
-                        />
-                        <CurrencyCombobox
-                          value={from}
-                          onChange={handlePickFromCurrency}
-                          placeholder={t("comparator.field.sourceCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.sourceCurrency")}
-                          compactLabel
-                          hideChevron
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                      </div>
+                    {/* 2026-09-07 feedback — "las flechitas quedan tapando
+                        las currencies, agrandar un poco el box de currency
+                        (y achicar los de pais) para que la currency se
+                        mueva a la izquierda y la flecha no tape el
+                        contenido": el swap (30px, `right-2`) se superponía
+                        al extremo derecho de la caja de moneda de 58px. La
+                        moneda pasa a 70px — como el país es `flex-1`, se
+                        achica solo para cederle ese espacio — y su
+                        contenido (alineado a la izquierda dentro de su
+                        caja) queda más a la izquierda, lejos del botón. El
+                        `pr-9` de cada renglón (antes `px-2.5` parejo)
+                        reserva además el ancho real del botón + aire como
+                        padding propio del renglón, así el swap vive en ese
+                        margen en vez de pisar la caja de moneda en
+                        cualquier idioma/ancho de código. */}
+                    <div className="flex h-9 items-stretch gap-1.5 border-b border-border py-[7px] pl-2.5 pr-9">
+                      <CountryCombobox
+                        value={sendingCountry}
+                        onChange={handleSendingCountryChange}
+                        placeholder={t("comparator.combobox.placeholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.sourceCountry")}
+                        hideSecondary
+                        hideChevron
+                        triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border border-border bg-muted px-2 text-[12px] font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+                      />
+                      <CurrencyCombobox
+                        value={from}
+                        onChange={handlePickFromCurrency}
+                        placeholder={t("comparator.field.sourceCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.sourceCurrency")}
+                        compactLabel
+                        hideChevron
+                        triggerClassName="h-full w-[70px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                      />
                     </div>
 
                     {/* 2026-09-04 feedback — Receive gets a real bordered
                         box in the accent color while it still needs a
-                        country (Kayak's focused "To?" field cue), the same
-                        treatment as the full comparator's own Receive
-                        segment — distinct from sameCorridorBlocked (a
-                        stronger, more urgent state on the whole card,
-                        unchanged above). */}
-                    <div className="flex flex-col gap-[3px] px-2.5 py-[7px]">
-                      <span
-                        className={`text-badge font-semibold ${
-                          !receivingCountry ? "text-accent-text" : "text-muted-foreground"
+                        country (Kayak's focused "To?" field cue), la misma
+                        idea que el campo de origen de arriba — distinto de
+                        sameCorridorBlocked (sin cambios). */}
+                    <div className="flex h-9 items-stretch gap-1.5 py-[7px] pl-2.5 pr-9">
+                      <CountryCombobox
+                        value={receivingCountry}
+                        onChange={handleReceivingCountryChange}
+                        placeholder={t("comparator.field.receiveCountryPlaceholder")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCountry")}
+                        hideSecondary
+                        hideChevron
+                        triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border px-2 text-[12px] font-bold transition-colors ${
+                          !receivingCountry
+                            ? "border-brand-cta bg-accent/10 text-accent-text"
+                            : "border-border bg-muted text-foreground hover:border-foreground/30"
                         }`}
-                      >
-                        {t("comparator.field.youReceive")}
-                      </span>
-                      <div
-                        className={`flex h-[30px] items-stretch overflow-hidden rounded-control transition-colors ${
-                          !receivingCountry ? "border border-brand-cta bg-accent/10" : "bg-muted"
-                        }`}
-                      >
-                        <CountryCombobox
-                          value={receivingCountry}
-                          onChange={handleReceivingCountryChange}
-                          placeholder={t("comparator.field.receiveCountryPlaceholder")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCountry")}
-                          triggerIconOnly
-                          hideChevron
-                          triggerClassName="h-full w-11 shrink-0 justify-center gap-1 rounded-none border-0 bg-transparent px-1.5 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                        <CurrencyCombobox
-                          value={to}
-                          onChange={handlePickToCurrency}
-                          placeholder={t("comparator.field.targetCurrency")}
-                          searchPlaceholder={t("comparator.combobox.search")}
-                          emptyLabel={t("comparator.combobox.empty")}
-                          ariaLabel={t("comparator.field.targetCurrency")}
-                          compactLabel
-                          hideChevron
-                          triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 border-l border-black/10 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
-                        />
-                      </div>
+                      />
+                      <CurrencyCombobox
+                        value={to}
+                        onChange={handlePickToCurrency}
+                        placeholder={t("comparator.field.targetCurrency")}
+                        searchPlaceholder={t("comparator.combobox.search")}
+                        emptyLabel={t("comparator.combobox.empty")}
+                        ariaLabel={t("comparator.field.targetCurrency")}
+                        compactLabel
+                        hideChevron
+                        triggerClassName="h-full w-[70px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                      />
                     </div>
 
-                    {/* Swap — square, pinned to the right edge, overlapping
-                        the seam between the two rows (top-1/2 of this
-                        relative wrapper lands on that seam since both rows
-                        share the same padding/line-height). */}
+                    {/* Swap — cuadrado, superpuesto en la costura entre país/
+                        moneda de origen y de destino (renglones 2 y 3 de
+                        arriba; el monto, renglón 1, queda afuera de este
+                        `relative`, sin swap encima). */}
                     <button
                       type="button"
                       onClick={handleSwap}
                       aria-label={t("comparator.swap")}
-                      // §5.4 / regla 1 — los dos hex sueltos (#F5EFE8 fondo,
-                      // #EE5B3E ícono) pasan a tokens; el ring blanco que lo
-                      // recortaba contra el borde pasa a ring-card, que es
-                      // ese mismo blanco pero por token.
                       className="absolute right-2 top-1/2 flex h-[30px] w-[30px] -translate-y-1/2 items-center justify-center rounded-control bg-muted text-brand-cta shadow-md ring-[3px] ring-card transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cta/40"
                     >
                       <ArrowLeftRight strokeWidth={2.2} className="h-[13px] w-[13px]" />
@@ -2327,6 +2354,8 @@ export function ComparatorSection({
                 </div>
               ) : collapsedSearch ? (
                 collapsedSearchPill
+              ) : mergeSearchIntoHeader ? (
+                headerSearchSlot ? createPortal(headerSearchBar, headerSearchSlot) : null
               ) : (
                 searchBar
               )}
@@ -2658,7 +2687,7 @@ export function ComparatorSection({
                             hint: t("comparator.tab.receiveMoreHint"),
                             figure: tabSummary?.receiveMoreFigure ?? "—",
                             sub: tabSummary
-                              ? `${tabSummary.quote} · ${t("comparator.tab.receiveMoreSub")}`
+                              ? `${tabSummary.quote} · ${tabSummary.receiveMoreName}`
                               : "",
                           },
                           {
@@ -2965,6 +2994,7 @@ export function ComparatorSection({
                   sortBy={sortBy}
                   deliveryMethod={deliveryMethod}
                   showOnlyExclusive={showOnlyExclusive}
+                  tieBreakSeed={tieBreakSeed}
                   hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
                   handleAffiliateClick={openPreferredRate}
                   tRatesSource={t("fx.ratesSource")}
@@ -3661,27 +3691,34 @@ function FloatingAgent(p: FloatingAgentProps) {
   // `hover:bg-muted/60` sutil como única señal interactiva, y el texto
   // pasa a `font-bold` (kayak's "Ask AI" es un texto grueso, no
   // semibold).
+  // 2026-09-07 feedback — "cuando haces click en el boton de mangomundi
+  // ai, que no desaparezca el boton, que tenga el mismo comportamiento de
+  // ask ai de kayak.com": kayak's own "Ask AI" trigger STAYS put in the
+  // header when its panel opens (verified live) — it doesn't vanish and
+  // get replaced by the panel, it just reads as pressed/active while the
+  // panel is open, and clicking it again closes the panel. This trigger
+  // used to only exist while `collapsed` was true (see the old `if
+  // (collapsed) return <portals>` below, which meant "panel open" and
+  // "portal renders nothing" were the same branch) — now it always
+  // portals, with its own onClick/aria-expanded/active styling switching
+  // on `collapsed` instead of being hardcoded to the "closed" state.
   const collapsedTrigger = (
     <>
       <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
       <button
         ref={toggleBtnRef}
         type="button"
-        onClick={() => onToggle(false)}
+        onClick={() => onToggle(collapsed ? false : true)}
         aria-label={t("comparator.copilot.agent")}
-        aria-expanded={false}
+        aria-expanded={!collapsed}
         aria-haspopup="dialog"
         aria-controls="ai-agent-panel"
-        className="group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+        className={`group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+          !collapsed ? "bg-muted/60" : ""
+        } ${hasNewResult && collapsed ? "ai-glow-border" : ""}`}
       >
         <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
         <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
-        {hasNewResult && (
-          <span
-            aria-label={t("agent.newResult")}
-            className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
-          />
-        )}
       </button>
     </>
   );
@@ -3701,21 +3738,31 @@ function FloatingAgent(p: FloatingAgentProps) {
     <button
       ref={toggleBtnRef}
       type="button"
-      onClick={() => onToggle(false)}
+      onClick={() => onToggle(collapsed ? false : true)}
       aria-label={t("comparator.copilot.agent")}
-      aria-expanded={false}
+      aria-expanded={!collapsed}
       aria-haspopup="dialog"
       aria-controls="ai-agent-panel"
-      className="group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+      className={`group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+        !collapsed ? "bg-muted/60" : ""
+      } ${hasNewResult && collapsed ? "ai-glow-border" : ""}`}
     >
       <Sparkle className="h-5 w-5 shrink-0 text-brand-cta" aria-hidden />
-      {hasNewResult && (
-        <span
-          aria-label={t("agent.newResult")}
-          className="absolute right-1.5 top-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-success ring-2 ring-card"
-        />
-      )}
     </button>
+  );
+
+  // 2026-09-07 feedback (cont.) — los dos portales del trigger ahora se
+  // renderizan SIEMPRE (antes sólo cuando `collapsed`, ver comentario de
+  // arriba), y el panel se agrega como hermano adicional cuando
+  // `!collapsed`, en vez de reemplazar el `return` entero. Mismo patrón
+  // que el resto de portales de este archivo — sólo cambia que ahora hay
+  // hasta 3 piezas montadas a la vez (2 triggers + panel) en lugar de
+  // "triggers o panel".
+  const triggerPortals = (
+    <>
+      {headerSlot ? createPortal(collapsedTrigger, headerSlot) : null}
+      {mobileHeaderSlot ? createPortal(collapsedTriggerMobile, mobileHeaderSlot) : null}
+    </>
   );
 
   if (collapsed) {
@@ -3729,33 +3776,30 @@ function FloatingAgent(p: FloatingAgentProps) {
     // each slot (not this component) is what actually keeps only one
     // visible at a time per breakpoint — same single source of truth
     // Header.tsx already uses for every other responsive swap in that row.
-    return (
-      <>
-        {headerSlot ? createPortal(collapsedTrigger, headerSlot) : null}
-        {mobileHeaderSlot ? createPortal(collapsedTriggerMobile, mobileHeaderSlot) : null}
-      </>
-    );
+    return triggerPortals;
   }
 
   return (
-    // 2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta
-    // diferente que el de kayak que usa todo el costado izquierdo":
-    // inspeccionado en vivo el panel real de kayak.com al abrir su "Ask
-    // AI" (getBoundingClientRect a 1440×900) — no es una tarjeta chica
-    // flotando sobre la página (lo que este panel era hasta ahora, 380×560
-    // como máximo, con las cuatro esquinas redondeadas): es un panel
-    // DOCKED, pegado al borde izquierdo real (x=0) desde justo debajo del
-    // header (y = altura del header) hasta abajo de todo el viewport
-    // (height = 100% - header), 360px de ancho, empujando el contenido de
-    // la página hacia la derecha en vez de flotar encima de él. Pasa de
-    // `left-4 top-[76px]` (esquina, tarjeta) a `left-0 top-[66px] bottom-0`
-    // (borde a borde, alto completo) — mismo `top-[66px]` que ya usan la
-    // barra sticky del comparador y el drawer del menú (Header.tsx), la
-    // altura real del header en toda la página. El estilo oscuro
-    // (#241C16) es una decisión de marca propia de mangomundi con su
-    // propia historia (no una copia del blanco de kayak) y se mantiene —
-    // sólo cambia la GEOMETRÍA (dónde vive y cuánto ocupa), no la piel.
-    <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
+    <>
+      {triggerPortals}
+      {/* 2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta
+          diferente que el de kayak que usa todo el costado izquierdo":
+          inspeccionado en vivo el panel real de kayak.com al abrir su "Ask
+          AI" (getBoundingClientRect a 1440×900) — no es una tarjeta chica
+          flotando sobre la página (lo que este panel era hasta ahora, 380×560
+          como máximo, con las cuatro esquinas redondeadas): es un panel
+          DOCKED, pegado al borde izquierdo real (x=0) desde justo debajo del
+          header (y = altura del header) hasta abajo de todo el viewport
+          (height = 100% - header), 360px de ancho, empujando el contenido de
+          la página hacia la derecha en vez de flotar encima de él. Pasa de
+          `left-4 top-[76px]` (esquina, tarjeta) a `left-0 top-[66px] bottom-0`
+          (borde a borde, alto completo) — mismo `top-[66px]` que ya usan la
+          barra sticky del comparador y el drawer del menú (Header.tsx), la
+          altura real del header en toda la página. El estilo oscuro
+          (#241C16) es una decisión de marca propia de mangomundi con su
+          propia historia (no una copia del blanco de kayak) y se mantiene —
+          sólo cambia la GEOMETRÍA (dónde vive y cuánto ocupa), no la piel. */}
+      <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
       <div
         id="ai-agent-panel"
         role="dialog"
@@ -4014,6 +4058,7 @@ function FloatingAgent(p: FloatingAgentProps) {
           </div>
         </div>
     </div>
+    </>
   );
 }
 
@@ -4369,6 +4414,7 @@ function ResultsBlock({
   sortBy,
   deliveryMethod,
   showOnlyExclusive,
+  tieBreakSeed,
   hasCorridorContext,
   handleAffiliateClick,
   tRatesSource,
@@ -4389,6 +4435,17 @@ function ResultsBlock({
   sortBy: SortKey;
   deliveryMethod: DeliveryMethod | null;
   showOnlyExclusive: boolean;
+  /** 2026-09-07 feedback — antes esta seed se generaba ACÁ ADENTRO
+   *  (`useMemo(() => Math.random() * 1000, [])`, propia de este
+   *  componente), sin ninguna relación con la que tabSummary usa en el
+   *  padre para calcular qué proveedor mostrar en cada tab (Recomendado/
+   *  Recibís más/Más rápido) — dos seeds aleatorias independientes que
+   *  nunca coincidían, así que la tab y la fila destacada más abajo
+   *  (misma regla de tie-break, `pickFeaturedAmongTies`) podían señalar a
+   *  dos proveedores distintos empatados. Pasa a ser una prop: una sola
+   *  seed, generada una vez en el padre, compartida por tabSummary y por
+   *  este componente. */
+  tieBreakSeed: number;
   /** design/Mangomundi 4 - Final.dc.html line 494-529 — business segment
    *  passes an extra businessExtra prop to every ProviderRow (see
    *  BusinessRowExtra), never a different row layout — see this prop's own
@@ -4468,12 +4525,10 @@ function ResultsBlock({
     () => computeCompositeScores(filteredRows, "overall"),
     [filteredRows],
   );
-  // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
-  // in scoring.functions.ts) picks one value for this page view and doesn't
-  // flicker between renders, but still varies across visits/sessions — that's
-  // what actually spreads the "featured" slot across genuinely-tied providers
-  // instead of always favoring whichever one happens to sort first.
-  const tieBreakSeed = useMemo(() => Math.random() * 1000, []);
+  // 2026-09-07 feedback — la seed ahora es una prop (ver su propio
+  // comentario en la firma de este componente, arriba) en vez de
+  // generarse acá con su propio Math.random() — una sola fuente de
+  // verdad compartida con tabSummary, en el padre.
   const featuredSlug = useMemo(
     () => pickFeaturedAmongTies(organic, sortBy, tieBreakSeed)?.slug ?? organic[0]?.slug,
     [organic, sortBy, tieBreakSeed],

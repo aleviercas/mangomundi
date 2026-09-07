@@ -545,11 +545,12 @@
    escribiendo. "si le ponemos el borde fluo... le sacamos el puntito
    verde": el punto verde de `hasNewResult` se sacó de los dos triggers en
    el mismo cambio (ver ComparatorSection.tsx). */
-@keyframes mg-ai-glow-spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* 2026-09-07 feedback — "el recuadro de mangomundi ai esta girando en
+   circulos, se mueve, corregir eso": el anillo rotando (ronda 8, comentario
+   de arriba) leía como un elemento roto/inestable en la fila del header en
+   vez de un glow — se saca la animación (y el @keyframes que ya no usa
+   nadie) y el anillo queda estático: mismo gradiente cónico de marca
+   (mango → mango-glow → accent-deep), ya no rotando. */
 .ai-glow-border {
   position: relative;
   isolation: isolate;
@@ -577,7 +578,6 @@
     linear-gradient(#fff 0 0);
   mask-composite: exclude;
   pointer-events: none;
-  animation: mg-ai-glow-spin 3.5s linear infinite;
 }
 
 @utility btn-cta-gradient {
