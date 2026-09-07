@@ -1572,6 +1572,27 @@ export function ComparatorSection({
   // árbol a la vez, o los inputs se duplican y el foco/estado se parte en
   // dos copias.
   const collapsedSearch = !embedded && Boolean(result) && isMobile;
+  // 2026-09-06/07 feedback (ronda 10) — "cuando se pasa a la accion de
+  // comparar todo el combox se mueve al header... a la misma altura que
+  // el icono de mangomundi, igual que kayak.com". Header.tsx ya trae el
+  // slot receptor desde ronda 8 (`#header-searchbar-slot`, fila 2 del
+  // propio <header>, con el header creciendo vía ResizeObserver +
+  // `--header-h`) pero nunca se había conectado del lado de
+  // ComparatorSection — este componente y Header.tsx son hermanos sin
+  // padre común, mismo motivo por el que FloatingAgent (más abajo en
+  // este archivo) ya resuelve su propio trigger colapsado con un portal
+  // a `#header-ai-slot`. Mismo patrón acá: grabado vía DOM query (no
+  // ref/context) porque no hay forma más simple de apuntar a un elemento
+  // que vive en un componente hermano.
+  const [headerSearchSlot, setHeaderSearchSlot] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    setHeaderSearchSlot(document.getElementById("header-searchbar-slot"));
+  }, []);
+  // Sólo una vez que hay resultado (antes de buscar, la barra vive en su
+  // lugar normal dentro de la página, no en el header) y en desktop —
+  // en mobile ya existe collapsedSearch (píldora + Drawer), que cubre el
+  // mismo caso de "resultado + poco espacio" con su propio patrón.
+  const mergeSearchIntoHeader = !embedded && Boolean(result) && !isMobile;
   const collapsedRoute = `${COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry} → ${
     receivingCountry ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry) : "—"
   }`;
@@ -1613,41 +1634,74 @@ export function ComparatorSection({
   // Drawer de la píldora colapsada (mobile con resultado, §4.1). Es el
   // mismo árbol en los dos casos — duplicar el markup sería garantía de
   // que las dos copias se separen a la primera corrección.
-  const searchBar = (
-    // 2026-08-30 feedback (fifth round) — "sacar las pildoras del
-    // comparador... poder seleccionar pais de origen y destino y
-    // moneda de origen y destino y monto". 2026-08-30 feedback
-    // (sixth round) — "ponerlo todo en la misma linea": what was
-    // a country row + an amount/currency row is now one row.
-    // 2026-09-01 feedback — "se pueden agrupar las píldoras de
-    // selección de país monto y moneda de origen y por otra
-    // parte agrupar la de moneda y país de destino": amount +
-    // FROM currency + FROM country used to be 2 separate
-    // bordered boxes; TO country + TO currency likewise. Merged
-    // into ONE bordered box per side (same `border-l` divider
-    // pattern the amount+currency box already used internally
-    // for its own two segments — just extended to a third/
-    // second segment) so "everything about where it's coming
-    // from" and "everything about where it's going" each read
-    // as one visual unit, not four independent pills in a row.
-    // Below the wide breakpoint it still stacks to one column,
-    // same fallback every other tier here already uses.
-    // 2026-09-02 feedback (Z2) — "en mobile ordenar mejor las
-    // ventanas de comparar como hicimos en el widget para que
-    // quede los selectores en dos líneas": below @4xl this was
-    // `grid-cols-1`, so Send/swap/Receive/Compare each became
-    // their own full-width row — 4 stacked rows instead of the
-    // 2-line shape the embedded widget already uses for the
-    // same fields (see the `embedded ?` branch above). Same
-    // idea here, without duplicating the field markup: `flex
-    // flex-wrap` + `basis-full` on Send forces it alone onto
-    // line 1 (the same forced-break trick BusinessRequestPanel
-    // used to use for its own button, W10/Y2 history), and
-    // swap/Receive/Compare — none of which carry `basis-full`
-    // — flow together onto line 2, sized the same way the
-    // widget's own line 2 already is (Receive content-sized,
-    // Compare `flex-1` soaking up the rest). @4xl still swaps
-    // this to the original one-line 4-column grid.
+  // 2026-09-06 feedback (ronda 10) — extraído a su propia constante: antes
+  // vivía inline como primer hijo de `searchBar` (columna, arriba de la
+  // barra); ahora también hace falta suelto para `headerSearchBar` (fila,
+  // a la izquierda de la barra) — mismo trigger/menú en los dos lugares,
+  // sólo cambia el layout que lo envuelve, no el control en sí.
+  const segmentToggle = (
+    // §3.3 (revisado, ronda 7) — "tiene que replicar el comportamiento
+    // de kayak... arreglar el selector para que sea como el de
+    // kayak" + "lo de personal business te dije que si lo
+    // hagas" (confirmación explícita: el usuario ya había
+    // pedido este cambio en una ronda anterior, no era
+    // tentativo). Las dos tiles cuadradas de 52×52px de la
+    // ronda 4 copiaban el PATRÓN de los tiles de vertical de
+    // kayak.com (Flights/Stays/Cars/...), pero ese patrón es
+    // para elegir entre 4-5 categorías de producto muy
+    // distintas, con un ícono grande cada una — no para un
+    // toggle binario dentro de la propia barra de búsqueda.
+    // Kayak SÍ tiene un control exactamente para esto (un
+    // selector chico de 2-3 opciones metido en la barra, p.
+    // ej. one-way/round-trip): una píldora compacta, un solo
+    // contenedor con las opciones adentro, la activa con su
+    // propio fondo — no dos elementos sueltos con espacio
+    // entre ellos. Mismo patrón que ya usa este archivo más
+    // abajo para los tabs de Sort/resultados (un solo
+    // contenedor `bg-card`/`bg-muted`, la opción activa con su
+    // propio recuadro). Mismo estado `segment`/
+    // `handleSegmentChange` de siempre — vuelve a cambiar sólo
+    // la piel, no la lógica.
+    // 2026-09-06 feedback (ronda 10) — "que se comporte como hace kayak
+    // con el de one way o return, poniendo un selector desplegable con
+    // flechita": el toggle de dos botones en una píldora (ronda 9,
+    // arriba en el historial de git) copiaba la FORMA del control de
+    // kayak pero no su comportamiento real — kayak's one-way/round-trip
+    // no es un toggle de dos botones, es un selector desplegable: un
+    // solo trigger de texto con una flechita (chevron) que abre un menú
+    // con las opciones. Pasa a `DropdownMenu` (mismo primitivo de Radix
+    // que ya usa el resto del sitio, p.ej. el selector de idioma del
+    // header) — un trigger que muestra la opción activa + `ChevronDown`,
+    // y un menú con las dos opciones al hacer click. Sin ícono en el
+    // trigger ni en las opciones del menú (eso seguía siendo válido de
+    // la ronda 9, kayak tampoco lleva glifo ahí).
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          type="button"
+          aria-label={t("search.segment")}
+          className="inline-flex w-fit items-center gap-1 whitespace-nowrap rounded-control px-2 py-1.5 text-meta font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          {t(`comparator.segment.${segment}`)}
+          <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="min-w-[160px]">
+        {(["retail", "business"] as const).map((value) => (
+          <DropdownMenuItem
+            key={value}
+            onSelect={() => handleSegmentChange(value)}
+            className={segment === value ? "font-semibold text-foreground" : "text-foreground"}
+          >
+            {t(`comparator.segment.${value}`)}
+            {segment === value && <Check className="ml-auto h-3.5 w-3.5" aria-hidden />}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+
+  const searchBarFields = (
     // docs/kayak-redesign-spec.md §3.2/§3.3 — el formulario deja
     // de ser cajas independientes con label arriba y pasa a ser
     // lo que usa kayak.com: una fila de tiles de "vertical"
@@ -1658,66 +1712,6 @@ export function ComparatorSection({
     // propios: ese es el detalle que hace que se lea como una
     // barra y no como cuatro inputs pegados.
     <div className="flex flex-col gap-3">
-      {/* §3.3 (revisado, ronda 7) — "tiene que replicar el comportamiento
-                    de kayak... arreglar el selector para que sea como el de
-                    kayak" + "lo de personal business te dije que si lo
-                    hagas" (confirmación explícita: el usuario ya había
-                    pedido este cambio en una ronda anterior, no era
-                    tentativo). Las dos tiles cuadradas de 52×52px de la
-                    ronda 4 copiaban el PATRÓN de los tiles de vertical de
-                    kayak.com (Flights/Stays/Cars/...), pero ese patrón es
-                    para elegir entre 4-5 categorías de producto muy
-                    distintas, con un ícono grande cada una — no para un
-                    toggle binario dentro de la propia barra de búsqueda.
-                    Kayak SÍ tiene un control exactamente para esto (un
-                    selector chico de 2-3 opciones metido en la barra, p.
-                    ej. one-way/round-trip): una píldora compacta, un solo
-                    contenedor con las opciones adentro, la activa con su
-                    propio fondo — no dos elementos sueltos con espacio
-                    entre ellos. Mismo patrón que ya usa este archivo más
-                    abajo para los tabs de Sort/resultados (un solo
-                    contenedor `bg-card`/`bg-muted`, la opción activa con su
-                    propio recuadro). Mismo estado `segment`/
-                    `handleSegmentChange` de siempre — vuelve a cambiar sólo
-                    la piel, no la lógica. */}
-      {/* 2026-09-06 feedback (ronda 10) — "que se comporte como hace kayak
-          con el de one way o return, poniendo un selector desplegable con
-          flechita": el toggle de dos botones en una píldora (ronda 9,
-          arriba en el historial de git) copiaba la FORMA del control de
-          kayak pero no su comportamiento real — kayak's one-way/round-trip
-          no es un toggle de dos botones, es un selector desplegable: un
-          solo trigger de texto con una flechita (chevron) que abre un menú
-          con las opciones. Pasa a `DropdownMenu` (mismo primitivo de Radix
-          que ya usa el resto del sitio, p.ej. el selector de idioma del
-          header) — un trigger que muestra la opción activa + `ChevronDown`,
-          y un menú con las dos opciones al hacer click. Sin ícono en el
-          trigger ni en las opciones del menú (eso seguía siendo válido de
-          la ronda 9, kayak tampoco lleva glifo ahí). */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <button
-            type="button"
-            aria-label={t("search.segment")}
-            className="inline-flex w-fit items-center gap-1 rounded-control px-2 py-1.5 text-meta font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-          >
-            {t(`comparator.segment.${segment}`)}
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 opacity-60" aria-hidden />
-          </button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="min-w-[160px]">
-          {(["retail", "business"] as const).map((value) => (
-            <DropdownMenuItem
-              key={value}
-              onSelect={() => handleSegmentChange(value)}
-              className={segment === value ? "font-semibold text-foreground" : "text-foreground"}
-            >
-              {t(`comparator.segment.${value}`)}
-              {segment === value && <Check className="ml-auto h-3.5 w-3.5" aria-hidden />}
-            </DropdownMenuItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-
       {/* docs/kayak-redesign-spec.md §3.2 — LA barra. Un solo bloque:
                     `@2xl:h-15` (60px, la medida real de kayak.co.uk),
                     `rounded-compact`, `bg-card`, `shadow-compare`.
@@ -1940,6 +1934,32 @@ export function ComparatorSection({
     </div>
   );
 
+  // Punto de montaje "normal": inline en la página (desktop siempre antes
+  // de comparar; mobile mientras no hay resultado) y dentro del Drawer de
+  // la píldora colapsada (mobile con resultado). El selector va apilado
+  // arriba de la barra, como siempre.
+  const searchBar = (
+    <div className="flex flex-col gap-3">
+      {segmentToggle}
+      {searchBarFields}
+    </div>
+  );
+
+  // 2026-09-06/07 feedback (ronda 10) — "el return o one way queda
+  // adelante asi todo queda bien arriba del encabezado": tercer punto de
+  // montaje, sólo para cuando `mergeSearchIntoHeader` es true (ver su
+  // propio comentario más arriba) — misma barra, pero en FILA en vez de
+  // columna, con el selector de segmento primero (a la izquierda) y la
+  // barra ocupando el resto del ancho disponible, para vivir cómoda en
+  // la fila angosta del header en vez de apilarse verticalmente encima
+  // de ella.
+  const headerSearchBar = (
+    <div className="flex w-full items-center gap-3 border-t border-border px-3 py-2 sm:px-4">
+      <div className="shrink-0">{segmentToggle}</div>
+      <div className="min-w-0 flex-1">{searchBarFields}</div>
+    </div>
+  );
+
   return (
     <SectionTag
       id={embedded ? undefined : "comparator"}
@@ -1972,7 +1992,7 @@ export function ComparatorSection({
             second page. */}
         <div
           className={`min-w-0 ${
-            result && !embedded
+            collapsedSearch
               ? // El wrapper sticky necesita fondo propio: sin él, la lista
                 // que scrollea por debajo se ve a través de los huecos
                 // alrededor de la píldora/barra (verificado en screenshot a
@@ -1982,20 +2002,15 @@ export function ComparatorSection({
                 // la barra del buscador en kayak se mueve arriba al
                 // encabezado y en mangomundi no": en kayak.com, la barra
                 // compacta de resultados vive DENTRO de la misma fila del
-                // header (misma pieza blanca que el logo/☰/Ask AI, medido
-                // en vivo sobre /flights/JFK-LAX/...) — no es sólo "queda
-                // pegada arriba", es "pasa a ser parte del header". Acá no
-                // hay forma limpia de mover este árbol adentro de
-                // Header.tsx (son hermanos sin padre común, motivo por el
-                // que FloatingAgent tuvo que resolver lo mismo con un
-                // portal), pero el fondo SÍ puede dejar de ser el lienzo
-                // beige de la sección (`bg-surface-canvas`, antes) y pasar
-                // a `bg-card` (blanco, el mismo tono que Header.tsx) — así,
-                // pegada justo debajo del header fijo sin ningún corte de
-                // color entre los dos, se lee como una sola pieza blanca
-                // continua en vez de una banda de color aparte que sólo
-                // "quedó pegada" — el efecto visual que kayak realmente
-                // tiene, sin la reestructura de mover el árbol de nodos.
+                // header. En DESKTOP esto ya no pasa por acá — ver
+                // `mergeSearchIntoHeader`/`headerSearchBar` más arriba, que
+                // portalea la barra entera a `#header-searchbar-slot` de
+                // Header.tsx —, así que esta rama sticky/bg-card queda sólo
+                // para MOBILE con resultado (`collapsedSearch`): ahí la
+                // píldora resumen sigue viviendo inline en la página, pegada
+                // debajo del header fijo, con su propio fondo para que la
+                // lista que scrollea por debajo no se transparente por los
+                // huecos alrededor de ella.
                 "sticky top-[66px] z-30 bg-card py-2"
               : ""
           }`}
@@ -2277,6 +2292,8 @@ export function ComparatorSection({
                 </div>
               ) : collapsedSearch ? (
                 collapsedSearchPill
+              ) : mergeSearchIntoHeader ? (
+                headerSearchSlot ? createPortal(headerSearchBar, headerSearchSlot) : null
               ) : (
                 searchBar
               )}
