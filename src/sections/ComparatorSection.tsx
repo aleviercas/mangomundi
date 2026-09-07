@@ -614,6 +614,43 @@ export function ComparatorSection({
    *  ACTIVOS, no opciones disponibles: es la misma cuenta que el rail usa
    *  para decidir si muestra "Limpiar filtros". */
   const activeFilterCount = (deliveryMethod ? 1 : 0) + (showOnlyExclusive ? 1 : 0);
+  // 2026-09-07 feedback — "el recomendado dice transfergo pero el primero
+  // de la lista es wise" / "en fastest el boton dice moneygram pero
+  // aparece revolut": las 3 tabs (más arriba) calculaban su propio
+  // "ganador" con un `sortByScore(...)[0]` ingenuo, mientras que la fila
+  // que ResultsBlock (más abajo) realmente destaca primero y le pone el
+  // tag "Best overall"/"Fastest"/etc. pasa por DOS pasos más que las tabs
+  // no replicaban: (1) en "overall" los proveedores sponsored/exclusivos
+  // se adelantan como grupo (regla de negocio explícita, ver el propio
+  // comentario de `organic` en ResultsBlock) y (2) `pickFeaturedAmongTies`
+  // rota cuál de los proveedores genuinamente empatados (±0.5% de score)
+  // se destaca, usando un seed aleatorio por sesión — dos razones
+  // perfectamente válidas para que la fila destacada NO sea la que un
+  // `sortByScore(...)[0]` a secas devolvería, pero que dejaban a las tabs
+  // hablando de un proveedor distinto al que la lista mostraba primero.
+  // `tieBreakSeed` pasa a vivir ACÁ (antes era un useMemo local dentro de
+  // ResultsBlock, con su propio Math.random() — dos seeds independientes
+  // no podían coincidir nunca) y se pasa como prop hacia abajo, así hay
+  // una sola fuente de verdad; `pickFeaturedRow` replica exactamente los
+  // mismos 2 pasos que `organic`/`featuredSlug` de ResultsBlock para cada
+  // una de las 3 claves de sort, así el número de la tab y el primer
+  // resultado con su tag siempre hablan del mismo proveedor.
+  const tieBreakSeed = useMemo(() => Math.random() * 1000, []);
+  const pickFeaturedRow = useMemo(() => {
+    return (rows: ComparisonResult["rows"], key: SortKey) => {
+      const filtered = rows.filter(
+        (r) =>
+          (deliveryMethod == null || DELIVERY_METHOD_PREDICATES[deliveryMethod](r)) &&
+          (!showOnlyExclusive || r.has_exclusive_deal === true),
+      );
+      const sorted = sortByScore(filtered, key);
+      const ordered =
+        key === "overall"
+          ? [...sorted.filter((r) => r.has_exclusive_deal), ...sorted.filter((r) => !r.has_exclusive_deal)]
+          : sorted;
+      return pickFeaturedAmongTies(ordered, key, tieBreakSeed) ?? ordered[0];
+    };
+  }, [deliveryMethod, showOnlyExclusive, tieBreakSeed]);
   // The 3 big order-tab headline numbers (design/AJUSTES-1.md §C2) — real
   // values from the current result set, never invented. fastestFigure
   // reuses formatDeliverySpeed, the same function ProviderRow's own
@@ -621,18 +658,26 @@ export function ComparatorSection({
   // disagree.
   const tabSummary = useMemo(() => {
     if (!result || result.rows.length === 0) return null;
-    const recommendedRow = sortByScore(result.rows, "overall")[0];
-    const receiveMoreRow = sortByScore(result.rows, "recipient_gets_most")[0];
-    const fastestRow = sortByScore(result.rows, "fastest")[0];
+    const recommendedRow = pickFeaturedRow(result.rows, "overall");
+    const receiveMoreRow = pickFeaturedRow(result.rows, "recipient_gets_most");
+    const fastestRow = pickFeaturedRow(result.rows, "fastest");
+    if (!recommendedRow || !receiveMoreRow || !fastestRow) return null;
     return {
       quote: result.quote,
       recommendedFigure: Math.round(recommendedRow.received).toLocaleString(),
       recommendedName: recommendedRow.name,
       receiveMoreFigure: Math.round(receiveMoreRow.received).toLocaleString(),
+      // 2026-09-07 feedback — "en receive more dice 'the max' y no te dice
+      // el proveedor": a diferencia de recommendedName/fastestName (que sí
+      // leían el nombre real de su propia fila), este sub-texto estaba
+      // hardcodeado a la key de traducción `comparator.tab.receiveMoreSub`
+      // ("the max"), una frase genérica en vez del nombre del proveedor
+      // ganador. Pasa a `receiveMoreRow.name`, igual que las otras dos.
+      receiveMoreName: receiveMoreRow.name,
       fastestFigure: formatDeliverySpeed(fastestRow.speed_hours),
       fastestName: fastestRow.name,
     };
-  }, [result]);
+  }, [result, pickFeaturedRow]);
   const requestRef = useRef(0);
   // Set true when a compare just populated results for a NEW corridor, so the
   // debounced URL-sync effect (which fires on from/to/country changes) syncs the
@@ -1953,8 +1998,25 @@ export function ComparatorSection({
   // barra ocupando el resto del ancho disponible, para vivir cómoda en
   // la fila angosta del header en vez de apilarse verticalmente encima
   // de ella.
+  // 2026-09-07 feedback — "quedo mal, se puso todo vertical, no
+  // horizontal y el header sigue vacio": la barra decide fila-vs-columna
+  // con container queries (`@2xl:flex` etc. en `searchBarFields`/el bloque
+  // de segmentos), que sólo funcionan si un ANCESTRO tiene `@container`
+  // (`container-type: inline-size`) — ese ancestro es el div "Form body"
+  // de más abajo (`@container ${embedded ? ... : "space-y-2"}`), que
+  // envuelve a `searchBar` en su punto de montaje normal, pero NO viaja
+  // con el contenido portaleado: Header.tsx vive en otro punto del árbol
+  // de React por completo. Sin ese contexto, cada `@2xl:`/`@4xl:` de
+  // adentro simplemente nunca matchea nada — todo cae al layout mobile
+  // por default (columna, un campo por fila), que es exactamente lo que
+  // se vio: una barra gigante y vertical, con el header creciendo para
+  // contenerla (el propio ResizeObserver de Header.tsx haciendo bien su
+  // trabajo con una altura que nunca debió ser esa). Se agrega `@container`
+  // acá mismo, en la raíz de `headerSearchBar` — el header en desktop
+  // tiene de sobra los ~672px que pide el breakpoint `@2xl` por defecto de
+  // Tailwind, así que la barra pasa a fila apenas tiene este contexto.
   const headerSearchBar = (
-    <div className="flex w-full items-center gap-3 border-t border-border px-3 py-2 sm:px-4">
+    <div className="@container flex w-full items-center gap-3 border-t border-border px-3 py-2 sm:px-4">
       <div className="shrink-0">{segmentToggle}</div>
       <div className="min-w-0 flex-1">{searchBarFields}</div>
     </div>
@@ -2625,7 +2687,7 @@ export function ComparatorSection({
                             hint: t("comparator.tab.receiveMoreHint"),
                             figure: tabSummary?.receiveMoreFigure ?? "—",
                             sub: tabSummary
-                              ? `${tabSummary.quote} · ${t("comparator.tab.receiveMoreSub")}`
+                              ? `${tabSummary.quote} · ${tabSummary.receiveMoreName}`
                               : "",
                           },
                           {
@@ -2932,6 +2994,7 @@ export function ComparatorSection({
                   sortBy={sortBy}
                   deliveryMethod={deliveryMethod}
                   showOnlyExclusive={showOnlyExclusive}
+                  tieBreakSeed={tieBreakSeed}
                   hasCorridorContext={Boolean(sendingCountry && receivingCountry)}
                   handleAffiliateClick={openPreferredRate}
                   tRatesSource={t("fx.ratesSource")}
@@ -3628,20 +3691,31 @@ function FloatingAgent(p: FloatingAgentProps) {
   // `hover:bg-muted/60` sutil como única señal interactiva, y el texto
   // pasa a `font-bold` (kayak's "Ask AI" es un texto grueso, no
   // semibold).
+  // 2026-09-07 feedback — "cuando haces click en el boton de mangomundi
+  // ai, que no desaparezca el boton, que tenga el mismo comportamiento de
+  // ask ai de kayak.com": kayak's own "Ask AI" trigger STAYS put in the
+  // header when its panel opens (verified live) — it doesn't vanish and
+  // get replaced by the panel, it just reads as pressed/active while the
+  // panel is open, and clicking it again closes the panel. This trigger
+  // used to only exist while `collapsed` was true (see the old `if
+  // (collapsed) return <portals>` below, which meant "panel open" and
+  // "portal renders nothing" were the same branch) — now it always
+  // portals, with its own onClick/aria-expanded/active styling switching
+  // on `collapsed` instead of being hardcoded to the "closed" state.
   const collapsedTrigger = (
     <>
       <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
       <button
         ref={toggleBtnRef}
         type="button"
-        onClick={() => onToggle(false)}
+        onClick={() => onToggle(collapsed ? false : true)}
         aria-label={t("comparator.copilot.agent")}
-        aria-expanded={false}
+        aria-expanded={!collapsed}
         aria-haspopup="dialog"
         aria-controls="ai-agent-panel"
         className={`group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
-          hasNewResult ? "ai-glow-border" : ""
-        }`}
+          !collapsed ? "bg-muted/60" : ""
+        } ${hasNewResult && collapsed ? "ai-glow-border" : ""}`}
       >
         <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
         <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
@@ -3664,17 +3738,31 @@ function FloatingAgent(p: FloatingAgentProps) {
     <button
       ref={toggleBtnRef}
       type="button"
-      onClick={() => onToggle(false)}
+      onClick={() => onToggle(collapsed ? false : true)}
       aria-label={t("comparator.copilot.agent")}
-      aria-expanded={false}
+      aria-expanded={!collapsed}
       aria-haspopup="dialog"
       aria-controls="ai-agent-panel"
       className={`group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
-        hasNewResult ? "ai-glow-border" : ""
-      }`}
+        !collapsed ? "bg-muted/60" : ""
+      } ${hasNewResult && collapsed ? "ai-glow-border" : ""}`}
     >
       <Sparkle className="h-5 w-5 shrink-0 text-brand-cta" aria-hidden />
     </button>
+  );
+
+  // 2026-09-07 feedback (cont.) — los dos portales del trigger ahora se
+  // renderizan SIEMPRE (antes sólo cuando `collapsed`, ver comentario de
+  // arriba), y el panel se agrega como hermano adicional cuando
+  // `!collapsed`, en vez de reemplazar el `return` entero. Mismo patrón
+  // que el resto de portales de este archivo — sólo cambia que ahora hay
+  // hasta 3 piezas montadas a la vez (2 triggers + panel) en lugar de
+  // "triggers o panel".
+  const triggerPortals = (
+    <>
+      {headerSlot ? createPortal(collapsedTrigger, headerSlot) : null}
+      {mobileHeaderSlot ? createPortal(collapsedTriggerMobile, mobileHeaderSlot) : null}
+    </>
   );
 
   if (collapsed) {
@@ -3688,33 +3776,30 @@ function FloatingAgent(p: FloatingAgentProps) {
     // each slot (not this component) is what actually keeps only one
     // visible at a time per breakpoint — same single source of truth
     // Header.tsx already uses for every other responsive swap in that row.
-    return (
-      <>
-        {headerSlot ? createPortal(collapsedTrigger, headerSlot) : null}
-        {mobileHeaderSlot ? createPortal(collapsedTriggerMobile, mobileHeaderSlot) : null}
-      </>
-    );
+    return triggerPortals;
   }
 
   return (
-    // 2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta
-    // diferente que el de kayak que usa todo el costado izquierdo":
-    // inspeccionado en vivo el panel real de kayak.com al abrir su "Ask
-    // AI" (getBoundingClientRect a 1440×900) — no es una tarjeta chica
-    // flotando sobre la página (lo que este panel era hasta ahora, 380×560
-    // como máximo, con las cuatro esquinas redondeadas): es un panel
-    // DOCKED, pegado al borde izquierdo real (x=0) desde justo debajo del
-    // header (y = altura del header) hasta abajo de todo el viewport
-    // (height = 100% - header), 360px de ancho, empujando el contenido de
-    // la página hacia la derecha en vez de flotar encima de él. Pasa de
-    // `left-4 top-[76px]` (esquina, tarjeta) a `left-0 top-[66px] bottom-0`
-    // (borde a borde, alto completo) — mismo `top-[66px]` que ya usan la
-    // barra sticky del comparador y el drawer del menú (Header.tsx), la
-    // altura real del header en toda la página. El estilo oscuro
-    // (#241C16) es una decisión de marca propia de mangomundi con su
-    // propia historia (no una copia del blanco de kayak) y se mantiene —
-    // sólo cambia la GEOMETRÍA (dónde vive y cuánto ocupa), no la piel.
-    <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
+    <>
+      {triggerPortals}
+      {/* 2026-09-04 feedback (ronda 7) — "el mangomundi ai se comporta
+          diferente que el de kayak que usa todo el costado izquierdo":
+          inspeccionado en vivo el panel real de kayak.com al abrir su "Ask
+          AI" (getBoundingClientRect a 1440×900) — no es una tarjeta chica
+          flotando sobre la página (lo que este panel era hasta ahora, 380×560
+          como máximo, con las cuatro esquinas redondeadas): es un panel
+          DOCKED, pegado al borde izquierdo real (x=0) desde justo debajo del
+          header (y = altura del header) hasta abajo de todo el viewport
+          (height = 100% - header), 360px de ancho, empujando el contenido de
+          la página hacia la derecha en vez de flotar encima de él. Pasa de
+          `left-4 top-[76px]` (esquina, tarjeta) a `left-0 top-[66px] bottom-0`
+          (borde a borde, alto completo) — mismo `top-[66px]` que ya usan la
+          barra sticky del comparador y el drawer del menú (Header.tsx), la
+          altura real del header en toda la página. El estilo oscuro
+          (#241C16) es una decisión de marca propia de mangomundi con su
+          propia historia (no una copia del blanco de kayak) y se mantiene —
+          sólo cambia la GEOMETRÍA (dónde vive y cuánto ocupa), no la piel. */}
+      <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
       <div
         id="ai-agent-panel"
         role="dialog"
@@ -3973,6 +4058,7 @@ function FloatingAgent(p: FloatingAgentProps) {
           </div>
         </div>
     </div>
+    </>
   );
 }
 
@@ -4328,6 +4414,7 @@ function ResultsBlock({
   sortBy,
   deliveryMethod,
   showOnlyExclusive,
+  tieBreakSeed,
   hasCorridorContext,
   handleAffiliateClick,
   tRatesSource,
@@ -4348,6 +4435,17 @@ function ResultsBlock({
   sortBy: SortKey;
   deliveryMethod: DeliveryMethod | null;
   showOnlyExclusive: boolean;
+  /** 2026-09-07 feedback — antes esta seed se generaba ACÁ ADENTRO
+   *  (`useMemo(() => Math.random() * 1000, [])`, propia de este
+   *  componente), sin ninguna relación con la que tabSummary usa en el
+   *  padre para calcular qué proveedor mostrar en cada tab (Recomendado/
+   *  Recibís más/Más rápido) — dos seeds aleatorias independientes que
+   *  nunca coincidían, así que la tab y la fila destacada más abajo
+   *  (misma regla de tie-break, `pickFeaturedAmongTies`) podían señalar a
+   *  dos proveedores distintos empatados. Pasa a ser una prop: una sola
+   *  seed, generada una vez en el padre, compartida por tabSummary y por
+   *  este componente. */
+  tieBreakSeed: number;
   /** design/Mangomundi 4 - Final.dc.html line 494-529 — business segment
    *  passes an extra businessExtra prop to every ProviderRow (see
    *  BusinessRowExtra), never a different row layout — see this prop's own
@@ -4427,12 +4525,10 @@ function ResultsBlock({
     () => computeCompositeScores(filteredRows, "overall"),
     [filteredRows],
   );
-  // Stable per-mount seed so the near-tie rotation (see pickFeaturedAmongTies
-  // in scoring.functions.ts) picks one value for this page view and doesn't
-  // flicker between renders, but still varies across visits/sessions — that's
-  // what actually spreads the "featured" slot across genuinely-tied providers
-  // instead of always favoring whichever one happens to sort first.
-  const tieBreakSeed = useMemo(() => Math.random() * 1000, []);
+  // 2026-09-07 feedback — la seed ahora es una prop (ver su propio
+  // comentario en la firma de este componente, arriba) en vez de
+  // generarse acá con su propio Math.random() — una sola fuente de
+  // verdad compartida con tabSummary, en el padre.
   const featuredSlug = useMemo(
     () => pickFeaturedAmongTies(organic, sortBy, tieBreakSeed)?.slug ?? organic[0]?.slug,
     [organic, sortBy, tieBreakSeed],
