@@ -2154,7 +2154,22 @@ export function ComparatorSection({
                   </div>
 
                   <div className="relative">
-                    <div className="flex h-9 items-stretch gap-1.5 border-b border-border px-2.5 py-[7px]">
+                    {/* 2026-09-07 feedback — "las flechitas quedan tapando
+                        las currencies, agrandar un poco el box de currency
+                        (y achicar los de pais) para que la currency se
+                        mueva a la izquierda y la flecha no tape el
+                        contenido": el swap (30px, `right-2`) se superponía
+                        al extremo derecho de la caja de moneda de 58px. La
+                        moneda pasa a 70px — como el país es `flex-1`, se
+                        achica solo para cederle ese espacio — y su
+                        contenido (alineado a la izquierda dentro de su
+                        caja) queda más a la izquierda, lejos del botón. El
+                        `pr-9` de cada renglón (antes `px-2.5` parejo)
+                        reserva además el ancho real del botón + aire como
+                        padding propio del renglón, así el swap vive en ese
+                        margen en vez de pisar la caja de moneda en
+                        cualquier idioma/ancho de código. */}
+                    <div className="flex h-9 items-stretch gap-1.5 border-b border-border py-[7px] pl-2.5 pr-9">
                       <CountryCombobox
                         value={sendingCountry}
                         onChange={handleSendingCountryChange}
@@ -2175,7 +2190,7 @@ export function ComparatorSection({
                         ariaLabel={t("comparator.field.sourceCurrency")}
                         compactLabel
                         hideChevron
-                        triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                        triggerClassName="h-full w-[70px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                       />
                     </div>
 
@@ -2184,7 +2199,7 @@ export function ComparatorSection({
                         country (Kayak's focused "To?" field cue), la misma
                         idea que el campo de origen de arriba — distinto de
                         sameCorridorBlocked (sin cambios). */}
-                    <div className="flex h-9 items-stretch gap-1.5 px-2.5 py-[7px]">
+                    <div className="flex h-9 items-stretch gap-1.5 py-[7px] pl-2.5 pr-9">
                       <CountryCombobox
                         value={receivingCountry}
                         onChange={handleReceivingCountryChange}
@@ -2209,7 +2224,7 @@ export function ComparatorSection({
                         ariaLabel={t("comparator.field.targetCurrency")}
                         compactLabel
                         hideChevron
-                        triggerClassName="h-full w-[58px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
+                        triggerClassName="h-full w-[70px] shrink-0 rounded-none border-0 bg-transparent px-2 text-[12px] font-bold shadow-none hover:bg-black/5 focus:ring-0"
                       />
                     </div>
 
