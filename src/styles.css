@@ -172,10 +172,16 @@
      ComparatorSection.tsx) lee `var(--header-h)` en vez de tener 66px
      hardcodeado por su cuenta en cuatro archivos distintos — que es
      exactamente cómo esto se rompía antes: el día que el header cambiaba
-     de alto en un solo lugar, los otros tres quedaban desalineados. El
+     de alto en un solo lugar, los otros tres quedaban desalineados.
+     2026-09-07 feedback — "quiero que este en la misma linea de igual
+     forma que hace kayak.com": la fila 2 que hacía crecer el header se
+     saca — kayak.com mide siempre ~66px, con TODO (☰, logo, Ask AI, la
+     barra de búsqueda entera) en una sola fila (medido en vivo). Header.tsx
+     vuelve a ser de altura fija; el ResizeObserver se deja igual (no hace
+     daño, sigue siendo la única fuente de verdad para "dónde termina el
+     header"), sólo que ahora siempre va a publicar el mismo valor. El
      valor acá abajo es sólo el default para el primer paint/SSR, antes de
-     que el ResizeObserver corra — el mismo 66px real de siempre en toda
-     página sin la barra portaleada adentro. */
+     que el ResizeObserver corra. */
   --header-h: 66px;
 
   /* design/AJUSTES-2.md §0 — the site-wide palette, literal from the
@@ -313,30 +319,26 @@
 
   /* 2026-09-04 feedback (ronda 8) — "el fondo del mangomundi ai deberia de
      tener otro color?": el panel del AI (FloatingAgent, ComparatorSection
-     .tsx) usa `#241C16`/`#F1EBE4` como fondo/texto — auditado acá: `#241C16`
-     NO es un color nuevo o suelto, es exactamente `--foreground`/`--primary`
+     .tsx) usaba `#241C16`/`#F1EBE4` como fondo/texto — auditado acá: `#241C16`
+     NO era un color nuevo o suelto, era exactamente `--foreground`/`--primary`
      de arriba (la "tinta" de marca) usada como FONDO en vez de texto — ya
-     pertenecía a la paleta, sólo invertido. Por eso no cambia de valor acá;
-     lo que sí estaba mal es que vivía como dos strings hex sueltos en un
-     `style={{}}` inline en vez de tokens, así que si la tinta de marca
-     cambiara alguna vez, este panel se desincronizaría en silencio. Pasan a
-     tokens propios: `--ai-panel-bg` reutiliza `--foreground` directamente
-     (así queda de verdad atado, no sólo copiado), `--ai-panel-foreground`
-     se queda con su propio valor (`#F1EBE4`, un hueso cálido, no
-     `--primary-foreground` blanco puro) porque blanco puro sobre la tinta
-     oscura del panel se leía más duro/frío que este tono — una decisión
-     con su propia razón, no un descuido, así que se preserva como token
-     aparte en vez de fusionarse con `--primary-foreground`. */
-  --ai-panel-bg: var(--foreground);
-  --ai-panel-foreground: #f1ebe4;
+     pertenecía a la paleta, sólo invertido.
+     2026-09-07 feedback — "la ventana del agente cambiale el color para que
+     no sea oscura... que sea clara como la de ask ai de kayak.com": el
+     panel real de "Ask AI" de kayak.com es claro (blanco/gris muy claro),
+     no oscuro — se invierte de nuevo, esta vez apuntando a los tokens
+     claros que el resto del sitio ya usa para tarjetas/superficie (`--card`
+     blanco puro, `--foreground` como texto, `--border` para el hairline),
+     en vez de reintroducir hex sueltos. */
+  --ai-panel-bg: var(--card);
+  --ai-panel-foreground: var(--foreground);
   /* Mismo audit — estos dos hex se repetían idénticos en ~7 lugares del
-     panel del AI (íconos/foco en `#FF8A6B`, texto secundario en `#A79C92`)
-     sin ningún token detrás; tonos propios porque `--accent`/
-     `--muted-foreground` normales están calibrados para contraste sobre
-     fondos claros, no sobre la tinta oscura de este panel — no se
-     fusionan con esos tokens, se nombran aparte. */
-  --ai-panel-accent: #ff8a6b;
-  --ai-panel-muted: #a79c92;
+     panel del AI (íconos/foco, texto secundario) sin ningún token detrás;
+     ahora que el panel es claro, se atan directo a los tokens normales del
+     sitio para superficies claras (`--color-brand-cta`/`--muted-foreground`),
+     en vez de mantener una paleta paralela pensada para fondo oscuro. */
+  --ai-panel-accent: var(--accent);
+  --ai-panel-muted: var(--muted-foreground);
 }
 
 .dark { color-scheme: dark; }
@@ -545,15 +547,24 @@
    escribiendo. "si le ponemos el borde fluo... le sacamos el puntito
    verde": el punto verde de `hasNewResult` se sacó de los dos triggers en
    el mismo cambio (ver ComparatorSection.tsx). */
-/* 2026-09-07 feedback — "el recuadro de mangomundi ai esta girando en
-   circulos, se mueve, corregir eso": el anillo rotando (ronda 8, comentario
-   de arriba) leía como un elemento roto/inestable en la fila del header en
-   vez de un glow — se saca la animación (y el @keyframes que ya no usa
-   nadie) y el anillo queda estático: mismo gradiente cónico de marca
-   (mango → mango-glow → accent-deep), ya no rotando. */
+/* 2026-09-07 feedback — "cambiale el contorno al logo de ai, ponele un
+   color uniforme pero fluo, la linea se ve que parece dibujada a mano y
+   al revez tiene que ser una linea uniforme fluo e iluminada": el trigger
+   colapsado es una píldora bien ANCHA (texto + ícono) o un círculo chico
+   en mobile — un gradiente cónico (3 colores, ronda 8/2026-09-07 arriba)
+   centrado en una forma tan poco cuadrada como la píldora de escritorio
+   se estira/comprime de forma despareja en cada lado, exactamente el
+   efecto "línea dibujada a mano" que se reportó, sin importar si rota o
+   no. Pasa a UN solo color sólido (`--mango-glow`, ya en la paleta) en
+   vez de un gradiente — geométricamente uniforme en cualquier forma,
+   ancha o angosta —, más un `box-shadow` del mismo color por fuera del
+   anillo para el efecto "iluminada" (un glow real, no sólo una línea). */
 .ai-glow-border {
   position: relative;
   isolation: isolate;
+  box-shadow:
+    0 0 0 1px color-mix(in oklab, var(--mango-glow) 70%, transparent),
+    0 0 10px 2px color-mix(in oklab, var(--mango-glow) 55%, transparent);
 }
 .ai-glow-border::before {
   content: "";
@@ -562,13 +573,7 @@
   z-index: -1;
   border-radius: inherit;
   padding: 1.5px;
-  background: conic-gradient(
-    from 0deg,
-    var(--color-brand-cta),
-    var(--mango-glow),
-    var(--color-accent-deep),
-    var(--color-brand-cta)
-  );
+  background: var(--mango-glow);
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);

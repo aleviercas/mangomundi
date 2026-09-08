@@ -1649,29 +1649,27 @@ export function ComparatorSection({
         )
       : t("comparator.delivery.all")
   }`;
+  // 2026-09-07 feedback — "el boton de ai duplicado una vez que se esta en
+  // los resultados del comparador" (mobile): este botón Sparkle propio
+  // existía porque, en su momento, el trigger portaleado al header
+  // (`header-ai-slot-mobile`) desaparecía mientras el panel estaba abierto
+  // — "la pestaña lateral flotante queda tapada por la lista de
+  // resultados" ya no describe la realidad actual. Desde la ronda 10 ese
+  // trigger vive SIEMPRE en el header (ver `collapsedTriggerMobile` más
+  // abajo, "no desaparezca el boton"), así que este segundo botón quedó
+  // redundante — dos círculos con el mismo Sparkle a la vista en la misma
+  // pantalla. Se saca; el trigger del header sigue siendo el único punto
+  // de entrada al agente en mobile.
   const collapsedSearchPill = (
-    <div className="flex items-center gap-2">
-      <button
-        type="button"
-        onClick={() => setSearchDrawerOpen(true)}
-        aria-label={t("comparator.mobile.editSearch")}
-        className="min-w-0 flex-1 rounded-compact bg-muted px-3 py-2 text-left transition-colors hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        <div className="truncate text-metric font-bold text-foreground">{collapsedRoute}</div>
-        <div className="truncate text-meta text-muted-foreground">{collapsedDetail}</div>
-      </button>
-      {/* El `Ask AI` de Kayak: el agente ya existe y ya está montado — acá
-          sólo cambia su punto de entrada en mobile, donde la pestaña
-          lateral flotante queda tapada por la lista de resultados. */}
-      <button
-        type="button"
-        onClick={() => handleAgentToggle(false)}
-        aria-label={t("comparator.copilot.agent")}
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-input bg-card text-brand-cta transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-      >
-        <Sparkle className="h-5 w-5" aria-hidden />
-      </button>
-    </div>
+    <button
+      type="button"
+      onClick={() => setSearchDrawerOpen(true)}
+      aria-label={t("comparator.mobile.editSearch")}
+      className="w-full rounded-compact bg-muted px-3 py-2 text-left transition-colors hover:bg-secondary focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+    >
+      <div className="truncate text-metric font-bold text-foreground">{collapsedRoute}</div>
+      <div className="truncate text-meta text-muted-foreground">{collapsedDetail}</div>
+    </button>
   );
   // docs/kayak-redesign-spec.md §3.2/§4.1 — la barra completa se
   // extrae a una constante porque tiene DOS puntos de montaje: inline
@@ -1799,7 +1797,7 @@ export function ComparatorSection({
           llevar su propio hairline (border-t en mobile / border-l en
           desktop), sin cluster especial. */}
       <div
-        className="grid min-w-0 grid-cols-1 overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:items-stretch"
+        className="hidden overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:min-w-0 @2xl:items-stretch"
       >
         {/* Segmento 1 — monto, solo. Primer segmento, el más grande de la
                       barra. Sin chip propio, sin caja tipo píldora — plano
@@ -1976,6 +1974,121 @@ export function ComparatorSection({
           )}
         </button>
       </div>
+
+      {/* 2026-09-07 feedback — "en el combox de mobile o antes de buscar,
+          la currency aparezca en el mismo renglon que el pais y la
+          flechita superpuesta igual que lo hace el widget tanto en origen
+          como en destino": por debajo de @2xl la barra de arriba queda
+          oculta (`hidden @2xl:flex`) y este bloque toma su lugar — mismo
+          patrón de 3 renglones que ya usa el widget embebido más abajo en
+          este archivo (monto solo / país+moneda de origen / país+moneda
+          de destino, con el swap superpuesto en la costura entre los
+          últimos dos), en vez de 5 renglones apilados (uno por campo) que
+          es lo que `grid-cols-1` producía antes de que la fila de arriba
+          pasara a `hidden` en vez de mostrarse apilada. Mismo orden que
+          el resto del home (ronda 10): Monto → País → Moneda en origen,
+          destino sin cambios (País → Moneda). */}
+      <div className="overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:hidden">
+        <div className="border-b border-border px-3 py-2.5">
+          <input
+            type="number"
+            inputMode="decimal"
+            min={1}
+            value={amount || ""}
+            placeholder="1000"
+            onChange={(e) => setAmount(Math.max(0, Number(e.target.value) || 0))}
+            aria-label={t("comparator.field.amount")}
+            className="w-full min-w-0 bg-transparent text-metric font-bold tabular-nums text-foreground placeholder:text-muted-foreground focus:outline-none"
+          />
+        </div>
+
+        <div className="relative">
+          <div className="flex h-11 items-stretch gap-2 border-b border-border py-2 pl-3 pr-11">
+            <CountryCombobox
+              value={sendingCountry}
+              onChange={handleSendingCountryChange}
+              placeholder={t("comparator.combobox.placeholder")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.sourceCountry")}
+              hideSecondary
+              hideChevron
+              triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border border-border bg-muted px-2 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+            />
+            <CurrencyCombobox
+              value={from}
+              onChange={handlePickFromCurrency}
+              placeholder={t("comparator.field.sourceCurrency")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.sourceCurrency")}
+              compactLabel
+              hideChevron
+              triggerClassName="h-full w-[70px] shrink-0 rounded-none border-0 bg-transparent px-2 text-metric font-bold shadow-none hover:bg-black/5 focus:ring-0"
+            />
+          </div>
+
+          <div className="flex h-11 items-stretch gap-2 py-2 pl-3 pr-11">
+            <CountryCombobox
+              value={receivingCountry}
+              onChange={handleReceivingCountryChange}
+              placeholder={t("comparator.field.receiveCountryPlaceholder")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.targetCountry")}
+              hideSecondary
+              hideChevron
+              triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border px-2 text-metric font-bold transition-colors ${
+                receivingCountry
+                  ? "border-border bg-muted text-foreground hover:border-foreground/30"
+                  : "border-accent-text/40 bg-accent/10 text-accent-text hover:border-accent-text"
+              }`}
+            />
+            <CurrencyCombobox
+              value={to}
+              onChange={handlePickToCurrency}
+              placeholder={t("comparator.field.targetCurrency")}
+              searchPlaceholder={t("comparator.combobox.search")}
+              emptyLabel={t("comparator.combobox.empty")}
+              ariaLabel={t("comparator.field.targetCurrency")}
+              compactLabel
+              hideChevron
+              triggerClassName="h-full w-[70px] shrink-0 rounded-none border-0 bg-transparent px-2 text-metric font-bold shadow-none hover:bg-black/5 focus:ring-0"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSwap}
+            aria-label={t("comparator.swap")}
+            className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-control bg-muted text-brand-cta shadow-md ring-[3px] ring-card transition hover:brightness-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-cta/40"
+          >
+            <ArrowLeftRight strokeWidth={2.2} className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            if (!receivingCountry || amount <= 0) {
+              setValidationError(t("fx.validation"));
+              return;
+            }
+            setValidationError(null);
+            compareMut.mutate(undefined);
+          }}
+          disabled={compareMut.isPending || !receivingCountry || amount <= 0}
+          className="btn-cta-gradient mx-3 mb-3 mt-1 flex h-11 items-center justify-center gap-2 rounded-compact px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {compareMut.isPending ? (
+            <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+          ) : (
+            <span className="truncate">
+              {t(compact ? "comparator.cta.update" : "comparator.cta.compareRates")}
+            </span>
+          )}
+        </button>
+      </div>
     </div>
   );
 
@@ -2015,8 +2128,14 @@ export function ComparatorSection({
   // acá mismo, en la raíz de `headerSearchBar` — el header en desktop
   // tiene de sobra los ~672px que pide el breakpoint `@2xl` por defecto de
   // Tailwind, así que la barra pasa a fila apenas tiene este contexto.
+  // 2026-09-07 feedback (cont.) — ahora que el slot vive DENTRO de la fila
+  // fija de 66px del header (Header.tsx, ver su propio comentario) en vez
+  // de ser su propia fila 2, se sacan el `border-t` (ya no separa dos
+  // filas, hay una sola) y el padding vertical propio (`py-2`) — la altura
+  // la da el alto de la propia barra (`@2xl:h-15`, 60px) centrada por el
+  // `items-center` de la fila del header, no un padding calculado a mano.
   const headerSearchBar = (
-    <div className="@container flex w-full items-center gap-3 border-t border-border px-3 py-2 sm:px-4">
+    <div className="@container flex h-full w-full items-center gap-3">
       <div className="shrink-0">{segmentToggle}</div>
       <div className="min-w-0 flex-1">{searchBarFields}</div>
     </div>
@@ -3646,10 +3765,26 @@ function FloatingAgent(p: FloatingAgentProps) {
     setMobileHeaderSlot(document.getElementById("header-ai-slot-mobile"));
   }, []);
 
+  // 2026-09-07 feedback — "en kayak la ventana de askai... desplaza toda
+  // la pagina a la derecha, o sea no se superponen": la regla CSS para
+  // esto ya existía (`#page-main.ai-panel-open`, styles.css, ronda 8) —
+  // `<main>` se angosta con `padding-left` en vez de quedar tapado por el
+  // panel `fixed` — pero el toggle de la clase del lado de React nunca se
+  // había escrito (mismo patrón que `#header-searchbar-slot`/
+  // `ai-glow-border`: infraestructura ya lista, nunca conectada). Mismo
+  // motivo que los portales de `header-ai-slot`: Header/`<main>`/
+  // ComparatorSection son hermanos sin padre común, así que esto se hace
+  // por DOM directo en vez de props/contexto.
+  useEffect(() => {
+    document.getElementById("page-main")?.classList.toggle("ai-panel-open", !collapsed);
+    return () => {
+      document.getElementById("page-main")?.classList.remove("ai-panel-open");
+    };
+  }, [collapsed]);
+
   // Escape closes; auto-focus the composer on open.
   useEffect(() => {
-    if (collapsed) return;
-    // 2026-08-31 feedback — "eliminar los movimientos automáticos... por
+    if (collapsed) return;    // 2026-08-31 feedback — "eliminar los movimientos automáticos... por
     // ejemplo en el agente": this focus alone was enough to make the
     // browser auto-scroll the page toward the composer whenever the panel
     // opened near the edge of the viewport. The focus itself is still
@@ -3790,30 +3925,44 @@ function FloatingAgent(p: FloatingAgentProps) {
           como máximo, con las cuatro esquinas redondeadas): es un panel
           DOCKED, pegado al borde izquierdo real (x=0) desde justo debajo del
           header (y = altura del header) hasta abajo de todo el viewport
-          (height = 100% - header), 360px de ancho, empujando el contenido de
-          la página hacia la derecha en vez de flotar encima de él. Pasa de
-          `left-4 top-[76px]` (esquina, tarjeta) a `left-0 top-[66px] bottom-0`
+          (height = 100% - header), 360px de ancho. Pasa de `left-4
+          top-[76px]` (esquina, tarjeta) a `left-0 top-[66px] bottom-0`
           (borde a borde, alto completo) — mismo `top-[66px]` que ya usan la
           barra sticky del comparador y el drawer del menú (Header.tsx), la
-          altura real del header en toda la página. El estilo oscuro
-          (#241C16) es una decisión de marca propia de mangomundi con su
-          propia historia (no una copia del blanco de kayak) y se mantiene —
-          sólo cambia la GEOMETRÍA (dónde vive y cuánto ocupa), no la piel. */}
+          altura real del header en toda la página.
+          2026-09-07 feedback — "en kayak la ventana de askai cuando se abre
+          desplaza toda la pagina a la derecha, o sea no se superponen": el
+          panel sigue siendo `fixed` (necesario para quedar docked contra el
+          borde real del viewport, no del contenedor angosto del comparador)
+          pero ahora, además, togglea `.ai-panel-open` en `#page-main` (ver
+          el propio `useEffect` de este componente y la regla CSS en
+          styles.css, ronda 8 — ya existía, sólo faltaba conectarla) —
+          eso es lo que efectivamente angosta/corre el `<main>` de
+          __root.tsx hacia la derecha, así el panel deja de superponerse al
+          contenido real de la página en vez de sólo decirlo en un
+          comentario.
+          2026-09-07 feedback (cont.) — "cambiale el color para que no sea
+          oscura... que sea clara como la de ask ai de kayak.com": el estilo
+          oscuro (`#241C16`/`#F1EBE4`, inline style de siempre) se saca —
+          kayak's own panel es claro — y el panel entero pasa a los mismos
+          tokens de superficie clara que ya usa el resto del sitio
+          (`bg-card`/`text-foreground`/`border-border`), reemplazando cada
+          `white/NN` y hex suelto de acá para abajo por su equivalente
+          claro. */}
       <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
       <div
         id="ai-agent-panel"
         role="dialog"
         aria-modal="false"
         aria-labelledby={panelLabelId}
-        style={{ backgroundColor: "#241C16", color: "#F1EBE4" }}
-        className="flex h-full w-full flex-col overflow-hidden shadow-2xl"
+        className="flex h-full w-full flex-col overflow-hidden border-r border-border bg-card text-foreground shadow-2xl"
       >
-          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 py-3">
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3">
             <span
               id={panelLabelId}
-              className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-white/60"
+              className="flex min-w-0 items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground"
             >
-              <Sparkle className="h-3.5 w-3.5 shrink-0 text-[#FF8A6B]" aria-hidden />
+              <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
               <span className="truncate">{t("comparator.copilot.agent")}</span>
             </span>
             <div className="flex shrink-0 items-center gap-2">
@@ -3833,9 +3982,8 @@ function FloatingAgent(p: FloatingAgentProps) {
                   as "collapse this panel" the way an arrow pointing at the
                   edge it docks to does. An arrow reading "push this back to
                   the edge" is a standard sidebar-collapse affordance;
-                  wrapped in a visible pill (bg-white/10, a real background
-                  instead of bare text) so it reads as a button at a glance
-                  instead of blending into the header row.
+                  wrapped in a visible pill so it reads as a button at a
+                  glance instead of blending into the header row.
                   2026-09-04 feedback (ronda 7) — the panel itself moved
                   from a floating top-left card to a real docked-left
                   sidebar (see this component's own render-site comment) —
@@ -3848,7 +3996,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 onClick={() => onToggle(true)}
                 aria-label={t("agent.minimize")}
                 title={t("agent.minimize")}
-                className="flex items-center justify-center rounded-full bg-white/10 p-1.5 text-white/90 transition hover:bg-white/20 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/30"
+                className="flex items-center justify-center rounded-full bg-muted p-1.5 text-foreground transition hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-ring"
               >
                 <ChevronsLeft className="h-4 w-4" aria-hidden />
               </button>
@@ -3869,7 +4017,7 @@ function FloatingAgent(p: FloatingAgentProps) {
             }}
           >
             {aiLoading && (
-              <div className="flex items-center gap-2 text-sm text-[#A79C92]">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {t("fx.analyzing")}
               </div>
             )}
@@ -3887,20 +4035,20 @@ function FloatingAgent(p: FloatingAgentProps) {
             {chat.length === 0 && !aiLoading && (
               <>
                 {segment === "business" && businessStage !== "done" && result ? (
-                  <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                  <div className="rounded-xl border border-border bg-muted p-3 text-sm leading-relaxed text-foreground">
                     <ReactMarkdown>{t("comparator.copilot.business.intro")}</ReactMarkdown>
                   </div>
                 ) : (
                   <>
                     {segment === "retail" && result && amount >= B2B_UPSELL_MIN_AMOUNT && (
-                      <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                      <div className="rounded-xl border border-border bg-muted p-3 text-sm leading-relaxed text-foreground">
                         <ReactMarkdown>{t("comparator.copilot.b2bUpsell")}</ReactMarkdown>
                       </div>
                     )}
-                    <div className="rounded-xl border border-white/10 bg-white/[.06] p-3 text-sm leading-relaxed text-[#F1EBE4]">
+                    <div className="rounded-xl border border-border bg-muted p-3 text-sm leading-relaxed text-foreground">
                       <ReactMarkdown>{t("chat.welcome")}</ReactMarkdown>
                     </div>
-                    <div className="text-badge font-semibold uppercase tracking-wider text-white/50">
+                    <div className="text-badge font-semibold uppercase tracking-wider text-muted-foreground">
                       {t("wizard.quickActions")}
                     </div>
                     <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
@@ -3916,12 +4064,12 @@ function FloatingAgent(p: FloatingAgentProps) {
                     key={i}
                     className={`rounded-md px-3 py-2 text-sm leading-relaxed ${
                       m.role === "user"
-                        ? "ml-6 bg-white/[.15] text-[#F1EBE4]"
-                        : "mr-6 border border-white/10 bg-white/[.06] text-[#F1EBE4]"
+                        ? "ml-6 bg-accent/10 text-foreground"
+                        : "mr-6 border border-border bg-muted text-foreground"
                     }`}
                   >
                     {m.role === "assistant" ? (
-                      <div className="prose prose-sm prose-invert max-w-none prose-p:my-1">
+                      <div className="prose prose-sm max-w-none prose-p:my-1">
                         <ReactMarkdown>{m.content}</ReactMarkdown>
                       </div>
                     ) : (
@@ -3956,7 +4104,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                   </div>
                 ))}
                 {chatMutPending && (
-                  <div className="mr-6 flex items-center gap-2 rounded-md border border-white/10 bg-white/[.06] px-3 py-2 text-sm text-[#A79C92]">
+                  <div className="mr-6 flex items-center gap-2 rounded-md border border-border bg-muted px-3 py-2 text-sm text-muted-foreground">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />{" "}
                     {t("comparator.copilot.analyzing")}
                   </div>
@@ -3969,7 +4117,7 @@ function FloatingAgent(p: FloatingAgentProps) {
                 the whole product can be explored without free-typing/AI. */}
             {chat.length > 0 && !aiLoading && (
               <div className="pt-1">
-                <div className="mb-1.5 text-badge font-semibold uppercase tracking-wider text-white/50">
+                <div className="mb-1.5 text-badge font-semibold uppercase tracking-wider text-muted-foreground">
                   {t("wizard.moreQuestions")}
                 </div>
                 <AiCopilot onAction={onWizardAction} disabled={chatMutPending || aiLoading} />
@@ -3977,7 +4125,7 @@ function FloatingAgent(p: FloatingAgentProps) {
             )}
           </div>
 
-          <div className="shrink-0 border-t border-white/10 p-3">
+          <div className="shrink-0 border-t border-border p-3">
             {segment === "business" && businessStage === "consent" && (
               <div className="mb-3 flex flex-wrap gap-2">
                 <Button
@@ -4003,25 +4151,29 @@ function FloatingAgent(p: FloatingAgentProps) {
                       { role: "assistant", content: t("comparator.copilot.business.no") },
                     ]);
                   }}
-                  className="border-white/20 bg-transparent text-[#F1EBE4] hover:bg-white/10 hover:text-[#F1EBE4]"
+                  className="border-border bg-transparent text-foreground hover:bg-muted hover:text-foreground"
                 >
                   {t("comparator.copilot.business.review")}
                 </Button>
               </div>
             )}
-            {/* Composer (design/AJUSTES-1.md §D) — a white pill on the dark
-                panel, matching the mockup exactly, rather than the site's
-                usual bordered input field. 2026-08-31 feedback — "que el
-                espacio para escribir sea mas grande": a 2-row textarea (was
-                a single-line 42px input) that grows the panel instead of
-                cramming everything into one line; Enter still sends
-                (Shift+Enter for a literal newline), same as before. */}
+            {/* Composer (design/AJUSTES-1.md §D) — a filled pill inside the
+                panel. 2026-08-31 feedback — "que el espacio para escribir
+                sea mas grande": a 2-row textarea (was a single-line 42px
+                input) that grows the panel instead of cramming everything
+                into one line; Enter still sends (Shift+Enter for a literal
+                newline), same as before.
+                2026-09-07 feedback — el panel pasó de oscuro a claro (ver
+                comentario de arriba); la píldora del composer pasa de
+                `bg-white` (contraste contra el panel oscuro) a `bg-muted`
+                con un borde propio — un `bg-white` liso ya no se
+                distinguiría del panel, ahora también blanco. */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 sendChat(chatInput);
               }}
-              className="flex items-end gap-2 rounded-[11px] bg-white py-1.5 pl-3 pr-1.5"
+              className="flex items-end gap-2 rounded-[11px] border border-border bg-muted py-1.5 pl-3 pr-1.5"
             >
               <label htmlFor="ai-agent-composer" className="sr-only">
                 {t("comparator.copilot.placeholder")}
@@ -4040,19 +4192,19 @@ function FloatingAgent(p: FloatingAgentProps) {
                 }}
                 placeholder={t("comparator.copilot.placeholder")}
                 aria-label={t("comparator.copilot.placeholder")}
-                className="min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium text-[#241C16] outline-none placeholder:text-[#9C9089] thin-scrollbar"
+                className="min-h-[52px] min-w-0 flex-1 resize-none border-0 bg-transparent py-1 text-[12.5px] font-medium text-foreground outline-none placeholder:text-muted-foreground thin-scrollbar"
                 disabled={chatMutPending}
               />
               <button
                 type="submit"
                 disabled={chatMutPending || !chatInput.trim()}
-                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center self-end rounded-lg bg-[#EE5B3E] text-white transition disabled:opacity-50"
+                className="inline-flex h-[31px] w-[34px] shrink-0 items-center justify-center self-end rounded-lg bg-brand-cta text-brand-cta-foreground transition disabled:opacity-50"
                 aria-label={t("comparator.copilot.send")}
               >
                 <Send className="h-3.5 w-3.5" aria-hidden />
               </button>
             </form>
-            <p className="mt-2 text-badge leading-relaxed text-[#A79C92]">
+            <p className="mt-2 text-badge leading-relaxed text-muted-foreground">
               {t("comparator.copilot.trustLine")}
             </p>
           </div>

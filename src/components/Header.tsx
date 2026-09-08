@@ -150,16 +150,23 @@ export function Header() {
             weight/x-height down with it — so the glyph's optical center
             sits a couple px higher than its own box center, while the
             hamburger icon (a symmetric glyph, no descender) has no such
-            gap. Two boxes centered on the same line ≠ two GLYPHS optically
-            centered on the same line when one of them carries a
-            descender. `-translate-y-px` nudges the icon up to close that
-            gap without touching either box's actual layout. */}
+            gap.
+            2026-09-07 feedback — "en el home el menu hamburguesa y el logo
+            de mangomundi aparecen desalineados": el nudge de la ronda
+            anterior (`-translate-y-px` en el botón, empujando el ☰ hacia
+            ARRIBA) iba en el sentido contrario al problema que su propio
+            comentario describía — si el texto del logo lee más alto que
+            su caja (más aire abajo por el descender que arriba), el ☰
+            tenía que bajar un poco para encontrarlo, no subir todavía más
+            y agrandar la brecha. Se saca el nudge del botón y se mueve al
+            logo (`translate-y-px`, hacia ABAJO), en la dirección correcta
+            según el propio diagnóstico. */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={t("header.menuAriaLabel")}
-          className="inline-flex h-9 w-9 shrink-0 -translate-y-px items-center justify-center rounded-md text-foreground hover:bg-muted"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-foreground hover:bg-muted"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -167,7 +174,7 @@ export function Header() {
         <Link
           to="/"
           aria-label={t("header.homeAriaLabel")}
-          className="flex items-center"
+          className="flex translate-y-px items-center"
           onClick={handleLogoClick}
         >
           {/* Text-only lockup here and in Footer — the icon mark is reserved
@@ -216,7 +223,28 @@ export function Header() {
             recibe nada por debajo de `sm` — y FloatingAgent ahora porta un
             segundo trigger, sólo-ícono, al slot de la derecha (ver más
             abajo) para ese rango. */}
-        <div id="header-ai-slot" className="ml-5 hidden items-center gap-3 sm:flex" />
+        <div id="header-ai-slot" className="ml-5 hidden shrink-0 items-center gap-3 sm:flex" />
+
+        {/* 2026-09-07 feedback — "cuando me refiero al header... es la
+            misma linea en donde esta mangomundi y el icono de mangomundi
+            ai... quiero que este en la misma linea de igual forma que hace
+            kayak.com": comparado en vivo contra kayak.com — TODO vive en
+            una sola fila de ~66px (☰, logo, Ask AI, la barra de búsqueda
+            entera, botón Search), nunca en una segunda fila debajo. La
+            fila 2 que existía acá antes (ronda 8, `#header-searchbar-slot`
+            como su propio `<div>` después de este mismo `<div
+            className="flex h-[66px] ...">`, con el header creciendo de
+            66 a ~80px para contenerla) se saca — el slot se muda ACÁ
+            DENTRO, como un hijo más de esta fila, entre el AI slot y el
+            slot mobile del AI. Vacío (y por lo tanto sin alto propio) en
+            cualquier página sin comparador, en mobile, o antes de tener un
+            resultado (`mergeSearchIntoHeader` en ComparatorSection.tsx
+            sigue decidiendo cuándo portalea algo acá) — mismo criterio
+            "invisible hasta que algo se portalea adentro" que ya usa
+            `header-ai-slot`. `min-w-0 flex-1`: ocupa lo que sobra entre el
+            logo/AI (tamaño fijo) y el slot mobile del AI (`ml-auto` en su
+            propia esquina), sin forzar su propio ancho. */}
+        <div id="header-searchbar-slot" className="min-w-0 flex-1" />
 
         {/* Slot para el trigger mobile del agente — sólo ícono, en la
             esquina opuesta al ☰/logo, como el propio "Ask AI" de kayak en
@@ -226,20 +254,6 @@ export function Header() {
             escritorio. */}
         <div id="header-ai-slot-mobile" className="ml-auto flex items-center sm:hidden" />
       </div>
-
-      {/* Fila 2 — 2026-09-04 feedback (ronda 8) — "la barra de seleccion...
-          se mueve al header?": ComparatorSection porta la barra de
-          búsqueda entera acá (`createPortal`, ver `mergeSearchIntoHeader`
-          en ese archivo) una vez que hay resultado y el viewport es lo
-          bastante ancho — la misma pieza blanca del header, no una banda
-          aparte, igual que kayak.com (medido en vivo: su header pasa de
-          ~66px a ~80px en una página de resultados porque esta fila vive
-          adentro). Vacío en cualquier página sin comparador, o en mobile,
-          o por debajo de 1280px — no ocupa alto ni pinta nada (sin
-          padding/borde propios acá; el contenido portaleado trae los
-          suyos) hasta que algo se portalea adentro, así nunca deja una
-          franja colgando de la nada, mismo criterio que `header-ai-slot`. */}
-      <div id="header-searchbar-slot" />
 
       {/* Side drawer — now the only nav, opened by the ☰ trigger at every
           width (used to be mobile-only; desktop had its own always-open
