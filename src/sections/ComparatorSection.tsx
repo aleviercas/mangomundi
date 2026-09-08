@@ -2067,6 +2067,13 @@ export function ComparatorSection({
           </button>
         </div>
 
+        {/* 2026-09-07 feedback — "el boton compare queda mas chico, que
+            ocupe todo el ancho en lugar de quedar comprimido": un
+            `<button>` sin `w-full` ni `block` se ajusta a su propio
+            contenido (shrink-to-fit) aunque tenga `flex` para ordenar SUS
+            hijos — `flex` no lo hace ancho, sólo ordena lo de adentro.
+            Se agrega `w-full` (el `mx-3` de los costados queda igual, así
+            no llega a sangrar contra el borde de la tarjeta). */}
         <button
           type="button"
           onClick={() => {
@@ -2078,7 +2085,7 @@ export function ComparatorSection({
             compareMut.mutate(undefined);
           }}
           disabled={compareMut.isPending || !receivingCountry || amount <= 0}
-          className="btn-cta-gradient mx-3 mb-3 mt-1 flex h-11 items-center justify-center gap-2 rounded-compact px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="btn-cta-gradient mx-3 mb-3 mt-1 flex h-11 w-[calc(100%-1.5rem)] items-center justify-center gap-2 rounded-compact px-4 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           {compareMut.isPending ? (
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
@@ -2158,7 +2165,10 @@ export function ComparatorSection({
       // lo resuelve igual de bien y además en los dos estados, con y sin
       // resultado — que es lo que hace que esto se lea como un buscador y
       // no como una sección más del home.
-      className={embedded ? "min-w-0" : "scroll-mt-24 bg-surface-canvas pb-8 pt-4 sm:pb-12"}
+      // 2026-09-07 feedback (cont.) — mismo pedido de arriba (ver
+      // HeroSection): pt-4 → pt-2, el otro tramo del hueco entre el
+      // subtítulo y el recuadro del comparador.
+      className={embedded ? "min-w-0" : "scroll-mt-24 bg-surface-canvas pb-8 pt-2 sm:pb-12"}
     >
       {/* §3.1 — 1180 = 240 de rail + 728 de resultados + gutters, la
           proporción real de kayak.com (antes max-w-7xl = 1280). */}
@@ -3840,6 +3850,17 @@ function FloatingAgent(p: FloatingAgentProps) {
   const collapsedTrigger = (
     <>
       <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
+      {/* 2026-09-07 feedback — "el borde del ai sigue quedando mal o
+          desaparece, sino mejor sacale el borde y ponele al boton un
+          fondo de otro tono fluo naranja pero que se lea la letra": se
+          saca `ai-glow-border` (un anillo de 1.5-2px es frágil — clipping
+          contra vecinos del header, casi invisible a esa escala) y pasa a
+          un FONDO sólido cuando hay resultado nuevo — `--mango-glow`, un
+          tono de naranja distinto del `--accent`/`--color-brand-cta` que
+          ya usa el botón "Comparar"/CTA en el resto del sitio, así no se
+          confunden — con texto e ícono en `--foreground` (tinta oscura),
+          no blanco: `--mango-glow` es un naranja claro/medio, texto claro
+          encima perdía contraste. */}
       <button
         ref={toggleBtnRef}
         type="button"
@@ -3848,11 +3869,18 @@ function FloatingAgent(p: FloatingAgentProps) {
         aria-expanded={!collapsed}
         aria-haspopup="dialog"
         aria-controls="ai-agent-panel"
-        className={`group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
-          !collapsed ? "bg-muted/60" : ""
-        } ${hasNewResult && collapsed ? "ai-glow-border" : ""}`}
+        className={`group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 transition focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+          hasNewResult && collapsed
+            ? "bg-[var(--mango-glow)] text-foreground hover:brightness-95"
+            : `text-foreground hover:bg-muted/60 ${!collapsed ? "bg-muted/60" : ""}`
+        }`}
       >
-        <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
+        <Sparkle
+          className={`h-3.5 w-3.5 shrink-0 ${
+            hasNewResult && collapsed ? "text-foreground" : "text-brand-cta"
+          }`}
+          aria-hidden
+        />
         <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
       </button>
     </>
@@ -3878,11 +3906,18 @@ function FloatingAgent(p: FloatingAgentProps) {
       aria-expanded={!collapsed}
       aria-haspopup="dialog"
       aria-controls="ai-agent-panel"
-      className={`group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
-        !collapsed ? "bg-muted/60" : ""
-      } ${hasNewResult && collapsed ? "ai-glow-border" : ""}`}
+      className={`group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+        hasNewResult && collapsed
+          ? "bg-[var(--mango-glow)] text-foreground hover:brightness-95"
+          : `text-foreground hover:bg-muted/60 ${!collapsed ? "bg-muted/60" : ""}`
+      }`}
     >
-      <Sparkle className="h-5 w-5 shrink-0 text-brand-cta" aria-hidden />
+      <Sparkle
+        className={`h-5 w-5 shrink-0 ${
+          hasNewResult && collapsed ? "text-foreground" : "text-brand-cta"
+        }`}
+        aria-hidden
+      />
     </button>
   );
 

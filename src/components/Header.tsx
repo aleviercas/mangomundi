@@ -239,12 +239,24 @@ export function Header() {
             slot mobile del AI. Vacío (y por lo tanto sin alto propio) en
             cualquier página sin comparador, en mobile, o antes de tener un
             resultado (`mergeSearchIntoHeader` en ComparatorSection.tsx
-            sigue decidiendo cuándo portalea algo acá) — mismo criterio
-            "invisible hasta que algo se portalea adentro" que ya usa
-            `header-ai-slot`. `min-w-0 flex-1`: ocupa lo que sobra entre el
-            logo/AI (tamaño fijo) y el slot mobile del AI (`ml-auto` en su
-            propia esquina), sin forzar su propio ancho. */}
-        <div id="header-searchbar-slot" className="min-w-0 flex-1" />
+            sigue decidiendo cuándo portalea algo acá).
+            2026-09-07 feedback (cont.) — "el combo luego de buscar quedo
+            demasiado ancho... no es necesario ocupar todo el ancho de la
+            pagina y dejar un espacio separando del boton del agente ai":
+            `flex-1` (ocupar TODO lo que sobra hasta el slot mobile del AI,
+            que en desktop ni siquiera se ve) es justo lo que lo estiraba
+            de punta a punta. Pasa a `shrink-0` sin `flex-1` — el ancho fijo
+            que reemplaza a "todo lo que sobra" vive en styles.css
+            (`#header-searchbar-slot:not(:empty)`), NO acá como clase de
+            Tailwind, porque tiene que aplicar sólo cuando algo está
+            portaleado adentro: un `w-[...]` acá reservaría ese ancho vacío
+            en TODA página sin comparador (blog, about, etc.), rompiendo el
+            layout del header en todos lados menos donde hace falta. Vacío
+            sigue siendo `width: auto` (0 efectivo, sin contenido) — mismo
+            criterio "invisible hasta que algo se portalea adentro" que ya
+            usa `header-ai-slot`, el `gap-3` de la fila (más arriba) ya
+            pone aire entre esto y el trigger del AI a su izquierda. */}
+        <div id="header-searchbar-slot" className="min-w-0 shrink-0" />
 
         {/* Slot para el trigger mobile del agente — sólo ícono, en la
             esquina opuesta al ☰/logo, como el propio "Ask AI" de kayak en

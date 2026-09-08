@@ -100,10 +100,18 @@ const COLLAPSED_ACTION_COUNT = 4;
  */
 /**
  * Suggested-question chips (design/AJUSTES-1.md §D) — one per line, full
- * width, arrow on the right. Only ever rendered inside FloatingAgent's
- * dark #241C16 panel (its only consumer — it no longer has a light "docked"
- * mode, see FloatingAgent's own comment), so the colors here are that
- * panel's literal palette, not a general-purpose light/dark variant.
+ * width, arrow on the right.
+ * 2026-09-07 feedback — "el panel de agente cambiaste el fondo pero ahora
+ * la letra no se ve porque quedo clarita o del mismo color": este
+ * componente sólo se usa DENTRO del panel del AI (FloatingAgent,
+ * ComparatorSection.tsx), que era oscuro (`#241C16`) — estos botones
+ * llevaban su paleta literal hardcodeada para ESE fondo (`text-[#F1EBE4]`,
+ * un hueso casi blanco, sobre `bg-white/[.07]`). El panel pasó a claro en
+ * la ronda anterior pero este archivo, aparte, nunca se tocó — texto casi
+ * blanco sobre el `bg-card` (blanco) del panel nuevo, prácticamente
+ * invisible. Pasa a los mismos tokens claros que el resto del sitio usa
+ * para chips/filas interactivas (`border-border`/`bg-muted`/
+ * `text-foreground`), coherente con el resto de la tarjeta.
  */
 export function AiCopilot({
   actions = DEFAULT_WIZARD_ACTIONS,
@@ -127,10 +135,10 @@ export function AiCopilot({
           type="button"
           onClick={() => onAction(a)}
           disabled={disabled}
-          className="flex w-full items-center justify-between gap-2 rounded-[10px] border border-white/[.12] bg-white/[.07] px-[11px] py-[9px] text-left text-[12px] font-semibold text-[#F1EBE4] transition hover:bg-white/[.1] disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
+          className="flex w-full items-center justify-between gap-2 rounded-[10px] border border-border bg-muted px-[11px] py-[9px] text-left text-[12px] font-semibold text-foreground transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-ring"
         >
           <span className="truncate">{t(a.label)}</span>
-          <span className="shrink-0 text-[#FF8A6B]" aria-hidden>
+          <span className="shrink-0 text-brand-cta" aria-hidden>
             →
           </span>
         </button>
@@ -139,7 +147,7 @@ export function AiCopilot({
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="w-full rounded-[10px] px-[11px] py-[7px] text-center text-[11.5px] font-semibold text-[#F1EBE4]/70 transition hover:text-[#F1EBE4] focus:outline-none focus:ring-2 focus:ring-white/30"
+          className="w-full rounded-[10px] px-[11px] py-[7px] text-center text-[11.5px] font-semibold text-muted-foreground transition hover:text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
         >
           {t("wizard.moreOptions")}
         </button>

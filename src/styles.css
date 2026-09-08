@@ -526,64 +526,30 @@
   }
 }
 
-/* 2026-09-04 feedback (ronda 8) — "el mangomundi ai que tenga algun borde
-   fluo dinamico como hace ask ai de kayak": auditado en vivo (hojas de
-   estilo, pseudo-elementos, barrido de animaciones page-wide) contra el
-   Ask AI real de kayak.com — no se encontró ningún borde/glow animado ahí;
-   el único `@keyframes glow` de su CSS es un pulso de opacidad genérico
-   para skeletons de precio cargando, sin relación con ese botón. No se
-   pudo confirmar que kayak tenga este efecto — se construye igual acá
-   porque el usuario lo pidió explícitamente, independiente de la paridad
-   literal. Anillo con gradiente cónico (marca: mango → mango-glow →
-   accent-deep) rotando detrás del elemento vía un `::before` enmascarado
-   a sólo el grosor del borde (`mask-composite: exclude`, con el prefijo
-   `-webkit-` para Safari) — el mismo truco que un "borde con gradiente
-   animado" sin poder animar `border-image` directamente (no es
-   animable). `border-radius: inherit` para que calce con cualquier forma
-   del elemento (píldora cuadrada del trigger de escritorio, círculo del
-   de mobile). Aplicado sólo al trigger COLAPSADO (ver su propio comment
-   en ComparatorSection.tsx) — no al panel ya abierto, para no tener algo
-   animando permanentemente alrededor de donde el usuario está leyendo o
-   escribiendo. "si le ponemos el borde fluo... le sacamos el puntito
-   verde": el punto verde de `hasNewResult` se sacó de los dos triggers en
-   el mismo cambio (ver ComparatorSection.tsx). */
-/* 2026-09-07 feedback — "cambiale el contorno al logo de ai, ponele un
-   color uniforme pero fluo, la linea se ve que parece dibujada a mano y
-   al revez tiene que ser una linea uniforme fluo e iluminada": el trigger
-   colapsado es una píldora bien ANCHA (texto + ícono) o un círculo chico
-   en mobile — un gradiente cónico (3 colores, ronda 8/2026-09-07 arriba)
-   centrado en una forma tan poco cuadrada como la píldora de escritorio
-   se estira/comprime de forma despareja en cada lado, exactamente el
-   efecto "línea dibujada a mano" que se reportó, sin importar si rota o
-   no. Pasa a UN solo color sólido (`--mango-glow`, ya en la paleta) en
-   vez de un gradiente — geométricamente uniforme en cualquier forma,
-   ancha o angosta —, más un `box-shadow` del mismo color por fuera del
-   anillo para el efecto "iluminada" (un glow real, no sólo una línea). */
-.ai-glow-border {
-  position: relative;
-  isolation: isolate;
-  box-shadow:
-    0 0 0 1px color-mix(in oklab, var(--mango-glow) 70%, transparent),
-    0 0 10px 2px color-mix(in oklab, var(--mango-glow) 55%, transparent);
+/* 2026-09-07 feedback — "el combo luego de buscar quedo demasiado ancho...
+   no es necesario ocupar todo el ancho de la pagina": ver el comentario
+   completo en Header.tsx, junto al propio `#header-searchbar-slot` — el
+   ancho fijo vive acá (no como clase de Tailwind en el `<div>`) porque
+   sólo debe aplicar cuando ComparatorSection portalea la barra adentro
+   (`:not(:empty)`); en cualquier otra página el slot queda vacío y sin
+   ancho reservado, como siempre. */
+#header-searchbar-slot:not(:empty) {
+  width: 820px;
+  max-width: 100%;
 }
-.ai-glow-border::before {
-  content: "";
-  position: absolute;
-  inset: -2px;
-  z-index: -1;
-  border-radius: inherit;
-  padding: 1.5px;
-  background: var(--mango-glow);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  mask-composite: exclude;
-  pointer-events: none;
-}
+
+/* 2026-09-04/07 feedback — el trigger colapsado del AI pasó por un borde
+   con gradiente cónico rotando y después por un borde de un solo color con
+   glow (`.ai-glow-border`, ambos intentos de "borde fluo dinámico como
+   kayak"); en la práctica un anillo de 1.5-2px es frágil a esa escala
+   (clipping contra vecinos del header, casi invisible) — "sigue quedando
+   mal o desaparece, mejor sacale el borde y ponele un fondo fluo". La
+   señal de "hay resultado nuevo" pasa a ser un FONDO sólido
+   (`bg-[var(--mango-glow)]`) directo en las clases del botón
+   (ComparatorSection.tsx, `collapsedTrigger`/`collapsedTriggerMobile`) en
+   vez de una clase CSS aparte — no queda ninguna regla acá para esto.
+   El punto verde de `hasNewResult` que este efecto reemplazó sigue sin
+   volver. */
 
 @utility btn-cta-gradient {
   background-image: var(--gradient-cta);
