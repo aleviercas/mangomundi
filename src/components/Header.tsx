@@ -139,28 +139,21 @@ export function Header() {
         {/* Menu trigger — left of the logo, at every breakpoint, like
             kayak's ☰. Opens the same dropdown panel HEADER_NAV always used
             on mobile (below), just no longer gated to `md:hidden`.
-            2026-09-04 feedback (ronda 6, cont.) — "el menu hamburgesa esta
-            desalineado del logo": measured live (getBoundingClientRect at
-            4x zoom) — this button's box and the Wordmark link's box ARE
-            centered on the exact same Y in the 66px header (both flex
-            children of the same `items-center` row), so it isn't a
-            box-model bug. What's actually off is optical: "mangomundi" is
-            set in lowercase with a real descender on the "g", which pulls
-            the WORD's bounding box down without pulling its visual
-            weight/x-height down with it — so the glyph's optical center
-            sits a couple px higher than its own box center, while the
-            hamburger icon (a symmetric glyph, no descender) has no such
-            gap.
-            2026-09-07 feedback — "en el home el menu hamburguesa y el logo
-            de mangomundi aparecen desalineados": el nudge de la ronda
-            anterior (`-translate-y-px` en el botón, empujando el ☰ hacia
-            ARRIBA) iba en el sentido contrario al problema que su propio
-            comentario describía — si el texto del logo lee más alto que
-            su caja (más aire abajo por el descender que arriba), el ☰
-            tenía que bajar un poco para encontrarlo, no subir todavía más
-            y agrandar la brecha. Se saca el nudge del botón y se mueve al
-            logo (`translate-y-px`, hacia ABAJO), en la dirección correcta
-            según el propio diagnóstico. */}
+            2026-09-04/07 feedback (varias rondas) — "el menu hamburguesa
+            esta desalineado del logo": dos intentos de nudge óptico en
+            píxeles (`-translate-y-px` en el botón, después `translate-y-px`
+            en el logo) y ninguno de los dos se sostuvo — adivinar un
+            desface de 1px por diagnóstico óptico sin poder verificarlo en
+            un navegador real no es confiable. Se sacan los dos `translate`
+            y se ataca la causa de raíz en vez del síntoma: el botón tiene
+            una altura EXPLÍCITA (`h-9`, 36px) pero el `<Link>` del logo no
+            tenía ninguna — su caja alta era la del texto (line-height del
+            propio tipo de letra), una altura distinta a la del botón que
+            "centrado" (`items-center` del row) podía alinear de forma
+            distinta según cómo cada navegador calcule esa caja. `h-9` en
+            el Link iguala las dos cajas EXACTO al mismo alto que el
+            botón — mismo tamaño, mismo `items-center`, sin necesidad de
+            adivinar ningún nudge. */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
@@ -174,7 +167,7 @@ export function Header() {
         <Link
           to="/"
           aria-label={t("header.homeAriaLabel")}
-          className="flex translate-y-px items-center"
+          className="flex h-9 items-center"
           onClick={handleLogoClick}
         >
           {/* Text-only lockup here and in Footer — the icon mark is reserved

@@ -526,16 +526,27 @@
   }
 }
 
-/* 2026-09-07 feedback — "el combo luego de buscar quedo demasiado ancho...
-   no es necesario ocupar todo el ancho de la pagina": ver el comentario
-   completo en Header.tsx, junto al propio `#header-searchbar-slot` — el
-   ancho fijo vive acá (no como clase de Tailwind en el `<div>`) porque
-   sólo debe aplicar cuando ComparatorSection portalea la barra adentro
-   (`:not(:empty)`); en cualquier otra página el slot queda vacío y sin
-   ancho reservado, como siempre. */
+/* 2026-09-07 feedback — "el combo del encabezado quedo todo aplastado y
+   tirado a la izquierda... corregirlo para que quede mas a la derecha y
+   con un espacio del boton agente ai, ademas que las celdas para
+   seleccionar (los paises) no queden aplastadas": el intento anterior
+   (`width: 820px` fijo + `shrink-0` de Tailwind en el `<div>`) no dejaba
+   margen para el propio selector de segmento (Individual/Business, un
+   hermano DENTRO del contenido portaleado, no contado en esos 820px) ni
+   para que el navegador angostara con gracia en vez de comprimir los
+   campos de país/moneda de adentro. Pasa a un `flex-basis` elástico
+   (960px preferido, nunca baja de 680px — el `@container` de la propia
+   barra necesita ~672px para activar su layout en fila, ver el `@2xl` en
+   ComparatorSection.tsx — nunca sube de 960px) en vez de un ancho fijo
+   rígido: crece o se achica con la ventana en vez de forzar overflow o
+   aplastar los campos de adentro. `margin-left` propio (no sólo el
+   `gap-3` de la fila) para el espacio pedido respecto al botón del
+   agente, a su izquierda. */
 #header-searchbar-slot:not(:empty) {
-  width: 820px;
-  max-width: 100%;
+  flex: 1 1 960px;
+  min-width: 680px;
+  max-width: 960px;
+  margin-left: 1.25rem;
 }
 
 /* 2026-09-04/07 feedback — el trigger colapsado del AI pasó por un borde

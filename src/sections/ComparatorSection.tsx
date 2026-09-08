@@ -3850,17 +3850,14 @@ function FloatingAgent(p: FloatingAgentProps) {
   const collapsedTrigger = (
     <>
       <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
-      {/* 2026-09-07 feedback — "el borde del ai sigue quedando mal o
-          desaparece, sino mejor sacale el borde y ponele al boton un
-          fondo de otro tono fluo naranja pero que se lea la letra": se
-          saca `ai-glow-border` (un anillo de 1.5-2px es frágil — clipping
-          contra vecinos del header, casi invisible a esa escala) y pasa a
-          un FONDO sólido cuando hay resultado nuevo — `--mango-glow`, un
-          tono de naranja distinto del `--accent`/`--color-brand-cta` que
-          ya usa el botón "Comparar"/CTA en el resto del sitio, así no se
-          confunden — con texto e ícono en `--foreground` (tinta oscura),
-          no blanco: `--mango-glow` es un naranja claro/medio, texto claro
-          encima perdía contraste. */}
+      {/* 2026-09-07 feedback — "el fondo naranja del boton del agente
+          quedo muy mal, sacaselo": tanto el borde fluo (rondas
+          anteriores) como el fondo sólido que lo reemplazó fallaron a
+          esta escala — se saca la señal visual de `hasNewResult` por
+          completo, el botón queda siempre con el mismo tratamiento
+          neutro (texto/ícono normales, fondo sólo en hover o con el
+          panel abierto), sin ningún estado especial para "hay resultado
+          nuevo". */}
       <button
         ref={toggleBtnRef}
         type="button"
@@ -3869,18 +3866,11 @@ function FloatingAgent(p: FloatingAgentProps) {
         aria-expanded={!collapsed}
         aria-haspopup="dialog"
         aria-controls="ai-agent-panel"
-        className={`group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 transition focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
-          hasNewResult && collapsed
-            ? "bg-[var(--mango-glow)] text-foreground hover:brightness-95"
-            : `text-foreground hover:bg-muted/60 ${!collapsed ? "bg-muted/60" : ""}`
+        className={`group relative flex items-center gap-1.5 rounded-md px-1.5 py-1.5 text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+          !collapsed ? "bg-muted/60" : ""
         }`}
       >
-        <Sparkle
-          className={`h-3.5 w-3.5 shrink-0 ${
-            hasNewResult && collapsed ? "text-foreground" : "text-brand-cta"
-          }`}
-          aria-hidden
-        />
+        <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
         <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
       </button>
     </>
@@ -3906,18 +3896,11 @@ function FloatingAgent(p: FloatingAgentProps) {
       aria-expanded={!collapsed}
       aria-haspopup="dialog"
       aria-controls="ai-agent-panel"
-      className={`group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
-        hasNewResult && collapsed
-          ? "bg-[var(--mango-glow)] text-foreground hover:brightness-95"
-          : `text-foreground hover:bg-muted/60 ${!collapsed ? "bg-muted/60" : ""}`
+      className={`group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-foreground transition hover:bg-muted/60 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${
+        !collapsed ? "bg-muted/60" : ""
       }`}
     >
-      <Sparkle
-        className={`h-5 w-5 shrink-0 ${
-          hasNewResult && collapsed ? "text-foreground" : "text-brand-cta"
-        }`}
-        aria-hidden
-      />
+      <Sparkle className="h-5 w-5 shrink-0 text-brand-cta" aria-hidden />
     </button>
   );
 
