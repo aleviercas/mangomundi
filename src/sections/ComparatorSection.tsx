@@ -1799,11 +1799,14 @@ export function ComparatorSection({
       <div
         className="hidden overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:min-w-0 @2xl:items-stretch"
       >
-        {/* Segmento 1 — monto, solo. Primer segmento, el más grande de la
-                      barra. Sin chip propio, sin caja tipo píldora — plano
-                      sobre el lienzo del contenedor, como la fecha de
-                      kayak.com (ver historial de rondas anteriores). */}
-        <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.3] @2xl:py-0">
+        {/* Segmento 1 — monto, solo. Primer segmento. Sin chip propio, sin
+                      caja tipo píldora — plano sobre el lienzo del
+                      contenedor, como la fecha de kayak.com (ver historial
+                      de rondas anteriores).
+                      2026-09-07 feedback — "el de monto tambien se puede
+                      achicar un poco" (para dejarle más espacio al país,
+                      que "no quede aplastado"): flex-[1.3] → flex-[1]. */}
+        <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1] @2xl:py-0">
           <FieldLight label={t("comparator.field.amount")} hideLabel>
             <input
               type="number"
@@ -1824,8 +1827,13 @@ export function ComparatorSection({
                       Mantiene el recuadro (`rounded border border-border
                       bg-muted`): es la señal visual de "esto es un
                       selector con menú desplegable", igual que el campo de
-                      aeropuerto real de kayak.com. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+                      aeropuerto real de kayak.com.
+                      2026-09-07 feedback — "las celdas para seleccionar
+                      como los paises no queden aplastadas... agrandar el
+                      de pais": flex-[1.4] → flex-[1.8], a costa del monto
+                      (ver su propio comentario, Segmento 1) y la moneda
+                      (ver el comentario del Segmento 3, abajo). */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
             <CountryCombobox
               value={sendingCountry}
@@ -1842,10 +1850,14 @@ export function ComparatorSection({
         </div>
 
         {/* Segmento 3 — moneda de origen (antes Segmento 2). Caja angosta
-                      propia (`@2xl:w-28 @2xl:flex-none`), la misma idea que
-                      el campo de fecha de kayak.com: chico, ancho fijo, sin
-                      chip propio, plano sobre el lienzo. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+                      propia, la misma idea que el campo de fecha de
+                      kayak.com: chico, ancho fijo, sin chip propio, plano
+                      sobre el lienzo.
+                      2026-09-07 feedback — "el ancho de las celdas de
+                      moneda se puede achicar un poco": @2xl:w-28 (112px) →
+                      @2xl:w-20 (80px), un código de 3 letras no necesita
+                      más — el espacio ganado va al país (Segmento 2/4). */}
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
               value={from}
@@ -1882,7 +1894,7 @@ export function ComparatorSection({
                       destino ("asi como esta"): sigue yendo país primero,
                       moneda después. Ahora lleva su propio hairline (ya no
                       hay cluster con el swap, ver comentario arriba). */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.4] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight
             label={t("comparator.field.youReceive")}
             emphasizeLabel={!receivingCountry}
@@ -1908,7 +1920,7 @@ export function ComparatorSection({
 
         {/* Segmento 5 — moneda de destino, sin cambios de orden. Mismo
                       campo sin caja tipo fecha que el Segmento 3. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-28 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
               value={to}
@@ -3873,6 +3885,14 @@ function FloatingAgent(p: FloatingAgentProps) {
         <Sparkle className="h-3.5 w-3.5 shrink-0 text-brand-cta" aria-hidden />
         <span className="text-meta font-bold leading-none">{t("comparator.copilot.agent")}</span>
       </button>
+      {/* 2026-09-07 feedback — "ponele una barrita separadora del lado
+          derecho para separar cuando el combox se mueve al encabezado,
+          igual a la barrita que tiene el boton a la izquierda": misma
+          barrita (`h-6 w-px bg-border`) que ya separa el logo de este
+          botón, ahora también del lado derecho — separa el botón del
+          combo de búsqueda que se portalea justo después (ver
+          `header-searchbar-slot` en Header.tsx) cuando hay resultado. */}
+      <span className="h-6 w-px shrink-0 bg-border" aria-hidden="true" />
     </>
   );
 
