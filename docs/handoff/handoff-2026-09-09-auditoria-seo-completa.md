@@ -20,13 +20,14 @@ redirects para cada URL legacy en vez de 404s, y un `robots.txt` que bloquea
 bots de entrenamiento de IA sin tocar Googlebot/Bingbot (decisión ya
 documentada y correcta).
 
-Dicho eso, encontré **7 problemas concretos y accionables** en la primera
-pasada, y **6 más en una segunda pasada** enfocada específicamente en
-páginas sin uso/huérfanas (ver "Segunda pasada" más abajo) — de los cuales
-uno (§13, `/send/:corridor` con contenido duplicado bajo 2-3 URLs distintas)
-también es de prioridad alta. En total, de los 13 puntos, 4 son de
-prioridad alta porque le cuestan indexación/ranking real hoy mismo, no solo
-"buenas prácticas":
+Dicho eso, encontré **14 puntos concretos y accionables** a lo largo de tres
+pasadas. El más importante, con diferencia, no es un bug puntual sino un
+problema de arquitectura (§14): **la home y `/business` nunca navegan hacia
+`/send/:corridor`**, que es la única página del sitio realmente construida
+para SEO por corredor — están desconectadas entre sí, así que la inmensa
+mayoría de comparaciones reales que la gente hace nunca generan una URL
+indexable propia. Después de eso, 4 más son de prioridad alta porque le
+cuestan indexación/ranking real hoy mismo, no solo "buenas prácticas":
 
 1. **El sitemap le falta la mitad del sitio** — no lista `/about`,
    `/business`, `/widget` ni ninguna página `/send/:corridor` (§1).
@@ -39,6 +40,11 @@ prioridad alta porque le cuestan indexación/ranking real hoy mismo, no solo
    distintas** (código de país vs. de moneda, y mayúsculas vs. minúsculas),
    y cada una se autocanonicaliza en vez de apuntar a una sola forma
    canónica (§13).
+5. **La home y `/business` nunca llevan a `/send/:corridor`** — cada
+   comparación real queda atrapada en parámetros de query sobre `/` o
+   `/business`, que se autocanonicalizan hacia la página vacía. La página
+   que sí está armada para indexar por corredor existe, funciona, y no
+   recibe tráfico real del flujo de búsqueda (§14).
 
 El resto son mejoras reales pero de impacto menor: `/business` no tiene SEO
 localizado (§4), el `<h1>` es idéntico en home/business/cada corridor sin
@@ -421,6 +427,154 @@ canónica, sin necesidad de tocar el parseo ni las redirecciones existentes.
 
 ---
 
+## Tercera pasada — ¿el comparador debería llevar a otra página al mostrar resultados? (prioridad alta, el hallazgo más importante de toda la auditoría)
+
+Pregunta original de Ale: "cuando comparás y se muestran los resultados, ¿no
+debería ser otra página? ¿como lo hace kayak?". Investigué el flujo
+completo (home, `/business`, `/send/:corridor`, y el propio
+`ComparatorSection.tsx`) para responder con evidencia, no con intuición.
+
+### Cómo funciona hoy, en el código
+
+El sitio tiene, sin saberlo del todo a sí mismo, **dos sistemas distintos
+para lo mismo**, construidos en fases separadas y nunca conectados entre
+sí:
+
+**Fase A — `/` y `/business` (donde la gente realmente busca):**
+`ComparatorSection.tsx` reporta su estado (moneda, monto, países,
+segmento) hacia arriba, debounced 300ms, y tanto `index.tsx` como
+`business.tsx` lo escriben a la URL así:
+
+```ts
+navigate({ search: (prev) => ({ ...prev, from, to, amount, origin, destination }), replace: true });
+```
+
+- `replace: true` → nunca se crea una entrada nueva en el historial del
+  navegador. Buscás GBP→MXN, cambiás a EUR→ARS, cambiás el monto: todo
+  pisa la misma entrada. **El botón "atrás" del navegador nunca te saca de
+  `/`** — no hay "volver al buscador" porque nunca saliste de ahí.
+- La ruta nunca cambia — sigue siendo `/` (o `/business`) sin importar qué
+  tan específica sea la comparación.
+- Y lo más importante para SEO: el `canonical` de `/` **ignora por
+  completo** `from`/`to`/`amount`/`origin`/`destination` — siempre apunta a
+  la `/` limpia (esto ya lo vimos como algo positivo en la primera pasada,
+  para evitar miles de home duplicadas por combinación de parámetros — y
+  sigue siendo correcto para ese propósito). Pero la consecuencia es que
+  **cada comparación real que alguien hace en la home le está diciendo
+  activamente a Google "ignorá esto, es la misma página de siempre"** — el
+  contenido más específico y valioso (una comparación real GBP→MXN) queda
+  con cero posibilidad de indexarse por sí mismo, para siempre.
+
+**Fase B — `/send/:corridor` (la página que sí está armada para SEO):**
+tiene todo lo que le falta a la Fase A — `<title>`/description/canonical
+dinámicos por corredor, JSON-LD-ready, hreflang. El propio comentario del
+código lo dice: *"Unlike '/' and '/business' (query-string sync), this
+route's corridor lives in the PATH"*. Cambiar de país navega (con
+`replace: true` también, pero cambiando efectivamente de ruta) a un
+`/send/:corridor` **nuevo**:
+
+```ts
+const nextCorridor = `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}`;
+navigate({ to: "/send/$corridor", params: { corridor: nextCorridor }, replace: true });
+```
+
+(Dato interesante para el hallazgo §13: acá mismo se ve cuál es la única
+forma "canónica" que el propio código genera siempre — país-país en
+minúsculas. Es la pista más fuerte de cuál debería ser la única forma
+válida del canonical de esa ruta.)
+
+### El problema real: estos dos sistemas nunca se tocan entre sí
+
+`/send/:corridor` existe, funciona, y tiene SEO propio — **pero nada en
+`/` ni en `/business` navega ahí jamás**. Alguien que entra a la home,
+busca "cuánto sale mandar plata de UK a México", completa el formulario y
+ve resultados reales... se queda en `/?from=GBP&to=MXN&amount=1000&origin=GB&destination=MX`
+para siempre. Nunca llega a `/send/gb-mx`, que es la única URL del sitio
+diseñada para que ESA búsqueda específica pueda rankear en Google.
+
+`/send/:corridor` sólo se visita hoy por:
+- las 4 tarjetas rotativas de `TodaysRoutesSection.tsx` en la home, o
+- un link compartido/bookmark directo, o
+- (eventualmente) un post del blog que la mencione.
+
+Es decir: la página con más potencial de SEO del sitio está construida y
+funcionando, pero **desconectada del flujo real de búsqueda** — la
+inmensa mayoría de comparaciones que la gente hace en la home nunca
+generan una URL indexable propia.
+
+Mismo problema, sin ninguna solución ni parcial, en `/business`: no existe
+ningún equivalente de `/send/:corridor` para el segmento business —
+`send.$corridor.tsx` hardcodea `segment: "retail"` siempre (ver comentario:
+*"Amount/currency overrides aren't tracked here"*), así que hoy **no hay
+ninguna URL indexable posible para una comparación de FX corporativo**, ni
+siquiera construida y sin usar como el caso de `/`.
+
+### Cómo lo hace kayak (el punto de comparación de Ale) y por qué importa
+
+En kayak (y en cualquier comparador serio: Skyscanner, Google Flights,
+Wise), buscar no actualiza parámetros sobre la misma página — **navega a
+una URL de resultados real**, con su propio título, su propio contenido
+indexable, bookmarkable, con historial de navegador coherente (289 el botón
+atrás te devuelve al buscador, no te deja pegado en la página anterior de
+resultados). Eso es exactamente lo que `/send/:corridor` ya hace bien — el
+problema de mangomundi no es que le falte esa pieza, es que **la construyó
+y la dejó sin conectar a la puerta de entrada real del sitio.**
+
+### Cómo lo resolvería
+
+No hace falta construir nada nuevo — hace falta conectar lo que ya existe,
+en este orden (cada paso depende del anterior):
+
+1. **Primero, arreglar §13** (normalizar el canonical de `/send/:corridor`
+   a una sola forma — país-país en minúsculas, calcado de lo que el propio
+   código ya usa para navegar entre corredores). Si no se arregla esto
+   primero, conectar más tráfico a esa ruta multiplica el problema de
+   contenido duplicado en vez de solucionarlo.
+2. **Agregar soporte de `amount`/`segment` como query params en
+   `send.$corridor.tsx`** — hoy los ignora por completo (siempre `amount:
+   1000, segment: "retail"` fijos). Sin esto, llegar desde la home con un
+   monto/segmento específico se perdería en el camino.
+3. **En `index.tsx` (`/`): cuando `sendingCountry` y `receivingCountry`
+   ya forman un corredor completo**, el `handleQueryChange` debería hacer
+   `navigate({ to: "/send/$corridor", params: { corridor: "..." },
+   search: { amount, segment, lang }, replace: false })` — con `replace:
+   false` (a diferencia de todo lo demás en este sistema) **sólo para esa
+   transición puntual** de `/` → `/send/:corridor`, así el botón atrás
+   efectivamente te devuelve al buscador vacío, como en kayak. Una vez ahí,
+   el propio `send.$corridor.tsx` ya sabe manejar todo lo que siga con su
+   `replace: true` existente.
+4. **Mismo cambio en `business.tsx`**, navegando a
+   `/send/$corridor?segment=business` (una vez que `send.$corridor.tsx`
+   sepa leer `segment` del punto 2).
+5. **Sumar `/send/:corridor` al sitemap** (§1) — ahora con más razón, va a
+   ser la puerta de entrada real de mucho más tráfico de búsqueda que hoy.
+6. La home (`/`) y `/business` en su estado "sin corredor completo todavía"
+   (buscando, sin haber elegido destino) quedan exactamente como están —
+   ese es el comportamiento correcto de un formulario de búsqueda, no
+   necesita URL propia ni indexación (kayak tampoco indexa "la home con el
+   formulario a medio llenar").
+
+### Lo que falta confirmar antes de tocar código (para la próxima ronda, no ahora)
+
+- **Corredores sin datos reales**: no confirmé si `compareProviders` puede
+  devolver cero resultados para algún par de países/monedas armable por
+  URL. Si eso pasa, empujar tráfico real y links de Google hacia esos
+  corredores crearía páginas de "resultado vacío" indexadas — contenido
+  pobre. Antes de sumar corredores al sitemap (paso 5), conviene filtrar
+  sólo los que tienen datos reales en `providers`/`fx_rates` (la misma
+  fuente que ya usa `getExclusiveCorridors()`).
+- **La pregunta abierta de eurozona** que dejé anotada en §13: si dos
+  países distintos que comparten moneda (ej. Francia y Alemania, ambos
+  EUR) generan contenido casi idéntico entre sí más allá del país
+  mostrado — relacionado pero más amplio que el bug de §13, no lo confirmé
+  todavía.
+- **`/widget` — confirmado, no aplica.** Es una página de documentación
+  para desarrolladores (snippets de `<script>`/`<iframe>` para embeber el
+  comparador en un sitio de terceros) — no pasa por el flujo de búsqueda
+  en sí, así que este diagnóstico no le corresponde.
+
+---
+
 ## Lo que ya está bien (para no repetir trabajo en la próxima auditoría)
 
 - **Canonical + hreflang:** `src/config/site.ts` (`selfCanonical`,
@@ -465,6 +619,25 @@ canónica, sin necesidad de tocar el parseo ni las redirecciones existentes.
 | 10 | `fo-verify.html` en la raíz — a confirmar si sigue vivo en prod antes de borrar | Baja | Trivial (una vez confirmado) | `fo-verify.html` |
 | 11 | `/admin/i18n-status` sin `Disallow` explícito en `robots.txt` (ya tiene `noindex`) | Baja | Trivial | `public/robots.txt` |
 | 12 | Contenido duplicado del blog por fallback de idioma | — | — | **Descartado** — verificado contra la base, no está ocurriendo |
+| **14** | **La home y `/business` nunca navegan a `/send/:corridor`** — cada comparación real queda no-indexable | **Alta (la más importante)** | Medio (4 pasos encadenados, ver §14) | `index.tsx`, `business.tsx`, `send.$corridor.tsx` |
+
+### Orden sugerido de implementación (para la próxima ronda)
+
+Dado que varios hallazgos dependen entre sí, este es el orden que evita
+rehacer trabajo:
+
+1. **§3** — typo de encoding (trivial, sin dependencias, hacerlo ya).
+2. **§2** — `statusCode: 301` en los 7 redirects (trivial, sin dependencias).
+3. **§13** — normalizar el canonical de `/send/:corridor` a una sola forma
+   (país-país en minúsculas). Es prerrequisito de #4.
+4. **§14** — conectar `/` y `/business` a `/send/:corridor` (los 4 pasos
+   del plan de §14, en su propio orden interno). El cambio de mayor impacto
+   de toda la auditoría, pero necesita el #3 resuelto primero.
+5. **§1** — sumar `/about`, `/business`, `/widget` y (una vez filtrados por
+   datos reales, ver la nota de §14) los corredores de `/send/:corridor` al
+   sitemap.
+6. **§4, §5, §6, §7, §9, §10, §11** — el resto, sin orden estricto entre
+   ellos, ninguno depende de los anteriores.
 
 Ningún hallazgo de este pase requiere tocar la base de datos ni corre nada
 contra producción — son todos cambios de código en la rama `kayakclone`,
