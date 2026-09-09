@@ -20,6 +20,10 @@
 
 - [`handoff/handoff-2026-08-29-rediseno-mangomundi-4.md`](./handoff/handoff-2026-08-29-rediseno-mangomundi-4.md) — handoff en curso del rediseño "Mangomundi 4" (home, comparador, modo Business, widget, identidad de marca): qué se pidió, qué ya se implementó, decisiones de producto ya tomadas y qué falta. Léelo antes de tocar `design/HANDOFF.md` o cualquiera de las secciones del home.
 
+## SEO
+
+- [`handoff/handoff-2026-09-09-auditoria-seo-completa.md`](./handoff/handoff-2026-09-09-auditoria-seo-completa.md) — auditoría técnica completa (sitemap, redirects, metadatos/i18n, datos estructurados, encabezados, imágenes) con hallazgos verificados contra el código y un plan de acción priorizado. Léelo antes de tocar `sitemap[.]xml.ts`, cualquier `head()` de ruta, o `SEO_META`/`ROUTE_SEO` en `i18n.tsx`.
+
 ## Operación
 
 - [`blog-translation-runbook.md`](./blog-translation-runbook.md) — cómo continuar la traducción del blog a los 20 idiomas soportados.

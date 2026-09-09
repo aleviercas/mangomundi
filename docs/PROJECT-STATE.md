@@ -595,6 +595,7 @@ marketing genérico sin cifra concreta en ninguna página oficial revisada.
 | Handoff: octavo round — agente siempre flotante/oscuro (corrige el séptimo), rail = FiltersCard oscuro, widget sin scroll (31-ago) | `docs/handoff/handoff-2026-08-31-octavo-round-agente-siempre-flotante.md` |
 | Handoff: noveno round — widget con país+moneda+monto verificado sin scroll, `/business` sin vacío de sticky-footer, espaciado sitewide, fix Trustpilot del rail (1-sep) | `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md` |
 | Handoff: décimo round — bug de color de fondo sitewide, píldoras agrupadas, "Rank by" unificado en "More filters", "Your request" comprimido, `/about` con imagen, bug de contenido cortado en el widget (1-sep) | `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md` |
+| **Auditoría SEO completa** (sitemap incompleto, redirects 307 vs 301, typo de encoding en meta description ES, `/business` sin SEO localizado, `<h1>` genérico en corredores, `alt` de miniaturas del blog, `llms.txt` desactualizado) — con plan de acción priorizado (9-sep, rama `kayakclone`) | `docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md` |
 
 ## 10. Cómo continuar
 
