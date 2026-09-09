@@ -20,9 +20,13 @@ redirects para cada URL legacy en vez de 404s, y un `robots.txt` que bloquea
 bots de entrenamiento de IA sin tocar Googlebot/Bingbot (decisión ya
 documentada y correcta).
 
-Dicho eso, encontré **7 problemas concretos y accionables**, de los cuales 3
-son de prioridad alta porque le cuestan indexación/ranking real hoy mismo, no
-solo "buenas prácticas":
+Dicho eso, encontré **7 problemas concretos y accionables** en la primera
+pasada, y **6 más en una segunda pasada** enfocada específicamente en
+páginas sin uso/huérfanas (ver "Segunda pasada" más abajo) — de los cuales
+uno (§13, `/send/:corridor` con contenido duplicado bajo 2-3 URLs distintas)
+también es de prioridad alta. En total, de los 13 puntos, 4 son de
+prioridad alta porque le cuestan indexación/ranking real hoy mismo, no solo
+"buenas prácticas":
 
 1. **El sitemap le falta la mitad del sitio** — no lista `/about`,
    `/business`, `/widget` ni ninguna página `/send/:corridor` (§1).
@@ -31,6 +35,10 @@ solo "buenas prácticas":
 3. **La meta description en español tiene un typo de encoding** ("Comparã"
    en vez de "Compará") — se muestra tal cual en el snippet de Google para
    toda página en español que no tenga su propia description (§3).
+4. **`/send/:corridor` genera contenido 100% idéntico bajo 2-3 URLs
+   distintas** (código de país vs. de moneda, y mayúsculas vs. minúsculas),
+   y cada una se autocanonicaliza en vez de apuntar a una sola forma
+   canónica (§13).
 
 El resto son mejoras reales pero de impacto menor: `/business` no tiene SEO
 localizado (§4), el `<h1>` es idéntico en home/business/cada corridor sin
@@ -258,6 +266,161 @@ páginas de corredor.
 
 ---
 
+## Segunda pasada (mismo día) — páginas huérfanas y contenido duplicado
+
+A pedido explícito de Ale, esta segunda pasada se enfocó en una pregunta
+puntual: ¿quedaron páginas sin uso que estén afectando el SEO? Metodología:
+un mapeo completo de todos los `to="..."` de todo `src/` (para saber, con
+certeza, qué rutas están genuinamente linkeadas desde algún lado del sitio),
+más una consulta de solo-lectura contra la base real de Supabase
+(`mangomundi`, proyecto `ttqalbexpquzobrdyvgx`) para verificar una hipótesis
+sobre contenido duplicado del blog. Nada de esto tocó código ni datos —todo
+lectura.
+
+### 8. Confirmado: 7 rutas sin ningún link interno (prioridad — ya cubierta en §2)
+
+Grep de cada `to="/..."` en todo `src/**/*.tsx` y `src/**/*.ts` da como único
+set de rutas genuinamente linkeadas desde algún lado del sitio:
+
+```
+/, /about, /blog, /blog/$slug, /business, /legal, /send/$corridor, /widget
+```
+
+`/compare`, `/pricing`, `/features`, `/platform`, `/insurance`, `/contact` y
+`/fx-tool` no aparecen ni una vez como destino de un `<Link>` en ningún
+componente. Esto no es nuevo — ya estaban señaladas en §2 por el tema
+307/301 — pero ahora está confirmado con certeza que además de tener el
+status code incorrecto, son genuinamente huérfanas: nada en el código les
+apunta, sólo sobreviven como redirect para bookmarks/backlinks viejos.
+
+### 9. `public/brand/signature.html` — página estática pública sin ningún link ni valor de SEO (prioridad baja)
+
+Es una firma de email en HTML (para pegar en el cliente de correo), pero
+vive dentro de `public/`, que es exactamente la carpeta que Vite copia tal
+cual a la raíz del sitio servido. Eso la hace una página real, pública y
+crawleable en `https://mangomundi.com/brand/signature.html` — sin un solo
+link interno, sin contenido relevante para búsqueda. Bajo riesgo real (no
+va a rankear ni a dañar nada), pero es candidata a bloquear vía
+`robots.txt` (`Disallow: /brand/`) o simplemente sacarla de `public/` y
+servirla de otra forma si todavía se usa para armar firmas.
+
+### 10. `fo-verify.html` en la raíz del repo — probablemente ya no se sirve, pero hay que confirmarlo antes de tocar nada (prioridad baja)
+
+Vive en la raíz del repo (no dentro de `public/`), y `vite.config.ts` no
+pisa `publicDir` — con la config default de Vite, un archivo ahí **no**
+debería llegar al build de producción. Coincide con el comentario de
+"Option 1: meta tag" que ya vimos en `index.tsx` (verificación de FlexOffers
+por meta tag, no por archivo) — probablemente es un resabio de cuando se
+probó el método de verificación por archivo antes de decidirse por el meta
+tag. No confirmé esto contra el deploy real de Vercel — antes de borrarlo,
+alguien debería verificar que efectivamente no responde en producción (por
+si hay algún `vercel.json`/build step que sí lo copie, o por si FlexOffers
+todavía lo necesita).
+
+### 11. `/admin/i18n-status` — bien protegida por `noindex`, pero sin defensa en profundidad en `robots.txt` (prioridad baja)
+
+Ya tiene `<meta name="robots" content="noindex, nofollow">` en su `head()`
+y no está linkeada desde ningún lado público — no es un problema de
+indexación real. Lo único que le falta para estar "por las dudas" del todo
+cubierta es que `robots.txt` no la excluye explícitamente (hoy sólo lista
+disallows para bots de IA/scraping, nada para `/admin`). No es urgente:
+un `noindex` bien puesto ya resuelve el 100% del riesgo de indexación para
+cualquier crawler que respete la meta tag.
+
+### 12. Descartado: contenido duplicado del blog por fallback de idioma
+
+Antes de escribir esto pensé que podía haber un problema real: `getBlogPost`
+(`src/lib/blog.functions.ts`) cae al contenido en inglés cuando no existe
+traducción para el idioma pedido, y cada URL (`/blog/:slug?lang=xx`) se
+autocanonicaliza a sí misma (no al inglés) — en teoría, esa combinación
+podría generar N URLs con contenido idéntico, cada una insistiendo en que
+*ella* es la canónica.
+
+**Verificado contra la base real y descartado.** Consulta a
+`blog_posts` (proyecto Supabase `mangomundi`): los 23 posts publicados
+tienen sus 20 locales completos (460 filas, ninguna faltante), y comparé
+`content_md` (hash + longitud) entre idiomas de un post al azar
+(`comparar-proveedores-remesas-latinoamerica`): las 20 filas tienen hash
+distinto y longitud distinta — son traducciones reales, no el mismo texto
+en inglés repetido bajo otro `locale`. El fallback en el código es una red
+de seguridad para el día que se publique un post sin traducir todavía, pero
+hoy no se está usando en la práctica. Sin acción pendiente aquí — lo dejo
+escrito para que la próxima auditoría no tenga que volver a chequearlo
+mientras la cobertura de traducciones se mantenga en 20/20.
+
+*(Nota aparte, no es un problema de SEO: al comparar las longitudes entre
+idiomas de ese mismo post noté que francés/japonés/chino salen notablemente
+más cortos — 2.100–2.960 caracteres — contra 8.000+ en inglés/español/
+alemán/portugués/ruso/italiano. Puede ser sólo que esos idiomas son más
+compactos por naturaleza, o puede ser que esas traducciones se hicieron con
+menos detalle. No lo puedo distinguir sin leer el contenido real, y es un
+tema de profundidad/calidad editorial, no técnico — lo señalo para quien
+maneje el contenido, no como hallazgo de esta auditoría.)*
+
+### 13. Confirmado y nuevo: `/send/:corridor` genera contenido 100% idéntico bajo varias URLs distintas, cada una autocanonicalizándose (prioridad alta)
+
+Este es el hallazgo más importante de esta segunda pasada.
+
+`parseCorridor()` (`src/routes/send.$corridor.tsx`) acepta tanto códigos de
+país (`GB`, `MX`) como códigos de moneda (`GBP`, `MXN`) en cada mitad del
+slug, vía `resolveRouteCode()` (`src/lib/countries.ts`). Para un país cuya
+moneda no comparte con nadie más en el mapa (como Gran Bretaña/GBP o
+México/MXN), **el código de país y el código de moneda resuelven al mismo
+`origin`/`destination`**, vía `primaryCountryForCurrency()`:
+
+- `/send/gb-mx` → `parseCorridor` → `{ origin: "GB", destination: "MX", from: "GBP", to: "MXN" }`
+- `/send/gbp-mxn` → mismo resultado exacto: `{ origin: "GB", destination: "MX", from: "GBP", to: "MXN" }`
+
+Página resultante: mismo `<title>`, misma `<meta name="description">`, mismo
+`<h1>`, mismos resultados del comparador — **son la misma página**. Pero el
+`canonical` de cada una se calcula así (línea 48 de `send.$corridor.tsx`):
+
+```ts
+const path = `/send/${params.corridor}`;   // el slug CRUDO de la URL, sin normalizar
+const canonical = selfCanonical(path, match.search.lang);
+```
+
+Es decir, cada variante se autocanonicaliza a sí misma en vez de apuntar a
+una única forma canónica del corredor. Y no es sólo la variante
+país-vs-moneda: `parseCorridor` hace `.toLowerCase()` **para parsear**, pero
+esa normalización nunca se propaga al `path` del canonical — así que
+`/send/GB-MX` (mayúsculas) es una tercera URL distinta, con su propio
+canonical autoreferenciado, para el mismo contenido exacto.
+
+Esto no es hipotético — **ya está confirmado como comportamiento esperado
+en el propio historial del proyecto**, sólo que evaluado como éxito de QA
+en su momento, sin la lectura de SEO: `docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md`
+(línea ~291) documenta explícitamente que se probó
+`/send/gb-mx`, `/send/gbp-mxn` y `/send/GB-MX` y "funcionando igual" — que
+en ese momento se leyó como "el parseo es robusto", correctamente, pero es
+exactamente la definición de contenido duplicado bajo URLs distintas vista
+desde SEO.
+
+**Impacto:** cualquier corredor cuyo país y moneda resuelvan al mismo lugar
+(el caso común — GB/GBP, US/USD para USD-only si no hay ambigüedad, MX/MXN,
+etc.) tiene como mínimo 3 URLs indexables con contenido idéntico y sin un
+canonical real entre ellas. Si alguna vez se linkea internamente o
+externamente con una ortografía distinta a la que usa
+`TodaysRoutesSection.tsx` (que no confirmé cuál usa, país o moneda), Google
+puede terminar indexando y compitiendo por ranking entre 2-3 URLs del sitio
+para la misma búsqueda, en vez de consolidar señales en una sola.
+
+*(No confirmé, y queda como pregunta abierta para cuando se toque este
+código: si dos países distintos que comparten la misma moneda —por ejemplo,
+varios países de la eurozona con EUR— producen o no contenido casi
+idéntico entre sí más allá del código de país mostrado. Es una pregunta
+relacionada pero más amplia que la de arriba, que sí quedó 100% confirmada
+con el código y con el historial del proyecto.)*
+
+**Acción sugerida (para cuando se implemente, no ahora):** normalizar el
+`path` usado para el `canonical` a una única forma por corredor (por
+ejemplo, siempre país-país en minúsculas, usando `parsed.origin`/
+`parsed.destination` en vez de `params.corridor` crudo) — así todas las
+variantes de ortografía de un mismo corredor declaran la misma URL como
+canónica, sin necesidad de tocar el parseo ni las redirecciones existentes.
+
+---
+
 ## Lo que ya está bien (para no repetir trabajo en la próxima auditoría)
 
 - **Canonical + hreflang:** `src/config/site.ts` (`selfCanonical`,
@@ -296,7 +459,15 @@ páginas de corredor.
 | 5 | `<h1>` genérico, no menciona corredor/audiencia | Media | Bajo-Medio | `HeroSection.tsx`, `send.$corridor.tsx`, `business.tsx` |
 | 6 | `alt=""` en miniaturas del listado del blog | Baja | Trivial (1 línea) | `src/routes/blog.tsx:114` |
 | 7 | `llms.txt` desactualizado | Baja | Bajo | `public/llms.txt` |
+| 13 | `/send/:corridor` genera contenido idéntico bajo 3+ URLs (país vs. moneda vs. mayúsculas), cada una autocanonicalizándose | **Alta** | Bajo (normalizar el `path` del canonical) | `send.$corridor.tsx`, `countries.ts` |
+| 8 | 7 rutas confirmadas sin ningún link interno (mismas del punto 2) | Alta (ya contada en #2) | — | — |
+| 9 | `public/brand/signature.html` público, sin link, sin valor SEO | Baja | Trivial | `public/brand/signature.html`, `robots.txt` |
+| 10 | `fo-verify.html` en la raíz — a confirmar si sigue vivo en prod antes de borrar | Baja | Trivial (una vez confirmado) | `fo-verify.html` |
+| 11 | `/admin/i18n-status` sin `Disallow` explícito en `robots.txt` (ya tiene `noindex`) | Baja | Trivial | `public/robots.txt` |
+| 12 | Contenido duplicado del blog por fallback de idioma | — | — | **Descartado** — verificado contra la base, no está ocurriendo |
 
 Ningún hallazgo de este pase requiere tocar la base de datos ni corre nada
 contra producción — son todos cambios de código en la rama `kayakclone`,
-verificables localmente con `bun run build` antes de subir.
+verificables localmente con `bun run build` antes de subir. El punto 13 es
+el único hallazgo nuevo de prioridad alta de esta segunda pasada; los
+puntos 9-11 son de limpieza, bajo riesgo y bajo impacto.
