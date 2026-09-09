@@ -4,10 +4,15 @@ Fecha: 2026-09-09.
 Alcance: auditoría técnica de SEO sobre el código real de la rama `kayakclone`
 (`aleviercas/mangomundi`), leyendo `robots.txt`, `sitemap.xml`, cada `head()`
 de ruta, `src/config/site.ts`, `src/lib/i18n.tsx` (SEO_META / ROUTE_SEO) y los
-componentes que renderizan `<h1>`/`<img>`. No se corrió Lighthouse/PSI ni se
-golpeó el sitio en producción — todo lo de acá está verificado leyendo el
-código fuente, con cita de archivo y línea. Esto es una foto de un momento;
-antes de tocar nada, re-leer los archivos citados por si ya cambiaron.
+componentes que renderizan `<h1>`/`<img>`, más un mapeo completo de todos los
+links internos (`to="..."`) de `src/` y una serie de consultas de
+**solo lectura** contra la base real de Supabase (proyecto `mangomundi`,
+`ttqalbexpquzobrdyvgx`) para verificar con datos reales dos hipótesis que
+de otra forma hubieran quedado como especulación. No se corrió Lighthouse/PSI
+ni se golpeó el sitio en producción — todo lo de acá está verificado leyendo
+el código fuente o consultando la base directamente, con cita de archivo y
+línea, o de tabla/columna. Esto es una foto de un momento; antes de tocar
+nada, re-leer los archivos citados por si ya cambiaron.
 
 ## Resumen ejecutivo
 
@@ -554,24 +559,122 @@ en este orden (cada paso depende del anterior):
    necesita URL propia ni indexación (kayak tampoco indexa "la home con el
    formulario a medio llenar").
 
-### Lo que falta confirmar antes de tocar código (para la próxima ronda, no ahora)
+### Lo que se confirmó al investigar más (ver "Cuarta pasada" más abajo)
 
-- **Corredores sin datos reales**: no confirmé si `compareProviders` puede
-  devolver cero resultados para algún par de países/monedas armable por
-  URL. Si eso pasa, empujar tráfico real y links de Google hacia esos
-  corredores crearía páginas de "resultado vacío" indexadas — contenido
-  pobre. Antes de sumar corredores al sitemap (paso 5), conviene filtrar
-  sólo los que tienen datos reales en `providers`/`fx_rates` (la misma
-  fuente que ya usa `getExclusiveCorridors()`).
-- **La pregunta abierta de eurozona** que dejé anotada en §13: si dos
-  países distintos que comparten moneda (ej. Francia y Alemania, ambos
-  EUR) generan contenido casi idéntico entre sí más allá del país
-  mostrado — relacionado pero más amplio que el bug de §13, no lo confirmé
-  todavía.
+- **Corredores sin datos reales**: confirmado y cuantificado — de ~59.000
+  URLs armables por el selector de país, sólo 309 tienen datos propios en
+  `fx_rates`. El resto cae a providers genéricos idénticos entre sí. **El
+  filtro de sitemap del paso 5 debe limitarse a esos 309**, no es opcional.
+- **La pregunta de la eurozona**: resuelta — no es un problema específico
+  de compartir moneda, es el mismo fenómeno de arriba (el 99.5% de los
+  corredores sin datos propios muestra providers idénticos sin importar el
+  país). Confirmado con datos reales que los corredores CON fila propia sí
+  son genuinamente distintos entre sí.
+- **`/widget`**: confirmado, no aplica — ver más abajo.
 - **`/widget` — confirmado, no aplica.** Es una página de documentación
   para desarrolladores (snippets de `<script>`/`<iframe>` para embeber el
   comparador en un sitio de terceros) — no pasa por el flujo de búsqueda
   en sí, así que este diagnóstico no le corresponde.
+
+---
+
+## Cuarta pasada — las dos preguntas abiertas, resueltas con datos reales
+
+Ambas preguntas quedaron cerradas consultando el código y la base real de
+Supabase (proyecto `mangomundi`, solo lectura). Terminaron siendo **la
+misma causa raíz**, no dos problemas separados.
+
+### ¿Puede `compareProviders` devolver cero resultados para algún corredor armable por URL?
+
+**No, prácticamente nunca — pero esa no era la pregunta correcta.**
+
+`eligibleProviders` (`src/lib/fx.functions.ts` línea ~794) incluye siempre,
+sin excepción, a cualquier provider que no sea `is_corridor_specific`
+(`if (!p.is_corridor_specific) return true;`). Consulté la base:
+
+| segment | corridor-specific | genéricos (siempre elegibles) |
+|---|---|---|
+| retail | 17 | 6 + 7 ("both") = **13** |
+| business | 0 | 6 + 7 ("both") = **13** |
+
+O sea: **cualquier par de países válido va a mostrar como mínimo esos ~13
+providers genéricos** — nunca una página en blanco. El riesgo real no es
+"resultado vacío", es otro: **cuántas de esas páginas terminan siendo
+contenido genérico casi idéntico entre sí**, y ahí sí hay algo concreto:
+
+- `COUNTRY_BY_CODE` (`src/lib/countries.ts`) soporta **244 países reales**
+  (los 251 territorios de `country-to-currency` menos 7 deshabitados). Eso
+  da un espacio teórico de **~59.000 URLs armables** vía
+  `/send/:origen-:destino` (244 × 243, sin contar mismo país).
+- De ese universo, **sólo 309 corredores tienen datos reales y
+  específicos** en `fx_rates` (consulta directa: `count(distinct
+  sending_country || '-' || receiving_country) from fx_rates` → 309, con
+  69 países de origen y 97 de destino distintos).
+- Para cualquier corredor SIN fila propia en `fx_rates`, el precio que ve
+  el usuario sale de `resolveTier()` (línea ~528) — que calcula
+  `fee_percent`/`fee_fixed`/`spread_percent` en función de **sólo el
+  monto**, sin leer el país de origen ni el de destino en ningún momento.
+
+**Conclusión:** el 99.5% del espacio de URLs armable por el selector de
+país (~58.700 de ~59.000) muestra exactamente los mismos ~13 providers con
+exactamente los mismos números que cualquier otro corredor sin datos
+propios que comparta la misma moneda — la única cosa que cambia entre
+esas páginas es el nombre del país y la bandera. Es contenido genérico
+plantillado a escala, el patrón clásico de "doorway pages" que Google
+penaliza si se indexa masivamente. La respuesta a la pregunta original
+("¿hay que filtrar antes de sumar corredores al sitemap?") es **sí, y por
+mucho más margen del que pensaba** — de las decenas de miles de URLs
+posibles, sólo unos cientos tienen contenido genuinamente único.
+
+### ¿Dos países que comparten moneda (eurozona) generan contenido casi idéntico entre sí?
+
+**Depende, y ahora sé exactamente de qué depende — es la misma causa raíz
+de arriba, no un bug aparte de la eurozona.**
+
+Primero confirmé que SÍ hay corredores reales donde dos o más países de la
+eurozona tienen datos propios hacia el mismo destino (ej. Marruecos, con
+filas propias desde BE/ES/FR/IT). Comparé los números fila por fila —
+**son genuinamente distintos**, no una plantilla repetida:
+
+| provider | BE→MA | ES→MA | FR→MA | IT→MA |
+|---|---|---|---|---|
+| Wise (fee) | €0.00 | €1.67 | €1.63 | €1.67 |
+| Western Union (fee) | €0.90 | €1.90 | €0.90 | €1.90 |
+| Ria (fee) | €1.99 | €2.90 | €1.99 | €2.90 |
+
+`/send/be-ma` y `/send/es-ma` son páginas legítimamente distintas — no hay
+ningún problema ahí. **Pero** para cualquier par de países-eurozona hacia
+un destino donde NINGUNO de los dos tiene fila propia en `fx_rates` (la
+inmensa mayoría, dado que sólo 309 de ~59.000 corredores tienen datos
+propios), la tabla de resultados sale enteramente de `resolveTier()` —
+que como ya vimos no lee el país en absoluto. Ahí sí, `/send/de-ar` y
+`/send/fr-ar` (si ninguno de los dos tiene fila propia hacia Argentina)
+mostrarían exactamente los mismos providers con exactamente los mismos
+números.
+
+**No es un problema específico de "comparten moneda"** — es el mismo
+fenómeno de arriba, sólo que se nota más fácil en la eurozona porque ahí
+hay muchos países candidatos compitiendo por la misma moneda EUR. Un
+`/send/gb-ar` y un `/send/us-ar` (monedas distintas, GBP vs USD) sin datos
+propios hacia Argentina también mostrarían providers idénticos en fee, sólo
+que con el título/`<h1>` diciendo "GBP to ARS" vs "USD to ARS" en vez de
+"EUR to ARS" repetido — la duplicación de contenido cruda es la misma, la
+eurozona sólo la hace más visible porque además comparte la etiqueta de
+moneda.
+
+### Qué cambia esto en la recomendación de §1/§14
+
+No cambia el plan de acción, lo hace más preciso: cuando se sume
+`/send/:corridor` al sitemap (§1) y se conecte el flujo de búsqueda ahí
+(§14), **el filtro no es opcional ni "nice to have" — es necesario para no
+generar decenas de miles de páginas genéricas indexables**. Filtrar por
+los 309 corredores con fila propia en `fx_rates` (la misma fuente que ya
+usa `getExclusiveCorridors()`) es exactamente el criterio correcto — ya
+está probado con datos reales que esos 309 sí tienen contenido
+diferenciado de verdad. El resto del espacio de URLs puede seguir
+existiendo y funcionando para quien llegue por un link compartido o
+escriba la URL a mano (no hay que romper nada ahí), simplemente no hay que
+promoverlo activamente a Google.
 
 ---
 
