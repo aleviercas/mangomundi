@@ -49,8 +49,16 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
       // (era simplemente "lo que había antes de que el comparador tuviera
       // su propio lienzo" — ver el comment de ComparatorSection sobre
       // --surface-canvas para el resto de esa historia).
+      // 2026-09-07 feedback — "achicar el espacio un poco entre el
+      // subtitulo y el menu personal business asi sube un poco el
+      // recuadro": pb-5/sm:pb-6 (ronda anterior, "reducir el espacio entre
+      // el subtítulo y el comparador") todavía dejaba más aire del pedido
+      // ahora — se recorta otro poco, pb-3/sm:pb-4, junto con el
+      // pt-4→pt-2 del section de ComparatorSection (ver su propio
+      // comentario) para que el recuadro suba de verdad, no sólo la mitad
+      // del hueco.
       className={`relative grid overflow-hidden bg-surface-canvas transition-[grid-template-rows,padding] duration-300 ease-out ${
-        compact ? "grid-rows-[0fr] py-0" : "grid-rows-[1fr] pt-6 pb-5 sm:pt-10 sm:pb-6"
+        compact ? "grid-rows-[0fr] py-0" : "grid-rows-[1fr] pt-6 pb-3 sm:pt-10 sm:pb-4"
       }`}
       aria-hidden={compact}
     >

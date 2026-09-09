@@ -2923,7 +2923,17 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.combobox.placeholder": "Select…",
     "comparator.copilot.title": "FX Copilot",
     // 2026-08-30 feedback — "que se llame mangomundi ai como en el diseno".
-    "comparator.copilot.agent": "Mangomundi AI",
+    // 2026-09-07 feedback — "llamalo agente ai y no mangomundi ai... para
+    // que en cada idioma tenga el nombre que corresponda": los 19 JSON de
+    // scripts/translations/ (que pisan este default de EN en build, ver
+    // el merge más abajo en este archivo) YA traducían esto como "Agente
+    // IA"/"Agent IA"/"KI-Agent"/etc. en vez de "Mangomundi AI" — sólo el
+    // default de EN, acá, se había quedado con el nombre viejo. Un solo
+    // key (usado en el trigger de escritorio, el de mobile y el título
+    // del panel — "el título... adentro del chat... y en el botón del
+    // link" son los 3 lugares que ya leen este mismo string) alcanza para
+    // los tres puntos que pidió.
+    "comparator.copilot.agent": "AI Agent",
     "comparator.copilot.placeholder": "Ask a follow-up about this route…",
     "comparator.copilot.empty": "Run a comparison to enable the copilot.",
     "comparator.copilot.send": "Send",

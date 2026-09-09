@@ -5,6 +5,7 @@ import { z } from "zod";
 import { HomePageBody } from "@/components/HomePageBody";
 import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
+import { SEO_META } from "@/lib/i18n";
 import { defaultCounterCurrency } from "@/lib/countries";
 import { listBlogPosts, toBlogLocale } from "@/lib/blog.functions";
 import { getExclusiveCorridors } from "@/lib/fx.functions";
@@ -100,6 +101,17 @@ export const Route = createFileRoute("/")({
   // JSON-LD so it doesn't re-pin an English-only title over the localized one.
   head: ({ match }) => {
     const canonical = selfCanonical("/", match.search.lang);
+    // 2026-09-07 i18n audit — "que no quede nada hardcodeado, todo se vea
+    // bien en todos los idiomas": este JSON-LD (Organization) tenía su
+    // `description` fija en inglés sin importar el idioma de la página —
+    // el título/meta description normales YA salían de SEO_META por
+    // idioma (ver el comentario de arriba), pero este bloque se armó
+    // aparte y a mano. SEO_META ya tiene una descripción propia por cada
+    // uno de los 20 idiomas del sitio (la misma que usa la meta
+    // description normal) — se reusa acá en vez de duplicar el texto en
+    // inglés otra vez.
+    const seoLang = (match.search.lang ?? "en") as keyof typeof SEO_META;
+    const seo = SEO_META[seoLang] ?? SEO_META.en;
     return {
       meta: [
         { property: "og:url", content: canonical },
@@ -123,8 +135,7 @@ export const Route = createFileRoute("/")({
               "https://www.facebook.com/people/Mangomundi/61591687365990/",
               "https://www.instagram.com/mangomundi/",
             ],
-            description:
-              "AI-powered currency exchange comparator — compare exchange rates, fees, routes and delivery speeds across 50+ providers in real time.",
+            description: seo.description,
           }),
         },
         {

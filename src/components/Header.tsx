@@ -139,27 +139,27 @@ export function Header() {
         {/* Menu trigger — left of the logo, at every breakpoint, like
             kayak's ☰. Opens the same dropdown panel HEADER_NAV always used
             on mobile (below), just no longer gated to `md:hidden`.
-            2026-09-04 feedback (ronda 6, cont.) — "el menu hamburgesa esta
-            desalineado del logo": measured live (getBoundingClientRect at
-            4x zoom) — this button's box and the Wordmark link's box ARE
-            centered on the exact same Y in the 66px header (both flex
-            children of the same `items-center` row), so it isn't a
-            box-model bug. What's actually off is optical: "mangomundi" is
-            set in lowercase with a real descender on the "g", which pulls
-            the WORD's bounding box down without pulling its visual
-            weight/x-height down with it — so the glyph's optical center
-            sits a couple px higher than its own box center, while the
-            hamburger icon (a symmetric glyph, no descender) has no such
-            gap. Two boxes centered on the same line ≠ two GLYPHS optically
-            centered on the same line when one of them carries a
-            descender. `-translate-y-px` nudges the icon up to close that
-            gap without touching either box's actual layout. */}
+            2026-09-04/07 feedback (varias rondas) — "el menu hamburguesa
+            esta desalineado del logo": dos intentos de nudge óptico en
+            píxeles (`-translate-y-px` en el botón, después `translate-y-px`
+            en el logo) y ninguno de los dos se sostuvo — adivinar un
+            desface de 1px por diagnóstico óptico sin poder verificarlo en
+            un navegador real no es confiable. Se sacan los dos `translate`
+            y se ataca la causa de raíz en vez del síntoma: el botón tiene
+            una altura EXPLÍCITA (`h-9`, 36px) pero el `<Link>` del logo no
+            tenía ninguna — su caja alta era la del texto (line-height del
+            propio tipo de letra), una altura distinta a la del botón que
+            "centrado" (`items-center` del row) podía alinear de forma
+            distinta según cómo cada navegador calcule esa caja. `h-9` en
+            el Link iguala las dos cajas EXACTO al mismo alto que el
+            botón — mismo tamaño, mismo `items-center`, sin necesidad de
+            adivinar ningún nudge. */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-label={t("header.menuAriaLabel")}
-          className="inline-flex h-9 w-9 shrink-0 -translate-y-px items-center justify-center rounded-md text-foreground hover:bg-muted"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-foreground hover:bg-muted"
         >
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
@@ -167,7 +167,7 @@ export function Header() {
         <Link
           to="/"
           aria-label={t("header.homeAriaLabel")}
-          className="flex items-center"
+          className="flex h-9 items-center"
           onClick={handleLogoClick}
         >
           {/* Text-only lockup here and in Footer — the icon mark is reserved
@@ -216,7 +216,40 @@ export function Header() {
             recibe nada por debajo de `sm` — y FloatingAgent ahora porta un
             segundo trigger, sólo-ícono, al slot de la derecha (ver más
             abajo) para ese rango. */}
-        <div id="header-ai-slot" className="ml-5 hidden items-center gap-3 sm:flex" />
+        <div id="header-ai-slot" className="ml-5 hidden shrink-0 items-center gap-3 sm:flex" />
+
+        {/* 2026-09-07 feedback — "cuando me refiero al header... es la
+            misma linea en donde esta mangomundi y el icono de mangomundi
+            ai... quiero que este en la misma linea de igual forma que hace
+            kayak.com": comparado en vivo contra kayak.com — TODO vive en
+            una sola fila de ~66px (☰, logo, Ask AI, la barra de búsqueda
+            entera, botón Search), nunca en una segunda fila debajo. La
+            fila 2 que existía acá antes (ronda 8, `#header-searchbar-slot`
+            como su propio `<div>` después de este mismo `<div
+            className="flex h-[66px] ...">`, con el header creciendo de
+            66 a ~80px para contenerla) se saca — el slot se muda ACÁ
+            DENTRO, como un hijo más de esta fila, entre el AI slot y el
+            slot mobile del AI. Vacío (y por lo tanto sin alto propio) en
+            cualquier página sin comparador, en mobile, o antes de tener un
+            resultado (`mergeSearchIntoHeader` en ComparatorSection.tsx
+            sigue decidiendo cuándo portalea algo acá).
+            2026-09-07 feedback (cont.) — "el combo luego de buscar quedo
+            demasiado ancho... no es necesario ocupar todo el ancho de la
+            pagina y dejar un espacio separando del boton del agente ai":
+            `flex-1` (ocupar TODO lo que sobra hasta el slot mobile del AI,
+            que en desktop ni siquiera se ve) es justo lo que lo estiraba
+            de punta a punta. Pasa a `shrink-0` sin `flex-1` — el ancho fijo
+            que reemplaza a "todo lo que sobra" vive en styles.css
+            (`#header-searchbar-slot:not(:empty)`), NO acá como clase de
+            Tailwind, porque tiene que aplicar sólo cuando algo está
+            portaleado adentro: un `w-[...]` acá reservaría ese ancho vacío
+            en TODA página sin comparador (blog, about, etc.), rompiendo el
+            layout del header en todos lados menos donde hace falta. Vacío
+            sigue siendo `width: auto` (0 efectivo, sin contenido) — mismo
+            criterio "invisible hasta que algo se portalea adentro" que ya
+            usa `header-ai-slot`, el `gap-3` de la fila (más arriba) ya
+            pone aire entre esto y el trigger del AI a su izquierda. */}
+        <div id="header-searchbar-slot" className="min-w-0 shrink-0" />
 
         {/* Slot para el trigger mobile del agente — sólo ícono, en la
             esquina opuesta al ☰/logo, como el propio "Ask AI" de kayak en
@@ -226,20 +259,6 @@ export function Header() {
             escritorio. */}
         <div id="header-ai-slot-mobile" className="ml-auto flex items-center sm:hidden" />
       </div>
-
-      {/* Fila 2 — 2026-09-04 feedback (ronda 8) — "la barra de seleccion...
-          se mueve al header?": ComparatorSection porta la barra de
-          búsqueda entera acá (`createPortal`, ver `mergeSearchIntoHeader`
-          en ese archivo) una vez que hay resultado y el viewport es lo
-          bastante ancho — la misma pieza blanca del header, no una banda
-          aparte, igual que kayak.com (medido en vivo: su header pasa de
-          ~66px a ~80px en una página de resultados porque esta fila vive
-          adentro). Vacío en cualquier página sin comparador, o en mobile,
-          o por debajo de 1280px — no ocupa alto ni pinta nada (sin
-          padding/borde propios acá; el contenido portaleado trae los
-          suyos) hasta que algo se portalea adentro, así nunca deja una
-          franja colgando de la nada, mismo criterio que `header-ai-slot`. */}
-      <div id="header-searchbar-slot" />
 
       {/* Side drawer — now the only nav, opened by the ☰ trigger at every
           width (used to be mobile-only; desktop had its own always-open
