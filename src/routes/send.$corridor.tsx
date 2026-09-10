@@ -16,6 +16,20 @@ const searchSchema = z
     // §14, paso 2. Mismo patrón .catch(undefined) que "/" y "/business".
     amount: z.coerce.number().positive().optional().catch(undefined),
     segment: z.enum(["retail", "business"]).optional().catch(undefined),
+    // 2026-09-10 feedback — "no me mandes a comparar hasta que haga click
+    // en compare, cuando estoy en el home... me esta llevando automatico":
+    // el sync debounceado de ComparatorSection (300ms después de elegir
+    // ambos países) ya navegaba PARA ACÁ vía `handleQueryChange` en
+    // index.tsx, sin que el usuario hubiera tocado el botón — y esta ruta
+    // corría la comparación sola al llegar (`autoRun: true` fijo, abajo),
+    // pensado para el caso real de un link compartido/resultado de
+    // búsqueda externo, no para ese sync de fondo. `run` es la señal
+    // explícita que distingue los dos casos: index.tsx la manda en `false`
+    // en esa navegación de fondo (ver su propio comentario); una llegada
+    // externa genuina (alguien pega/comparte "/send/gb-mx" sin este
+    // parámetro) sigue sin necesitarla — `search.run ?? true` más abajo
+    // mantiene el default viejo para ese caso.
+    run: z.coerce.boolean().optional().catch(undefined),
   })
   .catch({});
 
@@ -125,8 +139,11 @@ function SendCorridorPage() {
     to: parsed.to,
     amount: search.amount ?? 1000,
     // Arriving at a named corridor (a shared link, or a search result) means
-    // seeing it compared immediately, not pressing Compare again.
-    autoRun: true,
+    // seeing it compared immediately, not pressing Compare again — salvo que
+    // `run` diga explícitamente lo contrario (ver el comentario de `run` en
+    // el searchSchema, arriba): la navegación de fondo desde "/" antes de
+    // que el usuario haga click en Compare llega con `run: false`.
+    autoRun: search.run ?? true,
   };
 
   // Unlike "/" and "/business" (query-string sync), this route's corridor

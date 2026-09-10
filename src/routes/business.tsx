@@ -102,7 +102,11 @@ function BusinessPage() {
         navigate({
           to: "/send/$corridor",
           params: { corridor: `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}` },
-          search: { lang: search.lang, amount: q.amount || undefined, segment: "business" },
+          // 2026-09-10 feedback — mismo fix que index.tsx (ver su propio
+          // comentario): `run: false` para que esta navegación de fondo no
+          // dispare `autoRun` en send.$corridor.tsx antes de un click real
+          // en Compare.
+          search: { lang: search.lang, amount: q.amount || undefined, segment: "business", run: false },
         });
         return;
       }
