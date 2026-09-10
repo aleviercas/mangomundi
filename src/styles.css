@@ -390,7 +390,7 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+    font-family: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {
