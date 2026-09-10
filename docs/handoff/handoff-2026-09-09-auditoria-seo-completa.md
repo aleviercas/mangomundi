@@ -719,19 +719,22 @@ promoverlo activamente a Google.
 | 13 | `/send/:corridor` genera contenido idéntico bajo 3+ URLs (país vs. moneda vs. mayúsculas), cada una autocanonicalizándose | **Alta** | Bajo (normalizar el `path` del canonical) | `send.$corridor.tsx`, `countries.ts` | ✅ Implementado (10-sep) |
 | 8 | 7 rutas confirmadas sin ningún link interno (mismas del punto 2) | Alta (ya contada en #2) | — | — | ✅ Ya cubierto por #2 (no se borran, ver nota abajo) |
 | 9 | `public/brand/signature.html` público, sin link, sin valor SEO | Baja | Trivial | `public/brand/signature.html`, `robots.txt` | ✅ Mitigado (10-sep, `Disallow: /brand/`) |
-| 10 | `fo-verify.html` en la raíz — a confirmar si sigue vivo en prod antes de borrar | Baja | Trivial (una vez confirmado) | `fo-verify.html` | ⏳ Pendiente — no se pudo confirmar contra el deploy real (sin acceso de red al dominio), no se tocó |
+| 10 | `fo-verify.html` en la raíz — a confirmar si sigue vivo en prod antes de borrar | Baja | Trivial (una vez confirmado) | `fo-verify.html` | ✅ Confirmado y borrado (10-sep) |
 | 11 | `/admin/i18n-status` sin `Disallow` explícito en `robots.txt` (ya tiene `noindex`) | Baja | Trivial | `public/robots.txt` | ✅ Implementado (10-sep) |
 | 12 | Contenido duplicado del blog por fallback de idioma | — | — | **Descartado** — verificado contra la base, no está ocurriendo | — |
 | **14** | **La home y `/business` nunca navegan a `/send/:corridor`** — cada comparación real queda no-indexable | **Alta (la más importante)** | Medio (4 pasos encadenados, ver §14) | `index.tsx`, `business.tsx`, `send.$corridor.tsx` | ✅ Implementado (10-sep) |
 
-### Lo único que quedó pendiente: §10 (`fo-verify.html`)
+### §10 (`fo-verify.html`) — confirmado y resuelto
 
-No se tocó porque no se pudo confirmar contra el deploy real si todavía se sirve
-en producción (el acceso de red de esta sesión no llega al dominio). Sigue
-siendo de prioridad baja y de esfuerzo trivial una vez confirmado — sólo hace
-falta que alguien con acceso al sitio en vivo revise si
-`https://mangomundi.com/fo-verify.html` responde 200 o 404 antes de borrar el
-archivo.
+No había acceso de red directo al dominio real desde esta sesión, pero se
+confirmó de una forma más rigurosa: se corrió el build real del proyecto
+(`vite build`, el mismo pipeline que corre Vercel) y se inspeccionó
+`.output/public/` — el directorio real de estáticos que termina
+sirviéndose. `fo-verify.html` **no aparece en ningún lado del output**; sólo
+están los archivos que ya vivían en `public/` (`ads.txt`, `brand/`, `fonts/`,
+`images/`, `llms.txt`, `logos/`, `robots.txt`, `widget.js`). Confirma lo que
+ya sugería `vite.config.ts` (sin `publicDir` pisado) — el archivo nunca llegó
+a producción. Borrado.
 
 ### Nota sobre §5 y §8 al implementarse
 
