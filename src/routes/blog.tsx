@@ -3,7 +3,7 @@ import { useQuery, queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
-import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n, localeTagForLang } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { BrandMark } from "@/components/Wordmark";
 
@@ -136,7 +136,7 @@ function BlogIndexPage() {
                   )}
                   {post.published_at && (
                     <span>
-                      {new Date(post.published_at).toLocaleDateString(undefined, {
+                      {new Date(post.published_at).toLocaleDateString(localeTagForLang(lang), {
                         year: "numeric",
                         month: "long",
                         day: "numeric",

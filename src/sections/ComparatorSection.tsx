@@ -55,7 +55,7 @@ import {
   chatAboutRecommendation,
   type ComparisonResult,
 } from "@/lib/fx.functions";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, localeTagForLang } from "@/lib/i18n";
 import {
   localCurrency,
   primaryCountryForCurrency,
@@ -69,8 +69,9 @@ import { PreferredRateModal } from "@/components/PreferredRateModal";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CountryCombobox } from "@/components/ui/CountryCombobox";
 import { CurrencyCombobox } from "@/components/ui/CurrencyCombobox";
+import type { ComboboxHandle } from "@/components/ui/Combobox";
 import { useAnalytics } from "@/hooks/use-analytics";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile, useIsNarrowerThan } from "@/hooks/use-mobile";
 import { useRatesFreshness } from "@/hooks/use-rates-freshness";
 import { B2B_UPSELL_MIN_AMOUNT } from "@/config/providers";
 import { captureBusinessLead, captureEnterpriseLead } from "@/lib/agent.functions";
@@ -306,6 +307,19 @@ export interface ComparatorQuery {
   autoRun?: boolean;
 }
 
+/** 2026-09-09 feedback — bug real encontrado revisando "cómo se mueve
+ *  cuando se cambia el tamaño de la pantalla": `#header-searchbar-slot`
+ *  (styles.css) exige `min-width: 680px`, y el resto de esa misma fila del
+ *  header (☰ 36px + logo ~150px + botón "Ask AI" ~160px + paddings/gaps
+ *  ~100px, estimado a partir de las clases reales, no medido en vivo)
+ *  necesita otros ~450px — total real ≈1080-1100px. Redondeado hacia
+ *  arriba con margen (1120) porque esas estimaciones de logo/botón son
+ *  aproximadas — mejor pasarse por unos px de más a "usar la píldora
+ *  colapsada" que quedarse corto y volver a romper el header. Confirmar
+ *  con Alejandro si en algún ancho intermedio real (no estimado) todavía
+ *  se ve mal y ajustar. */
+const HEADER_SEARCH_MERGE_MIN_WIDTH = 1120;
+
 export function ComparatorSection({
   initialQuery,
   embedded = false,
@@ -357,6 +371,28 @@ export function ComparatorSection({
   // back once the dropdown opens or the viewport is wide enough to show it
   // inline without truncating.
   const isMobile = useIsMobile();
+  // 2026-09-09 feedback — bug real: "zona muerta" 768px-~1100px donde
+  // `mergeSearchIntoHeader` se activaba (isMobile ya daba false a los
+  // 768px) pero el header no tenía espacio real para la barra completa —
+  // ver el doc comment de `HEADER_SEARCH_MERGE_MIN_WIDTH` (arriba, a nivel
+  // de módulo) para la cuenta completa de por qué el número es este y no
+  // 768. Sólo se usa para decidir collapsedSearch/mergeSearchIntoHeader,
+  // unas líneas más abajo — `isMobile` (768) sigue siendo el gate correcto
+  // para todo lo demás en este archivo (y para Combobox.tsx: ahí sí importa
+  // si es literalmente un teléfono, no si el header tiene sitio).
+  const headerTooNarrowForSearchBar = useIsNarrowerThan(HEADER_SEARCH_MERGE_MIN_WIDTH);
+  // 2026-09-09 feedback — "comportamiento como kayak.com": tres refs, uno
+  // por cada instancia real del campo de país de destino (barra desktop,
+  // bloque mobile apilado, tarjeta del widget embebido) — son 3 elementos
+  // de DOM distintos, no el mismo componente reusado tres veces, así que
+  // cada uno necesita su propio `ComboboxHandle` para que el país de origen
+  // de ESA misma variante pueda auto-abrirlo (ver `ComboboxHandle`'s own
+  // doc comment sobre el guard de visibilidad — necesario específicamente
+  // porque, salvo en el widget, dos de estas tres instancias están siempre
+  // montadas a la vez, sólo una visible según el ancho).
+  const destCountryDesktopRef = useRef<ComboboxHandle>(null);
+  const destCountryMobileRef = useRef<ComboboxHandle>(null);
+  const destCountryWidgetRef = useRef<ComboboxHandle>(null);
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
   const [from, setFrom] = useState(initialQuery?.from ?? "GBP");
   const [to, setTo] = useState(initialQuery?.to ?? "USD");
@@ -1629,11 +1665,22 @@ export function ComparatorSection({
   // esto, en 390px la barra se come la pantalla entera y los resultados —
   // que son lo que la persona vino a ver — arrancan debajo del fold.
   //
-  // Gate por `isMobile` (el hook que este archivo ya usa) y no por una
-  // media query CSS: el formulario tiene que existir en UN solo lugar del
-  // árbol a la vez, o los inputs se duplican y el foco/estado se parte en
-  // dos copias.
-  const collapsedSearch = !embedded && Boolean(result) && isMobile;
+  // 2026-09-09 feedback — bug real, "revisá cómo se mueve cuando se cambia
+  // el tamaño de la pantalla": este gate usaba `isMobile` (768px), el mismo
+  // corte que decide "es un teléfono" en todo el resto del sitio — pero acá
+  // la pregunta correcta no es "¿es un teléfono?", es "¿entra la barra
+  // completa en la fila del header?", y esa cuenta da un número bastante
+  // más alto (ver `HEADER_SEARCH_MERGE_MIN_WIDTH`, unas líneas más abajo).
+  // Entre 768px y ese punto, la versión vieja intentaba mergear al header
+  // (`!isMobile` ya daba true) y el header se desbordaba — la píldora +
+  // Drawer de abajo es justo el patrón que YA maneja bien "resultado + poco
+  // espacio", así que la zona muerta pasa a usarlo también, en vez de
+  // forzar la barra completa donde no entra.
+  //
+  // Gate por un hook (no por una media query CSS): el formulario tiene que
+  // existir en UN solo lugar del árbol a la vez, o los inputs se duplican y
+  // el foco/estado se parte en dos copias.
+  const collapsedSearch = !embedded && Boolean(result) && headerTooNarrowForSearchBar;
   // 2026-09-06/07 feedback (ronda 10) — "cuando se pasa a la accion de
   // comparar todo el combox se mueve al header... a la misma altura que
   // el icono de mangomundi, igual que kayak.com". Header.tsx ya trae el
@@ -1651,10 +1698,11 @@ export function ComparatorSection({
     setHeaderSearchSlot(document.getElementById("header-searchbar-slot"));
   }, []);
   // Sólo una vez que hay resultado (antes de buscar, la barra vive en su
-  // lugar normal dentro de la página, no en el header) y en desktop —
-  // en mobile ya existe collapsedSearch (píldora + Drawer), que cubre el
-  // mismo caso de "resultado + poco espacio" con su propio patrón.
-  const mergeSearchIntoHeader = !embedded && Boolean(result) && !isMobile;
+  // lugar normal dentro de la página, no en el header) y con espacio real
+  // en el header — si no lo hay, `collapsedSearch` (arriba) cubre el mismo
+  // caso de "resultado + poco espacio" con su propio patrón, ya sea un
+  // teléfono angosto o un notebook/tablet en la zona muerta.
+  const mergeSearchIntoHeader = !embedded && Boolean(result) && !headerTooNarrowForSearchBar;
   const collapsedRoute = `${COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry} → ${
     receivingCountry ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry) : "—"
   }`;
@@ -1814,7 +1862,17 @@ export function ComparatorSection({
           llevar su propio hairline (border-t en mobile / border-l en
           desktop), sin cluster especial. */}
       <div
-        className="hidden overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:h-15 @2xl:min-w-0 @2xl:items-stretch"
+        // 2026-09-09 feedback — bug real: `design/AJUSTES-2.md §1` pedía
+        // que los campos se achiquen (58px→52px) y el fondo pase a crema
+        // una vez que hay resultado, pero lo único que `compact` de verdad
+        // cambiaba era el texto del CTA ("Compare"→"Update") — el alto y
+        // el color quedaban iguales siempre. Conectado ahora: 60px→52px de
+        // wrapper (cada segmento de abajo achica su propio alto en
+        // proporción, ver sus propios comentarios) y blanco→#FDFBF9, el
+        // mismo crema que ya describía ese comentario viejo.
+        className={`hidden overflow-hidden rounded-compact shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:flex @2xl:min-w-0 @2xl:items-stretch ${
+          compact ? "bg-[#FDFBF9] @2xl:h-[52px]" : "bg-card @2xl:h-15"
+        }`}
       >
         {/* Segmento 1 — monto, solo. Primer segmento. Sin chip propio, sin
                       caja tipo píldora — plano sobre el lienzo del
@@ -1823,7 +1881,11 @@ export function ComparatorSection({
                       2026-09-07 feedback — "el de monto tambien se puede
                       achicar un poco" (para dejarle más espacio al país,
                       que "no quede aplastado"): flex-[1.3] → flex-[1]. */}
-        <div className="flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1] @2xl:py-0">
+        <div
+          className={`flex min-w-0 items-center px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:flex-[1] @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
+          }`}
+        >
           <FieldLight label={t("comparator.field.amount")} hideLabel>
             <input
               type="number"
@@ -1850,7 +1912,26 @@ export function ComparatorSection({
                       de pais": flex-[1.4] → flex-[1.8], a costa del monto
                       (ver su propio comentario, Segmento 1) y la moneda
                       (ver el comentario del Segmento 3, abajo). */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        {/* 2026-09-10 feedback — "las lineas de division de adentro del
+            combox podemos hacerlas trasparentes? total se ve que son
+            distintos campos cuando se pasa por arriba y se pintan mas
+            oscuro": primero se probó sólo en el estado compact (header,
+            una vez que hay resultado) — pedido de seguimiento, "tambien en
+            el home no solo en estado compact": siempre transparente en
+            desktop (`@2xl:border-l-transparent` en la clase base, no
+            condicionado a `compact`), en los dos estados. El hairline
+            servía para separar los campos cuando no había nada más
+            marcando el límite — el `hover:bg-muted/60` de cada campo (ya
+            estaba) alcanza solo para leerlos como celdas distintas, línea
+            o no. Sigue existiendo `border-t border-border` para mobile
+            (`@2xl:hidden`), que es un caso distinto — ahí las filas están
+            apiladas sin ningún otro borde propio del contenedor entre
+            ellas, no un pedido de esta ronda. */}
+        <div
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
+          }`}
+        >
           <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
             <CountryCombobox
               value={sendingCountry}
@@ -1861,6 +1942,14 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.sourceCountry")}
               hideSecondary
               hideChevron
+              // 2026-09-09 feedback — "comportamiento como kayak.com":
+              // elegir el país de origen auto-abre el de destino, como el
+              // From→To de kayak. La moneda queda afuera de la cadena a
+              // propósito (ver el doc comment de `advanceTo` en
+              // Combobox.tsx) — ya se autocompleta sola en
+              // `handleSendingCountryChange`, es un override manual, no el
+              // siguiente paso natural del flujo.
+              advanceTo={destCountryDesktopRef}
               triggerClassName="h-auto w-full rounded border border-border bg-muted px-2 py-1 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
             />
           </FieldLight>
@@ -1874,7 +1963,11 @@ export function ComparatorSection({
                       moneda se puede achicar un poco": @2xl:w-28 (112px) →
                       @2xl:w-20 (80px), un código de 3 letras no necesita
                       más — el espacio ganado va al país (Segmento 2/4). */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
+          }`}
+        >
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
               value={from}
@@ -1896,7 +1989,11 @@ export function ComparatorSection({
                       viejo, país-swap-país); ahora el segmento que lo
                       precede es la moneda de origen, así que lleva su
                       propio espacio como cualquier otro segmento. */}
-        <div className="flex items-center justify-center border-t border-border py-0.5 @2xl:h-14 @2xl:w-9 @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div
+          className={`flex items-center justify-center border-t border-border py-0.5 @2xl:w-9 @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
+          }`}
+        >
           <button
             type="button"
             onClick={handleSwap}
@@ -1911,13 +2008,18 @@ export function ComparatorSection({
                       destino ("asi como esta"): sigue yendo país primero,
                       moneda después. Ahora lleva su propio hairline (ya no
                       hay cluster con el swap, ver comentario arriba). */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
+          }`}
+        >
           <FieldLight
             label={t("comparator.field.youReceive")}
             emphasizeLabel={!receivingCountry}
             hideLabel
           >
             <CountryCombobox
+              ref={destCountryDesktopRef}
               value={receivingCountry}
               onChange={handleReceivingCountryChange}
               placeholder={t("comparator.field.receiveCountryPlaceholder")}
@@ -1926,6 +2028,12 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.targetCountry")}
               hideSecondary
               hideChevron
+              // 2026-09-09 feedback — "comportamiento como kayak.com":
+              // igual que el "To" de kayak, se puede vaciar sin reabrir la
+              // lista — coherente con lo que este campo ya hacía antes
+              // (borde/placeholder acento cuando está vacío, CTA
+              // deshabilitado sin él).
+              clearable
               triggerClassName={`h-auto w-full rounded border bg-muted px-2 py-1 text-metric font-bold focus:ring-1 focus:ring-ring/40 ${
                 receivingCountry
                   ? "border-border text-foreground hover:border-foreground/30"
@@ -1937,7 +2045,11 @@ export function ComparatorSection({
 
         {/* Segmento 5 — moneda de destino, sin cambios de orden. Mismo
                       campo sin caja tipo fecha que el Segmento 3. */}
-        <div className="flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:h-14 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0">
+        <div
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
+          }`}
+        >
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
             <CurrencyCombobox
               value={to}
@@ -2017,7 +2129,14 @@ export function ComparatorSection({
           pasara a `hidden` en vez de mostrarse apilada. Mismo orden que
           el resto del home (ronda 10): Monto → País → Moneda en origen,
           destino sin cambios (País → Moneda). */}
-      <div className="overflow-hidden rounded-compact bg-card shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:hidden">
+      <div
+        // 2026-09-09 feedback — mismo fix que la barra desktop (ver su
+        // propio comentario, unas líneas más arriba): el fondo pasa a
+        // crema una vez que hay resultado, no se queda blanco siempre.
+        className={`overflow-hidden rounded-compact shadow-compare transition focus-within:ring-2 focus-within:ring-brand-cta/40 @2xl:hidden ${
+          compact ? "bg-[#FDFBF9]" : "bg-card"
+        }`}
+      >
         <div className="border-b border-border px-3 py-2.5">
           <input
             type="number"
@@ -2032,7 +2151,11 @@ export function ComparatorSection({
         </div>
 
         <div className="relative">
-          <div className="flex h-11 items-stretch gap-2 border-b border-border py-2 pl-3 pr-11">
+          <div
+            className={`flex items-stretch gap-2 border-b border-border py-2 pl-3 pr-11 ${
+              compact ? "h-10" : "h-11"
+            }`}
+          >
             <CountryCombobox
               value={sendingCountry}
               onChange={handleSendingCountryChange}
@@ -2042,6 +2165,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.sourceCountry")}
               hideSecondary
               hideChevron
+              advanceTo={destCountryMobileRef}
               triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border border-border bg-muted px-2 text-metric font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
             />
             <CurrencyCombobox
@@ -2057,8 +2181,11 @@ export function ComparatorSection({
             />
           </div>
 
-          <div className="flex h-11 items-stretch gap-2 py-2 pl-3 pr-11">
+          <div
+            className={`flex items-stretch gap-2 py-2 pl-3 pr-11 ${compact ? "h-10" : "h-11"}`}
+          >
             <CountryCombobox
+              ref={destCountryMobileRef}
               value={receivingCountry}
               onChange={handleReceivingCountryChange}
               placeholder={t("comparator.field.receiveCountryPlaceholder")}
@@ -2067,6 +2194,7 @@ export function ComparatorSection({
               ariaLabel={t("comparator.field.targetCountry")}
               hideSecondary
               hideChevron
+              clearable
               triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border px-2 text-metric font-bold transition-colors ${
                 receivingCountry
                   ? "border-border bg-muted text-foreground hover:border-foreground/30"
@@ -2130,12 +2258,18 @@ export function ComparatorSection({
 
   // Punto de montaje "normal": inline en la página (desktop siempre antes
   // de comparar; mobile mientras no hay resultado) y dentro del Drawer de
-  // la píldora colapsada (mobile con resultado). El selector va apilado
-  // arriba de la barra, como siempre.
+  // la píldora colapsada (mobile con resultado).
+  // 2026-09-10 feedback — "el selector personal o business... ponerlo
+  // adelante de la moneda en lugar de arriba": en mobile sigue apilado
+  // arriba (`flex-col` por default, sin el ancho para meterlo en la misma
+  // fila que 6 campos) — el cambio es sólo `@2xl:` en adelante, mismo
+  // patrón que `headerSearchBar` (más abajo) ya usa para el estado
+  // compact: selector a la izquierda con su ancho propio (`shrink-0`),
+  // la barra ocupando el resto (`flex-1`), en una sola fila en vez de dos.
   const searchBar = (
-    <div className="flex flex-col gap-3">
-      {segmentToggle}
-      {searchBarFields}
+    <div className="flex flex-col gap-3 @2xl:flex-row @2xl:items-center">
+      <div className="@2xl:shrink-0">{segmentToggle}</div>
+      <div className="min-w-0 @2xl:flex-1">{searchBarFields}</div>
     </div>
   );
 
@@ -2414,6 +2548,7 @@ export function ComparatorSection({
                         ariaLabel={t("comparator.field.sourceCountry")}
                         hideSecondary
                         hideChevron
+                        advanceTo={destCountryWidgetRef}
                         triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border border-border bg-muted px-2 text-[12px] font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
                       />
                       <CurrencyCombobox
@@ -2436,6 +2571,7 @@ export function ComparatorSection({
                         sameCorridorBlocked (sin cambios). */}
                     <div className="flex h-9 items-stretch gap-1.5 py-[7px] pl-2.5 pr-9">
                       <CountryCombobox
+                        ref={destCountryWidgetRef}
                         value={receivingCountry}
                         onChange={handleReceivingCountryChange}
                         placeholder={t("comparator.field.receiveCountryPlaceholder")}
@@ -2444,6 +2580,7 @@ export function ComparatorSection({
                         ariaLabel={t("comparator.field.targetCountry")}
                         hideSecondary
                         hideChevron
+                        clearable
                         triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border px-2 text-[12px] font-bold transition-colors ${
                           !receivingCountry
                             ? "border-brand-cta bg-accent/10 text-accent-text"
@@ -4682,7 +4819,7 @@ function ResultsBlock({
   tCta: string;
   tNeutrality: string;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   // Opt-in requirement filters narrow the pool BEFORE ranking/badges are
   // computed, so a "cheapest" badge always reflects the cheapest among what
@@ -4757,7 +4894,7 @@ function ResultsBlock({
   }, [organic, featuredSlug]);
 
   // Crisp HH:mm:ss for the trust line.
-  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
+  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(localeTagForLang(lang), {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -4901,7 +5038,7 @@ function ResultsBlock({
           <p>
             {tRatesSource}{" "}
             <span className="font-semibold text-foreground">
-              {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
+              {new Date(result.rates_updated_at).toLocaleDateString(localeTagForLang(lang))} {tAt}{" "}
               <span className="tabular-nums">{updatedTime}</span>
             </span>
           </p>
@@ -5002,7 +5139,7 @@ function ProviderRow({
     onToggleRequested: () => void;
   };
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const deliveryLabel = formatDeliverySpeed(row.speed_hours);
 
   const ratePct = row.rate_vs_market_pct;
@@ -5019,8 +5156,11 @@ function ProviderRow({
   const lastUpdatedRaw = row.corridor_data_collected_at ?? row.provider_rates_last_updated;
   // Day + month + time (no year) — design/AJUSTES-1.md §C3's "28 Aug,
   // 09:41" stamp, not the plain date the pre-adjustment label used.
+  // 2026-09-07 feedback — "las fechas de cada proveedor aparecen en
+  // ingles": pasaba `undefined` como locale, que usa el idioma del
+  // navegador del visitante en vez del idioma elegido en el sitio.
   const lastUpdatedLabel = lastUpdatedRaw
-    ? new Date(lastUpdatedRaw).toLocaleString(undefined, {
+    ? new Date(lastUpdatedRaw).toLocaleString(localeTagForLang(lang), {
         day: "numeric",
         month: "short",
         hour: "2-digit",

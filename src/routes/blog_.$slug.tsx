@@ -12,7 +12,7 @@ import {
   toBlogLocale,
 } from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, localeTagForLang } from "@/lib/i18n";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { BrandLogo } from "@/components/BrandLogo";
 import { BrandMark } from "@/components/Wordmark";
@@ -428,7 +428,7 @@ function BlogPostPage() {
           )}
           {post.published_at && (
             <span>
-              {new Date(post.published_at).toLocaleDateString(undefined, {
+              {new Date(post.published_at).toLocaleDateString(localeTagForLang(lang), {
                 year: "numeric",
                 month: "long",
                 day: "numeric",

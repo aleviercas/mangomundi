@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, localeTagForLang } from "@/lib/i18n";
 
 /** design/AJUSTES-2.md §4 — the blog stops being a big three-tall-card
  *  section and becomes a compact band at the foot of the page: a title
@@ -73,7 +73,7 @@ export function BlogSection() {
               >
                 {post.published_at && (
                   <div className="text-[10.5px] font-bold uppercase tracking-[.08em] text-muted-foreground">
-                    {new Date(post.published_at).toLocaleDateString(undefined, {
+                    {new Date(post.published_at).toLocaleDateString(localeTagForLang(lang), {
                       day: "numeric",
                       month: "short",
                       year: "numeric",

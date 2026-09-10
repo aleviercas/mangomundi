@@ -5,61 +5,8 @@
 -- 3 Kenya corridors, 8 OFX rows (Egypt x3, Sri Lanka, Pakistan, Mexico x2
 -- tiers, Tanzania), Global66's 3rd Argentina corridor (->USA), and Western
 -- Union Bolivia measured from 5 sending origins.
---
--- ===========================================================================
--- THE METHODOLOGICAL CORRECTION THIS MIGRATION APPLIES (instructivo Sec. 1,
--- discovered v23 Sec.6, confirmed live v25):
---
--- Monito's own displayed "% peor que el tipo de cambio medio" compares ONLY
--- the applied exchange rate against the mid-market rate -- it does NOT
--- account for a flat fee's cost as a fraction of the amount sent. This
--- project's `fx_rates` schema, however, already stores fee and
--- public_spread_percent as SEPARATE fields, and src/lib/fx.functions.ts's
--- live calculator combines them correctly: `rate = marketRate*(1-spread/100)`,
--- `received = (amountSent-fee)*rate` -- i.e. cost = 1-received/(amount*mid),
--- exactly the corrected formula the research derived. Verified against the
--- raw Kenya (Mukuru) numbers directly: applied 0.005338, mid 0.005730 ->
--- (mid-applied)/mid = 6.84%, matching Monito's own displayed figure exactly
--- -- so Monito's displayed "% peor" IS the pure FX-rate spread this schema's
--- public_spread_percent field has always held (see e.g. the v15 Botswana
--- Mukuru row: spread=-0.25%, NOT the 9.75% total-cost figure).
---
--- The actual bug this migration fixes is NOT "wrong spread field values" --
--- it's that several rounds (v16-v22) reported and compared Monito's raw
--- "% peor" number (0.37% for Botswana, 4.01% for Kenya, 1.37% for Chile...)
--- AS IF it were the corridor's total cost, without the fee. Loaded correctly
--- into fee+public_spread_percent (both real, sourced numbers, never
--- conflated into one field), this schema's own formula reproduces the
--- corrected "costo real" from the instructivo/conclusiones docs. Where the
--- source gives a fresh, self-consistent raw "% peor" + fee pairing that
--- reproduces the corrected costo_real (verified row by row against the
--- instructivo/conclusiones tables before writing this migration -- typically
--- within 0.01-0.1pp, attributable to the source's own rounding), that raw
--- percentage is loaded directly. Where a row's cited raw "%" is stale/
--- inconsistent with its own recalculated costo_real (South Africa->UK is the
--- one clear case) or simply wasn't given at all (Botswana, whose "0.37%" the
--- research itself explicitly disowns), public_spread_percent is instead
--- solved algebraically from the source's own real fee and its own final
--- corrected costo_real: spread_pct = 100*(1-(1-costo_real/100)/(1-fee/monto))
--- -- a direct transform of two real, sourced numbers (never an invented
--- one), the same category of technique already established in this project
--- for implicit rates (MoneyGram BR corrections, v11 Sec.31).
---
--- `rate` (the applied FX rate) is documentary only -- verified against
--- src/lib/fx.functions.ts that the live comparator never reads fx_rates.rate
--- (only fee + public_spread_percent), so its precision does not affect what
--- users see. Loaded directly from the source wherever given. Where absent,
--- derived by inverting/triangulating this project's own existing 0%-spread
--- Wise canonical rates or, failing that, the live rate_cache table
--- (frankfurter data already used elsewhere in this project) -- flagged
--- "APROXIMADO" in the row comment wherever this applies.
--- ===========================================================================
 
--- PART 1: Mukuru, 7 origin countries, 18 rows. Zero prior Mukuru rows
--- existed for ANY of these sending/receiving pairs (verified before writing
--- this migration) -- all INSERTs, no misattributed "Kenya 4.01%" row to fix
--- (per instructivo Sec.4 that figure belongs to Skrill -- see PART 3; it
--- was never loaded here as Mukuru in any prior round).
+-- PART 1: Mukuru, 7 origin countries, 18 rows.
 insert into public.fx_rates (
   from_currency, to_currency, rate, fee, provider_slug,
   sending_country, receiving_country, is_local_fx,
@@ -155,10 +102,7 @@ insert into public.fx_rates (
    'Monito.com (tarjeta de Mukuru), corredor Rwanda->Reino Unido, envio de 200.000 RWF. Fee 5.143 RWF, tasa aplicada 0,000478, tipo de cambio medio 0,000503 (dados directamente), "5,05% peor". Costo real corregido: 7,42% -- CONFIRMADO instructivo Seccion 2. Septimo y ultimo pais de Mukuru confirmado -- se busco fuera de Africa (Pakistan, Filipinas, Tanzania, Senegal probados) sin exito. Investigado 3-sep-2026 (research v24 Seccion 5.2).',
    '2026-09-03', 'sin_confirmar');
 
--- PART 2: Western Union Chile/Argentina "santo grial", confirmado en vivo
--- v25. Chile->Espana YA existe en fx_rates (id fbd2a4a7, datos de v16,
--- 2025-08-01) -- UPDATE, no insert. Argentina->EEUU NO tenia fila previa
--- (solo AR->ES y AR->IT existian, de v15) -- INSERT.
+-- PART 2: Western Union Chile/Argentina "santo grial", confirmado en vivo v25.
 update public.fx_rates
 set rate = 0.000908,
     fee = 2100,
@@ -177,8 +121,7 @@ insert into public.fx_rates (
    'Monito.com (tarjeta de Western Union), corredor Argentina->EEUU, envio de 100.000 ARS -- MEDICION EN VIVO v25 (3-sep-2026). Fee 5.000 ARS (5% del monto), tasa aplicada 0,000627, tipo de cambio medio 0,000662 (mostrado directamente por Monito, fuente XE.com). Costo real corregido: 10,10% -- CONFIRMADO EN VIVO (research v25 Seccion 1.3), reemplaza el 5,12-5,35% citado desde v16 -- casi el DOBLE. Validado por consistencia interna contra Global66 (fee $0, mismo corredor, PART 5 de esta migracion): formula da 5,26% vs 5,24% mostrado por Monito, coinciden casi exacto (research v25 Seccion 1.4). SALVEDAD DE ALCANCE (instructivo Seccion 5, conclusiones Seccion 6): confiable PARA ESTE CORREDOR ESPECIFICO -- no resuelve el problema estructural mas amplio del tipo de cambio "medio" del ARS. No generalizar a otros corredores argentinos sin verificar caso por caso. Zero filas previas para este corredor exacto, verificado antes de escribir esta migracion. Investigado 3-sep-2026 (research v16 Seccion 1, recalculo v23 Seccion 3.1, confirmado en vivo v25 Seccion 1.3).',
    '2026-09-03', 'confirmado_activo');
 
--- PART 3: Skrill, Kenia, 3 corredores. Cero filas previas de Skrill para
--- Kenia en ningun corredor -- los 3 son INSERT.
+-- PART 3: Skrill, Kenia, 3 corredores.
 insert into public.fx_rates (
   from_currency, to_currency, rate, fee, provider_slug,
   sending_country, receiving_country, is_local_fx,
@@ -194,11 +137,7 @@ insert into public.fx_rates (
    'Monito.com (tarjeta de Skrill), corredor Kenia->Alemania, envio de 200.000 KES. Fee $0 (unico corredor de Skrill del proyecto sin comision fija). Tasa aplicada 0,006500, tipo de cambio medio 0,006667, "2,51% peor" -- CON FEE=0 esta cifra YA ES el costo real, no necesita correccion (verificado exacto, research v24 Seccion 2.1). Sin cambios respecto a mediciones anteriores. Investigado 3-sep-2026 (research v21 Seccion 4, confirmado v24 Seccion 2).',
    '2026-09-03', 'sin_confirmar');
 
--- PART 4: OFX, 8 filas -- todos fee $0, sin correccion necesaria (el "%
--- mostrado" YA es el costo real). Turquia NO se carga: ningun archivo
--- fuente da una cifra de tarjeta individual para OFX en Turquia -- solo el
--- agregado propio de Monito, que la convencion del proyecto excluye
--- siempre. Cero filas previas para EG/LK/PK/MX/TZ+ofx -- las 8 son INSERT.
+-- PART 4: OFX, 8 filas -- todos fee $0.
 insert into public.fx_rates (
   from_currency, to_currency, rate, fee, provider_slug,
   sending_country, receiving_country, is_local_fx,
@@ -230,8 +169,7 @@ insert into public.fx_rates (
    'Monito.com (tarjeta de OFX), corredor Tanzania->Reino Unido, envio de 500.000 TZS. Fee "Gratis" (0). Tasa aplicada 0,000257, tipo de cambio medio 0,000280 (dados directamente), "8,21% peor" -- coincide con el costo real. El mas alto del grupo OFX. Octavo pais "de relleno" via OFX. Investigado 3-sep-2026 (research v25 Seccion 3).',
    '2026-09-03', 'sin_confirmar');
 
--- PART 5: Global66, Argentina->EEUU. Fee $0, sin correccion necesaria. Zero
--- filas previas para este corredor exacto -- INSERT.
+-- PART 5: Global66, Argentina->EEUU.
 insert into public.fx_rates (
   from_currency, to_currency, rate, fee, provider_slug,
   sending_country, receiving_country, is_local_fx,
@@ -241,10 +179,7 @@ insert into public.fx_rates (
    'Monito.com (tarjeta de Global66), corredor Argentina->EEUU, envio de 100.000 ARS. Fee "Free" (0). Tasa aplicada 0,000627 (identica a Western Union en el mismo corredor), "5,24% peor" -- sin correccion necesaria. Tercer corredor argentino de Global66 (junto a Espana 5,28% e Italia 5,28%, v15) -- confirma que el fenomeno es del ORIGEN, no del destino. Validacion cruzada del tipo de cambio medio del ARS usado en la fila Western Union AR->US (research v25 Seccion 1.4). Investigado 2-sep-2026 (research v16 Seccion 1).',
    '2026-09-02', 'sin_confirmar');
 
--- PART 6: Western Union, Bolivia, 5 origenes -- "el caso que no tiene un
--- numero representativo" (0,62% a 9,16%, instructivo Seccion 6). EEUU YA
--- tenia una fila (RPW, 2025-08-01) -- UPDATE tramo 1.000 USD + INSERT tramo
--- 5.000 USD. Espana/Brasil/Italia/Argentina: cero filas previas -- INSERT.
+-- PART 6: Western Union, Bolivia, 5 origenes.
 update public.fx_rates
 set rate = 12.2600,
     fee = 20.99,
@@ -283,21 +218,12 @@ insert into public.fx_rates (
    'Monito.com (tarjeta de Western Union), corredor Argentina->Bolivia, envio de 500.000 ARS, cash pickup. Fee 25.000 ARS (5%), tasa aplicada 0,007682, tipo de cambio medio 0,008034 (dados directamente). Costo real: 9,16% -- dado directamente, verificado exacto. EL MAS CARO de los 5 origenes de Bolivia. SALVEDAD ARS (instructivo Seccion 5): carga sobre la misma incertidumbre estructural del tipo de cambio "medio" del peso argentino -- se carga porque el instructivo explicitamente lo indica (Seccion 6), pero con esta salvedad explicita en notas. Investigado 3-sep-2026 (research v24 Seccion 6.1).',
    '2026-09-03', 'sin_confirmar');
 
--- NOT loaded from v16-v25 -- ver docs/data-sources/ para el detalle:
--- - Zero-coverage countries (25+ paises: Lebanon, Venezuela, Nigeria,
---   Ukraine, Russia, Ghana, Cuba, Suriname, Gambia, Guinea, Mozambique,
---   Malawi, Nicaragua, Angola, Sierra Leone, Ethiopia, Sudan, Haiti,
---   Myanmar, Laos, Bangladesh, Vietnam, Paraguay, Mongolia, Cambodia...):
---   ausencia de proveedor, no un dato de tarifa -- documentados solo en
---   docs/data-sources/, no en la base de datos.
--- - Zimbabwe, DR Congo, South Sudan: Monito no ofrece su moneda local como
---   opcion (fuerza USD/USD/GBP) -- no hay margen cambiario que medir.
--- - TransferGo (Turquia, v17): contaminacion estructural confirmada (v15
---   Seccion 5.3) -- el propio archivo v17 senala no cargar estos datos.
--- - OFX Turquia: sin cifra de tarjeta individual citable en ningun archivo
---   fuente, solo el agregado propio de Monito (la convencion del proyecto
---   excluye siempre esos promedios).
--- - Cualquier otro corredor en ARS mas alla de Western Union AR->US (PART 2)
---   y Argentina->Bolivia (PART 6): instructivo Seccion 5 / conclusiones
---   Seccion 6 advierten no generalizar el tipo de cambio "medio" del ARS a
---   ningun otro corredor sin verificacion caso por caso.
+-- NOT loaded from v16-v25: zero-coverage countries (25+ paises, ausencia de
+-- proveedor, no dato de tarifa -- solo documentados en docs/data-sources/);
+-- Zimbabwe/DR Congo/South Sudan (Monito no ofrece su moneda local); TransferGo
+-- Turquia (contaminacion estructural confirmada v15 Seccion 5.3); OFX Turquia
+-- (sin cifra de tarjeta citable, solo el agregado propio de Monito, que la
+-- convencion del proyecto excluye siempre); ningun otro corredor en ARS mas
+-- alla de Western Union AR->US y AR->BO (instructivo Seccion 5, conclusiones
+-- Seccion 6: no generalizar el tipo de cambio "medio" del ARS sin verificar
+-- caso por caso).

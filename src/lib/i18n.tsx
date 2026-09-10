@@ -66,6 +66,33 @@ export interface LangMetadata {
   english: string; // English name (for searching / a11y)
 }
 
+// 2026-09-07 feedback — "las fechas de cada proveedor aparecen en ingles":
+// varios `.toLocaleTimeString()`/`.toLocaleDateString()` en todo el sitio
+// (ComparatorSection.tsx, blog.tsx, blog_.$slug.tsx, BlogSection.tsx)
+// pasaban `undefined` como locale — eso NO usa el idioma seleccionado del
+// sitio, usa el locale del NAVEGADOR/SO del visitante (casi siempre
+// inglés en un entorno de test, y de cualquier forma desconectado del
+// selector de idioma). `localeTagForLang` traduce el código de idioma de
+// la app a una etiqueta BCP-47 válida para pasarle a `Intl`/
+// `toLocale*String` explícitamente, así los nombres de mes, separadores
+// de fecha, formato de 12/24hs, etc. siguen el idioma elegido en el
+// sitio, no el del dispositivo. Las 19 etiquetas base ya son BCP-47
+// válidas por sí solas (Intl las acepta tal cual); sólo zh/pt se afinan
+// a una variante regional concreta porque el propio `LANGUAGE_METADATA`
+// de arriba ya elige una bandera regional específica para cada una
+// (🇨🇳 continental, 🇧🇷 Brasil) — mismo criterio, sin inventar una
+// región nueva que el resto del sitio no haya elegido ya.
+export function localeTagForLang(lang: Lang): string {
+  switch (lang) {
+    case "zh":
+      return "zh-CN";
+    case "pt":
+      return "pt-BR";
+    default:
+      return lang;
+  }
+}
+
 export const LANGUAGE_METADATA: Record<Lang, LangMetadata> = {
   en: { code: "en", label: "EN", flag: "🇬🇧", native: "English", english: "English" },
   es: { code: "es", label: "ES", flag: "🇪🇸", native: "Español", english: "Spanish" },
@@ -357,7 +384,13 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Required",
     "chat.welcome":
-      "Hi 👋 I'm the **mangomundi Agent**. Try a quote (`500 GBP to ARS`) or describe your corporate case.",
+      // 2026-09-10 feedback — "saca todo el texto de la intro del chat
+      // con numeros de un quote y reemplazalo por algo mas corto y
+      // sencillo": el ejemplo con numeros ("Try a quote (`500 GBP to
+      // ARS`)...") se saca, queda un saludo corto que invita a preguntar
+      // sin más fricción — mismo criterio en los 19 idiomas (ver
+      // scripts/translations/*.json).
+      "Hi 👋 I'm the **mangomundi Agent**. Ask away.",
     "chat.placeholder": "e.g. 500 GBP to ARS · or describe your corporate case",
     "chat.error": "I couldn't process that right now. Please try again.",
     "fx.emptyState": "Enter the details to calculate the best rates.",
@@ -3178,8 +3211,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // 2026-08-30 feedback — AiCopilot.tsx's own collapse-toggle button,
     // distinct from wizard.moreQuestions (a section header elsewhere).
     "wizard.moreOptions": "More options",
-    "wizard.quickActions": "Wizard — quick actions",
-    "wizard.quickActionsAria": "AI Wizard quick actions",
+    "wizard.quickActions": "Getting started",
+    "wizard.quickActionsAria": "Getting started — quick actions",
     "wizard.reportNote":
       "I have noted your interest in the {from}-{to} route. It has been added to the discovery log; we will prioritize it as demand grows.",
     "wizard.runFirst":
