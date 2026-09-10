@@ -384,7 +384,13 @@ export const DICTS: Record<Lang, Dict> = {
     "common.email": "Email",
     "common.required": "Required",
     "chat.welcome":
-      "Hi 👋 I'm the **mangomundi Agent**. Try a quote (`500 GBP to ARS`) or describe your corporate case.",
+      // 2026-09-10 feedback — "saca todo el texto de la intro del chat
+      // con numeros de un quote y reemplazalo por algo mas corto y
+      // sencillo": el ejemplo con numeros ("Try a quote (`500 GBP to
+      // ARS`)...") se saca, queda un saludo corto que invita a preguntar
+      // sin más fricción — mismo criterio en los 19 idiomas (ver
+      // scripts/translations/*.json).
+      "Hi 👋 I'm the **mangomundi Agent**. Ask away.",
     "chat.placeholder": "e.g. 500 GBP to ARS · or describe your corporate case",
     "chat.error": "I couldn't process that right now. Please try again.",
     "fx.emptyState": "Enter the details to calculate the best rates.",
@@ -3205,8 +3211,8 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // 2026-08-30 feedback — AiCopilot.tsx's own collapse-toggle button,
     // distinct from wizard.moreQuestions (a section header elsewhere).
     "wizard.moreOptions": "More options",
-    "wizard.quickActions": "Wizard — quick actions",
-    "wizard.quickActionsAria": "AI Wizard quick actions",
+    "wizard.quickActions": "Getting started",
+    "wizard.quickActionsAria": "Getting started — quick actions",
     "wizard.reportNote":
       "I have noted your interest in the {from}-{to} route. It has been added to the discovery log; we will prioritize it as demand grows.",
     "wizard.runFirst":
