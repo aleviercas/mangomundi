@@ -192,14 +192,15 @@ no la solución final.
 ### Recomendación
 
 **Empezar por la Opción C ahora** (bajo riesgo, cierra el bug más visible
-de inmediato), y planificar la **Opción B como iniciativa aparte, no
-apurada** — full-site, no sólo blog, justamente para no introducir la
-inconsistencia de la Opción A. La razón para no recomendar A ni B *ahora
-mismo*: los tres hallazgos grandes de la auditoría anterior (sitemap,
-redirects, conectar el comparador a `/send/:corridor`) recién se
-implementaron esta semana — tiene sentido dejar que esos cambios asienten
-y se puedan medir en Search Console antes de superponer una migración de
-URLs mucho más grande y de mayor riesgo sobre el mismo sitio.
+de inmediato — ✅ **implementado el 10-sep**, ver §6), y planificar la
+**Opción B como iniciativa aparte, no apurada** — full-site, no sólo blog,
+justamente para no introducir la inconsistencia de la Opción A. La razón
+para no recomendar A ni B *ahora mismo*: los tres hallazgos grandes de la
+auditoría anterior (sitemap, redirects, conectar el comparador a
+`/send/:corridor`) recién se implementaron esta semana — tiene sentido
+dejar que esos cambios asienten y se puedan medir en Search Console antes
+de superponer una migración de URLs mucho más grande y de mayor riesgo
+sobre el mismo sitio.
 
 Si igual se quiere priorizar el blog específicamente por ser donde más
 pesa la búsqueda orgánica por palabra clave en cada idioma, la Opción A es
@@ -209,7 +210,7 @@ a propósito.
 
 ---
 
-## 6. Plan detallado — Opción C (arrancar por acá)
+## 6. Plan detallado — Opción C ✅ implementado (10-sep)
 
 1. `LangSwitcher.tsx`: `pick()` pasa de `setLang(code)` a navegar
    (`navigate({ search: (prev) => ({ ...prev, lang: code === "en" ?
@@ -220,11 +221,23 @@ a propósito.
 2. Verificar que esto no rompe rutas que hoy no tienen `?lang=` en su
    `searchSchema` de forma explícita (ya se revisó en §1 de este documento
    — las 8 rutas con SEO ya lo tienen).
-3. `tsc --noEmit` + `vite build` antes de commitear, mismo criterio que
+3. `tsc --noEmit` + `vite build` antes de commitear, mismo criterio de
    siempre.
 4. No hace falta redirect ni migración de URLs existentes — este cambio no
    mueve ninguna URL, sólo hace que las nuevas navegaciones del selector
    escriban la que ya existía.
+
+**Cómo quedó implementado:** `useNavigate()` genérico (el mismo hook de
+router-wide, no atado a una ruta puntual, ya que `LangSwitcher` vive en
+`Header`/`Footer` y se monta en TODAS las rutas del sitio vía
+`__root.tsx`). Tuvo el mismo problema de tipos ya documentado en
+`ComparatorSection.tsx` (TypeScript infiere el tipo del root "/" al no
+haber un `from` puntual, y ese tipo no acepta `lang` como key arbitraria)
+— resuelto con un cast documentado, ya que en runtime es seguro: las 8
+rutas con SEO ya tienen `lang` en su `searchSchema`, y cualquier ruta sin
+`validateSearch` (como `/admin/i18n-status`) simplemente no valida el
+parámetro, sin romperse. `replace: true` — es una preferencia, no
+contenido nuevo, no debería llenar el historial de navegación.
 
 ## 7. Plan detallado — Opción B (cuando se decida encarar, no ahora)
 

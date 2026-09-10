@@ -2,6 +2,7 @@ import { useI18n, LANGUAGE_METADATA, SUPPORTED_LANGS, type Lang } from "@/lib/i1
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { Globe, ChevronDown, Search } from "lucide-react";
 import { useMemo, useRef, useState, useEffect } from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 const LANGS = SUPPORTED_LANGS.map((code) => LANGUAGE_METADATA[code]);
 
@@ -27,6 +28,7 @@ export function LangSwitcher({
   variant?: "default" | "pill" | "footer";
 }) {
   const { lang, setLang, t } = useI18n();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,7 +56,34 @@ export function LangSwitcher({
   }, [open]);
 
   const pick = (code: Lang) => {
+    // 2026-09-10 — antes esto sólo cambiaba estado de React + localStorage,
+    // sin tocar la URL en absoluto: alguien que cambiaba de idioma acá y
+    // compartía el link no compartía el idioma elegido, sino el que le
+    // tocara al destinatario por su propia geo-IP/Accept-Language. `lang`
+    // ya vive en el searchSchema de cada ruta con SEO (usado hoy sólo para
+    // el primer render del servidor y hreflang) — esto lo conecta también
+    // a la navegación real, sin tocar la estructura de rutas. `replace`
+    // porque es una preferencia, no contenido nuevo — no tiene sentido
+    // llenar el historial del navegador con cada cambio de idioma. Ver
+    // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md, Opción C.
     setLang(code);
+    // TypeScript no puede tipar esto de forma estricta: LangSwitcher vive en
+    // el Header/Footer y se monta en TODAS las rutas del sitio, cada una con
+    // su propio searchSchema — useNavigate() genérico (sin `from` a una
+    // ruta puntual) infiere el tipo del root "/", que no acepta `lang` como
+    // key arbitraria (mismo problema ya visto en ComparatorSection.tsx). En
+    // runtime es seguro: las 8 rutas con SEO ya tienen `lang` en su
+    // searchSchema (ver docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md),
+    // y cualquier ruta sin `lang` simplemente ignora la key de más.
+    (
+      navigate as unknown as (opts: {
+        search: (prev: Record<string, unknown>) => Record<string, unknown>;
+        replace: boolean;
+      }) => void
+    )({
+      search: (prev) => ({ ...prev, lang: code === "en" ? undefined : code }),
+      replace: true,
+    });
     setOpen(false);
   };
 
