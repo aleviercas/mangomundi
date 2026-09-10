@@ -393,6 +393,13 @@ export function ComparatorSection({
   const destCountryDesktopRef = useRef<ComboboxHandle>(null);
   const destCountryMobileRef = useRef<ComboboxHandle>(null);
   const destCountryWidgetRef = useRef<ComboboxHandle>(null);
+  // 2026-09-10 feedback — "el combox se movio demasiado a la derecha, yo
+  // te pedi que este alineado con los resultados... a la misma linea":
+  // apunta al div que envuelve "Your results" (más abajo, es el mismo
+  // `<div className="min-w-0">` de la columna de resultados). Usado por el
+  // efecto de alineación más abajo, junto con `headerSearchSlot` — ver su
+  // propio comentario.
+  const resultsColumnRef = useRef<HTMLDivElement>(null);
   const [amount, setAmount] = useState<number>(initialQuery?.amount ?? 1000);
   const [from, setFrom] = useState(initialQuery?.from ?? "GBP");
   const [to, setTo] = useState(initialQuery?.to ?? "USD");
@@ -1703,6 +1710,49 @@ export function ComparatorSection({
   // caso de "resultado + poco espacio" con su propio patrón, ya sea un
   // teléfono angosto o un notebook/tablet en la zona muerta.
   const mergeSearchIntoHeader = !embedded && Boolean(result) && !headerTooNarrowForSearchBar;
+  // 2026-09-10 feedback — "el combox se movio demasiado a la derecha, yo
+  // te pedi que este alineado con los resultados... personal o business
+  // inicie en donde inicia la columna de your results, a la misma linea":
+  // el primer intento (`margin-left: auto` en styles.css) empujaba el
+  // combobox a comerse TODO el espacio libre de la fila del header — mucho
+  // más lejos de lo pedido. Alinear al pixel exacto con "Your results" no
+  // se puede resolver en CSS puro: ese contenedor vive en un componente
+  // hermano (Header.tsx) sin ningún ancestro compartido con overrides de
+  // layout, y la distancia real depende del ancho renderizado de
+  // ☰+logo+AI Agent — variable, no algo que se pueda escribir como un
+  // número fijo en styles.css. Se mide en vivo en su lugar: la diferencia
+  // entre dónde el navegador puso el slot (con el margin-left base de
+  // styles.css) y dónde arranca de verdad la columna de resultados, y esa
+  // diferencia se suma al margin-left actual — una sola pasada alcanza
+  // (es una relación lineal, no hace falta iterar). Mismo patrón de
+  // "medir con ResizeObserver y publicar" que Header.tsx ya usa para su
+  // propia altura (`--header-h`, ver styles.css) — acá directo como estilo
+  // inline en el propio nodo en vez de una custom property, porque sólo
+  // este componente necesita el valor.
+  useEffect(() => {
+    if (!mergeSearchIntoHeader || !headerSearchSlot) return;
+    const slot = headerSearchSlot;
+    const target = resultsColumnRef.current;
+    if (!target) return;
+
+    const align = () => {
+      const slotLeft = slot.getBoundingClientRect().left;
+      const targetLeft = target.getBoundingClientRect().left;
+      const currentMargin = parseFloat(getComputedStyle(slot).marginLeft) || 0;
+      const delta = targetLeft - slotLeft;
+      // Nunca menos que un gap chico — si el header es angosto y no hay
+      // lugar real para alinear al pixel, que se quede pegado con un
+      // margen normal en vez de superponerse o quedar negativo.
+      slot.style.marginLeft = `${Math.max(12, currentMargin + delta)}px`;
+    };
+
+    align();
+    window.addEventListener("resize", align);
+    return () => {
+      window.removeEventListener("resize", align);
+      slot.style.marginLeft = "";
+    };
+  }, [mergeSearchIntoHeader, headerSearchSlot, result]);
   const collapsedRoute = `${COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry} → ${
     receivingCountry ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry) : "—"
   }`;
@@ -2509,7 +2559,15 @@ export function ComparatorSection({
                       y el 3 (antes 1-2): se anida un `relative` propio
                       alrededor de esos dos renglones nada más, dejando el
                       monto (renglón 1) afuera de ese cálculo de costura. */}
-                  <div className="border-b border-border px-2.5 py-[9px]">
+                  {/* 2026-09-10 feedback — "al widget tambien sacale las
+                      lineas divisorias del combox": mismo pedido que ya se
+                      hizo en la barra desktop (ver el comentario del
+                      Segmento 2, más arriba en este archivo) — acá es
+                      `border-b` entre renglones apilados en vez de
+                      `border-l` entre columnas, pero la razón es la misma:
+                      el hover ya alcanza para leer cada campo como una
+                      celda distinta, no hace falta la línea encima. */}
+                  <div className="border-b border-transparent px-2.5 py-[9px]">
                     <input
                       type="number"
                       inputMode="decimal"
@@ -2538,7 +2596,7 @@ export function ComparatorSection({
                         padding propio del renglón, así el swap vive en ese
                         margen en vez de pisar la caja de moneda en
                         cualquier idioma/ancho de código. */}
-                    <div className="flex h-9 items-stretch gap-1.5 border-b border-border py-[7px] pl-2.5 pr-9">
+                    <div className="flex h-9 items-stretch gap-1.5 border-b border-transparent py-[7px] pl-2.5 pr-9">
                       <CountryCombobox
                         value={sendingCountry}
                         onChange={handleSendingCountryChange}
@@ -2867,7 +2925,7 @@ export function ComparatorSection({
                 <TrustpilotCard />
               </aside>
 
-              <div className="min-w-0">
+              <div className="min-w-0" ref={resultsColumnRef}>
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
                   {/* 2026-09-02 feedback (X8 audit) — was h3, but every
                       marketing section that carries an h2 (Today's routes,
