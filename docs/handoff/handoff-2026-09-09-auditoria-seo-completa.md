@@ -707,22 +707,53 @@ promoverlo activamente a Google.
 
 ## Plan de acción priorizado
 
-| # | Hallazgo | Prioridad | Esfuerzo | Archivo(s) |
-|---|---|---|---|---|
-| 1 | Sitemap sin `/about`, `/business`, `/widget`, `/send/:corridor` | Alta | Medio (bajo para las 3 estáticas, requiere decisión de canonicalización para corredores) | `src/routes/sitemap[.]xml.ts` |
-| 2 | Redirects legacy en 307 en vez de 301 | Alta | Bajo (1 línea × 7 archivos) | `pricing.tsx`, `features.tsx`, `platform.tsx`, `insurance.tsx`, `contact.tsx`, `fx-tool.tsx`, `compare.tsx` |
-| 3 | Typo "Comparã" en meta description ES | Alta | Trivial (1 línea) | `src/lib/i18n.tsx:3491` |
-| 4 | `/business` sin SEO localizado (title/description fijos en inglés) | Media | Bajo-Medio | `business.tsx`, `i18n.tsx` |
-| 5 | `<h1>` genérico, no menciona corredor/audiencia | Media | Bajo-Medio | `HeroSection.tsx`, `send.$corridor.tsx`, `business.tsx` |
-| 6 | `alt=""` en miniaturas del listado del blog | Baja | Trivial (1 línea) | `src/routes/blog.tsx:114` |
-| 7 | `llms.txt` desactualizado | Baja | Bajo | `public/llms.txt` |
-| 13 | `/send/:corridor` genera contenido idéntico bajo 3+ URLs (país vs. moneda vs. mayúsculas), cada una autocanonicalizándose | **Alta** | Bajo (normalizar el `path` del canonical) | `send.$corridor.tsx`, `countries.ts` |
-| 8 | 7 rutas confirmadas sin ningún link interno (mismas del punto 2) | Alta (ya contada en #2) | — | — |
-| 9 | `public/brand/signature.html` público, sin link, sin valor SEO | Baja | Trivial | `public/brand/signature.html`, `robots.txt` |
-| 10 | `fo-verify.html` en la raíz — a confirmar si sigue vivo en prod antes de borrar | Baja | Trivial (una vez confirmado) | `fo-verify.html` |
-| 11 | `/admin/i18n-status` sin `Disallow` explícito en `robots.txt` (ya tiene `noindex`) | Baja | Trivial | `public/robots.txt` |
-| 12 | Contenido duplicado del blog por fallback de idioma | — | — | **Descartado** — verificado contra la base, no está ocurriendo |
-| **14** | **La home y `/business` nunca navegan a `/send/:corridor`** — cada comparación real queda no-indexable | **Alta (la más importante)** | Medio (4 pasos encadenados, ver §14) | `index.tsx`, `business.tsx`, `send.$corridor.tsx` |
+| # | Hallazgo | Prioridad | Esfuerzo | Archivo(s) | Estado |
+|---|---|---|---|---|---|
+| 1 | Sitemap sin `/about`, `/business`, `/widget`, `/send/:corridor` | Alta | Medio (bajo para las 3 estáticas, requiere decisión de canonicalización para corredores) | `src/routes/sitemap[.]xml.ts` | ✅ Implementado (10-sep) |
+| 2 | Redirects legacy en 307 en vez de 301 | Alta | Bajo (1 línea × 7 archivos) | `pricing.tsx`, `features.tsx`, `platform.tsx`, `insurance.tsx`, `contact.tsx`, `fx-tool.tsx`, `compare.tsx` | ✅ Implementado (10-sep) |
+| 3 | Typo "Comparã" en meta description ES | Alta | Trivial (1 línea) | `src/lib/i18n.tsx:3491` | ✅ Implementado (10-sep) |
+| 4 | `/business` sin SEO localizado (title/description fijos en inglés) | Media | Bajo-Medio | `business.tsx`, `i18n.tsx` | ✅ Implementado (10-sep) |
+| 5 | `<h1>` genérico, no menciona corredor/audiencia | Media | Bajo-Medio | `HeroSection.tsx`, `send.$corridor.tsx`, `business.tsx` | ✅ Implementado (10-sep, sólo en `/send/:corridor` — ver nota abajo) |
+| 6 | `alt=""` en miniaturas del listado del blog | Baja | Trivial (1 línea) | `src/routes/blog.tsx:114` | ✅ Implementado (10-sep) |
+| 7 | `llms.txt` desactualizado | Baja | Bajo | `public/llms.txt` | ✅ Implementado (10-sep) |
+| 13 | `/send/:corridor` genera contenido idéntico bajo 3+ URLs (país vs. moneda vs. mayúsculas), cada una autocanonicalizándose | **Alta** | Bajo (normalizar el `path` del canonical) | `send.$corridor.tsx`, `countries.ts` | ✅ Implementado (10-sep) |
+| 8 | 7 rutas confirmadas sin ningún link interno (mismas del punto 2) | Alta (ya contada en #2) | — | — | ✅ Ya cubierto por #2 (no se borran, ver nota abajo) |
+| 9 | `public/brand/signature.html` público, sin link, sin valor SEO | Baja | Trivial | `public/brand/signature.html`, `robots.txt` | ✅ Mitigado (10-sep, `Disallow: /brand/`) |
+| 10 | `fo-verify.html` en la raíz — a confirmar si sigue vivo en prod antes de borrar | Baja | Trivial (una vez confirmado) | `fo-verify.html` | ⏳ Pendiente — no se pudo confirmar contra el deploy real (sin acceso de red al dominio), no se tocó |
+| 11 | `/admin/i18n-status` sin `Disallow` explícito en `robots.txt` (ya tiene `noindex`) | Baja | Trivial | `public/robots.txt` | ✅ Implementado (10-sep) |
+| 12 | Contenido duplicado del blog por fallback de idioma | — | — | **Descartado** — verificado contra la base, no está ocurriendo | — |
+| **14** | **La home y `/business` nunca navegan a `/send/:corridor`** — cada comparación real queda no-indexable | **Alta (la más importante)** | Medio (4 pasos encadenados, ver §14) | `index.tsx`, `business.tsx`, `send.$corridor.tsx` | ✅ Implementado (10-sep) |
+
+### Lo único que quedó pendiente: §10 (`fo-verify.html`)
+
+No se tocó porque no se pudo confirmar contra el deploy real si todavía se sirve
+en producción (el acceso de red de esta sesión no llega al dominio). Sigue
+siendo de prioridad baja y de esfuerzo trivial una vez confirmado — sólo hace
+falta que alguien con acceso al sitio en vivo revise si
+`https://mangomundi.com/fo-verify.html` responde 200 o 404 antes de borrar el
+archivo.
+
+### Nota sobre §5 y §8 al implementarse
+
+- **§5** — el `<h1>` específico por corredor se implementó en
+  `/send/:corridor` (que es donde vive el problema real, ver §13/§14). No se
+  tocó `/business`: al no tener contenido por corredor propio (ese caso ya
+  redirige a `/send/:corridor?segment=business`, ver §14), no había ningún
+  headline específico que darle más allá del genérico que ya tenía.
+- **§8** — las 7 rutas confirmadas sin link interno **no se borraron**: existen
+  únicamente para redirigir bookmarks/backlinks viejos (nunca renderizaron una
+  página propia), borrar el archivo reintroduciría un 404 real en vez de un
+  301 — exactamente lo contrario de lo que buscaba arreglar el punto #2.
+
+### Bug encontrado e implementado durante §14, no estaba en el plan original
+
+Al conectar `/send/:corridor` con `segment` como query param (necesario para
+§14), el toggle Personal/Business (`ComparatorSection.tsx`,
+`handleSegmentChange`) quedó con un caso sin cubrir: decidía si el usuario
+estaba viendo resultados de business mirando sólo si el `pathname` empezaba
+con `/business`, lo cual ya no alcanza una vez que un corredor también puede
+tener `segment=business` por query param. Corregido en el mismo cambio — ver
+el commit de implementación.
 
 ### Orden sugerido de implementación (para la próxima ronda)
 

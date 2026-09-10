@@ -6,8 +6,12 @@ Mangomundi is an AI-powered platform that helps individuals and businesses pick 
 
 ## Pages
 
-- [Home](/): Intelligent currency exchange decisions — live comparator and overview. The comparator, how-it-works, about, business, and contact info all live here as sections.
+- [Home](/): Intelligent currency exchange decisions — live comparator and overview for individuals.
+- [About](/about): Mission, vision, and the problem mangomundi is solving.
+- [Business](/business): Corporate FX — compare broker rates for high-volume transfers.
+- [Widget](/widget): Embed the comparator on any site with a script tag or iframe.
 - [Legal & risk](/legal): Terms of Service, risk disclosures, and privacy policy.
+- `/send/{origin}-{destination}`: a dedicated comparison for one specific corridor (country or currency codes, e.g. `/send/gb-mx` or `/send/gbp-mxn`), retail or business.
 
 ## Optional
 
