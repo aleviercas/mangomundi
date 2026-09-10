@@ -4,49 +4,58 @@
 @plugin "@tailwindcss/typography";
 
 /* Self-hosted fonts — replaces the fonts.googleapis.com <link> in
-   src/routes/__root.tsx (2026-09-09 font-loading fix, extended 2026-09-10
-   to cover all 3 families the same way — see that commit: Manrope/Rubik
-   initially kept Fontsource's default `font-display: swap`, which still
-   showed a visible flash on every uncached page load. Professional sites
-   (Wise, Skyscanner, etc.) self-host + preload + `font-display: optional`
-   for exactly this reason — swap guarantees the swap eventually happens,
-   optional makes it a rare edge case instead, backed by a metric-matched
-   fallback (fontaine, vite.config.ts) so even that rare case doesn't
-   visibly jump. All 3 families below follow the same pattern; see
-   docs/data-sources/ for the full investigation.
+   src/routes/__root.tsx (2026-09-09 font-loading fix, revised 2026-09-10
+   twice — see that day's commits for the full history).
 
-   All 3 sourced directly from github.com/google/fonts (OFL), not
+   `font-display: swap`, not `optional`. Tried `optional` first (matches
+   what a lot of "avoid FOUT" guides recommend), but real testing (cold
+   cache — incognito, a second browser — reported by the user) showed
+   its actual trade-off: on any load where the 100ms block window is
+   missed, `optional` shows the WRONG font for the entire pageview and
+   only self-corrects on the *next* navigation once the file is cached.
+   No mid-page jump, but a real chance of an entirely-wrong-font first
+   visit — worse for the stated goal ("look right, like a real product")
+   than a fast, non-jumping swap. `swap` always converges on the correct
+   font on every load, cold cache or not. The failure mode `swap` is
+   normally criticized for — a visible size/layout jump when the
+   fallback face doesn't match the real font's box — is covered by
+   `fontaine` (vite.config.ts): it generates a metric-matched local
+   fallback for each family below, so the swap is same-size/no-CLS, just
+   a brief typeface change, not the jump the original bug report was
+   about. All 3 sourced directly from github.com/google/fonts (OFL), not
    Fontsource — Fontsource's per-script @font-face rules hardcode
-   `font-display: swap` with no override hook, so matching `optional`
-   requires writing the @font-face ourselves regardless. Manrope keeps its
-   full native variable range (200-800, one axis, one file — no split-axis
-   problem like Bricolage had). Rubik ships two separate variable files
-   upstream (upright/italic, each wght 300-900) but the site only ever
-   uses weight 700 in either style (src/components/Wordmark.tsx) — so both
-   are extracted down to a static instance at wght=700 (fonttools
-   varLib.instancer) instead of self-hosting the full unused 300-900
-   range, keeping the files small (~53-64KB vs. Fontsource's much larger
-   multi-script bundles). */
+   `font-display: swap` (ironically the value we want!) but as separate
+   rules with no shared control, and for Bricolage specifically splits
+   the opsz/wght variable axes into separate files (see that face's own
+   comment below) — so writing all 3 ourselves was still the right call
+   regardless of which display value we land on. Manrope keeps its full
+   native variable range (200-800, one axis, one file). Rubik ships two
+   separate variable files upstream (upright/italic, each wght 300-900)
+   but the site only ever uses weight 700 in either style
+   (src/components/Wordmark.tsx) — so both are extracted down to a
+   static instance at wght=700 (fonttools varLib.instancer) instead of
+   self-hosting the full unused 300-900 range, keeping the files small
+   (~53-64KB vs. Fontsource's much larger multi-script bundles). */
 @font-face {
   font-family: 'Manrope Variable';
   src: url('/fonts/manrope-variable.woff2') format('woff2');
   font-weight: 200 800;
   font-style: normal;
-  font-display: optional;
+  font-display: swap;
 }
 @font-face {
   font-family: 'Rubik';
   src: url('/fonts/rubik-700.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
-  font-display: optional;
+  font-display: swap;
 }
 @font-face {
   font-family: 'Rubik';
   src: url('/fonts/rubik-700-italic.woff2') format('woff2');
   font-weight: 700;
   font-style: italic;
-  font-display: optional;
+  font-display: swap;
 }
 
 /* Bricolage Grotesque: NOT from Fontsource. Fontsource ships each variable
@@ -58,17 +67,17 @@
    serves (github.com/google/fonts, ofl/bricolagegrotesque), self-hosted
    directly instead. `format('woff2')` (not 'woff2-variations') for broadest
    browser support — the file's own fvar table is what makes it variable,
-   the format hint doesn't need to say so. `font-display: optional` per the
-   2026-09-01 fix (see the link's old comment history) — now backed by a
-   same-origin, preloaded file instead of a cross-origin one, so the
-   ~100ms window is realistically enough even on first visit. */
+   the format hint doesn't need to say so. `font-display: swap` — see the
+   longer explanation above this face's siblings; same-origin + preloaded
+   + metric-matched fallback (fontaine) means the swap, when it happens at
+   all, is a same-size typeface change, not the original bug's jump. */
 @font-face {
   font-family: 'Bricolage Grotesque';
   src: url('/fonts/bricolage-grotesque-variable.woff2') format('woff2');
   font-weight: 700 800;
   font-stretch: 75% 100%;
   font-style: normal;
-  font-display: optional;
+  font-display: swap;
 }
 
 @custom-variant dark (&:is(.dark *));

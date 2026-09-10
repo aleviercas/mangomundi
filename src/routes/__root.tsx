@@ -137,11 +137,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         // external stylesheet link needed here at all. All 3 preloaded:
         // Manrope styles the hero paragraph and every label above the fold,
         // Rubik is the header wordmark, both visible on first paint same as
-        // Bricolage's h1. The `display=optional` fix from 2026-09-01 (see
-        // git history on this line) is preserved in all 3 self-hosted
-        // @font-face rules (src/styles.css) — self-hosting + preloading
-        // removes the cross-origin round-trip that was the main remaining
-        // cause of a visible flash on an uncached first visit.
+        // Bricolage's h1. `font-display: swap` (src/styles.css) + fontaine's
+        // metric-matched fallback (vite.config.ts) means any swap that does
+        // happen is same-size, no layout shift — see styles.css's comment
+        // for why swap (not optional) is the 2026-09-10 final call.
         {
           rel: "preload",
           as: "font",
