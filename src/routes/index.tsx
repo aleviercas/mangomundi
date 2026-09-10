@@ -224,6 +224,15 @@ function Index() {
             lang: search.lang,
             amount: q.amount || undefined,
             segment: q.segment === "retail" ? undefined : q.segment,
+            // 2026-09-10 feedback — "no me mandes a comparar hasta que haga
+            // click en compare": esta navegación la dispara el sync
+            // debounceado de ComparatorSection en cuanto se eligen los 2
+            // países, no un click real del botón — sin `run: false`,
+            // send.$corridor.tsx corría la comparación sola al llegar (ver
+            // su propio comentario en `autoRun`), sacándole al usuario la
+            // decisión de cuándo comparar mientras seguía completando el
+            // formulario en el home.
+            run: false,
           },
         });
         return;
