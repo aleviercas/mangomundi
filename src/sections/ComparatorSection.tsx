@@ -1915,22 +1915,21 @@ export function ComparatorSection({
         {/* 2026-09-10 feedback — "las lineas de division de adentro del
             combox podemos hacerlas trasparentes? total se ve que son
             distintos campos cuando se pasa por arriba y se pintan mas
-            oscuro": pedido específico del estado compact (una vez que hay
-            resultado y la barra vive arriba, en el header — ver la captura
-            que lo motivó). El hairline `@2xl:border-l` entre segmentos
-            (línea de arriba) sigue estando en el estado normal, sin
-            resultado — ahí SÍ hace falta: la barra vive sola en la página,
-            sin nada al lado que ya la enmarque. Una vez arriba en el
-            header, compacta y al lado de otros controles (AI Agent,
-            Personal), el hover oscuro de cada campo (`hover:bg-muted/60`,
-            ya estaba) alcanza solo para leerla como una fila de campos
-            separados — las líneas de más se sienten recargadas en ese
-            contexto más chico. Mismo patrón que el resize/color de más
-            arriba: `@2xl:border-l-transparent` sólo cuando `compact`, deja
-            el color base (`border-border`) para el resto de las veces. */}
+            oscuro": primero se probó sólo en el estado compact (header,
+            una vez que hay resultado) — pedido de seguimiento, "tambien en
+            el home no solo en estado compact": siempre transparente en
+            desktop (`@2xl:border-l-transparent` en la clase base, no
+            condicionado a `compact`), en los dos estados. El hairline
+            servía para separar los campos cuando no había nada más
+            marcando el límite — el `hover:bg-muted/60` de cada campo (ya
+            estaba) alcanza solo para leerlos como celdas distintas, línea
+            o no. Sigue existiendo `border-t border-border` para mobile
+            (`@2xl:hidden`), que es un caso distinto — ahí las filas están
+            apiladas sin ningún otro borde propio del contenedor entre
+            ellas, no un pedido de esta ronda. */}
         <div
-          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:py-0 ${
-            compact ? "@2xl:h-[46px] @2xl:border-l-transparent" : "@2xl:h-14"
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
           }`}
         >
           <FieldLight label={t("comparator.field.sourceCountry")} hideLabel>
@@ -1965,8 +1964,8 @@ export function ComparatorSection({
                       @2xl:w-20 (80px), un código de 3 letras no necesita
                       más — el espacio ganado va al país (Segmento 2/4). */}
         <div
-          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0 ${
-            compact ? "@2xl:h-[46px] @2xl:border-l-transparent" : "@2xl:h-14"
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
           }`}
         >
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
@@ -1991,8 +1990,8 @@ export function ComparatorSection({
                       precede es la moneda de origen, así que lleva su
                       propio espacio como cualquier otro segmento. */}
         <div
-          className={`flex items-center justify-center border-t border-border py-0.5 @2xl:w-9 @2xl:border-t-0 @2xl:border-l @2xl:py-0 ${
-            compact ? "@2xl:h-[46px] @2xl:border-l-transparent" : "@2xl:h-14"
+          className={`flex items-center justify-center border-t border-border py-0.5 @2xl:w-9 @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
           }`}
         >
           <button
@@ -2010,8 +2009,8 @@ export function ComparatorSection({
                       moneda después. Ahora lleva su propio hairline (ya no
                       hay cluster con el swap, ver comentario arriba). */}
         <div
-          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:py-0 ${
-            compact ? "@2xl:h-[46px] @2xl:border-l-transparent" : "@2xl:h-14"
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:flex-[1.8] @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
           }`}
         >
           <FieldLight
@@ -2047,8 +2046,8 @@ export function ComparatorSection({
         {/* Segmento 5 — moneda de destino, sin cambios de orden. Mismo
                       campo sin caja tipo fecha que el Segmento 3. */}
         <div
-          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:py-0 ${
-            compact ? "@2xl:h-[46px] @2xl:border-l-transparent" : "@2xl:h-14"
+          className={`flex min-w-0 items-center border-t border-border px-3 py-2.5 transition-colors hover:bg-muted/60 @2xl:w-20 @2xl:flex-none @2xl:border-t-0 @2xl:border-l @2xl:border-l-transparent @2xl:py-0 ${
+            compact ? "@2xl:h-[46px]" : "@2xl:h-14"
           }`}
         >
           <FieldLight label={t("comparator.business.request.currency")} hideLabel>
