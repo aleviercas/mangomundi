@@ -55,7 +55,7 @@ import {
   chatAboutRecommendation,
   type ComparisonResult,
 } from "@/lib/fx.functions";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, localeTagForLang } from "@/lib/i18n";
 import {
   localCurrency,
   primaryCountryForCurrency,
@@ -4819,7 +4819,7 @@ function ResultsBlock({
   tCta: string;
   tNeutrality: string;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   // Opt-in requirement filters narrow the pool BEFORE ranking/badges are
   // computed, so a "cheapest" badge always reflects the cheapest among what
@@ -4894,7 +4894,7 @@ function ResultsBlock({
   }, [organic, featuredSlug]);
 
   // Crisp HH:mm:ss for the trust line.
-  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(undefined, {
+  const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(localeTagForLang(lang), {
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
@@ -5038,7 +5038,7 @@ function ResultsBlock({
           <p>
             {tRatesSource}{" "}
             <span className="font-semibold text-foreground">
-              {new Date(result.rates_updated_at).toLocaleDateString()} {tAt}{" "}
+              {new Date(result.rates_updated_at).toLocaleDateString(localeTagForLang(lang))} {tAt}{" "}
               <span className="tabular-nums">{updatedTime}</span>
             </span>
           </p>
@@ -5139,7 +5139,7 @@ function ProviderRow({
     onToggleRequested: () => void;
   };
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const deliveryLabel = formatDeliverySpeed(row.speed_hours);
 
   const ratePct = row.rate_vs_market_pct;
@@ -5156,8 +5156,11 @@ function ProviderRow({
   const lastUpdatedRaw = row.corridor_data_collected_at ?? row.provider_rates_last_updated;
   // Day + month + time (no year) — design/AJUSTES-1.md §C3's "28 Aug,
   // 09:41" stamp, not the plain date the pre-adjustment label used.
+  // 2026-09-07 feedback — "las fechas de cada proveedor aparecen en
+  // ingles": pasaba `undefined` como locale, que usa el idioma del
+  // navegador del visitante en vez del idioma elegido en el sitio.
   const lastUpdatedLabel = lastUpdatedRaw
-    ? new Date(lastUpdatedRaw).toLocaleString(undefined, {
+    ? new Date(lastUpdatedRaw).toLocaleString(localeTagForLang(lang), {
         day: "numeric",
         month: "short",
         hour: "2-digit",

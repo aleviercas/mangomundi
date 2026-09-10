@@ -66,6 +66,33 @@ export interface LangMetadata {
   english: string; // English name (for searching / a11y)
 }
 
+// 2026-09-07 feedback — "las fechas de cada proveedor aparecen en ingles":
+// varios `.toLocaleTimeString()`/`.toLocaleDateString()` en todo el sitio
+// (ComparatorSection.tsx, blog.tsx, blog_.$slug.tsx, BlogSection.tsx)
+// pasaban `undefined` como locale — eso NO usa el idioma seleccionado del
+// sitio, usa el locale del NAVEGADOR/SO del visitante (casi siempre
+// inglés en un entorno de test, y de cualquier forma desconectado del
+// selector de idioma). `localeTagForLang` traduce el código de idioma de
+// la app a una etiqueta BCP-47 válida para pasarle a `Intl`/
+// `toLocale*String` explícitamente, así los nombres de mes, separadores
+// de fecha, formato de 12/24hs, etc. siguen el idioma elegido en el
+// sitio, no el del dispositivo. Las 19 etiquetas base ya son BCP-47
+// válidas por sí solas (Intl las acepta tal cual); sólo zh/pt se afinan
+// a una variante regional concreta porque el propio `LANGUAGE_METADATA`
+// de arriba ya elige una bandera regional específica para cada una
+// (🇨🇳 continental, 🇧🇷 Brasil) — mismo criterio, sin inventar una
+// región nueva que el resto del sitio no haya elegido ya.
+export function localeTagForLang(lang: Lang): string {
+  switch (lang) {
+    case "zh":
+      return "zh-CN";
+    case "pt":
+      return "pt-BR";
+    default:
+      return lang;
+  }
+}
+
 export const LANGUAGE_METADATA: Record<Lang, LangMetadata> = {
   en: { code: "en", label: "EN", flag: "🇬🇧", native: "English", english: "English" },
   es: { code: "es", label: "ES", flag: "🇪🇸", native: "Español", english: "Spanish" },
