@@ -488,6 +488,23 @@ export function ComparatorSection({
   //    to top on a fresh forward navigation) is what a real reset needs.
   const handleSegmentChange = (next: Segment) => {
     if (next === segment) return;
+    // 2026-09-10 — desde que "/" y "/business" pueden llevar a
+    // "/send/:corridor?segment=..." (ver
+    // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §14), acá
+    // el segmento vive en un query param del propio corredor, no en el
+    // path — a diferencia de "/" vs "/business", que sí son rutas
+    // distintas. No hace falta navegar a mano: sólo cambiar el estado
+    // local y dejar que el efecto de sync debounced de más abajo (el mismo
+    // que ya propaga amount/moneda) lo reporte hacia arriba — el
+    // `handleQueryChange` de send.$corridor.tsx ya sabe escribir `segment`
+    // en la URL sin salir del corredor (mismo fix de más arriba). Sin este
+    // caso, `pathname.startsWith("/business")` de abajo no alcanza para
+    // saber si estamos viendo resultados de business en un corredor, y el
+    // toggle dejaba el estado local y la URL desincronizados.
+    if (pathname.startsWith("/send/")) {
+      setSegment(next);
+      return;
+    }
     const onBusinessRoute = pathname.startsWith("/business");
     const wantsBusinessRoute = next === "business";
     if (onBusinessRoute === wantsBusinessRoute) {

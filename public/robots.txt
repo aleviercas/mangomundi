@@ -12,6 +12,13 @@
 # needs occasional upkeep as new bots appear.
 User-agent: *
 Allow: /
+# 2026-09-10 — /admin/i18n-status ya tiene su propio <meta name="robots"
+# content="noindex, nofollow"> (funciona para cualquier crawler que lo
+# respete), y /brand/signature.html no tiene ningún link interno ni valor
+# de búsqueda. Este Disallow es sólo defensa en profundidad, no la
+# protección principal.
+Disallow: /admin/
+Disallow: /brand/
 
 User-agent: GPTBot
 Disallow: /

@@ -34,6 +34,7 @@ export function HomePageBody({
   businessExtras = false,
   todaysRoutesData,
   businessTodaysRoutesData,
+  heroHeadline,
 }: {
   initialQuery: ComparatorQuery;
   onQueryChange?: (q: ComparatorQueryChange) => void;
@@ -59,6 +60,10 @@ export function HomePageBody({
   todaysRoutesData?: ExclusiveCorridor[];
   /** Same idea as todaysRoutesData, for /business's own prefetch. */
   businessTodaysRoutesData?: ExclusiveCorridor[];
+  /** See HeroSection's own comment — a specific headline for the page
+   *  (a corridor's "Compare GBP to MXN...", say) instead of the generic
+   *  one. Optional; "/" leaves this unset. */
+  heroHeadline?: string;
 }) {
   // Drives the Kayak/Skyscanner-style "search mode" swap: once a comparison
   // has a result, the hero collapses and the comparator card (see its own
@@ -69,7 +74,7 @@ export function HomePageBody({
 
   return (
     <>
-      <HeroSection compact={hasResult} />
+      <HeroSection compact={hasResult} headline={heroHeadline} />
       <ComparatorSection
         initialQuery={initialQuery}
         onHasResultChange={setHasResult}

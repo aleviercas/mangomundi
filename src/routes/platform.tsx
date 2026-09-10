@@ -6,6 +6,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 // old bookmark, backlink, or previously-indexed URL doesn't 404.
 export const Route = createFileRoute("/platform")({
   beforeLoad: () => {
-    throw redirect({ to: "/" });
+    throw redirect({ to: "/", statusCode: 301 });
   },
 });

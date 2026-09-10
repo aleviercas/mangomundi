@@ -6,7 +6,18 @@ import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { resolveRouteCode, primaryCountryForCurrency } from "@/lib/countries";
 
-const searchSchema = z.object({ lang: z.string().optional() }).catch({});
+const searchSchema = z
+  .object({
+    lang: z.string().optional(),
+    // 2026-09-10 — antes ignorados por completo (siempre amount:1000,
+    // segment:"retail" hardcodeados abajo). Sin esto, llegar acá desde "/"
+    // o "/business" con un monto/segmento ya elegido se perdía en el
+    // camino — ver docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md
+    // §14, paso 2. Mismo patrón .catch(undefined) que "/" y "/business".
+    amount: z.coerce.number().positive().optional().catch(undefined),
+    segment: z.enum(["retail", "business"]).optional().catch(undefined),
+  })
+  .catch({});
 
 interface ParsedCorridor {
   origin: string;
@@ -39,8 +50,30 @@ export const Route = createFileRoute("/send/$corridor")({
   validateSearch: (search) => searchSchema.parse(search),
   // Bad slug ("/send/nonsense") → home, rather than a dead-end page. Runs
   // before head()/component, so both can safely assume params.corridor parses.
-  beforeLoad: ({ params }) => {
-    if (!parseCorridor(params.corridor)) throw redirect({ to: "/" });
+  //
+  // 2026-09-10 — también normaliza acá la ÚNICA forma canónica del
+  // corredor (país-país en minúsculas, la misma que ya genera
+  // handleQueryChange más abajo para navegar entre corredores). Antes de
+  // este fix, "/send/gb-mx", "/send/gbp-mxn" y "/send/GB-MX" resolvían al
+  // mismo origin/destination/from/to (contenido 100% idéntico) pero cada
+  // una se autocanonicalizaba a sí misma — confirmado con el código y con
+  // el propio historial del proyecto (ver
+  // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §13). Un 301
+  // real (no sólo un <link rel="canonical">) consolida todas esas
+  // variantes en una sola URL indexable, igual que ya se hace con las 7
+  // rutas legacy (§2 del mismo documento).
+  beforeLoad: ({ params, search }) => {
+    const parsed = parseCorridor(params.corridor);
+    if (!parsed) throw redirect({ to: "/", statusCode: 301 });
+    const canonicalSlug = `${parsed.origin.toLowerCase()}-${parsed.destination.toLowerCase()}`;
+    if (params.corridor !== canonicalSlug) {
+      throw redirect({
+        to: "/send/$corridor",
+        params: { corridor: canonicalSlug },
+        search,
+        statusCode: 301,
+      });
+    }
   },
   head: ({ params, match }) => {
     const parsed = parseCorridor(params.corridor);
@@ -53,7 +86,10 @@ export const Route = createFileRoute("/send/$corridor")({
     // reviewed batch — see decision 8 in docs/handoff/
     // handoff-2026-08-29-rediseno-mangomundi-4.md §4).
     const title = `Compare ${parsed.from} to ${parsed.to} exchange rates — mangomundi`;
-    const description = `Real-time exchange rates and transfer fees from ${parsed.from} to ${parsed.to}, compared across every mangomundi provider. No sign-up.`;
+    const description =
+      match.search.segment === "business"
+        ? `Corporate FX rates and transfer fees from ${parsed.from} to ${parsed.to}, compared across every mangomundi broker. No sign-up.`
+        : `Real-time exchange rates and transfer fees from ${parsed.from} to ${parsed.to}, compared across every mangomundi provider. No sign-up.`;
     return {
       meta: [
         { title },
@@ -70,6 +106,7 @@ export const Route = createFileRoute("/send/$corridor")({
 
 function SendCorridorPage() {
   const { corridor } = Route.useParams();
+  const search = Route.useSearch();
   const navigate = Route.useNavigate();
   // Same defensive fallback as head() — beforeLoad already guarantees this
   // parses by the time the component mounts.
@@ -83,10 +120,10 @@ function SendCorridorPage() {
   const initialQuery: ComparatorQuery = {
     origin: parsed.origin,
     destination: parsed.destination,
-    segment: "retail",
+    segment: search.segment ?? "retail",
     from: parsed.from,
     to: parsed.to,
-    amount: 1000,
+    amount: search.amount ?? 1000,
     // Arriving at a named corridor (a shared link, or a search result) means
     // seeing it compared immediately, not pressing Compare again.
     autoRun: true,
@@ -94,17 +131,42 @@ function SendCorridorPage() {
 
   // Unlike "/" and "/business" (query-string sync), this route's corridor
   // lives in the PATH — so a country change navigates to a new
-  // /send/:corridor rather than patching search params. Amount/currency
-  // overrides aren't tracked here, matching design/HANDOFF.md §2's own
-  // routes table (only :from-:to is part of this path).
+  // /send/:corridor rather than patching search params. Amount/segment
+  // (2026-09-10: now tracked, see the searchSchema comment above) travel
+  // along as query params on whichever /send/:corridor URL is current.
   const handleQueryChange = useCallback(
     (q: ComparatorQueryChange) => {
       const nextCorridor = `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}`;
-      if (nextCorridor === corridor.toLowerCase()) return;
-      navigate({ to: "/send/$corridor", params: { corridor: nextCorridor }, replace: true });
+      const nextSearch = {
+        lang: search.lang,
+        amount: q.amount || undefined,
+        segment: q.segment === "retail" ? undefined : q.segment,
+      };
+      if (nextCorridor === corridor.toLowerCase()) {
+        navigate({ search: nextSearch, replace: true });
+        return;
+      }
+      navigate({
+        to: "/send/$corridor",
+        params: { corridor: nextCorridor },
+        search: nextSearch,
+        replace: true,
+      });
     },
-    [navigate, corridor],
+    [navigate, corridor, search.lang],
   );
 
-  return <HomePageBody initialQuery={initialQuery} onQueryChange={handleQueryChange} />;
+  return (
+    <HomePageBody
+      initialQuery={initialQuery}
+      onQueryChange={handleQueryChange}
+      // 2026-09-10 — mismo criterio de i18n que el title/description de
+      // arriba (códigos de moneda, no copy traducido — safe en cualquier
+      // idioma). Antes el <h1> de esta página era idéntico al de la home
+      // en cualquier idioma, sin mencionar el corredor específico, aunque
+      // el <title> sí lo hace — ver
+      // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §5.
+      heroHeadline={`Compare ${parsed.from} to ${parsed.to} exchange rates`}
+    />
+  );
 }

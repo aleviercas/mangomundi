@@ -5,6 +5,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 // there now instead of a home anchor that no longer exists.
 export const Route = createFileRoute("/contact")({
   beforeLoad: () => {
-    throw redirect({ to: "/about", hash: "contact" });
+    throw redirect({ to: "/about", hash: "contact", statusCode: 301 });
   },
 });

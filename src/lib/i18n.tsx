@@ -3488,7 +3488,7 @@ export const SEO_META: Record<Lang, SeoMeta> = {
   es: {
     title: "Mangomundi | Comparar tipos de cambio",
     description:
-      "Comparã tasas de cambio, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
+      "Compará tasas de cambio, comisiones, velocidad de transferencia y proveedores en tiempo real. Impulsado por IA neutral.",
   },
   pt: {
     title: "Mangomundi | Compare Taxas de Câmbio",
@@ -3614,6 +3614,18 @@ const ROUTE_SEO_EN: RouteSeoMap = {
     title: "Widget — mangomundi",
     description:
       "Embed the mangomundi FX comparator on your site with one script tag or an iframe — free, live rates, no account needed.",
+  },
+  // 2026-09-10 — antes vivía hardcodeado en inglés directo dentro del
+  // head() de business.tsx, sin pasar nunca por getRouteSeo() ni siquiera
+  // para caer al fallback genérico de SEO_META[lang] — la única página
+  // real del sitio en ese caso. Mismo texto que ya estaba, sólo movido acá
+  // para que el resto de idiomas al menos reciban el fallback genérico en
+  // vez de inglés fijo siempre. Ver
+  // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §4.
+  "/business": {
+    title: "Business FX — compare broker rates for high-volume transfers | mangomundi",
+    description:
+      "Corporate FX brokers quote negotiated rates above retail volume — spot, forward and option contracts, compared side by side, neutral and free.",
   },
 };
 

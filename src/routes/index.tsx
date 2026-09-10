@@ -187,15 +187,26 @@ function Index() {
     autoRun: search.autoRun ?? Boolean(search.origin && search.destination),
   };
 
-  // Fase A of design/HANDOFF.md §2 ("el estado vive en la URL, no solo en
-  // React") — see docs/handoff/handoff-2026-08-29-rediseno-mangomundi-4.md
-  // §4.5. Pure one-way sync: ComparatorSection keeps its own useState as the
-  // live source of truth (untouched internally) and just reports its
-  // debounced corridor state up here, which pushes it into the URL via
-  // `replace` (no history entry per keystroke/selection). This alone makes a
-  // comparison shareable/bookmarkable/crawlable — Fase B (real /send/:from-to
-  // and /business route files reusing this same synced state) is separate,
-  // deliberately not part of this change.
+  // Fase A de design/HANDOFF.md §2 ("el estado vive en la URL, no solo en
+  // React") para el caso en que TODAVÍA no hay un corredor completo (sólo
+  // un país elegido, o ninguno) — ahí sigue viviendo en query params sobre
+  // "/", igual que un buscador de kayak con el formulario a medio llenar
+  // no necesita URL propia.
+  //
+  // 2026-09-10 — cuando SÍ hay un corredor completo (los dos países
+  // elegidos), en vez de seguir pisando parámetros sobre "/" navega a
+  // "/send/:corridor" — la única ruta del sitio con canonical/title/
+  // description propios por corredor (Fase B, ya construida, pero hasta
+  // ahora nunca conectada a la búsqueda real). Sin esto, cada comparación
+  // real que alguien hacía en la home quedaba atrapada en una URL que se
+  // autocanonicaliza hacia la home vacía — ver
+  // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §14. `push`
+  // (no `replace`, a diferencia de todo lo demás acá) sólo en esta
+  // transición puntual, para que el botón atrás del navegador devuelva al
+  // buscador vacío en vez de dejar a alguien atrapado en resultados — mismo
+  // comportamiento que kayak/skyscanner. Una vez ahí, el propio
+  // handleQueryChange de send.$corridor.tsx sigue con `replace` para
+  // cualquier ajuste posterior (monto, moneda, otro país).
   const handleQueryChange = useCallback(
     (q: {
       from: string;
@@ -205,6 +216,18 @@ function Index() {
       sendingCountry: string;
       receivingCountry: string;
     }) => {
+      if (q.sendingCountry && q.receivingCountry) {
+        navigate({
+          to: "/send/$corridor",
+          params: { corridor: `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}` },
+          search: {
+            lang: search.lang,
+            amount: q.amount || undefined,
+            segment: q.segment === "retail" ? undefined : q.segment,
+          },
+        });
+        return;
+      }
       navigate({
         search: (prev) => ({
           ...prev,
@@ -218,7 +241,7 @@ function Index() {
         replace: true,
       });
     },
-    [navigate],
+    [navigate, search.lang],
   );
 
   return (

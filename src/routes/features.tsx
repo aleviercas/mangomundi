@@ -6,6 +6,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 // previously-indexed URL doesn't 404.
 export const Route = createFileRoute("/features")({
   beforeLoad: () => {
-    throw redirect({ to: "/" });
+    throw redirect({ to: "/", statusCode: 301 });
   },
 });

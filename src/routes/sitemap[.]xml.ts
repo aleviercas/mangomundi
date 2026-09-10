@@ -68,10 +68,45 @@ export const Route = createFileRoute("/sitemap.xml")({
           // Sitemap should still render even if DB is unavailable
         }
 
+        // 2026-09-10 — corredores reales de /send/:corridor (§1 y §14 de
+        // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md). El
+        // selector de país del comparador arma ~59.000 combinaciones
+        // posibles, pero sólo las que tienen fila propia en `fx_rates`
+        // muestran contenido realmente distinto entre sí — el resto cae al
+        // mismo fallback genérico de providers sin importar el país (ver
+        // §14 del mismo documento, confirmado con datos reales). Sumar acá
+        // TODO el espacio combinatorio generaría miles de páginas "doorway"
+        // casi idénticas; este query es exactamente el filtro que las
+        // separa. Mismo slug (país-país en minúsculas) que
+        // send.$corridor.tsx ya usa como única forma canónica.
+        let corridorEntries: SitemapEntry[] = [];
+        try {
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+          const { data } = await supabaseAdmin
+            .from("fx_rates")
+            .select("sending_country, receiving_country");
+          const slugs = new Set<string>();
+          for (const r of data ?? []) {
+            if (!r.sending_country || !r.receiving_country) continue;
+            slugs.add(`${r.sending_country.toLowerCase()}-${r.receiving_country.toLowerCase()}`);
+          }
+          corridorEntries = [...slugs].map((slug) => ({
+            path: `/send/${slug}`,
+            changefreq: "daily",
+            priority: "0.6",
+          }));
+        } catch {
+          // Sitemap should still render even if DB is unavailable
+        }
+
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
+          { path: "/about", changefreq: "monthly", priority: "0.5" },
+          { path: "/business", changefreq: "weekly", priority: "0.7" },
+          { path: "/widget", changefreq: "monthly", priority: "0.4" },
           { path: "/blog", changefreq: "weekly", priority: "0.8" },
           ...blogEntries,
+          ...corridorEntries,
           { path: "/legal", changefreq: "monthly", priority: "0.4" },
         ];
 

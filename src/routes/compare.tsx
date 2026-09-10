@@ -16,6 +16,6 @@ const redirectSearchSchema = z.object({ lang: z.string().optional() }).catch({})
 export const Route = createFileRoute("/compare")({
   validateSearch: (search) => redirectSearchSchema.parse(search),
   beforeLoad: ({ search }) => {
-    throw redirect({ to: "/", search: search.lang ? { lang: search.lang } : undefined });
+    throw redirect({ to: "/", search: search.lang ? { lang: search.lang } : undefined, statusCode: 301 });
   },
 });

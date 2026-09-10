@@ -11,7 +11,20 @@ import { useI18n } from "@/lib/i18n";
  *  second results route). Height (not just opacity) is what animates —
  *  a `grid-rows` 0fr/1fr transition, so the space actually closes instead
  *  of leaving a blank gap. */
-export function HeroSection({ compact = false }: { compact?: boolean }) {
+export function HeroSection({
+  compact = false,
+  headline,
+}: {
+  compact?: boolean;
+  /** 2026-09-10 — antes esta sección mostraba siempre el mismo headline
+   *  genérico sin importar si la página era "/", "/business" o un
+   *  "/send/:corridor" específico, aunque el <title>/description de esas
+   *  páginas SÍ mencionan la moneda exacta — la señal on-page más barata de
+   *  relevancia temática quedaba sin usar. Opcional: cuando no se pasa,
+   *  cae al genérico de siempre (home, y cualquier otro caller que no lo
+   *  necesite). Ver docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §5. */
+  headline?: string;
+}) {
   const { t } = useI18n();
   return (
     <section
@@ -85,7 +98,7 @@ export function HeroSection({ compact = false }: { compact?: boolean }) {
               solo color. El gradiente sobre la palabra destacada que §6.2
               manda eliminar ya no existía acá. */}
           <h1 className="font-heading text-[28px] font-extrabold leading-[1.1] tracking-[-0.035em] text-foreground sm:text-[44px]">
-            {t("home.hero.headline")}
+            {headline ?? t("home.hero.headline")}
             <span className="text-brand-cta">.</span>
           </h1>
           {/* 2026-09-04 feedback (ronda 5) — "el titulo... que quede en un

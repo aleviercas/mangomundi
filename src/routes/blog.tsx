@@ -113,7 +113,7 @@ function BlogIndexPage() {
               {post.cover_url && (
                 <img
                   src={post.cover_url}
-                  alt=""
+                  alt={post.title}
                   className="h-44 w-full shrink-0 rounded-2xl object-cover sm:h-32 sm:w-52"
                   loading="lazy"
                 />

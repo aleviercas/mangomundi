@@ -4,6 +4,7 @@ import { z } from "zod";
 import { HomePageBody, type ComparatorQueryChange } from "@/components/HomePageBody";
 import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { hreflangLinks, selfCanonical } from "@/config/site";
+import { getRouteSeo } from "@/lib/i18n";
 import { defaultCounterCurrency } from "@/lib/countries";
 import { getBusinessTodaysRoutes } from "@/lib/fx.functions";
 
@@ -32,18 +33,28 @@ export const Route = createFileRoute("/business")({
   // serialization) rather than through context.queryClient.ensureQueryData,
   // since this app has no queryClient dehydration wired up to carry that
   // cache entry to the client's first render.
-  loader: async () => ({ corridors: await getBusinessTodaysRoutes() }),
-  head: ({ match }) => {
+  //
+  // 2026-09-10 — `lang` sumado acá (mismo patrón que about.tsx) para que
+  // head() pueda pasar por getRouteSeo() en vez del title/description
+  // hardcodeados en inglés que tenía antes — ver
+  // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §4.
+  loader: async () => {
+    const { getInitialLang } = await import("@/lib/geo.functions");
+    const [corridors, lang] = await Promise.all([
+      getBusinessTodaysRoutes(),
+      getInitialLang().catch(() => "en" as const),
+    ]);
+    return { corridors, lang };
+  },
+  head: ({ match, loaderData }) => {
     const canonical = selfCanonical("/business", match.search.lang);
-    const title = "Business FX — compare broker rates for high-volume transfers | mangomundi";
-    const description =
-      "Corporate FX brokers quote negotiated rates above retail volume — spot, forward and option contracts, compared side by side, neutral and free.";
+    const seo = getRouteSeo(loaderData?.lang ?? "en", "/business");
     return {
       meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
         { property: "og:url", content: canonical },
       ],
       links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/business")],
@@ -74,10 +85,27 @@ function BusinessPage() {
     autoRun: search.autoRun ?? Boolean(search.origin && search.destination),
   };
 
-  // Same one-way state→URL sync as "/" (see its own comment) — this route
-  // just never writes `segment` back, since being on /business already says it.
+  // Same one-way state→URL sync as "/" (see its own comment) for the
+  // "no corredor completo todavía" case — este route tampoco escribe
+  // `segment` de vuelta en su propia URL, ya que estar en /business ya lo
+  // dice.
+  //
+  // 2026-09-10 — mismo fix que index.tsx: con un corredor completo,
+  // navega a "/send/:corridor?segment=business" en vez de seguir sobre
+  // "/business" (que hoy no tiene ninguna URL indexable por corredor para
+  // el segmento business — ver
+  // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §14). Mismo
+  // `push` puntual que index.tsx, mismas razones.
   const handleQueryChange = useCallback(
     (q: ComparatorQueryChange) => {
+      if (q.sendingCountry && q.receivingCountry) {
+        navigate({
+          to: "/send/$corridor",
+          params: { corridor: `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}` },
+          search: { lang: search.lang, amount: q.amount || undefined, segment: "business" },
+        });
+        return;
+      }
       navigate({
         search: (prev) => ({
           ...prev,
@@ -90,7 +118,7 @@ function BusinessPage() {
         replace: true,
       });
     },
-    [navigate],
+    [navigate, search.lang],
   );
 
   return (
