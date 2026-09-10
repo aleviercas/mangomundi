@@ -129,35 +129,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "icon", type: "image/png", sizes: "16x16", href: "/brand/favicon-16.png" },
         { rel: "apple-touch-icon", href: "/brand/apple-touch-icon.png" },
         { rel: "manifest", href: "/brand/manifest.json" },
-        { rel: "preconnect", href: "https://fonts.googleapis.com" },
-        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        // 2026-09-09 font-loading fix — Bricolage Grotesque (headings +
+        // every received/rate/delta/stat figure, design/AJUSTES-1.md §A),
+        // Manrope (everything else) and Rubik (brand wordmark only,
+        // design/HANDOFF.md §1) are now self-hosted (src/styles.css) instead
+        // of requested from fonts.googleapis.com — no more preconnect/
+        // external stylesheet link needed here at all. The
+        // `display=optional` fix from 2026-09-01 (see git history on this
+        // line for that comment) is preserved in the self-hosted
+        // @font-face for Bricolage Grotesque; self-hosting it removes the
+        // main cause of the residual flash that `display=optional` alone
+        // couldn't fully prevent (the cross-origin round-trip to Google on
+        // an uncached first visit).
         {
-          rel: "stylesheet",
-          // Bricolage Grotesque: headings AND figures — h1/h2/section titles,
-          // every received/rate/delta/stat number (design/AJUSTES-1.md §A).
-          // Replaces Sora, retired from the project. Manrope: everything
-          // else (labels, row text, buttons, paragraphs). Rubik
-          // ital,wght@0,700;1,700: the brand wordmark/icon only
-          // (design/HANDOFF.md §1) — 700 upright for the straight "m"s, 700
-          // italic for the "ango"/"undi" tails.
-          //
-          // 2026-09-01 feedback — "el título está en negrita y después
-          // cambia la letra": `display=swap` renders the page with the
-          // fallback stack (`ui-sans-serif, system-ui, sans-serif` —
-          // styles.css's own --font-heading) immediately, then visibly
-          // swaps to Bricolage Grotesque the moment it finishes
-          // downloading — exactly the jump reported, most noticeable on
-          // the big bold h1/h2 titles. `display=optional` fixes it at the
-          // font-loading level: the browser gives the webfont a very
-          // short window (~100ms) to be ready (near-instant on repeat
-          // visits, since it's cached) and uses the fallback with no
-          // later swap otherwise — so the title never visibly changes
-          // after first paint, at the cost of an occasional slow first
-          // visit rendering in the fallback font instead of waiting for
-          // Bricolage. Applies to all 3 families requested in this one
-          // stylesheet (Bricolage/Manrope/Rubik) since `display` is a
-          // per-request query param here, not settable per-family.
-          href: "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Manrope:wght@200;300;400;500;600;700&family=Rubik:ital,wght@0,700;1,700&display=optional",
+          rel: "preload",
+          as: "font",
+          type: "font/woff2",
+          href: "/fonts/bricolage-grotesque-variable.woff2",
+          crossOrigin: "anonymous",
         },
         // 2026-08-31 feedback (twice), still reported 2026-09-01 after
         // switching from a JS idle-callback warm-up to `<link

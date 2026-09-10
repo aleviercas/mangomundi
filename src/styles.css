@@ -3,6 +3,45 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
+/* Self-hosted fonts — replaces the fonts.googleapis.com <link> in
+   src/routes/__root.tsx (2026-09-09 font-loading fix). Self-hosting removes
+   the external-domain round-trip that was the main cause of the visible
+   fallback→webfont swap on load; see docs/data-sources/ for the full
+   investigation.
+
+   Manrope + Rubik: self-hosted via Fontsource (@fontsource-variable/manrope,
+   @fontsource/rubik), keeping their default `font-display: swap` — see the
+   commit message / handoff for why those two aren't also switched to
+   `optional` in this pass. Fontsource's variable Manrope package registers
+   the family as 'Manrope Variable' (NOT 'Manrope') — the --font-sans token
+   below is updated to match, or every UI text on the site would silently
+   fall back to the system font. */
+@import "@fontsource-variable/manrope/wght.css";
+@import "@fontsource/rubik/700.css";
+@import "@fontsource/rubik/700-italic.css";
+
+/* Bricolage Grotesque: NOT from Fontsource. Fontsource ships each variable
+   axis as a separate single-axis file (wght.css *or* opsz.css, never both
+   together) — using it here would silently drop the opsz axis that
+   `opsz,wght@12..96,700;12..96,800` (the old Google Fonts request) served as
+   one combined variable font, changing how headings/figures actually render
+   at different sizes. This file is the same multi-axis source Google itself
+   serves (github.com/google/fonts, ofl/bricolagegrotesque), self-hosted
+   directly instead. `format('woff2')` (not 'woff2-variations') for broadest
+   browser support — the file's own fvar table is what makes it variable,
+   the format hint doesn't need to say so. `font-display: optional` per the
+   2026-09-01 fix (see the link's old comment history) — now backed by a
+   same-origin, preloaded file instead of a cross-origin one, so the
+   ~100ms window is realistically enough even on first visit. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/fonts/bricolage-grotesque-variable.woff2') format('woff2');
+  font-weight: 700 800;
+  font-stretch: 75% 100%;
+  font-style: normal;
+  font-display: optional;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -31,7 +70,7 @@
     0 3px 6px 0 oklch(0.27 0.025 257 / 0.16),
     0 -1px 4px 0 oklch(0.27 0.025 257 / 0.04);
 
-  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
   /* Headings AND figures (received amounts, rates, deltas, stat numbers) —
      design/AJUSTES-1.md §A. Replaces Sora, retired from the project. */
   --font-heading: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;

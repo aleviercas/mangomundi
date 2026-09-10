@@ -3,6 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import tsConfigPaths from "vite-tsconfig-paths";
 import viteReact from "@vitejs/plugin-react";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { FontaineTransform } from "fontaine";
 
 // Hand-rolled config that replaces the former @lovable.dev/vite-tanstack-config
 // wrapper. It wires the same underlying plugins (TanStack Start, Nitro, React,
@@ -21,6 +22,24 @@ export default defineConfig(async ({ command, mode }): Promise<UserConfig> => {
   }
 
   const plugins: PluginOption[] = [
+    // Generates a metric-matched local-font @font-face for each self-hosted
+    // family (src/styles.css) and appends it as a fallback wherever that
+    // family is used — same box size as the real webfont, so even the rare
+    // case where `display: optional`'s ~100ms window is missed (slow first
+    // visit, empty cache) doesn't visibly reflow when the real font swaps
+    // in. Part of the 2026-09-09 font-loading fix, see that commit.
+    FontaineTransform.vite({
+      fallbacks: ["Arial"],
+      // Our own Bricolage Grotesque @font-face (styles.css) uses an
+      // absolute `/fonts/...` src — served from public/ at runtime, but
+      // fontaine needs a real filesystem path to read the font's metrics
+      // at build time. Fontsource's own @font-face rules (Manrope/Rubik)
+      // use plain relative `./files/...` src values that already resolve
+      // correctly against their own file's location, so only the
+      // `/fonts/`-prefixed case needs remapping here.
+      resolvePath: (id) =>
+        id.startsWith("/fonts/") ? new URL(`./public${id}`, import.meta.url) : id,
+    }),
     tailwindcss(),
     tsConfigPaths({ projects: ["./tsconfig.json"] }),
     tanstackStart({
