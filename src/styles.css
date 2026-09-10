@@ -584,11 +584,24 @@
    derecho del botón del agente, el `margin-left` de acá baja de 1.25rem
    a 0.5rem — separación real (gap-3 de la fila + la barrita + este
    margen) sin que el hueco total quede exagerado. */
+/* 2026-09-10 feedback — "mover el combox mas a la derecha de la pantalla...
+   asi no queda tan pegado al ai agent": antes sólo tenía `margin-left:
+   0.5rem` (8px) — el gap normal de la fila — así que quedaba pegado
+   inmediatamente después de "Personal". `margin-left: auto` en un flex
+   item se resuelve ANTES que `flex-grow` reparta el espacio sobrante: se
+   come todo el hueco libre de la fila como margen, empujando el combobox
+   al borde derecho disponible (con su propio ancho, hasta max-width:960px,
+   sin crecer más allá) en vez de crecer él mismo pegado a la izquierda.
+   No es una alineación exacta con el borde de "Your results" más abajo —
+   ese contenedor tiene su propio max-width:1180px centrado que no guarda
+   ninguna relación fija con el ancho real del header (varía con el
+   viewport de forma distinta) — pero sí logra el efecto pedido: separarlo
+   visualmente del "AI Agent"/"Personal" en vez de quedar pegado. */
 #header-searchbar-slot:not(:empty) {
-  flex: 1 1 960px;
+  flex: 0 1 960px;
   min-width: 680px;
   max-width: 960px;
-  margin-left: 0.5rem;
+  margin-left: auto;
 }
 
 /* 2026-09-04/07 feedback — el trigger colapsado del AI pasó por un borde
