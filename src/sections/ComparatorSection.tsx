@@ -2259,12 +2259,18 @@ export function ComparatorSection({
 
   // Punto de montaje "normal": inline en la página (desktop siempre antes
   // de comparar; mobile mientras no hay resultado) y dentro del Drawer de
-  // la píldora colapsada (mobile con resultado). El selector va apilado
-  // arriba de la barra, como siempre.
+  // la píldora colapsada (mobile con resultado).
+  // 2026-09-10 feedback — "el selector personal o business... ponerlo
+  // adelante de la moneda en lugar de arriba": en mobile sigue apilado
+  // arriba (`flex-col` por default, sin el ancho para meterlo en la misma
+  // fila que 6 campos) — el cambio es sólo `@2xl:` en adelante, mismo
+  // patrón que `headerSearchBar` (más abajo) ya usa para el estado
+  // compact: selector a la izquierda con su ancho propio (`shrink-0`),
+  // la barra ocupando el resto (`flex-1`), en una sola fila en vez de dos.
   const searchBar = (
-    <div className="flex flex-col gap-3">
-      {segmentToggle}
-      {searchBarFields}
+    <div className="flex flex-col gap-3 @2xl:flex-row @2xl:items-center">
+      <div className="@2xl:shrink-0">{segmentToggle}</div>
+      <div className="min-w-0 @2xl:flex-1">{searchBarFields}</div>
     </div>
   );
 
