@@ -129,23 +129,45 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "icon", type: "image/png", sizes: "16x16", href: "/brand/favicon-16.png" },
         { rel: "apple-touch-icon", href: "/brand/apple-touch-icon.png" },
         { rel: "manifest", href: "/brand/manifest.json" },
-        // 2026-09-09 font-loading fix — Bricolage Grotesque (headings +
+        // 2026-09-09/10 font-loading fix — Bricolage Grotesque (headings +
         // every received/rate/delta/stat figure, design/AJUSTES-1.md §A),
         // Manrope (everything else) and Rubik (brand wordmark only,
         // design/HANDOFF.md §1) are now self-hosted (src/styles.css) instead
         // of requested from fonts.googleapis.com — no more preconnect/
-        // external stylesheet link needed here at all. The
-        // `display=optional` fix from 2026-09-01 (see git history on this
-        // line for that comment) is preserved in the self-hosted
-        // @font-face for Bricolage Grotesque; self-hosting it removes the
-        // main cause of the residual flash that `display=optional` alone
-        // couldn't fully prevent (the cross-origin round-trip to Google on
-        // an uncached first visit).
+        // external stylesheet link needed here at all. All 3 preloaded:
+        // Manrope styles the hero paragraph and every label above the fold,
+        // Rubik is the header wordmark, both visible on first paint same as
+        // Bricolage's h1. The `display=optional` fix from 2026-09-01 (see
+        // git history on this line) is preserved in all 3 self-hosted
+        // @font-face rules (src/styles.css) — self-hosting + preloading
+        // removes the cross-origin round-trip that was the main remaining
+        // cause of a visible flash on an uncached first visit.
         {
           rel: "preload",
           as: "font",
           type: "font/woff2",
           href: "/fonts/bricolage-grotesque-variable.woff2",
+          crossOrigin: "anonymous",
+        },
+        {
+          rel: "preload",
+          as: "font",
+          type: "font/woff2",
+          href: "/fonts/manrope-variable.woff2",
+          crossOrigin: "anonymous",
+        },
+        {
+          rel: "preload",
+          as: "font",
+          type: "font/woff2",
+          href: "/fonts/rubik-700.woff2",
+          crossOrigin: "anonymous",
+        },
+        {
+          rel: "preload",
+          as: "font",
+          type: "font/woff2",
+          href: "/fonts/rubik-700-italic.woff2",
           crossOrigin: "anonymous",
         },
         // 2026-08-31 feedback (twice), still reported 2026-09-01 after

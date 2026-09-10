@@ -4,21 +4,50 @@
 @plugin "@tailwindcss/typography";
 
 /* Self-hosted fonts — replaces the fonts.googleapis.com <link> in
-   src/routes/__root.tsx (2026-09-09 font-loading fix). Self-hosting removes
-   the external-domain round-trip that was the main cause of the visible
-   fallback→webfont swap on load; see docs/data-sources/ for the full
-   investigation.
+   src/routes/__root.tsx (2026-09-09 font-loading fix, extended 2026-09-10
+   to cover all 3 families the same way — see that commit: Manrope/Rubik
+   initially kept Fontsource's default `font-display: swap`, which still
+   showed a visible flash on every uncached page load. Professional sites
+   (Wise, Skyscanner, etc.) self-host + preload + `font-display: optional`
+   for exactly this reason — swap guarantees the swap eventually happens,
+   optional makes it a rare edge case instead, backed by a metric-matched
+   fallback (fontaine, vite.config.ts) so even that rare case doesn't
+   visibly jump. All 3 families below follow the same pattern; see
+   docs/data-sources/ for the full investigation.
 
-   Manrope + Rubik: self-hosted via Fontsource (@fontsource-variable/manrope,
-   @fontsource/rubik), keeping their default `font-display: swap` — see the
-   commit message / handoff for why those two aren't also switched to
-   `optional` in this pass. Fontsource's variable Manrope package registers
-   the family as 'Manrope Variable' (NOT 'Manrope') — the --font-sans token
-   below is updated to match, or every UI text on the site would silently
-   fall back to the system font. */
-@import "@fontsource-variable/manrope/wght.css";
-@import "@fontsource/rubik/700.css";
-@import "@fontsource/rubik/700-italic.css";
+   All 3 sourced directly from github.com/google/fonts (OFL), not
+   Fontsource — Fontsource's per-script @font-face rules hardcode
+   `font-display: swap` with no override hook, so matching `optional`
+   requires writing the @font-face ourselves regardless. Manrope keeps its
+   full native variable range (200-800, one axis, one file — no split-axis
+   problem like Bricolage had). Rubik ships two separate variable files
+   upstream (upright/italic, each wght 300-900) but the site only ever
+   uses weight 700 in either style (src/components/Wordmark.tsx) — so both
+   are extracted down to a static instance at wght=700 (fonttools
+   varLib.instancer) instead of self-hosting the full unused 300-900
+   range, keeping the files small (~53-64KB vs. Fontsource's much larger
+   multi-script bundles). */
+@font-face {
+  font-family: 'Manrope Variable';
+  src: url('/fonts/manrope-variable.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: 'Rubik';
+  src: url('/fonts/rubik-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: optional;
+}
+@font-face {
+  font-family: 'Rubik';
+  src: url('/fonts/rubik-700-italic.woff2') format('woff2');
+  font-weight: 700;
+  font-style: italic;
+  font-display: optional;
+}
 
 /* Bricolage Grotesque: NOT from Fontsource. Fontsource ships each variable
    axis as a separate single-axis file (wght.css *or* opsz.css, never both
