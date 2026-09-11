@@ -23,6 +23,7 @@ const searchSchema = z
     // switch's explicit override so carrying origin/destination over on a
     // switch doesn't also auto-fire a comparison the user didn't ask for.
     autoRun: z.coerce.boolean().optional().catch(undefined),
+    shared: z.string().optional().catch(undefined),
   })
   .catch({});
 
@@ -93,6 +94,7 @@ function BusinessPage() {
     to: search.to ?? defaultCounterCurrency(search.from ?? geoCurrency),
     amount: search.amount ?? 1000,
     autoRun: search.autoRun ?? Boolean(search.origin && search.destination),
+    sharedSlug: search.shared,
   };
 
   // Same one-way state→URL sync as "/" (see its own comment) for the
