@@ -5633,11 +5633,26 @@ function ProviderRow({
                 </span>
               )
             )}
-            {isBest && (
-              <span className="rounded-control bg-merit-cheap px-2 py-0.5 text-badge font-semibold text-merit-cheap-foreground">
-                {t("comparator.row.tagReceivesMost")}
-              </span>
-            )}
+            {isBest &&
+              // 2026-09-11 fix — "se repite el receive most" (also reported
+              // under Recommended, not just Receive more): a row that's
+              // already `shared` or `featured` gets a prominent badge in
+              // the slot right above this one — piling this second merit
+              // badge on the exact same row read as cluttered/redundant
+              // regardless of whether the two texts happened to match
+              // word-for-word (Receive more tab: literally both said
+              // "Receives most") or not (Recommended tab: "Best overall" +
+              // "Receives most" together). Now only shows on rows that
+              // aren't already carrying a badge — still real, useful
+              // information on a *non*-featured row that happens to
+              // receive the most while sorted by something else (e.g.
+              // sorted by Fastest, a different row is featured for speed,
+              // but this one can still be flagged as the actual top payout).
+              !(shared || featured) && (
+                <span className="rounded-control bg-merit-cheap px-2 py-0.5 text-badge font-semibold text-merit-cheap-foreground">
+                  {t("comparator.row.tagReceivesMost")}
+                </span>
+              )}
           </div>
         </div>
 
