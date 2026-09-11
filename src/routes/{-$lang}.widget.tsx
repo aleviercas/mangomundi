@@ -70,7 +70,18 @@ function WidgetPage() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-5 pt-28 pb-20 sm:px-8">
+    // 2026-09-11 fix — "queda muy separado del encabezado": pt-28 (112px)
+    // was tuned to clear the 66px fixed header assuming it was the only
+    // padding involved, but `<main id="page-main">` (__root.tsx) already
+    // adds pt-[var(--header-h)] (66px) around every route — added later
+    // (ronda 8), so the two were stacking to 66+112=178px instead of the
+    // 112px total this page was actually designed around. pt-[46px] here
+    // restores that original total (66 + 46 = 112) without double-counting
+    // the header. Also `<main>` → `<div>`: a `<main>` nested inside
+    // __root.tsx's own `<main id="page-main">` is two "main" landmarks on
+    // one page, which is invalid HTML and confusing for screen readers —
+    // there should be exactly one per page, and __root.tsx's is it.
+    <div className="mx-auto max-w-6xl px-5 pt-[46px] pb-20 sm:px-8">
       <div className="grid items-start gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
         {/* 2026-09-02 feedback — W13 mobile audit: measured a real 10px
             horizontal overflow on /widget at 375px (docW 385 vs a 375
@@ -195,6 +206,6 @@ function WidgetPage() {
           </div>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

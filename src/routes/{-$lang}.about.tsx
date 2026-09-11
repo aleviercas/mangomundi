@@ -63,8 +63,19 @@ export const Route = createFileRoute("/{-$lang}/about")({
 function AboutPage() {
   const { t, lang } = useI18n();
   return (
-    <main>
-      {/* 2026-09-01 feedback — "mejor estilo, agregar alguna imagen de
+    <div>
+      {/* 2026-09-11 fix — same double-counted header padding as /blog,
+          blog posts and /widget: this section's pt-28 (112px) was tuned to
+          clear the 66px fixed header on its own, before `<main
+          id="page-main">` (__root.tsx) started adding pt-[var(--header-h)]
+          (66px) around every route (ronda 8, 2026-09-04). Stacked they were
+          66+112=178px; pt-[46px] restores the original 112px total (66+46)
+          without double-counting the header a second time. Also outer
+          `<main>` → `<div>`: it was nested inside __root.tsx's own `<main
+          id="page-main">`, two "main" landmarks on one page (invalid HTML,
+          confusing for screen readers).
+
+          2026-09-01 feedback — "mejor estilo, agregar alguna imagen de
           fondo... más grande": this page was plain white/text with no
           imagery anywhere, unlike every other institutional section on the
           site. Reuses the same photo AboutManifestoSection's dark band
@@ -72,7 +83,7 @@ function AboutPage() {
           `right center` and no side content competing for room, so more of
           the coin/globe art is visible here as a real hero rather than a
           cropped sliver. */}
-      <section className="relative overflow-hidden bg-[#120E0B] px-5 pb-16 pt-28 sm:px-8">
+      <section className="relative overflow-hidden bg-[#120E0B] px-5 pb-16 pt-[46px] sm:px-8">
         <div
           className="absolute inset-0"
           style={{
@@ -178,6 +189,6 @@ function AboutPage() {
       </section>
 
       <ContactSection />
-    </main>
+    </div>
   );
 }
