@@ -31,6 +31,13 @@ const searchSchema = z
     // parámetro) sigue sin necesitarla — `search.run ?? true` más abajo
     // mantiene el default viejo para ese caso.
     run: z.coerce.boolean().optional().catch(undefined),
+    // 2026-09-10 feedback — "el boton de compartir... hacer como hace
+    // kayak, que en el link te manda a los resultados del comparador y
+    // pone primero la que te compartieron y dice shared rate": el slug
+    // del proveedor compartido (ver ProviderRow's handleShare en
+    // ComparatorSection.tsx) — lee acá y se pasa como
+    // `initialQuery.sharedSlug`.
+    shared: z.string().optional().catch(undefined),
   })
   .catch({});
 
@@ -164,6 +171,7 @@ function SendCorridorPage() {
     // el searchSchema, arriba): la navegación de fondo desde "/" antes de
     // que el usuario haga click en Compare llega con `run: false`.
     autoRun: search.run ?? true,
+    sharedSlug: search.shared,
   };
 
   // Unlike "/" and "/business" (query-string sync), this route's corridor
