@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "Promo :",
   "comparator.badge.unconfirmed": "Non confirmé",
   "comparator.buildQuery": "configurer la requête",
-  "comparator.business.addToRequest": "Ajouter à la demande",
+  "comparator.business.addToRequest": "Ajouter à la demande de devis spécial",
   "comparator.business.added": "Ajouté",
   "comparator.business.contactCard.body": "Nous vous mettons en relation avec les courtiers et n'intervenons pas dans la tarification. Aucun frais pour vous dans tous les cas.",
   "comparator.business.contactCard.title": "Vous préférez parler à quelqu'un ?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "Actions rapides pour commencer",
   "wizard.reportNote": "J'ai noté votre intérêt pour la route {from}-{to}. Elle a été ajoutée au journal de découverte ; nous la prioriserons à mesure que la demande augmente.",
   "wizard.runFirst": "Lancez d'abord une comparaison — je réponds avec les données du tableau, pas avec des sources externes.",
-  "wizard.send": "mangomundi ne déplace pas l'argent — il vous montre la meilleure option puis vous envoie directement chez ce prestataire pour finaliser le transfert sur son site. Comparez, choisissez une ligne et cliquez pour terminer. Aucun compte chez nous requis."
+  "wizard.send": "mangomundi ne déplace pas l'argent — il vous montre la meilleure option puis vous envoie directement chez ce prestataire pour finaliser le transfert sur son site. Comparez, choisissez une ligne et cliquez pour terminer. Aucun compte chez nous requis.",
+  "comparator.business.addToRequestHint": "Envoyé comme une seule demande que mangomundi gère avec le fournisseur en votre nom.",
+  "comparator.business.request.empty": "Cochez des fournisseurs ci-dessous pour les ajouter ici.",
+  "comparator.saved.title": "Taux enregistrés",
+  "comparator.saved.remove": "Retirer",
+  "comparator.row.sharedRate": "Taux partagé"
 }
