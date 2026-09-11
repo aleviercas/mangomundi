@@ -45,6 +45,11 @@ const searchSchema = z
     // autoRun) keeps the old auto-run-on-load behavior; the segment switch
     // sets this to `false` explicitly to suppress it.
     autoRun: z.coerce.boolean().optional().catch(undefined),
+    // 2026-09-10 feedback — mismo parámetro que send.$corridor.tsx (ver su
+    // propio comentario): el slug del proveedor compartido, cuando alguien
+    // llega desde un link de "compartir" generado en una fila del
+    // comparador estando en el home.
+    shared: z.string().optional().catch(undefined),
   })
   .catch({});
 
@@ -199,6 +204,7 @@ function Index() {
     // `search.autoRun === false` (the segment switch's own explicit override,
     // see the searchSchema's own comment above) wins over that default.
     autoRun: search.autoRun ?? Boolean(search.origin && search.destination),
+    sharedSlug: search.shared,
   };
 
   // Fase A de design/HANDOFF.md §2 ("el estado vive en la URL, no solo en
