@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "عرض ترويجي:",
   "comparator.badge.unconfirmed": "غير مؤكد",
   "comparator.buildQuery": "بناء الاستعلام",
-  "comparator.business.addToRequest": "إضافة إلى الطلب",
+  "comparator.business.addToRequest": "إضافة إلى طلب عرض سعر خاص",
   "comparator.business.added": "تمت الإضافة",
   "comparator.business.contactCard.body": "نُعرّفك على الوسطاء ولا نتدخل في التسعير. لا توجد رسوم عليك في كلتا الحالتين.",
   "comparator.business.contactCard.title": "هل تفضّل التحدث مع شخص؟",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "إجراءات سريعة للبدء",
   "wizard.reportNote": "سجلت اهتمامك بمسار {from}-{to}. تمت إضافته إلى سجل الاكتشاف؛ وسنمنحه الأولوية مع تزايد الطلب.",
   "wizard.runFirst": "شغّل مقارنة أولاً — أجيب بالاستناد إلى بيانات الجدول، وليس إلى مصادر خارجية.",
-  "wizard.send": "لا تحرّك mangomundi الأموال بنفسها — بل تعرض لك أفضل خيار ثم توجّهك مباشرة إلى المزود لإتمام التحويل على موقعه. قارن واختر صفًا وانقر للإنهاء. لا حاجة لحساب لدينا."
+  "wizard.send": "لا تحرّك mangomundi الأموال بنفسها — بل تعرض لك أفضل خيار ثم توجّهك مباشرة إلى المزود لإتمام التحويل على موقعه. قارن واختر صفًا وانقر للإنهاء. لا حاجة لحساب لدينا.",
+  "comparator.business.addToRequestHint": "تُرسل كطلب واحد تديره مانجوموندي مع المزوّد نيابةً عنك.",
+  "comparator.business.request.empty": "اختر الموردين أدناه لإضافتهم هنا.",
+  "comparator.saved.title": "التعرفات المحفوظة",
+  "comparator.saved.remove": "إزالة",
+  "comparator.row.sharedRate": "التعرفة التي تمت مشاركتها"
 }
