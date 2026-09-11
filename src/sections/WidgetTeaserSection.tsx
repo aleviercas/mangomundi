@@ -25,7 +25,7 @@ import { useI18n } from "@/lib/i18n";
  *  below; the `mask-image` fade keeps it from competing with the
  *  actual text for attention. */
 export function WidgetTeaserSection() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <div className="relative isolate flex flex-col justify-between overflow-hidden rounded-[20px] border border-border p-5">
       <div
@@ -57,13 +57,15 @@ export function WidgetTeaserSection() {
       </div>
       <div className="mt-4 flex items-center gap-3">
         <Link
-          to="/widget"
+          to="/{-$lang}/widget"
+          params={{ lang: lang === "en" ? undefined : lang }}
           className="inline-flex items-center gap-1.5 rounded-md border-[1.5px] border-foreground bg-card px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted"
         >
           {t("home.widget.card.cta")}
         </Link>
         <Link
-          to="/widget"
+          to="/{-$lang}/widget"
+          params={{ lang: lang === "en" ? undefined : lang }}
           aria-label={t("home.widget.card.title")}
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[9px] bg-foreground"
         >

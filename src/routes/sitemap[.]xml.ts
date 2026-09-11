@@ -18,12 +18,18 @@ interface SitemapEntry {
 // own alternates independently, hardcoding `?lang=${lang}` for every locale
 // including "en". That directly contradicted each page's own <head> tags
 // once those were fixed to point "en" at the clean URL (see selfCanonical's
-// comment on why: en is the fallback language, so ?lang=en duplicates the
-// clean URL's content for most requests — exactly what Search Console
-// flagged as "Duplicate, Google chose different canonical than user"). A
-// sitemap that disagreed with the pages it lists is its own source of
-// confusion for Google, on top of the original bug — one shared function
-// means the two can't drift apart again.
+// comment on why: en is the fallback language, so a same-content English
+// alternate always pointing anywhere but the clean URL was exactly what
+// Search Console flagged as "Duplicate, Google chose different canonical
+// than user"). A sitemap that disagreed with the pages it lists is its own
+// source of confusion for Google, on top of the original bug — one shared
+// function means the two can't drift apart again.
+//
+// 2026-09-10 — selfCanonical/hreflangLinks migrated from ?lang= query
+// params to path-prefixed URLs (/es/..., see
+// docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md) — this file
+// needed zero changes for that, since it never builds URLs itself, only
+// calls these two shared functions.
 function alternates(path: string, langs: readonly string[] = HREFLANG_LANGS): string {
   return hreflangLinks(path, langs)
     .map((l) => `    <xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${l.href}"/>`)
@@ -42,8 +48,9 @@ export const Route = createFileRoute("/sitemap.xml")({
             .from("blog_posts")
             .select("slug, updated_at")
             .eq("published", true);
-          // One sitemap entry per slug (locales are ?lang= alternates of the
-          // same URL); newest updated_at wins for lastmod.
+          // One sitemap entry per slug (locales are hreflang alternates of
+          // the same URL, path-prefixed since 2026-09-10 — see the comment
+          // above); newest updated_at wins for lastmod.
           const bySlug = new Map<string, string | null>();
           for (const p of data ?? []) {
             const prev = bySlug.get(p.slug);

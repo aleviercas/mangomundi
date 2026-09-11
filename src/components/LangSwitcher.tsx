@@ -2,7 +2,7 @@ import { useI18n, LANGUAGE_METADATA, SUPPORTED_LANGS, type Lang } from "@/lib/i1
 import { FlagIcon } from "@/components/ui/FlagIcon";
 import { Globe, ChevronDown, Search } from "lucide-react";
 import { useMemo, useRef, useState, useEffect } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouterState } from "@tanstack/react-router";
 
 const LANGS = SUPPORTED_LANGS.map((code) => LANGUAGE_METADATA[code]);
 
@@ -28,7 +28,6 @@ export function LangSwitcher({
   variant?: "default" | "pill" | "footer";
 }) {
   const { lang, setLang, t } = useI18n();
-  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,35 +54,30 @@ export function LangSwitcher({
     setQuery("");
   }, [open]);
 
+  const routerPathname = useRouterState({ select: (s) => s.location.pathname });
+
   const pick = (code: Lang) => {
-    // 2026-09-10 — antes esto sólo cambiaba estado de React + localStorage,
-    // sin tocar la URL en absoluto: alguien que cambiaba de idioma acá y
-    // compartía el link no compartía el idioma elegido, sino el que le
-    // tocara al destinatario por su propia geo-IP/Accept-Language. `lang`
-    // ya vive en el searchSchema de cada ruta con SEO (usado hoy sólo para
-    // el primer render del servidor y hreflang) — esto lo conecta también
-    // a la navegación real, sin tocar la estructura de rutas. `replace`
-    // porque es una preferencia, no contenido nuevo — no tiene sentido
-    // llenar el historial del navegador con cada cambio de idioma. Ver
-    // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md, Opción C.
+    // 2026-09-10 (segunda vuelta) — Opción B del plan: ahora el idioma vive
+    // en el path (/es/..., no ?lang=es), así que elegir un idioma es
+    // literalmente navegar a OTRA URL — ya no alcanza con reescribir un
+    // search param sobre la misma ruta (eso era la Opción C, ya superada).
+    // Se usa una navegación dura (window.location) en vez del navigate()
+    // del router: cambiar de idioma cruza entre rutas con un `params.lang`
+    // distinto — evita toda la complejidad de tipado cross-ruta ya vista en
+    // ComparatorSection/este mismo archivo (Opción C), y garantiza un SSR
+    // limpio en el idioma nuevo sin arrastrar ningún estado de cliente
+    // residual. Ver docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md
+    // §6/§7.
     setLang(code);
-    // TypeScript no puede tipar esto de forma estricta: LangSwitcher vive en
-    // el Header/Footer y se monta en TODAS las rutas del sitio, cada una con
-    // su propio searchSchema — useNavigate() genérico (sin `from` a una
-    // ruta puntual) infiere el tipo del root "/", que no acepta `lang` como
-    // key arbitraria (mismo problema ya visto en ComparatorSection.tsx). En
-    // runtime es seguro: las 8 rutas con SEO ya tienen `lang` en su
-    // searchSchema (ver docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md),
-    // y cualquier ruta sin `lang` simplemente ignora la key de más.
-    (
-      navigate as unknown as (opts: {
-        search: (prev: Record<string, unknown>) => Record<string, unknown>;
-        replace: boolean;
-      }) => void
-    )({
-      search: (prev) => ({ ...prev, lang: code === "en" ? undefined : code }),
-      replace: true,
-    });
+    const currentPrefix = lang !== "en" ? `/${lang}` : "";
+    const barePath =
+      currentPrefix && routerPathname.startsWith(currentPrefix)
+        ? routerPathname.slice(currentPrefix.length) || "/"
+        : routerPathname;
+    const nextPath = code === "en" ? barePath : `/${code}${barePath}`;
+    if (typeof window !== "undefined") {
+      window.location.href = nextPath + window.location.search + window.location.hash;
+    }
     setOpen(false);
   };
 

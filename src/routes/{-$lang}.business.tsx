@@ -1,10 +1,10 @@
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router";
 import { useCallback } from "react";
 import { z } from "zod";
 import { HomePageBody, type ComparatorQueryChange } from "@/components/HomePageBody";
 import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { hreflangLinks, selfCanonical } from "@/config/site";
-import { getRouteSeo } from "@/lib/i18n";
+import { getRouteSeo, SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 import { defaultCounterCurrency } from "@/lib/countries";
 import { getBusinessTodaysRoutes } from "@/lib/fx.functions";
 
@@ -26,29 +26,38 @@ const searchSchema = z
   })
   .catch({});
 
-export const Route = createFileRoute("/business")({
+export const Route = createFileRoute("/{-$lang}/business")({
   validateSearch: (search) => searchSchema.parse(search),
+  // 2026-09-10 — mismo patrón que el resto de las rutas migradas.
+  beforeLoad: ({ params, search }) => {
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      const { lang: _drop, ...rest } = search;
+      throw redirect({
+        to: "/{-$lang}/business",
+        params: { lang: target },
+        search: rest,
+        statusCode: 301,
+      });
+    }
+    if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      throw redirect({ to: "/{-$lang}/business", params: { lang: undefined }, statusCode: 301 });
+    }
+  },
   // See index.tsx's identical fix comment on its own loader — corridors
   // come back as loaderData (the router's own, always-hydration-safe
   // serialization) rather than through context.queryClient.ensureQueryData,
   // since this app has no queryClient dehydration wired up to carry that
   // cache entry to the client's first render.
-  //
-  // 2026-09-10 — `lang` sumado acá (mismo patrón que about.tsx) para que
-  // head() pueda pasar por getRouteSeo() en vez del title/description
-  // hardcodeados en inglés que tenía antes — ver
-  // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §4.
-  loader: async () => {
-    const { getInitialLang } = await import("@/lib/geo.functions");
-    const [corridors, lang] = await Promise.all([
-      getBusinessTodaysRoutes(),
-      getInitialLang().catch(() => "en" as const),
-    ]);
-    return { corridors, lang };
-  },
-  head: ({ match, loaderData }) => {
-    const canonical = selfCanonical("/business", match.search.lang);
-    const seo = getRouteSeo(loaderData?.lang ?? "en", "/business");
+  loader: async ({ params }) => ({
+    corridors: await getBusinessTodaysRoutes(),
+    lang: coerceLang(params.lang ?? "en"),
+  }),
+  head: ({ params }) => {
+    const lang = coerceLang(params.lang ?? "en");
+    const canonical = selfCanonical("/business", lang);
+    const seo = getRouteSeo(lang, "/business");
     return {
       meta: [
         { title: seo.title },
@@ -73,6 +82,7 @@ function BusinessPage() {
   const geoCurrency = rootData?.geoCurrency ?? "GBP";
   const { corridors } = Route.useLoaderData();
   const search = Route.useSearch();
+  const { lang } = Route.useParams();
   const navigate = Route.useNavigate();
 
   const initialQuery: ComparatorQuery = {
@@ -100,13 +110,16 @@ function BusinessPage() {
     (q: ComparatorQueryChange) => {
       if (q.sendingCountry && q.receivingCountry) {
         navigate({
-          to: "/send/$corridor",
-          params: { corridor: `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}` },
+          to: "/{-$lang}/send/$corridor",
+          params: {
+            lang,
+            corridor: `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}`,
+          },
           // 2026-09-10 feedback — mismo fix que index.tsx (ver su propio
           // comentario): `run: false` para que esta navegación de fondo no
           // dispare `autoRun` en send.$corridor.tsx antes de un click real
           // en Compare.
-          search: { lang: search.lang, amount: q.amount || undefined, segment: "business", run: false },
+          search: { amount: q.amount || undefined, segment: "business", run: false },
         });
         return;
       }
@@ -122,7 +135,7 @@ function BusinessPage() {
         replace: true,
       });
     },
-    [navigate, search.lang],
+    [navigate, lang],
   );
 
   return (

@@ -1,11 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import ReactMarkdown from "react-markdown";
 import { z } from "zod";
-import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n, SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { ContactSection } from "@/sections/ContactSection";
 import { BrandMark } from "@/components/Wordmark";
 
+// 2026-09-10 — `lang` deja de ser el driver principal (ahora vive en
+// `params.lang`, ver createFileRoute de abajo) — se mantiene acá SÓLO para
+// poder detectar y redirigir 301 los links viejos tipo `?lang=es` hacia la
+// URL nueva con prefijo (`/es/about`). Ver
+// docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md §7.
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
 /** design/AJUSTES-3.md §B + design/AJUSTES-4.md §1 — /about promoted from a
@@ -21,16 +26,26 @@ const searchSchema = z.object({ lang: z.string().optional() }).catch({});
  *  three-part mission/vision/problem copy that sat unused in i18n.tsx even
  *  before /about existed as a page. Every paragraph reuses that existing
  *  copy — no new claims, just a page for it. */
-export const Route = createFileRoute("/about")({
+export const Route = createFileRoute("/{-$lang}/about")({
   validateSearch: (search) => searchSchema.parse(search),
-  loader: async () => {
-    const { getInitialLang } = await import("@/lib/geo.functions");
-    const lang = await getInitialLang().catch(() => "en" as const);
-    return { lang };
+  // 2026-09-10 — dos cosas: (1) `?lang=xx` viejo → 301 a `/xx/about`, y (2)
+  // un `params.lang` inválido (no soportado) → 301 a la versión sin
+  // prefijo, en vez de dejarlo pasar silenciosamente. Mismo patrón para
+  // cada una de las 8 rutas migradas.
+  beforeLoad: ({ params, search }) => {
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      throw redirect({ to: "/{-$lang}/about", params: { lang: target }, statusCode: 301 });
+    }
+    if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      throw redirect({ to: "/{-$lang}/about", params: { lang: undefined }, statusCode: 301 });
+    }
   },
-  head: ({ match, loaderData }) => {
-    const canonical = selfCanonical("/about", match.search.lang);
-    const seo = getRouteSeo(loaderData?.lang ?? "en", "/about");
+  head: ({ params }) => {
+    const lang = coerceLang(params.lang ?? "en");
+    const canonical = selfCanonical("/about", lang);
+    const seo = getRouteSeo(lang, "/about");
     return {
       meta: [
         { title: seo.title },
@@ -46,7 +61,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <main>
       {/* 2026-09-01 feedback — "mejor estilo, agregar alguna imagen de
@@ -152,7 +167,8 @@ function AboutPage() {
               other, vs. several px off with the centered+nudge approach.
               No manual offset needed. */}
           <Link
-            to="/"
+            to="/{-$lang}"
+            params={{ lang: lang === "en" ? undefined : lang }}
             className="mt-3 inline-flex items-baseline gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
             <BrandMark tone="light" />

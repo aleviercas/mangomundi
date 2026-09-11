@@ -531,32 +531,44 @@ export function ComparatorSection({
   //    to top on a fresh forward navigation) is what a real reset needs.
   const handleSegmentChange = (next: Segment) => {
     if (next === segment) return;
-    // 2026-09-10 — desde que "/" y "/business" pueden llevar a
+    // 2026-09-10 -- desde que "/" y "/business" pueden llevar a
     // "/send/:corridor?segment=..." (ver
-    // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md §14), acá
+    // docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md #14), aca
     // el segmento vive en un query param del propio corredor, no en el
-    // path — a diferencia de "/" vs "/business", que sí son rutas
-    // distintas. No hace falta navegar a mano: sólo cambiar el estado
-    // local y dejar que el efecto de sync debounced de más abajo (el mismo
-    // que ya propaga amount/moneda) lo reporte hacia arriba — el
-    // `handleQueryChange` de send.$corridor.tsx ya sabe escribir `segment`
-    // en la URL sin salir del corredor (mismo fix de más arriba). Sin este
-    // caso, `pathname.startsWith("/business")` de abajo no alcanza para
-    // saber si estamos viendo resultados de business en un corredor, y el
-    // toggle dejaba el estado local y la URL desincronizados.
-    if (pathname.startsWith("/send/")) {
+    // path -- a diferencia de "/" vs "/business", que si son rutas
+    // distintas. No hace falta navegar a mano: solo cambiar el estado
+    // local y dejar que el efecto de sync debounced de mas abajo lo
+    // reporte hacia arriba.
+    //
+    // 2026-09-10 (segunda vuelta, migracion a URLs por idioma) -- `pathname`
+    // ahora puede tener un prefijo de idioma (/es/send/gb-mx,
+    // /es/business) -- el chequeo por `startsWith` de antes ya no alcanza,
+    // necesita tolerar ese prefijo opcional de 2 letras. Ver
+    // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md.
+    if (/^(\/[a-z]{2})?\/send\//.test(pathname)) {
       setSegment(next);
       return;
     }
-    const onBusinessRoute = pathname.startsWith("/business");
+    const onBusinessRoute = /^(\/[a-z]{2})?\/business(\/|$)/.test(pathname);
     const wantsBusinessRoute = next === "business";
     if (onBusinessRoute === wantsBusinessRoute) {
       setSegment(next);
       return;
     }
+    // TypeScript no puede tipar esto de forma estricta -- mismo motivo que
+    // LangSwitcher.tsx: useNavigate() generico sin `from` a una ruta
+    // puntual infiere el tipo del root, que no acepta estos search params
+    // arbitrarios. En runtime es seguro: "/{-$lang}/business" y
+    // "/{-$lang}" son rutas reales, ya migradas.
+    const nav = segmentNavigate as unknown as (opts: {
+      to: string;
+      params: { lang: string | undefined };
+      search: (prev: Record<string, unknown>) => Record<string, unknown>;
+    }) => void;
     if (wantsBusinessRoute) {
-      segmentNavigate({
-        to: "/business",
+      nav({
+        to: "/{-$lang}/business",
+        params: { lang: lang === "en" ? undefined : lang },
         search: (prev) => ({
           ...prev,
           from,
@@ -568,8 +580,9 @@ export function ComparatorSection({
         }),
       });
     } else {
-      segmentNavigate({
-        to: "/",
+      nav({
+        to: "/{-$lang}",
+        params: { lang: lang === "en" ? undefined : lang },
         search: (prev) => ({
           ...prev,
           from,

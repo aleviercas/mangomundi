@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useRouter, useRouterState } from "@tanstack/react-router";
+import { useRouter, useRouterState, useParams } from "@tanstack/react-router";
 import { z } from "zod";
 
 export type Lang =
@@ -3993,7 +3993,7 @@ const LS_KEY = "mg.lang";
  * Defensive language coercion: anything that isn't a recognised, non-broken
  * supported language collapses to "en". Never throws — safe for SSR.
  */
-function coerceLang(candidate: unknown): Lang {
+export function coerceLang(candidate: unknown): Lang {
   if (typeof candidate !== "string") return "en";
   const lower = candidate.toLowerCase() as Lang;
   if (!SUPPORTED_LANGS.includes(lower)) return "en";
@@ -4014,62 +4014,26 @@ export function I18nProvider({
   children: React.ReactNode;
   initialLang?: Lang;
 }) {
-  const [lang, setLangState] = useState<Lang>(() => coerceLang(initialLang));
+  // 2026-09-10 — migración de ?lang= a URLs con prefijo de idioma (ver
+  // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md). Antes `lang`
+  // era estado de cliente (useState + localStorage) que sólo opcionalmente
+  // se reflejaba en la URL — ahora es AL REVÉS: `lang` se deriva del
+  // parámetro `{-$lang}` de la ruta activa (cuando existe), la URL es la
+  // única fuente de verdad. Ya no hay override silencioso por
+  // localStorage/geo-IP que cambie el contenido sin cambiar la URL — eso
+  // era exactamente el antipatrón de SEO que se corrigió (§2 del plan).
+  const [routeLang, setRouteLang] = useState<Lang | undefined>(undefined);
+  const lang = routeLang ?? coerceLang(initialLang === "en" ? "en" : initialLang);
+
   // Subscribe to router state so SEO meta react to navigation as well as lang.
   // useRouter({ warn: false }) never throws (unlike useRouterState) when no
   // <RouterProvider> ancestor exists (tests/storybook/SSR probes) — it just
   // returns undefined. We use its presence to decide whether to mount
-  // <RouterPathnameSync>, which is the only place that calls useRouterState
-  // (unconditionally, from its own component) — keeping every hook call in
-  // I18nProvider itself unconditional too.
+  // <RouterStateSync>, which is the only place that calls useRouterState/
+  // useParams (unconditionally, from its own component) — keeping every
+  // hook call in I18nProvider itself unconditional too.
   const router = useRouter({ warn: false });
   const [pathname, setPathname] = useState(() => router?.state.location.pathname ?? "/");
-
-  // Hydration: prefer the user's previously chosen language (localStorage),
-  // then the server-detected geo-IP language passed via props, then navigator,
-  // then English.
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    // 1) Highest priority: explicit ?lang= query param (used by share URLs + E2E).
-    try {
-      const qp = new URLSearchParams(window.location.search).get("lang");
-      if (qp) {
-        const coerced = coerceLang(qp);
-        setLangState(coerced);
-        try {
-          window.localStorage.setItem(LS_KEY, coerced);
-        } catch {
-          /* ignore */
-        }
-        return;
-      }
-    } catch {
-      // URL parsing unavailable — fall through
-    }
-    try {
-      const stored = window.localStorage.getItem(LS_KEY);
-      if (stored) {
-        const coerced = coerceLang(stored);
-        if (coerced !== "en" || stored.toLowerCase() === "en") {
-          setLangState(coerced);
-          return;
-        }
-      }
-    } catch {
-      // localStorage unavailable — fall through
-    }
-    const coercedInitial = coerceLang(initialLang);
-    if (coercedInitial !== "en") {
-      setLangState(coercedInitial);
-      return;
-    }
-    try {
-      const nav = (navigator.language || "en").slice(0, 2).toLowerCase();
-      setLangState(coerceLang(nav));
-    } catch {
-      setLangState("en");
-    }
-  }, [initialLang]);
 
   // Keep <html lang> and direction in sync, plus update <title>/<meta>
   // live whenever the language OR the current route changes.
@@ -4097,11 +4061,18 @@ export function I18nProvider({
     }
   }, [lang, pathname]);
 
+  // 2026-09-10 — vestigial a propósito: ya no maneja el idioma que se
+  // muestra (eso lo hace `routeLang`, derivado de la URL) — sólo guarda la
+  // preferencia en localStorage por si en el futuro se quiere ofrecer
+  // "detectamos que preferís X, ¿cambiar?" en la primera visita a una URL
+  // sin prefijo (deliberadamente NO implementado en esta ronda, ver la nota
+  // de alcance en docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md).
+  // LangSwitcher.tsx ya no llama a esto para cambiar de idioma — navega a
+  // la URL con el prefijo correspondiente en su lugar.
   const setLang = (l: Lang) => {
     const parsed = langCodeSchema.safeParse(l);
     const safe = parsed.success ? parsed.data : "en";
     const final = coerceLang(safe);
-    setLangState(final);
     try {
       window.localStorage.setItem(LS_KEY, final);
     } catch {
@@ -4139,20 +4110,44 @@ export function I18nProvider({
 
   return (
     <I18nContext.Provider value={value}>
-      {router && <RouterPathnameSync onPathname={setPathname} />}
+      {router && <RouterStateSync onPathname={setPathname} onRouteLang={setRouteLang} />}
       {children}
     </I18nContext.Provider>
   );
 }
 
 // Only ever mounted when I18nProvider has confirmed a router exists, so this
-// is the sole place that calls useRouterState — unconditionally, from its
-// own component — rather than guarding a hook call inline with try/catch.
-function RouterPathnameSync({ onPathname }: { onPathname: (pathname: string) => void }) {
+// is the sole place that calls useRouterState/useParams — unconditionally,
+// from its own component — rather than guarding a hook call inline with
+// try/catch.
+//
+// 2026-09-10 — `useParams({ strict: false })` reads the `{-$lang}` param
+// from wherever it appears in the currently matched route tree, without
+// needing to be tied to one specific route — exactly what's needed here,
+// since this component (like I18nProvider itself) is mounted once at the
+// root, above every route. Returns undefined on routes outside the
+// `{-$lang}` tree (the 7 legacy redirect stubs, /embed, /admin/i18n-status)
+// — those fall back to plain English, same as the bare "/" path.
+function RouterStateSync({
+  onPathname,
+  onRouteLang,
+}: {
+  onPathname: (pathname: string) => void;
+  onRouteLang: (lang: Lang | undefined) => void;
+}) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { lang: rawRouteLang } = useParams({ strict: false }) as { lang?: string };
   useEffect(() => {
     onPathname(pathname);
   }, [pathname, onPathname]);
+  useEffect(() => {
+    if (!rawRouteLang) {
+      onRouteLang(undefined);
+      return;
+    }
+    const parsed = langCodeSchema.safeParse(rawRouteLang);
+    onRouteLang(parsed.success ? coerceLang(parsed.data) : undefined);
+  }, [rawRouteLang, onRouteLang]);
   return null;
 }
 

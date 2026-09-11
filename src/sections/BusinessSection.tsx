@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useI18n } from "@/lib/i18n";
+import { langLinkProps } from "@/config/nav";
 
 /** design/Mangomundi 4 - Final.dc.html (line 191-203) — "For business" is a
  *  full bordered card (border 1px #EBE3D9, radius 20px, padding 20px)
@@ -14,7 +15,7 @@ import { useI18n } from "@/lib/i18n";
  *  the one button in the mockup that deliberately isn't the brand accent
  *  color. */
 export function BusinessSection() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <div
       id="business"
@@ -40,7 +41,7 @@ export function BusinessSection() {
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
-            to="/business"
+            {...langLinkProps("/business", lang)}
             className="inline-flex h-11 items-center gap-1.5 rounded-xl bg-foreground px-5 text-sm font-semibold text-white hover:opacity-90"
           >
             {t("home.contact.getQuotes")}

@@ -20,7 +20,7 @@ import { TrustBox } from "@/components/TrustBox";
  *  TrustpilotCard's own comment) for "Founded in 2026", a real fact
  *  instead of an unverifiable one. */
 export function AboutManifestoSection() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   // Providers stays "50+": no single real total-active-providers count
   // exists server-side today (getProviderCounts only returns segment-split
   // retail/business counts, which double-count providers marked "both"),
@@ -82,7 +82,8 @@ export function AboutManifestoSection() {
             </p>
             <div className="mt-5">
               <Link
-                to="/about"
+                to="/{-$lang}/about"
+                params={{ lang: lang === "en" ? undefined : lang }}
                 className="inline-flex h-[52px] items-center rounded-xl bg-[#EE5B3E] px-5 text-[14px] font-bold text-white"
               >
                 {t("home.about.cta.aboutUs")}

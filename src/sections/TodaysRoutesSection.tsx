@@ -110,7 +110,7 @@ export function TodaysRoutesSection({
    *  this app, so anything else here diverges from the server on hydration). */
   initialData?: ExclusiveCorridor[];
 } = {}) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { data: corridors } = useExclusiveCorridors(initialData);
   const shown = useDisplayCorridors(corridors);
 
@@ -150,8 +150,11 @@ export function TodaysRoutesSection({
           {shown.map((c) => (
             <Link
               key={`${c.from}-${c.to}`}
-              to="/send/$corridor"
-              params={{ corridor: `${c.from.toLowerCase()}-${c.to.toLowerCase()}` }}
+              to="/{-$lang}/send/$corridor"
+              params={{
+                lang: lang === "en" ? undefined : lang,
+                corridor: `${c.from.toLowerCase()}-${c.to.toLowerCase()}`,
+              }}
               className={cardClassName}
             >
               <RouteCardBody c={c} />
@@ -190,7 +193,7 @@ export function BusinessTodaysRoutesSection({
   /** See TodaysRoutesSection's own `initialData` comment above. */
   initialData?: ExclusiveCorridor[];
 } = {}) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { data: corridors } = useBusinessTodaysRoutes(initialData);
   const shown = useDisplayCorridors(corridors);
 
@@ -214,7 +217,8 @@ export function BusinessTodaysRoutesSection({
           {shown.map((c) => (
             <Link
               key={`${c.from}-${c.to}`}
-              to="/business"
+              to="/{-$lang}/business"
+              params={{ lang: lang === "en" ? undefined : lang }}
               search={{
                 from: c.from,
                 to: c.to,

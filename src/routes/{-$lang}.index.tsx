@@ -1,11 +1,11 @@
-import { createFileRoute, useLoaderData } from "@tanstack/react-router";
+import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router";
 import { queryOptions } from "@tanstack/react-query";
 import { useCallback } from "react";
 import { z } from "zod";
 import { HomePageBody } from "@/components/HomePageBody";
 import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
-import { SEO_META } from "@/lib/i18n";
+import { SEO_META, SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 import { defaultCounterCurrency } from "@/lib/countries";
 import { listBlogPosts, toBlogLocale } from "@/lib/blog.functions";
 import { getExclusiveCorridors } from "@/lib/fx.functions";
@@ -65,11 +65,24 @@ const homeBlogListQuery = (locale: string) =>
     queryFn: () => listBlogPosts({ data: { locale } }),
   });
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/{-$lang}/")({
   validateSearch: (search) => searchSchema.parse(search),
-  loader: async ({ context }) => {
-    const { getInitialLang } = await import("@/lib/geo.functions");
-    const detected = await getInitialLang().catch(() => "en" as const);
+  // 2026-09-10 — mismo patrón que el resto de las rutas migradas: ?lang=xx
+  // viejo → 301 a /xx/, params.lang inválido → 301 a la versión sin
+  // prefijo. Ver docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md §7.
+  beforeLoad: ({ params, search }) => {
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      const { lang: _drop, ...rest } = search;
+      throw redirect({ to: "/{-$lang}", params: { lang: target }, search: rest, statusCode: 301 });
+    }
+    if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      throw redirect({ to: "/{-$lang}", params: { lang: undefined }, statusCode: 301 });
+    }
+  },
+  loader: async ({ params, context }) => {
+    const lang = coerceLang(params.lang ?? "en");
     // Run both prefetches concurrently — neither depends on the other, and
     // sequencing them would just add their latencies instead of taking the
     // slower of the two.
@@ -91,16 +104,17 @@ export const Route = createFileRoute("/")({
     // passes render the identical array up front. See TodaysRoutesSection's
     // `initialData` prop.
     const [, corridors] = await Promise.all([
-      context.queryClient.ensureQueryData(homeBlogListQuery(toBlogLocale(detected))),
+      context.queryClient.ensureQueryData(homeBlogListQuery(toBlogLocale(lang))),
       getExclusiveCorridors(),
     ]);
-    return { corridors };
+    return { corridors, lang };
   },
   // Title/description/OG come from the root head, which is per-language
   // (SEO_META). The home just adds its own canonical, og:url, hreflang and
   // JSON-LD so it doesn't re-pin an English-only title over the localized one.
-  head: ({ match }) => {
-    const canonical = selfCanonical("/", match.search.lang);
+  head: ({ params }) => {
+    const lang = coerceLang(params.lang ?? "en");
+    const canonical = selfCanonical("/", lang);
     // 2026-09-07 i18n audit — "que no quede nada hardcodeado, todo se vea
     // bien en todos los idiomas": este JSON-LD (Organization) tenía su
     // `description` fija en inglés sin importar el idioma de la página —
@@ -110,8 +124,7 @@ export const Route = createFileRoute("/")({
     // uno de los 20 idiomas del sitio (la misma que usa la meta
     // description normal) — se reusa acá en vez de duplicar el texto en
     // inglés otra vez.
-    const seoLang = (match.search.lang ?? "en") as keyof typeof SEO_META;
-    const seo = SEO_META[seoLang] ?? SEO_META.en;
+    const seo = SEO_META[lang] ?? SEO_META.en;
     return {
       meta: [
         { property: "og:url", content: canonical },
@@ -163,6 +176,7 @@ function Index() {
   const geoCurrency = rootData?.geoCurrency ?? "GBP";
   const { corridors } = Route.useLoaderData();
   const search = Route.useSearch();
+  const { lang } = Route.useParams();
   const navigate = Route.useNavigate();
 
   // The comparator is THE single box now (basic row + fold-out advanced
@@ -218,10 +232,12 @@ function Index() {
     }) => {
       if (q.sendingCountry && q.receivingCountry) {
         navigate({
-          to: "/send/$corridor",
-          params: { corridor: `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}` },
+          to: "/{-$lang}/send/$corridor",
+          params: {
+            lang,
+            corridor: `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}`,
+          },
           search: {
-            lang: search.lang,
             amount: q.amount || undefined,
             segment: q.segment === "retail" ? undefined : q.segment,
             // 2026-09-10 feedback — "no me mandes a comparar hasta que haga
@@ -250,7 +266,7 @@ function Index() {
         replace: true,
       });
     },
-    [navigate, search.lang],
+    [navigate, lang],
   );
 
   return (

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
 
 export function CTASection() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <section className="bg-background py-20 lg:py-28">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -19,7 +19,8 @@ export function CTASection() {
           </p>
           <div className="mt-8">
             <Link
-              to="/"
+              to="/{-$lang}"
+              params={{ lang: lang === "en" ? undefined : lang }}
               hash="comparator"
               className="btn-cta inline-flex h-11 items-center gap-2 rounded-md px-6 text-sm font-semibold"
             >

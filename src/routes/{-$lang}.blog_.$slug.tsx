@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import ReactMarkdown from "react-markdown";
@@ -12,11 +12,12 @@ import {
   toBlogLocale,
 } from "@/lib/blog.functions";
 import { extractFaqPairs } from "@/lib/faq.functions";
-import { useI18n, localeTagForLang } from "@/lib/i18n";
+import { useI18n, localeTagForLang, SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 import { useAnalytics } from "@/hooks/use-analytics";
 import { BrandLogo } from "@/components/BrandLogo";
 import { BrandMark } from "@/components/Wordmark";
 import { SITE_URL, hreflangLinks, selfCanonical } from "@/config/site";
+import { langLinkProps } from "@/config/nav";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
@@ -51,20 +52,41 @@ const relatedQuery = (
 const truncate = (s: string, max = 160) =>
   s.length <= max ? s : s.slice(0, max - 1).trimEnd() + "…";
 
-export const Route = createFileRoute("/blog_/$slug")({
+export const Route = createFileRoute("/{-$lang}/blog_/$slug")({
   validateSearch: (search) => searchSchema.parse(search),
+  // 2026-09-10 — mismo patrón que el resto de las rutas migradas.
+  beforeLoad: ({ params, search }) => {
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      const { lang: _drop, ...rest } = search;
+      throw redirect({
+        to: "/{-$lang}/blog/$slug",
+        params: { lang: target, slug: params.slug },
+        search: rest,
+        statusCode: 301,
+      });
+    }
+    if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      throw redirect({
+        to: "/{-$lang}/blog/$slug",
+        params: { lang: undefined, slug: params.slug },
+        statusCode: 301,
+      });
+    }
+  },
   loader: async ({ params, context }) => {
-    // SSR the post in the geo-detected language (cheap header read) so
-    // crawlers and the first paint get the right locale; the client keeps
-    // refetching with the live i18n lang. Falls back to "en" only if the
-    // post doesn't exist yet in the detected language (see getBlogPost).
-    const { getInitialLang } = await import("@/lib/geo.functions");
-    const detected = await getInitialLang().catch(() => "en");
-    const locale = toBlogLocale(detected);
+    // SSR the post in the URL's language so crawlers and the first paint
+    // get the right locale; the client keeps refetching with the live i18n
+    // lang. Falls back to "en" only if the post doesn't exist yet in the
+    // detected language (see getBlogPost).
+    const lang = coerceLang(params.lang ?? "en");
+    const locale = toBlogLocale(lang);
     return context.queryClient.ensureQueryData(postQuery(params.slug, locale));
   },
-  head: ({ params, loaderData, match }) => {
-    const url = selfCanonical(`/blog/${params.slug}`, match.search.lang);
+  head: ({ params, loaderData }) => {
+    const lang = coerceLang(params.lang ?? "en");
+    const url = selfCanonical(`/blog/${params.slug}`, lang);
     const post = loaderData ?? null;
     const title = post?.title ? `${post.title} — Mangomundi` : `${params.slug} — Mangomundi`;
     const description = post?.excerpt
@@ -146,7 +168,7 @@ export const Route = createFileRoute("/blog_/$slug")({
 });
 
 function PostNotFound() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <div className="bg-background min-h-[60vh] flex items-center justify-center">
       <div className="text-center px-4">
@@ -155,7 +177,8 @@ function PostNotFound() {
         </h1>
         <p className="mt-2 text-muted-foreground">{t("errors.post.body")}</p>
         <Link
-          to="/blog"
+          to="/{-$lang}/blog"
+          params={{ lang: lang === "en" ? undefined : lang }}
           className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
         >
           <ArrowLeft className="h-4 w-4" /> {t("errors.post.back")}
@@ -308,7 +331,7 @@ function RelatedArticlesSection({
   audience: string;
   topicCluster: string | null;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const { data: posts } = useQuery(relatedQuery(slug, locale, audience, topicCluster));
 
   if (!posts || posts.length === 0) return null;
@@ -322,8 +345,8 @@ function RelatedArticlesSection({
         {posts.map((p) => (
           <Link
             key={p.slug}
-            to="/blog/$slug"
-            params={{ slug: p.slug }}
+            to="/{-$lang}/blog/$slug"
+            params={{ lang: lang === "en" ? undefined : lang, slug: p.slug }}
             className="flex items-center gap-3 rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:border-accent/50"
           >
             <span className="min-w-0 flex-1">
@@ -398,7 +421,8 @@ function BlogPostPage() {
       <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-20 pb-24">
         <div className="mb-8 flex items-center justify-between">
           <Link
-            to="/blog"
+            to="/{-$lang}/blog"
+            params={{ lang: lang === "en" ? undefined : lang }}
             className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" /> {t("blog.backShort")}
@@ -406,7 +430,7 @@ function BlogPostPage() {
           {/* 2026-08-30 feedback (fourth round) — a small brand mark on every
               post, same icon the widget badge uses (BrandMark, Wordmark.tsx),
               not the full wordmark — this is a watermark, not navigation. */}
-          <Link to="/" aria-label={t("header.homeAriaLabel")}>
+          <Link to="/{-$lang}" params={{ lang: lang === "en" ? undefined : lang }} aria-label={t("header.homeAriaLabel")}>
             <BrandMark />
           </Link>
         </div>
@@ -484,7 +508,7 @@ function BlogPostPage() {
               the pixel-scan verification) — aligns both children on their
               real text baseline instead of centering mismatched boxes. */}
           <Link
-            to={post.audience === "business" ? "/business" : "/"}
+            {...langLinkProps(post.audience === "business" ? "/business" : "/", lang)}
             className="mt-3 inline-flex items-baseline gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
             <BrandMark tone="light" />

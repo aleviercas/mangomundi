@@ -1,23 +1,28 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
-import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n, SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
 
-export const Route = createFileRoute("/legal")({
+export const Route = createFileRoute("/{-$lang}/legal")({
   validateSearch: (search) => searchSchema.parse(search),
-  loader: async () => {
-    // SSR the title/description in the geo-detected language so crawlers and
-    // first paint get it right; I18nProvider's client-side effect keeps it
-    // in sync afterwards if the user switches language without reloading.
-    const { getInitialLang } = await import("@/lib/geo.functions");
-    const lang = await getInitialLang().catch(() => "en" as const);
-    return { lang };
+  // 2026-09-10 — mismo patrón que {-$lang}.about.tsx: ?lang=xx viejo → 301 a
+  // /xx/legal, params.lang inválido → 301 a la versión sin prefijo.
+  beforeLoad: ({ params, search }) => {
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      throw redirect({ to: "/{-$lang}/legal", params: { lang: target }, statusCode: 301 });
+    }
+    if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      throw redirect({ to: "/{-$lang}/legal", params: { lang: undefined }, statusCode: 301 });
+    }
   },
-  head: ({ match, loaderData }) => {
-    const canonical = selfCanonical("/legal", match.search.lang);
-    const seo = getRouteSeo(loaderData?.lang ?? "en", "/legal");
+  head: ({ params }) => {
+    const lang = coerceLang(params.lang ?? "en");
+    const canonical = selfCanonical("/legal", lang);
+    const seo = getRouteSeo(lang, "/legal");
     return {
       meta: [
         { title: seo.title },

@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader, getRequest } from "@tanstack/react-start/server";
-import { COUNTRY_TO_LANG, SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
+import { SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
 import { COUNTRY_BY_CODE, localCurrency } from "@/lib/countries";
 
 /**
@@ -23,24 +23,28 @@ function detectCountryFromHeaders(): string {
  * Server-side initial language detection.
  * Priority: geo country -> Accept-Language -> "en".
  */
+// 2026-09-10 — antes esta función decidía el idioma de la URL LIMPIA (sin
+// prefijo) por geo-IP/Accept-Language, sirviendo contenido distinto en la
+// MISMA URL según quién la pidiera — el antipatrón que la documentación de
+// Google nombra explícitamente (ver
+// docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md §2). Con la
+// migración a URLs con prefijo de idioma (/es/..., /fr/...), el idioma real
+// de cada página ahora vive en el path — cada ruta bajo `{-$lang}` ya lo
+// lee de `params.lang` directamente, sin llamar a esta función.
+//
+// Esta función queda sólo para el caso transicional: alguien que todavía
+// tenga un link viejo con `?lang=xx` (compartido antes de esta migración,
+// o un bookmark), para que la redirección 301 hacia la URL con prefijo
+// (ver el `beforeLoad` de la ruta `{-$lang}`) sepa a qué idioma redirigir.
+// Ya NO autodetecta por geo-IP ni por Accept-Language — la URL sin prefijo
+// es determinísticamente inglés, tanto para Google como para un visitante
+// real, sin importar de dónde venga.
 export const getInitialLang = createServerFn({ method: "GET" }).handler(async (): Promise<Lang> => {
   try {
-    // An explicit ?lang= wins — this is what the hreflang alternates point to
-    // (/?lang=de, /?lang=es …), so crawlers hitting an alternate must get that
-    // language's SSR <title>/<meta>, not the geo-IP default.
     const url = getRequest()?.url;
     if (url) {
       const q = new URL(url).searchParams.get("lang")?.toLowerCase();
       if (q && (SUPPORTED_LANGS as string[]).includes(q)) return q as Lang;
-    }
-    const country = detectCountryFromHeaders();
-    if (country && country in COUNTRY_TO_LANG) {
-      return COUNTRY_TO_LANG[country];
-    }
-    const accept = (getRequestHeader("accept-language") || "").toLowerCase();
-    const primary = accept.split(",")[0]?.split("-")[0]?.trim();
-    if (primary && (SUPPORTED_LANGS as string[]).includes(primary)) {
-      return primary as Lang;
     }
   } catch {
     // fall through

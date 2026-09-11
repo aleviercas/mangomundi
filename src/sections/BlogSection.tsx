@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
 import { useI18n, localeTagForLang } from "@/lib/i18n";
+import { langLinkProps } from "@/config/nav";
 
 /** design/AJUSTES-2.md §4 — the blog stops being a big three-tall-card
  *  section and becomes a compact band at the foot of the page: a title
@@ -34,7 +35,7 @@ export function BlogSection() {
             {t("home.blog.compactTitle")}
           </h2>
           <Link
-            to="/blog"
+            {...langLinkProps("/blog", lang)}
             className="shrink-0 text-[13px] font-bold text-[#C2410C] hover:underline"
           >
             {t("home.blog.allArticles")}
@@ -81,8 +82,8 @@ export function BlogSection() {
                   </div>
                 )}
                 <Link
-                  to="/blog/$slug"
-                  params={{ slug: post.slug }}
+                  to="/{-$lang}/blog/$slug"
+                  params={{ lang: lang === "en" ? undefined : lang, slug: post.slug }}
                   className="mt-[7px] block font-heading text-[16.5px] font-extrabold leading-[1.25] tracking-[-0.02em] text-foreground"
                 >
                   {post.title}

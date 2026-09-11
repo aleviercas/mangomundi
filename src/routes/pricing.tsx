@@ -6,6 +6,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 // indexed URL doesn't 404.
 export const Route = createFileRoute("/pricing")({
   beforeLoad: () => {
-    throw redirect({ to: "/", statusCode: 301 });
+    throw redirect({ to: "/{-$lang}", params: { lang: undefined }, statusCode: 301 });
   },
 });

@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Wordmark, BrandMark } from "@/components/Wordmark";
 import { LangSwitcher } from "@/components/LangSwitcher";
-import { HEADER_NAV } from "@/config/nav";
+import { HEADER_NAV, langLinkProps } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
 /** Main nav — anchors into the home sections (Link with hash works from any
@@ -48,7 +48,7 @@ import { useI18n } from "@/lib/i18n";
  *  state, just docked to the side like kayak's instead of stacked
  *  downward. */
 export function Header() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [open, setOpen] = useState(false);
 
   // 2026-09-04 feedback (ronda 8) — "la barra de seleccion... se mueve al
@@ -165,7 +165,8 @@ export function Header() {
         </button>
 
         <Link
-          to="/"
+          to="/{-$lang}"
+          params={{ lang: lang === "en" ? undefined : lang }}
           aria-label={t("header.homeAriaLabel")}
           className="flex h-9 items-center"
           onClick={handleLogoClick}
@@ -287,7 +288,7 @@ export function Header() {
               {HEADER_NAV.map((item) => (
                 <li key={item.labelKey}>
                   <Link
-                    to={item.to ?? "/"}
+                    {...langLinkProps(item.to, lang)}
                     hash={item.hash}
                     onClick={() => setOpen(false)}
                     className="block rounded-md px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"

@@ -21,7 +21,7 @@ function I18nStatusGate() {
         <div className="text-center">
           <h1 className="font-heading text-2xl font-bold text-foreground">Not Found</h1>
           <p className="mt-2 text-sm text-muted-foreground">This page is not available.</p>
-          <Link to="/" className="mt-4 inline-block text-sm text-primary hover:underline">
+          <Link to="/{-$lang}" params={{ lang: undefined }} className="mt-4 inline-block text-sm text-primary hover:underline">
             Return home
           </Link>
         </div>
@@ -103,7 +103,8 @@ function I18nStatusPage() {
     <div className="min-h-screen bg-background py-10 px-4 sm:px-6">
       <div className="mx-auto max-w-5xl">
         <Link
-          to="/"
+          to="/{-$lang}"
+          params={{ lang: undefined }}
           className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-primary"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Back to site

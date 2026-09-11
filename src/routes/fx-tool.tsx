@@ -4,6 +4,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 // (not via /compare) to avoid a redirect chain.
 export const Route = createFileRoute("/fx-tool")({
   beforeLoad: () => {
-    throw redirect({ to: "/", statusCode: 301 });
+    throw redirect({ to: "/{-$lang}", params: { lang: undefined }, statusCode: 301 });
   },
 });

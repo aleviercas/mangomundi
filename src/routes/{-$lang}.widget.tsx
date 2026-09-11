@@ -1,9 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Check, Code2, Copy } from "lucide-react";
 import { z } from "zod";
 import { EmbedComparator } from "@/components/EmbedComparator";
-import { getRouteSeo, useI18n } from "@/lib/i18n";
+import { getRouteSeo, useI18n, SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 
 const searchSchema = z.object({ lang: z.string().optional() }).catch({});
@@ -29,7 +29,7 @@ const IFRAME_SNIPPET = `<iframe src="https://mangomundi.com/embed"
  *  como se instala y para que sirve" — this page keeps the install
  *  snippets and live preview from that section, unchanged, and adds a
  *  "how it works"/"who it's for" block that didn't exist before. */
-export const Route = createFileRoute("/widget")({
+export const Route = createFileRoute("/{-$lang}/widget")({
   validateSearch: (search) => searchSchema.parse(search),
   loader: async () => {
     const { getInitialLang } = await import("@/lib/geo.functions");

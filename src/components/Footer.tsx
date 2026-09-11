@@ -2,7 +2,7 @@ import type { MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
 import { LangSwitcher } from "@/components/LangSwitcher";
-import { FOOTER_COMPANY, FOOTER_PRODUCT, type NavEntry } from "@/config/nav";
+import { FOOTER_COMPANY, FOOTER_PRODUCT, langLinkProps, type NavEntry } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
 const socials = [
@@ -35,7 +35,7 @@ const socials = [
  *  text-muted-foreground/text-foreground tokens, since this is a
  *  dark-specific palette independent of the rest of the (light) site. */
 function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyArray<NavEntry> }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   return (
     <div className="flex flex-col gap-2 text-[12.5px] text-[#A79C92]">
       {/* docs/kayak-redesign-spec.md §6.4 — títulos de columna en
@@ -49,7 +49,7 @@ function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyAr
       {items.map((item) => (
         <Link
           key={item.labelKey}
-          to={item.to ?? "/"}
+          {...langLinkProps(item.to, lang)}
           hash={item.hash}
           className="transition-colors hover:text-white"
         >
@@ -84,7 +84,7 @@ function FooterColumn({ titleKey, items }: { titleKey: string; items: ReadonlyAr
  *  the more specific, deliberate call — text-only here too, same as
  *  Header. */
 export function Footer() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
 
   // 2026-09-04 feedback (ronda 5) — "cuando hago click en el logo mangomundi
   // en el encabezado [y] footer deberia llevar al home y resetear la
@@ -113,7 +113,12 @@ export function Footer() {
       <div className="mx-auto max-w-[1340px] px-5 sm:px-[30px]">
         <div className="grid gap-[26px] md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Link to="/" className="inline-flex items-center" onClick={handleLogoClick}>
+            <Link
+              to="/{-$lang}"
+              params={{ lang: lang === "en" ? undefined : lang }}
+              className="inline-flex items-center"
+              onClick={handleLogoClick}
+            >
               <Wordmark className="text-[21px]" tone="light" icon={false} />
             </Link>
             <p className="mt-2.5 max-w-[280px] whitespace-pre-line text-[12.5px] leading-[1.6] text-[#8A7C6E]">
@@ -164,7 +169,8 @@ export function Footer() {
             {legal.map((l) => (
               <Link
                 key={l.label}
-                to={l.to}
+                to="/{-$lang}/legal"
+                params={{ lang: lang === "en" ? undefined : lang }}
                 hash={l.hash}
                 className="transition-colors hover:text-white"
               >

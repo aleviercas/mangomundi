@@ -9,45 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as BusinessRouteImport } from './routes/business'
 import { Route as CompareRouteImport } from './routes/compare'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as EmbedRouteImport } from './routes/embed'
 import { Route as FeaturesRouteImport } from './routes/features'
 import { Route as FxToolRouteImport } from './routes/fx-tool'
 import { Route as InsuranceRouteImport } from './routes/insurance'
-import { Route as LegalRouteImport } from './routes/legal'
 import { Route as PlatformRouteImport } from './routes/platform'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as WidgetRouteImport } from './routes/widget'
 import { Route as AdminI18nStatusRouteImport } from './routes/admin.i18n-status'
-import { Route as BlogSlugRouteImport } from './routes/blog_.$slug'
-import { Route as SendCorridorRouteImport } from './routes/send.$corridor'
+import { Route as Char123LangChar125IndexRouteImport } from './routes/{-$lang}.index'
+import { Route as Char123LangChar125AboutRouteImport } from './routes/{-$lang}.about'
+import { Route as Char123LangChar125BlogRouteImport } from './routes/{-$lang}.blog'
+import { Route as Char123LangChar125BusinessRouteImport } from './routes/{-$lang}.business'
+import { Route as Char123LangChar125LegalRouteImport } from './routes/{-$lang}.legal'
+import { Route as Char123LangChar125WidgetRouteImport } from './routes/{-$lang}.widget'
+import { Route as Char123LangChar125BlogSlugRouteImport } from './routes/{-$lang}.blog_.$slug'
+import { Route as Char123LangChar125SendCorridorRouteImport } from './routes/{-$lang}.send.$corridor'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessRoute = BusinessRouteImport.update({
-  id: '/business',
-  path: '/business',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CompareRoute = CompareRouteImport.update({
   id: '/compare',
   path: '/compare',
@@ -78,11 +58,6 @@ const InsuranceRoute = InsuranceRouteImport.update({
   path: '/insurance',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LegalRoute = LegalRouteImport.update({
-  id: '/legal',
-  path: '/legal',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlatformRoute = PlatformRouteImport.update({
   id: '/platform',
   path: '/platform',
@@ -98,202 +73,203 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const WidgetRoute = WidgetRouteImport.update({
-  id: '/widget',
-  path: '/widget',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminI18nStatusRoute = AdminI18nStatusRouteImport.update({
   id: '/admin/i18n-status',
   path: '/admin/i18n-status',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog_/$slug',
-  path: '/blog/$slug',
+const Char123LangChar125IndexRoute = Char123LangChar125IndexRouteImport.update({
+  id: '/{-$lang}/',
+  path: '/{-$lang}/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SendCorridorRoute = SendCorridorRouteImport.update({
-  id: '/send/$corridor',
-  path: '/send/$corridor',
+const Char123LangChar125AboutRoute = Char123LangChar125AboutRouteImport.update({
+  id: '/{-$lang}/about',
+  path: '/{-$lang}/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char123LangChar125BlogRoute = Char123LangChar125BlogRouteImport.update({
+  id: '/{-$lang}/blog',
+  path: '/{-$lang}/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char123LangChar125BusinessRoute =
+  Char123LangChar125BusinessRouteImport.update({
+    id: '/{-$lang}/business',
+    path: '/{-$lang}/business',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char123LangChar125LegalRoute = Char123LangChar125LegalRouteImport.update({
+  id: '/{-$lang}/legal',
+  path: '/{-$lang}/legal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char123LangChar125WidgetRoute =
+  Char123LangChar125WidgetRouteImport.update({
+    id: '/{-$lang}/widget',
+    path: '/{-$lang}/widget',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char123LangChar125BlogSlugRoute =
+  Char123LangChar125BlogSlugRouteImport.update({
+    id: '/{-$lang}/blog_/$slug',
+    path: '/{-$lang}/blog/$slug',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char123LangChar125SendCorridorRoute =
+  Char123LangChar125SendCorridorRouteImport.update({
+    id: '/{-$lang}/send/$corridor',
+    path: '/{-$lang}/send/$corridor',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
-  '/business': typeof BusinessRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
-  '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/widget': typeof WidgetRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/send/$corridor': typeof SendCorridorRoute
+  '/{-$lang}/about': typeof Char123LangChar125AboutRoute
+  '/{-$lang}/blog': typeof Char123LangChar125BlogRoute
+  '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
+  '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
+  '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
+  '/{-$lang}/': typeof Char123LangChar125IndexRoute
+  '/{-$lang}/blog/$slug': typeof Char123LangChar125BlogSlugRoute
+  '/{-$lang}/send/$corridor': typeof Char123LangChar125SendCorridorRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
-  '/business': typeof BusinessRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
-  '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/widget': typeof WidgetRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/send/$corridor': typeof SendCorridorRoute
+  '/{-$lang}/about': typeof Char123LangChar125AboutRoute
+  '/{-$lang}/blog': typeof Char123LangChar125BlogRoute
+  '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
+  '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
+  '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
+  '/{-$lang}': typeof Char123LangChar125IndexRoute
+  '/{-$lang}/blog/$slug': typeof Char123LangChar125BlogSlugRoute
+  '/{-$lang}/send/$corridor': typeof Char123LangChar125SendCorridorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/blog': typeof BlogRoute
-  '/business': typeof BusinessRoute
   '/compare': typeof CompareRoute
   '/contact': typeof ContactRoute
   '/embed': typeof EmbedRoute
   '/features': typeof FeaturesRoute
   '/fx-tool': typeof FxToolRoute
   '/insurance': typeof InsuranceRoute
-  '/legal': typeof LegalRoute
   '/platform': typeof PlatformRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/widget': typeof WidgetRoute
   '/admin/i18n-status': typeof AdminI18nStatusRoute
-  '/blog_/$slug': typeof BlogSlugRoute
-  '/send/$corridor': typeof SendCorridorRoute
+  '/{-$lang}/about': typeof Char123LangChar125AboutRoute
+  '/{-$lang}/blog': typeof Char123LangChar125BlogRoute
+  '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
+  '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
+  '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
+  '/{-$lang}/': typeof Char123LangChar125IndexRoute
+  '/{-$lang}/blog_/$slug': typeof Char123LangChar125BlogSlugRoute
+  '/{-$lang}/send/$corridor': typeof Char123LangChar125SendCorridorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
-    | '/about'
-    | '/blog'
-    | '/business'
     | '/compare'
     | '/contact'
     | '/embed'
     | '/features'
     | '/fx-tool'
     | '/insurance'
-    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
-    | '/widget'
     | '/admin/i18n-status'
-    | '/blog/$slug'
-    | '/send/$corridor'
+    | '/{-$lang}/about'
+    | '/{-$lang}/blog'
+    | '/{-$lang}/business'
+    | '/{-$lang}/legal'
+    | '/{-$lang}/widget'
+    | '/{-$lang}/'
+    | '/{-$lang}/blog/$slug'
+    | '/{-$lang}/send/$corridor'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
-    | '/about'
-    | '/blog'
-    | '/business'
     | '/compare'
     | '/contact'
     | '/embed'
     | '/features'
     | '/fx-tool'
     | '/insurance'
-    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
-    | '/widget'
     | '/admin/i18n-status'
-    | '/blog/$slug'
-    | '/send/$corridor'
+    | '/{-$lang}/about'
+    | '/{-$lang}/blog'
+    | '/{-$lang}/business'
+    | '/{-$lang}/legal'
+    | '/{-$lang}/widget'
+    | '/{-$lang}'
+    | '/{-$lang}/blog/$slug'
+    | '/{-$lang}/send/$corridor'
   id:
     | '__root__'
-    | '/'
-    | '/about'
-    | '/blog'
-    | '/business'
     | '/compare'
     | '/contact'
     | '/embed'
     | '/features'
     | '/fx-tool'
     | '/insurance'
-    | '/legal'
     | '/platform'
     | '/pricing'
     | '/sitemap.xml'
-    | '/widget'
     | '/admin/i18n-status'
-    | '/blog_/$slug'
-    | '/send/$corridor'
+    | '/{-$lang}/about'
+    | '/{-$lang}/blog'
+    | '/{-$lang}/business'
+    | '/{-$lang}/legal'
+    | '/{-$lang}/widget'
+    | '/{-$lang}/'
+    | '/{-$lang}/blog_/$slug'
+    | '/{-$lang}/send/$corridor'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  BlogRoute: typeof BlogRoute
-  BusinessRoute: typeof BusinessRoute
   CompareRoute: typeof CompareRoute
   ContactRoute: typeof ContactRoute
   EmbedRoute: typeof EmbedRoute
   FeaturesRoute: typeof FeaturesRoute
   FxToolRoute: typeof FxToolRoute
   InsuranceRoute: typeof InsuranceRoute
-  LegalRoute: typeof LegalRoute
   PlatformRoute: typeof PlatformRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  WidgetRoute: typeof WidgetRoute
   AdminI18nStatusRoute: typeof AdminI18nStatusRoute
-  BlogSlugRoute: typeof BlogSlugRoute
-  SendCorridorRoute: typeof SendCorridorRoute
+  Char123LangChar125AboutRoute: typeof Char123LangChar125AboutRoute
+  Char123LangChar125BlogRoute: typeof Char123LangChar125BlogRoute
+  Char123LangChar125BusinessRoute: typeof Char123LangChar125BusinessRoute
+  Char123LangChar125LegalRoute: typeof Char123LangChar125LegalRoute
+  Char123LangChar125WidgetRoute: typeof Char123LangChar125WidgetRoute
+  Char123LangChar125IndexRoute: typeof Char123LangChar125IndexRoute
+  Char123LangChar125BlogSlugRoute: typeof Char123LangChar125BlogSlugRoute
+  Char123LangChar125SendCorridorRoute: typeof Char123LangChar125SendCorridorRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business': {
-      id: '/business'
-      path: '/business'
-      fullPath: '/business'
-      preLoaderRoute: typeof BusinessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/compare': {
       id: '/compare'
       path: '/compare'
@@ -336,13 +312,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InsuranceRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/legal': {
-      id: '/legal'
-      path: '/legal'
-      fullPath: '/legal'
-      preLoaderRoute: typeof LegalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/platform': {
       id: '/platform'
       path: '/platform'
@@ -364,13 +333,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/widget': {
-      id: '/widget'
-      path: '/widget'
-      fullPath: '/widget'
-      preLoaderRoute: typeof WidgetRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/i18n-status': {
       id: '/admin/i18n-status'
       path: '/admin/i18n-status'
@@ -378,42 +340,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminI18nStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog_/$slug': {
-      id: '/blog_/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
+    '/{-$lang}/': {
+      id: '/{-$lang}/'
+      path: '/{-$lang}'
+      fullPath: '/{-$lang}/'
+      preLoaderRoute: typeof Char123LangChar125IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/send/$corridor': {
-      id: '/send/$corridor'
-      path: '/send/$corridor'
-      fullPath: '/send/$corridor'
-      preLoaderRoute: typeof SendCorridorRouteImport
+    '/{-$lang}/about': {
+      id: '/{-$lang}/about'
+      path: '/{-$lang}/about'
+      fullPath: '/{-$lang}/about'
+      preLoaderRoute: typeof Char123LangChar125AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$lang}/blog': {
+      id: '/{-$lang}/blog'
+      path: '/{-$lang}/blog'
+      fullPath: '/{-$lang}/blog'
+      preLoaderRoute: typeof Char123LangChar125BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$lang}/business': {
+      id: '/{-$lang}/business'
+      path: '/{-$lang}/business'
+      fullPath: '/{-$lang}/business'
+      preLoaderRoute: typeof Char123LangChar125BusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$lang}/legal': {
+      id: '/{-$lang}/legal'
+      path: '/{-$lang}/legal'
+      fullPath: '/{-$lang}/legal'
+      preLoaderRoute: typeof Char123LangChar125LegalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$lang}/widget': {
+      id: '/{-$lang}/widget'
+      path: '/{-$lang}/widget'
+      fullPath: '/{-$lang}/widget'
+      preLoaderRoute: typeof Char123LangChar125WidgetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$lang}/blog_/$slug': {
+      id: '/{-$lang}/blog_/$slug'
+      path: '/{-$lang}/blog/$slug'
+      fullPath: '/{-$lang}/blog/$slug'
+      preLoaderRoute: typeof Char123LangChar125BlogSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/{-$lang}/send/$corridor': {
+      id: '/{-$lang}/send/$corridor'
+      path: '/{-$lang}/send/$corridor'
+      fullPath: '/{-$lang}/send/$corridor'
+      preLoaderRoute: typeof Char123LangChar125SendCorridorRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  BlogRoute: BlogRoute,
-  BusinessRoute: BusinessRoute,
   CompareRoute: CompareRoute,
   ContactRoute: ContactRoute,
   EmbedRoute: EmbedRoute,
   FeaturesRoute: FeaturesRoute,
   FxToolRoute: FxToolRoute,
   InsuranceRoute: InsuranceRoute,
-  LegalRoute: LegalRoute,
   PlatformRoute: PlatformRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  WidgetRoute: WidgetRoute,
   AdminI18nStatusRoute: AdminI18nStatusRoute,
-  BlogSlugRoute: BlogSlugRoute,
-  SendCorridorRoute: SendCorridorRoute,
+  Char123LangChar125AboutRoute: Char123LangChar125AboutRoute,
+  Char123LangChar125BlogRoute: Char123LangChar125BlogRoute,
+  Char123LangChar125BusinessRoute: Char123LangChar125BusinessRoute,
+  Char123LangChar125LegalRoute: Char123LangChar125LegalRoute,
+  Char123LangChar125WidgetRoute: Char123LangChar125WidgetRoute,
+  Char123LangChar125IndexRoute: Char123LangChar125IndexRoute,
+  Char123LangChar125BlogSlugRoute: Char123LangChar125BlogSlugRoute,
+  Char123LangChar125SendCorridorRoute: Char123LangChar125SendCorridorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

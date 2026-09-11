@@ -5,6 +5,7 @@ import { HomePageBody, type ComparatorQueryChange } from "@/components/HomePageB
 import type { ComparatorQuery } from "@/sections/ComparatorSection";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { resolveRouteCode, primaryCountryForCurrency } from "@/lib/countries";
+import { SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 
 const searchSchema = z
   .object({
@@ -60,7 +61,7 @@ function parseCorridor(corridor: string): ParsedCorridor | null {
   return { origin, destination, from: fromSide.currency, to: toSide.currency };
 }
 
-export const Route = createFileRoute("/send/$corridor")({
+export const Route = createFileRoute("/{-$lang}/send/$corridor")({
   validateSearch: (search) => searchSchema.parse(search),
   // Bad slug ("/send/nonsense") → home, rather than a dead-end page. Runs
   // before head()/component, so both can safely assume params.corridor parses.
@@ -76,15 +77,33 @@ export const Route = createFileRoute("/send/$corridor")({
   // real (no sólo un <link rel="canonical">) consolida todas esas
   // variantes en una sola URL indexable, igual que ya se hace con las 7
   // rutas legacy (§2 del mismo documento).
+  //
+  // 2026-09-10 (segunda vuelta) — sumado acá el mismo 301 de idioma que el
+  // resto de las rutas migradas (?lang=xx viejo → /xx/send/:corridor,
+  // params.lang inválido → sin prefijo). Un slug no-canónico Y un idioma
+  // viejo a la vez redirige directo a la forma final correcta en un solo
+  // salto, no en dos.
   beforeLoad: ({ params, search }) => {
     const parsed = parseCorridor(params.corridor);
-    if (!parsed) throw redirect({ to: "/", statusCode: 301 });
+    if (!parsed) throw redirect({ to: "/{-$lang}", params: { lang: params.lang }, statusCode: 301 });
     const canonicalSlug = `${parsed.origin.toLowerCase()}-${parsed.destination.toLowerCase()}`;
-    if (params.corridor !== canonicalSlug) {
+
+    let targetLang = params.lang;
+    let targetSearch = search;
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      targetLang = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      const { lang: _drop, ...rest } = search;
+      targetSearch = rest;
+    } else if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      targetLang = undefined;
+    }
+
+    if (params.corridor !== canonicalSlug || targetLang !== params.lang || targetSearch !== search) {
       throw redirect({
-        to: "/send/$corridor",
-        params: { corridor: canonicalSlug },
-        search,
+        to: "/{-$lang}/send/$corridor",
+        params: { lang: targetLang, corridor: canonicalSlug },
+        search: targetSearch,
         statusCode: 301,
       });
     }
@@ -92,8 +111,9 @@ export const Route = createFileRoute("/send/$corridor")({
   head: ({ params, match }) => {
     const parsed = parseCorridor(params.corridor);
     if (!parsed) return {}; // unreachable in practice — beforeLoad already redirected
+    const lang = coerceLang(params.lang ?? "en");
     const path = `/send/${params.corridor}`;
-    const canonical = selfCanonical(path, match.search.lang);
+    const canonical = selfCanonical(path, lang);
     // Currency codes, not translated copy — safe to use as-is in every
     // language's version of this page (design/HANDOFF.md's own i18n
     // discipline: don't invent translated marketing copy outside a
@@ -119,7 +139,7 @@ export const Route = createFileRoute("/send/$corridor")({
 });
 
 function SendCorridorPage() {
-  const { corridor } = Route.useParams();
+  const { corridor, lang } = Route.useParams();
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
   // Same defensive fallback as head() — beforeLoad already guarantees this
@@ -155,7 +175,6 @@ function SendCorridorPage() {
     (q: ComparatorQueryChange) => {
       const nextCorridor = `${q.sendingCountry.toLowerCase()}-${q.receivingCountry.toLowerCase()}`;
       const nextSearch = {
-        lang: search.lang,
         amount: q.amount || undefined,
         segment: q.segment === "retail" ? undefined : q.segment,
       };
@@ -164,13 +183,13 @@ function SendCorridorPage() {
         return;
       }
       navigate({
-        to: "/send/$corridor",
-        params: { corridor: nextCorridor },
+        to: "/{-$lang}/send/$corridor",
+        params: { lang, corridor: nextCorridor },
         search: nextSearch,
         replace: true,
       });
     },
-    [navigate, corridor, search.lang],
+    [navigate, corridor, lang],
   );
 
   return (

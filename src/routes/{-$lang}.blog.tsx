@@ -1,9 +1,9 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useQuery, queryOptions } from "@tanstack/react-query";
 import { z } from "zod";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { listBlogPosts, toBlogLocale, type BlogListItem } from "@/lib/blog.functions";
-import { getRouteSeo, useI18n, localeTagForLang } from "@/lib/i18n";
+import { getRouteSeo, useI18n, localeTagForLang, SUPPORTED_LANGS, coerceLang } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { BrandMark } from "@/components/Wordmark";
 
@@ -15,18 +15,30 @@ const listQuery = (locale: string) =>
     queryFn: () => listBlogPosts({ data: { locale } }),
   });
 
-export const Route = createFileRoute("/blog")({
+export const Route = createFileRoute("/{-$lang}/blog")({
   validateSearch: (search) => searchSchema.parse(search),
-  loader: async ({ context }) => {
-    // SSR the list in the geo-detected language; client refetches live lang.
-    const { getInitialLang } = await import("@/lib/geo.functions");
-    const detected = await getInitialLang().catch(() => "en" as const);
-    await context.queryClient.ensureQueryData(listQuery(toBlogLocale(detected)));
-    return { lang: detected };
+  // 2026-09-10 — mismo patrón que el resto de las rutas migradas.
+  beforeLoad: ({ params, search }) => {
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      const { lang: _drop, ...rest } = search;
+      throw redirect({ to: "/{-$lang}/blog", params: { lang: target }, search: rest, statusCode: 301 });
+    }
+    if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      throw redirect({ to: "/{-$lang}/blog", params: { lang: undefined }, statusCode: 301 });
+    }
   },
-  head: ({ match, loaderData }) => {
-    const canonical = selfCanonical("/blog", match.search.lang);
-    const seo = getRouteSeo(loaderData?.lang ?? "en", "/blog");
+  loader: async ({ context, params }) => {
+    // SSR the list in the URL's language; client refetches live lang.
+    const lang = coerceLang(params.lang ?? "en");
+    await context.queryClient.ensureQueryData(listQuery(toBlogLocale(lang)));
+    return { lang };
+  },
+  head: ({ params }) => {
+    const lang = coerceLang(params.lang ?? "en");
+    const canonical = selfCanonical("/blog", lang);
+    const seo = getRouteSeo(lang, "/blog");
     return {
       meta: [
         { title: seo.title },
@@ -80,7 +92,12 @@ function BlogIndexPage() {
           <p className="text-eyebrow font-bold uppercase text-accent-text">
             {t("home.blog.eyebrow")}
           </p>
-          <Link to="/" aria-label={t("header.homeAriaLabel")} className="shrink-0">
+          <Link
+            to="/{-$lang}"
+            params={{ lang: lang === "en" ? undefined : lang }}
+            aria-label={t("header.homeAriaLabel")}
+            className="shrink-0"
+          >
             <BrandMark />
           </Link>
         </div>
@@ -106,8 +123,8 @@ function BlogIndexPage() {
           {(posts ?? []).map((post: BlogListItem) => (
             <Link
               key={post.slug}
-              to="/blog/$slug"
-              params={{ slug: post.slug }}
+              to="/{-$lang}/blog/$slug"
+              params={{ lang: lang === "en" ? undefined : lang, slug: post.slug }}
               className="group flex flex-col gap-5 py-6 transition-colors hover:bg-muted/40 sm:flex-row sm:items-center"
             >
               {post.cover_url && (

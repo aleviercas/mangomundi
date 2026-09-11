@@ -1,5 +1,27 @@
 import type { TKey } from "@/lib/i18n";
 
+/** 2026-09-10 — migración de ?lang= a URLs con prefijo de idioma (ver
+ *  docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md). Todas las
+ *  rutas indexables ahora viven bajo el segmento opcional `{-$lang}`, así
+ *  que un `<Link to="/about">` plano ya no es una ruta válida — hay que
+ *  usar el route-id real ("/{-$lang}/about") + pasarle `params={{ lang }}`.
+ *
+ *  `nav.ts` sigue guardando los `to` como paths planos (más legible acá, y
+ *  es exactamente lo que ya usaban antes de esta migración) — esta función
+ *  es la única responsable de traducirlos al route-id real, en un solo
+ *  lugar, para no repetir el mapeo en cada componente que consume
+ *  HEADER_NAV/FOOTER_PRODUCT/FOOTER_COMPANY. TypeScript no puede verificar
+ *  este mapeo dinámico contra los route-ids literales generados por el
+ *  router — el `as any` de abajo es un cast deliberado, seguro porque el
+ *  universo de `to` posibles es el puñado fijo de arriba, no input
+ *  arbitrario del usuario.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function langLinkProps(to: string | undefined, lang: string): any {
+  const path = to && to !== "/" ? to : "";
+  return { to: `/{-$lang}${path}`, params: { lang: lang === "en" ? undefined : lang } };
+}
+
 /** A nav entry always has a route (`to`, defaults to "/" at the render
  *  site when omitted) and optionally a `hash` — an anchor within that
  *  route, e.g. `{ to: "/about", hash: "contact" }` for /about#contact. */
