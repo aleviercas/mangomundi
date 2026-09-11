@@ -646,8 +646,16 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.business.exclusiveTag": "Exclusive",
     "comparator.business.estOn": "Est. on {amount}",
     "comparator.business.saved": "saved",
-    "comparator.business.addToRequest": "Add to request",
+    // 2026-09-10 feedback — "los botones de add to request en realidad
+    // deberian ser un tick para llenar tipo opcion que diga agregar a
+    // solicitud de cotizacion especial para el proveedor con gestion de
+    // mangomundi": pasó de botón sólido a checkbox — el label visible se
+    // mantiene corto (entra en el chip), la explicación completa
+    // ("gestionado por mangomundi") vive en el tooltip de abajo.
+    "comparator.business.addToRequest": "Add to special quote request",
     "comparator.business.added": "Added",
+    "comparator.business.addToRequestHint":
+      "Sent as one request that mangomundi manages with the provider for you.",
     "comparator.business.methodology":
       "Savings estimated against the retail best on the same route. Indicative only: brokers price by volume, frequency and settlement date, which is why this screen ends in a quote instead of a rate.",
     "comparator.business.request.title": "Your request",
@@ -671,6 +679,11 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.business.request.sending": "Sending…",
     "comparator.business.request.cta": "Send request to {n} brokers",
     "comparator.business.request.error": "Something went wrong. Please try again.",
+    // 2026-09-10 feedback — "la ventana de your request deberia... mostrar
+    // los que se seleccionaron y que se vayan agregando en una lista":
+    // texto para cuando esa lista todavía está vacía (nadie tildó "Add to
+    // special quote request" todavía en ninguna fila).
+    "comparator.business.request.empty": "Tick providers below to add them here.",
     "comparator.business.request.disclaimer":
       "One email with your requirements. No broker gets your contact details until you reply to their quote.",
     "comparator.business.request.sent":
@@ -3095,6 +3108,15 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // §3.7 — per-row save action (the ♡ that sits next to share).
     "comparator.row.save": "Save this rate",
     "comparator.row.saved": "Saved",
+    // 2026-09-10 feedback — "hacer como hace kayak... dice shared rate":
+    // badge que reemplaza al de destacada en la fila que coincide con el
+    // link que alguien compartió (ver ComparatorQuery's sharedSlug).
+    "comparator.row.sharedRate": "Shared rate",
+    // 2026-09-10 feedback — "el corazoncito hay que resolverlo que lo
+    // vaya agregando en una lista al lado izquierdo del comparador":
+    // título del panel del rail (ver SavedRatesCard) que junta esa lista.
+    "comparator.saved.title": "Saved rates",
+    "comparator.saved.remove": "Remove",
     // §4.1 — mobile collapsed search pill.
     "comparator.mobile.editSearch": "Edit search",
     // §4.2 — bottom button of the mobile filters drawer. Filters already
