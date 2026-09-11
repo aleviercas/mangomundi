@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "প্রোমো:",
   "comparator.badge.unconfirmed": "অনিশ্চিত",
   "comparator.buildQuery": "প্রশ্ন (query) তৈরি করুন",
-  "comparator.business.addToRequest": "রিকোয়েস্টে যোগ করুন",
+  "comparator.business.addToRequest": "বিশেষ কোটেশন অনুরোধে যোগ করুন",
   "comparator.business.added": "যোগ করা হয়েছে",
   "comparator.business.contactCard.body": "আমরা আপনাকে ব্রোকারদের সাথে পরিচয় করিয়ে দিই এবং মূল্য নির্ধারণে জড়িত হই না। আপনার জন্য কোনোভাবেই কোনো খরচ নেই।",
   "comparator.business.contactCard.title": "কারো সাথে কথা বলতে চান?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "শুরু করার দ্রুত পদক্ষেপ",
   "wizard.reportNote": "{from}-{to} রুটে আপনার আগ্রহ নোট করেছি। এটি ডিসকভারি লগে যুক্ত হয়েছে; চাহিদা বাড়লে আমরা এটিকে অগ্রাধিকার দেব।",
   "wizard.runFirst": "আগে একটি তুলনা চালান — আমি টেবিলের তথ্য দিয়ে উত্তর দিই, বাইরের উৎস দিয়ে নয়।",
-  "wizard.send": "mangomundi নিজে টাকা সরায় না — এটি সেরা অপশন দেখায়, তারপর ট্রান্সফার সম্পন্ন করতে সরাসরি সেই প্রদানকারীর সাইটে পাঠায়। তুলনা করুন, একটি সারি বেছে নিন ও শেষ করতে ক্লিক করুন। আমাদের সঙ্গে অ্যাকাউন্ট লাগে না।"
+  "wizard.send": "mangomundi নিজে টাকা সরায় না — এটি সেরা অপশন দেখায়, তারপর ট্রান্সফার সম্পন্ন করতে সরাসরি সেই প্রদানকারীর সাইটে পাঠায়। তুলনা করুন, একটি সারি বেছে নিন ও শেষ করতে ক্লিক করুন। আমাদের সঙ্গে অ্যাকাউন্ট লাগে না।",
+  "comparator.business.addToRequestHint": "ম্যাঙ্গোমুন্ডি আপনার পক্ষে প্রদানকারীর সাথে এটি একটি অনুরোধ হিসেবে পরিচালনা করে পাঠাবে।",
+  "comparator.business.request.empty": "এখানে যোগ করতে নিচের প্রদানকারীদের টিক দিন।",
+  "comparator.saved.title": "সংরক্ষিত রেট",
+  "comparator.saved.remove": "সরান",
+  "comparator.row.sharedRate": "শেয়ার করা রেট"
 }
