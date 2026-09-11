@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "Promo:",
   "comparator.badge.unconfirmed": "Hindi kumpirmado",
   "comparator.buildQuery": "mag-build ng query",
-  "comparator.business.addToRequest": "Idagdag sa kahilingan",
+  "comparator.business.addToRequest": "Idagdag sa espesyal na kahilingan sa quotation",
   "comparator.business.added": "Naidagdag na",
   "comparator.business.contactCard.body": "Ipapakilala ka namin sa mga broker at hindi kami sumasali sa pagpepresyo. Walang bayad para sa iyo sa alinmang paraan.",
   "comparator.business.contactCard.title": "Gusto mo bang makausap ang isang tao?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "Mabibilis na aksyon para magsimula",
   "wizard.reportNote": "Naitala ko ang iyong interes sa rutang {from}-{to}. Naidagdag ito sa discovery log; uunahin namin ito habang lumalaki ang demand.",
   "wizard.runFirst": "Magpatakbo muna ng paghahambing — sumasagot ako gamit ang datos ng talahanayan, hindi mga panlabas na source.",
-  "wizard.send": "Hindi mismo naglilipat ng pera ang mangomundi — ipinapakita nito ang pinakamahusay na opsyon, tapos dinadala ka diretso sa provider na iyon para tapusin ang transfer sa site nila. Maghambing, pumili ng row, at mag-click para matapos. Walang account na kailangan sa amin."
+  "wizard.send": "Hindi mismo naglilipat ng pera ang mangomundi — ipinapakita nito ang pinakamahusay na opsyon, tapos dinadala ka diretso sa provider na iyon para tapusin ang transfer sa site nila. Maghambing, pumili ng row, at mag-click para matapos. Walang account na kailangan sa amin.",
+  "comparator.business.addToRequestHint": "Ipinapadala bilang isang kahilingan na pinamamahalaan ng mangomundi kasama ang provider para sa iyo.",
+  "comparator.business.request.empty": "I-tick ang mga provider sa ibaba para idagdag dito.",
+  "comparator.saved.title": "Mga na-save na rate",
+  "comparator.saved.remove": "Alisin",
+  "comparator.row.sharedRate": "Ibinahaging rate"
 }
