@@ -31,6 +31,7 @@ import {
   Sparkle,
   Zap,
   Info,
+  X,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer";
@@ -305,6 +306,17 @@ export interface ComparatorQuery {
   lang?: string;
   /** Run the comparison immediately on mount (set by the hero widget submit). */
   autoRun?: boolean;
+  /** 2026-09-10 feedback — "el boton de compartir en un proveedor deberia
+   *  de llevar a mangomundi... hacer como hace kayak, que en el link te
+   *  manda a los resultados del comparador y pone primero la que te
+   *  compartieron y dice shared rate": el slug del proveedor que se
+   *  compartió (ver ProviderRow's handleShare) — cuando está presente,
+   *  ResultsBlock fija esa fila primera en la lista sin importar el sort
+   *  activo, y le muestra el badge "Shared rate" en vez de/además del
+   *  badge normal de destacada. undefined en el caso común (nadie llegó
+   *  acá desde un link compartido).
+   */
+  sharedSlug?: string;
 }
 
 /** 2026-09-09 feedback — bug real encontrado revisando "cómo se mueve
@@ -782,6 +794,40 @@ export function ComparatorSection({
   const [requestPanelStatus, setRequestPanelStatus] = useState<
     "idle" | "sending" | "sent" | "error"
   >("idle");
+
+  // 2026-09-10 feedback — "el corazoncito hay que resolverlo que lo vaya
+  // agregando en una lista al lado izquierdo del comparador": antes vivía
+  // enteramente adentro de cada ProviderRow (estado local + localStorage,
+  // sin ningún lugar que mostrara la lista junta) — elevado acá, mismo
+  // patrón que requestedSlugs arriba, para que un panel en el rail
+  // izquierdo (ver SavedRatesCard) pueda mostrar la lista completa y
+  // actualizarse en vivo sin importar desde qué fila se tocó el corazón.
+  // Se sigue persistiendo en localStorage (SAVED_RATES_KEY) — conveniencia
+  // por navegador, no una cuenta — pero ahora leído UNA vez acá arriba en
+  // vez de en cada fila por separado.
+  const [savedSlugs, setSavedSlugs] = useState<Set<string>>(new Set());
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SAVED_RATES_KEY);
+      setSavedSlugs(raw ? new Set(JSON.parse(raw) as string[]) : new Set());
+    } catch {
+      // Storage blocked (private mode, etc.) — starts empty, same as before.
+    }
+  }, []);
+  const toggleSavedSlug = (slug: string) => {
+    setSavedSlugs((current) => {
+      const next = new Set(current);
+      if (next.has(slug)) next.delete(slug);
+      else next.add(slug);
+      try {
+        localStorage.setItem(SAVED_RATES_KEY, JSON.stringify(Array.from(next)));
+      } catch {
+        // Storage unavailable — flip the visual state anyway (the click
+        // isn't dead), it just won't survive a reload.
+      }
+      return next;
+    });
+  };
 
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCtx, setModalCtx] = useState<{
@@ -2918,6 +2964,45 @@ export function ComparatorSection({
                       : undefined
                   }
                 />
+                {/* 2026-09-10 feedback — "la ventana de your request
+                    deberia quedarse a la izquierda abajo de los filters, y
+                    ademas mostrar los que se seleccionarn y que se vayan
+                    agregando en una lista para enviar el request": movida
+                    del bloque de resultados (ancho completo, layout
+                    horizontal) a acá — versión angosta apilada, ver el
+                    componente mismo para el resto de la historia. */}
+                {segment === "business" && result && (
+                  <BusinessRequestPanel
+                    amount={amount}
+                    from={from}
+                    to={to}
+                    sendingCountry={sendingCountry}
+                    receivingCountry={receivingCountry}
+                    rows={result.rows}
+                    requestedSlugs={requestedSlugs}
+                    onToggleRequested={toggleRequestedSlug}
+                    contractTypeLabel={t(`comparator.contractType.${contractType}`)}
+                    frequencyLabel={t(
+                      `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
+                    )}
+                    status={requestPanelStatus}
+                    onSend={sendBusinessRequest}
+                  />
+                )}
+                {/* 2026-09-10 feedback — "el corazoncito hay que
+                    resolverlo que lo vaya agregando en una lista al lado
+                    izquierdo del comparador": mismo rail, ambos
+                    segmentos (el corazón nunca fue exclusivo de business)
+                    — sólo aparece una vez que hay algo guardado, para no
+                    sumar una tarjeta vacía en el caso común. */}
+                {result && savedSlugs.size > 0 && (
+                  <SavedRatesCard
+                    rows={result.rows}
+                    quote={result.quote}
+                    savedSlugs={savedSlugs}
+                    onToggleSaved={toggleSavedSlug}
+                  />
+                )}
                 {/* 2026-08-31 feedback — "el cuadro de rather talk to
                     someone debe estar en el menú vertical... debajo de los
                     filtros": back in the rail (was below the results for
@@ -3327,31 +3412,14 @@ export function ComparatorSection({
                     </div>
                   </DialogContent>
                 </Dialog>
-                {/* 2026-08-31 feedback — "el cuadro de request en business
-                    debe estar arriba de los resultados, no abajo, y debe
-                    tener todo el ancho": moved above ResultsBlock (was
-                    below), full width of this column now that
-                    BusinessContactCard went back to the rail instead of
-                    sharing this row with it. */}
-                {segment === "business" && result && (
-                  <div className="mb-4">
-                    <BusinessRequestPanel
-                      amount={amount}
-                      from={from}
-                      to={to}
-                      sendingCountry={sendingCountry}
-                      receivingCountry={receivingCountry}
-                      totalBrokers={result?.rows.length ?? 0}
-                      requestedSlugs={requestedSlugs}
-                      contractTypeLabel={t(`comparator.contractType.${contractType}`)}
-                      frequencyLabel={t(
-                        `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
-                      )}
-                      status={requestPanelStatus}
-                      onSend={sendBusinessRequest}
-                    />
-                  </div>
-                )}
+                {/* 2026-09-10 feedback — "la ventana de your request
+                    deberia quedarse a la izquierda abajo de los filters":
+                    se movió al <aside> (ver más abajo, justo después de
+                    FiltersCard) — antes vivía acá, arriba de ResultsBlock,
+                    a todo el ancho de esta columna (ver el historial de
+                    comentarios de 2026-08-31 que quedó más abajo, en la
+                    definición del propio componente). */}
+
 
                 <ResultsBlock
                   result={result}
@@ -3371,6 +3439,9 @@ export function ComparatorSection({
                   retailBestReceived={retailBestReceived}
                   requestedSlugs={requestedSlugs}
                   onToggleRequested={toggleRequestedSlug}
+                  savedSlugs={savedSlugs}
+                  onToggleSaved={toggleSavedSlug}
+                  sharedSlug={initialQuery?.sharedSlug}
                 />
 
                 {/* Stable business upsell (design/HANDOFF.md §3 + decision
@@ -4517,22 +4588,29 @@ function StatItem({
 }
 
 // ===== Business "Your request" panel =====
-// design/Mangomundi 4 - Final.dc.html (line 532-541) — lives in the results
-// column now, below the results list (2026-08-31 feedback; used to dock in
-// the rail next to the agent): a running summary of the request being built
-// from the broker table's "Add to request" toggles, not a chat wizard. Email
-// and consent are
-// collected inline once "Send request" is pressed, rather than up front —
-// nothing here blocks browsing/selecting brokers on providing an email
-// first, unlike the old chat flow.
+// 2026-09-10 feedback — "la ventana de your request deberia quedarse a la
+// izquierda abajo de los filters, y ademas mostrar los que se
+// seleccionarn y que se vayan agregando en una lista para enviar el
+// request, luego se ingresa el email y cuando hacen click en el boton se
+// envia": tercera ubicación de este panel (rail → arriba de resultados →
+// rail de nuevo), pero esta vez con un cambio real de forma, no sólo de
+// lugar — pasa de una tarjeta oscura ancha con un CONTADOR ("3 of 26") a
+// una tarjeta clara angosta (mismo ancho que FiltersCard, arriba, ~240px)
+// con la LISTA real de nombres tildados — cada uno con su propia × para
+// sacarlo sin tener que volver a buscar la fila en el comparador. El
+// fondo oscuro (#241C16) de las versiones anteriores no tenía dónde
+// entrar en una columna de 240px sin leerse como una tarjeta completamente
+// aparte del resto del rail (FiltersCard, TrustpilotCard, todas claras) —
+// pasa a `compare-card` como cualquier otra tarjeta del rail.
 function BusinessRequestPanel({
   amount,
   from,
   to,
   sendingCountry,
   receivingCountry,
-  totalBrokers,
+  rows,
   requestedSlugs,
+  onToggleRequested,
   contractTypeLabel,
   frequencyLabel,
   status,
@@ -4543,12 +4621,14 @@ function BusinessRequestPanel({
   to: string;
   sendingCountry: string;
   receivingCountry: string;
-  totalBrokers: number;
+  /** Necesita las filas completas (no sólo el total) — a diferencia de la
+   *  versión vieja (sólo mostraba "N of M"), ésta necesita el `name` de
+   *  cada slug tildado para poder listarlos por nombre. */
+  rows: ComparisonResult["rows"];
   requestedSlugs: Set<string>;
-  /** Read-only here — the actual controls are the existing "Contract type"/
-   *  "Frequency" selects in the search row above (contractType/frequency
-   *  state, design/HANDOFF.md §4), already real and already wired; this
-   *  panel just reflects the current choice, same as Volume/Route below it. */
+  /** Permite sacar un proveedor de la lista con su propia × (ver la lista
+   *  más abajo), sin tener que volver a buscar esa fila en el comparador. */
+  onToggleRequested: (slug: string) => void;
   contractTypeLabel: string;
   frequencyLabel: string;
   status: "idle" | "sending" | "sent" | "error";
@@ -4556,229 +4636,180 @@ function BusinessRequestPanel({
 }) {
   const { t } = useI18n();
   const [email, setEmail] = useState("");
-  // 2026-09-03 feedback — once the parent resets `status` back to "idle"
-  // a few seconds after a successful send (see sendBusinessRequest's own
-  // comment), this panel's own email field needs to clear too, or it would
-  // show the just-submitted address again instead of the clean pre-request
-  // form the feedback asked for.
   useEffect(() => {
     if (status === "idle") setEmail("");
   }, [status]);
-  const selectedCount = requestedSlugs.size;
+  const selectedRows = rows.filter((r) => requestedSlugs.has(r.slug));
+  const selectedCount = selectedRows.length;
   const sendingCountryName = COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry;
   const receivingCountryName = receivingCountry
     ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry)
     : "—";
 
-  // 2026-09-04 feedback — "cuando se manda el mail que no se cambie el
-  // tamaño de la ventana de your request": the "sent" state used to be a
-  // much shorter card (title + one line) than the normal form below it
-  // (title+disclaimer, a wrapping stats row, the email field and button) —
-  // real content, but a lot less of it, so the panel visibly shrank the
-  // moment a request went out. Mirrors the normal state's own layout
-  // instead (same header row, same stats row confirming what was actually
-  // requested) and only swaps the email form for a same-sized confirmation
-  // message in that one slot, so the panel's height doesn't move.
   if (status === "sent") {
     return (
-      <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <h3 className="font-heading text-[15px] font-extrabold text-white">
-              {t("comparator.business.request.title")}
-            </h3>
-            <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
-              {t("comparator.business.request.disclaimer")}
-            </p>
-          </div>
-          <div className="shrink-0 text-right">
-            <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
-              {t("comparator.business.request.brokersSelected")}
-            </div>
-            <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
-              {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-white/15 pt-3">
-          {/* 2026-09-04 feedback (round 2) — "poner currency en el renglón
-              de abajo y antes de contract": grid-cols-2 instead of a free
-              wrapping flex row so Volume/Route always land on row 1 and
-              Currency/Contract on row 2, regardless of viewport width,
-              rather than wherever the flex-wrap happened to break. */}
-          <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-2">
-            <StatItem dark label={t("comparator.business.request.volume")}>
-              {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
-            </StatItem>
-            <StatItem dark label={t("comparator.business.request.route")}>
-              <span className="inline-flex flex-wrap items-center gap-1.5">
-                <FlagIcon country={sendingCountry} /> {sendingCountryName}
-                <span>→</span>
-                {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
-              </span>
-            </StatItem>
-            <StatItem dark label={t("comparator.business.request.currency")}>
-              {from} → {to}
-            </StatItem>
-            <StatItem dark label={t("comparator.business.request.contract")}>
-              {contractTypeLabel} · {frequencyLabel}
-            </StatItem>
-          </div>
-
-          {/* 2026-09-04 feedback — "eso hace que se mueva el tamaño del
-              cuadro de your request por algo mínimo": matching the form's
-              *content* (same header/stats row) wasn't enough — the form
-              below is two stacked h-10 controls (input + button) with a
-              gap-2 between them, 88px tall (2.5rem+0.5rem+2.5rem), while
-              this confirmation was a single ~40px row. On most widths the
-              stats block next to it was tall enough (wrapped to 2-3 lines)
-              to hide the difference, but whenever it wrapped to fewer
-              lines the shared flex row's height tracked the shorter side,
-              shrinking the panel by that few-px gap. `h-[88px]` pins this
-              box to the exact same height as the form, independent of how
-              the stats wrap. */}
-          <div className="flex h-[88px] w-full items-center justify-center gap-2 rounded-lg border border-success/40 bg-success/15 px-3 text-sm font-semibold text-success sm:w-[280px]">
-            <CheckCircle2 className="h-4 w-4 shrink-0" />
-            {t("comparator.business.request.sent")}
-          </div>
+      <div className="compare-card p-4">
+        <h3 className="text-[14.5px] font-extrabold text-foreground">
+          {t("comparator.business.request.title")}
+        </h3>
+        <div className="mt-3 flex items-center gap-2 rounded-lg border border-success/40 bg-success/15 px-3 py-2.5 text-xs font-semibold text-success">
+          <CheckCircle2 className="h-4 w-4 shrink-0" />
+          {t("comparator.business.request.sent")}
         </div>
       </div>
     );
   }
 
-  // 2026-09-03 feedback — third redesign of this panel: "cambiarle el
-  // color y reorganizar de nuevo todos los datos... así como lo pusimos
-  // en columna queda mal". Every dark treatment tried here (near-black,
-  // then the softened #716B68) kept reading as its own separate, heavier
-  // "mode" next to the plain bg-card results below it — and the stacked
-  // single-column layout (four label/value rows one under another) read
-  // as unnecessarily tall for what's four short facts. Dropping the
-  // custom dark background entirely: this is now styled exactly like
-  // every other card on the page (border-border, bg-card, foreground/
-  // muted-foreground text) rather than a fourth attempt at a bespoke
-  // dark tint — the safest way to stop it clashing is to stop giving it
-  // its own look. The four facts move from a stacked column into a
-  // single wrapping row of compact label/value pairs (StatItem below) —
-  // no grid, no fixed-width cells, so a long country pair just wraps to
-  // the next line as its own unit instead of overflowing a column
-  // (the original overlap bug's actual cause).
-  //
-  // "Eliminar esto porque ocupa lugar... ponerlo en el subtitulo de your
-  // request más conciso": the old explainer paragraph (a full sentence
-  // about what selecting brokers does) AND the disclaimer paragraph below
-  // the stats both took their own line; dropped the explainer and
-  // promoted the disclaimer's own already-existing copy ("One email with
-  // your requirements...") to be the one subtitle under the title —
-  // shorter, and says the one thing that actually matters (privacy),
-  // instead of two paragraphs saying it twice.
-  //
-  // The Send button keeps its own bottom row, right-aligned via
-  // `justify-end` on a row of its own — same "anchored, never drifting"
-  // fix as before (see git history), now independent of how many lines
-  // the stats row above it wraps to.
   return (
-    <div style={{ backgroundColor: "#241C16", color: "#F1EBE4" }} className="rounded-[18px] p-4">
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="min-w-0 flex-1">
-          {/* Was h4 — see the "Your results" h2's own comment (X8 audit). */}
-          <h3 className="font-heading text-[15px] font-extrabold text-white">
-            {t("comparator.business.request.title")}
-          </h3>
-          <p className="mt-1 text-xs leading-relaxed text-[#A79C92]">
-            {t("comparator.business.request.disclaimer")}
-          </p>
-        </div>
-        <div className="shrink-0 text-right">
-          <div className="text-[10.5px] font-bold uppercase tracking-wide text-white/50">
-            {t("comparator.business.request.brokersSelected")}
-          </div>
-          <div className="mt-0.5 text-sm font-bold tabular-nums text-white">
-            {selectedCount} {t("comparator.business.request.of")} {totalBrokers}
-          </div>
-        </div>
+    <div className="compare-card p-4">
+      <h3 className="text-[14.5px] font-extrabold text-foreground">
+        {t("comparator.business.request.title")}
+      </h3>
+      <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+        {t("comparator.business.request.disclaimer")}
+      </p>
+
+      {/* La lista en sí — crece a medida que se tildan proveedores en el
+          checkbox de cada fila (ver BusinessRowExtra), no sólo cuenta.
+          max-h + overflow-y-auto: con 26 proveedores posibles no puede
+          crecer sin límite dentro de un rail sticky. */}
+      {selectedCount > 0 ? (
+        <ul className="mt-3 flex max-h-[180px] flex-col gap-1.5 overflow-y-auto pr-1">
+          {selectedRows.map((r) => (
+            <li
+              key={r.slug}
+              className="flex items-center gap-2 rounded-control border border-border bg-muted/40 px-2 py-1.5"
+            >
+              <span className="min-w-0 flex-1 truncate text-xs font-semibold text-foreground">
+                {r.name}
+              </span>
+              <button
+                type="button"
+                onClick={() => onToggleRequested(r.slug)}
+                aria-label={`${t("comparator.saved.remove")} — ${r.name}`}
+                className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" aria-hidden />
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="mt-3 rounded-control border border-dashed border-border px-2.5 py-3 text-center text-xs text-muted-foreground">
+          {t("comparator.business.request.empty")}
+        </p>
+      )}
+
+      {/* Datos del corredor — apilados en columna angosta en vez de la
+          fila/grilla ancha de la versión anterior (no entra en 240px). */}
+      <div className="mt-3 flex flex-col gap-2 border-t border-border pt-3">
+        <StatItem label={t("comparator.business.request.volume")}>
+          {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
+        </StatItem>
+        <StatItem label={t("comparator.business.request.route")}>
+          <span className="inline-flex flex-wrap items-center gap-1.5">
+            <FlagIcon country={sendingCountry} /> {sendingCountryName}
+            <span>→</span>
+            {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+          </span>
+        </StatItem>
+        <StatItem label={t("comparator.business.request.currency")}>
+          {from} → {to}
+        </StatItem>
+        <StatItem label={t("comparator.business.request.contract")}>
+          {contractTypeLabel} · {frequencyLabel}
+        </StatItem>
       </div>
 
-      {/* 2026-09-03 feedback (third round) — "el volume route currency
-          contract y el boton de send request podrian estar un poco mas
-          separados y deberian de estar en el mismo nivel, queda mucho
-          espacio en blanco": these used to be two stacked rows, each with
-          its own `border-t pt-3` — one gap for the stats, a second
-          identical gap above the button, adding a full extra row's worth
-          of height for no real content. Merged into one row (one border,
-          one pt-3): stats flow on the left, the button anchors to the
-          right via `justify-between` on the shared row (still never
-          drifting — see the button's own comment below) — `gap-8` between
-          the two sides so the button doesn't crowd the stats now that
-          they share a row. `items-center` on this outer row keeps the
-          button vertically centered against the stats block's height;
-          the stats keep their own `items-baseline` internally. */}
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-x-8 gap-y-3 border-t border-white/15 pt-3">
-        {/* 2026-09-04 feedback (round 2) — same grid-cols-2 reordering as
-            the "sent" state above. */}
-        <div className="grid flex-1 grid-cols-2 gap-x-6 gap-y-2">
-          <StatItem dark label={t("comparator.business.request.volume")}>
-            {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
-          </StatItem>
-          <StatItem dark label={t("comparator.business.request.route")}>
-            <span className="inline-flex flex-wrap items-center gap-1.5">
-              <FlagIcon country={sendingCountry} /> {sendingCountryName}
-              <span>→</span>
-              {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
-            </span>
-          </StatItem>
-          <StatItem dark label={t("comparator.business.request.currency")}>
-            {from} → {to}
-          </StatItem>
-          <StatItem dark label={t("comparator.business.request.contract")}>
-            {contractTypeLabel} · {frequencyLabel}
-          </StatItem>
-        </div>
-
-        {/* 2026-09-03 feedback — "el campo de mail ver si conviene dejarlo
-            siempre visible arriba del boton de send request": this used to
-            be a plain CTA button that only revealed the email input after
-            its own click (an extra step + an extra layout change every
-            time). Always showing the field removes both — one less click
-            to submit, and no more content jumping in as the button is
-            pressed. `justify-between` on the shared row above still keeps
-            this block anchored right regardless of content — the earlier
-            "el botón se mueve al centro" fix (see git history) — so the
-            button itself doesn't need a fixed width for that. */}
-        <form
-          className="flex w-full flex-col gap-2 sm:w-[280px]"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSend(email);
-          }}
+      <form
+        className="mt-3 flex flex-col gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSend(email);
+        }}
+      >
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder={t("comparator.business.request.emailPlaceholder")}
+          className="h-10 w-full rounded-control border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand-cta/60 focus:outline-none"
+        />
+        <button
+          type="submit"
+          disabled={selectedCount === 0 || status === "sending"}
+          className="btn-cta flex h-10 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <input
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={t("comparator.business.request.emailPlaceholder")}
-            className="h-10 w-full rounded-lg border border-white/20 bg-white/[.06] px-3 text-sm text-white placeholder:text-white/40 focus:border-[#FF8A6B]/60 focus:outline-none"
-          />
-          <button
-            type="submit"
-            disabled={selectedCount === 0 || status === "sending"}
-            className="btn-cta flex h-10 w-full shrink-0 items-center justify-center rounded-xl text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {status === "sending"
-              ? t("comparator.business.request.sending")
-              : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
-          </button>
-          {status === "error" && (
-            <p className="text-right text-xs text-destructive">
-              {t("comparator.business.request.error")}
-            </p>
-          )}
-        </form>
-      </div>
+          {status === "sending"
+            ? t("comparator.business.request.sending")
+            : t("comparator.business.request.cta").replace("{n}", String(selectedCount))}
+        </button>
+        {status === "error" && (
+          <p className="text-xs text-destructive">{t("comparator.business.request.error")}</p>
+        )}
+      </form>
     </div>
   );
 }
+
+// ===== Saved rates panel (heart) =====
+// 2026-09-10 feedback — "el corazoncito hay que resolverlo que lo vaya
+// agregando en una lista al lado izquierdo del comparador": el corazón de
+// cada fila (ProviderRow's saveButton) ya existía, pero no tenía a dónde
+// ir — tocarlo sólo escribía en localStorage sin ningún lugar visible que
+// mostrara la lista. Mismo formato angosto/apilado que BusinessRequestPanel
+// (arriba) — vive en el rail, ambos segmentos (nunca fue exclusivo de
+// business), sólo se monta con al menos un guardado (ver el call site en
+// el <aside>).
+function SavedRatesCard({
+  rows,
+  quote,
+  savedSlugs,
+  onToggleSaved,
+}: {
+  rows: ComparisonResult["rows"];
+  quote: string;
+  savedSlugs: Set<string>;
+  onToggleSaved: (slug: string) => void;
+}) {
+  const { t } = useI18n();
+  const savedRows = rows.filter((r) => savedSlugs.has(r.slug));
+  if (savedRows.length === 0) return null;
+
+  return (
+    <div className="compare-card p-4">
+      <h3 className="flex items-center gap-1.5 text-[14.5px] font-extrabold text-foreground">
+        <Heart className="h-3.5 w-3.5 fill-current text-brand-cta" aria-hidden />
+        {t("comparator.saved.title")}
+      </h3>
+      <ul className="mt-3 flex max-h-[220px] flex-col gap-1.5 overflow-y-auto pr-1">
+        {savedRows.map((r) => (
+          <li
+            key={r.slug}
+            className="flex items-center gap-2 rounded-control border border-border bg-muted/40 px-2 py-1.5"
+          >
+            <span className="min-w-0 flex-1 truncate text-xs font-semibold text-foreground">
+              {r.name}
+            </span>
+            <span className="shrink-0 text-xs font-semibold tabular-nums text-muted-foreground">
+              {r.received.toLocaleString(undefined, { maximumFractionDigits: 0 })} {quote}
+            </span>
+            <button
+              type="button"
+              onClick={() => onToggleSaved(r.slug)}
+              aria-label={`${t("comparator.saved.remove")} — ${r.name}`}
+              className="shrink-0 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <X className="h-3.5 w-3.5" aria-hidden />
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 
 // design/Mangomundi 4 - Final.dc.html (line 552-557) — the mockup's third
 // rail card is "Rather talk to someone?" + "Book a 15-min call". 2026-08-30
@@ -4840,6 +4871,9 @@ function ResultsBlock({
   retailBestReceived,
   requestedSlugs,
   onToggleRequested,
+  savedSlugs,
+  onToggleSaved,
+  sharedSlug,
 }: {
   result: ComparisonResult;
   amount: number;
@@ -4876,6 +4910,21 @@ function ResultsBlock({
   retailBestReceived: number | null;
   requestedSlugs: Set<string>;
   onToggleRequested: (slug: string) => void;
+  /** 2026-09-10 feedback — "el corazoncito hay que resolverlo que lo vaya
+   *  agregando en una lista al lado izquierdo del comparador": elevado del
+   *  mismo modo que requestedSlugs, arriba — pero, a diferencia de esa
+   *  (sólo business), esta se pasa a TODAS las filas sin importar el
+   *  segmento (ver el mapeo a ProviderRow más abajo), el corazón siempre
+   *  estuvo disponible en ambos. */
+  savedSlugs: Set<string>;
+  onToggleSaved: (slug: string) => void;
+  /** 2026-09-10 feedback — "hacer como hace kayak... pone primero la que
+   *  te compartieron": el slug del proveedor compartido (ComparatorQuery's
+   *  sharedSlug, vía initialQuery) — cuando coincide con una fila real,
+   *  esa fila se fija primera en `displayRows` (más abajo) y recibe el
+   *  badge "Shared rate" en vez del de destacada. undefined en el caso
+   *  común. */
+  sharedSlug?: string;
   /** True when the current query has both a sending and receiving country
    *  selected, i.e. a real corridor lookup was attempted server-side — see
    *  fx.functions.ts. Gates the "not verified for this route" badge: without
@@ -4954,15 +5003,25 @@ function ResultsBlock({
   // the near-tie threshold of each other (pickFeaturedAmongTies never picks
   // outside that cluster), so it never contradicts the actual ranking —
   // it just decides who leads among genuine equals, and puts them first.
+  //
+  // 2026-09-10 feedback — "hacer como hace kayak, que en el link te manda
+  // a los resultados del comparador y pone primero la que te
+  // compartieron": un link compartido gana sobre el featured — si alguien
+  // te mandó específicamente la fila de MoneyGram, tiene que aparecer
+  // primera aunque no sea la "recomendada" del ranking actual. No es la
+  // misma regla que featured (no exige que esté dentro del cluster de
+  // empate) — cualquier fila real del resultado puede ser la compartida.
+  const pinnedSlug =
+    sharedSlug && organic.some((r) => r.slug === sharedSlug) ? sharedSlug : featuredSlug;
   const displayRows = useMemo(() => {
-    if (!featuredSlug) return organic;
-    const idx = organic.findIndex((r) => r.slug === featuredSlug);
+    if (!pinnedSlug) return organic;
+    const idx = organic.findIndex((r) => r.slug === pinnedSlug);
     if (idx <= 0) return organic;
     const copy = [...organic];
-    const [featured] = copy.splice(idx, 1);
-    copy.unshift(featured);
+    const [pinned] = copy.splice(idx, 1);
+    copy.unshift(pinned);
     return copy;
-  }, [organic, featuredSlug]);
+  }, [organic, pinnedSlug]);
 
   // Crisp HH:mm:ss for the trust line.
   const updatedTime = new Date(result.rates_updated_at).toLocaleTimeString(localeTagForLang(lang), {
@@ -5046,10 +5105,13 @@ function ResultsBlock({
             score={scoresBySlug.get(row.slug) ?? null}
             delta={row.received - bestReceived}
             featured={i === 0}
+            shared={Boolean(sharedSlug) && row.slug === sharedSlug}
             hasCorridorContext={hasCorridorContext}
             onClick={() => handleAffiliateClick(row.slug, row.affiliate_url, row.name)}
             tCta={tCta}
             sortBy={sortBy}
+            saved={savedSlugs.has(row.slug)}
+            onToggleSaved={() => onToggleSaved(row.slug)}
             businessExtra={
               segment === "business"
                 ? {
@@ -5167,6 +5229,9 @@ function ProviderRow({
   onClick,
   tCta,
   sortBy,
+  saved,
+  onToggleSaved,
+  shared,
   businessExtra,
 }: {
   row: ComparisonResult["rows"][number];
@@ -5195,6 +5260,19 @@ function ProviderRow({
   /** Drives the featured row's winner tag (design/AJUSTES-2.md §3) — which
    *  criterion it won under the currently active sort. */
   sortBy: SortKey;
+  /** 2026-09-10 feedback — "el corazoncito hay que resolverlo que lo vaya
+   *  agregando en una lista al lado izquierdo": estado elevado (ver
+   *  ComparatorSection's savedSlugs) en vez de local a esta fila — antes
+   *  este componente leía/escribía localStorage directo por su cuenta, sin
+   *  forma de que un panel afuera mostrara la lista completa. */
+  saved: boolean;
+  onToggleSaved: () => void;
+  /** 2026-09-10 feedback — "hacer como hace kayak... pone primero la que
+   *  te compartieron y dice shared rate": true sólo para la fila que
+   *  coincide con `sharedSlug` de la URL (ver ComparatorQuery) — controla
+   *  el badge "Shared rate" de arriba, que gana sobre el badge normal de
+   *  destacada. */
+  shared: boolean;
   /** design/Mangomundi 4 - Final.dc.html line 494-529 — business-only,
    *  additive block (Spread/Minimum/Settlement/Contracts + "Add to special
    *  request") appended below the row's existing footer. 2026-08-30
@@ -5370,17 +5448,18 @@ function ProviderRow({
     </div>
   );
 
-  // Labeled CTA (§C4 — "Go to {name} ↗"; was an icon-only 44×44 square with
-  // no text before that, then just the bare name — the audit's H5: no way
-  // to tell what it does, and five identical buttons in a list have no
-  // hierarchy).
-  //
   // docs/kayak-redesign-spec.md §3.7 — 36px de alto (la medida real del CTA
   // de fila de kayak.co.uk: 144x36), radio de control, text-meta. Nunca más
   // alto que 36 en la fila: era h-11 (44px), y 8 botones de 44px apilados
-  // son los que hacían que la lista perdiera densidad. La destacada lleva
-  // el gradiente; el resto, outline — la jerarquía la da el CTA, no un
-  // borde coral alrededor de toda la tarjeta.
+  // son los que hacían que la lista perdiera densidad.
+  //
+  // 2026-09-10 feedback — "todos los que tienen link de afiliado deberian
+  // tener el boton naranja y hay algunos que lo tienen blanco": antes sólo
+  // la fila destacada (featured) llevaba el gradiente, el resto — con link
+  // de afiliado real, no menos "clickeable" que la destacada — quedaba en
+  // outline blanco, leyéndose como deshabilitado al lado de la única
+  // naranja. El gate pasa a ser sólo `row.affiliate_url` (como ya lo era
+  // para mostrar el botón o no), sin importar si es la fila destacada.
   const cta = row.affiliate_url ? (
     <button
       onClick={onClick}
@@ -5392,11 +5471,7 @@ function ProviderRow({
       // único recorte aceptable acá: agrandar la columna se lo come al
       // bloque de métricas, y achicar la tipografía lo prohíbe el §0.5.
       title={`${t("fx.goto")} ${row.name}`}
-      className={`inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 rounded-control px-2.5 text-meta font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-        featured
-          ? "btn-cta-gradient"
-          : "border border-input bg-card text-foreground hover:border-foreground/40"
-      }`}
+      className="inline-flex h-9 w-full shrink-0 items-center justify-center gap-1.5 rounded-control px-2.5 text-meta font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-ring btn-cta-gradient"
     >
       <span className="truncate">
         {t("fx.goto")} {row.name} ↗
@@ -5418,11 +5493,41 @@ function ProviderRow({
   // sheet first (best on mobile — the person picks WhatsApp/Messages/etc.
   // themselves), clipboard copy as the fallback everywhere else, same
   // pattern blog_.$slug.tsx's own ShareRow already uses.
+  //
+  // 2026-09-10 feedback — "el boton de compartir en un proveedor deberia
+  // de llevar a mangomundi en lugar de el link de afiliado": compartía
+  // `row.affiliate_url` directo — quien recibía el link terminaba en el
+  // sitio del proveedor sin pasar por mangomundi (ni el corredor
+  // comparado, ni el resto de las opciones, ni el disclosure de afiliado).
+  // Comparte la URL actual de mangomundi (esta misma página de resultados,
+  // con el corredor/monto ya en la URL — ver el sync debounceado más
+  // arriba en este archivo) en su lugar. El gate sigue siendo
+  // `row.affiliate_url`: no tiene sentido un botón de compartir en una
+  // fila sin link real, aunque lo que se comparta ya no sea ese link.
+  //
+  // 2026-09-10 feedback (segunda ronda) — "hacer como hace kayak, que en
+  // el link te manda a los resultados del comparador y pone primero la
+  // que te compartieron y dice shared flight, en este caso diria shared
+  // rate": la URL de arriba ya llevaba a mangomundi, pero no decía CUÁL
+  // fila era la compartida — agrega `?shared={slug}` (preservando el
+  // resto de los params ya en la URL: corredor, monto, idioma). Quien
+  // abre el link ve exactamente esta fila primera y con el badge "Shared
+  // rate" (ver displayRows/ProviderRow's `shared` prop, en
+  // ComparatorSection/ResultsBlock).
   const [shareCopied, setShareCopied] = useState(false);
   const handleShare = async () => {
+    let shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    try {
+      const url = new URL(shareUrl);
+      url.searchParams.set("shared", row.slug);
+      shareUrl = url.toString();
+    } catch {
+      // Malformed/relative location — share the plain URL as a fallback
+      // rather than leaving the click dead.
+    }
     try {
       if (navigator.share) {
-        await navigator.share({ title: row.name, url: row.affiliate_url });
+        await navigator.share({ title: `${row.name} — mangomundi`, url: shareUrl });
         return;
       }
     } catch {
@@ -5430,7 +5535,7 @@ function ProviderRow({
       // to a plain clipboard copy instead of leaving the click looking dead.
     }
     try {
-      await navigator.clipboard.writeText(row.affiliate_url);
+      await navigator.clipboard.writeText(shareUrl);
       setShareCopied(true);
       setTimeout(() => setShareCopied(false), 2000);
     } catch {
@@ -5445,42 +5550,21 @@ function ProviderRow({
   // debajo del CTA a este par; el gate sigue siendo `row.affiliate_url`
   // (nunca se comparte ni se guarda un link que no existe).
   //
-  // El guardado persiste en localStorage, no en el servidor: es una
-  // conveniencia por navegador, no una cuenta. Cada acceso va en try/catch
-  // — en modo privado o con el almacenamiento bloqueado el botón
-  // simplemente no persiste, en vez de romper la fila entera.
-  const [saved, setSaved] = useState(false);
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(SAVED_RATES_KEY);
-      setSaved(raw ? (JSON.parse(raw) as string[]).includes(row.slug) : false);
-    } catch {
-      setSaved(false);
-    }
-  }, [row.slug]);
-  const toggleSaved = () => {
-    try {
-      const raw = localStorage.getItem(SAVED_RATES_KEY);
-      const list = raw ? (JSON.parse(raw) as string[]) : [];
-      const next = list.includes(row.slug)
-        ? list.filter((s) => s !== row.slug)
-        : [...list, row.slug];
-      localStorage.setItem(SAVED_RATES_KEY, JSON.stringify(next));
-      setSaved(next.includes(row.slug));
-    } catch {
-      // Storage unavailable — flip the visual state anyway so the click
-      // isn't dead; it just won't survive a reload.
-      setSaved((p) => !p);
-    }
-  };
-
+  // 2026-09-10 feedback — "el corazoncito hay que resolverlo que lo vaya
+  // agregando en una lista al lado izquierdo del comparador": `saved`/
+  // `onToggleSaved` ahora son props (ver ComparatorSection's savedSlugs) —
+  // antes este componente tenía su propio estado local + acceso directo a
+  // localStorage, sin ninguna forma de que un panel afuera de esta fila
+  // mostrara la lista completa de guardados. La persistencia real sigue
+  // en localStorage, sólo que ahora un nivel arriba (ver el comentario de
+  // `savedSlugs`).
   const rowActionClass =
     "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 
   const saveButton = row.affiliate_url ? (
     <button
       type="button"
-      onClick={toggleSaved}
+      onClick={onToggleSaved}
       aria-pressed={saved}
       aria-label={`${saved ? t("comparator.row.saved") : t("comparator.row.save")} — ${row.name}`}
       className={`${rowActionClass} ${saved ? "text-brand-cta" : ""}`}
@@ -5529,10 +5613,25 @@ function ProviderRow({
             {shareButton}
           </div>
           <div className="flex flex-wrap items-center justify-end gap-1.5">
-            {featured && (
-              <span className="rounded-control bg-merit-best px-2 py-0.5 text-badge font-semibold text-merit-best-foreground">
-                {t(winnerTagKey(sortBy))}
+            {shared ? (
+              // 2026-09-10 feedback — "hacer como hace kayak, que en el
+              // link te manda a los resultados del comparador y pone
+              // primero la que te compartieron y dice shared flight con
+              // el icono de compartir, en este caso diria shared rate":
+              // gana sobre el badge normal de destacada — si por
+              // casualidad la fila compartida también es la más
+              // conveniente, lo que importa comunicar acá es que fue
+              // compartida a propósito, no que ganó el ranking.
+              <span className="inline-flex items-center gap-1 rounded-control bg-merit-best px-2 py-0.5 text-badge font-semibold text-merit-best-foreground">
+                <Share2 className="h-3 w-3 shrink-0" aria-hidden />
+                {t("comparator.row.sharedRate")}
               </span>
+            ) : (
+              featured && (
+                <span className="rounded-control bg-merit-best px-2 py-0.5 text-badge font-semibold text-merit-best-foreground">
+                  {t(winnerTagKey(sortBy))}
+                </span>
+              )
             )}
             {isBest && (
               <span className="rounded-control bg-merit-cheap px-2 py-0.5 text-badge font-semibold text-merit-cheap-foreground">
@@ -5596,7 +5695,24 @@ function ProviderRow({
           grande a la izquierda, el delta a la derecha, y el CTA a ancho
           completo debajo. A partir de sm vuelve a ser la columna de precio
           de §3.7, detrás de la divisoria vertical. */}
-      <div className="flex flex-col gap-1.5 border-t border-border px-4 py-2.5 sm:justify-center sm:gap-0.5 sm:border-l sm:border-t-0 sm:text-right">
+      {/* 2026-09-10 feedback — "los botones de accion en el comparador
+          deberian de ser los que tienen link de afiliado que se pueda
+          apretar no solo en el boton sino tambien arriba del numero y en
+          todo ese recuadro, asi hace kayak": todo el bloque (monto, delta,
+          Y el botón) dispara el mismo `onClick` ahora, no sólo el botón de
+          36px de abajo. El botón conserva su propio onClick con
+          `stopPropagation` — si no, un click directo sobre el botón
+          burbujearía hasta este div y disparería `onClick` DOS veces
+          (doble registro en `trackAffiliateClick`, posible doble
+          apertura de pestaña). Gate igual que el CTA: sin
+          `row.affiliate_url` no hay nada que abrir, así que el bloque no
+          es clickeable ni muestra el cursor de mano. */}
+      <div
+        onClick={row.affiliate_url ? onClick : undefined}
+        className={`flex flex-col gap-1.5 border-t border-border px-4 py-2.5 transition-colors sm:justify-center sm:gap-0.5 sm:border-l sm:border-t-0 sm:text-right ${
+          row.affiliate_url ? "cursor-pointer hover:bg-muted/40" : ""
+        }`}
+      >
         <div className="flex items-end justify-between gap-3 sm:block">
           <div className="flex items-baseline gap-1.5 sm:block">
             <div className="whitespace-nowrap text-price font-bold tabular-nums text-foreground">
@@ -5618,7 +5734,57 @@ function ProviderRow({
         {/* §4.3 — CTA a ancho completo y 44px de alto en mobile (blanco de
             toque real con el pulgar); vuelve a los 36px de Kayak en la
             columna de precio a partir de sm. */}
-        <div className="[&>button]:h-11 sm:[&>button]:h-9">{cta}</div>
+        <div
+          className="[&>button]:h-11 sm:[&>button]:h-9"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {cta}
+        </div>
+        {/* 2026-09-10 feedback — "en business... como dijimos en el
+            selector negro remover ese boton y poner en ese costado abajo
+            del precio un recuadro similar con la opcion de hacer click
+            para agregarlo al request, pero no tiene que estar lejos del
+            precio ni del boton de accion... se le puede poner una linea
+            separadora como en el cuadro del precio y del boton de ir al
+            proveedor así tiene el mismo formato que la parte de arriba":
+            el checkbox se muda de BusinessRowExtra (una sección aparte,
+            al pie de toda la fila) a este mismo bloque — mismo costado
+            que el precio y el CTA, separado apenas por una línea, no una
+            sección entera aparte. `stopPropagation` por la misma razón
+            que el wrapper del CTA arriba: este bloque entero dispara la
+            navegación al afiliado on click, tildar el checkbox no debería
+            disparar eso también. */}
+        {businessExtra && (
+          <div
+            className="mt-1.5 border-t border-border pt-1.5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={businessExtra.onToggleRequested}
+              aria-pressed={businessExtra.requested}
+              aria-label={`${businessExtra.requested ? t("comparator.business.added") : t("comparator.business.addToRequest")} — ${row.name}`}
+              title={t("comparator.business.addToRequestHint")}
+              className={`flex h-9 w-full shrink-0 items-center gap-2 whitespace-nowrap rounded-control border px-2.5 text-xs font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                businessExtra.requested
+                  ? "border-brand-cta bg-accent/10 text-accent-text"
+                  : "border-input bg-card text-foreground hover:border-foreground/40"
+              }`}
+            >
+              <span
+                aria-hidden
+                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-colors ${
+                  businessExtra.requested
+                    ? "border-brand-cta bg-brand-cta text-white"
+                    : "border-input bg-card"
+                }`}
+              >
+                {businessExtra.requested && <Check className="h-3 w-3" strokeWidth={3} />}
+              </span>
+              <span className="truncate">{t("comparator.business.addToRequest")}</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Pie — la línea de confianza y la disclosure de afiliado dejan de
@@ -5631,15 +5797,8 @@ function ProviderRow({
       )}
 
       {businessExtra && (
-        <div className="border-t border-border px-4 py-3 sm:col-span-2">
-          <BusinessRowExtra
-            row={row}
-            quote={quote}
-            amount={businessExtra.amount}
-            savedVsRetail={businessExtra.savedVsRetail}
-            requested={businessExtra.requested}
-            onToggleRequested={businessExtra.onToggleRequested}
-          />
+        <div className="border-t border-border px-4 py-2.5 sm:col-span-2">
+          <BusinessRowExtra row={row} quote={quote} amount={businessExtra.amount} savedVsRetail={businessExtra.savedVsRetail} />
         </div>
       )}
     </div>
@@ -5659,8 +5818,6 @@ function BusinessRowExtra({
   quote,
   amount,
   savedVsRetail,
-  requested,
-  onToggleRequested,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -5668,8 +5825,6 @@ function BusinessRowExtra({
   /** null when the retail baseline hasn't loaded yet — the saved figure is
    *  hidden rather than guessed (see ResultsBlock's own prop comment). */
   savedVsRetail: number | null;
-  requested: boolean;
-  onToggleRequested: () => void;
 }) {
   const { t } = useI18n();
   const metrics: Array<{ labelKey: string; value: string; estimated?: boolean }> = [
@@ -5697,111 +5852,60 @@ function BusinessRowExtra({
     },
   ];
 
+  // 2026-09-10 feedback — "en business en los resultados sacale el
+  // recuadro interno a la informacion de business y usa la misma letra
+  // que se usa en la parte de arriba, con los datos similares a los de
+  // personal, ya que en la informacion adicional de business al estar en
+  // negrita se ve medio raro": el checkbox de "Add to special quote
+  // request" se mudó al bloque de precio (ver ProviderRow, más arriba) —
+  // lo único que queda acá son las 4 métricas propias de business
+  // (spread/minimum/settlement/contracts). Antes vivían en un
+  // `rounded-xl border-dashed bg-muted/30` — su propia caja, con
+  // StatItem's tipografía de label diminuto en mayúsculas + valor en
+  // negrita — leyéndose como una sección aparte, más pesada que el resto
+  // de la fila. Pasa al mismo patrón que `trustLine` (la línea de Fee ·
+  // Rate · actualización que ya vive arriba, en la fila "de personal"):
+  // sin caja, "·" entre pares label/valor, `text-badge` en vez de bold
+  // — misma letra, no una sección visualmente distinta.
+  const footerDot = (
+    <span className="whitespace-nowrap" style={{ color: "#B3A698" }}>
+      ·
+    </span>
+  );
+
   return (
-    <div className="mt-3 flex flex-col gap-3 rounded-xl border border-dashed border-input bg-muted/30 p-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-      {/* 2026-09-03 feedback (second round) — "lo mismo ocurre en los datos
-          en cada proveedor... la posición en columna quedó bastante mal":
-          same fix as BusinessRequestPanel's own stats — reuses the same
-          StatItem component instead of a bespoke stacked column.
-          2026-09-02 feedback (AG4, round 4) — "poner spread y abajo
-          minimum en una misma columna, y en otra columna al lado
-          settlement y abajo contracts": the single flex-wrap row above
-          let the 4 chips reflow arbitrarily (2+2, 3+1, all 4 on one
-          line depending on value lengths) — no longer a fixed spread/
-          minimum vs. settlement/contracts pairing. Two explicit columns
-          (metrics[0]/[1] stacked in the first, [2]/[3] in the second) fix
-          that pairing regardless of value length.
-          2026-09-02 feedback (AH1) — "ponelo mas a la izquierda al lado
-          de la otra columna... aprovechamos el espacio vacío": a
-          grid-cols-2 split this whole block 50/50, so column 2 always
-          started at the container's midpoint regardless of how narrow
-          column 1's own content (a percentage, an amount) actually was —
-          wasted gap between the columns, and settlement/contracts' long
-          sentences capped at that same 50% width even though there was
-          more room to their right before the Add to request block.
-          Flex instead: column 1 is `shrink-0` (sized to its own short
-          content), column 2 is `flex-1` (starts right after column 1's
-          natural width, then uses everything remaining), separated by a
-          fixed, deliberately generous gap rather than a proportional one. */}
-      <div className="flex min-w-0 flex-1 items-start gap-x-8 gap-y-2">
-        {[metrics.slice(0, 2), metrics.slice(2, 4)].map((column, i) => (
-          <div key={i} className={`flex min-w-0 flex-col gap-2 ${i === 0 ? "shrink-0" : "flex-1"}`}>
-            {column.map((m) => (
-              <StatItem
-                key={m.labelKey}
-                label={t(m.labelKey)}
-                labelExtra={
-                  // 2026-09-02 feedback — real value where findable,
-                  // otherwise a logical estimate (never blank, never
-                  // presented as verified) — see this component's own
-                  // metrics comment.
-                  m.estimated ? (
-                    <span
-                      title={t("comparator.business.metric.estimatedTooltip")}
-                      className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-badge font-bold normal-case tracking-normal text-accent-text"
-                    >
-                      {t("comparator.business.metric.estimated")}
-                    </span>
-                  ) : undefined
-                }
+    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-badge leading-snug text-muted-foreground">
+      {metrics.map((m, i) => (
+        <span key={m.labelKey} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          {i > 0 && footerDot}
+          <span className="inline-flex items-center gap-1">
+            {t(m.labelKey)} <span className="font-semibold text-foreground">{m.value}</span>
+            {m.estimated && (
+              <span
+                title={t("comparator.business.metric.estimatedTooltip")}
+                className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-badge font-semibold text-accent-text"
               >
-                {m.value}
-              </StatItem>
-            ))}
-          </div>
-        ))}
-      </div>
-      {/* 2026-09-03 feedback — "dejar el botón de add request del lado
-          derecho a la misma altura": sits beside the stats row (the outer
-          wrapper's `sm:items-center` centers it against that row's full
-          height, "misma altura" no matter how many lines Settlement/
-          Contracts wrap to).
-          2026-09-03 feedback (second round) — "los botones de add to
-          request en verde quedan fuera de la paleta, deberían estar en
-          negro": Verde read as an odd, unexpected color for this action —
-          switched to solid Tinta (--primary, this palette's black),
-          the same color blog_.$slug.tsx's own "Go to compare" CTA already
-          uses, rather than introducing another new hue. "Added" flips to
-          an outlined light-fill treatment (never back to white/card) with
-          a check icon, so the confirmed state still reads as its own
-          thing rather than just a darker button. */}
-      <div className="flex shrink-0 items-center gap-3 sm:flex-col sm:items-end sm:gap-2">
-        {savedVsRetail != null && savedVsRetail > 0 && (
-          <div className="sm:text-right">
-            <div className="text-badge font-bold uppercase tracking-wide text-muted-foreground">
-              {t("comparator.business.estOn").replace(
-                "{amount}",
-                amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
-              )}
-            </div>
-            <div className="font-heading text-lg font-extrabold leading-none tabular-nums text-foreground">
-              {savedVsRetail.toLocaleString(undefined, { maximumFractionDigits: 0 })}{" "}
-              <span className="text-badge font-bold text-muted-foreground">
-                {quote} {t("comparator.business.saved")}
+                {t("comparator.business.metric.estimated")}
               </span>
-            </div>
-          </div>
-        )}
-        {/* 2026-09-02 feedback — "cuando hago click en un proveedor para
-            ponerlo en add to request se mueve todo el texto porque el
-            botón cambia de tamaño": "Add to request" (14 chars) vs.
-            "Added" (5 chars) — fixed width sized to fit the longer label
-            (plus the check icon's own state) so toggling never changes
-            the button's footprint. */}
-        <button
-          type="button"
-          onClick={onToggleRequested}
-          aria-pressed={requested}
-          className={`flex h-9 w-[140px] shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-xs font-bold transition-colors ${
-            requested
-              ? "border-[1.5px] border-primary/40 bg-primary/5 text-primary"
-              : "bg-primary text-primary-foreground hover:bg-primary/90"
-          }`}
-        >
-          {requested && <Check className="h-3.5 w-3.5" />}
-          {requested ? t("comparator.business.added") : t("comparator.business.addToRequest")}
-        </button>
-      </div>
+            )}
+          </span>
+        </span>
+      ))}
+      {savedVsRetail != null && savedVsRetail > 0 && (
+        <span className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          {footerDot}
+          <span className="inline-flex items-center gap-1">
+            {t("comparator.business.estOn").replace(
+              "{amount}",
+              amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
+            )}{" "}
+            <span className="font-semibold text-foreground">
+              {savedVsRetail.toLocaleString(undefined, { maximumFractionDigits: 0 })} {quote}
+            </span>{" "}
+            {t("comparator.business.saved")}
+          </span>
+        </span>
+      )}
     </div>
   );
 }
