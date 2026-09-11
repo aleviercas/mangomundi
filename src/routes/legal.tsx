@@ -72,7 +72,17 @@ function LegalPage() {
   ];
 
   return (
-    <main className="mx-auto max-w-4xl px-5 pt-28 pb-20 sm:px-8">
+    // 2026-09-11 fix — same double-counted header padding as /blog, blog
+    // posts, /widget and /about: pt-28 (112px) was tuned to clear the 66px
+    // fixed header on its own, before `<main id="page-main">`
+    // (__root.tsx) started adding pt-[var(--header-h)] (66px) around
+    // every route (ronda 8, 2026-09-04). Stacked they were 66+112=178px;
+    // pt-[46px] restores the original 112px total (66+46) without
+    // double-counting the header a second time. Also `<main>` → `<div>`:
+    // it was nested inside __root.tsx's own `<main id="page-main">`, two
+    // "main" landmarks on one page (invalid HTML, confusing for screen
+    // readers).
+    <div className="mx-auto max-w-4xl px-5 pt-[46px] pb-20 sm:px-8">
       <h1 className="font-heading text-4xl font-extrabold tracking-tight text-foreground sm:text-h1">
         {t("legal.pageTitle")}
       </h1>
@@ -108,6 +118,6 @@ function LegalPage() {
           </section>
         ))}
       </div>
-    </main>
+    </div>
   );
 }
