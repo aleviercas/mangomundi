@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "Promoção:",
   "comparator.badge.unconfirmed": "Não confirmado",
   "comparator.buildQuery": "construir consulta",
-  "comparator.business.addToRequest": "Adicionar à solicitação",
+  "comparator.business.addToRequest": "Adicionar ao pedido de cotação especial",
   "comparator.business.added": "Adicionado",
   "comparator.business.contactCard.body": "Apresentamos você às corretoras e ficamos fora da precificação. Sem custo para você de qualquer forma.",
   "comparator.business.contactCard.title": "Prefere falar com alguém?",
@@ -822,5 +822,10 @@
   "wizard.quickActionsAria": "Ações rápidas para começar",
   "wizard.reportNote": "Anotei seu interesse na rota {from}-{to}. Ela foi registrada no log de descoberta; vamos priorizá-la conforme a demanda crescer.",
   "wizard.runFirst": "Primeiro execute uma comparação — respondo com os dados da tabela, não com fontes externas.",
-  "wizard.send": "A mangomundi não move o dinheiro — ela mostra a melhor opção e leva você direto ao provedor para concluir a transferência no site dele. Compare, escolha uma linha e clique para finalizar. Não precisa de conta conosco."
+  "wizard.send": "A mangomundi não move o dinheiro — ela mostra a melhor opção e leva você direto ao provedor para concluir a transferência no site dele. Compare, escolha uma linha e clique para finalizar. Não precisa de conta conosco.",
+  "comparator.business.addToRequestHint": "Enviado como um único pedido que a mangomundi gerencia com o provedor em seu nome.",
+  "comparator.business.request.empty": "Marque provedores abaixo para adicioná-los aqui.",
+  "comparator.saved.title": "Taxas salvas",
+  "comparator.saved.remove": "Remover",
+  "comparator.row.sharedRate": "Taxa compartilhada"
 }
