@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "プロモ:",
   "comparator.badge.unconfirmed": "未確認",
   "comparator.buildQuery": "クエリを作成",
-  "comparator.business.addToRequest": "リクエストに追加",
+  "comparator.business.addToRequest": "特別見積もりリクエストに追加",
   "comparator.business.added": "追加済み",
   "comparator.business.contactCard.body": "ブローカーをご紹介するのみで、価格には一切関与しません。いずれの場合も費用は発生しません。",
   "comparator.business.contactCard.title": "担当者と直接話したいですか？",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "はじめるためのクイックアクション",
   "wizard.reportNote": "{from}-{to} ルートへのご関心を記録しました。需要の増加に応じて優先的に対応します。",
   "wizard.runFirst": "まず比較を実行してください — 表のデータに基づいて回答します。外部ソースは使用しません。",
-  "wizard.send": "mangomundi自体はお金を動かしません — 最適な選択肢を示し、その事業者のサイトへ直接ご案内して送金を完了します。比較して行を選び、クリックして完了。当社のアカウントは不要です。"
+  "wizard.send": "mangomundi自体はお金を動かしません — 最適な選択肢を示し、その事業者のサイトへ直接ご案内して送金を完了します。比較して行を選び、クリックして完了。当社のアカウントは不要です。",
+  "comparator.business.addToRequestHint": "mangomundiがお客様に代わってプロバイダーと管理する1件のリクエストとして送信されます。",
+  "comparator.business.request.empty": "下のプロバイダーにチェックを入れるとここに追加されます。",
+  "comparator.saved.title": "保存したレート",
+  "comparator.saved.remove": "削除",
+  "comparator.row.sharedRate": "共有されたレート"
 }
