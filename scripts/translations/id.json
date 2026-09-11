@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "Promo:",
   "comparator.badge.unconfirmed": "Belum dikonfirmasi",
   "comparator.buildQuery": "buat kueri",
-  "comparator.business.addToRequest": "Tambahkan ke permintaan",
+  "comparator.business.addToRequest": "Tambahkan ke permintaan penawaran khusus",
   "comparator.business.added": "Ditambahkan",
   "comparator.business.contactCard.body": "Kami mengenalkan Anda kepada broker dan tidak ikut campur dalam penetapan harga. Tidak ada biaya untuk Anda dalam kondisi apa pun.",
   "comparator.business.contactCard.title": "Lebih suka berbicara dengan seseorang?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "Aksi cepat untuk memulai",
   "wizard.reportNote": "Saya mencatat minat Anda pada rute {from}-{to}. Sudah tercatat di log penemuan; kami akan memprioritaskannya seiring meningkatnya permintaan.",
   "wizard.runFirst": "Jalankan perbandingan dulu — saya menjawab dengan data tabel, bukan sumber eksternal.",
-  "wizard.send": "mangomundi tidak memindahkan uang sendiri — ia menunjukkan opsi terbaik lalu mengarahkan Anda langsung ke penyedia untuk menyelesaikan transfer di situs mereka. Bandingkan, pilih satu baris, dan klik untuk selesai. Tidak perlu akun dengan kami."
+  "wizard.send": "mangomundi tidak memindahkan uang sendiri — ia menunjukkan opsi terbaik lalu mengarahkan Anda langsung ke penyedia untuk menyelesaikan transfer di situs mereka. Bandingkan, pilih satu baris, dan klik untuk selesai. Tidak perlu akun dengan kami.",
+  "comparator.business.addToRequestHint": "Dikirim sebagai satu permintaan yang dikelola mangomundi dengan penyedia atas nama Anda.",
+  "comparator.business.request.empty": "Centang penyedia di bawah untuk menambahkannya di sini.",
+  "comparator.saved.title": "Kurs tersimpan",
+  "comparator.saved.remove": "Hapus",
+  "comparator.row.sharedRate": "Kurs yang dibagikan"
 }
