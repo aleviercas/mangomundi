@@ -3,46 +3,26 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
-/* Self-hosted fonts — replaces the fonts.googleapis.com <link> in
-   src/routes/__root.tsx (2026-09-09 font-loading fix, revised 2026-09-10
-   twice — see that day's commits for the full history).
-
-   `font-display: swap`, not `optional`. Tried `optional` first (matches
-   what a lot of "avoid FOUT" guides recommend), but real testing (cold
-   cache — incognito, a second browser — reported by the user) showed
-   its actual trade-off: on any load where the 100ms block window is
-   missed, `optional` shows the WRONG font for the entire pageview and
-   only self-corrects on the *next* navigation once the file is cached.
-   No mid-page jump, but a real chance of an entirely-wrong-font first
-   visit — worse for the stated goal ("look right, like a real product")
-   than a fast, non-jumping swap. `swap` always converges on the correct
-   font on every load, cold cache or not. The failure mode `swap` is
-   normally criticized for — a visible size/layout jump when the
-   fallback face doesn't match the real font's box — is covered by
-   `fontaine` (vite.config.ts): it generates a metric-matched local
-   fallback for each family below, so the swap is same-size/no-CLS, just
-   a brief typeface change, not the jump the original bug report was
-   about. All 3 sourced directly from github.com/google/fonts (OFL), not
-   Fontsource — Fontsource's per-script @font-face rules hardcode
-   `font-display: swap` (ironically the value we want!) but as separate
-   rules with no shared control, and for Bricolage specifically splits
-   the opsz/wght variable axes into separate files (see that face's own
-   comment below) — so writing all 3 ourselves was still the right call
-   regardless of which display value we land on. Manrope keeps its full
-   native variable range (200-800, one axis, one file). Rubik ships two
-   separate variable files upstream (upright/italic, each wght 300-900)
-   but the site only ever uses weight 700 in either style
+/* Self-hosted font — Rubik, brand wordmark only (--font-brand, see the
+   token comment further down). Manrope and Bricolage Grotesque used to
+   be self-hosted here too (2026-09-09/10 commits — see git history if
+   curious about that whole road: Fontsource axis-splitting, tabular-nums
+   verification, optional vs. swap, etc.) but were dropped 2026-09-11 in
+   favor of the system font stack for all body text and headings — no
+   webfont there anymore means no fallback→webfont swap category of bug
+   for that text at all, which is what the user asked for after `swap`
+   was still visibly changing fonts a few seconds into a real cold-cache
+   load. Rubik stays because the user specifically wanted to keep the
+   logo's exact look without updating it everywhere it's used. Sourced
+   directly from github.com/google/fonts (OFL). Ships two separate
+   variable files upstream (upright/italic, each wght 300-900) but the
+   site only ever uses weight 700 in either style
    (src/components/Wordmark.tsx) — so both are extracted down to a
    static instance at wght=700 (fonttools varLib.instancer) instead of
-   self-hosting the full unused 300-900 range, keeping the files small
-   (~53-64KB vs. Fontsource's much larger multi-script bundles). */
-@font-face {
-  font-family: 'Manrope Variable';
-  src: url('/fonts/manrope-variable.woff2') format('woff2');
-  font-weight: 200 800;
-  font-style: normal;
-  font-display: swap;
-}
+   self-hosting the full unused 300-900 range. `font-display: swap` +
+   fontaine's metric-matched fallback (vite.config.ts): if it doesn't
+   arrive instantly, no layout jump, just a brief typeface change on the
+   one small wordmark element, not the whole page's text. */
 @font-face {
   font-family: 'Rubik';
   src: url('/fonts/rubik-700.woff2') format('woff2');
@@ -55,28 +35,6 @@
   src: url('/fonts/rubik-700-italic.woff2') format('woff2');
   font-weight: 700;
   font-style: italic;
-  font-display: swap;
-}
-
-/* Bricolage Grotesque: NOT from Fontsource. Fontsource ships each variable
-   axis as a separate single-axis file (wght.css *or* opsz.css, never both
-   together) — using it here would silently drop the opsz axis that
-   `opsz,wght@12..96,700;12..96,800` (the old Google Fonts request) served as
-   one combined variable font, changing how headings/figures actually render
-   at different sizes. This file is the same multi-axis source Google itself
-   serves (github.com/google/fonts, ofl/bricolagegrotesque), self-hosted
-   directly instead. `format('woff2')` (not 'woff2-variations') for broadest
-   browser support — the file's own fvar table is what makes it variable,
-   the format hint doesn't need to say so. `font-display: swap` — see the
-   longer explanation above this face's siblings; same-origin + preloaded
-   + metric-matched fallback (fontaine) means the swap, when it happens at
-   all, is a same-size typeface change, not the original bug's jump. */
-@font-face {
-  font-family: 'Bricolage Grotesque';
-  src: url('/fonts/bricolage-grotesque-variable.woff2') format('woff2');
-  font-weight: 700 800;
-  font-stretch: 75% 100%;
-  font-style: normal;
   font-display: swap;
 }
 
@@ -108,10 +66,22 @@
     0 3px 6px 0 oklch(0.27 0.025 257 / 0.16),
     0 -1px 4px 0 oklch(0.27 0.025 257 / 0.04);
 
-  --font-sans: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
-  /* Headings AND figures (received amounts, rates, deltas, stat numbers) —
-     design/AJUSTES-1.md §A. Replaces Sora, retired from the project. */
-  --font-heading: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+  /* 2026-09-11 — replaced Manrope + Bricolage Grotesque with the native/
+     system font stack (same one GitHub, Stripe's dashboard, etc. use for
+     UI text): zero network fetch, so there's no fallback→webfont swap to
+     get wrong — not a smaller version of the problem, the whole category
+     of it stops applying. Renders as San Francisco on Mac/iOS, Segoe UI on
+     Windows, Roboto on Android/Chrome OS — each user's own OS font, always
+     already on disk. --font-sans and --font-heading are now identical on
+     purpose; the heading/body visual distinction that Bricolage Grotesque
+     used to carry comes from font-weight + size instead (see the h1-h6
+     rule below), not from a second typeface. All of these support
+     tabular-nums properly, so price-column alignment (font-variant-numeric
+     in the components that need it) still works. Rubik (--font-brand,
+     below) is unaffected — kept self-hosted for the wordmark specifically
+     because the user didn't want to touch the logo everywhere it's used. */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   /* Brand wordmark/icon only (Header, Footer, "powered by" lockups) — not a
      site-wide type change. See design/HANDOFF.md §1. */
   --font-brand: 'Rubik', ui-sans-serif, system-ui, sans-serif;
@@ -197,15 +167,26 @@
   --text-eyebrow--line-height: 1.4;
   --text-eyebrow--letter-spacing: 0.18em;
 
-  /* Bricolage Grotesque needs negative tracking to read tight — unlike Sora,
-     it looks loose at these sizes without it (design/AJUSTES-1.md §A). */
+  /* 2026-09-11 — was tuned tight (-0.035em/-0.03em) specifically for
+     Bricolage Grotesque, which read loose at these sizes without it
+     (design/AJUSTES-1.md §A, historical). Now that headings use the
+     system font stack (San Francisco / Segoe UI / Roboto depending on
+     the visitor's OS — see the --font-heading token above), that same
+     aggressive correction is a guess with no single right answer across
+     3 different typefaces' natural spacing, and risks reading cramped
+     on whichever of the three is already tighter by design. Backed off
+     to a mild, safe value (same order of magnitude as --text-price
+     below, which was already fine at -0.01em) instead of guessing a
+     per-font-specific number I can't verify visually from here — worth
+     a look on a real screen and adjusting per h1/h2 if it reads too
+     loose/tight on your system font. */
   --text-h1: 3rem;
   --text-h1--line-height: 1.05;
-  --text-h1--letter-spacing: -0.035em;
+  --text-h1--letter-spacing: -0.01em;
 
   --text-h2: 2.75rem;
   --text-h2--line-height: 1.1;
-  --text-h2--letter-spacing: -0.03em;
+  --text-h2--letter-spacing: -0.01em;
 
   --text-h3: 1.25rem;
   --text-h3--line-height: 1.3;
@@ -428,11 +409,19 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-sans);
   }
 
+  /* --font-heading == --font-sans now (2026-09-11, see the @font-face
+     comment above) — the heading/body visual distinction that a separate
+     typeface (Bricolage Grotesque) used to carry now comes from weight
+     instead: font-weight 800 here as the default, same as the boldest cut
+     Bricolage Grotesque shipped. Individual components can still override
+     with their own Tailwind weight utility if a specific heading needs to
+     differ. */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-heading);
+    font-weight: 800;
   }
 
   .input {

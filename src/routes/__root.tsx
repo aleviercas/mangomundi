@@ -129,32 +129,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "icon", type: "image/png", sizes: "16x16", href: "/brand/favicon-16.png" },
         { rel: "apple-touch-icon", href: "/brand/apple-touch-icon.png" },
         { rel: "manifest", href: "/brand/manifest.json" },
-        // 2026-09-09/10 font-loading fix — Bricolage Grotesque (headings +
-        // every received/rate/delta/stat figure, design/AJUSTES-1.md §A),
-        // Manrope (everything else) and Rubik (brand wordmark only,
-        // design/HANDOFF.md §1) are now self-hosted (src/styles.css) instead
-        // of requested from fonts.googleapis.com — no more preconnect/
-        // external stylesheet link needed here at all. All 3 preloaded:
-        // Manrope styles the hero paragraph and every label above the fold,
-        // Rubik is the header wordmark, both visible on first paint same as
-        // Bricolage's h1. `font-display: swap` (src/styles.css) + fontaine's
-        // metric-matched fallback (vite.config.ts) means any swap that does
-        // happen is same-size, no layout shift — see styles.css's comment
-        // for why swap (not optional) is the 2026-09-10 final call.
-        {
-          rel: "preload",
-          as: "font",
-          type: "font/woff2",
-          href: "/fonts/bricolage-grotesque-variable.woff2",
-          crossOrigin: "anonymous",
-        },
-        {
-          rel: "preload",
-          as: "font",
-          type: "font/woff2",
-          href: "/fonts/manrope-variable.woff2",
-          crossOrigin: "anonymous",
-        },
+        // 2026-09-09/10/11 font-loading fix — full history in
+        // src/styles.css's @font-face comment. Final state (2026-09-11):
+        // body text and headings use the system font stack (no download,
+        // no fallback→webfont swap possible at all); only the brand
+        // wordmark (Rubik, design/HANDOFF.md §1) is still self-hosted, so
+        // it's the only face preloaded here.
         {
           rel: "preload",
           as: "font",

@@ -40,7 +40,7 @@ export function HowItWorksSection() {
             <div className="mt-6 flex flex-col gap-[18px]">
               {steps.map((s) => (
                 <div key={s.n} className="flex gap-[15px]">
-                  <span className="w-[34px] shrink-0 font-heading text-[15px] font-extrabold text-accent-text">
+                  <span className="min-w-[34px] shrink-0 font-heading text-[15px] font-extrabold text-accent-text">
                     {s.n}
                   </span>
                   <div>
