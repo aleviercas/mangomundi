@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "Promocja:",
   "comparator.badge.unconfirmed": "Niepotwierdzone",
   "comparator.buildQuery": "buduj zapytanie",
-  "comparator.business.addToRequest": "Dodaj do zapytania",
+  "comparator.business.addToRequest": "Dodaj do specjalnego zapytania ofertowego",
   "comparator.business.added": "Dodano",
   "comparator.business.contactCard.body": "Przedstawiamy Cię brokerom i nie ingerujemy w wycenę. W żadnym wypadku nie ponosisz kosztów.",
   "comparator.business.contactCard.title": "Wolisz porozmawiać z kimś?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "Szybkie akcje na początek",
   "wizard.reportNote": "Odnotowałem Twoje zainteresowanie trasą {from}-{to}. Została zapisana w dzienniku; nadamy jej priorytet wraz ze wzrostem popytu.",
   "wizard.runFirst": "Najpierw uruchom porównanie — odpowiadam na podstawie danych z tabeli, nie źródeł zewnętrznych.",
-  "wizard.send": "mangomundi nie przenosi pieniędzy — pokazuje najlepszą opcję i kieruje Cię prosto do dostawcy, aby dokończyć przelew na jego stronie. Porównaj, wybierz wiersz i kliknij, aby zakończyć. Konto u nas nie jest potrzebne."
+  "wizard.send": "mangomundi nie przenosi pieniędzy — pokazuje najlepszą opcję i kieruje Cię prosto do dostawcy, aby dokończyć przelew na jego stronie. Porównaj, wybierz wiersz i kliknij, aby zakończyć. Konto u nas nie jest potrzebne.",
+  "comparator.business.addToRequestHint": "Wysyłane jako jedno zapytanie, którym mangomundi zarządza z dostawcą w Twoim imieniu.",
+  "comparator.business.request.empty": "Zaznacz dostawców poniżej, aby dodać ich tutaj.",
+  "comparator.saved.title": "Zapisane kursy",
+  "comparator.saved.remove": "Usuń",
+  "comparator.row.sharedRate": "Udostępniony kurs"
 }
