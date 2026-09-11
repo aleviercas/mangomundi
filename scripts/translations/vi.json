@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "Khuyến mãi:",
   "comparator.badge.unconfirmed": "Chưa xác nhận",
   "comparator.buildQuery": "thiết lập truy vấn",
-  "comparator.business.addToRequest": "Thêm vào yêu cầu",
+  "comparator.business.addToRequest": "Thêm vào yêu cầu báo giá đặc biệt",
   "comparator.business.added": "Đã thêm",
   "comparator.business.contactCard.body": "Chúng tôi giới thiệu bạn với các nhà môi giới và không can thiệp vào việc định giá. Bạn không phải trả phí trong mọi trường hợp.",
   "comparator.business.contactCard.title": "Bạn muốn nói chuyện trực tiếp với ai đó?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "Thao tác nhanh để bắt đầu",
   "wizard.reportNote": "Tôi đã ghi nhận sự quan tâm của bạn với tuyến {from}-{to}. Nó đã được ghi vào nhật ký; chúng tôi sẽ ưu tiên khi nhu cầu tăng.",
   "wizard.runFirst": "Hãy chạy so sánh trước — tôi trả lời dựa trên dữ liệu bảng, không phải nguồn bên ngoài.",
-  "wizard.send": "mangomundi không tự chuyển tiền — nó cho bạn lựa chọn tốt nhất rồi đưa bạn thẳng đến nhà cung cấp để hoàn tất giao dịch trên trang của họ. So sánh, chọn một hàng và nhấp để hoàn tất. Không cần tài khoản với chúng tôi."
+  "wizard.send": "mangomundi không tự chuyển tiền — nó cho bạn lựa chọn tốt nhất rồi đưa bạn thẳng đến nhà cung cấp để hoàn tất giao dịch trên trang của họ. So sánh, chọn một hàng và nhấp để hoàn tất. Không cần tài khoản với chúng tôi.",
+  "comparator.business.addToRequestHint": "Được gửi dưới dạng một yêu cầu duy nhất mà mangomundi quản lý với nhà cung cấp thay mặt bạn.",
+  "comparator.business.request.empty": "Chọn nhà cung cấp bên dưới để thêm vào đây.",
+  "comparator.saved.title": "Tỷ giá đã lưu",
+  "comparator.saved.remove": "Xóa",
+  "comparator.row.sharedRate": "Tỷ giá đã chia sẻ"
 }
