@@ -46,8 +46,19 @@ function BlogIndexPage() {
   const { data: posts, isLoading } = useQuery(listQuery(toBlogLocale(lang)));
 
   return (
-    <div className="min-h-screen bg-background pb-16 pt-20 sm:pb-20">
-      {/* 2026-09-02 feedback — "el ícono se mueve o está en distinta
+    <div className="min-h-screen bg-background pb-16 pt-[14px] sm:pb-20">
+      {/* 2026-09-11 fix — "queda muy separado del encabezado": this used to
+          be pt-20 (80px), on top of `<main id="page-main">`'s own
+          pt-[var(--header-h)] (__root.tsx) — that global padding was added
+          in ronda 8 (2026-09-04), *after* the pt-20 below was tuned assuming
+          it was the only thing separating this page from the header, so it
+          went uncorrected and the two stacked: 66px (header) + 80px (this
+          div) = 146px, i.e. ~80px of dead air below the header instead of
+          the ~14px the original tuning intended. pt-[14px] here restores
+          that original total (66 + 14 = 80px) without double-counting the
+          header height a second time.
+
+          2026-09-02 feedback — "el ícono se mueve o está en distinta
           posición" entre este listado y un post individual: este wrapper
           usaba py-16 sm:py-20 (64px/80px de padding-top), mientras que
           blog_.$slug.tsx usa pt-20 (80px) fijo — coinciden a partir de sm,

@@ -371,7 +371,17 @@ function BlogPostPage() {
 
   return (
     <article className="bg-background">
-      {/* 2026-09-02 feedback — "el ícono se mueve o está en distinta
+      {/* 2026-09-11 fix — "queda muy separado del encabezado": pt-20 (80px)
+          below was, same as blog.tsx, tuned assuming it was the only thing
+          separating this page from the header — but `<main id="page-main">`
+          (__root.tsx) already adds pt-[var(--header-h)] (66px) around every
+          route, added later (ronda 8, 2026-09-04) without revisiting this
+          page's own padding. The two were stacking: 66 + 80 = 146px, not
+          the 80px total this comment's history below assumed. pt-[14px]
+          restores that original 80px total (66 + 14) without the double
+          count.
+
+          2026-09-02 feedback — "el ícono se mueve o está en distinta
           posición" vs. el listado de /blog: acá el padding-top era pt-20
           (80px) fijo, el listado usaba py-16 sm:py-20 (64px en mobile) —
           coincidían solo a partir de sm. pt-28 (112px) unifica con el
@@ -395,7 +405,7 @@ function BlogPostPage() {
           the listing above it read as genuinely too much blank space with
           the same number. pt-20 (80px, this page's own value before that
           unification) still clears the 66px fixed header with margin. */}
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-20 pb-24">
+      <div className="mx-auto max-w-3xl px-4 sm:px-6 pt-[14px] pb-24">
         <div className="mb-8 flex items-center justify-between">
           <Link
             to="/blog"
