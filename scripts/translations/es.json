@@ -125,7 +125,7 @@
   "comparator.b2bBanner.below": "¿Enviás más de {threshold}? Los corredores de negocios cotizan tasas negociadas.",
   "comparator.b2bBanner.cta": "Ver cotizaciones de negocios",
   "comparator.buildQuery": "construir consulta",
-  "comparator.business.addToRequest": "Agregar a la solicitud",
+  "comparator.business.addToRequest": "Agregar a solicitud de cotización especial",
   "comparator.business.added": "Agregado",
   "comparator.business.contactCard.body": "Te presentamos a los corredores y no intervenimos en el precio. Sin costo para vos de ninguna forma.",
   "comparator.business.contactCard.title": "¿Preferís hablar con alguien?",
@@ -821,5 +821,10 @@
   "wizard.quickActionsAria": "Acciones rápidas para empezar",
   "wizard.reportNote": "Tomé nota de tu interés en la ruta {from}-{to}. Quedó registrada en el log de descubrimiento; la priorizaremos a medida que crezca la demanda.",
   "wizard.runFirst": "Primero corré una comparación — respondo con los datos de la tabla, no con fuentes externas.",
-  "wizard.send": "mangomundi no mueve el dinero: te muestra la mejor opción y te lleva directo a ese proveedor para completar la transferencia en su sitio. Compará, elegí una fila y hacé clic para terminar. No necesitás cuenta con nosotros."
+  "wizard.send": "mangomundi no mueve el dinero: te muestra la mejor opción y te lleva directo a ese proveedor para completar la transferencia en su sitio. Compará, elegí una fila y hacé clic para terminar. No necesitás cuenta con nosotros.",
+  "comparator.business.addToRequestHint": "Se envía como una sola solicitud que mangomundi gestiona con el proveedor en tu nombre.",
+  "comparator.business.request.empty": "Marcá proveedores abajo para agregarlos acá.",
+  "comparator.saved.title": "Tarifas guardadas",
+  "comparator.saved.remove": "Quitar",
+  "comparator.row.sharedRate": "Tarifa compartida"
 }
