@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "โปรโม:",
   "comparator.badge.unconfirmed": "ยังไม่ยืนยัน",
   "comparator.buildQuery": "สร้างคำถาม",
-  "comparator.business.addToRequest": "เพิ่มในคำขอ",
+  "comparator.business.addToRequest": "เพิ่มในคำขอใบเสนอราคาพิเศษ",
   "comparator.business.added": "เพิ่มแล้ว",
   "comparator.business.contactCard.body": "เราแนะนำคุณให้รู้จักโบรกเกอร์และไม่เข้าไปยุ่งเกี่ยวกับการตั้งราคา ไม่มีค่าใช้จ่ายสำหรับคุณไม่ว่ากรณีใด",
   "comparator.business.contactCard.title": "อยากพูดคุยกับเจ้าหน้าที่หรือไม่?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "การดำเนินการด่วนเพื่อเริ่มต้น",
   "wizard.reportNote": "ได้บันทึกความสนใจของคุณในเส้นทาง {from}-{to} แล้ว ระบบเพิ่มลงบันทึกการค้นพบ เราจะให้ความสำคัญเมื่อความต้องการเพิ่มขึ้น",
   "wizard.runFirst": "โปรดเรียกใช้การเปรียบเทียบก่อน — ฉันตอบจากข้อมูลในตาราง ไม่ใช่แหล่งข้อมูลภายนอก",
-  "wizard.send": "mangomundi ไม่ได้โอนเงินเอง — แต่แสดงตัวเลือกที่ดีที่สุดแล้วพาคุณตรงไปยังผู้ให้บริการเพื่อทำรายการให้เสร็จบนเว็บของเขา เปรียบเทียบ เลือกแถวหนึ่ง แล้วคลิกเพื่อจบ ไม่ต้องมีบัญชีกับเรา"
+  "wizard.send": "mangomundi ไม่ได้โอนเงินเอง — แต่แสดงตัวเลือกที่ดีที่สุดแล้วพาคุณตรงไปยังผู้ให้บริการเพื่อทำรายการให้เสร็จบนเว็บของเขา เปรียบเทียบ เลือกแถวหนึ่ง แล้วคลิกเพื่อจบ ไม่ต้องมีบัญชีกับเรา",
+  "comparator.business.addToRequestHint": "ส่งเป็นคำขอเดียวที่ mangomundi จัดการร่วมกับผู้ให้บริการในนามของคุณ",
+  "comparator.business.request.empty": "ทำเครื่องหมายผู้ให้บริการด้านล่างเพื่อเพิ่มที่นี่",
+  "comparator.saved.title": "อัตราที่บันทึกไว้",
+  "comparator.saved.remove": "ลบ",
+  "comparator.row.sharedRate": "อัตราที่แชร์"
 }
