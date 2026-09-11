@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "प्रोमो:",
   "comparator.badge.unconfirmed": "अपुष्ट",
   "comparator.buildQuery": "क्वेरी बनाएं",
-  "comparator.business.addToRequest": "अनुरोध में जोड़ें",
+  "comparator.business.addToRequest": "विशेष कोटेशन अनुरोध में जोड़ें",
   "comparator.business.added": "जोड़ा गया",
   "comparator.business.contactCard.body": "हम आपको ब्रोकर से मिलवाते हैं और कीमत तय करने में शामिल नहीं होते। आपके लिए किसी भी तरह से कोई शुल्क नहीं है।",
   "comparator.business.contactCard.title": "किसी से बात करना पसंद करेंगे?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "शुरू करने के लिए त्वरित क्रियाएँ",
   "wizard.reportNote": "मैंने {from}-{to} रूट में आपकी रुचि नोट कर ली है। इसे डिस्कवरी लॉग में दर्ज किया गया है; माँग बढ़ने पर हम इसे प्राथमिकता देंगे।",
   "wizard.runFirst": "पहले एक तुलना चलाएँ — मैं तालिका के आँकड़ों से उत्तर देता हूँ, बाहरी स्रोतों से नहीं।",
-  "wizard.send": "mangomundi खुद पैसा नहीं भेजता — यह आपको सबसे अच्छा विकल्प दिखाता है और फिर ट्रांसफ़र पूरा करने के लिए सीधे उस प्रदाता की साइट पर ले जाता है। तुलना करें, एक पंक्ति चुनें और पूरा करने के लिए क्लिक करें। हमारे साथ खाते की ज़रूरत नहीं।"
+  "wizard.send": "mangomundi खुद पैसा नहीं भेजता — यह आपको सबसे अच्छा विकल्प दिखाता है और फिर ट्रांसफ़र पूरा करने के लिए सीधे उस प्रदाता की साइट पर ले जाता है। तुलना करें, एक पंक्ति चुनें और पूरा करने के लिए क्लिक करें। हमारे साथ खाते की ज़रूरत नहीं।",
+  "comparator.business.addToRequestHint": "मैंगोमुंडी आपकी ओर से प्रदाता के साथ इसे एक अनुरोध के रूप में प्रबंधित करके भेजती है।",
+  "comparator.business.request.empty": "यहां जोड़ने के लिए नीचे प्रदाताओं को चुनें।",
+  "comparator.saved.title": "सहेजी गई दरें",
+  "comparator.saved.remove": "हटाएं",
+  "comparator.row.sharedRate": "साझा की गई दर"
 }
