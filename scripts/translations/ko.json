@@ -129,7 +129,7 @@
   "comparator.badge.promoPrefix": "프로모:",
   "comparator.badge.unconfirmed": "미확인",
   "comparator.buildQuery": "쿼리 작성",
-  "comparator.business.addToRequest": "요청에 추가",
+  "comparator.business.addToRequest": "특별 견적 요청에 추가",
   "comparator.business.added": "추가됨",
   "comparator.business.contactCard.body": "브로커를 소개해 드릴 뿐 가격 책정에는 관여하지 않습니다. 어떤 경우든 비용은 발생하지 않습니다.",
   "comparator.business.contactCard.title": "직접 상담을 원하시나요?",
@@ -824,5 +824,10 @@
   "wizard.quickActionsAria": "시작하기 위한 빠른 작업",
   "wizard.reportNote": "{from}-{to} 경로에 대한 관심을 기록했습니다. 수요가 늘어나면 우선적으로 지원하겠습니다.",
   "wizard.runFirst": "먼저 비교를 실행하세요 — 표 데이터로만 답변하며 외부 소스는 사용하지 않습니다.",
-  "wizard.send": "mangomundi는 돈을 직접 옮기지 않습니다 — 최선의 옵션을 보여주고, 해당 업체 사이트로 바로 안내해 송금을 완료합니다. 비교하고 한 줄을 선택해 클릭하면 끝. 저희 계정은 필요 없습니다."
+  "wizard.send": "mangomundi는 돈을 직접 옮기지 않습니다 — 최선의 옵션을 보여주고, 해당 업체 사이트로 바로 안내해 송금을 완료합니다. 비교하고 한 줄을 선택해 클릭하면 끝. 저희 계정은 필요 없습니다.",
+  "comparator.business.addToRequestHint": "mangomundi가 귀하를 대신하여 제공업체와 관리하는 하나의 요청으로 전송됩니다.",
+  "comparator.business.request.empty": "아래에서 공급자를 선택하면 여기에 추가됩니다.",
+  "comparator.saved.title": "저장된 환율",
+  "comparator.saved.remove": "제거",
+  "comparator.row.sharedRate": "공유된 환율"
 }
