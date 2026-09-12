@@ -646,13 +646,12 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.business.exclusiveTag": "Exclusive",
     "comparator.business.estOn": "Est. on {amount}",
     "comparator.business.saved": "saved",
-    // 2026-09-10 feedback — "los botones de add to request en realidad
-    // deberian ser un tick para llenar tipo opcion que diga agregar a
-    // solicitud de cotizacion especial para el proveedor con gestion de
-    // mangomundi": pasó de botón sólido a checkbox — el label visible se
-    // mantiene corto (entra en el chip), la explicación completa
-    // ("gestionado por mangomundi") vive en el tooltip de abajo.
-    "comparator.business.addToRequest": "Add to special quote request",
+    // 2026-09-11 feedback — "el boton agregado de seleccion llamalo: add
+    // to request": vuelve al label corto (había pasado a "Add to special
+    // quote request" la vuelta anterior) — la explicación de "gestionado
+    // por mangomundi" sigue viva en el tooltip (`addToRequestHint`,
+    // abajo), no hace falta que esté en el label visible también.
+    "comparator.business.addToRequest": "Add to request",
     "comparator.business.added": "Added",
     "comparator.business.addToRequestHint":
       "Sent as one request that mangomundi manages with the provider for you.",
