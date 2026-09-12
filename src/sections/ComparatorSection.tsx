@@ -894,6 +894,16 @@ export function ComparatorSection({
   const [searchDrawerOpen, setSearchDrawerOpen] = useState(false);
   /** §4.2 — el rail de filtros de §3.4, como Drawer, debajo de `lg`. */
   const [filtersDrawerOpen, setFiltersDrawerOpen] = useState(false);
+  // 2026-09-12 feedback — "en mobile agrego en add to request pero
+  // despues no veo la barra para seleccionar": `BusinessRequestPanel` y
+  // `SavedRatesCard` viven en el `<aside>`, que es `hidden lg:flex` — no
+  // existe en absoluto por debajo de `lg`, así que tildar el checkbox de
+  // una fila no tenía ningún panel visible donde reflejarse en mobile.
+  // Mismo patrón que `filtersDrawerOpen` (arriba): un botón visible que
+  // abre el mismo panel real dentro de un Drawer, en vez de una segunda
+  // implementación aparte.
+  const [requestDrawerOpen, setRequestDrawerOpen] = useState(false);
+  const [savedDrawerOpen, setSavedDrawerOpen] = useState(false);
   // Was a per-message unread COUNT; nothing auto-populates `chat` anymore
   // (see compareMut's onSuccess), so there's no message count left to keep.
   // A plain boolean — "a result landed while the panel was collapsed" — is
@@ -3299,6 +3309,47 @@ export function ComparatorSection({
                       </button>
                     )}
 
+                    {/* 2026-09-12 feedback — "en mobile agrego en add to
+                        request pero despues no veo la barra para
+                        seleccionar": mismo tratamiento que el botón de
+                        Filters de arriba — cuadrado, con badge de conteo,
+                        abre el panel real (BusinessRequestPanel) en un
+                        Drawer. Sólo business, y sólo una vez que hay
+                        resultado (mismo gate que el panel del rail). */}
+                    {!embedded && segment === "business" && result && (
+                      <button
+                        type="button"
+                        onClick={() => setRequestDrawerOpen(true)}
+                        aria-label={t("comparator.business.request.title")}
+                        className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-control border border-input bg-card text-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        <Send className="h-4 w-4" aria-hidden />
+                        {requestedSlugs.size > 0 && (
+                          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-cta px-1 text-badge font-bold leading-none text-brand-cta-foreground">
+                            {requestedSlugs.size}
+                          </span>
+                        )}
+                      </button>
+                    )}
+
+                    {/* Mismo botón para la lista de guardados (corazón) —
+                        ambos segmentos, sólo una vez que hay algo
+                        guardado (mismo gate que SavedRatesCard del
+                        rail). */}
+                    {!embedded && result && savedSlugs.size > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => setSavedDrawerOpen(true)}
+                        aria-label={t("comparator.saved.title")}
+                        className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-control border border-input bg-card text-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                      >
+                        <Heart className="h-4 w-4" aria-hidden />
+                        <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-cta px-1 text-badge font-bold leading-none text-brand-cta-foreground">
+                          {savedSlugs.size}
+                        </span>
+                      </button>
+                    )}
+
                     <div
                       className={`flex min-w-0 items-center gap-2 ${
                         embedded ? "flex-wrap" : "overflow-x-auto no-scrollbar"
@@ -3567,6 +3618,63 @@ export function ComparatorSection({
                 {t("comparator.filters.apply")}
                 {activeFilterCount > 0 ? ` (${activeFilterCount})` : ""}
               </button>
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
+
+      {/* 2026-09-12 feedback — "en mobile agrego en add to request pero
+          despues no veo la barra para seleccionar": mismo patrón que el
+          Drawer de Filters de arriba — reusa BusinessRequestPanel entero
+          (mismo componente que el rail de desktop), no una segunda
+          implementación. Sin botón "Aplicar" fijo abajo — a diferencia de
+          Filters, el propio panel ya tiene su CTA de envío. */}
+      {!embedded && segment === "business" && result && (
+        <Drawer open={requestDrawerOpen} onOpenChange={setRequestDrawerOpen}>
+          <DrawerContent className="max-h-[85vh] lg:hidden">
+            <DrawerHeader className="pb-2">
+              <DrawerTitle className="text-metric font-bold">
+                {t("comparator.business.request.title")}
+              </DrawerTitle>
+            </DrawerHeader>
+            <div className="overflow-y-auto px-4 pb-6">
+              <BusinessRequestPanel
+                amount={amount}
+                from={from}
+                to={to}
+                sendingCountry={sendingCountry}
+                receivingCountry={receivingCountry}
+                rows={result.rows}
+                requestedSlugs={requestedSlugs}
+                onToggleRequested={toggleRequestedSlug}
+                contractTypeLabel={t(`comparator.contractType.${contractType}`)}
+                frequencyLabel={t(
+                  `comparator.frequency.${frequency === "one_off" ? "oneOff" : frequency}`,
+                )}
+                status={requestPanelStatus}
+                onSend={sendBusinessRequest}
+              />
+            </div>
+          </DrawerContent>
+        </Drawer>
+      )}
+
+      {/* Mismo patrón para la lista de guardados. */}
+      {!embedded && result && (
+        <Drawer open={savedDrawerOpen} onOpenChange={setSavedDrawerOpen}>
+          <DrawerContent className="max-h-[85vh] lg:hidden">
+            <DrawerHeader className="pb-2">
+              <DrawerTitle className="text-metric font-bold">
+                {t("comparator.saved.title")}
+              </DrawerTitle>
+            </DrawerHeader>
+            <div className="overflow-y-auto px-4 pb-6">
+              <SavedRatesCard
+                rows={result.rows}
+                quote={result.quote}
+                savedSlugs={savedSlugs}
+                onToggleSaved={toggleSavedSlug}
+              />
             </div>
           </DrawerContent>
         </Drawer>
@@ -5920,6 +6028,14 @@ function BusinessRowExtra({
         )}
       </div>
 
+      {/* 2026-09-12 feedback — "destaca un poco mejor el selector o el
+          contorno del selector de add to request": `border-border` es un
+          tono muy sutil, pensado para líneas divisorias — casi invisible
+          en un control que se supone se puede tocar. Pasa a `border-input`
+          (el mismo tono que ya usan los demás controles tocables del
+          sitio — los combobox de país/moneda, por ejemplo) + fondo
+          `bg-card` en vez de transparente, para que se lea como una caja
+          real, no una línea suelta. */}
       <button
         type="button"
         onClick={onToggleRequested}
@@ -5929,7 +6045,7 @@ function BusinessRowExtra({
         className={`flex h-11 w-full shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-control border px-3 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-8 sm:w-auto sm:justify-start sm:border-y-0 sm:border-r-0 sm:border-l sm:pl-3 sm:pr-2.5 sm:text-badge ${
           requested
             ? "border-brand-cta bg-accent/10 text-accent-text"
-            : "border-border bg-transparent text-foreground hover:bg-muted/50"
+            : "border-input bg-card text-foreground hover:border-foreground/40 hover:bg-muted/50"
         }`}
       >
         <span
