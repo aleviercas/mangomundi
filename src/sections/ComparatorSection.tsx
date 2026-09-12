@@ -5872,12 +5872,24 @@ function BusinessRowExtra({
   // "el boton [Add to request] tiene que estar en el rectangulo de abajo
   // en la misma linea horizontal que spread minimum settlement contracts
   // ... agregale un divisor vertical asi queda como una continuacion del
-  // espacio de arriba": el checkbox pasa a compartir esta misma fila (no
-  // una fila propia abajo) — separado por un `border-l`, mismo lenguaje
-  // visual que la línea vertical entre el bloque de identidad y el de
-  // precio más arriba en la fila.
+  // espacio de arriba": el checkbox comparte fila con las métricas — sólo
+  // a partir de `sm`. En mobile, separado por `border-l` sería una línea
+  // vertical minúscula sin nada a su lado (columna angosta, todo apilado),
+  // así que no aplica ahí.
+  //
+  // 2026-09-12 feedback — "en mobile que el checkbox de add to request
+  // aparezca arriba del spread/minimum/settlement... y del mismo ancho
+  // que el boton de ir al proveedor": en mobile pasa a su propia fila,
+  // ARRIBA de las métricas (no al lado), a todo el ancho — mismo h-11/
+  // w-full que el CTA de arriba (ver el wrapper `[&>button]:h-11` del
+  // bloque de precio) para que se sienta como el mismo tipo de control,
+  // no una franja más chica perdida entre otras dos. `flex-col-reverse`
+  // sobre el mismo orden de DOM (métricas primero, checkbox después) es
+  // lo que logra "checkbox arriba" en mobile sin duplicar el JSX — a
+  // partir de `sm` vuelve al orden normal (métricas, después el
+  // checkbox), fila en vez de columna.
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:gap-3">
       <div className="min-w-0 flex-1 text-badge leading-snug text-muted-foreground">
         {metrics.map((m, i) => (
           <span key={m.labelKey}>
@@ -5914,12 +5926,11 @@ function BusinessRowExtra({
         aria-pressed={requested}
         aria-label={`${requested ? t("comparator.business.added") : t("comparator.business.addToRequest")} — ${row.name}`}
         title={t("comparator.business.addToRequestHint")}
-        className={`flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-control border pl-3 pr-2.5 text-badge font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+        className={`flex h-11 w-full shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-control border px-3 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-8 sm:w-auto sm:justify-start sm:border-y-0 sm:border-r-0 sm:border-l sm:pl-3 sm:pr-2.5 sm:text-badge ${
           requested
             ? "border-brand-cta bg-accent/10 text-accent-text"
-            : "border-l border-border bg-transparent text-foreground hover:bg-muted/50"
+            : "border-border bg-transparent text-foreground hover:bg-muted/50"
         }`}
-        style={{ borderLeftWidth: requested ? undefined : "1px" }}
       >
         <span
           aria-hidden
