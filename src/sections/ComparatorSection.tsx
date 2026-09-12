@@ -3648,10 +3648,16 @@ function FiltersCard({
   // El rank-by (trust/fees/rate) sigue sin vivir acá (2026-09-01: "sacalo
   // del cuadro vertical de filters"); su única casa es el dropdown "Sort"
   // al lado de las 3 tabs.
-  const sectionClass = "px-4 py-3.5";
+  // 2026-09-11 feedback — "ver si el panel de filters de la izquierda se
+  // puede comprimir un poco tal vez reorganizando en cuanto a lo alto":
+  // sección py-3.5→py-3 y fila py-1.5→py-1 — cada sección/fila pierde
+  // unos pocos px, pero con 2-3 secciones y 4-5 filas suma un ahorro real
+  // de alto total sin que se sienta apretado (sigue habiendo aire, sólo
+  // menos del que sobraba).
+  const sectionClass = "px-4 py-3";
   const headingClass = "text-badge font-semibold uppercase tracking-wide text-muted-foreground";
   const rowClass =
-    "flex cursor-pointer items-center gap-2.5 py-1.5 text-meta text-foreground transition-colors hover:text-brand-cta";
+    "flex cursor-pointer items-center gap-2.5 py-1 text-meta text-foreground transition-colors hover:text-brand-cta";
 
   return (
     <div className="compare-card divide-y divide-border">
@@ -4641,10 +4647,6 @@ function BusinessRequestPanel({
   }, [status]);
   const selectedRows = rows.filter((r) => requestedSlugs.has(r.slug));
   const selectedCount = selectedRows.length;
-  const sendingCountryName = COUNTRY_BY_CODE[sendingCountry]?.name ?? sendingCountry;
-  const receivingCountryName = receivingCountry
-    ? (COUNTRY_BY_CODE[receivingCountry]?.name ?? receivingCountry)
-    : "—";
 
   if (status === "sent") {
     return (
@@ -4706,11 +4708,20 @@ function BusinessRequestPanel({
         <StatItem label={t("comparator.business.request.volume")}>
           {amount.toLocaleString(undefined, { maximumFractionDigits: 0 })} {from}
         </StatItem>
+        {/* 2026-09-11 feedback — "en el de your request la ruta pone un
+            pais abajo del otro": nombres completos ("United Kingdom",
+            "Andorra") no entran en una sola línea a 240px de ancho de
+            rail — `flex-wrap` los partía a mitad de la ruta, un país
+            arriba y otro abajo. Pasa al código de 2 letras junto a la
+            bandera (ya suficiente para identificar el país al lado de su
+            propia bandera) — mismo patrón corto que `comparator.business.
+            request.currency` (from → to) ya usa un renglón más abajo. */}
         <StatItem label={t("comparator.business.request.route")}>
-          <span className="inline-flex flex-wrap items-center gap-1.5">
-            <FlagIcon country={sendingCountry} /> {sendingCountryName}
+          <span className="inline-flex items-center gap-1 whitespace-nowrap">
+            <FlagIcon country={sendingCountry} /> {sendingCountry}
             <span>→</span>
-            {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountryName}
+            {receivingCountry && <FlagIcon country={receivingCountry} />}{" "}
+            {receivingCountry || "—"}
           </span>
         </StatItem>
         <StatItem label={t("comparator.business.request.currency")}>
@@ -5561,7 +5572,15 @@ function ProviderRow({
   const rowActionClass =
     "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50";
 
-  const saveButton = row.affiliate_url ? (
+  // 2026-09-11 feedback — "el boton de favoritos y share dejaselo a todos
+  // no solo a los que tienen link": ambos estaban atrás del mismo gate que
+  // el CTA (`row.affiliate_url`) — tenía sentido para el CTA (no hay a
+  // dónde ir sin link real) pero no para estos dos: guardar una tarifa
+  // para comparar después, o compartir la página de mangomundi con ese
+  // corredor, son útiles aunque ese proveedor puntual todavía no tenga
+  // link de afiliado cargado (ver mangomundi-afiliados-clasificacion.md —
+  // gran parte del catálogo todavía está en ese estado).
+  const saveButton = (
     <button
       type="button"
       onClick={onToggleSaved}
@@ -5571,9 +5590,9 @@ function ProviderRow({
     >
       <Heart className={`h-4 w-4 ${saved ? "fill-current" : ""}`} aria-hidden />
     </button>
-  ) : null;
+  );
 
-  const shareButton = row.affiliate_url ? (
+  const shareButton = (
     <button
       type="button"
       onClick={handleShare}
@@ -5587,7 +5606,7 @@ function ProviderRow({
         <Share2 className="h-4 w-4" aria-hidden />
       )}
     </button>
-  ) : null;
+  );
 
   return (
     // docs/kayak-redesign-spec.md §3.7 — la fila deja de ser una tarjeta
@@ -5755,51 +5774,6 @@ function ProviderRow({
         >
           {cta}
         </div>
-        {/* 2026-09-10 feedback — "en business... como dijimos en el
-            selector negro remover ese boton y poner en ese costado abajo
-            del precio un recuadro similar con la opcion de hacer click
-            para agregarlo al request, pero no tiene que estar lejos del
-            precio ni del boton de accion... se le puede poner una linea
-            separadora como en el cuadro del precio y del boton de ir al
-            proveedor así tiene el mismo formato que la parte de arriba":
-            el checkbox se muda de BusinessRowExtra (una sección aparte,
-            al pie de toda la fila) a este mismo bloque — mismo costado
-            que el precio y el CTA, separado apenas por una línea, no una
-            sección entera aparte. `stopPropagation` por la misma razón
-            que el wrapper del CTA arriba: este bloque entero dispara la
-            navegación al afiliado on click, tildar el checkbox no debería
-            disparar eso también. */}
-        {businessExtra && (
-          <div
-            className="mt-1.5 border-t border-border pt-1.5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={businessExtra.onToggleRequested}
-              aria-pressed={businessExtra.requested}
-              aria-label={`${businessExtra.requested ? t("comparator.business.added") : t("comparator.business.addToRequest")} — ${row.name}`}
-              title={t("comparator.business.addToRequestHint")}
-              className={`flex h-9 w-full shrink-0 items-center gap-2 whitespace-nowrap rounded-control border px-2.5 text-xs font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                businessExtra.requested
-                  ? "border-brand-cta bg-accent/10 text-accent-text"
-                  : "border-input bg-card text-foreground hover:border-foreground/40"
-              }`}
-            >
-              <span
-                aria-hidden
-                className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border transition-colors ${
-                  businessExtra.requested
-                    ? "border-brand-cta bg-brand-cta text-white"
-                    : "border-input bg-card"
-                }`}
-              >
-                {businessExtra.requested && <Check className="h-3 w-3" strokeWidth={3} />}
-              </span>
-              <span className="truncate">{t("comparator.business.addToRequest")}</span>
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Pie — la línea de confianza y la disclosure de afiliado dejan de
@@ -5813,7 +5787,14 @@ function ProviderRow({
 
       {businessExtra && (
         <div className="border-t border-border px-4 py-2.5 sm:col-span-2">
-          <BusinessRowExtra row={row} quote={quote} amount={businessExtra.amount} savedVsRetail={businessExtra.savedVsRetail} />
+          <BusinessRowExtra
+            row={row}
+            quote={quote}
+            amount={businessExtra.amount}
+            savedVsRetail={businessExtra.savedVsRetail}
+            requested={businessExtra.requested}
+            onToggleRequested={businessExtra.onToggleRequested}
+          />
         </div>
       )}
     </div>
@@ -5833,6 +5814,8 @@ function BusinessRowExtra({
   quote,
   amount,
   savedVsRetail,
+  requested,
+  onToggleRequested,
 }: {
   row: ComparisonResult["rows"][number];
   quote: string;
@@ -5840,6 +5823,8 @@ function BusinessRowExtra({
   /** null when the retail baseline hasn't loaded yet — the saved figure is
    *  hidden rather than guessed (see ResultsBlock's own prop comment). */
   savedVsRetail: number | null;
+  requested: boolean;
+  onToggleRequested: () => void;
 }) {
   const { t } = useI18n();
   const metrics: Array<{ labelKey: string; value: string; estimated?: boolean }> = [
@@ -5869,47 +5854,48 @@ function BusinessRowExtra({
 
   // 2026-09-10 feedback — "en business en los resultados sacale el
   // recuadro interno a la informacion de business y usa la misma letra
-  // que se usa en la parte de arriba, con los datos similares a los de
-  // personal, ya que en la informacion adicional de business al estar en
-  // negrita se ve medio raro": el checkbox de "Add to special quote
-  // request" se mudó al bloque de precio (ver ProviderRow, más arriba) —
-  // lo único que queda acá son las 4 métricas propias de business
-  // (spread/minimum/settlement/contracts). Antes vivían en un
-  // `rounded-xl border-dashed bg-muted/30` — su propia caja, con
-  // StatItem's tipografía de label diminuto en mayúsculas + valor en
-  // negrita — leyéndose como una sección aparte, más pesada que el resto
-  // de la fila. Pasa al mismo patrón que `trustLine` (la línea de Fee ·
-  // Rate · actualización que ya vive arriba, en la fila "de personal"):
-  // sin caja, "·" entre pares label/valor, `text-badge` en vez de bold
-  // — misma letra, no una sección visualmente distinta.
-  const footerDot = (
-    <span className="whitespace-nowrap" style={{ color: "#B3A698" }}>
-      ·
-    </span>
-  );
-
+  // que se usa en la parte de arriba": sin caja, `text-badge` en vez de
+  // bold — misma letra que trustLine (la línea de Fee · Rate de arriba),
+  // no una sección visualmente distinta.
+  //
+  // 2026-09-11 feedback — "el spread minimun settlement y contract
+  // escribilo todo como texto corrido, así con los puntitos que separa
+  // pero que quede uno a continuación de otro": la versión anterior
+  // envolvía cada par label/valor en su propio `inline-flex` dentro de un
+  // `flex flex-wrap` — funcionalmente parecido, pero se leía más como
+  // chips sueltos que como una frase. Pasa a spans simples con flujo
+  // `inline` normal (nada de flex acá) — el " · " es texto literal entre
+  // ellos, no un elemento aparte — así se comporta como un párrafo
+  // cualquiera: una sola tira de texto que se corta donde el ancho real
+  // lo pide, no donde un `flex-wrap` decide.
+  //
+  // "el boton [Add to request] tiene que estar en el rectangulo de abajo
+  // en la misma linea horizontal que spread minimum settlement contracts
+  // ... agregale un divisor vertical asi queda como una continuacion del
+  // espacio de arriba": el checkbox pasa a compartir esta misma fila (no
+  // una fila propia abajo) — separado por un `border-l`, mismo lenguaje
+  // visual que la línea vertical entre el bloque de identidad y el de
+  // precio más arriba en la fila.
   return (
-    <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-badge leading-snug text-muted-foreground">
-      {metrics.map((m, i) => (
-        <span key={m.labelKey} className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          {i > 0 && footerDot}
-          <span className="inline-flex items-center gap-1">
+    <div className="flex items-center gap-3">
+      <div className="min-w-0 flex-1 text-badge leading-snug text-muted-foreground">
+        {metrics.map((m, i) => (
+          <span key={m.labelKey}>
+            {i > 0 && " · "}
             {t(m.labelKey)} <span className="font-semibold text-foreground">{m.value}</span>
             {m.estimated && (
               <span
                 title={t("comparator.business.metric.estimatedTooltip")}
-                className="cursor-help rounded-sm bg-accent/15 px-1 py-px text-badge font-semibold text-accent-text"
+                className="ml-1 cursor-help rounded-sm bg-accent/15 px-1 py-px text-badge font-semibold text-accent-text"
               >
                 {t("comparator.business.metric.estimated")}
               </span>
             )}
           </span>
-        </span>
-      ))}
-      {savedVsRetail != null && savedVsRetail > 0 && (
-        <span className="inline-flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          {footerDot}
-          <span className="inline-flex items-center gap-1">
+        ))}
+        {savedVsRetail != null && savedVsRetail > 0 && (
+          <span>
+            {" · "}
             {t("comparator.business.estOn").replace(
               "{amount}",
               amount.toLocaleString(undefined, { maximumFractionDigits: 0 }),
@@ -5919,8 +5905,32 @@ function BusinessRowExtra({
             </span>{" "}
             {t("comparator.business.saved")}
           </span>
+        )}
+      </div>
+
+      <button
+        type="button"
+        onClick={onToggleRequested}
+        aria-pressed={requested}
+        aria-label={`${requested ? t("comparator.business.added") : t("comparator.business.addToRequest")} — ${row.name}`}
+        title={t("comparator.business.addToRequestHint")}
+        className={`flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-control border pl-3 pr-2.5 text-badge font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+          requested
+            ? "border-brand-cta bg-accent/10 text-accent-text"
+            : "border-l border-border bg-transparent text-foreground hover:bg-muted/50"
+        }`}
+        style={{ borderLeftWidth: requested ? undefined : "1px" }}
+      >
+        <span
+          aria-hidden
+          className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[3px] border transition-colors ${
+            requested ? "border-brand-cta bg-brand-cta text-white" : "border-input bg-card"
+          }`}
+        >
+          {requested && <Check className="h-2.5 w-2.5" strokeWidth={3} />}
         </span>
-      )}
+        {t("comparator.business.addToRequest")}
+      </button>
     </div>
   );
 }
