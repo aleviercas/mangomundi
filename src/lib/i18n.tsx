@@ -481,7 +481,7 @@ export const DICTS: Record<Lang, Dict> = {
     // pantalla no está diseñada").
     "home.hero.localExchangeLink": "Exchanging currency inside one country? ↗",
     "home.dual.title": "Built for every cross-border flow — retail and corporate",
-    "home.dual.retail.title": "Retail Remittances & Private Wealth",
+    "home.dual.retail.title": "Personal Remittances & Private Wealth",
     "home.dual.retail.body":
       "Send money internationally, pay for global travel, or manage personal cross-border transfers. Access wholesale interbank rates with zero hidden markups, absolute transparency, and automated tracking.",
     "home.dual.corporate.title": "Corporate Treasury & Operations",
@@ -2542,7 +2542,7 @@ const PAGE_KEYS: Partial<Record<Lang, Dict>> = {
     "blog.sponsored.forBusiness": "for your business",
     "blog.sponsored.forIndividuals": "for individuals",
     "blog.audience.business": "Business",
-    "blog.audience.retail": "Retail",
+    "blog.audience.retail": "Personal",
     "blog.audience.both": "Both",
     "blog.related.heading": "Related articles",
 
