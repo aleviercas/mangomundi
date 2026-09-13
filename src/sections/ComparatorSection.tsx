@@ -559,6 +559,23 @@ export function ComparatorSection({
     // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md.
     if (/^(\/[a-z]{2})?\/send\//.test(pathname)) {
       setSegment(next);
+      // 2026-09-13 feedback — "si ya estás con resultados del comparador
+      // y le cambias de business a personal o viceversa, porque te manda
+      // de nuevo al home? no debería ir a los resultados directamente?
+      // cómo hacen las mejores prácticas?": Kayak/Google Flights refrescan
+      // un cambio de modo (ida-vuelta ↔ solo ida, clase de cabina) EN EL
+      // LUGAR, sin volver a una pantalla en blanco — es la misma tarea,
+      // sólo cambia un criterio. Antes esta rama sólo hacía
+      // `setSegment(next)` sin volver a comparar — el estado cambiaba,
+      // pero lo que se veía en pantalla seguía siendo el resultado viejo
+      // (con las tarifas de personal, aunque el toggle ya dijera
+      // "business") hasta que la persona apretaba "Update" ella misma.
+      // Pasa el segmento nuevo explícito al override de `compareMut` (ver
+      // su propio comentario) en vez de depender de que este mismo
+      // closure ya vea el `segment` actualizado, que todavía no pasó.
+      if (result) {
+        compareMut.mutate({ from, to, sendingCountry, receivingCountry, segment: next });
+      }
       return;
     }
     const onBusinessRoute = /^(\/[a-z]{2})?\/business(\/|$)/.test(pathname);
@@ -588,7 +605,20 @@ export function ComparatorSection({
           amount,
           origin: sendingCountry || undefined,
           destination: receivingCountry || undefined,
-          autoRun: false,
+          // 2026-09-13 feedback — "si ya estás con resultados... por qué
+          // te manda de nuevo al home? no debería ir a los resultados
+          // directamente?": esta rama sólo se toma cuando "/" ↔
+          // "/business" son rutas DISTINTAS (fuera de "/send/:corridor",
+          // que ya se resuelve arriba sin navegar) — la navegación en sí
+          // no se puede evitar, esas son páginas distintas por SEO. Pero
+          // forzar `autoRun: false` significaba que aunque ya hubiera un
+          // resultado en pantalla, la página de destino arrancaba en
+          // blanco igual, pidiendo un click de "Compare" de más. Ahora
+          // sólo se fuerza a false cuando todavía no había nada que
+          // preservar (alguien tocando el toggle en un formulario vacío
+          // no debería disparar una comparación de la nada) — si ya había
+          // resultado, la página de destino lo recalcula sola al llegar.
+          autoRun: Boolean(result),
         }),
       });
     } else {
@@ -603,7 +633,7 @@ export function ComparatorSection({
           segment: undefined,
           origin: sendingCountry || undefined,
           destination: receivingCountry || undefined,
-          autoRun: false,
+          autoRun: Boolean(result),
         }),
       });
     }
@@ -1012,18 +1042,31 @@ export function ComparatorSection({
       to: string;
       sendingCountry?: string;
       receivingCountry?: string;
+      /** 2026-09-13 feedback — "si ya estás con resultados... y le cambias
+       *  de business a personal o viceversa, porque te manda de nuevo al
+       *  home? no debería ir a los resultados directamente?": sin esto,
+       *  `mutationFn` sólo podía leer `segment` del closure de este mismo
+       *  render — llamar `setSegment(next)` y `compareMut.mutate()` en el
+       *  mismo handler todavía vería el segmento VIEJO acá (los closures
+       *  capturan el valor de cuando se creó `compareMut`, no una
+       *  referencia viva al state). Pasarlo explícito en el override es lo
+       *  que le permite a `handleSegmentChange` (más abajo) re-correr la
+       *  comparación con el segmento nuevo en el mismo momento en que lo
+       *  cambia, sin esperar a un re-render. */
+      segment?: Segment;
     }) => {
       const useFrom = override?.from ?? from;
       const useTo = override?.to ?? to;
       const useSending = override?.sendingCountry ?? sendingCountry;
       const useReceiving = override?.receivingCountry ?? receivingCountry;
+      const useSegment = override?.segment ?? segment;
       const requestId = ++requestRef.current;
       const data = await compareFn({
         data: {
           amount,
           from: useFrom,
           to: useTo,
-          segment,
+          segment: useSegment,
           amountMode,
           sendingCountry: useSending || undefined,
           receivingCountry: useReceiving || undefined,
