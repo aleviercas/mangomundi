@@ -94,7 +94,9 @@ if (UPDATE_BASELINE) {
     if (typeof v === "string") baseline[k] = sha256(v);
   }
   writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2) + "\n");
-  console.log(`[i18n-staleness] baseline updated — ${Object.keys(baseline).length} keys snapshotted.`);
+  console.log(
+    `[i18n-staleness] baseline updated — ${Object.keys(baseline).length} keys snapshotted.`,
+  );
   process.exit(0);
 }
 
@@ -159,13 +161,34 @@ for (const [k, enVal] of Object.entries(enDict)) {
 //    translation should be).
 // ---------------------------------------------------------------------------
 const SCRIPT_RANGES: Partial<Record<Lang, [number, number][]>> = {
-  ar: [[0x0600, 0x06ff], [0x0750, 0x077f], [0x08a0, 0x08ff], [0xfb50, 0xfdff], [0xfe70, 0xfeff]],
-  ur: [[0x0600, 0x06ff], [0x0750, 0x077f], [0x08a0, 0x08ff], [0xfb50, 0xfdff], [0xfe70, 0xfeff]],
+  ar: [
+    [0x0600, 0x06ff],
+    [0x0750, 0x077f],
+    [0x08a0, 0x08ff],
+    [0xfb50, 0xfdff],
+    [0xfe70, 0xfeff],
+  ],
+  ur: [
+    [0x0600, 0x06ff],
+    [0x0750, 0x077f],
+    [0x08a0, 0x08ff],
+    [0xfb50, 0xfdff],
+    [0xfe70, 0xfeff],
+  ],
   bn: [[0x0980, 0x09ff]],
   hi: [[0x0900, 0x097f]],
-  zh: [[0x4e00, 0x9fff], [0x3400, 0x4dbf]],
-  ja: [[0x3040, 0x30ff], [0x4e00, 0x9fff]],
-  ko: [[0xac00, 0xd7a3], [0x1100, 0x11ff]],
+  zh: [
+    [0x4e00, 0x9fff],
+    [0x3400, 0x4dbf],
+  ],
+  ja: [
+    [0x3040, 0x30ff],
+    [0x4e00, 0x9fff],
+  ],
+  ko: [
+    [0xac00, 0xd7a3],
+    [0x1100, 0x11ff],
+  ],
   th: [[0x0e00, 0x0e7f]],
   ru: [[0x0400, 0x04ff]],
 };
@@ -232,12 +255,16 @@ lines.push(
 );
 for (const k of staleKeys) lines.push(`  - ${k}  (EN: ${JSON.stringify(enDict[k]).slice(0, 90)})`);
 lines.push("");
-lines.push(`## 2) Untranslated (EN copy-pasted into ${UNTRANSLATED_THRESHOLD}+ languages): ${untranslated.length}`);
+lines.push(
+  `## 2) Untranslated (EN copy-pasted into ${UNTRANSLATED_THRESHOLD}+ languages): ${untranslated.length}`,
+);
 for (const { key, count, langs: ls } of untranslated) {
   lines.push(`  - ${key}  (${count}/${langs.length} langs: ${ls.join(", ")})`);
 }
 lines.push("");
-lines.push(`## 3) Wrong script (Latin/English text in a non-Latin-script language): ${wrongScript.length}`);
+lines.push(
+  `## 3) Wrong script (Latin/English text in a non-Latin-script language): ${wrongScript.length}`,
+);
 for (const { lang, key, value } of wrongScript) {
   lines.push(`  - [${lang}] ${key}  ->  ${JSON.stringify(value).slice(0, 90)}`);
 }
@@ -246,7 +273,9 @@ lines.push("");
 writeFileSync(REPORT_PATH, lines.join("\n") + "\n");
 
 const totalIssues = staleKeys.length + untranslated.length + wrongScript.length;
-console.log(`[i18n-staleness] stale: ${staleKeys.length}, untranslated: ${untranslated.length}, wrong-script: ${wrongScript.length}`);
+console.log(
+  `[i18n-staleness] stale: ${staleKeys.length}, untranslated: ${untranslated.length}, wrong-script: ${wrongScript.length}`,
+);
 console.log(`[i18n-staleness] full report → ${REPORT_PATH}`);
 
 if (!existsSync(BASELINE_PATH)) {

@@ -36,5 +36,20 @@ export default tseslint.config(
       "@typescript-eslint/no-unused-vars": "off",
     },
   },
+  {
+    // shadcn/ui-generated primitives (button.tsx, badge.tsx, form.tsx,
+    // navigation-menu.tsx, sidebar.tsx, toggle.tsx, ...) export a component
+    // alongside a `cva()` variants function in the same file by upstream
+    // convention — that's exactly how `npx shadcn add` generates them, and
+    // every real shadcn/ui project has this shape. Splitting them would
+    // deviate from that convention (breaking future `shadcn add --overwrite`
+    // updates) for zero production benefit — this rule only affects dev
+    // Fast Refresh behavior (a full reload instead of a hot swap when
+    // editing one of these files), never the production build or runtime.
+    files: ["src/components/ui/**/*.{ts,tsx}"],
+    rules: {
+      "react-refresh/only-export-components": "off",
+    },
+  },
   eslintPluginPrettier,
 );

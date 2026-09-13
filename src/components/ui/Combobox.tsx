@@ -376,9 +376,7 @@ export const Combobox = React.forwardRef<ComboboxHandle, ComboboxProps>(function
         <DrawerTrigger asChild>{trigger}</DrawerTrigger>
         <DrawerContent className="mt-0 flex h-[100dvh] max-h-[100dvh] flex-col rounded-none border-0 p-0">
           <DrawerHeader className="shrink-0 border-b border-border px-4 pb-3 pt-3 text-left">
-            <DrawerTitle className="text-metric font-bold">
-              {ariaLabel ?? placeholder}
-            </DrawerTitle>
+            <DrawerTitle className="text-metric font-bold">{ariaLabel ?? placeholder}</DrawerTitle>
           </DrawerHeader>
           <div className="flex min-h-0 flex-1 flex-col px-1">{commandContent(true)}</div>
         </DrawerContent>
@@ -442,9 +440,7 @@ function highlightMatch(label: string, query: string): React.ReactNode {
   return (
     <>
       {label.slice(0, idx)}
-      <strong className="font-semibold text-foreground">
-        {label.slice(idx, idx + q.length)}
-      </strong>
+      <strong className="font-semibold text-foreground">{label.slice(idx, idx + q.length)}</strong>
       {label.slice(idx + q.length)}
     </>
   );

@@ -48,7 +48,7 @@ export const Route = createFileRoute("/{-$lang}/business")({
       const q = params.lang.toLowerCase();
       const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
       throw redirect({ to: "/{-$lang}/business", params: { lang: target }, statusCode: 301 });
-  }
+    }
   },
   // See index.tsx's identical fix comment on its own loader — corridors
   // come back as loaderData (the router's own, always-hydration-safe

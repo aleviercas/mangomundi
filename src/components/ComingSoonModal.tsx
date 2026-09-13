@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { CheckCircle2, Loader2, Sparkles } from "lucide-react";
 import {
@@ -10,18 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { captureEnterpriseLead } from "@/lib/agent.functions";
 import { useI18n } from "@/lib/i18n";
-
-interface ComingSoonContextValue {
-  open: (source: string) => void;
-}
-
-const ComingSoonContext = createContext<ComingSoonContextValue | null>(null);
-
-export function useComingSoon() {
-  const ctx = useContext(ComingSoonContext);
-  if (!ctx) throw new Error("useComingSoon must be used within ComingSoonProvider");
-  return ctx;
-}
+import { ComingSoonContext } from "@/hooks/use-coming-soon";
 
 export function ComingSoonProvider({ children }: { children: ReactNode }) {
   const { t } = useI18n();

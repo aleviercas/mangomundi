@@ -1040,6 +1040,26 @@ const EXCLUSIVE_CORRIDOR_CANDIDATES: ReadonlyArray<{
   { from: "CAD", to: "PHP", sendingCountry: "CA", receivingCountry: "PH" },
   { from: "CAD", to: "NGN", sendingCountry: "CA", receivingCountry: "NG" },
   { from: "CAD", to: "CNY", sendingCountry: "CA", receivingCountry: "CN" },
+  // 2026-09-12 feedback — "today's routes tienen que aparecer 4, aparecen
+  // 2": same root cause the comment above already documents (a candidate
+  // only qualifies if the real comparator winner happens to be a
+  // has_exclusive_deal provider) — checked Supabase directly (fx_rates
+  // joined to providers.has_exclusive_deal) rather than guessing, and
+  // Wise alone has dozens of real, "confirmado_activo" corridor rows at
+  // 0% spread and a flat fee well under the generic multi-currency
+  // baseline (Atlantic Money: 0% spread + ~$3 flat) that weren't in the
+  // 11-pair list above at all. These 8 are picked from that real data —
+  // each one has Wise (or another has_exclusive_deal provider) beating
+  // every other same-corridor row on fee+spread at the same reference
+  // amount, not assumed:
+  { from: "GBP", to: "INR", sendingCountry: "GB", receivingCountry: "IN" },
+  { from: "GBP", to: "PKR", sendingCountry: "GB", receivingCountry: "PK" },
+  { from: "GBP", to: "ZAR", sendingCountry: "GB", receivingCountry: "ZA" },
+  { from: "GBP", to: "BDT", sendingCountry: "GB", receivingCountry: "BD" },
+  { from: "EUR", to: "MAD", sendingCountry: "ES", receivingCountry: "MA" },
+  { from: "EUR", to: "PLN", sendingCountry: "DE", receivingCountry: "PL" },
+  { from: "EUR", to: "TRY", sendingCountry: "DE", receivingCountry: "TR" },
+  { from: "SAR", to: "INR", sendingCountry: "SA", receivingCountry: "IN" },
 ];
 const EXCLUSIVE_CORRIDOR_REFERENCE_AMOUNT = 1000;
 
