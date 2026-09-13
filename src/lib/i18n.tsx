@@ -682,6 +682,11 @@ export const DICTS: Record<Lang, Dict> = {
     "comparator.business.request.emailPlaceholder": "you@company.com",
     "comparator.business.request.sending": "Sending…",
     "comparator.business.request.cta": "Send request to {n} brokers",
+    // 2026-09-13 feedback — "el boton para enviar el request... como hace
+    // kayak?": barra fija al pie (ver ResultsBlock), Kayak-style "sticky
+    // cart bar" — conteo corto a la izquierda, CTA claro a la derecha.
+    "comparator.business.request.selectedCount": "{n} selected",
+    "comparator.business.request.goToRequest": "Go to request",
     "comparator.business.request.error": "Something went wrong. Please try again.",
     // 2026-09-10 feedback — "la ventana de your request deberia... mostrar
     // los que se seleccionaron y que se vayan agregando en una lista":
