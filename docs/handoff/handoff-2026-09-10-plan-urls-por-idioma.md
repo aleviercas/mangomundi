@@ -231,11 +231,11 @@ a propósito.
 §6.5 más abajo) — `LangSwitcher.tsx` ya no escribe `?lang=`, navega
 directo a la URL con prefijo de idioma real.
 
-## 6.5. Revisión posterior a la implementación de la Opción B (13-sep) — 3 hallazgos reales
+## 6.5. Revisión posterior a la implementación de la Opción B (13-sep) — 4 hallazgos reales
 
 Después de implementar y pushear la Opción B completa, una revisión
 adicional (sin ningún pedido puntual, sólo "¿se puede mejorar algo?")
-encontró 3 problemas reales, no cosméticos:
+encontró 4 problemas reales, no cosméticos:
 
 1. **`/widget` se había quedado a medio migrar.** Su `head()` todavía leía
    `match.search.lang` (el esquema viejo) en vez de `params.lang`, y le
@@ -264,8 +264,22 @@ encontró 3 problemas reales, no cosméticos:
    nuevo `I18nOverride` (`i18n.tsx`) que fuerza el idioma sólo para el
    subárbol de `/embed`, sin tocar el `I18nProvider` global que usa el
    resto del sitio.
+4. **Consecuencia del punto 3: `<html lang>`/`dir` no seguían al idioma
+   detectado dentro de `/embed`.** `I18nOverride` corrige el texto (`t()`)
+   pero el `I18nProvider` de afuera (montado en `__root.tsx`, fuera de
+   cualquier `{-$lang}`) seguía viendo `initialLang: "en"` para `/embed` —
+   inofensivo para idiomas LTR, pero un widget "auto" detectado en árabe o
+   urdu quedaba con texto RTL bajo un documento marcado `dir="ltr"`,
+   rompiendo el layout visualmente. Agregado un efecto en el propio
+   `I18nOverride` que corrige `document.documentElement.lang`/`dir` para
+   ese subárbol específicamente. De paso, encontrado un bug preexistente
+   —no introducido por esta migración— mientras se tocaba esto: `RTL_LANGS`
+   sólo incluía `"ar"`, sin `"ur"` (urdu, que también se escribe de derecha
+   a izquierda y es uno de los 20 idiomas soportados del sitio) — corregido
+   en el mismo cambio, junto con `__root.tsx`'s `<html dir>` (comparaba
+   sólo contra `"ar"` en vez de usar `RTL_LANGS`).
 
-Los 3 quedaron corregidos y verificados (`tsc --noEmit` + `vite build`
+Los 4 quedaron corregidos y verificados (`tsc --noEmit` + `vite build`
 limpios) en la misma sesión que los encontró.
 
 

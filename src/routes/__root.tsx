@@ -10,7 +10,7 @@ import {
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { I18nProvider, SEO_META, useI18n } from "@/lib/i18n";
+import { I18nProvider, SEO_META, RTL_LANGS, useI18n } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 import { ALL_FLAG_URLS } from "@/components/ui/FlagIcon";
 
@@ -259,7 +259,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   const loaderData = Route.useLoaderData();
   const initialLang = loaderData?.initialLang ?? "en";
   return (
-    <html lang={initialLang} dir={initialLang === "ar" ? "rtl" : undefined}>
+    <html lang={initialLang} dir={RTL_LANGS.includes(initialLang) ? "rtl" : undefined}>
       <head>
         <GoogleTagManager />
         <HeadContent />

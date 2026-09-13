@@ -47,7 +47,12 @@ export const SUPPORTED_LANGS: Lang[] = [
   "th",
 ];
 
-export const RTL_LANGS: Lang[] = ["ar"];
+// 2026-09-13 — "ur" (urdu) sumado: es de los 20 idiomas soportados del
+// sitio y su escritura es de derecha a izquierda igual que el árabe —
+// faltaba acá, encontrado al revisar el manejo de RTL para /embed más
+// abajo. No hay ningún comentario que sugiera que la exclusión haya sido
+// intencional, así que se trata como el bug preexistente que parece ser.
+export const RTL_LANGS: Lang[] = ["ar", "ur"];
 
 // Kept for backwards compatibility — no longer used as a gating mechanism.
 // The whole site now exposes all 20 supported languages.
@@ -4068,6 +4073,24 @@ function buildI18nValue(lang: Lang, setLang: (l: Lang) => void): I18nCtx {
  */
 export function I18nOverride({ lang, children }: { lang: Lang; children: React.ReactNode }) {
   const value = useMemo(() => buildI18nValue(lang, () => {}), [lang]);
+  // 2026-09-13 — el I18nProvider de afuera (montado en __root.tsx, fuera
+  // de cualquier `{-$lang}`) sigue viendo `initialLang: "en"` para
+  // `/embed` — nunca se entera de que acá adentro se está mostrando otro
+  // idioma. Sin este efecto, el texto quedaba corregido (vía `t()`) pero
+  // `<html lang>`/`dir` seguían diciendo inglés/LTR — inofensivo para
+  // idiomas LTR, pero rompía visualmente el layout de un widget "auto"
+  // detectado en árabe o urdu (texto RTL bajo un documento marcado LTR).
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const prevLang = document.documentElement.lang;
+    const prevDir = document.documentElement.dir;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = RTL_LANGS.includes(lang) ? "rtl" : "ltr";
+    return () => {
+      document.documentElement.lang = prevLang;
+      document.documentElement.dir = prevDir;
+    };
+  }, [lang]);
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
 
