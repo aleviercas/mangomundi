@@ -82,9 +82,8 @@ import {
   type MasterRateMap,
   type MissingCorridorEntry,
 } from "@/services/providers/MasterRateStore";
+import { AiCopilot, MissingCorridorCta } from "@/components/AiCopilot";
 import {
-  AiCopilot,
-  MissingCorridorCta,
   buildWizardContext,
   resolveWizardLocale,
   localHowToCompare,
@@ -97,7 +96,7 @@ import {
   localProviders,
   DEFAULT_WIZARD_ACTIONS,
   type WizardAction,
-} from "@/components/AiCopilot";
+} from "@/lib/wizard.functions";
 import { Button } from "@/components/ui/button";
 import {
   sortByScore,
