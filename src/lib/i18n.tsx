@@ -4028,6 +4028,49 @@ export function coerceLang(candidate: unknown): Lang {
   return lower;
 }
 
+// 2026-09-13 — extraído para poder reusarlo en I18nOverride (más abajo),
+// sin duplicar la lógica de fallback de t().
+function buildI18nValue(lang: Lang, setLang: (l: Lang) => void): I18nCtx {
+  return {
+    lang,
+    setLang,
+    t: (key) => {
+      // Hardened: any failure path falls through to EN, then to the raw key.
+      try {
+        const active = DICTS[lang] && typeof DICTS[lang] === "object" ? DICTS[lang] : undefined;
+        const hit = active?.[key];
+        if (typeof hit === "string" && hit.length > 0) return hit;
+        const fallback = DICTS.en?.[key];
+        if (import.meta.env?.DEV) {
+          console.warn(
+            `[i18n] missing key "${key}" for lang "${lang}" — using ${fallback !== undefined ? "EN fallback" : "raw key"}`,
+          );
+        }
+        return typeof fallback === "string" ? fallback : key;
+      } catch (err) {
+        if (import.meta.env?.DEV) {
+          console.warn(`[i18n] t() threw for key "${key}":`, err);
+        }
+        return key;
+      }
+    },
+  };
+}
+
+/**
+ * Fuerza un idioma específico para todo lo que esté debajo, sin importar
+ * de qué ruta venga `lang` en I18nProvider (útil para `/embed`, que no
+ * tiene su propio segmento `{-$lang}` en el path y por lo tanto siempre
+ * ve `lang: "en"` desde el I18nProvider global — ver la nota grande de
+ * `getInitialLang()`/`detectEmbedLang()` en geo.functions.ts). Comparte
+ * `t()`/el resto del contexto por completo con I18nProvider, sólo pisa
+ * qué idioma usa para todo lo que esté debajo en el árbol de React.
+ */
+export function I18nOverride({ lang, children }: { lang: Lang; children: React.ReactNode }) {
+  const value = useMemo(() => buildI18nValue(lang, () => {}), [lang]);
+  return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
+}
+
 export function I18nProvider({
   children,
   initialLang = "en",
@@ -4101,33 +4144,7 @@ export function I18nProvider({
     }
   };
 
-  const value = useMemo<I18nCtx>(
-    () => ({
-      lang,
-      setLang,
-      t: (key) => {
-        // Hardened: any failure path falls through to EN, then to the raw key.
-        try {
-          const active = DICTS[lang] && typeof DICTS[lang] === "object" ? DICTS[lang] : undefined;
-          const hit = active?.[key];
-          if (typeof hit === "string" && hit.length > 0) return hit;
-          const fallback = DICTS.en?.[key];
-          if (import.meta.env?.DEV) {
-            console.warn(
-              `[i18n] missing key "${key}" for lang "${lang}" — using ${fallback !== undefined ? "EN fallback" : "raw key"}`,
-            );
-          }
-          return typeof fallback === "string" ? fallback : key;
-        } catch (err) {
-          if (import.meta.env?.DEV) {
-            console.warn(`[i18n] t() threw for key "${key}":`, err);
-          }
-          return key;
-        }
-      },
-    }),
-    [lang],
-  );
+  const value = useMemo<I18nCtx>(() => buildI18nValue(lang, setLang), [lang]);
 
   return (
     <I18nContext.Provider value={value}>

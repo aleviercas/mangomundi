@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader, getRequest } from "@tanstack/react-start/server";
-import { SUPPORTED_LANGS, type Lang } from "@/lib/i18n";
+import { SUPPORTED_LANGS, COUNTRY_TO_LANG, type Lang } from "@/lib/i18n";
 import { COUNTRY_BY_CODE, localCurrency } from "@/lib/countries";
 
 /**
@@ -46,6 +46,34 @@ export const getInitialLang = createServerFn({ method: "GET" }).handler(async ()
       const q = new URL(url).searchParams.get("lang")?.toLowerCase();
       if (q && (SUPPORTED_LANGS as string[]).includes(q)) return q as Lang;
     }
+  } catch {
+    // fall through
+  }
+  return "en";
+});
+
+// 2026-09-13 — encontrado al revisar la migración: /embed (el widget para
+// terceros, widget.js) se configura por defecto con `data-lang="auto"` en
+// su propia documentación — sin `?lang=` explícito, `getInitialLang()` de
+// arriba ahora siempre devuelve "en", así que todo widget "auto" (el modo
+// default, no uno con idioma fijo) quedaba en inglés sin importar el
+// visitante real. Antes de la migración, `getInitialLang()` hacía esta
+// misma detección para TODAS las rutas — se sacó de ahí a propósito, era
+// el antipatrón de servir contenido distinto en la misma URL indexable
+// (ver docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md §2). Ese
+// antipatrón no aplica acá: `/embed` ya es `noindex, nofollow` (nunca lo
+// indexa Google), y "auto-detectar el idioma de una calculadora embebida"
+// es exactamente el caso de uso legítimo que ese antipatrón NO cubre —
+// es personalización de una herramienta, no una página de contenido
+// buscable. Restaurada la detección acá, con un nombre y un comentario
+// que dejan claro que es la excepción, no la regla.
+export const detectEmbedLang = createServerFn({ method: "GET" }).handler(async (): Promise<Lang> => {
+  try {
+    const country = detectCountryFromHeaders();
+    if (country && country in COUNTRY_TO_LANG) return COUNTRY_TO_LANG[country];
+    const accept = (getRequestHeader("accept-language") || "").toLowerCase();
+    const primary = accept.split(",")[0]?.split("-")[0]?.trim();
+    if (primary && (SUPPORTED_LANGS as string[]).includes(primary)) return primary as Lang;
   } catch {
     // fall through
   }

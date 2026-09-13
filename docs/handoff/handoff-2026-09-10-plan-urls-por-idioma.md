@@ -227,6 +227,64 @@ a propósito.
    mueve ninguna URL, sólo hace que las nuevas navegaciones del selector
    escriban la que ya existía.
 
+**Nota (10-sep, segunda vuelta):** superado por la Opción B completa (ver
+§6.5 más abajo) — `LangSwitcher.tsx` ya no escribe `?lang=`, navega
+directo a la URL con prefijo de idioma real.
+
+## 6.5. Revisión posterior a la implementación de la Opción B (13-sep) — 3 hallazgos reales
+
+Después de implementar y pushear la Opción B completa, una revisión
+adicional (sin ningún pedido puntual, sólo "¿se puede mejorar algo?")
+encontró 3 problemas reales, no cosméticos:
+
+1. **`/widget` se había quedado a medio migrar.** Su `head()` todavía leía
+   `match.search.lang` (el esquema viejo) en vez de `params.lang`, y le
+   faltaba el `beforeLoad` de validación/redirect que sí tienen las otras
+   7 rutas. Confirmado (no sólo sospechado): `/es/widget` estaba generando
+   un `<link rel="canonical">` apuntando al inglés en vez de a sí mismo.
+2. **Las URLs con mayúsculas en el idioma no se normalizaban.** `/ES/about`
+   tiraba directo a la versión sin prefijo (perdiendo el idioma) en vez de
+   a `/es/about`. Corregido con el mismo criterio que ya se usaba para los
+   slugs de corredor (`GB-MX` → `gb-mx`).
+3. **`/embed` (el widget para terceros, `widget.js`) perdió su
+   autodetección de idioma por geo-IP.** `getInitialLang()` simplificado en
+   la Opción B (§2 de este documento) ahora sólo mira `?lang=` explícito —
+   correcto para las 8 páginas indexables (era el antipatrón), pero
+   `data-lang="auto"` es el default documentado del widget (`widget.js`,
+   `data-lang`), que deliberadamente NO manda `?lang=` para que se
+   autodetecte. Con el simplificado, todo widget "auto" quedaba en inglés
+   sin importar el visitante real. **Esta no es la misma situación que las
+   8 páginas migradas**: `/embed` ya es `noindex, nofollow` (nunca lo
+   indexa Google), así que autodetectar el idioma de una calculadora
+   embebida no es el antipatrón de "misma URL indexable, contenido
+   distinto" — es personalización legítima de una herramienta. Restaurada
+   la detección geo-IP/Accept-Language sólo para esta ruta
+   (`detectEmbedLang()` en `geo.functions.ts`, con un comentario grande
+   explicando por qué es la excepción y no una regresión de la Opción B), *aplicada* vía un
+   nuevo `I18nOverride` (`i18n.tsx`) que fuerza el idioma sólo para el
+   subárbol de `/embed`, sin tocar el `I18nProvider` global que usa el
+   resto del sitio.
+
+Los 3 quedaron corregidos y verificados (`tsc --noEmit` + `vite build`
+limpios) en la misma sesión que los encontró.
+
+
+
+1. `LangSwitcher.tsx`: `pick()` pasa de `setLang(code)` a navegar
+   (`navigate({ search: (prev) => ({ ...prev, lang: code === "en" ?
+   undefined : code }) })`) manteniendo el path actual — funciona en
+   cualquier ruta porque todas ya tienen `lang` en su `searchSchema`.
+   `setLang(code)` se mantiene además (no se saca), para que el estado de
+   React se actualice al toque sin esperar el roundtrip de navegación.
+2. Verificar que esto no rompe rutas que hoy no tienen `?lang=` en su
+   `searchSchema` de forma explícita (ya se revisó en §1 de este documento
+   — las 8 rutas con SEO ya lo tienen).
+3. `tsc --noEmit` + `vite build` antes de commitear, mismo criterio de
+   siempre.
+4. No hace falta redirect ni migración de URLs existentes — este cambio no
+   mueve ninguna URL, sólo hace que las nuevas navegaciones del selector
+   escriban la que ya existía.
+
 **Cómo quedó implementado:** `useNavigate()` genérico (el mismo hook de
 router-wide, no atado a una ruta puntual, ya que `LangSwitcher` vive en
 `Header`/`Footer` y se monta en TODAS las rutas del sitio vía
