@@ -43,8 +43,12 @@ export const Route = createFileRoute("/{-$lang}/business")({
       });
     }
     if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
-      throw redirect({ to: "/{-$lang}/business", params: { lang: undefined }, statusCode: 301 });
-    }
+      // 2026-09-13 -- normaliza mayusculas/variantes de caso tambien (ej.
+      // /ES/... -> /es/...) en vez de tirar el idioma entero por la borda.
+      const q = params.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      throw redirect({ to: "/{-$lang}/business", params: { lang: target }, statusCode: 301 });
+  }
   },
   // See index.tsx's identical fix comment on its own loader — corridors
   // come back as loaderData (the router's own, always-hydration-safe

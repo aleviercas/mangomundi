@@ -103,7 +103,10 @@ export const Route = createFileRoute("/{-$lang}/send/$corridor")({
       const { lang: _drop, ...rest } = search;
       targetSearch = rest;
     } else if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
-      targetLang = undefined;
+      // 2026-09-13 -- normaliza mayusculas/variantes de caso tambien (ej.
+      // /ES/... -> /es/...) en vez de tirar el idioma entero por la borda.
+      const q = params.lang.toLowerCase();
+      targetLang = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
     }
 
     if (params.corridor !== canonicalSlug || targetLang !== params.lang || targetSearch !== search) {

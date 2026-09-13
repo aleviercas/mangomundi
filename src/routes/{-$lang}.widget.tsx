@@ -31,14 +31,32 @@ const IFRAME_SNIPPET = `<iframe src="https://mangomundi.com/embed"
  *  "how it works"/"who it's for" block that didn't exist before. */
 export const Route = createFileRoute("/{-$lang}/widget")({
   validateSearch: (search) => searchSchema.parse(search),
-  loader: async () => {
-    const { getInitialLang } = await import("@/lib/geo.functions");
-    const lang = await getInitialLang().catch(() => "en" as const);
-    return { lang };
+  // 2026-09-13 — esta ruta se había quedado a mitad de camino en la
+  // migración de URLs por idioma (docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md):
+  // le faltaba este beforeLoad (mismo patrón que las otras 7 rutas
+  // migradas) y su head() todavía leía `match.search.lang` en vez de
+  // `params.lang` — con eso, `/es/widget` generaba un canonical apuntando
+  // al inglés en vez de a sí mismo. Encontrado y corregido en una revisión
+  // posterior, no en la migración original.
+  beforeLoad: ({ params, search }) => {
+    if (search.lang) {
+      const q = search.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      const { lang: _drop, ...rest } = search;
+      throw redirect({ to: "/{-$lang}/widget", params: { lang: target }, search: rest, statusCode: 301 });
+    }
+    if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      // 2026-09-13 -- normaliza mayusculas/variantes de caso tambien (ej.
+      // /ES/... -> /es/...) en vez de tirar el idioma entero por la borda.
+      const q = params.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
+      throw redirect({ to: "/{-$lang}/widget", params: { lang: target }, statusCode: 301 });
+  }
   },
-  head: ({ match, loaderData }) => {
-    const canonical = selfCanonical("/widget", match.search.lang);
-    const seo = getRouteSeo(loaderData?.lang ?? "en", "/widget");
+  head: ({ params }) => {
+    const lang = coerceLang(params.lang ?? "en");
+    const canonical = selfCanonical("/widget", lang);
+    const seo = getRouteSeo(lang, "/widget");
     return {
       meta: [
         { title: seo.title },

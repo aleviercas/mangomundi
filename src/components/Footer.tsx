@@ -101,9 +101,9 @@ export function Footer() {
   };
 
   const legal = [
-    { to: "/legal", hash: "terms", label: t("footer.legal.terms") },
-    { to: "/legal", hash: "privacy", label: t("footer.legal.privacy") },
-    { to: "/legal", hash: "risk", label: t("footer.legal.risk") },
+    { hash: "terms", label: t("footer.legal.terms") },
+    { hash: "privacy", label: t("footer.legal.privacy") },
+    { hash: "risk", label: t("footer.legal.risk") },
   ] as const;
 
   return (

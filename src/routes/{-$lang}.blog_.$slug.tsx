@@ -68,9 +68,13 @@ export const Route = createFileRoute("/{-$lang}/blog_/$slug")({
       });
     }
     if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
+      // 2026-09-13 -- normaliza mayusculas/variantes de caso tambien (ej.
+      // /ES/... -> /es/...) en vez de tirar el idioma entero por la borda.
+      const q = params.lang.toLowerCase();
+      const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
       throw redirect({
         to: "/{-$lang}/blog/$slug",
-        params: { lang: undefined, slug: params.slug },
+        params: { lang: target, slug: params.slug },
         statusCode: 301,
       });
     }
