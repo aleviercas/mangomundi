@@ -761,7 +761,10 @@ export function ComparatorSection({
       const sorted = sortByScore(filtered, key);
       const ordered =
         key === "overall"
-          ? [...sorted.filter((r) => r.has_exclusive_deal), ...sorted.filter((r) => !r.has_exclusive_deal)]
+          ? [
+              ...sorted.filter((r) => r.has_exclusive_deal),
+              ...sorted.filter((r) => !r.has_exclusive_deal),
+            ]
           : sorted;
       return pickFeaturedAmongTies(ordered, key, tieBreakSeed) ?? ordered[0];
     };
@@ -2343,9 +2346,7 @@ export function ComparatorSection({
             />
           </div>
 
-          <div
-            className={`flex items-stretch gap-2 py-2 pl-3 pr-11 ${compact ? "h-10" : "h-11"}`}
-          >
+          <div className={`flex items-stretch gap-2 py-2 pl-3 pr-11 ${compact ? "h-10" : "h-11"}`}>
             <CountryCombobox
               ref={destCountryMobileRef}
               value={receivingCountry}
@@ -2820,7 +2821,9 @@ export function ComparatorSection({
               ) : collapsedSearch ? (
                 collapsedSearchPill
               ) : mergeSearchIntoHeader ? (
-                headerSearchSlot ? createPortal(headerSearchBar, headerSearchSlot) : null
+                headerSearchSlot ? (
+                  createPortal(headerSearchBar, headerSearchSlot)
+                ) : null
               ) : (
                 searchBar
               )}
@@ -3513,7 +3516,6 @@ export function ComparatorSection({
                     a todo el ancho de esta columna (ver el historial de
                     comentarios de 2026-08-31 que quedó más abajo, en la
                     definición del propio componente). */}
-
 
                 <ResultsBlock
                   result={result}
@@ -4259,7 +4261,7 @@ function FloatingAgent(p: FloatingAgentProps) {
 
   // Escape closes; auto-focus the composer on open.
   useEffect(() => {
-    if (collapsed) return;    // 2026-08-31 feedback — "eliminar los movimientos automáticos... por
+    if (collapsed) return; // 2026-08-31 feedback — "eliminar los movimientos automáticos... por
     // ejemplo en el agente": this focus alone was enough to make the
     // browser auto-scroll the page toward the composer whenever the panel
     // opened near the edge of the viewport. The focus itself is still
@@ -4441,13 +4443,13 @@ function FloatingAgent(p: FloatingAgentProps) {
           `white/NN` y hex suelto de acá para abajo por su equivalente
           claro. */}
       <div className="fixed inset-y-0 left-0 top-[66px] z-[60] w-[min(380px,100vw)]">
-      <div
-        id="ai-agent-panel"
-        role="dialog"
-        aria-modal="false"
-        aria-labelledby={panelLabelId}
-        className="flex h-full w-full flex-col overflow-hidden border-r border-border bg-card text-foreground shadow-2xl"
-      >
+        <div
+          id="ai-agent-panel"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby={panelLabelId}
+          className="flex h-full w-full flex-col overflow-hidden border-r border-border bg-card text-foreground shadow-2xl"
+        >
           <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-3">
             <span
               id={panelLabelId}
@@ -4700,7 +4702,7 @@ function FloatingAgent(p: FloatingAgentProps) {
             </p>
           </div>
         </div>
-    </div>
+      </div>
     </>
   );
 }
@@ -4871,8 +4873,7 @@ function BusinessRequestPanel({
           <span className="inline-flex items-center gap-1 whitespace-nowrap">
             <FlagIcon country={sendingCountry} /> {sendingCountry}
             <span>→</span>
-            {receivingCountry && <FlagIcon country={receivingCountry} />}{" "}
-            {receivingCountry || "—"}
+            {receivingCountry && <FlagIcon country={receivingCountry} />} {receivingCountry || "—"}
           </span>
         </StatItem>
         <StatItem label={t("comparator.business.request.currency")}>
@@ -4971,7 +4972,6 @@ function SavedRatesCard({
     </div>
   );
 }
-
 
 // design/Mangomundi 4 - Final.dc.html (line 552-557) — the mockup's third
 // rail card is "Rather talk to someone?" + "Book a 15-min call". 2026-08-30
@@ -5919,10 +5919,7 @@ function ProviderRow({
         {/* §4.3 — CTA a ancho completo y 44px de alto en mobile (blanco de
             toque real con el pulgar); vuelve a los 36px de Kayak en la
             columna de precio a partir de sm. */}
-        <div
-          className="[&>button]:h-11 sm:[&>button]:h-9"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="[&>button]:h-11 sm:[&>button]:h-9" onClick={(e) => e.stopPropagation()}>
           {cta}
         </div>
       </div>

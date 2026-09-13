@@ -192,7 +192,7 @@ function PostNotFound() {
   );
 }
 
-function PostError({ error }: { error: Error }) {
+function PostError({ error }: { error: unknown }) {
   const { t } = useI18n();
   console.error("blog post load error", error);
   return (
@@ -444,7 +444,11 @@ function BlogPostPage() {
           {/* 2026-08-30 feedback (fourth round) — a small brand mark on every
               post, same icon the widget badge uses (BrandMark, Wordmark.tsx),
               not the full wordmark — this is a watermark, not navigation. */}
-          <Link to="/{-$lang}" params={{ lang: lang === "en" ? undefined : lang }} aria-label={t("header.homeAriaLabel")}>
+          <Link
+            to="/{-$lang}"
+            params={{ lang: lang === "en" ? undefined : lang }}
+            aria-label={t("header.homeAriaLabel")}
+          >
             <BrandMark />
           </Link>
         </div>

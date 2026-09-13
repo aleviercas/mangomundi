@@ -11,10 +11,7 @@ import { useI18n } from "@/lib/i18n";
  * never block or break if the writes fail.
  */
 export type AnalyticsEvent =
-  | "provider_click"
-  | "comparator_query"
-  | "rfq_interaction"
-  | "conversion_completed";
+  "provider_click" | "comparator_query" | "rfq_interaction" | "conversion_completed";
 
 export interface AnalyticsPayload {
   provider_slug?: string;

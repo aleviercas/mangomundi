@@ -21,7 +21,11 @@ function I18nStatusGate() {
         <div className="text-center">
           <h1 className="font-heading text-2xl font-bold text-foreground">Not Found</h1>
           <p className="mt-2 text-sm text-muted-foreground">This page is not available.</p>
-          <Link to="/{-$lang}" params={{ lang: undefined }} className="mt-4 inline-block text-sm text-primary hover:underline">
+          <Link
+            to="/{-$lang}"
+            params={{ lang: undefined }}
+            className="mt-4 inline-block text-sm text-primary hover:underline"
+          >
             Return home
           </Link>
         </div>

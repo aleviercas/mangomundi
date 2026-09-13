@@ -92,7 +92,8 @@ export const Route = createFileRoute("/{-$lang}/send/$corridor")({
   // salto, no en dos.
   beforeLoad: ({ params, search }) => {
     const parsed = parseCorridor(params.corridor);
-    if (!parsed) throw redirect({ to: "/{-$lang}", params: { lang: params.lang }, statusCode: 301 });
+    if (!parsed)
+      throw redirect({ to: "/{-$lang}", params: { lang: params.lang }, statusCode: 301 });
     const canonicalSlug = `${parsed.origin.toLowerCase()}-${parsed.destination.toLowerCase()}`;
 
     let targetLang = params.lang;
@@ -109,7 +110,11 @@ export const Route = createFileRoute("/{-$lang}/send/$corridor")({
       targetLang = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
     }
 
-    if (params.corridor !== canonicalSlug || targetLang !== params.lang || targetSearch !== search) {
+    if (
+      params.corridor !== canonicalSlug ||
+      targetLang !== params.lang ||
+      targetSearch !== search
+    ) {
       throw redirect({
         to: "/{-$lang}/send/$corridor",
         params: { lang: targetLang, corridor: canonicalSlug },

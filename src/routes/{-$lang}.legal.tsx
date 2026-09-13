@@ -21,7 +21,7 @@ export const Route = createFileRoute("/{-$lang}/legal")({
       const q = params.lang.toLowerCase();
       const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
       throw redirect({ to: "/{-$lang}/legal", params: { lang: target }, statusCode: 301 });
-  }
+    }
   },
   head: ({ params }) => {
     const lang = coerceLang(params.lang ?? "en");

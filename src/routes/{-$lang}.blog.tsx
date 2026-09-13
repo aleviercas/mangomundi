@@ -23,7 +23,12 @@ export const Route = createFileRoute("/{-$lang}/blog")({
       const q = search.lang.toLowerCase();
       const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
       const { lang: _drop, ...rest } = search;
-      throw redirect({ to: "/{-$lang}/blog", params: { lang: target }, search: rest, statusCode: 301 });
+      throw redirect({
+        to: "/{-$lang}/blog",
+        params: { lang: target },
+        search: rest,
+        statusCode: 301,
+      });
     }
     if (params.lang && !(SUPPORTED_LANGS as string[]).includes(params.lang)) {
       // 2026-09-13 -- normaliza mayusculas/variantes de caso tambien (ej.
@@ -31,7 +36,7 @@ export const Route = createFileRoute("/{-$lang}/blog")({
       const q = params.lang.toLowerCase();
       const target = (SUPPORTED_LANGS as string[]).includes(q) && q !== "en" ? q : undefined;
       throw redirect({ to: "/{-$lang}/blog", params: { lang: target }, statusCode: 301 });
-  }
+    }
   },
   loader: async ({ context, params }) => {
     // SSR the list in the URL's language; client refetches live lang.
