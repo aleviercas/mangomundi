@@ -3537,6 +3537,7 @@ export function ComparatorSection({
                   savedSlugs={savedSlugs}
                   onToggleSaved={toggleSavedSlug}
                   sharedSlug={initialQuery?.sharedSlug}
+                  onOpenRequestDrawer={() => setRequestDrawerOpen(true)}
                 />
 
                 {/* Stable business upsell (design/HANDOFF.md §3 + decision
@@ -5035,6 +5036,7 @@ function ResultsBlock({
   savedSlugs,
   onToggleSaved,
   sharedSlug,
+  onOpenRequestDrawer,
 }: {
   result: ComparisonResult;
   amount: number;
@@ -5086,6 +5088,16 @@ function ResultsBlock({
    *  badge "Shared rate" en vez del de destacada. undefined en el caso
    *  común. */
   sharedSlug?: string;
+  /** 2026-09-13 feedback — "el boton para enviar el request en business no
+   *  se tendria que mostrar tambien... como hace kayak": Kayak muestra su
+   *  propia bandeja de comparación FIJA AL PIE de la pantalla en cuanto
+   *  hay algo agregado ("When the car rentals are added to the comparison
+   *  list at the bottom of your screen, click Compare") — mismo patrón
+   *  que un "sticky add to cart bar" de e-commerce. Abre el mismo Drawer
+   *  que ya existe (ver `requestDrawerOpen` en el padre) — este prop es
+   *  sólo el callback para abrirlo desde la barra fija de abajo, más
+   *  abajo en este archivo. */
+  onOpenRequestDrawer?: () => void;
   /** True when the current query has both a sending and receiving country
    *  selected, i.e. a real corridor lookup was attempted server-side — see
    *  fx.functions.ts. Gates the "not verified for this route" badge: without
@@ -5298,25 +5310,63 @@ function ResultsBlock({
           izquierda el mejor monto encontrado, a la derecha el CTA de ESA
           fila — el mismo `handleAffiliateClick` que dispara la fila,
           incluido su tracking, nunca un atajo que saltee la disclosure. */}
-      {winner && showBottomBar && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
-          <div className="min-w-0">
-            <div className="truncate text-meta font-semibold tabular-nums text-foreground">
-              {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-              {result.quote}
-            </div>
-            <div className="truncate text-badge text-muted-foreground">{winner.name}</div>
+      {/* 2026-09-13 feedback — "el boton para enviar el request en
+          business no se tendria que mostrar tambien en el fondo al lado
+          del boton de ir al proveedor? cómo hace kayak? eso que se
+          despliega desde abajo cómo debería ser mejor de acuerdo a
+          mejores prácticas?": investigado — Kayak literalmente arma una
+          "comparison list at the bottom of your screen" en cuanto agregás
+          algo, con un botón claro para continuar; es el mismo patrón que
+          un "sticky add to cart bar" de e-commerce (persistente, visible
+          sin importar el scroll, desaparece si no hay nada seleccionado).
+          Mutuamente excluyente con la barra del "winner" de abajo — las
+          dos son `fixed inset-x-0 bottom-0`, no pueden convivir; en
+          business, con algo ya agregado al request, esa es la acción de
+          conversión que importa más que "ir a este proveedor puntual".
+          `lg:hidden` (no `sm:hidden` como la del winner): el panel real
+          del rail (`BusinessRequestPanel`) recién se ve a partir de `lg`
+          — esta barra cubre exactamente el hueco de abajo, incluyendo
+          tablet, donde ni el rail ni la barra del winner (que corta en
+          `sm`) alcanzarían a mostrar nada. */}
+      {segment === "business" && requestedSlugs.size > 0 ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+          <div className="min-w-0 text-meta font-semibold text-foreground">
+            {t("comparator.business.request.selectedCount").replace(
+              "{n}",
+              String(requestedSlugs.size),
+            )}
           </div>
-          {winner.affiliate_url && (
-            <button
-              type="button"
-              onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
-              className="btn-cta-gradient inline-flex h-10 shrink-0 items-center justify-center rounded-control px-5 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {t("fx.goto")} {winner.name} ↗
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onOpenRequestDrawer}
+            className="btn-cta-gradient inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-control px-5 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {t("comparator.business.request.goToRequest")}
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </button>
         </div>
+      ) : (
+        winner &&
+        showBottomBar && (
+          <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
+            <div className="min-w-0">
+              <div className="truncate text-meta font-semibold tabular-nums text-foreground">
+                {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+                {result.quote}
+              </div>
+              <div className="truncate text-badge text-muted-foreground">{winner.name}</div>
+            </div>
+            {winner.affiliate_url && (
+              <button
+                type="button"
+                onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
+                className="btn-cta-gradient inline-flex h-10 shrink-0 items-center justify-center rounded-control px-5 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {t("fx.goto")} {winner.name} ↗
+              </button>
+            )}
+          </div>
+        )
       )}
 
       {/* docs/kayak-redesign-spec.md §3.6 — el bloque legal se mantiene
