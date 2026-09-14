@@ -2672,14 +2672,26 @@ export function ComparatorSection({
                       alrededor de esos dos renglones nada más, dejando el
                       monto (renglón 1) afuera de ese cálculo de costura. */}
                   {/* 2026-09-10 feedback — "al widget tambien sacale las
-                      lineas divisorias del combox": mismo pedido que ya se
-                      hizo en la barra desktop (ver el comentario del
-                      Segmento 2, más arriba en este archivo) — acá es
-                      `border-b` entre renglones apilados en vez de
-                      `border-l` entre columnas, pero la razón es la misma:
-                      el hover ya alcanza para leer cada campo como una
-                      celda distinta, no hace falta la línea encima. */}
-                  <div className="border-b border-transparent px-2.5 py-[9px]">
+                      lineas divisorias del combox": pedido original,
+                      apuntaba a las líneas ENTRE país y moneda dentro de
+                      la misma fila (ver el fix de esa parte más abajo,
+                      ronda 2026-09-14) — mismo criterio que la barra
+                      desktop, donde el hover ya alcanza para leer cada
+                      campo como celda distinta.
+                      2026-09-14 feedback (segunda ronda) — "no faltan
+                      unas lineas horizontales en el combox del widget?":
+                      sí — sacar TAMBIÉN esta línea (entre monto y origen,
+                      y entre origen y destino, más abajo) fue de más:
+                      estas no separan un país de su propia moneda dentro
+                      de la misma fila, separan tres secciones genuinamente
+                      distintas (cuánto / desde dónde / hacia dónde) — sin
+                      ninguna línea ahí, y con el monto en un input sin
+                      fondo ni borde propio, las tres filas se leían como
+                      un solo bloque indiferenciado. Vuelve a
+                      `border-border`, sólo que ahora es la única línea
+                      que queda en toda la tarjeta (el resto — país+moneda,
+                      línea 2712 — sigue sin borde). */}
+                  <div className="border-b border-border px-2.5 py-[9px]">
                     <input
                       type="number"
                       inputMode="decimal"
@@ -2708,7 +2720,7 @@ export function ComparatorSection({
                         padding propio del renglón, así el swap vive en ese
                         margen en vez de pisar la caja de moneda en
                         cualquier idioma/ancho de código. */}
-                    <div className="flex h-9 items-stretch gap-1.5 border-b border-transparent py-[7px] pl-2.5 pr-9">
+                    <div className="flex h-9 items-stretch gap-1.5 border-b border-border py-[7px] pl-2.5 pr-9">
                       <CountryCombobox
                         value={sendingCountry}
                         onChange={handleSendingCountryChange}
