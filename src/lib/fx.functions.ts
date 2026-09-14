@@ -1074,6 +1074,31 @@ export interface ExclusiveCorridor {
   winnerSlug: string;
 }
 
+// 2026-09-13 feedback — "revisá si hay que arreglar algo" (deployment
+// health check): investigado en logs de Vercel/Supabase — todos los
+// timeouts reales de producción son `Gateway Timeout` de Supabase (free
+// tier, sin RLS de por medio acá — `compareProviders` usa `supabaseAdmin`,
+// service role, evita RLS por completo). `computeExclusiveCorridors`
+// dispara un `compareProviders` completo POR CADA candidato, todos en
+// paralelo vía `Promise.all` — con ~15-20 candidatos, eso es un burst de
+// decenas de requests simultáneos a Supabase desde una sola invocación,
+// justo el patrón que dispara timeouts de gateway en un backend free-tier
+// compartido. Cuando un candidato pega ese timeout, hoy se descarta en
+// silencio (catch de abajo) — es la causa más probable de que "Today's
+// routes" a veces muestre menos de 4, no necesariamente que menos
+// corredores califiquen de verdad. Un solo reintento con backoff corto
+// (400ms) alcanza para absorber un timeout puntual sin machacar más a
+// Supabase durante una caída real (no reintenta en loop).
+async function withRetry<T>(fn: () => Promise<T>, retries = 1, delayMs = 400): Promise<T> {
+  try {
+    return await fn();
+  } catch (err) {
+    if (retries <= 0) throw err;
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    return withRetry(fn, retries - 1, delayMs * 2);
+  }
+}
+
 // Shared by getExclusiveCorridors (retail) and getBusinessTodaysRoutes
 // (business, see below) — same "run the real comparator, keep only
 // candidates where the actual winner has a real exclusive deal" logic,
@@ -1099,17 +1124,19 @@ async function computeExclusiveCorridors(
   const settled = await Promise.all(
     candidates.map(async (c): Promise<ExclusiveCorridor | null> => {
       try {
-        const result = await compareProviders({
-          data: {
-            amount,
-            from: c.from,
-            to: c.to,
-            segment,
-            amountMode: "send",
-            sendingCountry: c.sendingCountry,
-            receivingCountry: c.receivingCountry,
-          },
-        });
+        const result = await withRetry(() =>
+          compareProviders({
+            data: {
+              amount,
+              from: c.from,
+              to: c.to,
+              segment,
+              amountMode: "send",
+              sendingCountry: c.sendingCountry,
+              receivingCountry: c.receivingCountry,
+            },
+          }),
+        );
         if (result.rows.length === 0) return null;
         const winner = result.rows.reduce((a, b) => (b.received > a.received ? b : a));
         if (!winner.has_exclusive_deal) return null;

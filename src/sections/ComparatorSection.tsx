@@ -2672,14 +2672,26 @@ export function ComparatorSection({
                       alrededor de esos dos renglones nada más, dejando el
                       monto (renglón 1) afuera de ese cálculo de costura. */}
                   {/* 2026-09-10 feedback — "al widget tambien sacale las
-                      lineas divisorias del combox": mismo pedido que ya se
-                      hizo en la barra desktop (ver el comentario del
-                      Segmento 2, más arriba en este archivo) — acá es
-                      `border-b` entre renglones apilados en vez de
-                      `border-l` entre columnas, pero la razón es la misma:
-                      el hover ya alcanza para leer cada campo como una
-                      celda distinta, no hace falta la línea encima. */}
-                  <div className="border-b border-transparent px-2.5 py-[9px]">
+                      lineas divisorias del combox": pedido original,
+                      apuntaba a las líneas ENTRE país y moneda dentro de
+                      la misma fila (ver el fix de esa parte más abajo,
+                      ronda 2026-09-14) — mismo criterio que la barra
+                      desktop, donde el hover ya alcanza para leer cada
+                      campo como celda distinta.
+                      2026-09-14 feedback (segunda ronda) — "no faltan
+                      unas lineas horizontales en el combox del widget?":
+                      sí — sacar TAMBIÉN esta línea (entre monto y origen,
+                      y entre origen y destino, más abajo) fue de más:
+                      estas no separan un país de su propia moneda dentro
+                      de la misma fila, separan tres secciones genuinamente
+                      distintas (cuánto / desde dónde / hacia dónde) — sin
+                      ninguna línea ahí, y con el monto en un input sin
+                      fondo ni borde propio, las tres filas se leían como
+                      un solo bloque indiferenciado. Vuelve a
+                      `border-border`, sólo que ahora es la única línea
+                      que queda en toda la tarjeta (el resto — país+moneda,
+                      línea 2712 — sigue sin borde). */}
+                  <div className="border-b border-border px-2.5 py-[9px]">
                     <input
                       type="number"
                       inputMode="decimal"
@@ -2708,7 +2720,7 @@ export function ComparatorSection({
                         padding propio del renglón, así el swap vive en ese
                         margen en vez de pisar la caja de moneda en
                         cualquier idioma/ancho de código. */}
-                    <div className="flex h-9 items-stretch gap-1.5 border-b border-transparent py-[7px] pl-2.5 pr-9">
+                    <div className="flex h-9 items-stretch gap-1.5 border-b border-border py-[7px] pl-2.5 pr-9">
                       <CountryCombobox
                         value={sendingCountry}
                         onChange={handleSendingCountryChange}
@@ -2719,7 +2731,20 @@ export function ComparatorSection({
                         hideSecondary
                         hideChevron
                         advanceTo={destCountryWidgetRef}
-                        triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border border-border bg-muted px-2 text-[12px] font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+                        // 2026-09-14 feedback — "chequea tambien el diseño
+                        // del widget, no debería tener líneas similares a
+                        // la versión mobile en el combox": la caja de país
+                        // acá copiaba el mismo `border border-border` de
+                        // la fila mobile del home (línea ~2333 de este
+                        // archivo) — una caja bordeada al lado de una
+                        // moneda sin borde, en la tarjeta más chica del
+                        // sitio (~360px), donde cada línea de más pesa
+                        // más. Se saca el borde (`border-0`), queda sólo
+                        // el fondo (`bg-muted`) — mismo criterio que ya se
+                        // usó para las líneas divisorias entre segmentos:
+                        // el hover/fondo ya alcanza para leer el campo, no
+                        // hace falta el borde encima.
+                        triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border-0 bg-muted px-2 text-[12px] font-bold text-foreground hover:bg-muted/70 focus:ring-1 focus:ring-ring/40"
                       />
                       <CurrencyCombobox
                         value={from}
@@ -2751,10 +2776,16 @@ export function ComparatorSection({
                         hideSecondary
                         hideChevron
                         clearable
-                        triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border px-2 text-[12px] font-bold transition-colors ${
+                        // 2026-09-14 feedback — mismo fix que el país de
+                        // origen, arriba: se saca el borde. El estado
+                        // "vacío" (needs a country, el cue de Kayak's own
+                        // "To?") sigue leyéndose — pasa de borde naranja a
+                        // fondo naranja tenue, coherente con sacar líneas
+                        // en toda la tarjeta, no sólo perder el aviso.
+                        triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border-0 px-2 text-[12px] font-bold transition-colors ${
                           !receivingCountry
-                            ? "border-brand-cta bg-accent/10 text-accent-text"
-                            : "border-border bg-muted text-foreground hover:border-foreground/30"
+                            ? "bg-accent/15 text-accent-text"
+                            : "bg-muted text-foreground hover:bg-muted/70"
                         }`}
                       />
                       <CurrencyCombobox
@@ -3537,6 +3568,7 @@ export function ComparatorSection({
                   savedSlugs={savedSlugs}
                   onToggleSaved={toggleSavedSlug}
                   sharedSlug={initialQuery?.sharedSlug}
+                  onOpenRequestDrawer={() => setRequestDrawerOpen(true)}
                 />
 
                 {/* Stable business upsell (design/HANDOFF.md §3 + decision
@@ -5035,6 +5067,7 @@ function ResultsBlock({
   savedSlugs,
   onToggleSaved,
   sharedSlug,
+  onOpenRequestDrawer,
 }: {
   result: ComparisonResult;
   amount: number;
@@ -5086,6 +5119,16 @@ function ResultsBlock({
    *  badge "Shared rate" en vez del de destacada. undefined en el caso
    *  común. */
   sharedSlug?: string;
+  /** 2026-09-13 feedback — "el boton para enviar el request en business no
+   *  se tendria que mostrar tambien... como hace kayak": Kayak muestra su
+   *  propia bandeja de comparación FIJA AL PIE de la pantalla en cuanto
+   *  hay algo agregado ("When the car rentals are added to the comparison
+   *  list at the bottom of your screen, click Compare") — mismo patrón
+   *  que un "sticky add to cart bar" de e-commerce. Abre el mismo Drawer
+   *  que ya existe (ver `requestDrawerOpen` en el padre) — este prop es
+   *  sólo el callback para abrirlo desde la barra fija de abajo, más
+   *  abajo en este archivo. */
+  onOpenRequestDrawer?: () => void;
   /** True when the current query has both a sending and receiving country
    *  selected, i.e. a real corridor lookup was attempted server-side — see
    *  fx.functions.ts. Gates the "not verified for this route" badge: without
@@ -5298,25 +5341,63 @@ function ResultsBlock({
           izquierda el mejor monto encontrado, a la derecha el CTA de ESA
           fila — el mismo `handleAffiliateClick` que dispara la fila,
           incluido su tracking, nunca un atajo que saltee la disclosure. */}
-      {winner && showBottomBar && (
-        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
-          <div className="min-w-0">
-            <div className="truncate text-meta font-semibold tabular-nums text-foreground">
-              {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
-              {result.quote}
-            </div>
-            <div className="truncate text-badge text-muted-foreground">{winner.name}</div>
+      {/* 2026-09-13 feedback — "el boton para enviar el request en
+          business no se tendria que mostrar tambien en el fondo al lado
+          del boton de ir al proveedor? cómo hace kayak? eso que se
+          despliega desde abajo cómo debería ser mejor de acuerdo a
+          mejores prácticas?": investigado — Kayak literalmente arma una
+          "comparison list at the bottom of your screen" en cuanto agregás
+          algo, con un botón claro para continuar; es el mismo patrón que
+          un "sticky add to cart bar" de e-commerce (persistente, visible
+          sin importar el scroll, desaparece si no hay nada seleccionado).
+          Mutuamente excluyente con la barra del "winner" de abajo — las
+          dos son `fixed inset-x-0 bottom-0`, no pueden convivir; en
+          business, con algo ya agregado al request, esa es la acción de
+          conversión que importa más que "ir a este proveedor puntual".
+          `lg:hidden` (no `sm:hidden` como la del winner): el panel real
+          del rail (`BusinessRequestPanel`) recién se ve a partir de `lg`
+          — esta barra cubre exactamente el hueco de abajo, incluyendo
+          tablet, donde ni el rail ni la barra del winner (que corta en
+          `sm`) alcanzarían a mostrar nada. */}
+      {segment === "business" && requestedSlugs.size > 0 ? (
+        <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
+          <div className="min-w-0 text-meta font-semibold text-foreground">
+            {t("comparator.business.request.selectedCount").replace(
+              "{n}",
+              String(requestedSlugs.size),
+            )}
           </div>
-          {winner.affiliate_url && (
-            <button
-              type="button"
-              onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
-              className="btn-cta-gradient inline-flex h-10 shrink-0 items-center justify-center rounded-control px-5 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              {t("fx.goto")} {winner.name} ↗
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={onOpenRequestDrawer}
+            className="btn-cta-gradient inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-control px-5 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {t("comparator.business.request.goToRequest")}
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </button>
         </div>
+      ) : (
+        winner &&
+        showBottomBar && (
+          <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
+            <div className="min-w-0">
+              <div className="truncate text-meta font-semibold tabular-nums text-foreground">
+                {winner.received.toLocaleString(undefined, { maximumFractionDigits: 2 })}{" "}
+                {result.quote}
+              </div>
+              <div className="truncate text-badge text-muted-foreground">{winner.name}</div>
+            </div>
+            {winner.affiliate_url && (
+              <button
+                type="button"
+                onClick={() => handleAffiliateClick(winner.slug, winner.affiliate_url, winner.name)}
+                className="btn-cta-gradient inline-flex h-10 shrink-0 items-center justify-center rounded-control px-5 text-meta font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                {t("fx.goto")} {winner.name} ↗
+              </button>
+            )}
+          </div>
+        )
       )}
 
       {/* docs/kayak-redesign-spec.md §3.6 — el bloque legal se mantiene
