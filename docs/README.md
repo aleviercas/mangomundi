@@ -33,7 +33,7 @@
 ## SEO
 
 - [`handoff/handoff-2026-09-09-auditoria-seo-completa.md`](./handoff/handoff-2026-09-09-auditoria-seo-completa.md) — auditoría técnica completa (sitemap, redirects, metadatos/i18n, datos estructurados, encabezados, imágenes) con hallazgos verificados contra el código y un plan de acción priorizado. Léelo antes de tocar `sitemap[.]xml.ts`, cualquier `head()` de ruta, o `SEO_META`/`ROUTE_SEO` en `i18n.tsx`.
-- [`handoff/handoff-2026-09-10-plan-urls-por-idioma.md`](./handoff/handoff-2026-09-10-plan-urls-por-idioma.md) — análisis y plan (sin implementar) de si migrar de `?lang=` a URLs propias por idioma (ej. `/es/blog/...`). Hallazgo clave: el selector de idioma hoy no navega, es sólo estado de cliente — migrar invierte ese modelo, no es sólo agregar un segmento de path. Léelo antes de tocar `I18nProvider`, `LangSwitcher.tsx`, o el esquema de rutas de `src/routes/`.
+- [`handoff/handoff-2026-09-10-plan-urls-por-idioma.md`](./handoff/handoff-2026-09-10-plan-urls-por-idioma.md) — análisis, plan, e implementación completa (Opción B, 10 al 13-sep) de la migración de `?lang=` a URLs propias por idioma (`/es/blog/...`). Las 8 rutas indexables migradas, más el fix de `/embed` (autodetección geo-IP restaurada sólo ahí) y RTL (`ur` le faltaba a `RTL_LANGS`). Léelo antes de tocar `I18nProvider`, `LangSwitcher.tsx`, `site.ts`, o el esquema de rutas de `src/routes/`.
 
 ## Operación
 

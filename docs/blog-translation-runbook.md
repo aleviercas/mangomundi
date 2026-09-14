@@ -97,7 +97,8 @@ set -a; . ./.env; set +a
 bun run scripts/blog-backfill.ts --slug=<one-slug>   # validate on one post first
 bun run scripts/blog-backfill.ts                     # then everything
 ```
-Spot-check quality afterwards (open a few `/blog/<slug>?lang=xx`).
+Spot-check quality afterwards (open a few `/<xx>/blog/<slug>`, e.g. `/fr/blog/<slug>`
+— see the note at the bottom about the URL scheme change).
 
 ---
 
@@ -140,9 +141,21 @@ This is how the first post was done. Work **one post per batch**:
 
 4. **Verify** it rendered:
    ```bash
-   curl -s "https://mangomundi.com/blog/<SLUG>?lang=fr" | grep -o "<title>[^<]*"
+   curl -s "https://mangomundi.com/fr/blog/<SLUG>" | grep -o "<title>[^<]*"
    ```
    (No deploy needed — the blog reads Supabase live.)
+
+## Nota (2026-09-13) — el esquema de URLs por idioma cambió
+
+Hasta el 10-sep, el idioma vivía en `?lang=xx` sobre la misma URL
+(`/blog/<slug>?lang=fr`). Se migró a URLs con prefijo de idioma propio
+(`/fr/blog/<slug>`) — ver
+`docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md`. `?lang=xx`
+todavía funciona en cualquier URL vieja, pero ahora **redirige (301)** a
+la nueva URL con prefijo en vez de servir el contenido directo ahí mismo
+— si vas a scriptear una verificación con `curl`, agregá `-L` para que
+siga el redirect, o pegale directo a `/fr/blog/<slug>` como en el ejemplo
+de arriba.
 
 ## Notes
 
