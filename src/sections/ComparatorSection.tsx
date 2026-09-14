@@ -2719,7 +2719,20 @@ export function ComparatorSection({
                         hideSecondary
                         hideChevron
                         advanceTo={destCountryWidgetRef}
-                        triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border border-border bg-muted px-2 text-[12px] font-bold text-foreground hover:border-foreground/30 focus:ring-1 focus:ring-ring/40"
+                        // 2026-09-14 feedback — "chequea tambien el diseño
+                        // del widget, no debería tener líneas similares a
+                        // la versión mobile en el combox": la caja de país
+                        // acá copiaba el mismo `border border-border` de
+                        // la fila mobile del home (línea ~2333 de este
+                        // archivo) — una caja bordeada al lado de una
+                        // moneda sin borde, en la tarjeta más chica del
+                        // sitio (~360px), donde cada línea de más pesa
+                        // más. Se saca el borde (`border-0`), queda sólo
+                        // el fondo (`bg-muted`) — mismo criterio que ya se
+                        // usó para las líneas divisorias entre segmentos:
+                        // el hover/fondo ya alcanza para leer el campo, no
+                        // hace falta el borde encima.
+                        triggerClassName="h-full min-w-0 flex-1 justify-start gap-1.5 rounded border-0 bg-muted px-2 text-[12px] font-bold text-foreground hover:bg-muted/70 focus:ring-1 focus:ring-ring/40"
                       />
                       <CurrencyCombobox
                         value={from}
@@ -2751,10 +2764,16 @@ export function ComparatorSection({
                         hideSecondary
                         hideChevron
                         clearable
-                        triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border px-2 text-[12px] font-bold transition-colors ${
+                        // 2026-09-14 feedback — mismo fix que el país de
+                        // origen, arriba: se saca el borde. El estado
+                        // "vacío" (needs a country, el cue de Kayak's own
+                        // "To?") sigue leyéndose — pasa de borde naranja a
+                        // fondo naranja tenue, coherente con sacar líneas
+                        // en toda la tarjeta, no sólo perder el aviso.
+                        triggerClassName={`h-full min-w-0 flex-1 justify-start gap-1.5 rounded border-0 px-2 text-[12px] font-bold transition-colors ${
                           !receivingCountry
-                            ? "border-brand-cta bg-accent/10 text-accent-text"
-                            : "border-border bg-muted text-foreground hover:border-foreground/30"
+                            ? "bg-accent/15 text-accent-text"
+                            : "bg-muted text-foreground hover:bg-muted/70"
                         }`}
                       />
                       <CurrencyCombobox
