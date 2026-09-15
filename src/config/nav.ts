@@ -73,3 +73,34 @@ export const FOOTER_COMPANY: ReadonlyArray<NavEntry> = [
   { to: "/about", hash: "contact", labelKey: "nav.contact" },
   { to: "/blog", labelKey: "nav.blog" },
 ];
+
+/** 2026-09-10 feedback — "que más se podría agregar en la barra
+ *  desplegable de la izquierda... legal agrupado al pie": kayak.com's own
+ *  ☰ drawer groups a secondary block of utility/legal links below the
+ *  main nav, visually smaller and separated by its own hairline — not
+ *  mixed into the primary Individual/Business/Widget/Blog/About list.
+ *  Two new groups, both reusing keys/routes that already exist elsewhere
+ *  (Footer.tsx) rather than inventing new copy or destinations:
+ *
+ *  DRAWER_UTILITY — "Alertas de tasa" (footer.product.rateAlerts, a
+ *  translated key that existed but was never actually linked anywhere in
+ *  the site — dead key until now). Points at "/", same as the Individual
+ *  entry above: there's no dedicated rate-alerts page today, the feature
+ *  is a card that appears inside a comparator RESULT (needs a real
+ *  corridor first — see ComparatorSection.tsx's own rate-alert card,
+ *  which needs `from`/`to`/`amount` in scope), so "/" is the honest
+ *  destination — it's where that flow starts, not a stand-in that goes
+ *  nowhere.
+ *
+ *  LEGAL_LINKS — Terms/Privacy/Risk, identical targets to Footer.tsx's
+ *  own `legal` array (same hashes into /legal) — Header no longer needs
+ *  to duplicate that array inline, both read from here now. */
+export const DRAWER_UTILITY: ReadonlyArray<NavEntry> = [
+  { to: "/", labelKey: "footer.product.rateAlerts" },
+];
+
+export const LEGAL_LINKS: ReadonlyArray<NavEntry> = [
+  { to: "/legal", hash: "terms", labelKey: "footer.legal.terms" },
+  { to: "/legal", hash: "privacy", labelKey: "footer.legal.privacy" },
+  { to: "/legal", hash: "risk", labelKey: "footer.legal.risk" },
+];

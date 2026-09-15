@@ -3,7 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
 import { Wordmark, BrandMark } from "@/components/Wordmark";
 import { LangSwitcher } from "@/components/LangSwitcher";
-import { HEADER_NAV, langLinkProps } from "@/config/nav";
+import { HEADER_NAV, DRAWER_UTILITY, LEGAL_LINKS, langLinkProps } from "@/config/nav";
+import { socials } from "@/components/Footer";
 import { useI18n } from "@/lib/i18n";
 
 /** Main nav — anchors into the home sections (Link with hash works from any
@@ -299,6 +300,48 @@ export function Header() {
               ))}
             </ul>
 
+            {/* 2026-09-10 feedback — "que más se podría agregar... legal
+                agrupado al pie": segundo grupo, mismo patrón visual que el
+                de arriba pero separado por un hairline propio — "Alertas
+                de tasa" (ver el comment de DRAWER_UTILITY en config/nav.ts
+                sobre por qué apunta a "/" y no a una página dedicada que
+                todavía no existe). */}
+            <ul className="mt-1 space-y-1 border-t border-border pt-3">
+              {DRAWER_UTILITY.map((item) => (
+                <li key={item.labelKey}>
+                  <Link
+                    {...langLinkProps(item.to, lang)}
+                    hash={item.hash}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-md px-3 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
+                  >
+                    {t(item.labelKey)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            {/* Legal — mismo criterio que la columna Legal de Footer.tsx
+                (texto más chico/secundario, no compite visualmente con la
+                navegación principal de arriba) pero en tema claro (este
+                drawer es bg-card, no el footer oscuro), así que usa
+                text-muted-foreground en vez del #A79C92 hardcodeado que
+                sólo tiene sentido sobre ese fondo oscuro. */}
+            <ul className="mt-1 space-y-1 border-t border-border pt-3">
+              {LEGAL_LINKS.map((item) => (
+                <li key={item.labelKey}>
+                  <Link
+                    {...langLinkProps(item.to, lang)}
+                    hash={item.hash}
+                    onClick={() => setOpen(false)}
+                    className="block rounded-md px-3 py-2 text-badge font-medium text-muted-foreground hover:bg-muted hover:text-foreground"
+                  >
+                    {t(item.labelKey)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
             {/* 2026-09-04 feedback (ronda 7) — "poner la banderita del
                 selector de idioma tambien en el menu de la izquierda como
                 hace kayak": kayak.com repite su selector de idioma/región
@@ -312,8 +355,35 @@ export function Header() {
                 lista de navegación, separado por un hairline propio;
                 `direction="up"` porque el drawer llega hasta el borde
                 inferior del viewport — un dropdown "down" ahí se saldría
-                de pantalla. */}
-            <div className="mt-auto border-t border-border pt-3">
+                de pantalla.
+                2026-09-10 feedback — "fila de íconos sociales junto al
+                selector de idioma": mismos 4 links que ya tiene el footer
+                (socials, exportado desde Footer.tsx), mismo criterio de
+                círculo con borde — acá en tono claro (border-border/
+                text-muted-foreground) en vez del border-white/14 del
+                footer oscuro. */}
+            <div className="mt-auto flex flex-col gap-3 border-t border-border pt-3">
+              <div className="flex items-center gap-2">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={s.label}
+                    className="group inline-flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted-foreground transition-colors hover:border-foreground/30 hover:text-foreground"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-3.5 w-3.5"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d={s.path} />
+                    </svg>
+                  </a>
+                ))}
+              </div>
               <LangSwitcher variant="pill" direction="up" />
             </div>
           </nav>

@@ -2,10 +2,14 @@ import type { MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Wordmark } from "@/components/Wordmark";
 import { LangSwitcher } from "@/components/LangSwitcher";
-import { FOOTER_COMPANY, FOOTER_PRODUCT, langLinkProps, type NavEntry } from "@/config/nav";
+import { FOOTER_COMPANY, FOOTER_PRODUCT, LEGAL_LINKS, langLinkProps, type NavEntry } from "@/config/nav";
 import { useI18n } from "@/lib/i18n";
 
-const socials = [
+// 2026-09-10 feedback — exportado (antes vivía sin exportar, sólo para
+// este archivo) para que Header.tsx pueda repetir la misma fila de
+// íconos en el drawer del ☰, junto al selector de idioma — mismos 4
+// links, un solo lugar con los SVG paths en vez de duplicarlos.
+export const socials = [
   {
     label: "X",
     href: "https://x.com/mangomundi",
@@ -100,12 +104,10 @@ export function Footer() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const legal = [
-    { hash: "terms", label: t("footer.legal.terms") },
-    { hash: "privacy", label: t("footer.legal.privacy") },
-    { hash: "risk", label: t("footer.legal.risk") },
-  ] as const;
-
+  // 2026-09-10 feedback — este array vivía sólo acá, hardcodeado; ahora
+  // sale de config/nav.ts (`LEGAL_LINKS`) para que Header.tsx (el drawer
+  // del ☰) pueda reusar exactamente los mismos 3 destinos en vez de
+  // duplicar la lista.
   return (
     <footer className="bg-[#1B1510] py-7">
       {/* 2026-09-04 feedback (ronda 6, cont.) — ver Header.tsx: tope de
@@ -166,15 +168,14 @@ export function Footer() {
             <span className="text-badge font-bold uppercase tracking-wide text-white">
               {t("footer.legal.title")}
             </span>
-            {legal.map((l) => (
+            {LEGAL_LINKS.map((l) => (
               <Link
-                key={l.label}
-                to="/{-$lang}/legal"
-                params={{ lang: lang === "en" ? undefined : lang }}
+                key={l.labelKey}
+                {...langLinkProps(l.to, lang)}
                 hash={l.hash}
                 className="transition-colors hover:text-white"
               >
-                {l.label}
+                {t(l.labelKey)}
               </Link>
             ))}
           </div>
