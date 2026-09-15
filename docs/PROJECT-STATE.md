@@ -596,6 +596,7 @@ marketing genérico sin cifra concreta en ninguna página oficial revisada.
 | Handoff: noveno round — widget con país+moneda+monto verificado sin scroll, `/business` sin vacío de sticky-footer, espaciado sitewide, fix Trustpilot del rail (1-sep) | `docs/handoff/handoff-2026-09-01-noveno-round-widget-business-trustpilot.md` |
 | Handoff: décimo round — bug de color de fondo sitewide, píldoras agrupadas, "Rank by" unificado en "More filters", "Your request" comprimido, `/about` con imagen, bug de contenido cortado en el widget (1-sep) | `docs/handoff/handoff-2026-09-01-decimo-round-agrupar-pildoras-colores-mockup.md` |
 | **Auditoría SEO completa** (sitemap incompleto, redirects 307 vs 301, typo de encoding en meta description ES, `/business` sin SEO localizado, `<h1>` genérico en corredores, `alt` de miniaturas del blog, `llms.txt` desactualizado) — con plan de acción priorizado (9-sep, rama `kayakclone`) | `docs/handoff/handoff-2026-09-09-auditoria-seo-completa.md` |
+| **Migración de URLs por idioma** (`?lang=es` → `/es/...` en las 8 rutas indexables — inglés sin prefijo) — análisis, plan, implementación completa, y 5 hallazgos de una revisión posterior (`/widget` a medio migrar, mayúsculas sin normalizar, `/embed` perdiendo su detección geo legítima, `RTL_LANGS` sin `"ur"`, docs/test e2e desactualizados). Léelo antes de tocar `I18nProvider`, `LangSwitcher.tsx`, `site.ts`, o cualquier archivo bajo `src/routes/{-$lang}*` (10 al 13-sep, rama `kayakclone`) | `docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md` |
 
 ## 10. Cómo continuar
 
