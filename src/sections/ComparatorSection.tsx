@@ -573,6 +573,23 @@ export function ComparatorSection({
       // su propio comentario) en vez de depender de que este mismo
       // closure ya vea el `segment` actualizado, que todavía no pasó.
       if (result) {
+        // 2026-09-14 feedback — "por qué vuelve a aparecer la pantalla de
+        // update?": la causa real de esto (y no lo que el fix anterior
+        // resolvía) — `segment` es una de las dependencias del efecto de
+        // sync debounceado (300ms) más abajo en este archivo, que hace
+        // `setResult(null)` salvo que este flag diga lo contrario (mismo
+        // patrón que ya usan `handlePickFromCurrency`/el compare de
+        // corredor sugerido, unas líneas más abajo). Sin este flag, medio
+        // segundo después de que `compareMut.mutate` de acá abajo trae el
+        // resultado nuevo, ese OTRO efecto lo pisaba con `null` — `compact`
+        // (que depende de `Boolean(result)`) pasaba a `false`, y la barra
+        // colapsada/el header mergeado se abrían de vuelta a la pantalla
+        // completa con el botón "Compare"/"Update" — exactamente el
+        // "vuelve a aparecer la pantalla de update" reportado. El
+        // resultado en sí ya estaba bien (el fix anterior de re-comparar
+        // en el lugar funcionaba) — lo que fallaba era que un efecto
+        // aparte lo borraba enseguida después.
+        skipNextSyncClearRef.current = true;
         compareMut.mutate({ from, to, sendingCountry, receivingCountry, segment: next });
       }
       return;
