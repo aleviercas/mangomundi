@@ -534,19 +534,36 @@ function resolveTier(
   spread_percent: number;
 } {
   const tiers = (p.fee_tiers ?? []) as FeeTier[];
-  if (!tiers.length) {
-    return {
-      fee_percent: Number(p.fee_percent) || 0,
-      fee_fixed: Number(p.fee_fixed) || 0,
-      spread_percent: Number(p.spread_percent) || 0,
-    };
-  }
-  const sorted = [...tiers].sort((a, b) => (a.max ?? Infinity) - (b.max ?? Infinity));
-  const match = sorted.find((t) => amount <= (t.max ?? Infinity)) ?? sorted[sorted.length - 1];
+  const flat = {
+    fee_percent: Number(p.fee_percent) || 0,
+    fee_fixed: Number(p.fee_fixed) || 0,
+    spread_percent: Number(p.spread_percent) || 0,
+  };
+  if (!tiers.length) return flat;
+  // 2026-09-14 feedback — "por qué SBI Remit tiene una fee tan grande?":
+  // la versión anterior sólo miraba `t.max` ("¿el monto entra debajo del
+  // techo de este tramo?"), nunca `t.min` — un monto muy por debajo del
+  // PISO de un tramo igual matcheaba ese tramo con tal de estar bajo su
+  // techo. SBI Remit tiene tramos [10001-20000, 30001-50000]: a
+  // amount=1000 (muy por debajo de cualquiera de los dos pisos), esta
+  // lógica igual matcheaba el primer tramo (1000 ≤ 20000 = true) y le
+  // aplicaba fee_fixed=720 — una tarifa pensada para una transferencia de
+  // 10-20 mil, mostrada para una de mil (72% de fee). `resolveBrokerTier`
+  // (function hermana, unas líneas más abajo) ya hace esto bien —
+  // `inRange` exige min Y max, no sólo max — esta función se había
+  // quedado atrás. Sin ningún tramo que cubra genuinamente este monto,
+  // cae al dato plano del proveedor (`flat`, arriba) en vez de tomar
+  // prestado el número de un tramo vecino que nunca cotizó para este
+  // monto — mismo principio de neutralidad que el resto del sitio: mostrar
+  // el dato real, no inventar uno con tal de mostrar algo.
+  const inRange = tiers.find(
+    (t) => amount >= (t.min ?? -Infinity) && amount <= (t.max ?? Infinity),
+  );
+  if (!inRange) return flat;
   return {
-    fee_percent: match.fee_percent ?? (Number(p.fee_percent) || 0),
-    fee_fixed: match.fee_fixed ?? (Number(p.fee_fixed) || 0),
-    spread_percent: match.spread_percent ?? (Number(p.spread_percent) || 0),
+    fee_percent: inRange.fee_percent ?? flat.fee_percent,
+    fee_fixed: inRange.fee_fixed ?? flat.fee_fixed,
+    spread_percent: inRange.spread_percent ?? flat.spread_percent,
   };
 }
 
