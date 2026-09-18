@@ -10,7 +10,7 @@ import {
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { I18nProvider, SEO_META, RTL_LANGS, useI18n } from "@/lib/i18n";
+import { I18nProvider, SEO_META, RTL_LANGS, SUPPORTED_LANGS, useI18n, type Lang } from "@/lib/i18n";
 import { ComingSoonProvider } from "@/components/ComingSoonModal";
 import { ALL_FLAG_URLS } from "@/components/ui/FlagIcon";
 
@@ -74,11 +74,24 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   );
 }
 
+// 2026-09-16 — misma lógica pura que geo.functions.ts's getInitialLang(),
+// duplicada acá a propósito (no importada) para que RootShell (más abajo)
+// pueda llamarla de forma 100% sincrónica sin arrastrar el resto de
+// geo.functions.ts (con exports server-only vía createServerFn) al bundle
+// de cliente. Ver el comentario grande de RootShell sobre por qué esto
+// tiene que ser sincrónico y no venir del loader asíncrono de la raíz.
+function getInitialLangSync(pathname: string): Lang {
+  const seg = pathname.split("/")[1]?.toLowerCase();
+  if (seg && (SUPPORTED_LANGS as string[]).includes(seg)) return seg as Lang;
+  return "en";
+}
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  loader: async () => {
+  loader: async ({ location }) => {
     try {
-      const { getInitialLang, getVisitorGeo } = await import("@/lib/geo.functions");
-      const [initialLang, geo] = await Promise.all([getInitialLang(), getVisitorGeo()]);
+      const { getVisitorGeo } = await import("@/lib/geo.functions");
+      const initialLang = getInitialLangSync(location.pathname);
+      const geo = await getVisitorGeo();
       return { initialLang, geoCountry: geo.country, geoCurrency: geo.currency };
     } catch {
       return { initialLang: "en" as const, geoCountry: "GB", geoCurrency: "GBP" };
@@ -253,11 +266,25 @@ function TrustpilotBootstrap() {
 }
 
 function RootShell({ children }: { children: React.ReactNode }) {
-  // Render the geo-detected language on the SSR document itself so crawlers
-  // and assistive tech see the right lang before hydration (the I18nProvider
-  // effect keeps it in sync client-side afterwards).
-  const loaderData = Route.useLoaderData();
-  const initialLang = loaderData?.initialLang ?? "en";
+  // 2026-09-16 — verificación en vivo (servidor real) encontró que leer
+  // `initialLang` del loaderData de la ruta raíz (más abajo, para
+  // el resto del árbol vía I18nProvider) daba SIEMPRE "en" acá arriba,
+  // incluso pidiendo /ar/legal. Causa: el loader de la raíz espera
+  // `getVisitorGeo()` (una llamada real) antes de resolver — con SSR por
+  // streaming, React ya mandó la etiqueta `<html>` de apertura al stream
+  // ANTES de que esa promesa resuelva, usando el valor default ("en") que
+  // `loaderData?.initialLang ?? "en"` daba en ese instante. Una vez que
+  // el `<html>` de apertura ya salió por el stream, no hay forma de
+  // corregirlo retroactivamente.
+  //
+  // El fix real: calcular esto ACÁ, sincrónico, a partir del pathname
+  // actual del router (disponible de inmediato, sin esperar ningún
+  // loader) — ya no necesita ninguna llamada de servidor desde que
+  // `getInitialLang()` (geo.functions.ts) pasó a ser lógica pura de
+  // string sobre el path. `useRouterState` da el pathname ya resuelto en
+  // el primer render del servidor, sin el delay de `getVisitorGeo()`.
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const initialLang = getInitialLangSync(pathname);
   return (
     <html lang={initialLang} dir={RTL_LANGS.includes(initialLang) ? "rtl" : undefined}>
       <head>

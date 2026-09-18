@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeader, getRequest } from "@tanstack/react-start/server";
+import { getRequestHeader } from "@tanstack/react-start/server";
 import { SUPPORTED_LANGS, COUNTRY_TO_LANG, type Lang } from "@/lib/i18n";
 import { COUNTRY_BY_CODE, localCurrency } from "@/lib/countries";
 
@@ -39,18 +39,31 @@ function detectCountryFromHeaders(): string {
 // Ya NO autodetecta por geo-IP ni por Accept-Language — la URL sin prefijo
 // es determinísticamente inglés, tanto para Google como para un visitante
 // real, sin importar de dónde venga.
-export const getInitialLang = createServerFn({ method: "GET" }).handler(async (): Promise<Lang> => {
-  try {
-    const url = getRequest()?.url;
-    if (url) {
-      const q = new URL(url).searchParams.get("lang")?.toLowerCase();
-      if (q && (SUPPORTED_LANGS as string[]).includes(q)) return q as Lang;
-    }
-  } catch {
-    // fall through
-  }
+// 2026-09-16 — verificación en vivo (servidor real) encontró que `<html
+// lang>` (seteado en __root.tsx a partir de esta función) quedaba en "en"
+// para `/es/legal` — el fix inicial (leer `getRequest()?.url` acá adentro)
+// no funcionó: `createServerFn` durante el loader de la ruta raíz se
+// resuelve como una llamada RPC interna, así que `getRequest()?.url` NO
+// refleja de forma confiable la URL de página que el visitante realmente
+// pidió (a diferencia de `search`/`params` de un `beforeLoad`/`loader` de
+// ruta, que sí vienen directo del router y sí son confiables — por eso
+// los redirects 301 de cada ruta migrada, que SÍ leen `search.lang` así,
+// funcionan bien).
+//
+// La solución real: dejar de depender de un server function para esto —
+// el path es la fuente de verdad del idioma desde la migración a la
+// Opción B (docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md), y
+// leerlo es lógica pura de string, no necesita ninguna API de servidor.
+// Ya no hace falta el fallback a `?lang=` acá tampoco: cualquier ruta
+// migrada con `?lang=` en la URL ya redirige (301) ANTES de que la raíz
+// llegue a renderizar esa request — el único momento en que importaría el
+// valor de `initialLang` de la raíz para esa request es un render que el
+// visitante nunca llega a ver.
+export function getInitialLang(pathname: string): Lang {
+  const seg = pathname.split("/")[1]?.toLowerCase();
+  if (seg && (SUPPORTED_LANGS as string[]).includes(seg)) return seg as Lang;
   return "en";
-});
+}
 
 // 2026-09-13 — encontrado al revisar la migración: /embed (el widget para
 // terceros, widget.js) se configura por defecto con `data-lang="auto"` en

@@ -4038,6 +4038,16 @@ export function coerceLang(candidate: unknown): Lang {
   return lower;
 }
 
+// 2026-09-16 — usado para el valor inicial SINCRÓNICO de `routeLang` en
+// I18nProvider (ver su comentario grande) y por RouterStateSync más abajo
+// para las actualizaciones posteriores — misma lógica en los dos lugares,
+// centralizada acá para no repetirla.
+function parseLangFromPathname(pathname: string | undefined): Lang | undefined {
+  if (!pathname) return undefined;
+  const seg = pathname.split("/")[1]?.toLowerCase();
+  return seg && (SUPPORTED_LANGS as string[]).includes(seg) ? coerceLang(seg) : undefined;
+}
+
 // 2026-09-13 — extraído para poder reusarlo en I18nOverride (más abajo),
 // sin duplicar la lógica de fallback de t().
 function buildI18nValue(lang: Lang, setLang: (l: Lang) => void): I18nCtx {
@@ -4114,9 +4124,6 @@ export function I18nProvider({
   // única fuente de verdad. Ya no hay override silencioso por
   // localStorage/geo-IP que cambie el contenido sin cambiar la URL — eso
   // era exactamente el antipatrón de SEO que se corrigió (§2 del plan).
-  const [routeLang, setRouteLang] = useState<Lang | undefined>(undefined);
-  const lang = routeLang ?? coerceLang(initialLang === "en" ? "en" : initialLang);
-
   // Subscribe to router state so SEO meta react to navigation as well as lang.
   // useRouter({ warn: false }) never throws (unlike useRouterState) when no
   // <RouterProvider> ancestor exists (tests/storybook/SSR probes) — it just
@@ -4125,6 +4132,26 @@ export function I18nProvider({
   // useParams (unconditionally, from its own component) — keeping every
   // hook call in I18nProvider itself unconditional too.
   const router = useRouter({ warn: false });
+
+  // 2026-09-16 — verificación en vivo (servidor real) encontró que los
+  // links del Header/Footer en `/es/legal` salían sin el prefijo `/es/`
+  // (`langLinkProps` recibía `lang: "en"` en vez de `"es"`, en el HTML que
+  // manda el servidor). Causa: `routeLang` se inicializaba en `undefined`
+  // y sólo se corregía en el `useEffect` de `RouterStateSync` más abajo —
+  // los efectos NUNCA corren durante SSR, así que ese `useEffect` nunca
+  // llega a ejecutarse a tiempo para el HTML que el servidor manda (recién
+  // corre después de la hidratación, en el navegador). El `<title>`/
+  // canonical de cada ruta no se veían afectados porque esos los arma el
+  // head() de cada ruta migrada leyendo `params.lang` directamente, sin
+  // pasar por I18nProvider en absoluto — pero cualquier cosa que dependa
+  // de `useI18n().lang` (los links, `t()`, etc.) sí. Mismo fix que
+  // `RootShell` en __root.tsx: calcular esto sincrónico, desde el
+  // pathname actual, ya disponible sin esperar ningún efecto.
+  const [routeLang, setRouteLang] = useState<Lang | undefined>(() =>
+    parseLangFromPathname(router?.state.location.pathname),
+  );
+  const lang = routeLang ?? coerceLang(initialLang === "en" ? "en" : initialLang);
+
   const [pathname, setPathname] = useState(() => router?.state.location.pathname ?? "/");
 
   // Keep <html lang> and direction in sync, plus update <title>/<meta>
