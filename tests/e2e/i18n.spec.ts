@@ -92,11 +92,20 @@ test.describe("i18n — locale from the URL's language prefix is live in the bro
     await goto(page, "/legal");
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
 
-    // LangSwitcher.tsx — un botón/trigger con el idioma actual, que abre un
-    // dropdown de opciones. Selector deliberadamente laxo (por rol +
-    // nombre visible) para no acoplarse a una clase interna que pueda
-    // cambiar con el rediseño de kayakclone.
-    await page.getByRole("button", { name: /english/i }).first().click();
+    // LangSwitcher.tsx (verificado contra el markup real, no adivinado):
+    // el trigger es un <button aria-expanded> con un <span>EN</span> como
+    // texto visible (el aria-label es genérico, "change language", así que
+    // NO sirve para identificar el idioma actual) — se filtra por
+    // aria-expanded (también lo tiene el toggle del menú mobile de
+    // Header.tsx, por eso el hasText: "EN" además) para asegurar que
+    // matchea el trigger correcto. Cada opción del dropdown es un
+    // role="option" con el nombre nativo del idioma como texto visible
+    // ("Español", no "Spanish").
+    await page
+      .locator("button[aria-expanded]")
+      .filter({ hasText: "EN" })
+      .first()
+      .click();
     await page.getByRole("option", { name: /español/i }).click();
 
     // LangSwitcher navega con una recarga completa (window.location) — dar

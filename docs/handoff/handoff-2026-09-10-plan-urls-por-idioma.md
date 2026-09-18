@@ -311,6 +311,81 @@ rutas con SEO ya tienen `lang` en su `searchSchema`, y cualquier ruta sin
 parámetro, sin romperse. `replace: true` — es una preferencia, no
 contenido nuevo, no debería llenar el historial de navegación.
 
+## 6.6. Verificación en vivo con un servidor real (16/17-sep) — 2 bugs más, invisibles para tsc/build
+
+Todo lo de arriba se había verificado sólo con `tsc --noEmit`/`vite
+build` (compila y tipa bien) y lectura de código — nunca con un servidor
+real respondiendo requests de verdad. El 16-sep se logró levantar el
+build real (`node .output/server/index.mjs`, sin acceso a Supabase/
+producción — sólo localhost) y probarlo con `curl` contra ~20 rutas y
+casos distintos. Encontró **2 bugs reales que ningún `tsc`/`build` podía
+detectar**, los dos con la misma causa raíz:
+
+**Causa raíz común:** con SSR por streaming, React manda la apertura de
+`<html>` al navegador *antes* de que el loader asíncrono de la ruta raíz
+(que espera `getVisitorGeo()`, una llamada real) termine de resolver. Todo
+lo que dependía de ese loader para calcular el idioma quedaba con el
+valor default ("en") en el HTML que efectivamente se manda — el loader
+sí calculaba el valor correcto (confirmado con un log de diagnóstico),
+pero llegaba tarde para lo que ya se había mandado por el stream.
+
+1. **`<html lang>` siempre "en"**, incluso pidiendo `/es/legal` o
+   `/ar/legal`. `getInitialLang()` pasó a ser una función pura (ya no
+   `createServerFn` — el intento inicial de arreglar esto leyendo
+   `getRequest()?.url` tampoco alcanzaba, por una razón relacionada: un
+   `createServerFn` llamado desde el loader de la raíz se resuelve como
+   una llamada RPC interna, y esa URL interna no refleja de forma
+   confiable la URL de página real). `RootShell` (`__root.tsx`) ahora la
+   llama sincrónicamente con `useRouterState` en vez de leer
+   `loaderData.initialLang`. Confirmado en vivo: `/ar/legal` ahora manda
+   `<html lang="ar" dir="rtl">`.
+2. **El más grave: todos los links del Header/Footer en cualquier página
+   `/es/...` salían SIN el prefijo** (a `/business`, `/about`, `/blog`,
+   no a `/es/business`, `/es/about`) — navegar desde cualquier página en
+   español a cualquier otra parte del sitio te reseteaba a inglés. Causa
+   idéntica: `routeLang` en `I18nProvider` se inicializaba en `undefined`
+   y sólo se corregía en un `useEffect` (`RouterStateSync`) que nunca
+   corre durante SSR — recién corre después de la hidratación, en el
+   navegador, cuando el HTML que ve un crawler (o alguien con JS
+   deshabilitado, o el primer paint antes de hidratar) ya salió mal.
+   Corregido inicializando `routeLang` sincrónicamente desde
+   `router.state.location.pathname`. Confirmado en vivo: `/es/legal`
+   ahora manda `href="/es/business"`, `href="/es/about"`, etc. en cada
+   link del footer/header.
+
+**Confirmado en vivo sin necesitar cambios** (ya funcionaban bien):
+redirects 301 de `?lang=xx` viejo, normalización de mayúsculas en el
+idioma (`/ES/legal`, `/send/GB-MX`), normalización de moneda→país en
+corredores (`/es/send/gbp-mxn` → `/es/send/gb-mx`), un idioma inválido
+cae a la versión sin prefijo, `/embed` devuelve `noindex` correctamente,
+el sitemap genera los 20 hreflang alternates correctamente y degrada bien
+(sin crashear) cuando no hay datos de Supabase, y el contenido real de
+cada página (no sólo `<title>`/meta) se traduce de verdad (confirmado
+leyendo el texto renderizado de `/es/about`).
+
+**Observación, no un bug de esta migración:** `/widget` en español
+muestra el `<title>` genérico de la home ("Mangomundi | Comparar tipos de
+cambio") en vez de uno propio del widget — es el fallback ya documentado
+de `getRouteSeo()` para rutas sin entrada traducida propia
+(`/widget`/`/about`/`/blog`/`/legal` sólo tienen entrada en
+`ROUTE_SEO_EN`), el mismo comportamiento que ya existía antes de esta
+migración, sólo que ahora alcanzable por path en vez de `?lang=`. Es una
+decisión de contenido/traducción, no algo que corresponda arreglar en
+código sin pasar por el proceso de traducción revisada del proyecto.
+
+**Test e2e corregido con datos reales, no adivinados:** al revisar el
+markup real de `LangSwitcher.tsx` para verificar el test recién escrito,
+se encontró que el selector usado (`getByRole("button", { name:
+/english/i })`) no iba a funcionar — el botón trigger usa un `aria-label`
+genérico ("cambiar idioma"), no el nombre del idioma actual; el texto
+visible real es el código corto ("EN"/"ES") vía `<span>{current.label}</span>`,
+y cada opción del dropdown (`role="option"`) muestra el nombre nativo
+("Español"). Corregido con esos datos verificados. **No se pudo correr
+el test de verdad**: el sandbox bloquea la descarga del navegador de
+Playwright (`cdn.playwright.dev` no está en la lista de red permitida) —
+selectores corregidos contra el markup real, pero sin la ejecución
+end-to-end real todavía.
+
 ## 7. Plan detallado — Opción B (cuando se decida encarar, no ahora)
 
 Fases, en orden de dependencia:
