@@ -118,9 +118,20 @@ export const Route = createFileRoute("/{-$lang}/")({
     ]);
     return { corridors, lang };
   },
-  // Title/description/OG come from the root head, which is per-language
-  // (SEO_META). The home just adds its own canonical, og:url, hreflang and
-  // JSON-LD so it doesn't re-pin an English-only title over the localized one.
+  // 2026-09-19 — antes esta ruta NO definía title/description/og:title/
+  // og:description/twitter:* propios, a propósito — el comentario
+  // original decía "vienen del head de la raíz, que ya es per-language
+  // (SEO_META)". Esa premisa resultó ser falsa: root's head() depende de
+  // `loaderData?.initialLang` (el loader asíncrono que espera
+  // `getVisitorGeo()`), y por streaming SSR el `<head>` puede
+  // serializarse antes de que esa promesa resuelva — confirmado en vivo,
+  // la home en `/es/` mostraría title/twitter en inglés en el HTML que
+  // efectivamente manda el servidor (ver
+  // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md §6.6). Cada
+  // una de las otras 7 rutas migradas ya definía esto en su propio
+  // head() (síncrono, desde `params.lang`) — la home era la única
+  // excepción, y quedó siendo la única con este bug real hoy. Alineada
+  // con el mismo patrón que el resto.
   head: ({ params }) => {
     const lang = coerceLang(params.lang ?? "en");
     const canonical = selfCanonical("/", lang);
@@ -136,7 +147,13 @@ export const Route = createFileRoute("/{-$lang}/")({
     const seo = SEO_META[lang] ?? SEO_META.en;
     return {
       meta: [
+        { title: seo.title },
+        { name: "description", content: seo.description },
+        { property: "og:title", content: seo.title },
+        { property: "og:description", content: seo.description },
         { property: "og:url", content: canonical },
+        { name: "twitter:title", content: seo.title },
+        { name: "twitter:description", content: seo.description },
         // FlexOffers site-ownership verification (Option 1: meta tag) —
         // home page only, per their own instructions, not site-wide.
         { name: "fo-verify", content: "63daa6c1-d68c-4c7a-ae08-7ff9a05df2b3" },

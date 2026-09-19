@@ -114,6 +114,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     }
   },
   head: ({ loaderData }) => {
+    // 2026-09-19 — este `seo` (title/description/og:*/twitter:*) es sólo
+    // el FALLBACK genérico — cada una de las 8 rutas migradas ya vuelve a
+    // definir title/description/og:title/og:description en su propio
+    // head() (leyendo `params.lang` directo, no `loaderData`), y esas
+    // sí ganan en el merge final. `loaderData?.initialLang` alcanza para
+    // las rutas que NO tienen ese override (/admin, /embed, los redirects
+    // legacy) porque ninguna de ellas depende de que esto sea exacto por
+    // idioma — no intentar "arreglar" esto para que sea sincrónico como
+    // RootShell: acá `match.pathname` siempre es "/" (el match de la
+    // propia ruta raíz, nunca la URL completa resuelta del hijo) — no hay
+    // forma de que la raíz sepa el idioma del hijo por este camino. Ver
+    // el hallazgo de twitter:title/twitter:description en
+    // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md — el fix
+    // real fue agregar esas dos claves al head() de cada ruta migrada,
+    // no acá.
     const seo = SEO_META[loaderData?.initialLang ?? "en"] ?? SEO_META.en;
     // Absolute URL — social crawlers (WhatsApp/X/LinkedIn/Facebook) reject
     // relative og:image paths, so the card would never render.

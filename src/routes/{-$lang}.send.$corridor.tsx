@@ -145,6 +145,12 @@ export const Route = createFileRoute("/{-$lang}/send/$corridor")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
+        // 2026-09-19 -- mismo hallazgo que el resto de las rutas migradas:
+        // twitter:title/description quedaban en el fallback generico en
+        // ingles de __root.tsx sin esto -- unica clave que ninguna ruta
+        // volvia a pisar en el merge final.
+        { name: "twitter:title", content: title },
+        { name: "twitter:description", content: description },
         { property: "og:url", content: canonical },
       ],
       links: [{ rel: "canonical", href: canonical }, ...hreflangLinks(path)],

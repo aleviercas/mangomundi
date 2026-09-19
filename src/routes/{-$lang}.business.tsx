@@ -69,6 +69,13 @@ export const Route = createFileRoute("/{-$lang}/business")({
         { name: "description", content: seo.description },
         { property: "og:title", content: seo.title },
         { property: "og:description", content: seo.description },
+        // 2026-09-19 -- sin esto, twitter:title/description quedaban
+        // siempre en ingles (el fallback generico de __root.tsx, ver su
+        // propio comentario en head()) sin importar el idioma real de la
+        // pagina -- unica clave que ninguna ruta volvia a pisar en el
+        // merge final. Mismo criterio que og:title/og:description arriba.
+        { name: "twitter:title", content: seo.title },
+        { name: "twitter:description", content: seo.description },
         { property: "og:url", content: canonical },
       ],
       links: [{ rel: "canonical", href: canonical }, ...hreflangLinks("/business")],
