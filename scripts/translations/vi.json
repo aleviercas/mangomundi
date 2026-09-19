@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Một email khi tỷ giá tốt nhất trên tuyến này được cải thiện. Không cần tài khoản.",
   "comparator.rateAlert.cta": "Đặt cảnh báo tỷ giá",
   "comparator.rateAlert.error": "Đã xảy ra lỗi. Vui lòng thử lại.",
-  "comparator.rateAlert.success": "Xong — chúng tôi sẽ gửi email cho bạn khi tỷ giá này được cải thiện.",
+  "comparator.rateAlert.success": "Đã ghi nhận — chúng tôi đã lưu lại sự quan tâm của bạn đến tuyến này.",
   "comparator.rateAlert.title": "Theo dõi {from} → {to}",
   "comparator.reasoning.context": "Ngữ cảnh",
   "comparator.reasoning.title": "Đã tìm thấy lộ trình tối ưu",
