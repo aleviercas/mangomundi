@@ -80,9 +80,25 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
 // geo.functions.ts (con exports server-only vía createServerFn) al bundle
 // de cliente. Ver el comentario grande de RootShell sobre por qué esto
 // tiene que ser sincrónico y no venir del loader asíncrono de la raíz.
-function getInitialLangSync(pathname: string): Lang {
+// 2026-09-19 — el prefijo de path es la fuente de verdad para las 8 rutas
+// migradas (search.lang ahí siempre redirige antes de llegar a este punto,
+// ver el comentario grande de RootShell), pero /embed NO tiene ni puede
+// tener su propio `{-$lang}` — legítimamente sigue usando `?lang=` como su
+// mecanismo real (ver detectEmbedLang() en geo.functions.ts) y nunca
+// redirige. Encontrado en vivo: `/embed?lang=ar` mandaba `<html
+// lang="en">` porque esta función sólo miraba el path. `searchStr` es la
+// query string cruda (con el `?` inicial si existe, o vacía) — se parsea
+// acá en vez de depender de un `search` ya tipado, porque la ruta raíz no
+// tiene su propio `validateSearch`.
+function getInitialLangSync(pathname: string, searchStr: string): Lang {
   const seg = pathname.split("/")[1]?.toLowerCase();
   if (seg && (SUPPORTED_LANGS as string[]).includes(seg)) return seg as Lang;
+  try {
+    const q = new URLSearchParams(searchStr).get("lang")?.toLowerCase();
+    if (q && (SUPPORTED_LANGS as string[]).includes(q)) return q as Lang;
+  } catch {
+    // ignore
+  }
   return "en";
 }
 
@@ -90,7 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   loader: async ({ location }) => {
     try {
       const { getVisitorGeo } = await import("@/lib/geo.functions");
-      const initialLang = getInitialLangSync(location.pathname);
+      const initialLang = getInitialLangSync(location.pathname, location.searchStr ?? "");
       const geo = await getVisitorGeo();
       return { initialLang, geoCountry: geo.country, geoCurrency: geo.currency };
     } catch {
@@ -284,7 +300,8 @@ function RootShell({ children }: { children: React.ReactNode }) {
   // string sobre el path. `useRouterState` da el pathname ya resuelto en
   // el primer render del servidor, sin el delay de `getVisitorGeo()`.
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const initialLang = getInitialLangSync(pathname);
+  const searchStr = useRouterState({ select: (s) => s.location.searchStr ?? "" });
+  const initialLang = getInitialLangSync(pathname, searchStr);
   return (
     <html lang={initialLang} dir={RTL_LANGS.includes(initialLang) ? "rtl" : undefined}>
       <head>
