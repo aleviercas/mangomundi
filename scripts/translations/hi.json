@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "जब इस रूट पर सबसे अच्छी दर बेहतर हो तो एक ईमेल। किसी खाते की आवश्यकता नहीं।",
   "comparator.rateAlert.cta": "रेट अलर्ट सेट करें",
   "comparator.rateAlert.error": "कुछ गलत हो गया। फिर से कोशिश करें।",
-  "comparator.rateAlert.success": "तैयार है — जब यह दर बेहतर होगी तो हम आपको ईमेल करेंगे।",
+  "comparator.rateAlert.success": "समझ गए — हमने इस मार्ग में आपकी रुचि दर्ज कर ली है।",
   "comparator.rateAlert.title": "{from} → {to} पर नज़र रखें",
   "comparator.reasoning.context": "प्रसंग",
   "comparator.reasoning.title": "इष्टतम मार्ग मिल गया",
