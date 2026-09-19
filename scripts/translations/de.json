@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Eine E-Mail, wenn sich der beste Kurs auf dieser Route verbessert. Kein Konto erforderlich.",
   "comparator.rateAlert.cta": "Kurs-Alarm einrichten",
   "comparator.rateAlert.error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
-  "comparator.rateAlert.success": "Fertig — wir schreiben Ihnen, sobald sich dieser Kurs verbessert.",
+  "comparator.rateAlert.success": "Alles klar — wir haben Ihr Interesse an dieser Strecke vermerkt.",
   "comparator.rateAlert.title": "{from} → {to} beobachten",
   "comparator.reasoning.context": "Kontext",
   "comparator.reasoning.title": "Optimale Route gefunden",
