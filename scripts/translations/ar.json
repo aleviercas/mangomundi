@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "بريد إلكتروني واحد عند تحسّن أفضل سعر على هذا المسار. لا حاجة لحساب.",
   "comparator.rateAlert.cta": "تعيين تنبيه سعر",
   "comparator.rateAlert.error": "حدث خطأ ما. حاول مرة أخرى.",
-  "comparator.rateAlert.success": "تم — سنراسلك عبر البريد الإلكتروني عند تحسّن هذا السعر.",
+  "comparator.rateAlert.success": "تم — سجّلنا اهتمامك بهذا المسار.",
   "comparator.rateAlert.title": "مراقبة {from} → {to}",
   "comparator.reasoning.context": "السياق",
   "comparator.reasoning.title": "تم العثور على المسار الأمثل",
