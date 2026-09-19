@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "이 경로의 최적 환율이 개선되면 이메일 한 통을 보내드립니다. 계정이 필요하지 않습니다.",
   "comparator.rateAlert.cta": "환율 알림 설정",
   "comparator.rateAlert.error": "문제가 발생했습니다. 다시 시도해 주세요.",
-  "comparator.rateAlert.success": "설정되었습니다 — 이 환율이 개선되면 이메일로 알려드리겠습니다.",
+  "comparator.rateAlert.success": "확인했습니다 — 이 경로에 대한 관심을 기록했습니다.",
   "comparator.rateAlert.title": "{from} → {to} 감시하기",
   "comparator.reasoning.context": "컨텍스트",
   "comparator.reasoning.title": "최적의 경로 발견",

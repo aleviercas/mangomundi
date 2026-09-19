@@ -3855,10 +3855,22 @@ function FiltersCard({
   // unos pocos px, pero con 2-3 secciones y 4-5 filas suma un ahorro real
   // de alto total sin que se sienta apretado (sigue habiendo aire, sólo
   // menos del que sobraba).
-  const sectionClass = "px-4 py-3";
+  // 2026-09-19 feedback (segunda ronda) — "los menus de filtros verticales
+  // de la izquierda podrian estar mas comprimidos tanto en personal como
+  // en business": este rail sólo vive en desktop (`hidden lg:flex`, nunca
+  // se toca con el dedo), así que apretar el padding más de lo que se
+  // haría en una lista táctil es seguro acá. py-3→py-2.5, py-1→py-0.5.
+  // Además, "Payout method" y "Exclusive offers" pasan de dos secciones
+  // separadas (cada una con su propio heading y su propia línea
+  // divisoria) a una sola — el checkbox de "Exclusive offers" se agrega
+  // como una fila más debajo de las de payout method, con sólo un
+  // pequeño `mt-2` de por medio en vez de un section break entero. Ahorra
+  // un heading completo + una división + su padding, sin perder
+  // legibilidad (el checkbox sigue teniendo su propio label claro).
+  const sectionClass = "px-4 py-2.5";
   const headingClass = "text-badge font-semibold uppercase tracking-wide text-muted-foreground";
   const rowClass =
-    "flex cursor-pointer items-center gap-2.5 py-1 text-meta text-foreground transition-colors hover:text-brand-cta";
+    "flex cursor-pointer items-center gap-2.5 py-0.5 text-meta text-foreground transition-colors hover:text-brand-cta";
 
   return (
     <div className="compare-card divide-y divide-border">
@@ -3954,10 +3966,10 @@ function FiltersCard({
             );
           })}
         </div>
-      </div>
-
-      <div className={sectionClass}>
-        <div className={headingClass}>{t("comparator.filters.exclusiveOffers")}</div>
+        {/* 2026-09-19 feedback — fusionado con Payout method (ver el
+            comentario de sectionClass, arriba) — antes era su propia
+            sección con heading + línea divisoria propia. */}
+        <div className={`mt-2 ${headingClass}`}>{t("comparator.filters.exclusiveOffers")}</div>
         <label className={`mt-1.5 ${rowClass}`}>
           {/* §3.4 — deja de ser un chip coral y pasa a ser un checkbox más:
               el color de marca se reserva para la acción, no para un

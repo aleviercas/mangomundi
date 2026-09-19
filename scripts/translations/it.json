@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Un'email quando il miglior tasso su questa rotta migliora. Nessun account necessario.",
   "comparator.rateAlert.cta": "Imposta un avviso sul tasso",
   "comparator.rateAlert.error": "Qualcosa è andato storto. Riprova.",
-  "comparator.rateAlert.success": "Fatto — ti scriveremo quando questo tasso migliorerà.",
+  "comparator.rateAlert.success": "Fatto — abbiamo registrato il tuo interesse per questa rotta.",
   "comparator.rateAlert.title": "Monitora {from} → {to}",
   "comparator.reasoning.context": "Contesto",
   "comparator.reasoning.title": "Rotta ottimale trovata",

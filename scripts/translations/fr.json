@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Un e-mail lorsque le meilleur taux sur cet itinéraire s'améliore. Aucun compte requis.",
   "comparator.rateAlert.cta": "Configurer une alerte de taux",
   "comparator.rateAlert.error": "Une erreur est survenue. Veuillez réessayer.",
-  "comparator.rateAlert.success": "C'est fait — nous vous enverrons un e-mail lorsque ce taux s'améliorera.",
+  "comparator.rateAlert.success": "Compris — nous avons noté votre intérêt pour cet itinéraire.",
   "comparator.rateAlert.title": "Suivre {from} → {to}",
   "comparator.reasoning.context": "Contexte",
   "comparator.reasoning.title": "Itinéraire optimal trouvé",

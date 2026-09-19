@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "جب اس روٹ پر بہترین ریٹ بہتر ہو تو ایک ای میل۔ کسی اکاؤنٹ کی ضرورت نہیں۔",
   "comparator.rateAlert.cta": "ریٹ الرٹ سیٹ کریں",
   "comparator.rateAlert.error": "کچھ غلط ہو گیا۔ دوبارہ کوشش کریں۔",
-  "comparator.rateAlert.success": "ہو گیا — جب یہ ریٹ بہتر ہوگا ہم آپ کو ای میل کریں گے۔",
+  "comparator.rateAlert.success": "ٹھیک ہے — ہم نے اس روٹ میں آپ کی دلچسپی نوٹ کر لی ہے۔",
   "comparator.rateAlert.title": "{from} → {to} پر نظر رکھیں",
   "comparator.reasoning.context": "سیاق و سباق",
   "comparator.reasoning.title": "بہترین راستہ مل گیا",

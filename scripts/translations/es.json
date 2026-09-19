@@ -262,7 +262,7 @@
   "comparator.rateAlert.body": "Un correo cuando mejore la mejor tasa en esta ruta. No necesitás cuenta.",
   "comparator.rateAlert.cta": "Configurar alerta de tasa",
   "comparator.rateAlert.error": "Algo salió mal. Intentalo de nuevo.",
-  "comparator.rateAlert.success": "Listo, te avisamos por correo cuando esta tasa mejore.",
+  "comparator.rateAlert.success": "Listo — registramos tu interés en esta ruta.",
   "comparator.rateAlert.title": "Vigilar {from} → {to}",
   "comparator.reasoning.context": "Contexto",
   "comparator.reasoning.title": "Ruta óptima encontrada",

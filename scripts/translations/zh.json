@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "当该路线的最优汇率有所改善时，我们会发送一封邮件通知。无需注册账户。",
   "comparator.rateAlert.cta": "设置汇率提醒",
   "comparator.rateAlert.error": "出了点问题，请重试。",
-  "comparator.rateAlert.success": "设置成功——该汇率改善时我们会通过邮件通知您。",
+  "comparator.rateAlert.success": "好的 — 我们已记录您对该路线的兴趣。",
   "comparator.rateAlert.title": "关注 {from} → {to}",
   "comparator.reasoning.context": "背景",
   "comparator.reasoning.title": "已找到最优路由",

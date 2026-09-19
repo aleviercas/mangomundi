@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Bu rotadaki en iyi kur iyileştiğinde bir e-posta. Hesap gerekmez.",
   "comparator.rateAlert.cta": "Kur uyarısı ayarla",
   "comparator.rateAlert.error": "Bir şeyler ters gitti. Lütfen tekrar deneyin.",
-  "comparator.rateAlert.success": "Tamamdır — bu kur iyileştiğinde size e-posta göndereceğiz.",
+  "comparator.rateAlert.success": "Tamam — bu güzergaha olan ilginizi kaydettik.",
   "comparator.rateAlert.title": "{from} → {to} izle",
   "comparator.reasoning.context": "Bağlam",
   "comparator.reasoning.title": "Optimal rota bulundu",

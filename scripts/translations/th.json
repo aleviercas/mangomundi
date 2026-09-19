@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "อีเมลหนึ่งฉบับเมื่ออัตราที่ดีที่สุดในเส้นทางนี้ดีขึ้น ไม่ต้องมีบัญชี",
   "comparator.rateAlert.cta": "ตั้งค่าแจ้งเตือนอัตรา",
   "comparator.rateAlert.error": "เกิดข้อผิดพลาด กรุณาลองอีกครั้ง",
-  "comparator.rateAlert.success": "เรียบร้อย — เราจะส่งอีเมลแจ้งคุณเมื่ออัตรานี้ดีขึ้น",
+  "comparator.rateAlert.success": "รับทราบ — เราบันทึกความสนใจของคุณในเส้นทางนี้แล้ว",
   "comparator.rateAlert.title": "ติดตาม {from} → {to}",
   "comparator.reasoning.context": "บริบท",
   "comparator.reasoning.title": "พบเส้นทางที่เหมาะสมที่สุดแล้ว",

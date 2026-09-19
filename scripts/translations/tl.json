@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Isang email kapag gumanda ang pinakamahusay na rate sa rutang ito. Walang kailangang account.",
   "comparator.rateAlert.cta": "Mag-set ng rate alert",
   "comparator.rateAlert.error": "May naganap na problema. Subukan ulit.",
-  "comparator.rateAlert.success": "Handa na — ie-email ka namin kapag gumanda ang rate na ito.",
+  "comparator.rateAlert.success": "Nakuha — naitala namin ang iyong interes sa rutang ito.",
   "comparator.rateAlert.title": "Bantayan ang {from} → {to}",
   "comparator.reasoning.context": "Konteksto",
   "comparator.reasoning.title": "Nahanap ang optimal na ruta",

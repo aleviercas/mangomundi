@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "এই রুটে সেরা রেট উন্নত হলে একটি ইমেইল। কোনো অ্যাকাউন্ট লাগবে না।",
   "comparator.rateAlert.cta": "রেট অ্যালার্ট সেট করুন",
   "comparator.rateAlert.error": "কিছু একটা সমস্যা হয়েছে। আবার চেষ্টা করুন।",
-  "comparator.rateAlert.success": "সেট হয়ে গেছে — এই রেট উন্নত হলে আমরা আপনাকে ইমেইল করব।",
+  "comparator.rateAlert.success": "বুঝেছি — আমরা এই রুটে আপনার আগ্রহ নথিভুক্ত করেছি।",
   "comparator.rateAlert.title": "{from} → {to} নজরে রাখুন",
   "comparator.reasoning.context": "প্রসঙ্গ",
   "comparator.reasoning.title": "সর্বোত্তম রুট পাওয়া গেছে",

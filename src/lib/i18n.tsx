@@ -3149,7 +3149,18 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.rateAlert.body":
       "One email when the best rate on this route improves. No account needed.",
     "comparator.rateAlert.cta": "Set a rate alert",
-    "comparator.rateAlert.success": "You're set — we'll email you when this rate improves.",
+    "comparator.rateAlert.success":
+      // 2026-09-19 feedback — "el boton de rate alerts... no deberia de
+      // hacer algo mas preciso?": este mensaje prometía "we'll email you
+      // when this rate improves" — un compromiso concreto y específico
+      // que el propio comentario de RateAlertCard (arriba, en
+      // ComparatorSection.tsx) ya admitía que no existe todavía ("NO
+      // automated job yet that watches rates and fires the email"). No es
+      // que el botón "no tenga función" — sí guarda el interés real en
+      // `enterprise_leads` — el problema es que promete algo puntual que
+      // no se cumple. Copy honesto: registra el interés sin prometer un
+      // disparador automático que todavía no existe.
+      "Got it — we've noted your interest in this route.",
     "comparator.rateAlert.error": "Something went wrong. Please try again.",
     // design/AJUSTES-1.md §E — "Today's routes, already priced". The
     // mockup's subtitle claims a specific freshness ("updated 2 min ago")

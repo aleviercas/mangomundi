@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Письмо, когда лучший курс на этом маршруте улучшится. Аккаунт не нужен.",
   "comparator.rateAlert.cta": "Настроить уведомление о курсе",
   "comparator.rateAlert.error": "Что-то пошло не так. Попробуйте ещё раз.",
-  "comparator.rateAlert.success": "Готово — мы напишем вам, когда этот курс улучшится.",
+  "comparator.rateAlert.success": "Готово — мы отметили ваш интерес к этому маршруту.",
   "comparator.rateAlert.title": "Отслеживать {from} → {to}",
   "comparator.reasoning.context": "Контекст",
   "comparator.reasoning.title": "Оптимальный маршрут найден",

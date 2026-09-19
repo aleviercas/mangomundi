@@ -43,10 +43,31 @@ function nameOf(code: string): string {
 // guess: each one checked individually (Antarctica, Bouvet Island, the
 // British Indian Ocean Territory, French Southern Territories, Heard &
 // McDonald Islands, Pitcairn, South Georgia & the South Sandwich Islands).
+//
+// 2026-09-19 feedback — "aparece curacao dos veces en el combox de paises
+// con codigo de pais ang": `AN` es el código viejo de "Netherlands
+// Antilles", disuelto en 2010 en Curaçao (CW), Sint Maarten (SX) y las
+// islas BES (Bonaire/Sint Eustatius/Saba, parte de BQ) — un país que ya no
+// existe, sin corredor de remesas propio. El paquete `country-to-currency`
+// todavía lo trae con su moneda vieja (ANG), y `Intl.DisplayNames` (que
+// resuelve el nombre visible) mapea ESE código obsoleto al mismo nombre
+// "Curaçao" que ya usa el código real y vigente (`CW`, con su moneda
+// actual XCG desde 2025) — de ahí el duplicado exacto en el selector.
+// Confirmado que es el único caso así en las 251 entradas del paquete
+// (los demás nombres son todos únicos). Mismo criterio de exclusión que
+// los territorios deshabitados de arriba: un código que ya no representa
+// un país real no debería competir por selección con el que sí.
 const UNINHABITED_TERRITORIES = new Set(["AQ", "BV", "GS", "HM", "IO", "PN", "TF"]);
 
+const DEPRECATED_CODES = new Set(["AN"]);
+
 export const COUNTRIES: CountryInfo[] = Object.keys(RAW)
-  .filter((code) => /^[A-Z]{2}$/.test(code) && !UNINHABITED_TERRITORIES.has(code))
+  .filter(
+    (code) =>
+      /^[A-Z]{2}$/.test(code) &&
+      !UNINHABITED_TERRITORIES.has(code) &&
+      !DEPRECATED_CODES.has(code),
+  )
   .map((code) => ({
     code,
     name: nameOf(code),
