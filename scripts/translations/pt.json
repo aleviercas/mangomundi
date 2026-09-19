@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Um e-mail quando a melhor taxa nessa rota melhorar. Não é necessário criar conta.",
   "comparator.rateAlert.cta": "Configurar alerta de taxa",
   "comparator.rateAlert.error": "Algo deu errado. Tente novamente.",
-  "comparator.rateAlert.success": "Pronto — vamos te avisar por e-mail quando essa taxa melhorar.",
+  "comparator.rateAlert.success": "Combinado — registramos seu interesse nesta rota.",
   "comparator.rateAlert.title": "Monitorar {from} → {to}",
   "comparator.reasoning.context": "Contexto",
   "comparator.reasoning.title": "Rota ideal encontrada",
