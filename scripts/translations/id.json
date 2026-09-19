@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "Satu email saat kurs terbaik di rute ini membaik. Tidak perlu akun.",
   "comparator.rateAlert.cta": "Atur peringatan kurs",
   "comparator.rateAlert.error": "Terjadi kesalahan. Silakan coba lagi.",
-  "comparator.rateAlert.success": "Selesai — kami akan mengirim email saat kurs ini membaik.",
+  "comparator.rateAlert.success": "Baik — kami telah mencatat minat Anda pada rute ini.",
   "comparator.rateAlert.title": "Pantau {from} → {to}",
   "comparator.reasoning.context": "Konteks",
   "comparator.reasoning.title": "Rute optimal ditemukan",
