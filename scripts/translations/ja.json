@@ -265,7 +265,7 @@
   "comparator.rateAlert.body": "このルートの最良レートが向上した際に1通メールでお知らせします。アカウント登録は不要です。",
   "comparator.rateAlert.cta": "レート通知を設定",
   "comparator.rateAlert.error": "問題が発生しました。もう一度お試しください。",
-  "comparator.rateAlert.success": "設定完了です。このレートが向上した際にメールでお知らせします。",
+  "comparator.rateAlert.success": "了解しました — このルートへのご興味を記録しました。",
   "comparator.rateAlert.title": "{from} → {to} をウォッチ",
   "comparator.reasoning.context": "コンテキスト",
   "comparator.reasoning.title": "最適なルートが見つかりました",
