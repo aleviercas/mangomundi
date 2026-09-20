@@ -386,6 +386,50 @@ Playwright (`cdn.playwright.dev` no está en la lista de red permitida) —
 selectores corregidos contra el markup real, pero sin la ejecución
 end-to-end real todavía.
 
+## 6.7. Bugs reales encontrados y corregidos (17-sep, dos más) + una observación no accionable
+
+Siguiendo la misma verificación en vivo, dos bugs más de la misma familia
+(dependían de `loaderData?.initialLang`, el loader asíncrono con el mismo
+problema de streaming SSR) y una observación de bajo impacto que se decidió
+no tocar:
+
+1. **`twitter:title`/`twitter:description` siempre en inglés**, sin
+   importar el idioma real — la única clave que ninguna de las 8 rutas
+   migradas volvía a pisar en el merge final (a diferencia de
+   `og:title`/`og:description`, que sí se corregían). Se intentó primero
+   arreglar en el propio `head()` de `__root.tsx` calculándolo sincrónico
+   (mismo patrón que `RootShell`) — no funcionó: `match.pathname` en el
+   `head()` de la ruta raíz siempre es `"/"` (el match de la propia raíz,
+   nunca la URL completa resuelta del hijo) — arquitectónicamente la raíz
+   no puede saber el idioma del hijo por ese camino. El fix real: agregar
+   `twitter:title`/`twitter:description` al `head()` de cada una de las 8
+   rutas migradas, mismo criterio que ya usan para `og:title`.
+2. **La home (`index.tsx`) no definía `title`/`description`/`og:title`/
+   `og:description` en absoluto** — a propósito, con un comentario que
+   decía "vienen del head de la raíz, que ya es per-language". Esa premisa
+   resultó falsa por el mismo bug — la página más importante del sitio
+   dependía enteramente del fallback con el problema. Alineada con el
+   mismo patrón que las otras 7 rutas.
+
+Confirmado en vivo tras el fix: `/es/` (home) manda `<title>`/
+`twitter:title`/`og:title` correctos en español; `/es/legal` también.
+Búsqueda sistemática de todo el resto de usos de `loaderData?.initialLang`
+en el código — no quedó ninguno más con este problema (el único uso
+restante, en el fallback de `__root.tsx`, ya está correctamente
+scopeado — sólo aplica a rutas fuera de `{-$lang}` que no necesitan
+corrección por idioma).
+
+**Observación de bajo impacto, no accionable:** `/es/` y `/legal/` (con
+barra final) devuelven **307**, no 301, hacia la versión sin barra —
+comportamiento *fijo y no configurable* de TanStack Router desde 2024
+(su propio changelog: "default redirect status code to 307"), no algo
+introducido por esta migración ni específico de este sitio — afecta a
+cualquier proyecto que use los defaults del framework. No se intentó
+"arreglar" porque requeriría hackear internals del router para un caso de
+impacto real muy bajo: ningún link interno del sitio genera nunca una URL
+con barra final (confirmado en toda la batería de pruebas de esta sesión)
+— sólo importaría si algún link externo apuntara con `/` de más por error.
+
 ## 7. Plan detallado — Opción B (cuando se decida encarar, no ahora)
 
 Fases, en orden de dependencia:
