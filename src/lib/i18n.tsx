@@ -4093,7 +4093,7 @@ function buildI18nValue(lang: Lang, setLang: (l: Lang) => void): I18nCtx {
  * de qué ruta venga `lang` en I18nProvider (útil para `/embed`, que no
  * tiene su propio segmento `{-$lang}` en el path y por lo tanto siempre
  * ve `lang: "en"` desde el I18nProvider global — ver la nota grande de
- * `getInitialLang()`/`detectEmbedLang()` en geo.functions.ts). Comparte
+ * `detectEmbedLang()` en geo.functions.ts). Comparte
  * `t()`/el resto del contexto por completo con I18nProvider, sólo pisa
  * qué idioma usa para todo lo que esté debajo en el árbol de React.
  */

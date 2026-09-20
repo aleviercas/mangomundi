@@ -74,10 +74,12 @@ function ErrorComponent({ error, reset }: { error: unknown; reset: () => void })
   );
 }
 
-// 2026-09-16 — misma lógica pura que geo.functions.ts's getInitialLang(),
-// duplicada acá a propósito (no importada) para que RootShell (más abajo)
-// pueda llamarla de forma 100% sincrónica sin arrastrar el resto de
-// geo.functions.ts (con exports server-only vía createServerFn) al bundle
+// 2026-09-16 — misma lógica pura que la que geo.functions.ts's
+// getInitialLang() usaba (ya se sacó de ahí por completo, ver su propio
+// comentario — quedó como código muerto tras este fix, nadie más la
+// llamaba). Duplicada acá a propósito (no importada) para que RootShell
+// (más abajo) pueda llamarla de forma 100% sincrónica sin arrastrar el
+// resto de geo.functions.ts (con exports server-only vía createServerFn) al bundle
 // de cliente. Ver el comentario grande de RootShell sobre por qué esto
 // tiene que ser sincrónico y no venir del loader asíncrono de la raíz.
 // 2026-09-19 — el prefijo de path es la fuente de verdad para las 8 rutas
@@ -311,7 +313,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
   // El fix real: calcular esto ACÁ, sincrónico, a partir del pathname
   // actual del router (disponible de inmediato, sin esperar ningún
   // loader) — ya no necesita ninguna llamada de servidor desde que
-  // `getInitialLang()` (geo.functions.ts) pasó a ser lógica pura de
+  // `getInitialLangSync` (arriba en este mismo archivo) es lógica pura de
   // string sobre el path. `useRouterState` da el pathname ya resuelto en
   // el primer render del servidor, sin el delay de `getVisitorGeo()`.
   const pathname = useRouterState({ select: (s) => s.location.pathname });

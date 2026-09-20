@@ -56,7 +56,7 @@ export const HREFLANG_LANGS = [
  *
  * "en" sigue siendo la excepción: se autocanonicaliza a la URL LIMPIA, sin
  * prefijo `/en/`, igual que x-default. English is this site's fallback
- * language (see getInitialLang in geo.functions.ts) — same reasoning que
+ * language (see getInitialLangSync in __root.tsx) — same reasoning que
  * ya se documentaba acá cuando el esquema era ?lang=en: mantener "en" sin
  * prefijo evita declarar dos URLs "correctas" para el mismo contenido en
  * inglés.

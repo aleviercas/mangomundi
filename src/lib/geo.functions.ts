@@ -30,40 +30,21 @@ function detectCountryFromHeaders(): string {
 // docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md §2). Con la
 // migración a URLs con prefijo de idioma (/es/..., /fr/...), el idioma real
 // de cada página ahora vive en el path — cada ruta bajo `{-$lang}` ya lo
-// lee de `params.lang` directamente, sin llamar a esta función.
+// lee de `params.lang` directamente.
 //
-// Esta función queda sólo para el caso transicional: alguien que todavía
-// tenga un link viejo con `?lang=xx` (compartido antes de esta migración,
-// o un bookmark), para que la redirección 301 hacia la URL con prefijo
-// (ver el `beforeLoad` de la ruta `{-$lang}`) sepa a qué idioma redirigir.
-// Ya NO autodetecta por geo-IP ni por Accept-Language — la URL sin prefijo
-// es determinísticamente inglés, tanto para Google como para un visitante
-// real, sin importar de dónde venga.
-// 2026-09-16 — verificación en vivo (servidor real) encontró que `<html
-// lang>` (seteado en __root.tsx a partir de esta función) quedaba en "en"
-// para `/es/legal` — el fix inicial (leer `getRequest()?.url` acá adentro)
-// no funcionó: `createServerFn` durante el loader de la ruta raíz se
-// resuelve como una llamada RPC interna, así que `getRequest()?.url` NO
-// refleja de forma confiable la URL de página que el visitante realmente
-// pidió (a diferencia de `search`/`params` de un `beforeLoad`/`loader` de
-// ruta, que sí vienen directo del router y sí son confiables — por eso
-// los redirects 301 de cada ruta migrada, que SÍ leen `search.lang` así,
-// funcionan bien).
-//
-// La solución real: dejar de depender de un server function para esto —
-// el path es la fuente de verdad del idioma desde la migración a la
-// Opción B (docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md), y
-// leerlo es lógica pura de string, no necesita ninguna API de servidor.
-// Ya no hace falta el fallback a `?lang=` acá tampoco: cualquier ruta
-// migrada con `?lang=` en la URL ya redirige (301) ANTES de que la raíz
-// llegue a renderizar esa request — el único momento en que importaría el
-// valor de `initialLang` de la raíz para esa request es un render que el
-// visitante nunca llega a ver.
-export function getInitialLang(pathname: string): Lang {
-  const seg = pathname.split("/")[1]?.toLowerCase();
-  if (seg && (SUPPORTED_LANGS as string[]).includes(seg)) return seg as Lang;
-  return "en";
-}
+// 2026-09-16 — la versión que vivía acá (`getInitialLang`, un
+// `createServerFn`) se sacó del todo: verificación en vivo (servidor real)
+// encontró que `<html lang>` (que la usaba, en `__root.tsx`) quedaba en
+// "en" para `/es/legal` — un `createServerFn` llamado desde el loader de
+// la ruta raíz se resuelve como una llamada RPC interna, así que
+// `getRequest()?.url` no reflejaba de forma confiable la URL de página
+// real. La lógica (pura, sin necesitar ninguna API de servidor — sólo
+// parsear el path) ahora vive directo en `__root.tsx` como
+// `getInitialLangSync()`, duplicada a propósito ahí (no importada de acá)
+// para no arrastrar el resto de este archivo — que sí tiene exports
+// server-only vía `createServerFn` — al bundle de cliente. Ver el
+// comentario de `getInitialLangSync` en `__root.tsx` y
+// docs/handoff/handoff-2026-09-10-plan-urls-por-idioma.md §6.6.
 
 // 2026-09-13 — encontrado al revisar la migración: /embed (el widget para
 // terceros, widget.js) se configura por defecto con `data-lang="auto"` en
