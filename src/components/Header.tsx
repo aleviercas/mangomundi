@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X } from "lucide-react";
-import { Wordmark, BrandMark } from "@/components/Wordmark";
+import { Wordmark } from "@/components/Wordmark";
 import { LangSwitcher } from "@/components/LangSwitcher";
 import { HEADER_NAV, DRAWER_UTILITY, LEGAL_LINKS, langLinkProps } from "@/config/nav";
 import { socials } from "@/components/Footer";
@@ -31,8 +31,14 @@ import { useI18n } from "@/lib/i18n";
  *  competing for room with a right-aligned nav row.
  *  "cuando kayak usa el loguito solo de la k... podemos usar el logo de
  *  la m": kayak's mobile header shows just the K mark, full wordmark only
- *  once there's room — same idea here with `BrandMark` (the icon-only "m")
- *  below `sm`, the full `Wordmark` from `sm` up.
+ *  once there's room — mismo criterio se probo aca (BrandMark solo por
+ *  debajo de `sm`), pero se revirtio (2026-09-19 feedback -- "en mobile se
+ *  deberia mostrar el logo entero... en lugar de la m sola"): a diferencia
+ *  de kayak, mangomundi no tiene el mismo reconocimiento de marca todavia
+ *  como para que una sola letra alcance en el espacio mas chico que
+ *  existe -- el wordmark completo (`Wordmark`, con su propio icono
+ *  adentro) se muestra siempre, en todos los anchos, solo un poco mas
+ *  chico en mobile.
  *  2026-09-04 feedback (ronda 6) — "el menu de la esquina en kayak se
  *  despliega para el costado no para abajo" + "la idea es que el selector
  *  del buscador pase arriba de todo como hace kayak, por eso el menu
@@ -172,16 +178,29 @@ export function Header() {
           className="flex h-9 items-center"
           onClick={handleLogoClick}
         >
-          {/* Text-only lockup here and in Footer — the icon mark is reserved
-              for the widget card/embed surfaces and, now, this narrow
-              header. Still bicolor ("mundi" in mango): icon={false} only
-              drops the icon, unlike `compact` which also flattens the
-              color — see Wordmark's own doc comment (2026-08-30
-              feedback). */}
-          <span className="text-2xl sm:hidden">
-            <BrandMark />
-          </span>
-          <Wordmark className="hidden text-2xl sm:inline-flex" icon={false} />
+          {/* 2026-09-19 feedback — "en el mobile se deberia mostrar el
+              logo entero de mangomundi en lugar de la m sola arriba en el
+              encabezado": antes, por debajo de `sm`, sólo se veía
+              `BrandMark` (la "m" bicolor sola) — el wordmark completo
+              ("mango" + "mundi") recién aparecía desde `sm` en adelante.
+              Pasa a mostrarse siempre, en las dos resoluciones — mismo
+              componente (`Wordmark`, con su propio ícono adentro), sólo
+              un poco más chico en mobile (`text-xl` en vez de `text-2xl`)
+              para no competir tanto con el botón de hamburguesa al lado.
+              NOTA aparte (2026-09-19, investigación de mejores
+              prácticas): el ícono bicolor se arma con 3 copias
+              superpuestas del mismo glifo "m" vía `clip-path` — depende
+              de la forma EXACTA de la "m" de Rubik 700. Mientras esa
+              fuente todavía no cargó (fallback del sistema), el
+              clip-path corta en el lugar equivocado y el ícono se ve
+              roto hasta que Rubik hace el swap — un FOUT más grave que
+              el típico "cambia el ancho del texto", porque acá también
+              rompe la forma del ícono. La práctica estándar de la
+              industria (Stripe, Wise, etc.) es servir el logo como SVG
+              trazado a mano, no como texto vivo con web font — pendiente
+              como tarea de diseño aparte, no se resuelve mostrando MÁS
+              de este mismo componente en más anchos de pantalla. */}
+          <Wordmark className="text-xl sm:text-2xl" />
         </Link>
 
         {/* 2026-09-04 feedback (ronda 6, cont.) — "el mangomundi ai tiene
