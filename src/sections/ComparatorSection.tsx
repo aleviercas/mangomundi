@@ -1138,6 +1138,20 @@ export function ComparatorSection({
         skipNextSyncClearRef.current = true;
       }
       setResult(data);
+      // 2026-09-19 feedback — "en mobile cuando haces click en update...
+      // la ventana se deberia de cerrar porque si volves para atras se
+      // pierde todo": ya había un cierre "on click" (onClickCapture sobre
+      // `data-search-submit`, ver el Drawer más abajo en este archivo),
+      // pero corría ANTES de saber si la comparación realmente había
+      // funcionado (capture-phase, dispara antes que el propio onClick
+      // del botón valide/mande la mutación) — con un monto inválido, por
+      // ejemplo, el drawer ya se había cerrado para cuando aparecía el
+      // error de validación, tapándolo. Acá, en cambio, sólo se cierra
+      // cuando la actualización realmente se resolvió con datos nuevos —
+      // determinista, no depende de qué se clickeó. Inofensivo en
+      // desktop/cuando el drawer nunca estuvo abierto (`setState` a un
+      // valor que ya es `false` no hace nada).
+      setSearchDrawerOpen(false);
       setSortBy("overall");
       setAiText(buildReasoning());
       setAiLoading(false);
@@ -2866,7 +2880,19 @@ export function ComparatorSection({
                   </div>
                 </div>
               ) : collapsedSearch ? (
-                collapsedSearchPill
+                // 2026-09-19 feedback — "en mobile se deberia mostrar el
+                // boton de personal y business y que se pueda cambiar
+                // desde los resultados": antes `segmentToggle` sólo vivía
+                // adentro de `searchBar` — que en este estado (mobile con
+                // resultado) está escondido dentro del Drawer, no en la
+                // píldora colapsada. Se agrega acá al lado, mismo control
+                // (mismo `handleSegmentChange`, ya reescribe el resultado
+                // en el lugar sin perder nada — ver su propio comentario
+                // más arriba en este archivo), sin duplicar el trigger.
+                <div className="flex items-center gap-2">
+                  <div className="shrink-0">{segmentToggle}</div>
+                  <div className="min-w-0 flex-1">{collapsedSearchPill}</div>
+                </div>
               ) : mergeSearchIntoHeader ? (
                 headerSearchSlot ? (
                   createPortal(headerSearchBar, headerSearchSlot)
@@ -3217,13 +3243,30 @@ export function ComparatorSection({
                   reading as a would-be 4th tab) for `sm:items-center`, so
                   the compact pill sits at a normal control size next to
                   them instead of pretending to be one. */}
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                  {/* 2026-09-19 feedback — "en mobile se puede poner el
+                      boton de sort y el de filters a la derecha de los de
+                      recommended receive more y fastest? asi no hay que
+                      mostrar las pildoras que no entran en la pantalla,
+                      entonces al hacer click se despliega": antes esta
+                      fila se apilaba en columna por debajo de `sm` (Sort
+                      quedaba en su propia fila, debajo de las 3 tabs) y el
+                      método de entrega vivía como una tira de píldoras
+                      aparte, con scroll horizontal, ocupando otra fila
+                      completa. Pasa a una sola fila SIEMPRE (nunca se
+                      apila, ni en mobile angosto) con Sort y Filters
+                      pegados a la derecha de las 3 tabs — Filters ya abre
+                      el mismo Drawer con las mismas opciones de método de
+                      entrega que esa tira de píldoras ofrecía, así que ya
+                      no hace falta mostrarlas sueltas (ver más abajo, se
+                      sacan del todo salvo en el widget embebido, que no
+                      tiene este botón). */}
+                  <div className="flex items-center gap-2">
                     {/* §3.5 — un solo bloque de 3 columnas SIN gaps: la
                         matriz de precio de Kayak es una pieza, no 3
                         tarjetas sueltas. `overflow-hidden` recorta la barra
                         inferior de la tab activa contra el radio del
                         bloque. */}
-                    <div className="grid flex-1 grid-cols-3 overflow-hidden rounded-compact bg-card shadow-compare">
+                    <div className="grid min-w-0 flex-1 grid-cols-3 overflow-hidden rounded-compact bg-card shadow-compare">
                       {(
                         [
                           {
@@ -3361,15 +3404,34 @@ export function ComparatorSection({
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
+
+                    {/* Movido acá desde el cluster de abajo (ver el
+                        comentario de la fila, arriba) — mismo botón,
+                        mismo Drawer, sólo cambia dónde vive. `lg:hidden`:
+                        a partir de `lg` el rail (FiltersCard) ya está
+                        siempre visible al costado, este ícono sería
+                        redundante ahí. */}
+                    {!embedded && (
+                      <button
+                        type="button"
+                        onClick={() => setFiltersDrawerOpen(true)}
+                        aria-label={t("comparator.filters.title")}
+                        className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:hidden"
+                      >
+                        <SlidersHorizontal className="h-4 w-4" aria-hidden />
+                        {activeFilterCount > 0 && (
+                          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-cta px-1 text-badge font-bold leading-none text-brand-cta-foreground">
+                            {activeFilterCount}
+                          </span>
+                        )}
+                      </button>
+                    )}
                   </div>
 
-                  {/* Secondary filters — delivery method, exclusive-only, legend.
-                  Visually separate row (smaller chips) so it never competes
-                  with the primary tabs above for attention. Sort criteria no
-                  longer live in this row at all (moved above, see its own
-                  comment) — this cluster is delivery-method/exclusive/legend
-                  only now, still lg:hidden since those 3 stay in the rail's
-                  FiltersCard at that breakpoint. */}
+                  {/* Secondary filters — Your request / Saved triggers
+                  (method de entrega ya no vive acá, ver el comentario de
+                  la fila de arriba — sacado del todo salvo en el widget
+                  embebido, más abajo). */}
                   {/* docs/kayak-redesign-spec.md §4.2 — la fila de filtros de
                       mobile deja de envolver y pasa a scrollear en
                       horizontal, precedida por un botón cuadrado que abre el
@@ -3382,26 +3444,6 @@ export function ComparatorSection({
                   <div
                     className={`flex items-center gap-2 lg:hidden ${embedded ? "flex-wrap" : ""}`}
                   >
-                    {/* Abre el rail completo como Drawer. Sólo fuera del
-                        widget: dentro de un iframe de 440px un drawer a
-                        pantalla casi completa se lee como un secuestro de la
-                        página del tercero. */}
-                    {!embedded && (
-                      <button
-                        type="button"
-                        onClick={() => setFiltersDrawerOpen(true)}
-                        aria-label={t("comparator.filters.title")}
-                        className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-control border border-input bg-card text-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
-                        <SlidersHorizontal className="h-4 w-4" aria-hidden />
-                        {activeFilterCount > 0 && (
-                          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-cta px-1 text-badge font-bold leading-none text-brand-cta-foreground">
-                            {activeFilterCount}
-                          </span>
-                        )}
-                      </button>
-                    )}
-
                     {/* 2026-09-12 feedback — "en mobile agrego en add to
                         request pero despues no veo la barra para
                         seleccionar": mismo tratamiento que el botón de
@@ -3443,9 +3485,19 @@ export function ComparatorSection({
                       </button>
                     )}
 
+                    {/* 2026-09-19 feedback — "asi no hay que mostrar las
+                        pildoras que no entran en la pantalla": el botón
+                        Filters (movido arriba, junto a Sort) ya abre el
+                        mismo FiltersCard con estas mismas opciones de
+                        método de entrega — mostrarlas también sueltas acá
+                        es redundante en mobile normal. Se mantienen SÓLO
+                        para el widget embebido, que no tiene el botón
+                        Filters (ver el `!embedded &&` de los triggers de
+                        arriba) — ahí siguen siendo la única forma de
+                        cambiar el método de entrega. */}
                     <div
                       className={`flex min-w-0 items-center gap-2 ${
-                        embedded ? "flex-wrap" : "overflow-x-auto no-scrollbar"
+                        embedded ? "flex-wrap" : "hidden"
                       }`}
                     >
                       {DELIVERY_METHODS.map(({ key, icon: Icon, labelKey }) => {
@@ -3492,20 +3544,23 @@ export function ComparatorSection({
                         <Sparkle className="h-4 w-4" aria-hidden />
                         {t("comparator.filter.exclusiveOnly")}
                       </button>
-
-                      {/* Legend opens in a modal — never pushes the results
-                          table down, unlike an inline expand. Same content
-                          available on both desktop (click) and mobile (tap),
-                          no hover needed. */}
-                      <button
-                        type="button"
-                        onClick={() => setShowLegend(true)}
-                        aria-label={t("comparator.legend.toggle")}
-                        className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-input bg-card text-muted-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                      >
-                        <Info className="h-4 w-4" aria-hidden />
-                      </button>
                     </div>
+
+                    {/* 2026-09-19 feedback -- el Legend (explica Score/Fee/
+                        Rate/Speed/Trust) NO vive en FiltersCard, a
+                        diferencia del metodo de entrega y "exclusive only"
+                        de arriba -- ocultarlo junto con esos dos habria
+                        sido una regresion real. Se saca del wrapper que
+                        ahora esta `hidden` fuera del widget y queda
+                        siempre visible, como antes. */}
+                    <button
+                      type="button"
+                      onClick={() => setShowLegend(true)}
+                      aria-label={t("comparator.legend.toggle")}
+                      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-muted-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                    >
+                      <Info className="h-4 w-4" aria-hidden />
+                    </button>
                   </div>
                 </div>
                 <Dialog open={showLegend} onOpenChange={setShowLegend}>
@@ -3639,9 +3694,13 @@ export function ComparatorSection({
       {/* docs/kayak-redesign-spec.md §4.1 — el formulario completo detrás de
           la píldora colapsada. Sólo se monta cuando la píldora está en
           pantalla (`collapsedSearch`), así el árbol nunca tiene dos copias
-          de los mismos inputs a la vez. El CTA del formulario cierra el
-          drawer al disparar la búsqueda: la lista de abajo ya se reordena
-          sola, no hace falta que la persona lo cierre a mano. */}
+          de los mismos inputs a la vez.
+          2026-09-19 feedback — el cierre del drawer al confirmar ya no
+          depende de qué se clickeó acá adentro (ver compareMut's onSuccess,
+          más arriba en este archivo) — se sacó el `onClickCapture` viejo
+          que cerraba en la fase de captura, antes incluso de que el botón
+          validara/mandara la mutación (con un monto inválido, por ejemplo,
+          tapaba el error de validación cerrando de más). */}
       {collapsedSearch && (
         <Drawer open={searchDrawerOpen} onOpenChange={setSearchDrawerOpen}>
           <DrawerContent className="max-h-[92vh]">
@@ -3650,19 +3709,7 @@ export function ComparatorSection({
                 {t("comparator.mobile.editSearch")}
               </DrawerTitle>
             </DrawerHeader>
-            <div
-              className="overflow-y-auto px-4 pb-6"
-              onClickCapture={(e) => {
-                // El CTA es el único control del drawer que termina la
-                // tarea; cualquier otro click (abrir un combobox, tocar
-                // swap) tiene que dejarlo abierto.
-                if ((e.target as HTMLElement).closest("[data-search-submit]")) {
-                  setSearchDrawerOpen(false);
-                }
-              }}
-            >
-              {searchBar}
-            </div>
+            <div className="overflow-y-auto px-4 pb-6">{searchBar}</div>
           </DrawerContent>
         </Drawer>
       )}
