@@ -121,7 +121,12 @@ export function Footer() {
               className="inline-flex items-center"
               onClick={handleLogoClick}
             >
-              <Wordmark className="text-[21px]" tone="light" icon={false} />
+              {/* 2026-09-19 feedback — "en el footer deberia estar el
+                  logo tambien completo": antes tenía `icon={false}`, sólo
+                  el texto "mangomundi" sin la "m" bicolor — mismo
+                  criterio que se aplicó en el header (ver su propio
+                  comentario ahí): el logo completo, siempre. */}
+              <Wordmark className="text-[21px]" tone="light" />
             </Link>
             <p className="mt-2.5 max-w-[280px] whitespace-pre-line text-[12.5px] leading-[1.6] text-[#8A7C6E]">
               {t("footer.tagline")}
