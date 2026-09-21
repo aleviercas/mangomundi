@@ -41,7 +41,26 @@ const DialogContent = React.forwardRef<
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg",
+          // 2026-09-19 feedback — "el boton informativo cuando lo abris
+          // no se puede cerrar ni tampoco se puede escrolear y si vas a
+          // atras perdes todos los resultados": este componente
+          // COMPARTIDO (todo Dialog del sitio, no sólo Legend) no tenía
+          // ningún límite de alto ni scroll propio — con contenido largo
+          // (el Legend de ComparatorSection tiene 11 filas + un párrafo)
+          // en una pantalla mobile chica, el diálogo se centra vertical
+          // (`top-[50%] translate-y-[-50%]`) y se sale por arriba: el
+          // botón de cerrar (la X, `absolute right-4 top-4` DENTRO del
+          // propio contenido) queda literalmente fuera de la pantalla,
+          // sin nada para hacer scroll y alcanzarlo — de ahí que la
+          // única salida terminaba siendo el botón atrás del teléfono,
+          // que no cierra el modal sino que navega, perdiendo el
+          // resultado. `max-h-[85dvh] overflow-y-auto`: sólo entra en
+          // juego cuando el contenido es más alto que el 85% del
+          // viewport (si no, no cambia nada visualmente) — mismo `dvh`
+          // que ya usa el Drawer en este proyecto para altura segura en
+          // mobile real (no `vh`, que en iOS Safari no descuenta la
+          // barra de navegación).
+          "fixed left-[50%] top-[50%] z-50 grid max-h-[85dvh] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 overflow-y-auto border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:rounded-lg",
           className,
         )}
         {...props}
