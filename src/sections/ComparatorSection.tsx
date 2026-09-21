@@ -3368,64 +3368,100 @@ export function ComparatorSection({
                     menu (e.g. "most_trusted") never equals any of the 3
                     tabs' keys, so all three lose their highlighted
                     border/shadow the moment one of these is picked. */}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                    {/* 2026-09-19 feedback (segunda ronda) — "mobile
+                        quedo roto: el sort y filters y tambien el icono
+                        informativo deberian de estar uno arriba de otro,
+                        mas chiquitos... ocupando esos 3 lugares la misma
+                        altura que los botones de al lado": la ronda
+                        anterior forzó esta fila a ser SIEMPRE horizontal
+                        (nunca se apila), sin ninguna variante compacta
+                        para mobile angosto — Sort con texto+chevron +
+                        Filters (36px) + tabs de 3 columnas todos peleando
+                        el mismo ancho es justo lo que rompía el layout.
+                        Este cluster (Sort+Filters+Info) pasa a ser una
+                        columna angosta de 3 íconos chicos apilados por
+                        debajo de `sm` (`flex-col`, h-6 cada uno, sin
+                        texto/chevron) — vuelve a fila horizontal con
+                        texto a partir de `sm`, donde sí hay ancho de
+                        sobra. Legend se mueve para acá (antes vivía
+                        suelto más abajo, después del Dialog) para
+                        completar los 3 íconos pedidos en el mismo
+                        cluster. */}
+                    <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button
+                            type="button"
+                            aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
+                            aria-label={t("comparator.sort.more")}
+                            className={`inline-flex h-6 w-6 shrink-0 items-center justify-center gap-1.5 rounded-control transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 sm:h-9 sm:w-auto sm:rounded-lg sm:px-2 sm:text-xs sm:font-semibold ${
+                              MORE_SORT_CHIPS.includes(sortBy)
+                                ? "text-accent-text"
+                                : "text-foreground hover:text-accent-text"
+                            }`}
+                          >
+                            {(() => {
+                              const Icon = MORE_SORT_CHIPS.includes(sortBy)
+                                ? sortIcon(sortBy)
+                                : ArrowDownWideNarrow;
+                              return <Icon className="h-3.5 w-3.5" />;
+                            })()}
+                            <span className="hidden sm:inline">
+                              {MORE_SORT_CHIPS.includes(sortBy)
+                                ? t(sortLabelKey(sortBy))
+                                : t("comparator.sort.more")}
+                            </span>
+                            <ChevronDown className="hidden h-3 w-3 sm:inline" />
+                          </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuRadioGroup
+                            value={sortBy}
+                            onValueChange={(v) => setSortBy(v as SortKey)}
+                          >
+                            {MORE_SORT_CHIPS.map((key) => (
+                              <DropdownMenuRadioItem key={key} value={key}>
+                                {t(sortLabelKey(key))}
+                              </DropdownMenuRadioItem>
+                            ))}
+                          </DropdownMenuRadioGroup>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+
+                      {/* Movido acá desde el cluster de abajo, ronda
+                          anterior — mismo botón, mismo Drawer, sólo
+                          cambia dónde vive. `lg:hidden`: a partir de `lg`
+                          el rail (FiltersCard) ya está siempre visible al
+                          costado, este ícono sería redundante ahí. */}
+                      {!embedded && (
                         <button
                           type="button"
-                          aria-pressed={MORE_SORT_CHIPS.includes(sortBy)}
-                          className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring/40 ${
-                            MORE_SORT_CHIPS.includes(sortBy)
-                              ? "text-accent-text"
-                              : "text-foreground hover:text-accent-text"
-                          }`}
+                          onClick={() => setFiltersDrawerOpen(true)}
+                          aria-label={t("comparator.filters.title")}
+                          className="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-control border-0 text-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:h-9 sm:w-9 sm:border sm:border-input sm:bg-card sm:hover:border-foreground/40 lg:hidden"
                         >
-                          {(() => {
-                            const Icon = MORE_SORT_CHIPS.includes(sortBy)
-                              ? sortIcon(sortBy)
-                              : ArrowDownWideNarrow;
-                            return <Icon className="h-3.5 w-3.5" />;
-                          })()}
-                          {MORE_SORT_CHIPS.includes(sortBy)
-                            ? t(sortLabelKey(sortBy))
-                            : t("comparator.sort.more")}
-                          <ChevronDown className="h-3 w-3" />
+                          <SlidersHorizontal className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
+                          {activeFilterCount > 0 && (
+                            <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-brand-cta px-1 text-[9px] font-bold leading-none text-brand-cta-foreground sm:h-4 sm:min-w-4 sm:text-badge">
+                              {activeFilterCount}
+                            </span>
+                          )}
                         </button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuRadioGroup
-                          value={sortBy}
-                          onValueChange={(v) => setSortBy(v as SortKey)}
-                        >
-                          {MORE_SORT_CHIPS.map((key) => (
-                            <DropdownMenuRadioItem key={key} value={key}>
-                              {t(sortLabelKey(key))}
-                            </DropdownMenuRadioItem>
-                          ))}
-                        </DropdownMenuRadioGroup>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                      )}
 
-                    {/* Movido acá desde el cluster de abajo (ver el
-                        comentario de la fila, arriba) — mismo botón,
-                        mismo Drawer, sólo cambia dónde vive. `lg:hidden`:
-                        a partir de `lg` el rail (FiltersCard) ya está
-                        siempre visible al costado, este ícono sería
-                        redundante ahí. */}
-                    {!embedded && (
+                      {/* Legend — antes vivía suelto, después del propio
+                          Dialog más abajo; se mueve acá para completar
+                          los 3 íconos del cluster pedidos ("uno arriba de
+                          otro"). Mismo Dialog, sólo cambia el trigger. */}
                       <button
                         type="button"
-                        onClick={() => setFiltersDrawerOpen(true)}
-                        aria-label={t("comparator.filters.title")}
-                        className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:hidden"
+                        onClick={() => setShowLegend(true)}
+                        aria-label={t("comparator.legend.toggle")}
+                        className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-control border-0 text-muted-foreground transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:h-9 sm:w-9 sm:border sm:border-input sm:bg-card sm:hover:border-foreground/40"
                       >
-                        <SlidersHorizontal className="h-4 w-4" aria-hidden />
-                        {activeFilterCount > 0 && (
-                          <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-brand-cta px-1 text-badge font-bold leading-none text-brand-cta-foreground">
-                            {activeFilterCount}
-                          </span>
-                        )}
+                        <Info className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
                       </button>
-                    )}
+                    </div>
                   </div>
 
                   {/* Secondary filters — Your request / Saved triggers
@@ -3545,22 +3581,6 @@ export function ComparatorSection({
                         {t("comparator.filter.exclusiveOnly")}
                       </button>
                     </div>
-
-                    {/* 2026-09-19 feedback -- el Legend (explica Score/Fee/
-                        Rate/Speed/Trust) NO vive en FiltersCard, a
-                        diferencia del metodo de entrega y "exclusive only"
-                        de arriba -- ocultarlo junto con esos dos habria
-                        sido una regresion real. Se saca del wrapper que
-                        ahora esta `hidden` fuera del widget y queda
-                        siempre visible, como antes. */}
-                    <button
-                      type="button"
-                      onClick={() => setShowLegend(true)}
-                      aria-label={t("comparator.legend.toggle")}
-                      className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-control border border-input bg-card text-muted-foreground transition-colors hover:border-foreground/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                    >
-                      <Info className="h-4 w-4" aria-hidden />
-                    </button>
                   </div>
                 </div>
                 <Dialog open={showLegend} onOpenChange={setShowLegend}>
@@ -3944,15 +3964,25 @@ function FiltersCard({
 
       {businessFilters && (
         <div className={sectionClass}>
+          {/* 2026-09-19 feedback — "el menu vertical de la izquierda en
+              business... las opciones de frequency deberian de entrar en
+              la misma linea horizontal": `flex flex-wrap` dejaba que un
+              texto largo ("Quarterly") empujara la 3ra píldora a una
+              segunda línea — con `grid grid-cols-3` las 3 opciones
+              SIEMPRE ocupan exactamente un tercio del ancho cada una,
+              nunca se van a otra fila (truncan si hiciera falta, en vez
+              de envolver). Mismo tratamiento para contract type, por
+              consistencia — ya entraba en una línea, pero ahora está
+              alineado en columnas parejas con frequency, no libre. */}
           <div className={headingClass}>{t("comparator.field.contractType")}</div>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-2 grid grid-cols-3 gap-1">
             {(["spot", "forward", "option"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => businessFilters.setContractType(v)}
                 aria-pressed={businessFilters.contractType === v}
-                className={`inline-flex h-8 items-center rounded-control border px-2.5 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                className={`inline-flex h-8 min-w-0 items-center justify-center truncate rounded-control border px-1.5 text-badge font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                   businessFilters.contractType === v
                     ? "border-transparent bg-foreground text-background"
                     : "border-input bg-card text-foreground hover:border-foreground/40"
@@ -3963,14 +3993,14 @@ function FiltersCard({
             ))}
           </div>
           <div className={`mt-3 ${headingClass}`}>{t("comparator.field.frequency")}</div>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-2 grid grid-cols-3 gap-1">
             {(["one_off", "monthly", "quarterly"] as const).map((v) => (
               <button
                 key={v}
                 type="button"
                 onClick={() => businessFilters.setFrequency(v)}
                 aria-pressed={businessFilters.frequency === v}
-                className={`inline-flex h-8 items-center rounded-control border px-2.5 text-meta font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
+                className={`inline-flex h-8 min-w-0 items-center justify-center truncate rounded-control border px-1.5 text-badge font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 ${
                   businessFilters.frequency === v
                     ? "border-transparent bg-foreground text-background"
                     : "border-input bg-card text-foreground hover:border-foreground/40"
@@ -4822,7 +4852,6 @@ function StatItem({
   label,
   labelExtra,
   children,
-  dark,
 }: {
   label: string;
   /** Rendered right after the label (e.g. BusinessRowExtra's "estimated"
@@ -4830,25 +4859,29 @@ function StatItem({
    *  even when the value below wraps to several lines. */
   labelExtra?: React.ReactNode;
   children: React.ReactNode;
-  /** BusinessRequestPanel's dark theme (2026-09-04 feedback, round 2) —
-   *  same white/50 + white text pairing FiltersCard uses for its own
-   *  labels/values, instead of the light-card muted-foreground/foreground
-   *  pair every other StatItem caller (the broker row metrics) keeps. */
-  dark?: boolean;
 }) {
+  // 2026-09-19 feedback — "los detalles de your request deberian de
+  // achicarse la letra para que entren en una linea cada uno, ejemplo
+  // volume: y en la misma linea poner el valor, abajo pones route... y
+  // asi": antes label y valor eran dos líneas propias (label chico
+  // arriba, valor grande abajo) — cada stat ocupaba el doble de alto que
+  // hacía falta en un rail de 240px. Pasa a una sola línea por stat:
+  // label a la izquierda (con ":"), valor a la derecha, texto más chico
+  // (`text-badge` en las dos partes, antes el valor era `text-sm` —
+  // notablemente más grande). `justify-between` separa label/valor,
+  // `truncate` en el valor por si "Route" (con banderas + flechita) no
+  // entra del todo en el ancho disponible. El `dark` (tema oscuro del
+  // panel viejo) ya no aplica — este panel es `compare-card` claro desde
+  // la ronda 2026-09-10, no queda ningún caller que pase `dark`.
   return (
-    <div className="min-w-0">
-      <div
-        className={`flex items-center gap-1 text-[10.5px] font-bold uppercase tracking-wide ${dark ? "text-white/50" : "text-muted-foreground"}`}
-      >
+    <div className="flex min-w-0 items-baseline justify-between gap-2 text-badge">
+      <span className="flex shrink-0 items-center gap-1 font-semibold text-muted-foreground">
         {label}
-        {labelExtra}
-      </div>
-      <div
-        className={`mt-0.5 text-sm font-bold leading-snug tabular-nums ${dark ? "text-white" : "text-foreground"}`}
-      >
+        {labelExtra}:
+      </span>
+      <span className="min-w-0 truncate text-right font-bold tabular-nums text-foreground">
         {children}
-      </div>
+      </span>
     </div>
   );
 }
