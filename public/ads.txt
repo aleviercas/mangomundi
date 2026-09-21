@@ -1,4 +1,8 @@
 # ads.txt — Authorized Digital Sellers (IAB spec: https://iabtechlab.com/ads-txt/)
+# 2026-09-19 — Google AdSense (adsense.google.com), publisher pub-7346310316115207.
+# Formato estándar de Google: google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+# (f08c47fec0942fa0 es el certification authority ID fijo de Google, no varía por sitio).
+google.com, pub-7346310316115207, DIRECT, f08c47fec0942fa0
 # Managed via Sovrn. The two lijit.com DIRECT lines are required — Sovrn's
 # own docs confirm removing them breaks ad delivery entirely (lijit.com is
 # Sovrn's ad-serving domain, kept from before their rebrand). The RESELLER
