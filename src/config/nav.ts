@@ -94,9 +94,15 @@ export const FOOTER_COMPANY: ReadonlyArray<NavEntry> = [
  *
  *  LEGAL_LINKS — Terms/Privacy/Risk, identical targets to Footer.tsx's
  *  own `legal` array (same hashes into /legal) — Header no longer needs
- *  to duplicate that array inline, both read from here now. */
+ *  to duplicate that array inline, both read from here now.
+ *
+ *  2026-09-17 feedback — "Favoritos" se suma al mismo grupo: a
+ *  diferencia de Alertas de tasa, ESTA sí tiene una página propia
+ *  (/favorites, ver esa ruta) que junta los favoritos de cualquier
+ *  corredor — no apunta a "/" como placeholder. */
 export const DRAWER_UTILITY: ReadonlyArray<NavEntry> = [
   { to: "/", labelKey: "footer.product.rateAlerts" },
+  { to: "/favorites", labelKey: "nav.favorites" },
 ];
 
 export const LEGAL_LINKS: ReadonlyArray<NavEntry> = [

@@ -240,6 +240,7 @@ export const DICTS: Record<Lang, Dict> = {
     "nav.compare": "Compare",
     "nav.business": "Business",
     "nav.blog": "Blog",
+    "nav.favorites": "Favorites",
     "nav.features": "Features",
     "nav.pricing": "Pricing",
     "nav.about": "About us",
@@ -567,8 +568,11 @@ export const DICTS: Record<Lang, Dict> = {
     "home.blog.compactTitle": "From the blog",
     "home.blog.allArticles": "All articles ↗",
     // design/AJUSTES-1.md §B — literal subtitle copy.
+    // 2026-09-17 feedback — se saca "No sign-up." del final (y su
+    // equivalente en los 19 idiomas) — decisión de copy, no un bug de
+    // traducción.
     "home.hero.tagline":
-      "Who delivers more of your money? Real rates and total fees, side by side, updated every minute. No sign-up.",
+      "Who delivers more of your money? Real rates and total fees, side by side, updated every minute.",
     "home.contact.simple.title": "Get in touch",
     "home.contact.simple.body":
       "Questions, feedback or press — write to us and we'll get back to you.",
@@ -3101,6 +3105,23 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "comparator.badge.notVerified": "Estimated price — not verified for this exact route",
     "comparator.badge.unconfirmed": "Unconfirmed",
     "comparator.badge.promoPrefix": "Promo:",
+    // 2026-09-17 feedback — "checkea que hay traducciones en español que
+    // no se tradujeron: Promo: Tasa preferencial en tu primera
+    // transferencia online": `providers.promo_text` en Supabase es una
+    // sola columna `text` sin variante por idioma — las 3 que están
+    // cargadas (remitly/dahabshiil/moneygram) se entraron en español, así
+    // que se le mostraban en español a CUALQUIER visitante sin importar
+    // el idioma del sitio (ComparatorSection.tsx imprimía `row.promo_text`
+    // tal cual, ver el comment de `providerPromoKey` ahí). En vez de
+    // agregarle a la tabla una columna jsonb por idioma (una tabla que no
+    // tiene ese patrón en ningún otro campo), se resuelve en el sistema
+    // de traducciones que ya cubre el resto del sitio: un key por slug de
+    // proveedor acá, y el componente usa `t()` cuando existe un key para
+    // ese slug, con el `promo_text` de la base como fallback si algún día
+    // se carga un proveedor nuevo antes de traducirlo.
+    "provider.promo.remitly": "First transfer (up to $1,000): fee-free",
+    "provider.promo.dahabshiil": "First transfer: fee-free",
+    "provider.promo.moneygram": "Preferential rate on your first online transfer",
     "comparator.filter.exclusiveOnly": "Exclusive rates",
     // design/AJUSTES-2.md §6 — the rail's own "Exclusive rates only" row
     // text (mockup line 308), kept separate from the shorter
@@ -3126,6 +3147,21 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     // título del panel del rail (ver SavedRatesCard) que junta esa lista.
     "comparator.saved.title": "Saved rates",
     "comparator.saved.remove": "Remove",
+    // 2026-09-11/17 feedback — "guardar también la ruta... página real
+    // 'Mis favoritos'": nueva página /favorites (routes/{-$lang}.favorites.tsx)
+    // que junta los favoritos de CUALQUIER corredor, no sólo el que está
+    // abierto ahora mismo (ver SavedFavorite/readSavedFavorites en
+    // ComparatorSection.tsx). Keys propias de esa página, no reusa
+    // comparator.saved.title (ese es el encabezado del panel DENTRO del
+    // comparador — "Saved rates" tiene sentido ahí como sub-sección; acá
+    // es el título de una página entera, un registro más "mío").
+    "favorites.title": "My favorites",
+    "favorites.subtitle": "Providers you've saved, from every route you've compared — not just the one you have open now.",
+    "favorites.empty.title": "No favorites yet",
+    "favorites.empty.body": "Tap the heart on any provider in a comparison to save it here — from any route.",
+    "favorites.empty.cta": "Start a comparison",
+    "favorites.viewLive": "View live comparison",
+    "favorites.savedOn": "Saved {date}",
     // §4.1 — mobile collapsed search pill.
     "comparator.mobile.editSearch": "Edit search",
     // §4.2 — bottom button of the mobile filters drawer. Filters already

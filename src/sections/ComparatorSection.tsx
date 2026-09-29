@@ -56,7 +56,7 @@ import {
   chatAboutRecommendation,
   type ComparisonResult,
 } from "@/lib/fx.functions";
-import { useI18n, localeTagForLang } from "@/lib/i18n";
+import { useI18n, localeTagForLang, DICTS } from "@/lib/i18n";
 import {
   localCurrency,
   primaryCountryForCurrency,
@@ -106,7 +106,7 @@ import {
   type ScoreProfileKey,
 } from "@/lib/scoring.functions";
 
-type Segment = "retail" | "business";
+export type Segment = "retail" | "business";
 type AmountMode = "send" | "receive";
 
 /** Field styling for inputs/triggers inside the (light) comparator card —
@@ -845,31 +845,58 @@ export function ComparatorSection({
   >("idle");
 
   // 2026-09-10 feedback — "el corazoncito hay que resolverlo que lo vaya
-  // agregando en una lista al lado izquierdo del comparador": antes vivía
-  // enteramente adentro de cada ProviderRow (estado local + localStorage,
-  // sin ningún lugar que mostrara la lista junta) — elevado acá, mismo
-  // patrón que requestedSlugs arriba, para que un panel en el rail
-  // izquierdo (ver SavedRatesCard) pueda mostrar la lista completa y
-  // actualizarse en vivo sin importar desde qué fila se tocó el corazón.
-  // Se sigue persistiendo en localStorage (SAVED_RATES_KEY) — conveniencia
-  // por navegador, no una cuenta — pero ahora leído UNA vez acá arriba en
-  // vez de en cada fila por separado.
-  const [savedSlugs, setSavedSlugs] = useState<Set<string>>(new Set());
+  // 2026-09-11 feedback — "guardar también la ruta... para armar una
+  // página real 'Mis favoritos' que los junte a todos": el diseño
+  // original guardaba sólo el slug a propósito — "me interesa este
+  // proveedor", no "guardá esta cotización". Eso funcionaba mientras el
+  // corazón sólo alimentaba la tarjeta de la propia comparación abierta
+  // (SavedRatesCard, filtra sobre `rows` = los resultados ACTUALES) —
+  // pero afuera de esa comparación, un slug solo no alcanza para
+  // reconstruir nada: no hay ruta a la que volver. Ahora se guarda un
+  // registro por proveedor (interface SavedFavorite, más abajo) con el
+  // corredor/monto vigentes en el momento de guardar, así una página
+  // aparte puede juntar los favoritos de CUALQUIER corredor, no sólo el
+  // que tenés abierto ahora. `savedSlugs` se sigue derivando acá mismo
+  // como `Set<string>` — nada de lo que ya consume esa forma
+  // (ProviderRow, SavedRatesCard, el badge del contador) necesita
+  // cambiar.
+  const [savedFavorites, setSavedFavorites] = useState<Map<string, SavedFavorite>>(new Map());
+  const savedSlugs = useMemo(() => new Set(savedFavorites.keys()), [savedFavorites]);
   useEffect(() => {
     try {
       const raw = localStorage.getItem(SAVED_RATES_KEY);
-      setSavedSlugs(raw ? new Set(JSON.parse(raw) as string[]) : new Set());
+      if (!raw) return;
+      const parsed: unknown = JSON.parse(raw);
+      // Compatibilidad con el formato viejo (array de slugs sueltos, sin
+      // corredor) — sin corredor no hay nada que migrar, arranca vacío en
+      // vez de romper con datos a medio llenar.
+      if (!Array.isArray(parsed) || parsed.some((x) => typeof x === "string")) return;
+      setSavedFavorites(new Map((parsed as SavedFavorite[]).map((f) => [f.slug, f])));
     } catch {
       // Storage blocked (private mode, etc.) — starts empty, same as before.
     }
   }, []);
   const toggleSavedSlug = (slug: string) => {
-    setSavedSlugs((current) => {
-      const next = new Set(current);
-      if (next.has(slug)) next.delete(slug);
-      else next.add(slug);
+    setSavedFavorites((current) => {
+      const next = new Map(current);
+      if (next.has(slug)) {
+        next.delete(slug);
+      } else {
+        const row = result?.rows.find((r) => r.slug === slug);
+        next.set(slug, {
+          slug,
+          providerName: row?.name ?? slug,
+          sendingCountry,
+          receivingCountry,
+          from,
+          to,
+          amount,
+          segment,
+          savedAt: Date.now(),
+        });
+      }
       try {
-        localStorage.setItem(SAVED_RATES_KEY, JSON.stringify(Array.from(next)));
+        localStorage.setItem(SAVED_RATES_KEY, JSON.stringify(Array.from(next.values())));
       } catch {
         // Storage unavailable — flip the visual state anyway (the click
         // isn't dead), it just won't survive a reload.
@@ -5547,10 +5574,51 @@ function ResultsBlock({
 // mockup's dynamic tag literally ("Best overall", "Receives most",
 // "Fastest").
 /** docs/kayak-redesign-spec.md §3.7 — clave de localStorage del ♡ de cada
- *  fila. Guarda sólo slugs de proveedor: ni montos, ni corredores, ni nada
- *  que ate el guardado a una búsqueda concreta — es "me interesa este
- *  proveedor", no "guardá esta cotización", que caducaría en minutos. */
+ *  fila.
+ *  2026-09-11 feedback — pasa a guardar un `SavedFavorite` por proveedor
+ *  (slug + el corredor/monto vigentes al guardar), no sólo el slug
+ *  suelto — ver el comentario de `savedFavorites` más arriba, donde se
+ *  explica por qué el diseño original ("sin corredor, caduca en
+ *  minutos") ya no alcanza ahora que hay una página aparte
+ *  ("/favorites") que junta favoritos de cualquier corredor. */
 const SAVED_RATES_KEY = "mangomundi.savedProviders";
+
+export interface SavedFavorite {
+  slug: string;
+  providerName: string;
+  sendingCountry: string;
+  receivingCountry: string;
+  from: string;
+  to: string;
+  amount: number;
+  segment: Segment;
+  savedAt: number;
+}
+
+/** Exportado para que la página /favorites (fuera de este componente) lea
+ *  y agrupe por corredor sin duplicar la forma del registro. */
+export function readSavedFavorites(): SavedFavorite[] {
+  try {
+    const raw = localStorage.getItem(SAVED_RATES_KEY);
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed) || parsed.some((x) => typeof x === "string")) return [];
+    return parsed as SavedFavorite[];
+  } catch {
+    return [];
+  }
+}
+
+export function removeSavedFavorite(slug: string): SavedFavorite[] {
+  const remaining = readSavedFavorites().filter((f) => f.slug !== slug);
+  try {
+    localStorage.setItem(SAVED_RATES_KEY, JSON.stringify(remaining));
+  } catch {
+    // Storage unavailable — the in-memory list this returns is still
+    // correct for the caller's current render, it just won't persist.
+  }
+  return remaining;
+}
 
 function winnerTagKey(sortBy: SortKey): string {
   switch (sortBy) {
@@ -5773,12 +5841,22 @@ function ProviderRow({
       ·
     </span>
   );
+  // 2026-09-17 feedback — "Promo: Tasa preferencial..." en español para
+  // cualquier idioma: `row.promo_text` viene tal cual de Supabase
+  // (`providers.promo_text`, una sola columna sin variante por idioma) —
+  // se resuelve por slug contra el sistema de traducciones (ver el
+  // comment junto a `provider.promo.remitly` en i18n.tsx) antes de caer
+  // al texto crudo de la base, así los proveedores ya mapeados salen en
+  // el idioma del sitio y uno nuevo sin mapear no se rompe, sólo queda
+  // en el idioma en que se cargó hasta que se le agregue su key.
+  const providerPromoKey = `provider.promo.${row.slug}`;
+  const promoText = providerPromoKey in DICTS.en ? t(providerPromoKey) : row.promo_text;
   const footerParts = [
     priceStamp,
-    row.promo_text && (
+    promoText && (
       <span key="promo" className="inline-flex items-center gap-1 font-medium text-accent-text">
         <Sparkle className="h-2.5 w-2.5 shrink-0" /> {t("comparator.badge.promoPrefix")}{" "}
-        {row.promo_text}
+        {promoText}
       </span>
     ),
     affiliateNote,
