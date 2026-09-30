@@ -23,6 +23,7 @@ import { Route as Char123LangChar125IndexRouteImport } from './routes/{-$lang}.i
 import { Route as Char123LangChar125AboutRouteImport } from './routes/{-$lang}.about'
 import { Route as Char123LangChar125BlogRouteImport } from './routes/{-$lang}.blog'
 import { Route as Char123LangChar125BusinessRouteImport } from './routes/{-$lang}.business'
+import { Route as Char123LangChar125FavoritesRouteImport } from './routes/{-$lang}.favorites'
 import { Route as Char123LangChar125LegalRouteImport } from './routes/{-$lang}.legal'
 import { Route as Char123LangChar125WidgetRouteImport } from './routes/{-$lang}.widget'
 import { Route as Char123LangChar125BlogSlugRouteImport } from './routes/{-$lang}.blog_.$slug'
@@ -99,6 +100,12 @@ const Char123LangChar125BusinessRoute =
     path: '/{-$lang}/business',
     getParentRoute: () => rootRouteImport,
   } as any)
+const Char123LangChar125FavoritesRoute =
+  Char123LangChar125FavoritesRouteImport.update({
+    id: '/{-$lang}/favorites',
+    path: '/{-$lang}/favorites',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Char123LangChar125LegalRoute = Char123LangChar125LegalRouteImport.update({
   id: '/{-$lang}/legal',
   path: '/{-$lang}/legal',
@@ -137,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/{-$lang}/about': typeof Char123LangChar125AboutRoute
   '/{-$lang}/blog': typeof Char123LangChar125BlogRoute
   '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
+  '/{-$lang}/favorites': typeof Char123LangChar125FavoritesRoute
   '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
   '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
@@ -157,6 +165,7 @@ export interface FileRoutesByTo {
   '/{-$lang}/about': typeof Char123LangChar125AboutRoute
   '/{-$lang}/blog': typeof Char123LangChar125BlogRoute
   '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
+  '/{-$lang}/favorites': typeof Char123LangChar125FavoritesRoute
   '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
   '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
   '/{-$lang}': typeof Char123LangChar125IndexRoute
@@ -178,6 +187,7 @@ export interface FileRoutesById {
   '/{-$lang}/about': typeof Char123LangChar125AboutRoute
   '/{-$lang}/blog': typeof Char123LangChar125BlogRoute
   '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
+  '/{-$lang}/favorites': typeof Char123LangChar125FavoritesRoute
   '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
   '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
@@ -200,6 +210,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/about'
     | '/{-$lang}/blog'
     | '/{-$lang}/business'
+    | '/{-$lang}/favorites'
     | '/{-$lang}/legal'
     | '/{-$lang}/widget'
     | '/{-$lang}/'
@@ -220,6 +231,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/about'
     | '/{-$lang}/blog'
     | '/{-$lang}/business'
+    | '/{-$lang}/favorites'
     | '/{-$lang}/legal'
     | '/{-$lang}/widget'
     | '/{-$lang}'
@@ -240,6 +252,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/about'
     | '/{-$lang}/blog'
     | '/{-$lang}/business'
+    | '/{-$lang}/favorites'
     | '/{-$lang}/legal'
     | '/{-$lang}/widget'
     | '/{-$lang}/'
@@ -261,6 +274,7 @@ export interface RootRouteChildren {
   Char123LangChar125AboutRoute: typeof Char123LangChar125AboutRoute
   Char123LangChar125BlogRoute: typeof Char123LangChar125BlogRoute
   Char123LangChar125BusinessRoute: typeof Char123LangChar125BusinessRoute
+  Char123LangChar125FavoritesRoute: typeof Char123LangChar125FavoritesRoute
   Char123LangChar125LegalRoute: typeof Char123LangChar125LegalRoute
   Char123LangChar125WidgetRoute: typeof Char123LangChar125WidgetRoute
   Char123LangChar125IndexRoute: typeof Char123LangChar125IndexRoute
@@ -368,6 +382,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LangChar125BusinessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/{-$lang}/favorites': {
+      id: '/{-$lang}/favorites'
+      path: '/{-$lang}/favorites'
+      fullPath: '/{-$lang}/favorites'
+      preLoaderRoute: typeof Char123LangChar125FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/{-$lang}/legal': {
       id: '/{-$lang}/legal'
       path: '/{-$lang}/legal'
@@ -413,6 +434,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char123LangChar125AboutRoute: Char123LangChar125AboutRoute,
   Char123LangChar125BlogRoute: Char123LangChar125BlogRoute,
   Char123LangChar125BusinessRoute: Char123LangChar125BusinessRoute,
+  Char123LangChar125FavoritesRoute: Char123LangChar125FavoritesRoute,
   Char123LangChar125LegalRoute: Char123LangChar125LegalRoute,
   Char123LangChar125WidgetRoute: Char123LangChar125WidgetRoute,
   Char123LangChar125IndexRoute: Char123LangChar125IndexRoute,
