@@ -109,7 +109,16 @@ export function Footer() {
   // del ☰) pueda reusar exactamente los mismos 3 destinos en vez de
   // duplicar la lista.
   return (
-    <footer className="bg-[#1B1510] py-7">
+    // id="site-footer" — 2026-09-29 feedback: "el boton de about us del
+    // footer no me lleva a ningun lado en mobile". No era un link roto:
+    // la barra fija inferior de ComparatorSection.tsx (ya sea la del
+    // "winner" o la del request de negocios, ambas `fixed inset-x-0
+    // bottom-0`) queda pisando el footer cuando el usuario scrollea hasta
+    // el final con un resultado todavía activo — el click le llegaba a la
+    // barra, no al link de abajo. Ese componente observa este id para
+    // esconder la barra apenas el footer entra en pantalla (ver su propio
+    // comment, "hideBottomBarForFooter").
+    <footer id="site-footer" className="bg-[#1B1510] py-7">
       {/* 2026-09-04 feedback (ronda 6, cont.) — ver Header.tsx: tope de
           ancho subido a 1340px, medido en vivo contra kayak.com. */}
       <div className="mx-auto max-w-[1340px] px-5 sm:px-[30px]">

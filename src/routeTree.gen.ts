@@ -25,6 +25,7 @@ import { Route as Char123LangChar125BlogRouteImport } from './routes/{-$lang}.bl
 import { Route as Char123LangChar125BusinessRouteImport } from './routes/{-$lang}.business'
 import { Route as Char123LangChar125FavoritesRouteImport } from './routes/{-$lang}.favorites'
 import { Route as Char123LangChar125LegalRouteImport } from './routes/{-$lang}.legal'
+import { Route as Char123LangChar125RateAlertsRouteImport } from './routes/{-$lang}.rate-alerts'
 import { Route as Char123LangChar125WidgetRouteImport } from './routes/{-$lang}.widget'
 import { Route as Char123LangChar125BlogSlugRouteImport } from './routes/{-$lang}.blog_.$slug'
 import { Route as Char123LangChar125SendCorridorRouteImport } from './routes/{-$lang}.send.$corridor'
@@ -111,6 +112,12 @@ const Char123LangChar125LegalRoute = Char123LangChar125LegalRouteImport.update({
   path: '/{-$lang}/legal',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char123LangChar125RateAlertsRoute =
+  Char123LangChar125RateAlertsRouteImport.update({
+    id: '/{-$lang}/rate-alerts',
+    path: '/{-$lang}/rate-alerts',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Char123LangChar125WidgetRoute =
   Char123LangChar125WidgetRouteImport.update({
     id: '/{-$lang}/widget',
@@ -146,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
   '/{-$lang}/favorites': typeof Char123LangChar125FavoritesRoute
   '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
+  '/{-$lang}/rate-alerts': typeof Char123LangChar125RateAlertsRoute
   '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
   '/{-$lang}/blog/$slug': typeof Char123LangChar125BlogSlugRoute
@@ -167,6 +175,7 @@ export interface FileRoutesByTo {
   '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
   '/{-$lang}/favorites': typeof Char123LangChar125FavoritesRoute
   '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
+  '/{-$lang}/rate-alerts': typeof Char123LangChar125RateAlertsRoute
   '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
   '/{-$lang}': typeof Char123LangChar125IndexRoute
   '/{-$lang}/blog/$slug': typeof Char123LangChar125BlogSlugRoute
@@ -189,6 +198,7 @@ export interface FileRoutesById {
   '/{-$lang}/business': typeof Char123LangChar125BusinessRoute
   '/{-$lang}/favorites': typeof Char123LangChar125FavoritesRoute
   '/{-$lang}/legal': typeof Char123LangChar125LegalRoute
+  '/{-$lang}/rate-alerts': typeof Char123LangChar125RateAlertsRoute
   '/{-$lang}/widget': typeof Char123LangChar125WidgetRoute
   '/{-$lang}/': typeof Char123LangChar125IndexRoute
   '/{-$lang}/blog_/$slug': typeof Char123LangChar125BlogSlugRoute
@@ -212,6 +222,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/business'
     | '/{-$lang}/favorites'
     | '/{-$lang}/legal'
+    | '/{-$lang}/rate-alerts'
     | '/{-$lang}/widget'
     | '/{-$lang}/'
     | '/{-$lang}/blog/$slug'
@@ -233,6 +244,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/business'
     | '/{-$lang}/favorites'
     | '/{-$lang}/legal'
+    | '/{-$lang}/rate-alerts'
     | '/{-$lang}/widget'
     | '/{-$lang}'
     | '/{-$lang}/blog/$slug'
@@ -254,6 +266,7 @@ export interface FileRouteTypes {
     | '/{-$lang}/business'
     | '/{-$lang}/favorites'
     | '/{-$lang}/legal'
+    | '/{-$lang}/rate-alerts'
     | '/{-$lang}/widget'
     | '/{-$lang}/'
     | '/{-$lang}/blog_/$slug'
@@ -276,6 +289,7 @@ export interface RootRouteChildren {
   Char123LangChar125BusinessRoute: typeof Char123LangChar125BusinessRoute
   Char123LangChar125FavoritesRoute: typeof Char123LangChar125FavoritesRoute
   Char123LangChar125LegalRoute: typeof Char123LangChar125LegalRoute
+  Char123LangChar125RateAlertsRoute: typeof Char123LangChar125RateAlertsRoute
   Char123LangChar125WidgetRoute: typeof Char123LangChar125WidgetRoute
   Char123LangChar125IndexRoute: typeof Char123LangChar125IndexRoute
   Char123LangChar125BlogSlugRoute: typeof Char123LangChar125BlogSlugRoute
@@ -396,6 +410,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LangChar125LegalRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/{-$lang}/rate-alerts': {
+      id: '/{-$lang}/rate-alerts'
+      path: '/{-$lang}/rate-alerts'
+      fullPath: '/{-$lang}/rate-alerts'
+      preLoaderRoute: typeof Char123LangChar125RateAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/{-$lang}/widget': {
       id: '/{-$lang}/widget'
       path: '/{-$lang}/widget'
@@ -436,6 +457,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char123LangChar125BusinessRoute: Char123LangChar125BusinessRoute,
   Char123LangChar125FavoritesRoute: Char123LangChar125FavoritesRoute,
   Char123LangChar125LegalRoute: Char123LangChar125LegalRoute,
+  Char123LangChar125RateAlertsRoute: Char123LangChar125RateAlertsRoute,
   Char123LangChar125WidgetRoute: Char123LangChar125WidgetRoute,
   Char123LangChar125IndexRoute: Char123LangChar125IndexRoute,
   Char123LangChar125BlogSlugRoute: Char123LangChar125BlogSlugRoute,

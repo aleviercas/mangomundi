@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getRouteSeo, useI18n, SUPPORTED_LANGS, coerceLang, localeTagForLang } from "@/lib/i18n";
 import { hreflangLinks, selfCanonical } from "@/config/site";
 import { COUNTRY_BY_CODE } from "@/lib/countries";
+import { BrandMark } from "@/components/Wordmark";
 import {
   readSavedFavorites,
   removeSavedFavorite,
@@ -106,11 +107,19 @@ function FavoritesPage() {
           <Heart className="h-8 w-8 text-muted-foreground" aria-hidden />
           <p className="text-lg font-semibold text-foreground">{t("favorites.empty.title")}</p>
           <p className="max-w-sm text-sm text-muted-foreground">{t("favorites.empty.body")}</p>
+          {/* 2026-09-29 feedback — "reemplazar el boton de start a
+              comparison por el mismo que se usa en los blogs... que tiene
+              el icono que dice go to compare": mismo botón exacto que la
+              tarjeta CTA de blog_.$slug.tsx/about.tsx — mismas clases,
+              mismo BrandMark, mismo label (blog.cta.button, "Go to
+              compare") — en vez de un botón propio con texto/estilo
+              distinto para la misma acción. */}
           <Link
             {...langLinkPropsHome(lang)}
-            className="btn-cta-gradient mt-2 inline-flex items-center gap-1.5 rounded-compact px-4 py-2 text-meta font-semibold"
+            className="mt-3 inline-flex items-baseline gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
           >
-            {t("favorites.empty.cta")}
+            <BrandMark tone="light" />
+            {t("blog.cta.button")}
           </Link>
         </div>
       ) : (

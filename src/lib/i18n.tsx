@@ -3159,9 +3159,19 @@ const EXTRA_KEYS: Partial<Record<Lang, Dict>> = {
     "favorites.subtitle": "Providers you've saved, from every route you've compared — not just the one you have open now.",
     "favorites.empty.title": "No favorites yet",
     "favorites.empty.body": "Tap the heart on any provider in a comparison to save it here — from any route.",
-    "favorites.empty.cta": "Start a comparison",
+    // 2026-09-29 feedback — favorites.empty.cta sacada: el botón del
+    // estado vacío ahora reusa blog.cta.button ("Go to compare"), el
+    // mismo CTA que ya usan blog_.$slug.tsx/about.tsx, en vez de tener
+    // su propio texto/estilo para la misma acción.
     "favorites.viewLive": "View live comparison",
     "favorites.savedOn": "Saved {date}",
+    // 2026-09-29 feedback — "arreglar lo de Rate alerts que el boton no
+    // me lleva a ninguna accion": nueva página /rate-alerts (ver esa
+    // ruta) con su propio mini-formulario de corredor. Reusa
+    // footer.product.rateAlerts como título de la página y
+    // comparator.rateAlert.body/.cta/.success/.error (ya traducidos) —
+    // este es el único key nuevo que necesitó.
+    "rateAlerts.subtitle": "Pick a route and we'll note when the best rate improves.",
     // §4.1 — mobile collapsed search pill.
     "comparator.mobile.editSearch": "Edit search",
     // §4.2 — bottom button of the mobile filters drawer. Filters already

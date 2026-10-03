@@ -79,29 +79,20 @@ export const FOOTER_COMPANY: ReadonlyArray<NavEntry> = [
  *  ☰ drawer groups a secondary block of utility/legal links below the
  *  main nav, visually smaller and separated by its own hairline — not
  *  mixed into the primary Individual/Business/Widget/Blog/About list.
- *  Two new groups, both reusing keys/routes that already exist elsewhere
- *  (Footer.tsx) rather than inventing new copy or destinations:
  *
- *  DRAWER_UTILITY — "Alertas de tasa" (footer.product.rateAlerts, a
- *  translated key that existed but was never actually linked anywhere in
- *  the site — dead key until now). Points at "/", same as the Individual
- *  entry above: there's no dedicated rate-alerts page today, the feature
- *  is a card that appears inside a comparator RESULT (needs a real
- *  corridor first — see ComparatorSection.tsx's own rate-alert card,
- *  which needs `from`/`to`/`amount` in scope), so "/" is the honest
- *  destination — it's where that flow starts, not a stand-in that goes
- *  nowhere.
+ *  DRAWER_UTILITY — "Alertas de tasa" (footer.product.rateAlerts) y
+ *  "Favoritos" (nav.favorites), cada una con su propia página real
+ *  (/rate-alerts, /favorites) en vez de apuntar a "/" como placeholder.
+ *  2026-09-29 feedback — "Alertas de tasa" apuntaba a "/" al principio
+ *  (honesto pero vacío: la tarjeta real sólo aparece dentro de un
+ *  resultado de comparación, aterrizar en home vacío no mostraba nada) —
+ *  se le hizo su propia página (ver esa ruta para el porqué completo).
  *
  *  LEGAL_LINKS — Terms/Privacy/Risk, identical targets to Footer.tsx's
  *  own `legal` array (same hashes into /legal) — Header no longer needs
- *  to duplicate that array inline, both read from here now.
- *
- *  2026-09-17 feedback — "Favoritos" se suma al mismo grupo: a
- *  diferencia de Alertas de tasa, ESTA sí tiene una página propia
- *  (/favorites, ver esa ruta) que junta los favoritos de cualquier
- *  corredor — no apunta a "/" como placeholder. */
+ *  to duplicate that array inline, both read from here now. */
 export const DRAWER_UTILITY: ReadonlyArray<NavEntry> = [
-  { to: "/", labelKey: "footer.product.rateAlerts" },
+  { to: "/rate-alerts", labelKey: "footer.product.rateAlerts" },
   { to: "/favorites", labelKey: "nav.favorites" },
 ];
 

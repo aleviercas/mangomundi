@@ -5281,6 +5281,28 @@ function ResultsBlock({
 }) {
   const { t, lang } = useI18n();
 
+  // 2026-09-29 feedback — "el boton de about us del footer no me lleva a
+  // ningun lado en mobile": las dos barras fijas de abajo de este
+  // componente (`fixed inset-x-0 bottom-0`, la del "winner" y la del
+  // request de negocios) quedan pisando el footer del sitio cuando el
+  // usuario scrollea hasta el final con un resultado todavía activo — el
+  // click le llegaba a la barra invisible/transparente de arriba, no al
+  // link de abajo. Mismo componente real en ambos casos (ambas barras
+  // conviven en este archivo), así que un solo observer acá alcanza:
+  // mira el id="site-footer" de Footer.tsx (hermano de este árbol, no un
+  // padre/hijo — por eso DOM query en vez de una prop) y esconde
+  // cualquiera de las dos barras apenas el footer entra en pantalla.
+  const [hideBottomBarForFooter, setHideBottomBarForFooter] = useState(false);
+  useEffect(() => {
+    const footerEl = document.getElementById("site-footer");
+    if (!footerEl) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setHideBottomBarForFooter(entry.isIntersecting);
+    });
+    observer.observe(footerEl);
+    return () => observer.disconnect();
+  }, []);
+
   // Opt-in requirement filters narrow the pool BEFORE ranking/badges are
   // computed, so a "cheapest" badge always reflects the cheapest among what
   // the person can actually see right now, not a hidden full market.
@@ -5495,7 +5517,7 @@ function ResultsBlock({
           — esta barra cubre exactamente el hueco de abajo, incluyendo
           tablet, donde ni el rail ni la barra del winner (que corta en
           `sm`) alcanzarían a mostrar nada. */}
-      {segment === "business" && requestedSlugs.size > 0 ? (
+      {segment === "business" && requestedSlugs.size > 0 && !hideBottomBarForFooter ? (
         <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur lg:hidden">
           <div className="min-w-0 text-meta font-semibold text-foreground">
             {t("comparator.business.request.selectedCount").replace(
@@ -5514,7 +5536,8 @@ function ResultsBlock({
         </div>
       ) : (
         winner &&
-        showBottomBar && (
+        showBottomBar &&
+        !hideBottomBarForFooter && (
           <div className="fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-border bg-card/95 px-4 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] backdrop-blur sm:hidden">
             <div className="min-w-0">
               <div className="truncate text-meta font-semibold tabular-nums text-foreground">
